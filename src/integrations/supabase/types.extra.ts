@@ -218,3 +218,86 @@ export type Phase2Client = SupabaseClient<DatabaseWithPhase2, "public">;
 export function withPhase2(client: unknown): Phase2Client {
   return client as Phase2Client;
 }
+
+
+/* =====================================================================
+   امتداد المرحلة 4 — التقارير والخط الزمني والإشعارات
+   ===================================================================== */
+
+export type NotificationKind =
+  | "welcome"
+  | "orphan_approved"
+  | "orphan_rejected"
+  | "organization_approved"
+  | "organization_rejected"
+  | "sponsorship_started"
+  | "payment_succeeded"
+  | "payment_failed"
+  | "report_published"
+  | "report_rejected"
+  | "other";
+
+export type EmailState = "pending" | "sent" | "failed" | "skipped";
+
+type NotificationPhase4 = {
+  kind: NotificationKind;
+  entity: string | null;
+  entity_id: string | null;
+  email_state: EmailState;
+  email_attempts: number;
+  email_error: string | null;
+  email_sent_at: Iso | null;
+};
+
+type ReportPhase4 = {
+  attachments: string[];
+  reviewed_by: string | null;
+  reviewed_at: Iso | null;
+  published_at: Iso | null;
+};
+
+type GeneratedNotifications = GeneratedPublic["Tables"]["notifications"];
+type GeneratedReports = GeneratedPublic["Tables"]["progress_reports"];
+
+export type DatabaseWithPhase4 = Omit<DatabaseWithPhase2, "public"> & {
+  public: Omit<DatabaseWithPhase2["public"], "Tables" | "Functions"> & {
+    Tables: Omit<DatabaseWithPhase2["public"]["Tables"], "notifications" | "progress_reports"> & {
+      notifications: {
+        Row: GeneratedNotifications["Row"] & NotificationPhase4;
+        Insert: GeneratedNotifications["Insert"] & Partial<NotificationPhase4>;
+        Update: GeneratedNotifications["Update"] & Partial<NotificationPhase4>;
+        Relationships: GeneratedNotifications["Relationships"];
+      };
+      progress_reports: {
+        Row: GeneratedReports["Row"] & ReportPhase4;
+        Insert: GeneratedReports["Insert"] & Partial<ReportPhase4>;
+        Update: GeneratedReports["Update"] & Partial<ReportPhase4>;
+        Relationships: GeneratedReports["Relationships"];
+      };
+    };
+    Functions: DatabaseWithPhase2["public"]["Functions"] & {
+      submit_progress_report: {
+        Args: { _payload: unknown };
+        Returns: unknown;
+      };
+      review_progress_report: {
+        Args: { _id: string; _decision: string; _note?: string | null };
+        Returns: undefined;
+      };
+      notification_recipients: {
+        Args: { _ids: string[] };
+        Returns: Array<{ id: string; email: string | null }>;
+      };
+      announce_payment: {
+        Args: { _sponsorship: string; _succeeded: boolean; _amount: number; _currency: string };
+        Returns: undefined;
+      };
+    };
+  };
+};
+
+export type Phase4Client = SupabaseClient<DatabaseWithPhase4, "public">;
+
+export function withPhase4(client: unknown): Phase4Client {
+  return client as Phase4Client;
+}

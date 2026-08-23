@@ -16,9 +16,11 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
+import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -55,6 +57,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGuardianRoute = AuthenticatedGuardianRouteImport.update({
+  id: '/guardian',
+  path: '/guardian',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOrgRoute = AuthenticatedOrgRouteImport.update({
   id: '/org',
   path: '/org',
@@ -70,6 +77,12 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   path: '/orphans/$orphanId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNotificationsDispatchRoute =
+  ApiNotificationsDispatchRouteImport.update({
+    id: '/api/notifications/dispatch',
+    path: '/api/notifications/dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   id: '/api/payments/webhook',
   path: '/api/payments/webhook',
@@ -83,9 +96,11 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -95,9 +110,11 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans': typeof OrphansIndexRoute
+  '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -109,9 +126,11 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -123,9 +142,11 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/admin'
     | '/dashboard'
+    | '/guardian'
     | '/org'
     | '/orphans/$orphanId'
     | '/orphans/'
+    | '/api/notifications/dispatch'
     | '/api/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -135,9 +156,11 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/admin'
     | '/dashboard'
+    | '/guardian'
     | '/org'
     | '/orphans/$orphanId'
     | '/orphans'
+    | '/api/notifications/dispatch'
     | '/api/payments/webhook'
   id:
     | '__root__'
@@ -148,9 +171,11 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/guardian'
     | '/_authenticated/org'
     | '/orphans/$orphanId'
     | '/orphans/'
+    | '/api/notifications/dispatch'
     | '/api/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -162,6 +187,7 @@ export interface RootRouteChildren {
   OrganizationsRoute: typeof OrganizationsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
+  ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
 }
 
@@ -216,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/guardian': {
+      id: '/_authenticated/guardian'
+      path: '/guardian'
+      fullPath: '/guardian'
+      preLoaderRoute: typeof AuthenticatedGuardianRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/org': {
       id: '/_authenticated/org'
       path: '/org'
@@ -237,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/notifications/dispatch': {
+      id: '/api/notifications/dispatch'
+      path: '/api/notifications/dispatch'
+      fullPath: '/api/notifications/dispatch'
+      preLoaderRoute: typeof ApiNotificationsDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/payments/webhook': {
       id: '/api/payments/webhook'
       path: '/api/payments/webhook'
@@ -250,12 +290,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
 }
 
@@ -270,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrganizationsRoute: OrganizationsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   OrphansIndexRoute: OrphansIndexRoute,
+  ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

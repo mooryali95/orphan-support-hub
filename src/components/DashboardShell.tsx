@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IocoLockup } from "@/components/brand/IocoMark";
+import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
@@ -16,7 +17,7 @@ export function DashboardShell({
   description?: string;
   children: ReactNode;
 }) {
-  const { user, roles, isAdmin, isCareOrg } = useAuth();
+  const { user, roles, isAdmin, isCareOrg, isGuardian } = useAuth();
   const navigate = useNavigate();
 
   async function signOut() {
@@ -50,6 +51,15 @@ export function DashboardShell({
                 جهة الرعاية
               </Link>
             )}
+            {isGuardian && (
+              <Link
+                to="/guardian"
+                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+              >
+                من أرعاهم
+              </Link>
+            )}
             {isAdmin && (
               <Link
                 to="/admin"
@@ -68,6 +78,7 @@ export function DashboardShell({
           </nav>
 
           <div className="ms-auto flex items-center gap-3">
+            <NotificationBell />
             <div className="hidden text-end sm:block">
               <p className="text-xs font-medium">{user?.email}</p>
               <p className="text-[11px] text-muted-foreground">

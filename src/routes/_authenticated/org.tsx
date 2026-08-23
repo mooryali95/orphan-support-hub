@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Plus } from "lucide-react";
+import { FileText, Loader2, Plus } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getMyOrgWorkspace, registerOrganization } from "@/lib/org.functions";
 import { OrphanIntakeForm } from "@/components/intake/OrphanIntakeForm";
+import { ReportForm } from "@/components/impact/ReportForm";
 import { REJECTION_LABELS } from "@/lib/intake.functions";
 import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
@@ -33,6 +34,7 @@ function OrgPage() {
   const register = useServerFn(registerOrganization);
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [reporting, setReporting] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["org-workspace"],
@@ -141,28 +143,49 @@ function OrgPage() {
           </p>
         ) : (
           data.orphans.map((o) => (
-            <div
-              key={o.id}
-              className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card p-4"
-            >
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold">{o.display_name}</h3>
-                  <Badge variant="secondary">{ORPHAN_STATUS_LABELS[o.status] ?? o.status}</Badge>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {o.code} — {o.city ?? "—"} — {formatMoney(o.funded_monthly, o.currency)} /{" "}
-                  {formatMoney(o.monthly_need, o.currency)}
-                </p>
-                {o.status === "rejected" && (
-                  // الرفض بلا سبب لا يُمكّن الجهة من التصحيح، فالسبب
-                  // المُهيكل يُعرض هنا لا في بريد منفصل.
-                  <p className="text-bridge-ink mt-1 text-xs font-medium">
-                    سبب الرفض: {REJECTION_LABELS[o.rejection_code ?? ""] ?? "—"}
-                    {o.rejection_reason ? ` — ${o.rejection_reason}` : ""}
+            <div key={o.id} className="rounded-2xl border border-border bg-card p-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold">{o.display_name}</h3>
+                    <Badge variant="secondary">{ORPHAN_STATUS_LABELS[o.status] ?? o.status}</Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {o.code} — {o.city ?? "—"} — {formatMoney(o.funded_monthly, o.currency)} /{" "}
+                    {formatMoney(o.monthly_need, o.currency)}
                   </p>
+                  {o.status === "rejected" && (
+                    // الرفض بلا سبب لا يُمكّن الجهة من التصحيح، فالسبب
+                    // المُهيكل يُعرض هنا لا في بريد منفصل.
+                    <p className="text-bridge-ink mt-1 text-xs font-medium">
+                      سبب الرفض: {REJECTION_LABELS[o.rejection_code ?? ""] ?? "—"}
+                      {o.rejection_reason ? ` — ${o.rejection_reason}` : ""}
+                    </p>
+                  )}
+                </div>
+
+                {/* التقرير الدوري متاح على الملفات المنشورة وحدها: ملفّ
+                  لم يُعتمد بعدُ لا كافل له ينتظر خبراً. */}
+                {(o.status === "approved" || o.status === "fully_sponsored") && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    aria-expanded={reporting === o.id}
+                    onClick={() => setReporting(reporting === o.id ? null : o.id)}
+                  >
+                    <FileText className="size-4" aria-hidden="true" />
+                    {reporting === o.id ? "إغلاق" : "تقرير دوري"}
+                  </Button>
                 )}
               </div>
+
+              {reporting === o.id && (
+                <ReportForm
+                  orphanId={o.id}
+                  onDone={() => setReporting(null)}
+                  onCancel={() => setReporting(null)}
+                />
+              )}
             </div>
           ))
         )}
