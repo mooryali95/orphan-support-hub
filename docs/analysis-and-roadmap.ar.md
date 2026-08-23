@@ -8,7 +8,7 @@
 
 > ## ✅ حالة التنفيذ — المرحلة 0 مكتملة
 >
-> نُفِّذت المرحلة 0 في `supabase/migrations/20260823120000_phase0_critical_security_hardening.sql`،
+> نُفِّذت المرحلة 0 في `supabase/migrations/20260823100000_phase0_critical_security_hardening.sql`،
 > وتغطي **C1–C5** و**H1–H5**. الثغرات المتوسطة (M1–M9) لا تزال مفتوحة حسب ترتيب المراحل أدناه.
 >
 > الإثبات في `supabase/tests/phase0-verification.sql` — ينفّذ سيناريوهات الاستغلال
@@ -25,7 +25,7 @@
 > كفالات، صفر مدفوعات، والجهات والملفات كلها بيانات تجريبية أصلية — فلا حاجة لأي تنظيف.
 >
 > المدير المؤسّس `p.o.m2012@hotmail.com` مُسنَد ومحميّ عبر
-> `20260823140000_founder_admin_protection.sql` — التفاصيل في `docs/runbook.ar.md`.
+> `20260823100001_founder_admin_protection.sql` — التفاصيل في `docs/runbook.ar.md`.
 
 ## 1. الملخّص التنفيذي
 
