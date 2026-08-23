@@ -1,0 +1,354 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { withPhase2 } from "@/integrations/supabase/types.extra";
+
+/**
+ * إدخال ملف اليتيم ووثائقه — المرحلة 2.
+ *
+ * كل الكتابة تمرّ عبر `create_orphan_intake` في القاعدة لا عبر نداءات
+ * متتابعة من هنا. السبب أن النداءات المتتابعة ليست معاملة: كان الملف
+ * يُدرج ثم تُدرج بياناته السرّية بنداء ثانٍ بلا فحص خطأ، فإن فشل الثاني
+ * بقي ملف بلا اسم كامل ولا جوال ولي أمر — ولا أحد يعلم (M3).
+ */
+
+export const NEED_CATEGORIES = [
+  "education",
+  "health",
+  "food",
+  "housing",
+  "clothing",
+  "other",
+] as const;
+
+export const DOC_KINDS = [
+  "death_certificate",
+  "birth_certificate",
+  "guardianship_proof",
+  "orphan_id",
+  "guardian_id",
+  "income_proof",
+  "school_record",
+  "medical_report",
+  "photo_consent",
+  "other",
+] as const;
+
+/** الوثائق التي لا يُقبل ملفّ بدونها. */
+export const REQUIRED_DOCS = ["death_certificate", "guardianship_proof"] as const;
+
+export const DOC_LABELS: Record<string, string> = {
+  death_certificate: "شهادة وفاة الوالد",
+  birth_certificate: "شهادة ميلاد اليتيم",
+  guardianship_proof: "إثبات الوصاية",
+  orphan_id: "هوية اليتيم",
+  guardian_id: "هوية ولي الأمر",
+  income_proof: "إثبات الدخل",
+  school_record: "سجلّ دراسي",
+  medical_report: "تقرير طبّي",
+  photo_consent: "إقرار الموافقة على الصورة",
+  other: "أخرى",
+};
+
+/** الوثائق الإلزامية الناقصة. يُفحص في الخادم لا في الواجهة وحدها. */
+export function missingRequiredDocs(kinds: readonly string[]): string[] {
+  return REQUIRED_DOCS.filter((k) => !kinds.includes(k));
+}
+
+export const REJECTION_CODES = [
+  "documents_missing",
+  "documents_unclear",
+  "documents_inconsistent",
+  "identity_unverified",
+  "guardianship_unproven",
+  "needs_unjustified",
+  "duplicate_profile",
+  "photo_consent_missing",
+  "other",
+] as const;
+
+export const REJECTION_LABELS: Record<string, string> = {
+  documents_missing: "مستندات ناقصة",
+  documents_unclear: "مستندات غير واضحة",
+  documents_inconsistent: "تعارض بين المستندات",
+  identity_unverified: "الهوية غير مُتحقَّق منها",
+  guardianship_unproven: "الوصاية غير مُثبَتة",
+  needs_unjustified: "بنود الاحتياج غير مبرَّرة",
+  duplicate_profile: "ملف مكرّر",
+  photo_consent_missing: "لا إقرار بالموافقة على الصورة",
+  other: "سبب آخر",
+};
+
+const needSchema = z.object({
+  category: z.enum(NEED_CATEGORIES),
+  title: z.string().trim().min(1).max(120),
+  monthlyAmount: z.number().min(0).max(100000),
+  notes: z.string().trim().max(400).optional(),
+});
+
+const docSchema = z.object({
+  kind: z.enum(DOC_KINDS),
+  storagePath: z.string().trim().min(3).max(500),
+  fileName: z.string().trim().max(255).optional(),
+  mimeType: z.string().trim().max(120).optional(),
+  sizeBytes: z.number().int().min(0).max(20_000_000).optional(),
+});
+
+const intakeSchema = z.object({
+  orgId: z.string().uuid(),
+  /** مسودّة قائمة تُملأ وتُقدَّم؛ غيابها يعني إنشاءً من الصفر. */
+  orphanId: z.string().uuid().optional(),
+  // 1 — أساسي
+  displayName: z.string().trim().min(2).max(80),
+  gender: z.enum(["male", "female"]),
+  birthDate: z.string().trim().max(20).optional(),
+  city: z.string().trim().max(80).optional(),
+  region: z.string().trim().max(80).optional(),
+  // 2 — وصاية
+  fullName: z.string().trim().max(140).optional(),
+  nationalId: z.string().trim().max(40).optional(),
+  guardianName: z.string().trim().max(140).optional(),
+  guardianRelation: z.string().trim().max(60).optional(),
+  guardianPhone: z.string().trim().max(40).optional(),
+  // 3 — وضع أسري
+  address: z.string().trim().max(300).optional(),
+  familySize: z.number().int().min(0).max(60).optional(),
+  familyIncome: z.number().min(0).max(1_000_000).optional(),
+  // 4 — تعليم
+  educationStage: z.string().trim().max(80).optional(),
+  schoolName: z.string().trim().max(140).optional(),
+  // 5 — صحة
+  healthNotes: z.string().trim().max(1000).optional(),
+  // 6 — بنود الاحتياج
+  needs: z.array(needSchema).max(20).default([]),
+  monthlyNeed: z.number().min(0).max(100000).default(0),
+  story: z.string().trim().max(2000).optional(),
+  privateNotes: z.string().trim().max(1000).optional(),
+  // 7 — مستندات وإقرار
+  documents: z.array(docSchema).max(20).default([]),
+});
+
+export type IntakeInput = z.infer<typeof intakeSchema>;
+
+export const submitOrphanIntake = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => intakeSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const missing = missingRequiredDocs(data.documents.map((d) => d.kind));
+    if (missing.length > 0) {
+      return {
+        ok: false as const,
+        error: `مستندات إلزامية ناقصة: ${missing.map((k) => DOC_LABELS[k] ?? k).join("، ")}`,
+      };
+    }
+
+    const db = withPhase2(context.supabase);
+    const { data: res, error } = await db.rpc("create_orphan_intake", {
+      _payload: {
+        org_id: data.orgId,
+        orphan_id: data.orphanId ?? "",
+        display_name: data.displayName,
+        gender: data.gender,
+        birth_date: data.birthDate ?? "",
+        city: data.city ?? "",
+        region: data.region ?? "",
+        education_stage: data.educationStage ?? "",
+        story: data.story ?? "",
+        monthly_need: data.monthlyNeed,
+        full_name: data.fullName ?? "",
+        national_id: data.nationalId ?? "",
+        guardian_name: data.guardianName ?? "",
+        guardian_relation: data.guardianRelation ?? "",
+        guardian_phone: data.guardianPhone ?? "",
+        address: data.address ?? "",
+        family_size: data.familySize?.toString() ?? "",
+        family_income: data.familyIncome?.toString() ?? "",
+        health_notes: data.healthNotes ?? "",
+        school_name: data.schoolName ?? "",
+        private_notes: data.privateNotes ?? "",
+        needs: data.needs.map((n) => ({
+          category: n.category,
+          title: n.title,
+          monthly_amount: n.monthlyAmount,
+          note: n.notes ?? "",
+        })),
+        documents: data.documents.map((d) => ({
+          kind: d.kind,
+          storage_path: d.storagePath,
+          file_name: d.fileName ?? "",
+          mime_type: d.mimeType ?? "",
+          size_bytes: d.sizeBytes?.toString() ?? "",
+        })),
+      },
+    });
+
+    if (error) return { ok: false as const, error: error.message };
+    const out = res as { id: string; code: string };
+    return { ok: true as const, id: out.id, code: out.code };
+  });
+
+/**
+ * بدء مسودّة.
+ *
+ * الوثائق تُرفع إلى `<orphan_id>/…` وعليه تقوم عزلة التخزين، لكن المعرّف
+ * لا يوجد قبل إنشاء الملف والملف لا يكتمل قبل وثائقه. المسودّة تفكّ هذه
+ * الدورة: يُنشأ الملف أولاً بحالة `draft` — غير منشورة ولا مرئية لأحد
+ * خارج الجهة — فيصير له مجلّد تُرفع إليه الوثائق، ثم يُقدَّم.
+ */
+export const startOrphanDraft = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ orgId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const db = withPhase2(context.supabase);
+    const { data: res, error } = await db.rpc("start_orphan_draft", { _org_id: data.orgId });
+    if (error) return { ok: false as const, error: error.message };
+    const out = res as { id: string; code: string };
+    return { ok: true as const, id: out.id, code: out.code };
+  });
+
+/**
+ * رابط رفع موقّع.
+ *
+ * الملفّ لا يمرّ عبر خادمنا: الرابط يُصدَر هنا ويرفع المتصفّح إلى التخزين
+ * مباشرةً. فلا يُحمَّل الخادم بملفّات قد تبلغ عشرة ميغابايت، وتبقى سياسة
+ * التخزين هي الحارس لا شيفرتنا.
+ *
+ * المسار يبدأ دائماً بمعرّف اليتيم، وعليه تقوم العزلة في السياسة.
+ */
+/**
+ * مسار تخزين الوثيقة.
+ *
+ * العزلة في سياسة التخزين تقوم على أن المجلّد الأول هو معرّف اليتيم. فأي
+ * شرطة مائلة في اسم الملف تُنشئ مجلّداً فرعياً، و«..» قد تُفسَّر صعوداً —
+ * وكلاهما يكسر العزلة. لذا يُصفّى الاسم إلى حروف وأرقام ونقطة وشرطتين
+ * لا غير، ويُقيَّد طوله.
+ */
+export function documentStoragePath(orphanId: string, kind: string, fileName: string, at: number) {
+  const safe = fileName
+    // كل ما ليس حرفاً ولا رقماً ولا نقطة ولا شرطة يصير شرطة سفلية.
+    // هذا وحده يمنع الشرطة المائلة، فيبقى المسار مقطعين لا أكثر.
+    .replace(/[^\p{L}\p{N}._-]+/gu, "_")
+    // ثم تُطوى النقاط المتتالية إلى واحدة وتُقصّ من الطرفين: «..» داخل
+    // مقطع واحد غير ضارّ اليوم، لكن بعض أنظمة التخزين تُطبّع المسارات
+    // فتحوّلها إلى صعود. إزالتها أرخص من الاتّكال على ألّا يحدث ذلك.
+    .replace(/\.{2,}/g, ".")
+    .replace(/^[.\-_]+|[.\-_]+$/g, "")
+    .slice(0, 120);
+  // اسم فارغ بعد التطهير (اسم كلّه محارف ممنوعة) لا يُترك فارغاً.
+  return `${orphanId}/${kind}-${at}-${safe || "file"}`;
+}
+
+export const createDocumentUploadUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        orphanId: z.string().uuid(),
+        kind: z.enum(DOC_KINDS),
+        fileName: z.string().trim().min(1).max(255),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const path = documentStoragePath(data.orphanId, data.kind, data.fileName, Date.now());
+
+    const { data: signed, error } = await context.supabase.storage
+      .from("orphan-documents")
+      .createSignedUploadUrl(path);
+
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const, path, token: signed.token, signedUrl: signed.signedUrl };
+  });
+
+/** رابط قراءة موقّع قصير العمر — لا يُخزَّن ولا يُشارَك. */
+export const createDocumentReadUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ path: z.string().trim().min(3).max(500) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: signed, error } = await context.supabase.storage
+      .from("orphan-documents")
+      // ستّون ثانية تكفي لفتح الوثيقة ولا تكفي لتسريبها.
+      .createSignedUrl(data.path, 60);
+
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const, url: signed.signedUrl };
+  });
+
+export const listOrphanDocuments = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ orphanId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const db = withPhase2(context.supabase);
+    const { data: docs, error } = await db
+      .from("orphan_documents")
+      .select(
+        "id, kind, storage_path, file_name, mime_type, size_bytes, verified, note, created_at",
+      )
+      .eq("orphan_id", data.orphanId)
+      .order("created_at", { ascending: true });
+
+    if (error) return { ok: false as const, error: error.message, documents: [] };
+    return { ok: true as const, documents: docs ?? [] };
+  });
+
+/** توثيق وثيقة — للإدارة، ويكتب أثراً تدقيقياً في القاعدة. */
+export const verifyDocument = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        verified: z.boolean(),
+        note: z.string().trim().max(400).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const db = withPhase2(context.supabase);
+    const { error } = await db.rpc("verify_document", {
+      _id: data.id,
+      _verified: data.verified,
+      _note: data.note ?? null,
+    });
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const };
+  });
+
+/**
+ * ضبط موافقة الصورة.
+ *
+ * الحارس في القاعدة يرفض صورة بلا موافقة موثّقة، فهذه الدالة لا «تسمح»
+ * بشيء — هي الطريق الوحيد لتسجيل الموافقة، والقاعدة هي التي تفصل.
+ */
+export const setPhotoConsent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        orphanId: z.string().uuid(),
+        consent: z.enum(["none", "face_hidden", "granted", "withdrawn"]),
+        consentDocPath: z.string().trim().max(500).optional(),
+        photoUrl: z.string().trim().max(500).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const db = withPhase2(context.supabase);
+    const { error } = await db
+      .from("orphans")
+      .update({
+        photo_consent: data.consent,
+        photo_consent_at: data.consent === "none" ? null : new Date().toISOString(),
+        photo_consent_by: context.userId,
+        ...(data.consentDocPath === undefined
+          ? {}
+          : { photo_consent_doc: data.consentDocPath || null }),
+        ...(data.photoUrl === undefined ? {} : { photo_url: data.photoUrl || null }),
+      })
+      .eq("id", data.orphanId);
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const };
+  });

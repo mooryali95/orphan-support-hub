@@ -110,3 +110,111 @@ export type PaymentsClient = SupabaseClient<DatabaseWithPayments, "public">;
 export function withPayments(client: unknown): PaymentsClient {
   return client as PaymentsClient;
 }
+
+
+/* =====================================================================
+   امتداد المرحلة 2 — الوثائق وموافقة الصورة والإدخال المعامَلاتي
+   =====================================================================
+   نفس سبب الامتداد أعلاه: `types.ts` مولَّد من القاعدة قبل هذه الهجرات.
+   ===================================================================== */
+
+export type PhotoConsent = "none" | "face_hidden" | "granted" | "withdrawn";
+
+export type OrphanDocKind =
+  | "death_certificate"
+  | "birth_certificate"
+  | "guardianship_proof"
+  | "orphan_id"
+  | "guardian_id"
+  | "income_proof"
+  | "school_record"
+  | "medical_report"
+  | "photo_consent"
+  | "other";
+
+export type RejectionCode =
+  | "documents_missing"
+  | "documents_unclear"
+  | "documents_inconsistent"
+  | "identity_unverified"
+  | "guardianship_unproven"
+  | "needs_unjustified"
+  | "duplicate_profile"
+  | "photo_consent_missing"
+  | "other";
+
+/** الأعمدة التي أضافتها هجرتا 20260824100000/1 إلى `orphans`. */
+type OrphanPhase2 = {
+  photo_consent: PhotoConsent;
+  photo_consent_at: Iso | null;
+  photo_consent_by: string | null;
+  photo_consent_doc: string | null;
+  rejection_code: RejectionCode | null;
+  reviewed_by: string | null;
+  reviewed_at: Iso | null;
+};
+
+/** والأعمدة التي أُضيفت إلى `orphan_documents`. */
+type DocumentPhase2 = {
+  kind: OrphanDocKind;
+  mime_type: string | null;
+  size_bytes: number | null;
+  verified_by: string | null;
+  verified_at: Iso | null;
+  note: string | null;
+};
+
+type GeneratedOrphans = GeneratedPublic["Tables"]["orphans"];
+type GeneratedDocs = GeneratedPublic["Tables"]["orphan_documents"];
+
+export type DatabaseWithPhase2 = Omit<DatabaseWithPayments, "public"> & {
+  public: Omit<DatabaseWithPayments["public"], "Tables" | "Functions"> & {
+    Tables: Omit<DatabaseWithPayments["public"]["Tables"], "orphans" | "orphan_documents"> & {
+      orphans: {
+        Row: GeneratedOrphans["Row"] & OrphanPhase2;
+        Insert: GeneratedOrphans["Insert"] & Partial<OrphanPhase2>;
+        Update: GeneratedOrphans["Update"] & Partial<OrphanPhase2>;
+        Relationships: GeneratedOrphans["Relationships"];
+      };
+      orphan_documents: {
+        Row: GeneratedDocs["Row"] & DocumentPhase2;
+        Insert: GeneratedDocs["Insert"] & Partial<DocumentPhase2>;
+        Update: GeneratedDocs["Update"] & Partial<DocumentPhase2>;
+        Relationships: GeneratedDocs["Relationships"];
+      };
+    };
+    Functions: DatabaseWithPayments["public"]["Functions"] & {
+      start_orphan_draft: {
+        Args: { _org_id: string };
+        Returns: unknown;
+      };
+      create_orphan_intake: {
+        Args: { _payload: unknown };
+        Returns: unknown;
+      };
+      review_orphan: {
+        Args: { _id: string; _decision: string; _code?: string | null; _reason?: string | null };
+        Returns: undefined;
+      };
+      review_organization: {
+        Args: { _id: string; _decision: string; _reason?: string | null };
+        Returns: undefined;
+      };
+      verify_document: {
+        Args: { _id: string; _verified: boolean; _note?: string | null };
+        Returns: undefined;
+      };
+      next_orphan_code: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
+    };
+  };
+};
+
+export type Phase2Client = SupabaseClient<DatabaseWithPhase2, "public">;
+
+/** العميل نفسه؛ النوع وحده هو ما يتّسع — كما في `withPayments`. */
+export function withPhase2(client: unknown): Phase2Client {
+  return client as Phase2Client;
+}

@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { withPhase2 } from "@/integrations/supabase/types.extra";
+import { REJECTION_CODES } from "@/lib/intake.functions";
 
 export type AdminOverview = {
   currency: string;
@@ -91,29 +93,39 @@ export const getAdminOverview = createServerFn({ method: "GET" })
     return { allowed: true as const, overview: data as AdminOverview };
   });
 
+/**
+ * قرار المراجعة يمرّ عبر `review_orphan` في القاعدة لا عبر UPDATE مباشر.
+ *
+ * ثلاثة أشياء تكسبها بذلك ولا تكسبها من التحديث المباشر: فحص الدور في
+ * نفس المعاملة، وكتابة أثر تدقيقي لا يمكن إغفاله، ورفض الرفض بلا سبب
+ * مُهيكل. وكان `audit_log` جدولاً بلا كاتب: اعتماد ملف يتيم أو رفضه —
+ * وهو قرار يتعلّق بمال ومصير — كان يمرّ بلا أثر يُعرف منه من قرّر
+ * ومتى ولماذا (M7).
+ */
 export const reviewOrphan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
         id: z.string().uuid(),
-        decision: z.enum(["approved", "rejected"]),
+        decision: z.enum(["approved", "rejected", "under_review"]),
+        code: z.enum(REJECTION_CODES).optional(),
         reason: z.string().trim().max(400).optional(),
       })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin");
-    if (!isAdmin) return { ok: false as const, error: "غير مصرّح" };
+    if (data.decision === "rejected" && !data.code) {
+      return { ok: false as const, error: "الرفض يحتاج سبباً مُهيكلاً" };
+    }
 
-    const { error } = await context.supabase
-      .from("orphans")
-      .update({
-        status: data.decision,
-        approved_at: data.decision === "approved" ? new Date().toISOString() : null,
-        rejection_reason: data.decision === "rejected" ? (data.reason ?? null) : null,
-      })
-      .eq("id", data.id);
+    const db = withPhase2(context.supabase);
+    const { error } = await db.rpc("review_orphan", {
+      _id: data.id,
+      _decision: data.decision,
+      _code: data.code ?? null,
+      _reason: data.reason ?? null,
+    });
 
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
@@ -122,16 +134,21 @@ export const reviewOrphan = createServerFn({ method: "POST" })
 export const reviewOrganization = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ id: z.string().uuid(), decision: z.enum(["approved", "rejected"]) }).parse(input),
+    z
+      .object({
+        id: z.string().uuid(),
+        decision: z.enum(["approved", "rejected", "suspended"]),
+        reason: z.string().trim().max(400).optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin");
-    if (!isAdmin) return { ok: false as const, error: "غير مصرّح" };
-
-    const { error } = await context.supabase
-      .from("care_organizations")
-      .update({ status: data.decision })
-      .eq("id", data.id);
+    const db = withPhase2(context.supabase);
+    const { error } = await db.rpc("review_organization", {
+      _id: data.id,
+      _decision: data.decision,
+      _reason: data.reason ?? null,
+    });
 
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
