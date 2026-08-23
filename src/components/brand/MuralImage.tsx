@@ -1,0 +1,92 @@
+import { BrandPattern } from "@/components/brand/BrandPattern";
+import { IocoMark } from "@/components/brand/IocoMark";
+import { cn } from "@/lib/utils";
+
+/**
+ * نظام «الجداريات» — معالجة صور الملفات كما تعرّفها الاستراتيجية البصرية للعمران.
+ *
+ * الصورة في IOCO ليست توثيقاً بل «أداة نفوذ تقود مسار التغيير الأسي نحو
+ * الاستخلاف»، ولها سجلّان متقابلان:
+ *
+ *   need   — الجداريات المؤلمة: المنهج التفكيكي النقدي. تصوير مقرّب جداً يعزل
+ *            التفاصيل ليُصدر حكماً بصرياً بضرورة التدخل، مع قيد صريح في
+ *            الدليل: «دون امتهان كرامة الطفل». لذلك أحادي اللون، ولا وجه.
+ *
+ *   omran  — الجداريات الملهمة: نظم العمران والابتكار. لون كامل ودفء وتواصل
+ *            بصري مباشر — «النظرة الواثقة تؤكد تحقق مراتب الوعي العليا وتعلن
+ *            عن انتقال اليتيم من الهامش إلى المركز».
+ *
+ * السجلّ يُشتق من حالة الملف ولا يُختار يدوياً، فتكون القاعدة الأخلاقية
+ * مفروضة في الكود لا متروكة لاجتهاد من يرفع الصورة.
+ *
+ * الافتراضي عند غياب الصورة هو العلامة الرمزية لا حرفٌ ولا وجه — وهو الافتراض
+ * الصحيح حتى يصل حقل `photo_consent` في المرحلة 2. لا تُعرض صورة شخصية
+ * لملف في حالة الاحتياج قبل توثيق إقرار ولي الأمر.
+ */
+
+type Register = "need" | "omran";
+
+export function MuralImage({
+  photoUrl,
+  displayName,
+  register,
+  className,
+  imgClassName,
+  priority = false,
+}: {
+  photoUrl: string | null;
+  displayName: string;
+  register: Register;
+  className?: string;
+  imgClassName?: string;
+  priority?: boolean;
+}) {
+  if (!photoUrl) {
+    return (
+      <div
+        className={cn(
+          "surface-crossing relative flex items-center justify-center overflow-hidden",
+          className,
+        )}
+      >
+        <BrandPattern
+          density={register === "need" ? "dense" : "active"}
+          className="text-gold-line"
+          opacity={0.28}
+          tile={72}
+        />
+        <span className="relative w-[38%] max-w-24 opacity-90">
+          <IocoMark globe={false} />
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("relative overflow-hidden", className)}>
+      <img
+        src={photoUrl}
+        alt={
+          register === "need"
+            ? `صورة تعبيرية لحالة ملف ${displayName}`
+            : `${displayName} بعد اكتمال كفالته`
+        }
+        loading={priority ? "eager" : "lazy"}
+        className={cn(
+          "size-full object-cover",
+          // الجدارية المؤلمة أحادية اللون: الحكم البصري على الحالة لا على الشخص
+          register === "need" && "contrast-[1.08] grayscale",
+          imgClassName,
+        )}
+      />
+      {register === "need" && (
+        <div className="from-shore-need/35 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
+      )}
+    </div>
+  );
+}
+
+/** حالة الملف تحدّد السجلّ: بلغ العمران أم ما يزال في الاحتياج. */
+export function registerFor(status: string, percent: number): Register {
+  return status === "fully_sponsored" || percent >= 100 ? "omran" : "need";
+}

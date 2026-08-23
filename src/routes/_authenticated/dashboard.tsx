@@ -7,6 +7,7 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
+import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { listMySponsorships, cancelSponsorship } from "@/lib/sponsorships.functions";
 import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
 
@@ -93,19 +94,12 @@ function DashboardPage() {
                 key={s.id}
                 className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center"
               >
-                <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-secondary">
-                  {orphan?.photo_url ? (
-                    <img
-                      src={orphan.photo_url}
-                      alt={`صورة ${orphan.display_name}`}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="surface-warm flex size-full items-center justify-center font-bold text-primary/50">
-                      {orphan?.display_name.slice(0, 1) ?? "؟"}
-                    </div>
-                  )}
-                </div>
+                <MuralImage
+                  photoUrl={orphan?.photo_url ?? null}
+                  displayName={orphan?.display_name ?? "ملف محذوف"}
+                  register={registerFor(orphan ? "" : "", percent)}
+                  className="size-16 shrink-0 rounded-xl bg-secondary"
+                />
 
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2">

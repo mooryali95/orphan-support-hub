@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { MapPin, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
+import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { ageFromBirthDate, formatMoney, fundingPercent } from "@/lib/format";
 
 export type PublicOrphan = {
@@ -33,18 +34,13 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-        {orphan.photo_url ? (
-          <img
-            src={orphan.photo_url}
-            alt={`صورة رمزية لملف ${orphan.display_name}`}
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="surface-crossing flex size-full items-center justify-center text-4xl font-extrabold text-shore-need/35">
-            {orphan.display_name.slice(0, 1)}
-          </div>
-        )}
+        <MuralImage
+          photoUrl={orphan.photo_url}
+          displayName={orphan.display_name}
+          register={registerFor(orphan.status, percent)}
+          className="size-full"
+          imgClassName="transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+        />
         <Badge
           className={
             full

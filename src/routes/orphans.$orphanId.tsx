@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
+import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { getPublicOrphan } from "@/lib/orphans.functions";
 import { createSponsorship } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
@@ -112,19 +113,13 @@ function OrphanDetail() {
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
           <div>
             <div className="overflow-hidden rounded-3xl border border-border bg-card">
-              <div className="aspect-[16/9] bg-secondary">
-                {orphan.photo_url ? (
-                  <img
-                    src={orphan.photo_url}
-                    alt={`صورة ملف ${orphan.display_name}`}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <div className="surface-crossing flex size-full items-center justify-center text-6xl font-extrabold text-shore-need/35">
-                    {orphan.display_name.slice(0, 1)}
-                  </div>
-                )}
-              </div>
+              <MuralImage
+                photoUrl={orphan.photo_url}
+                displayName={orphan.display_name}
+                register={registerFor(orphan.status, percent)}
+                className="aspect-[16/9] bg-secondary"
+                priority
+              />
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl font-extrabold">{orphan.display_name}</h1>

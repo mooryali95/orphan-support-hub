@@ -1,25 +1,26 @@
 import { cn } from "@/lib/utils";
 
 /**
- * رمز IOCO — مستخرَج من دليل الهوية «الجسر الانسيابي».
+ * شعار IOCO — مُعاد بناؤه من العلامة الرسمية كما تظهر في
+ * «الاستراتيجية البصرية للعمران» (شريحة الختام: عدسة IOCO).
  *
- * التشريح البصري كما يعرّفه الدليل، وكل عنصر هنا يقابل واحداً منها:
- *   انحناءات الكرة الأرضية (Globe Curves) — الامتداد الدولي والرعاية العابرة للحدود.
- *   اليدان المفتوحتان (Embracing Hands)   — زوايا منحنية دافئة تعبّر عن الحماية والاحتضان.
- *   مركزية اليتيم (The Core)              — النواة التي تحتضنها اليدان: الطفل رافعاً يديه بالأمل.
+ * التشريح كما يعرّفه دليل الهوية، وكل عنصر هنا يقابل واحداً منها:
+ *   الكفّان المفتوحتان — الحماية والاحتضان. مصمتتان بثنية إبهام مقطوعة
+ *     من المسار نفسه (fill-rule evenodd) فتظهر الأرضية خلالها كما في الأصل.
+ *   الكرة الأرضية — الامتداد الدولي والرعاية العابرة للحدود.
+ *   الطفل رافعاً يديه — مركزية اليتيم؛ «انتقاله من الهامش إلى المركز».
  *
- * الرمز خطّي بالكامل مثل الباترن نفسه، ويرث اللون من `currentColor`.
+ * لونان: الكفّان بالأزرق الملوكي (الشاطئ الأول)، والكرة والطفل بالذهبي
+ * الدافئ (الجسر) — أي أن الرعاية تحتضن، والتدخل يُشرق.
  */
 
-/** اليدان المفتوحتان والإبهامان — العنصر الثابت في كل الأحجام. */
-const HANDS = (
-  <>
-    <path d="M27,21 C15,52 25,80 60,99" />
-    <path d="M93,21 C105,52 95,80 60,99" />
-    <path d="M46,55 C40,47 47,41 51,48 C55,56 53,72 60,99" />
-    <path d="M74,55 C80,47 73,41 69,48 C65,56 67,72 60,99" />
-  </>
-);
+const HAND_LEFT =
+  "M17,41 C9,68 22,95 52,109 L60,101 C34,89 24,66 29,45 C30,39 19,36 17,41 Z " +
+  "M25,55 C24,72 33,86 50,95 L47,89 C34,81 28,69 28,56 Z";
+
+const HAND_RIGHT =
+  "M103,41 C111,68 98,95 68,109 L60,101 C86,89 96,66 91,45 C90,39 101,36 103,41 Z " +
+  "M95,55 C96,72 87,86 70,95 L73,89 C86,81 92,69 92,56 Z";
 
 export function IocoMark({
   className,
@@ -27,10 +28,12 @@ export function IocoMark({
   title,
 }: {
   className?: string;
-  /** انحناءات الكرة الأرضية. تُطفأ تحت ~32px حيث تتحوّل إلى ضوضاء. */
+  /** الكرة الأرضية. تُطفأ تحت ~32px حيث تتحوّل خطوطها إلى ضوضاء. */
   globe?: boolean;
   title?: string;
 }) {
+  const cy = globe ? 42 : 44;
+
   return (
     <svg
       viewBox="0 0 120 120"
@@ -40,30 +43,40 @@ export function IocoMark({
       aria-label={title}
     >
       {title && <title>{title}</title>}
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={6.5}
-      >
+
+      <g className="text-shore-need" fill="currentColor" fillRule="evenodd">
+        <path d={HAND_LEFT} />
+        <path d={HAND_RIGHT} />
+      </g>
+
+      <g className="text-bridge">
         {globe && (
           <>
-            <circle cx="60" cy="58" r="49" strokeWidth={2} opacity={0.38} />
-            <ellipse cx="60" cy="58" rx="20" ry="49" strokeWidth={1.7} opacity={0.24} />
+            <circle cx="60" cy={cy} r="26" fill="none" stroke="currentColor" strokeWidth={3} />
+            <path
+              d={`M60,${cy - 26} C50,${cy - 10} 50,${cy + 10} 60,${cy + 26} M60,${cy - 26} C70,${cy - 10} 70,${cy + 10} 60,${cy + 26} M35,${cy - 9} H85 M35,${cy + 9} H85`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.7}
+              opacity={0.55}
+            />
           </>
         )}
-        {HANDS}
+        <circle cx="60" cy={cy - 7} r="6" fill="currentColor" />
+        <path
+          d={`M60,${cy - 1} V${cy + 13} M60,${cy + 2} L49,${cy - 7} M60,${cy + 2} L71,${cy - 7} M60,${cy + 13} L53,${cy + 24} M60,${cy + 13} L67,${cy + 24}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
-      <circle cx="60" cy="38" r="6.5" fill="currentColor" />
     </svg>
   );
 }
 
-/**
- * القفل الكامل: الرمز + الاسم + الوصف.
- * `IOCO` هوية المؤسسة، و«كافل» اسم المنصة تحتها.
- */
+/** القفل الكامل: العلامة + الاسم + وصف المنصة. */
 export function IocoLockup({
   className,
   compact = false,
@@ -73,13 +86,13 @@ export function IocoLockup({
 }) {
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
-      <span className={cn("text-bridge", compact ? "size-9" : "size-11")}>
+      <span className={compact ? "size-9" : "size-11"}>
         <IocoMark globe={!compact} title="شعار IOCO" />
       </span>
       <span className="flex flex-col leading-none">
         <span
           className={cn(
-            "font-extrabold tracking-[0.14em] text-shore-need",
+            "text-shore-need font-extrabold tracking-[0.14em]",
             compact ? "text-base" : "text-lg",
           )}
           dir="ltr"
@@ -87,7 +100,7 @@ export function IocoLockup({
           IOCO
         </span>
         {!compact && (
-          <span className="mt-1 text-[11px] font-medium text-muted-foreground">
+          <span className="text-muted-foreground mt-1 text-[11px] font-medium">
             منصة كفالة الأيتام
           </span>
         )}

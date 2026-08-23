@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ShieldCheck, FileCheck2, HeartHandshake, LineChart, ArrowLeft } from "lucide-react";
+import { Eye, Aperture, ShieldCheck, Building2, ArrowLeft } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { OrphanCard, type PublicOrphan } from "@/components/OrphanCard";
@@ -40,26 +40,49 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const STEPS = [
+// Tailwind يستخرج الأصناف نصياً من المصدر، فأي صنف يُركَّب في وقت التشغيل
+// (`bg-${tone}`) لا يُولَّد. لذلك تُذكر الأصناف كاملةً هنا لكل مرتبة.
+/**
+ * مراتب الوعي — سلّم المانح كما تعرّفه الاستراتيجية البصرية للعمران:
+ * «الانتقال بالمانح من مجرد الدراية (رؤية الصورة) إلى التعقل (الالتزام بالنظام)».
+ * فالمراحل ليست خطوات إجرائية بل انتقالات في وعي الكافل.
+ */
+const AWARENESS_LADDER = [
   {
-    icon: FileCheck2,
-    title: "ملف موثّق",
-    text: "جهة الرعاية ترفع ملف اليتيم مع مستنداته، والإدارة تراجعه قبل النشر.",
+    icon: Eye,
+    rank: "الدراية",
+    bar: "bg-shore-need",
+    chip: "bg-shore-need/12 text-shore-need",
+    label: "text-shore-need",
+    title: "أن ترى الصورة",
+    text: "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
   },
   {
-    icon: HeartHandshake,
-    title: "اختيار الكافل",
-    text: "تتصفح الملفات المعتمدة وتختار اليتيم والمبلغ الشهري المناسب لك.",
+    icon: Aperture,
+    rank: "الميقات",
+    bar: "bg-bridge-bright",
+    chip: "bg-bridge-bright/12 text-bridge-bright",
+    label: "text-bridge-bright",
+    title: "اللحظة الفاصلة",
+    text: "اللحظة التي يجتمع فيها الزمان والمكان والفاعل، فتختار من تكفل وينزل المفهوم إلى الواقع.",
   },
   {
     icon: ShieldCheck,
-    title: "دفع آمن",
-    text: "الكفالة تُفعّل بعد الدفع الإلكتروني، ويمكنك إيقافها أو تعديلها في أي وقت.",
+    rank: "التعقل",
+    bar: "bg-bridge",
+    chip: "bg-bridge/12 text-bridge",
+    label: "text-bridge",
+    title: "الالتزام بالنظام",
+    text: "لا تبرّع عابر بل كفالة شهرية شفافة: تعهّد مستمر تراه في كل دفعة وكل تقرير.",
   },
   {
-    icon: LineChart,
-    title: "تقارير أثر",
-    text: "تصلك تحديثات دورية عن الحالة التعليمية والصحية لليتيم الذي تكفله.",
+    icon: Building2,
+    rank: "العمران",
+    bar: "bg-shore-thrive",
+    chip: "bg-shore-thrive/12 text-shore-thrive",
+    label: "text-shore-thrive",
+    title: "من الهامش إلى المركز",
+    text: "تقارير أثر دورية عن التعليم والصحة والمعيشة، حتى يصبح اليتيم قوة فاعلة في مجتمعه.",
   },
 ];
 
@@ -84,8 +107,9 @@ function HomePage() {
                 وكن له سنداً كل شهر
               </h1>
               <p className="mt-5 max-w-xl text-base leading-8 text-muted-foreground">
-                نعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران: جهة رعاية معتمدة توثّق ملفه،
-                والإدارة تعتمده، ثم كفالة شهرية شفافة تحتضنه وتتابع أثرها.
+                لا نقدّم رعاية مؤقتة، بل نبني نظم عمران متكاملة. نعبر باليتيم من شاطئ الاحتياج إلى
+                شاطئ العمران: جهة رعاية معتمدة توثّق ملفه، والإدارة تعتمده، ثم كفالة شهرية شفافة
+                تحتضنه وتتابع أثرها.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg">
@@ -116,15 +140,31 @@ function HomePage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-2xl font-extrabold">كيف تسير الرحلة؟</h2>
+          <h2 className="text-2xl font-extrabold">مراتب الوعي: من الدراية إلى العمران</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+            رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام
+            بالنظام.
+          </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((step) => (
-              <div key={step.title} className="rounded-2xl border border-border bg-card p-5">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-bridge/12 text-bridge">
+            {AWARENESS_LADDER.map((step) => (
+              <div
+                key={step.rank}
+                className="border-border bg-card relative overflow-hidden rounded-2xl border p-5"
+              >
+                <span
+                  className={`absolute inset-x-0 top-0 h-[3px] ${step.bar}`}
+                  aria-hidden="true"
+                />
+                <span
+                  className={`flex size-10 items-center justify-center rounded-xl ${step.chip}`}
+                >
                   <step.icon className="size-5" />
                 </span>
-                <h3 className="mt-4 font-bold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
+                <p className={`mt-4 text-[11px] font-bold tracking-widest uppercase ${step.label}`}>
+                  {step.rank}
+                </p>
+                <h3 className="mt-1 font-bold">{step.title}</h3>
+                <p className="text-muted-foreground mt-2 text-sm leading-7">{step.text}</p>
               </div>
             ))}
           </div>
