@@ -494,6 +494,90 @@ export type Database = {
           },
         ]
       }
+      payment_events: {
+        Row: {
+          created_at: string
+          error: string | null
+          event_type: string
+          id: string
+          payload: Json
+          payment_id: string | null
+          processed_at: string | null
+          provider: string
+          provider_event_id: string
+          signature_verified: boolean
+          sponsorship_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          event_type: string
+          id?: string
+          payload: Json
+          payment_id?: string | null
+          processed_at?: string | null
+          provider: string
+          provider_event_id: string
+          signature_verified?: boolean
+          sponsorship_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          event_type?: string
+          id?: string
+          payload?: Json
+          payment_id?: string | null
+          processed_at?: string | null
+          provider?: string
+          provider_event_id?: string
+          signature_verified?: boolean
+          sponsorship_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_events_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_settings: {
+        Row: {
+          currency: string
+          fee_percent: number
+          id: boolean
+          max_sponsorship: number
+          min_sponsorship: number
+          updated_at: string
+        }
+        Insert: {
+          currency?: string
+          fee_percent?: number
+          id?: boolean
+          max_sponsorship?: number
+          min_sponsorship?: number
+          updated_at?: string
+        }
+        Update: {
+          currency?: string
+          fee_percent?: number
+          id?: boolean
+          max_sponsorship?: number
+          min_sponsorship?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -617,13 +701,19 @@ export type Database = {
       sponsorship_payments: {
         Row: {
           amount: number
+          checkout_url: string | null
           created_at: string
           currency: string
+          failure_reason: string | null
+          fee_amount: number
           id: string
+          idempotency_key: string | null
+          net_amount: number | null
           paid_at: string | null
           period_end: string | null
           period_start: string | null
           provider: string | null
+          provider_checkout_id: string | null
           provider_ref: string | null
           receipt_url: string | null
           sponsor_id: string
@@ -632,13 +722,19 @@ export type Database = {
         }
         Insert: {
           amount: number
+          checkout_url?: string | null
           created_at?: string
           currency?: string
+          failure_reason?: string | null
+          fee_amount?: number
           id?: string
+          idempotency_key?: string | null
+          net_amount?: number | null
           paid_at?: string | null
           period_end?: string | null
           period_start?: string | null
           provider?: string | null
+          provider_checkout_id?: string | null
           provider_ref?: string | null
           receipt_url?: string | null
           sponsor_id: string
@@ -647,13 +743,19 @@ export type Database = {
         }
         Update: {
           amount?: number
+          checkout_url?: string | null
           created_at?: string
           currency?: string
+          failure_reason?: string | null
+          fee_amount?: number
           id?: string
+          idempotency_key?: string | null
+          net_amount?: number | null
           paid_at?: string | null
           period_end?: string | null
           period_start?: string | null
           provider?: string | null
+          provider_checkout_id?: string | null
           provider_ref?: string | null
           receipt_url?: string | null
           sponsor_id?: string
@@ -796,6 +898,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_overview: { Args: never; Returns: Json }
       can_manage_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -829,6 +932,15 @@ export type Database = {
           status: Database["public"]["Enums"]["orphan_status"]
           story: string
         }[]
+      }
+      write_audit: {
+        Args: {
+          _action: string
+          _entity: string
+          _entity_id: string
+          _meta?: Json
+        }
+        Returns: undefined
       }
     }
     Enums: {
