@@ -18,15 +18,15 @@ const orphansQuery = queryOptions({
   },
 });
 
-export const Route = createFileRoute("/orphans")({
+export const Route = createFileRoute("/orphans/")({
   head: () => ({
     meta: [
-      { title: "دليل الأيتام — كافل" },
+      { title: "دليل الأيتام — IOCO" },
       {
         name: "description",
         content: "تصفّح ملفات الأيتام المعتمدة واختر من تكفله حسب المنطقة والاحتياج الشهري.",
       },
-      { property: "og:title", content: "دليل الأيتام — كافل" },
+      { property: "og:title", content: "دليل الأيتام — IOCO" },
       {
         property: "og:description",
         content: "ملفات أيتام موثّقة ومعتمدة، جاهزة للكفالة الشهرية.",
@@ -38,19 +38,36 @@ export const Route = createFileRoute("/orphans")({
 });
 
 type Filter = "all" | "open" | "full";
+type Sort = "urgent" | "closest" | "newest";
+
+const SORTS: Array<[Sort, string]> = [
+  ["urgent", "الأكثر احتياجاً"],
+  ["closest", "الأقرب للاكتمال"],
+  ["newest", "الأحدث"],
+];
+
+/** جمع عربي سليم: «ملف» للواحد، «ملفان» للاثنين، «ملفات» لما بينهما. */
+function countLabel(n: number) {
+  if (n === 0) return "لا ملفات";
+  if (n === 1) return "ملف واحد";
+  if (n === 2) return "ملفان";
+  if (n <= 10) return `${n} ملفات`;
+  return `${n} ملفاً`;
+}
 
 function OrphansPage() {
   const { data } = useSuspenseQuery(orphansQuery);
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState("all");
   const [filter, setFilter] = useState<Filter>("all");
+  const [sort, setSort] = useState<Sort>("urgent");
 
   const regions = useMemo(
     () => Array.from(new Set(data.map((o) => o.region).filter(Boolean))) as string[],
     [data],
   );
 
-  const filtered = data.filter((o) => {
+  const matched = data.filter((o) => {
     const percent = fundingPercent(o.monthly_need, o.funded_monthly);
     const isFull = o.status === "fully_sponsored" || percent >= 100;
     if (filter === "open" && isFull) return false;
@@ -64,10 +81,24 @@ function OrphansPage() {
     return true;
   });
 
+  // الترتيب الافتراضي بالفجوة: الدليل أداة قرار لا أرشيف.
+  const filtered = [...matched].sort((a, b) => {
+    const gapA = Number(a.monthly_need) - Number(a.funded_monthly);
+    const gapB = Number(b.monthly_need) - Number(b.funded_monthly);
+    if (sort === "urgent") return gapB - gapA;
+    if (sort === "closest") {
+      return (
+        fundingPercent(b.monthly_need, b.funded_monthly) -
+        fundingPercent(a.monthly_need, a.funded_monthly)
+      );
+    }
+    return 0;
+  });
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-12">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">دليل الأيتام</h1>
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
           جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة. البيانات الحسّاسة
@@ -88,6 +119,7 @@ function OrphansPage() {
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
+            aria-label="تصفية حسب المنطقة"
             className="h-9 rounded-md border border-input bg-background px-3 text-sm"
           >
             <option value="all">كل المناطق</option>
@@ -98,7 +130,25 @@ function OrphansPage() {
             ))}
           </select>
 
-          <div className="flex rounded-md border border-input p-1">
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as Sort)}
+            aria-label="ترتيب النتائج"
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            {SORTS.map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+
+          {/* مجموعة اختيار واحد: الدلالة تُعلَن حتى يفهمها قارئ الشاشة. */}
+          <div
+            role="group"
+            aria-label="تصفية حسب حالة الكفالة"
+            className="flex rounded-md border border-input p-1"
+          >
             {(
               [
                 ["all", "الكل"],
@@ -109,6 +159,7 @@ function OrphansPage() {
               <button
                 key={key}
                 type="button"
+                aria-pressed={filter === key}
                 onClick={() => setFilter(key)}
                 className={cn(
                   "rounded px-3 py-1 text-xs font-medium transition-colors",
@@ -123,7 +174,7 @@ function OrphansPage() {
           </div>
         </div>
 
-        <p className="mt-6 text-xs text-muted-foreground">{filtered.length} ملف</p>
+        <p className="mt-6 text-xs text-muted-foreground">{countLabel(filtered.length)}</p>
 
         {filtered.length === 0 ? (
           <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">

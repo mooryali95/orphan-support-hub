@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "كيف تعمل الكفالة — كافل" },
+      { title: "كيف تعمل الكفالة — IOCO" },
       {
         name: "description",
         content:
           "شرح مسار الكفالة في منصة كافل: توثيق ملف اليتيم، اعتماد الإدارة، اختيار الكافل، الدفع، ثم تقارير الأثر.",
       },
-      { property: "og:title", content: "كيف تعمل الكفالة — كافل" },
+      { property: "og:title", content: "كيف تعمل الكفالة — IOCO" },
       {
         property: "og:description",
         content: "من توثيق ملف اليتيم إلى تقارير الأثر: مسار الكفالة خطوة بخطوة.",
@@ -54,8 +54,8 @@ function HowItWorks() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «كافل»</h1>
+      <main id="main" tabIndex={-1} className="mx-auto max-w-4xl px-4 py-12">
+        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «IOCO»</h1>
         <p className="mt-3 leading-8 text-muted-foreground">
           المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل
           قبل التحقق منه واعتماده.

@@ -33,9 +33,9 @@ export const Route = createFileRoute("/orphans/$orphanId")({
   },
   head: ({ loaderData }) => {
     if (!loaderData?.orphan) {
-      return { meta: [{ title: "ملف غير متاح — كافل" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "ملف غير متاح — IOCO" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `كفالة ${loaderData.orphan.display_name} — كافل`;
+    const title = `كفالة ${loaderData.orphan.display_name} — IOCO`;
     const description = `ملف موثّق لكفالة ${loaderData.orphan.display_name}${
       loaderData.orphan.city ? ` من ${loaderData.orphan.city}` : ""
     }. احتياج شهري ${formatMoney(loaderData.orphan.monthly_need, loaderData.orphan.currency)}.`;
@@ -105,7 +105,7 @@ function OrphanDetail() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-10">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
         <Link to="/orphans" className="text-sm text-primary hover:underline">
           → العودة إلى الدليل
         </Link>
@@ -187,7 +187,10 @@ function OrphanDetail() {
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+            <div
+              id="sponsor-form"
+              className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+            >
               <p className="text-sm text-muted-foreground">الاحتياج الشهري</p>
               <p className="mt-1 text-3xl font-extrabold text-primary">
                 {formatMoney(orphan.monthly_need, orphan.currency)}
@@ -207,7 +210,16 @@ function OrphanDetail() {
                     onChange={(e) => setAmount(e.target.value)}
                     className="mt-2"
                   />
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {remaining > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setAmount(String(Math.round(remaining)))}
+                        className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
+                      >
+                        المتبقّي كاملاً
+                      </button>
+                    )}
                     {[25, 50, 100].map((v) => (
                       <button
                         key={v}
@@ -252,6 +264,23 @@ function OrphanDetail() {
           </aside>
         </div>
       </main>
+      {/* على الجوال يقع نموذج الكفالة أسفل الصفحة بأربع شاشات؛ هذا الشريط
+          يُبقي الفعل حاضراً ويقفز إليه. يُخفى على الشاشات الكبيرة حيث
+          النموذج مثبّت في العمود الجانبي أصلاً. */}
+      <div className="border-border bg-background/95 sticky bottom-0 z-40 border-t p-3 backdrop-blur lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <p className="text-xs text-muted-foreground">المتبقّي شهرياً</p>
+            <p className="text-bridge-ink text-base font-extrabold">
+              {formatMoney(remaining, orphan.currency)}
+            </p>
+          </div>
+          <Button asChild size="lg" className="flex-1">
+            <a href="#sponsor-form">{user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}</a>
+          </Button>
+        </div>
+      </div>
+
       <SiteFooter />
     </div>
   );

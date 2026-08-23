@@ -4,14 +4,16 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
@@ -69,6 +71,39 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * مؤشّر التنقّل. المُحمِّلات (loaders) تنتظر البيانات قبل رسم الصفحة الجديدة،
+ * فيبقى المستخدم على الصفحة القديمة بلا أي إشارة أن نقرته سُجّلت — وهذا أول
+ * ما تنصّ عليه إرشادات نيلسن: إظهار حالة النظام. الشريط يظهر بعد التأخير
+ * المحدَّد في `defaultPendingMs` فلا يومض في التنقّلات السريعة، ويُعلَن نصّياً
+ * لقارئ الشاشة لأن الشريط وحده لا يُقرأ.
+ */
+function NavigationProgress() {
+  const pending = useRouterState({ select: (s) => s.status === "pending" });
+  // الخادم يرسم الجذر وحالة الموجّه «pending» دائماً، فلو أعلنّا التحميل أثناء
+  // التوليد لاختلف HTML الخادم عن أول رسم في المتصفّح وأعاد React بناء الشجرة
+  // كاملة. المؤشّر شأن عميل خالص: لا يظهر إلا بعد التركيب.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isLoading = mounted && pending;
+
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className={cn(
+          "fixed inset-x-0 top-0 z-[100] h-0.5 origin-right transition-opacity duration-200 motion-reduce:transition-none",
+          "brand-rule",
+          isLoading ? "animate-pulse opacity-100" : "opacity-0",
+        )}
+      />
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {isLoading ? "جارٍ تحميل الصفحة" : ""}
+      </div>
+    </>
   );
 }
 
@@ -141,6 +176,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <NavigationProgress />
       <Outlet />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>

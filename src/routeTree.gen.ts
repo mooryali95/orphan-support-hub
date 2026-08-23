@@ -14,10 +14,10 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
-import { Route as OrphansRouteImport } from './routes/orphans'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
+import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 
@@ -45,11 +45,6 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
   path: '/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrphansRoute = OrphansRouteImport.update({
-  id: '/orphans',
-  path: '/orphans',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -65,10 +60,15 @@ const AuthenticatedOrgRoute = AuthenticatedOrgRouteImport.update({
   path: '/org',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const OrphansIndexRoute = OrphansIndexRouteImport.update({
+  id: '/orphans/',
+  path: '/orphans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
-  id: '/$orphanId',
-  path: '/$orphanId',
-  getParentRoute: () => OrphansRoute,
+  id: '/orphans/$orphanId',
+  path: '/orphans/$orphanId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   id: '/api/payments/webhook',
@@ -81,11 +81,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
-  '/orphans': typeof OrphansRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/orphans/': typeof OrphansIndexRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -93,11 +93,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
-  '/orphans': typeof OrphansRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/orphans': typeof OrphansIndexRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -107,11 +107,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
-  '/orphans': typeof OrphansRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/orphans/': typeof OrphansIndexRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -121,11 +121,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
-    | '/orphans'
     | '/admin'
     | '/dashboard'
     | '/org'
     | '/orphans/$orphanId'
+    | '/orphans/'
     | '/api/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -133,11 +133,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
-    | '/orphans'
     | '/admin'
     | '/dashboard'
     | '/org'
     | '/orphans/$orphanId'
+    | '/orphans'
     | '/api/payments/webhook'
   id:
     | '__root__'
@@ -146,11 +146,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
-    | '/orphans'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/org'
     | '/orphans/$orphanId'
+    | '/orphans/'
     | '/api/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -160,7 +160,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
-  OrphansRoute: typeof OrphansRouteWithChildren
+  OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
+  OrphansIndexRoute: typeof OrphansIndexRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
 }
 
@@ -201,13 +202,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/orphans': {
-      id: '/orphans'
-      path: '/orphans'
-      fullPath: '/orphans'
-      preLoaderRoute: typeof OrphansRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -229,12 +223,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrgRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/orphans/': {
+      id: '/orphans/'
+      path: '/orphans'
+      fullPath: '/orphans/'
+      preLoaderRoute: typeof OrphansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orphans/$orphanId': {
       id: '/orphans/$orphanId'
-      path: '/$orphanId'
+      path: '/orphans/$orphanId'
       fullPath: '/orphans/$orphanId'
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
-      parentRoute: typeof OrphansRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/payments/webhook': {
       id: '/api/payments/webhook'
@@ -261,24 +262,14 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface OrphansRouteChildren {
-  OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
-}
-
-const OrphansRouteChildren: OrphansRouteChildren = {
-  OrphansOrphanIdRoute: OrphansOrphanIdRoute,
-}
-
-const OrphansRouteWithChildren =
-  OrphansRoute._addFileChildren(OrphansRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
-  OrphansRoute: OrphansRouteWithChildren,
+  OrphansOrphanIdRoute: OrphansOrphanIdRoute,
+  OrphansIndexRoute: OrphansIndexRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
