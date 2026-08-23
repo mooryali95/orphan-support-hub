@@ -1,0 +1,184 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+import type { PaymentsClient } from "@/integrations/supabase/types.extra";
+import type { PaymentEvent } from "@/lib/payments/types";
+
+/**
+ * webhook المزوّد — المسار الوحيد الذي يُفعّل كفالة.
+ *
+ * العميل لا يستطيع كتابة سجلّ المدفوعات ولا تفعيل عقد (إصلاحا C2 و C3)،
+ * فالتفعيل يمرّ من هنا حصراً عبر service_role.
+ *
+ * ثلاثة شروط لا يُتنازل عنها:
+ *   1. التحقّق من التوقيع قبل أي قراءة للحمولة — حمولة غير موثّقة لا تُفسَّر.
+ *   2. منع تكرار المعالجة: البوابات تُعيد الإرسال عند أي شكّ في التسليم،
+ *      وقيد التفرّد على (provider, provider_event_id) يجعل ذلك بلا أثر.
+ *   3. تسجيل كل حدث خاماً قبل تطبيقه، فيبقى أثر للتدقيق حتى عند الفشل.
+ */
+
+export const Route = createFileRoute("/api/payments/webhook")({
+  server: {
+    handlers: {
+      POST: async ({ request }) => {
+        const { paymentProvider } = await import("@/lib/payments");
+        const provider = paymentProvider();
+
+        // النصّ الخام مطلوب كما وصل: أي إعادة تسلسل تُبطل التوقيع.
+        const raw = await request.text();
+
+        if (!provider.verifyWebhook(raw, request.headers)) {
+          console.warn("[payments] رُفض webhook: توقيع غير صالح");
+          return new Response("invalid signature", { status: 401 });
+        }
+
+        let event;
+        try {
+          event = provider.parseEvent(raw);
+        } catch (error) {
+          console.error("[payments] تعذّر تفسير الحدث", error);
+          return new Response("unparseable", { status: 400 });
+        }
+
+        if (!event.providerEventId) {
+          return new Response("missing event id", { status: 400 });
+        }
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { withPayments } = await import("@/integrations/supabase/types.extra");
+        // الجداول الجديدة موجودة في القاعدة وينقصها التوليد لا الوجود.
+        const db = withPayments(supabaseAdmin);
+
+        // التسجيل أولاً: القيد الفريد يجعل إعادة الإرسال بلا أثر.
+        const { data: stored, error: storeError } = await db
+          .from("payment_events")
+          .insert({
+            provider: provider.id,
+            provider_event_id: event.providerEventId,
+            event_type: event.kind,
+            sponsorship_id: event.sponsorshipId,
+            payload: JSON.parse(raw),
+            signature_verified: true,
+          })
+          .select("id")
+          .single();
+
+        if (storeError) {
+          // 23505 = تعارض تفرّد: حدث عولج سابقاً. النجاح هنا يوقف إعادة الإرسال.
+          if (storeError.code === "23505") {
+            return new Response("already processed", { status: 200 });
+          }
+          console.error("[payments] تعذّر تسجيل الحدث", storeError);
+          return new Response("storage error", { status: 500 });
+        }
+
+        try {
+          await applyEvent(db, event);
+          await db
+            .from("payment_events")
+            .update({ processed_at: new Date().toISOString() })
+            .eq("id", stored.id);
+          return new Response("ok", { status: 200 });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error("[payments] فشل تطبيق الحدث", message);
+          await db.from("payment_events").update({ error: message }).eq("id", stored.id);
+          // 500 يدفع المزوّد لإعادة المحاولة، والحدث مسجَّل بخطئه للتدقيق.
+          return new Response("apply failed", { status: 500 });
+        }
+      },
+    },
+  },
+});
+
+async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
+  if (!event.sponsorshipId) {
+    throw new Error("الحدث بلا مرجع كفالة");
+  }
+
+  const { data: sponsorship, error } = await supabase
+    .from("sponsorships")
+    .select("id, sponsor_id, amount, currency, status")
+    .eq("id", event.sponsorshipId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!sponsorship) throw new Error(`لا كفالة بالمعرّف ${event.sponsorshipId}`);
+
+  const now = new Date().toISOString();
+  const paidAt = event.occurredAt ?? now;
+
+  switch (event.kind) {
+    case "payment.succeeded":
+    case "subscription.charged": {
+      const { data: settings } = await supabase
+        .from("platform_settings")
+        .select("fee_percent")
+        .maybeSingle();
+
+      const amount = event.amount ?? Number(sponsorship.amount);
+      const fee = Math.round(amount * (Number(settings?.fee_percent ?? 0) / 100) * 100) / 100;
+
+      await supabase.from("sponsorship_payments").insert({
+        sponsorship_id: sponsorship.id,
+        sponsor_id: sponsorship.sponsor_id,
+        amount,
+        currency: event.currency ?? sponsorship.currency,
+        status: "paid",
+        provider: "careem",
+        provider_ref: event.providerCheckoutId,
+        provider_checkout_id: event.providerCheckoutId,
+        fee_amount: fee,
+        net_amount: amount - fee,
+        paid_at: paidAt,
+      });
+
+      // التفعيل هنا فقط. المُشغِّل يُعيد احتساب funded_monthly تلقائياً.
+      // started_at يُضبط عند أول دفعة ولا يُلمس في التجديدات.
+      await supabase
+        .from("sponsorships")
+        .update({
+          status: "active",
+          provider: "careem",
+          provider_subscription_id: event.providerSubscriptionId,
+          ...(sponsorship.status === "active" ? {} : { started_at: paidAt }),
+        })
+        .eq("id", sponsorship.id);
+      return;
+    }
+
+    case "payment.failed": {
+      await supabase.from("sponsorship_payments").insert({
+        sponsorship_id: sponsorship.id,
+        sponsor_id: sponsorship.sponsor_id,
+        amount: event.amount ?? Number(sponsorship.amount),
+        currency: event.currency ?? sponsorship.currency,
+        status: "failed",
+        provider: "careem",
+        provider_ref: event.providerCheckoutId,
+        failure_reason: event.failureReason,
+      });
+      // الكفالة لا تُلغى عند فشل دفعة واحدة؛ المزوّد يعيد المحاولة.
+      return;
+    }
+
+    case "payment.refunded": {
+      await supabase
+        .from("sponsorship_payments")
+        .update({ status: "refunded" })
+        .eq("sponsorship_id", sponsorship.id)
+        .eq("provider_ref", event.providerCheckoutId ?? "");
+      return;
+    }
+
+    case "subscription.cancelled": {
+      await supabase
+        .from("sponsorships")
+        .update({ status: "cancelled", ended_at: now })
+        .eq("id", sponsorship.id);
+      return;
+    }
+
+    default:
+      throw new Error(`نوع حدث غير معروف: ${event.kind}`);
+  }
+}

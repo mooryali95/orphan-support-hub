@@ -25,7 +25,9 @@ done
 # نظيفة — وهذا ما يفعله هذا السكربت في كل تشغيل.
 
 fail=0
-for suite in supabase/tests/phase0-verification.sql supabase/tests/founder-admin-verification.sql; do
+for suite in supabase/tests/phase0-verification.sql \
+              supabase/tests/founder-admin-verification.sql \
+              supabase/tests/payments-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.
   if out=$("${PSQL[@]}" -f "$suite" 2>&1); then
