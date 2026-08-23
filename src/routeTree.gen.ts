@@ -17,6 +17,7 @@ import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as OrphansRouteImport } from './routes/orphans'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -58,6 +59,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrgRoute = AuthenticatedOrgRouteImport.update({
+  id: '/org',
+  path: '/org',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   id: '/$orphanId',
   path: '/$orphanId',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/orphans': typeof OrphansRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesByTo {
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/orphans': typeof OrphansRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesById {
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/orphans': typeof OrphansRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/org': typeof AuthenticatedOrgRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRouteTypes {
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/admin'
     | '/dashboard'
+    | '/org'
     | '/orphans/$orphanId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/admin'
     | '/dashboard'
+    | '/org'
     | '/orphans/$orphanId'
   id:
     | '__root__'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/org'
     | '/orphans/$orphanId'
   fileRoutesById: FileRoutesById
 }
@@ -197,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/org': {
+      id: '/_authenticated/org'
+      path: '/org'
+      fullPath: '/org'
+      preLoaderRoute: typeof AuthenticatedOrgRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/orphans/$orphanId': {
       id: '/orphans/$orphanId'
       path: '/$orphanId'
@@ -210,11 +229,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedOrgRoute: AuthenticatedOrgRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
