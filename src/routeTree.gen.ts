@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OrphansRouteImport } from './routes/orphans'
+import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,39 @@ const OrphansRoute = OrphansRouteImport.update({
   path: '/orphans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
+  id: '/$orphanId',
+  path: '/$orphanId',
+  getParentRoute: () => OrphansRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/orphans': typeof OrphansRoute
+  '/orphans': typeof OrphansRouteWithChildren
+  '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/orphans': typeof OrphansRoute
+  '/orphans': typeof OrphansRouteWithChildren
+  '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/orphans': typeof OrphansRoute
+  '/orphans': typeof OrphansRouteWithChildren
+  '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/orphans'
+  fullPaths: '/' | '/orphans' | '/orphans/$orphanId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/orphans'
-  id: '__root__' | '/' | '/orphans'
+  to: '/' | '/orphans' | '/orphans/$orphanId'
+  id: '__root__' | '/' | '/orphans' | '/orphans/$orphanId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OrphansRoute: typeof OrphansRoute
+  OrphansRoute: typeof OrphansRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +74,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrphansRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orphans/$orphanId': {
+      id: '/orphans/$orphanId'
+      path: '/$orphanId'
+      fullPath: '/orphans/$orphanId'
+      preLoaderRoute: typeof OrphansOrphanIdRouteImport
+      parentRoute: typeof OrphansRoute
+    }
   }
 }
 
+interface OrphansRouteChildren {
+  OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
+}
+
+const OrphansRouteChildren: OrphansRouteChildren = {
+  OrphansOrphanIdRoute: OrphansOrphanIdRoute,
+}
+
+const OrphansRouteWithChildren =
+  OrphansRoute._addFileChildren(OrphansRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OrphansRoute: OrphansRoute,
+  OrphansRoute: OrphansRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
