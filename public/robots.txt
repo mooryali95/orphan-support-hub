@@ -12,3 +12,14 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# اللوحات ومسارات الواجهة البرمجية ليست للفهرسة: صفحات محمية لا يبلغها
+# الزاحف أصلاً، وإدراجها يكشف بنية المنصة بلا فائدة.
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /org
+Disallow: /guardian
+Disallow: /auth
+Disallow: /api/
+
+Sitemap: /sitemap.xml

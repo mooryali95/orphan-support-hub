@@ -10,11 +10,44 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * الدالة إطلاقاً — بل في webhook المزوّد وحده.
  */
 
+/**
+ * حال التعليق كما تقرأه القاعدة.
+ *
+ * التعليق إعداد في القاعدة لا متغيّر بيئة: رفعه قرار تشغيلي يُتّخذ حين
+ * يصل جواب المزوّد، ولا ينبغي أن يحتاج إعادة نشر. والافتراض `true`
+ * فبيئة جديدة تبدأ معلَّقة لا مفتوحة.
+ */
+async function readHold(supabase: unknown) {
+  const { withPayments } = await import("@/integrations/supabase/types.extra");
+  const { data } = await withPayments(supabase)
+    .from("platform_settings")
+    .select("payments_on_hold, payments_hold_reason")
+    .maybeSingle();
+
+  // تعذّرت القراءة: يُفترض التعليق. الفشل إلى الجانب الآمن.
+  return {
+    onHold: data?.payments_on_hold ?? true,
+    reason:
+      data?.payments_hold_reason ??
+      "التحصيل الإلكتروني موقوف مؤقتاً بانتظار اكتمال التحقّق من مزوّد الدفع.",
+  };
+}
+
 /** ما تحتاجه الواجهة لتعرف كيف تصف مسار الدفع، بلا كشف أي سرّ. */
-export const getPaymentMode = createServerFn({ method: "GET" }).handler(async () => {
-  const { paymentMode } = await import("@/lib/payments");
-  return paymentMode();
-});
+export const getPaymentMode = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { paymentMode } = await import("@/lib/payments");
+    const mode = paymentMode();
+    const hold = await readHold(context.supabase);
+    return {
+      ...mode,
+      // التعليق يُغلق المسار الإلكتروني مهما كان المزوّد مضبوطاً.
+      online: mode.online && !hold.onHold,
+      onHold: hold.onHold,
+      holdReason: hold.reason,
+    };
+  });
 
 export const startCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -34,6 +67,21 @@ export const startCheckout = createServerFn({ method: "POST" })
     if (!sponsorship) return { ok: false as const, error: "لا توجد كفالة بهذا المعرّف" };
     if (sponsorship.status === "cancelled" || sponsorship.status === "completed") {
       return { ok: false as const, error: "هذه الكفالة منتهية" };
+    }
+
+    // تحديد المعدّل قبل أي عمل: إنشاء جلسات دفع بلا حدّ يُنشئ ضغطاً على
+    // المزوّد ويُلوّث سجلّاته بجلسات مهجورة.
+    const { hitRateLimit } = await import("@/lib/rate-limit");
+    const verdict = await hitRateLimit("checkout", `u:${userId}`);
+    if (!verdict.allowed) {
+      return { ok: false as const, error: "محاولات كثيرة في وقت قصير. أعد المحاولة بعد قليل." };
+    }
+
+    // الفحص هنا لا في الواجهة: زرّ مخفيّ يُتجاوَز بطلب واحد، والتحصيل
+    // قبل موافقة المزوّد يعرّض أموال الكفلاء للتجميد.
+    const hold = await readHold(supabase);
+    if (hold.onHold) {
+      return { ok: false as const, error: hold.reason, onHold: true as const };
     }
 
     const { paymentProvider } = await import("@/lib/payments");

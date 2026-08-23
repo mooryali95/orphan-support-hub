@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -14,6 +14,10 @@ import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.
 import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  /* الإدارة وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
+  beforeLoad: ({ context }) => {
+    if (!context.roles.includes("admin")) throw redirect({ to: "/dashboard" });
+  },
   head: () => ({
     meta: [
       { title: "لوحة الإدارة — IOCO" },

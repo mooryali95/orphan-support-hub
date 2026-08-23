@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -17,6 +17,10 @@ import { REJECTION_LABELS } from "@/lib/intake.functions";
 import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/org")({
+  /* جهات الرعاية وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
+  beforeLoad: ({ context }) => {
+    if (!context.roles.includes("care_org")) throw redirect({ to: "/dashboard" });
+  },
   head: () => ({
     meta: [
       { title: "مساحة جهة الرعاية — IOCO" },
