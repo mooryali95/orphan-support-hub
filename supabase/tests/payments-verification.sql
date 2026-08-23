@@ -11,7 +11,10 @@ BEGIN;
 INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('c1000000-0000-4000-8000-000000000001', 'p3-admin@example.test', '{}'::jsonb),
   ('c1000000-0000-4000-8000-000000000002', 'p3-sponsor@example.test', '{}'::jsonb),
-  ('c1000000-0000-4000-8000-000000000003', 'p3-org@example.test', '{"role":"care_org"}'::jsonb);
+  ('c1000000-0000-4000-8000-000000000003', 'p3-org@example.test', '{"role":"care_org"}'::jsonb),
+  -- كافل مستقلّ لفحص المنازعة: قيد «كفالة حيّة واحدة لكل كافل على كل ملف»
+  -- يمنع مشاركة الكافل نفسه بين فحصين على الملف نفسه.
+  ('c1000000-0000-4000-8000-000000000004', 'p3-disputer@example.test', '{}'::jsonb);
 INSERT INTO public.user_roles (user_id, role)
 VALUES ('c1000000-0000-4000-8000-000000000001', 'admin');
 
@@ -22,6 +25,66 @@ INSERT INTO public.orphans (id, code, display_name, monthly_need, org_id, create
 VALUES ('c3000000-0000-4000-8000-00000000000b', 'PAY-1', 'ملف الدفع', 300,
         'c2000000-0000-4000-8000-00000000000a', 'c1000000-0000-4000-8000-000000000003',
         'approved', now());
+
+-- ---------------------------------------------------------------------
+-- المنازعة: مال معلّق لا يُعدّ رصيداً متاحاً
+-- ---------------------------------------------------------------------
+DO $$
+DECLARE v JSONB; before_balance NUMERIC; after_balance NUMERIC;
+BEGIN
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000001","role":"authenticated"}';
+  before_balance := (public.admin_overview()->'money'->>'balance')::numeric;
+  RESET ROLE;
+
+  -- كفالة ودفعتان: واحدة سليمة وأخرى وقعت عليها منازعة.
+  INSERT INTO public.sponsorships (id, sponsor_id, orphan_id, amount, status)
+  VALUES ('c4000000-0000-4000-8000-0000000000d1',
+          'c1000000-0000-4000-8000-000000000004',
+          'c3000000-0000-4000-8000-00000000000b', 100, 'active');
+
+  INSERT INTO public.sponsorship_payments (sponsorship_id, sponsor_id, amount, status)
+  VALUES ('c4000000-0000-4000-8000-0000000000d1',
+          'c1000000-0000-4000-8000-000000000004', 100, 'paid'),
+         ('c4000000-0000-4000-8000-0000000000d1',
+          'c1000000-0000-4000-8000-000000000004', 40, 'disputed');
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000001","role":"authenticated"}';
+  v := public.admin_overview();
+  after_balance := (v->'money'->>'balance')::numeric;
+
+  IF (v->'money'->>'disputed')::numeric <> 40 THEN
+    RAISE EXCEPTION 'FAIL — disputed amount not reported: %', v->'money';
+  END IF;
+  RAISE NOTICE 'PASS — disputed amount is reported separately';
+
+  -- الرصيد يرتفع بالمدفوع وحده: لو عُدّت المنازعة تحصيلاً لبلغ الفارق 140،
+  -- ولو طُرحت مرّتين لبلغ 60.
+  IF after_balance - before_balance <> 100 THEN
+    RAISE EXCEPTION 'FAIL — balance mis-states disputed money (delta %)',
+      after_balance - before_balance;
+  END IF;
+  RAISE NOTICE 'PASS — a disputed payment never counts toward the balance';
+  RESET ROLE;
+
+  -- الانتقال الحقيقي: الويبهوك يَسِم دفعةً مدفوعة، فيجب أن تغادر الرصيد.
+  UPDATE public.sponsorship_payments SET status = 'disputed'
+  WHERE sponsorship_id = 'c4000000-0000-4000-8000-0000000000d1' AND status = 'paid';
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000001","role":"authenticated"}';
+  v := public.admin_overview();
+  IF (v->'money'->>'balance')::numeric <> before_balance THEN
+    RAISE EXCEPTION 'FAIL — disputing a paid payment did not remove it from the balance (%)',
+      v->'money'->>'balance';
+  END IF;
+  IF (v->'money'->>'disputed')::numeric <> 140 THEN
+    RAISE EXCEPTION 'FAIL — disputed total wrong after transition: %', v->'money';
+  END IF;
+  RAISE NOTICE 'PASS — disputing a paid payment removes it from the balance';
+  RESET ROLE;
+END $$;
 
 -- ---------------------------------------------------------------------
 -- لوحة الإدارة: مقصورة على الإدارة

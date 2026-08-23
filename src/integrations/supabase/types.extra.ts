@@ -35,6 +35,15 @@ type PlatformSettingsRow = {
   updated_at: Iso;
 };
 
+/**
+ * حالة الدفعة بعد هجرة 20260823180000.
+ *
+ * `payment_status` المولَّد لا يعرف `disputed` لأن التوليد سبق الهجرة.
+ * والمنازعة ليست ردّ مبلغ: الردّ قرار من التاجر، والمنازعة نزاع يفتحه
+ * حامل البطاقة وقد يُحسم لأيّ طرف — فخلطهما يُخفي مالاً معلّقاً.
+ */
+type PaymentStatusWithDispute = Generated["public"]["Enums"]["payment_status"] | "disputed";
+
 /** الأعمدة التي أضافتها الهجرة إلى سجلّ المدفوعات. */
 type PaymentExtras = {
   provider_checkout_id: string | null;
@@ -52,9 +61,12 @@ export type DatabaseWithPayments = Omit<Generated, "public"> & {
   public: Omit<GeneratedPublic, "Tables" | "Functions"> & {
     Tables: Omit<GeneratedPublic["Tables"], "sponsorship_payments"> & {
       sponsorship_payments: {
-        Row: GeneratedPayments["Row"] & PaymentExtras;
-        Insert: GeneratedPayments["Insert"] & Partial<PaymentExtras>;
-        Update: GeneratedPayments["Update"] & Partial<PaymentExtras>;
+        Row: Omit<GeneratedPayments["Row"], "status"> &
+          PaymentExtras & { status: PaymentStatusWithDispute };
+        Insert: Omit<GeneratedPayments["Insert"], "status"> &
+          Partial<PaymentExtras> & { status?: PaymentStatusWithDispute };
+        Update: Omit<GeneratedPayments["Update"], "status"> &
+          Partial<PaymentExtras> & { status?: PaymentStatusWithDispute };
         Relationships: GeneratedPayments["Relationships"];
       };
       payment_events: {

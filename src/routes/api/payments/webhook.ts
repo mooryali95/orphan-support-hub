@@ -72,7 +72,7 @@ export const Route = createFileRoute("/api/payments/webhook")({
         }
 
         try {
-          await applyEvent(db, event);
+          await applyEvent(db, event, provider.id);
           await db
             .from("payment_events")
             .update({ processed_at: new Date().toISOString() })
@@ -90,7 +90,12 @@ export const Route = createFileRoute("/api/payments/webhook")({
   },
 });
 
-async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
+async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, providerId: string) {
+  // حدث معروف للمزوّد لا فعل له عندنا: سُجّل خاماً قبل الوصول إلى هنا،
+  // وهذا كل المطلوب. رفضه كان يعني إعادة إرسال لا تنتهي — والمزوّد
+  // يرسل ثلاثة عشر نوعاً أكثرها وصفٌ لدورة حياة الاشتراك لا مال.
+  if (event.kind === "unknown") return;
+
   if (!event.sponsorshipId) {
     throw new Error("الحدث بلا مرجع كفالة");
   }
@@ -124,7 +129,7 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
         amount,
         currency: event.currency ?? sponsorship.currency,
         status: "paid",
-        provider: "careem",
+        provider: providerId,
         provider_ref: event.providerCheckoutId,
         provider_checkout_id: event.providerCheckoutId,
         fee_amount: fee,
@@ -138,7 +143,7 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
         .from("sponsorships")
         .update({
           status: "active",
-          provider: "careem",
+          provider: providerId,
           provider_subscription_id: event.providerSubscriptionId,
           ...(sponsorship.status === "active" ? {} : { started_at: paidAt }),
         })
@@ -153,7 +158,7 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
         amount: event.amount ?? Number(sponsorship.amount),
         currency: event.currency ?? sponsorship.currency,
         status: "failed",
-        provider: "careem",
+        provider: providerId,
         provider_ref: event.providerCheckoutId,
         failure_reason: event.failureReason,
       });
@@ -165,6 +170,22 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent) {
       await supabase
         .from("sponsorship_payments")
         .update({ status: "refunded" })
+        .eq("sponsorship_id", sponsorship.id)
+        .eq("provider_ref", event.providerCheckoutId ?? "");
+      return;
+    }
+
+    case "subscription.paused": {
+      await supabase.from("sponsorships").update({ status: "paused" }).eq("id", sponsorship.id);
+      return;
+    }
+
+    // المنازعة مال مسحوب فعلاً وبلاغ احتيال محتمل. لا تُلغى الكفالة
+    // تلقائياً — القرار إداري — لكن الدفعة تُوسم فتظهر في لوحة الإدارة.
+    case "payment.disputed": {
+      await supabase
+        .from("sponsorship_payments")
+        .update({ status: "disputed" })
         .eq("sponsorship_id", sponsorship.id)
         .eq("provider_ref", event.providerCheckoutId ?? "");
       return;

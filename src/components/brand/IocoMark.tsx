@@ -76,35 +76,54 @@ export function IocoMark({
   );
 }
 
-/** القفل الكامل: العلامة + الاسم + وصف المنصة. */
+/**
+ * القفل الرسمي — الشعار كما هو في حقيبة الهوية، صورةً لا مساراً متجهياً.
+ *
+ * الحقيبة تعرض الشعار بصيغتين، وقياس البكسل أثبت أنهما لا تتطابقان:
+ * ملفّ SVG **تتبُّعٌ آلي** للصورة، وقد صهر كل الأشكال في مسار واحد
+ * وقرّب ألوانها بتدرّج خطّي وحيد. والأصل ليس تدرّجاً: عند x=2060 يكون
+ * القوس الأعلى رمادياً (116,125,131) والحرف تحته أزرق (35,90,159) —
+ * لونان عند الإحداثي الأفقي نفسه. والتدرّج الخطّي يمنح كل إحداثي لوناً
+ * واحداً، فلا يمكنه أن يصف هذا أبداً.
+ *
+ * أي أن التتبّع أتلف الربط بين الشكل ولونه إتلافاً لا يُستردّ، فلا سبيل
+ * إلى أمانة لونية من ذلك الملفّ مهما عُولج. والصورة النقطية هي الأصل
+ * الذي اشتُقّ منه التتبّع لا العكس، فاعتمادها أوفى وأخفّ معاً: هذه
+ * النسخ مقصوصة الهوامش ومصغَّرة إلى المقاسات المستعملة فعلاً ومكمَّمة
+ * إلى 256 لوناً (الشعار مسطّحات لونية لا تدرّجات فوتوغرافية)، فجاءت
+ * أصغر من الملفّ المتتبَّع ومطابقةً للأصل في آن.
+ */
 export function IocoLockup({
   className,
   compact = false,
+  onDark = false,
 }: {
   className?: string;
   compact?: boolean;
+  /** النسخة البيضاء فوق الأسطح الكحلية. */
+  onDark?: boolean;
 }) {
+  const base = onDark ? "/brand/ioco-wordmark-white" : "/brand/ioco-wordmark";
+
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span className={compact ? "size-9" : "size-11"}>
-        <IocoMark globe={!compact} title="شعار IOCO" />
-      </span>
-      <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "text-shore-need font-extrabold tracking-[0.14em]",
-            compact ? "text-base" : "text-lg",
-          )}
-          dir="ltr"
-        >
-          IOCO
+    <span className={cn("flex items-center gap-2.5", className)} dir="ltr">
+      <picture>
+        <source type="image/webp" srcSet={`${base}-240.webp 1x, ${base}-480.webp 2x`} />
+        <img
+          src={`${base}-240.png`}
+          srcSet={`${base}-240.png 1x, ${base}-480.png 2x`}
+          alt="IOCO"
+          // نسبة الأصل بعد قصّ الهوامش 1557×813.
+          className={cn("w-auto", compact ? "h-8" : "h-10")}
+          width={1557}
+          height={813}
+        />
+      </picture>
+      {!compact && (
+        <span className="text-muted-foreground hidden text-[11px] font-medium sm:inline" dir="rtl">
+          منصة كفالة الأيتام
         </span>
-        {!compact && (
-          <span className="text-muted-foreground mt-1 text-[11px] font-medium">
-            منصة كفالة الأيتام
-          </span>
-        )}
-      </span>
+      )}
     </span>
   );
 }

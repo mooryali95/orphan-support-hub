@@ -1,0 +1,200 @@
+import { createHmac } from "node:crypto";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { creemProvider } from "./creem";
+
+const SECRET = "whsec_test_secret";
+
+function sign(body: string, secret = SECRET) {
+  return createHmac("sha256", secret).update(body, "utf8").digest("hex");
+}
+
+function headers(signature: string | null) {
+  const h = new Headers();
+  if (signature !== null) h.set("creem-signature", signature);
+  return h;
+}
+
+beforeEach(() => {
+  process.env["CREEM_API_KEY"] = "creem_test_key";
+  process.env["CREEM_WEBHOOK_SECRET"] = SECRET;
+  process.env["CREEM_PRODUCT_MONTHLY"] = "prod_monthly";
+  process.env["CREEM_PRODUCT_ONETIME"] = "prod_onetime";
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  for (const k of [
+    "CREEM_API_KEY",
+    "CREEM_WEBHOOK_SECRET",
+    "CREEM_PRODUCT_MONTHLY",
+    "CREEM_PRODUCT_ONETIME",
+  ]) {
+    delete process.env[k];
+  }
+});
+
+describe("verifyWebhook", () => {
+  const body = JSON.stringify({ id: "evt_1", eventType: "checkout.completed" });
+
+  it("يقبل توقيعاً صحيحاً", () => {
+    expect(creemProvider.verifyWebhook(body, headers(sign(body)))).toBe(true);
+  });
+
+  // جوهر الأمان: توقيع صالح لجسم آخر لا يصلح لهذا الجسم.
+  it("يرفض جسماً عُدِّل بعد التوقيع", () => {
+    const tampered = JSON.stringify({ id: "evt_1", eventType: "subscription.paid" });
+    expect(creemProvider.verifyWebhook(tampered, headers(sign(body)))).toBe(false);
+  });
+
+  it("يرفض توقيعاً بسرّ آخر", () => {
+    expect(creemProvider.verifyWebhook(body, headers(sign(body, "wrong_secret")))).toBe(false);
+  });
+
+  it("يرفض غياب الترويسة", () => {
+    expect(creemProvider.verifyWebhook(body, headers(null))).toBe(false);
+  });
+
+  // بلا سرّ لا تحقّق، والقبول هنا يعني قبول أي حمولة من أي جهة.
+  it("يرفض حين لا سرّ مضبوطاً أصلاً", () => {
+    delete process.env["CREEM_WEBHOOK_SECRET"];
+    expect(creemProvider.verifyWebhook(body, headers(sign(body)))).toBe(false);
+  });
+});
+
+describe("parseEvent", () => {
+  it("يقرأ إتمام الدفع ويستخرج مرجع الكفالة والمبلغ", () => {
+    const event = creemProvider.parseEvent(
+      JSON.stringify({
+        id: "evt_checkout_1",
+        eventType: "checkout.completed",
+        created_at: 1750000000000,
+        object: {
+          id: "ch_1",
+          subscription: { id: "sub_1" },
+          order: { id: "ord_1", amount: 8000, currency: "USD" },
+          metadata: { sponsorship_id: "sp-uuid-1" },
+        },
+      }),
+    );
+
+    expect(event.providerEventId).toBe("evt_checkout_1");
+    expect(event.kind).toBe("payment.succeeded");
+    expect(event.sponsorshipId).toBe("sp-uuid-1");
+    expect(event.providerSubscriptionId).toBe("sub_1");
+    // السنتات تتحوّل إلى الوحدة الكبرى كما تخزّنها القاعدة.
+    expect(event.amount).toBe(80);
+    expect(event.currency).toBe("USD");
+  });
+
+  it("يقرأ تحصيل الاشتراك الشهري", () => {
+    const event = creemProvider.parseEvent(
+      JSON.stringify({
+        id: "evt_paid_1",
+        eventType: "subscription.paid",
+        created_at: 1750000000000,
+        object: {
+          id: "sub_1",
+          metadata: { sponsorship_id: "sp-uuid-1" },
+          last_transaction: { id: "ord_2", amount: 8000, currency: "USD" },
+        },
+      }),
+    );
+
+    expect(event.kind).toBe("subscription.charged");
+    expect(event.providerSubscriptionId).toBe("sub_1");
+    expect(event.amount).toBe(80);
+  });
+
+  // Creem يرسل ثلاثة عشر نوعاً؛ ما لا فعل له عندنا يجب ألّا يُرمى به
+  // استثناء، وإلا أعاد المزوّد إرساله بلا نهاية.
+  it("يُرجع unknown لنوع لا فعل له بدل أن يفشل", () => {
+    const event = creemProvider.parseEvent(
+      JSON.stringify({ id: "evt_x", eventType: "subscription.trialing", object: {} }),
+    );
+    expect(event.kind).toBe("unknown");
+    expect(event.providerEventId).toBe("evt_x");
+  });
+
+  it("يميّز المنازعة عن ردّ المبلغ", () => {
+    const dispute = creemProvider.parseEvent(
+      JSON.stringify({ id: "e1", eventType: "dispute.created", object: {} }),
+    );
+    const refund = creemProvider.parseEvent(
+      JSON.stringify({ id: "e2", eventType: "refund.created", object: {} }),
+    );
+    expect(dispute.kind).toBe("payment.disputed");
+    expect(refund.kind).toBe("payment.refunded");
+  });
+});
+
+describe("createCheckout", () => {
+  function stubFetch() {
+    const calls: Array<{ url: string; body: Record<string, unknown> }> = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init: RequestInit) => {
+        calls.push({ url: String(url), body: JSON.parse(String(init.body)) });
+        return new Response(JSON.stringify({ id: "ch_1", checkout_url: "https://pay/x" }), {
+          status: 200,
+        });
+      }),
+    );
+    return calls;
+  }
+
+  const base = {
+    sponsorshipId: "sp-1",
+    idempotencyKey: "idem-1",
+    description: "كفالة",
+    returnUrl: "https://app/ok",
+    cancelUrl: "https://app/no",
+    currency: "USD",
+  };
+
+  // القيد المحوري: المبلغ المتكرّر يُمرَّر كعدد وحدات لا كسعر، لأن
+  // custom_price لا يعمل مع المنتجات المتكرّرة.
+  it("الكفالة الشهرية تُمرَّر بالوحدات بلا custom_price", async () => {
+    const calls = stubFetch();
+    await creemProvider.createCheckout({ ...base, amount: 80, recurring: true });
+
+    expect(calls[0]!.url).toBe("https://test-api.creem.io/v1/checkouts");
+    expect(calls[0]!.body["product_id"]).toBe("prod_monthly");
+    expect(calls[0]!.body["units"]).toBe(80);
+    expect(calls[0]!.body).not.toHaveProperty("custom_price");
+    expect(calls[0]!.body["metadata"]).toEqual({ sponsorship_id: "sp-1" });
+  });
+
+  it("الدفعة الواحدة تستعمل custom_price بالسنتات", async () => {
+    const calls = stubFetch();
+    await creemProvider.createCheckout({ ...base, amount: 80, recurring: false });
+
+    expect(calls[0]!.body["product_id"]).toBe("prod_onetime");
+    expect(calls[0]!.body["custom_price"]).toBe(8000);
+    expect(calls[0]!.body["units"]).toBe(1);
+  });
+
+  // مفتاح الاختبار على نطاق الإنتاج يُرفض من المزوّد، فالاشتقاق من
+  // المفتاح يمنع تناقضاً لا يظهر إلا عند أول دفعة حقيقية.
+  it("يشتقّ نطاق الإنتاج من مفتاح الإنتاج", async () => {
+    process.env["CREEM_API_KEY"] = "creem_live_key";
+    const calls = stubFetch();
+    await creemProvider.createCheckout({ ...base, amount: 25, recurring: true });
+    expect(calls[0]!.url).toBe("https://api.creem.io/v1/checkouts");
+  });
+
+  it("يرفض مبلغاً دون الحدّ الأدنى بدل إرساله للمزوّد", async () => {
+    stubFetch();
+    await expect(
+      creemProvider.createCheckout({ ...base, amount: 0.4, recurring: true }),
+    ).rejects.toThrow();
+  });
+});
+
+describe("isConfigured", () => {
+  it("يشترط المفتاح والسرّ والمنتج المتكرّر", () => {
+    expect(creemProvider.isConfigured()).toBe(true);
+    delete process.env["CREEM_PRODUCT_MONTHLY"];
+    expect(creemProvider.isConfigured()).toBe(false);
+  });
+});
