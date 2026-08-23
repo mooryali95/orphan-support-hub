@@ -76,35 +76,44 @@ export function IocoMark({
   );
 }
 
-/** القفل الكامل: العلامة + الاسم + وصف المنصة. */
+/**
+ * القفل الرسمي — الشعار كما تسلّمه حقيبة الهوية.
+ *
+ * يُقدَّم أصلاً ثابتاً في `public/brand/` لا مساراً مضمَّناً: الشعار
+ * فنّ ثابت لا يُعاد تلوينه من الصفحة، وإخراجه من الحزمة يُبقيه خارج
+ * جافاسكربت ويجعل المتصفّح يخزّنه مرّةً واحدة لكل الصفحات.
+ *
+ * وثلاثة أمور عولجت في الأصل قبل اعتماده — موثّقة في docs/brand.ar.md:
+ * مدى التدرّج، وستّة عشر شكلاً دقيقاً من مخلّفات التتبّع، ونسخة بيضاء
+ * صريحة لأن `currentColor` لا يرث داخل `<img>`.
+ */
 export function IocoLockup({
   className,
   compact = false,
+  onDark = false,
 }: {
   className?: string;
   compact?: boolean;
+  /** يبدّل إلى النسخة البيضاء فوق الأسطح الكحلية. */
+  onDark?: boolean;
 }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span className={compact ? "size-9" : "size-11"}>
-        <IocoMark globe={!compact} title="شعار IOCO" />
-      </span>
-      <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "text-shore-need font-extrabold tracking-[0.14em]",
-            compact ? "text-base" : "text-lg",
-          )}
-          dir="ltr"
-        >
-          IOCO
+    <span className={cn("flex items-center gap-2.5", className)} dir="ltr">
+      <img
+        src={onDark ? "/brand/ioco-wordmark-white.svg" : "/brand/ioco-wordmark.svg"}
+        alt="IOCO"
+        // النسخة المقصوصة على الحروف: 1526×813. القفل الكامل بموجته
+        // يمتدّ 4096 عرضاً، فتقييده بارتفاع ترويسة يقزّم الاسم إلى ثُلث
+        // حجمه المقروء. القفل الكامل يبقى لمساحات العرض الواسعة.
+        className={cn("w-auto", compact ? "h-8" : "h-10")}
+        width={1526}
+        height={813}
+      />
+      {!compact && (
+        <span className="text-muted-foreground hidden text-[11px] font-medium sm:inline" dir="rtl">
+          منصة كفالة الأيتام
         </span>
-        {!compact && (
-          <span className="text-muted-foreground mt-1 text-[11px] font-medium">
-            منصة كفالة الأيتام
-          </span>
-        )}
-      </span>
+      )}
     </span>
   );
 }

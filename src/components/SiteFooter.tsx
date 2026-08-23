@@ -19,7 +19,7 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <h3 className="text-sm font-bold">المنصة</h3>
+          <h2 className="text-sm font-bold">المنصة</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/orphans" className="hover:text-foreground">
@@ -39,7 +39,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h3 className="text-sm font-bold">الحساب</h3>
+          <h2 className="text-sm font-bold">الحساب</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/auth" className="hover:text-foreground">
