@@ -596,6 +596,24 @@ export type Database = {
           },
         ]
       }
+      protected_admins: {
+        Row: {
+          created_at: string
+          email: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       sponsorship_payments: {
         Row: {
           amount: number
@@ -787,42 +805,30 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_protected_admin_email: { Args: { _email: string }; Returns: boolean }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
+      protected_admin_override: { Args: never; Returns: boolean }
       sponsors_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       suggest_orphans_for_sponsor: {
         Args: { _budget?: number; _limit?: number; _region?: string }
         Returns: {
-          approved_at: string | null
-          birth_date: string | null
-          city: string | null
+          birth_date: string
+          city: string
           code: string
-          country: string
           created_at: string
-          created_by: string | null
           currency: string
           display_name: string
-          education_stage: string | null
-          external_ref: string | null
-          external_source: string | null
+          education_stage: string
           funded_monthly: number
           gender: string
-          guardian_id: string | null
           id: string
           monthly_need: number
-          org_id: string | null
-          photo_url: string | null
-          region: string | null
-          rejection_reason: string | null
+          org_id: string
+          photo_url: string
+          region: string
           status: Database["public"]["Enums"]["orphan_status"]
-          story: string | null
-          updated_at: string
+          story: string
         }[]
-        SetofOptions: {
-          from: "*"
-          to: "orphans"
-          isOneToOne: false
-          isSetofReturn: true
-        }
       }
     }
     Enums: {
