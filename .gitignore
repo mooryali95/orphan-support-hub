@@ -30,3 +30,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets — never commit these. Only publishable/public values belong in .env,
+# which is tracked on purpose so the project builds. Anything secret
+# (SUPABASE_SERVICE_ROLE_KEY, payment provider keys, LOVABLE_CRON_SECRET)
+# goes in .env.local, which Vite loads at higher priority and git ignores.
+.env.local
+.env.*.local
+.env.production
+.env.*.key

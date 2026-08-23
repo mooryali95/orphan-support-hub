@@ -23,6 +23,15 @@ function publicClient() {
 const PUBLIC_COLUMNS =
   "id, code, display_name, gender, birth_date, city, region, story, photo_url, education_stage, monthly_need, funded_monthly, currency, status, org_id, created_at";
 
+// يُدرج مصطلح البحث نصياً في تعبير PostgREST المنطقي، فالفاصلة والقوس
+// والنقطة تغيّر بنية الفلتر. نزيلها إضافةً إلى محارف بدل LIKE.
+function sanitizeSearch(value: string) {
+  return value
+    .replace(/[%_,().:*"'\\]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 const listSchema = z.object({
   region: z.string().trim().max(80).optional(),
   search: z.string().trim().max(80).optional(),
@@ -43,7 +52,8 @@ export const listPublicOrphans = createServerFn({ method: "GET" })
 
     if (data.region) query = query.eq("region", data.region);
     if (data.onlyOpen) query = query.eq("status", "approved");
-    if (data.search) query = query.or(`display_name.ilike.%${data.search}%,city.ilike.%${data.search}%`);
+    const search = data.search ? sanitizeSearch(data.search) : "";
+    if (search) query = query.or(`display_name.ilike.%${search}%,city.ilike.%${search}%`);
 
     const { data: rows, error } = await query;
     if (error) return { orphans: [], error: error.message };
