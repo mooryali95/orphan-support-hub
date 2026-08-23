@@ -46,7 +46,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
 
     if (error) return { ok: false as const, error: error.message };
 
-    await supabase.from("payments").insert({
+    await supabase.from("sponsorship_payments").insert({
       sponsorship_id: created.id,
       sponsor_id: userId,
       amount: data.amount,
