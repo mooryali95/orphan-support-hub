@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrphansRouteImport } from './routes/orphans'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrphansRoute = OrphansRouteImport.update({
@@ -31,30 +37,34 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/orphans': typeof OrphansRouteWithChildren
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/orphans': typeof OrphansRouteWithChildren
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/orphans': typeof OrphansRouteWithChildren
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/orphans' | '/orphans/$orphanId'
+  fullPaths: '/' | '/how-it-works' | '/orphans' | '/orphans/$orphanId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/orphans' | '/orphans/$orphanId'
-  id: '__root__' | '/' | '/orphans' | '/orphans/$orphanId'
+  to: '/' | '/how-it-works' | '/orphans' | '/orphans/$orphanId'
+  id: '__root__' | '/' | '/how-it-works' | '/orphans' | '/orphans/$orphanId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HowItWorksRoute: typeof HowItWorksRoute
   OrphansRoute: typeof OrphansRouteWithChildren
 }
 
@@ -65,6 +75,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orphans': {
@@ -97,6 +114,7 @@ const OrphansRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HowItWorksRoute: HowItWorksRoute,
   OrphansRoute: OrphansRouteWithChildren,
 }
 export const routeTree = rootRouteImport
