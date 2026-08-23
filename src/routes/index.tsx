@@ -61,8 +61,10 @@ const AWARENESS_LADDER = [
     icon: Aperture,
     rank: "الميقات",
     bar: "bg-bridge-bright",
-    chip: "bg-bridge-bright/12 text-bridge-bright",
-    label: "text-bridge-bright",
+    // الأرضية تبقى بحرارة البرتقالي، أما الأيقونة فوقها فتُصبّ بالذهبي الداكن:
+    // البرتقالي يبلغ 2.1:1 على الأبيض ولا يستوفي 3:1 المطلوبة للعناصر غير النصّية.
+    chip: "bg-bridge-bright/12 text-bridge-ink",
+    label: "text-bridge-ink",
     title: "اللحظة الفاصلة",
     text: "اللحظة التي يجتمع فيها الزمان والمكان والفاعل، فتختار من تكفل وينزل المفهوم إلى الواقع.",
   },
@@ -71,7 +73,7 @@ const AWARENESS_LADDER = [
     rank: "التعقل",
     bar: "bg-bridge",
     chip: "bg-bridge/12 text-bridge",
-    label: "text-bridge",
+    label: "text-bridge-ink",
     title: "الالتزام بالنظام",
     text: "لا تبرّع عابر بل كفالة شهرية شفافة: تعهّد مستمر تراه في كل دفعة وكل تقرير.",
   },
@@ -93,7 +95,7 @@ function HomePage() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      <main>
+      <main id="main" tabIndex={-1}>
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">

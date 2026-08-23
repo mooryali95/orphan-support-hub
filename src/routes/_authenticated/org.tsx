@@ -16,9 +16,9 @@ import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/org")({
   head: () => ({
     meta: [
-      { title: "مساحة جهة الرعاية — كافل" },
+      { title: "مساحة جهة الرعاية — IOCO" },
       { name: "description", content: "أدر ملفات الأيتام التابعة لجهتك وأرسلها للاعتماد." },
-      { property: "og:title", content: "مساحة جهة الرعاية — كافل" },
+      { property: "og:title", content: "مساحة جهة الرعاية — IOCO" },
       { property: "og:description", content: "رفع ملفات الأيتام ومتابعة حالتها." },
       { name: "robots", content: "noindex" },
     ],

@@ -16,9 +16,9 @@ import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } fr
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "كفالاتي — كافل" },
+      { title: "كفالاتي — IOCO" },
       { name: "description", content: "تابع كفالاتك النشطة ومدفوعاتها وحالة الأيتام المكفولين." },
-      { property: "og:title", content: "كفالاتي — كافل" },
+      { property: "og:title", content: "كفالاتي — IOCO" },
       { property: "og:description", content: "لوحة الكافل لمتابعة الكفالات والمدفوعات." },
       { name: "robots", content: "noindex" },
     ],

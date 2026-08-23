@@ -13,12 +13,12 @@ const orgsQuery = queryOptions({
 export const Route = createFileRoute("/organizations")({
   head: () => ({
     meta: [
-      { title: "جهات الرعاية المعتمدة — كافل" },
+      { title: "جهات الرعاية المعتمدة — IOCO" },
       {
         name: "description",
         content: "قائمة الجمعيات ودور الرعاية المعتمدة التي توثّق ملفات الأيتام في منصة كافل.",
       },
-      { property: "og:title", content: "جهات الرعاية المعتمدة — كافل" },
+      { property: "og:title", content: "جهات الرعاية المعتمدة — IOCO" },
       {
         property: "og:description",
         content: "جمعيات ودور رعاية مرخّصة توثّق ملفات الأيتام وتتابع أثر الكفالة.",
@@ -35,7 +35,7 @@ function OrganizationsPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-4 py-12">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">جهات الرعاية المعتمدة</h1>
         <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">
           كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.

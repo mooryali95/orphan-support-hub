@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ageFromBirthDate, formatDate, fundingPercent } from "./format";
+import { ageFromBirthDate, formatDate, formatMoney, fundingPercent } from "./format";
+
+/** الأرقام الهندية العربية ٠-٩ — ما يجب ألّا يظهر في واجهة يُقرأ منها المال. */
+const ARABIC_INDIC = /[\u0660-\u0669\u06F0-\u06F9]/;
 
 describe("fundingPercent", () => {
   it("يحسب نسبة التغطية", () => {
@@ -43,5 +46,29 @@ describe("formatDate", () => {
     expect(formatDate(null)).toBe("—");
     expect(formatDate("")).toBe("—");
     expect(formatDate("nope")).toBe("—");
+  });
+});
+
+describe("formatMoney", () => {
+  it("يعرض العملة الافتراضية بالدولار", () => {
+    expect(formatMoney(80)).toContain("80");
+    expect(formatMoney(80)).toMatch(/US\$|USD|\$/);
+  });
+
+  it("يعيد صفراً للقيم الفارغة بدل NaN معروضاً للكافل", () => {
+    expect(formatMoney(null)).toContain("0");
+    expect(formatMoney(undefined)).toContain("0");
+  });
+
+  it("يقبل النصوص كما تصل من postgres numeric", () => {
+    expect(formatMoney("150.00")).toContain("150");
+  });
+
+  // العقد الذي يحرسه هذا الاختبار: أرقام لاتينية دائماً. لو بُدِّلت اللغة إلى
+  // «ar-SA» أو «ar-EG» — وهو تغيير يبدو أصحّ لجمهور عربي — لانقلبت الأرقام
+  // هندية، فاختلف المبلغ بين جهاز وآخر وانهار اصطفاف `tabular-nums`.
+  it("يثبّت الأرقام على اللاتينية في المال والتاريخ معاً", () => {
+    expect(formatMoney(1250)).not.toMatch(ARABIC_INDIC);
+    expect(formatDate("2026-01-15")).not.toMatch(ARABIC_INDIC);
   });
 });

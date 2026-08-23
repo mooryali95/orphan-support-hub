@@ -1,6 +1,12 @@
+// نظام الأرقام مثبّت على اللاتينية: «ar» وحدها تُنتج أرقاماً هندية في بعض
+// المتصفحات ولاتينية في غيرها، فيختلف الرقم نفسه بين جهاز وآخر. وهذه واجهة
+// يُتّخذ القرار المالي على أرقامها، كما أن `tabular-nums` لا تنطبق على الأرقام
+// الهندية في خط Tajawal فتهتزّ الأعمدة. التثبيت يضمن ثباتاً واصطفافاً.
+const AR_NUM = "ar-u-nu-latn";
+
 export function formatMoney(amount: number | string | null | undefined, currency = "USD") {
   const value = Number(amount ?? 0);
-  return new Intl.NumberFormat("ar", {
+  return new Intl.NumberFormat(AR_NUM, {
     style: "currency",
     currency,
     maximumFractionDigits: 0,
@@ -26,7 +32,7 @@ export function formatDate(value: string | null | undefined) {
   if (!value) return "—";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "—";
-  return new Intl.DateTimeFormat("ar", { dateStyle: "medium" }).format(d);
+  return new Intl.DateTimeFormat(AR_NUM, { dateStyle: "medium" }).format(d);
 }
 
 export const ORPHAN_STATUS_LABELS: Record<string, string> = {

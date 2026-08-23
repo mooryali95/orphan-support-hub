@@ -10,6 +10,10 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
+    // لا يظهر مؤشّر التنقّل قبل 250ms حتى لا يومض في التنقّلات الفورية،
+    // وإذا ظهر يبقى 400ms على الأقل فلا يُرى كوميض مبتور.
+    defaultPendingMs: 250,
+    defaultPendingMinMs: 400,
   });
 
   return router;

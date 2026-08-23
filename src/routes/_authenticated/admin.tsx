@@ -121,7 +121,7 @@ function AdminPage() {
                     من {formatMoney(o.orphans.monthly_need, cur)}
                   </span>
                 </p>
-                <p className="text-bridge text-sm font-bold">
+                <p className="text-bridge-ink text-sm font-bold">
                   المتبقّي {formatMoney(o.orphans.monthly_gap, cur)}
                 </p>
               </div>
@@ -176,7 +176,7 @@ function AdminPage() {
             </span>,
             formatMoney(r.need, cur),
             formatMoney(r.funded, cur),
-            <span key="g" className={r.gap > 0 ? "text-bridge font-bold" : "text-shore-thrive"}>
+            <span key="g" className={r.gap > 0 ? "text-bridge-ink font-bold" : "text-shore-thrive"}>
               {r.gap > 0 ? formatMoney(r.gap, cur) : "مكتمل"}
             </span>,
             String(r.sponsors),
@@ -314,7 +314,7 @@ function AdminPage() {
 
 const TONE: Record<string, string> = {
   need: "text-shore-need",
-  bridge: "text-bridge",
+  bridge: "text-bridge-ink",
   thrive: "text-shore-thrive",
   muted: "text-muted-foreground",
 };

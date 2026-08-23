@@ -19,6 +19,13 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/85 backdrop-blur">
+      {/* رابط التخطّي أول ما يبلغه التبويب: يقفز بمستخدم لوحة المفاتيح فوق التنقّل. */}
+      <a
+        href="#main"
+        className="bg-primary text-primary-foreground sr-only z-50 rounded-b-lg px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:inset-x-0 focus:mx-auto focus:w-fit"
+      >
+        تخطّي إلى المحتوى
+      </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to="/" aria-label="IOCO — الصفحة الرئيسية">
           <IocoLockup />
@@ -57,6 +64,8 @@ export function SiteHeader() {
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label="القائمة"
+            aria-expanded={open}
+            aria-controls="site-mobile-nav"
             className="inline-flex size-9 items-center justify-center rounded-lg border border-border md:hidden"
           >
             <Menu className="size-4" />
@@ -64,7 +73,10 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className={cn("border-t border-border/70 md:hidden", open ? "block" : "hidden")}>
+      <div
+        id="site-mobile-nav"
+        className={cn("border-t border-border/70 md:hidden", open ? "block" : "hidden")}
+      >
         <nav className="mx-auto flex max-w-6xl flex-col p-2">
           {NAV.map((item) => (
             <Link

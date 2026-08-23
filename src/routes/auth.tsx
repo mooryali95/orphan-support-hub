@@ -18,12 +18,12 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — كافل" },
+      { title: "الدخول والتسجيل — IOCO" },
       {
         name: "description",
         content: "سجّل الدخول إلى منصة كافل لمتابعة كفالاتك أو إنشاء حساب كافل جديد.",
       },
-      { property: "og:title", content: "الدخول والتسجيل — كافل" },
+      { property: "og:title", content: "الدخول والتسجيل — IOCO" },
       { property: "og:description", content: "حساب واحد لمتابعة كفالاتك وتقارير الأثر." },
       { name: "robots", content: "noindex" },
     ],
@@ -95,12 +95,19 @@ function AuthPage() {
   return (
     <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
-      <div className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm">
+      <main
+        id="main"
+        className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
+      >
         <Link to="/" className="flex justify-center" aria-label="IOCO — الصفحة الرئيسية">
           <IocoLockup />
         </Link>
 
-        <div className="mt-6 flex rounded-lg border border-input p-1">
+        <h1 className="mt-6 text-center text-lg font-extrabold">
+          {mode === "signin" ? "تسجيل الدخول" : "إنشاء حساب جديد"}
+        </h1>
+
+        <div className="mt-5 flex rounded-lg border border-input p-1">
           {(
             [
               ["signin", "تسجيل الدخول"],
@@ -178,7 +185,7 @@ function AuthPage() {
         <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
           بالمتابعة أنت توافق على سياسة الخصوصية وشروط استخدام المنصة.
         </p>
-      </div>
+      </main>
     </div>
   );
 }
