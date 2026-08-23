@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IocoLockup } from "@/components/brand/IocoMark";
 import { useAuth } from "@/hooks/useAuth";
+import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -46,6 +47,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ms-auto flex items-center gap-2">
+          {user && <NotificationBell />}
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">لوحتي</Link>

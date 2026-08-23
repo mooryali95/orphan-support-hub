@@ -90,6 +90,29 @@ export const Route = createFileRoute("/api/payments/webhook")({
   },
 });
 
+/**
+ * إعلان الدفعة للكافل.
+ *
+ * فشل الإعلان لا يُسقط تسجيل الدفعة: المال وصل فعلاً، وإرجاع 500 هنا
+ * يجعل المزوّد يُعيد إرسال الحدث ويُعالَج مرّتين. فيُسجَّل الخطأ ويمضي.
+ */
+async function announce(
+  supabase: PaymentsClient,
+  sponsorshipId: string,
+  succeeded: boolean,
+  amount: number,
+  currency: string,
+) {
+  const { withPhase4 } = await import("@/integrations/supabase/types.extra");
+  const { error } = await withPhase4(supabase).rpc("announce_payment", {
+    _sponsorship: sponsorshipId,
+    _succeeded: succeeded,
+    _amount: amount,
+    _currency: currency,
+  });
+  if (error) console.error("[payments] تعذّر إشعار الكافل", error.message);
+}
+
 async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, providerId: string) {
   // حدث معروف للمزوّد لا فعل له عندنا: سُجّل خاماً قبل الوصول إلى هنا،
   // وهذا كل المطلوب. رفضه كان يعني إعادة إرسال لا تنتهي — والمزوّد
@@ -148,6 +171,16 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
           ...(sponsorship.status === "active" ? {} : { started_at: paidAt }),
         })
         .eq("id", sponsorship.id);
+
+      // الكافل يُخبَر بأن ماله وصل. بعد تسجيل الدفعة لا قبله، لأن
+      // الدالة تُفرّق بين البداية والتجديد بعدّ الدفعات المدفوعة.
+      await announce(
+        supabase,
+        sponsorship.id,
+        true,
+        amount,
+        event.currency ?? sponsorship.currency,
+      );
       return;
     }
 
@@ -163,6 +196,13 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
         failure_reason: event.failureReason,
       });
       // الكفالة لا تُلغى عند فشل دفعة واحدة؛ المزوّد يعيد المحاولة.
+      await announce(
+        supabase,
+        sponsorship.id,
+        false,
+        event.amount ?? Number(sponsorship.amount),
+        event.currency ?? sponsorship.currency,
+      );
       return;
     }
 

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
+import { ReportQueue } from "@/components/impact/ReportQueue";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -271,6 +272,8 @@ function AdminPage() {
               ))}
             </div>
           </section>
+
+          <ReportQueue onDone={refresh} />
 
           <section>
             <h2 className="text-lg font-bold">جهات بانتظار الاعتماد ({o.pending_orgs.length})</h2>

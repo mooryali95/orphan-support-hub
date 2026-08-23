@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2, HeartHandshake } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
@@ -121,52 +122,63 @@ function DashboardPage() {
             const percent = orphan ? fundingPercent(orphan.monthly_need, orphan.funded_monthly) : 0;
 
             return (
-              <article
-                key={s.id}
-                className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center"
-              >
-                <MuralImage
-                  photoUrl={orphan?.photo_url ?? null}
-                  displayName={orphan?.display_name ?? "ملف محذوف"}
-                  register={registerFor(orphan ? "" : "", percent)}
-                  className="size-16 shrink-0 rounded-xl bg-secondary"
-                />
+              <article key={s.id} className="rounded-2xl border border-border bg-card p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <MuralImage
+                    photoUrl={orphan?.photo_url ?? null}
+                    displayName={orphan?.display_name ?? "ملف محذوف"}
+                    register={registerFor(orphan ? "" : "", percent)}
+                    className="size-16 shrink-0 rounded-xl bg-secondary"
+                  />
 
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold">{orphan?.display_name ?? "ملف محذوف"}</h2>
-                    <Badge variant={s.status === "active" ? "default" : "secondary"}>
-                      {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
-                    </Badge>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="font-bold">{orphan?.display_name ?? "ملف محذوف"}</h2>
+                      <Badge variant={s.status === "active" ? "default" : "secondary"}>
+                        {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {formatMoney(s.amount, s.currency)}{" "}
+                      {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
+                      {formatDate(s.created_at)}
+                    </p>
+                    {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {formatMoney(s.amount, s.currency)}{" "}
-                    {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
-                    {formatDate(s.created_at)}
-                  </p>
-                  {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
+
+                  <div className="flex gap-2">
+                    {orphan && (
+                      <Button asChild variant="outline" size="sm">
+                        <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
+                          الملف
+                        </Link>
+                      </Button>
+                    )}
+                    {s.status === "pending_payment" && (
+                      <Button size="sm" onClick={() => onPay(s.id)} disabled={paying === s.id}>
+                        {paying === s.id && <Loader2 className="size-4 animate-spin" />}
+                        {mode?.online ? "أكمل الدفع" : "تعليمات التحويل"}
+                      </Button>
+                    )}
+                    {(s.status === "active" || s.status === "pending_payment") && (
+                      <Button variant="ghost" size="sm" onClick={() => onCancel(s.id)}>
+                        إلغاء
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex gap-2">
-                  {orphan && (
-                    <Button asChild variant="outline" size="sm">
-                      <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
-                        الملف
-                      </Link>
-                    </Button>
-                  )}
-                  {s.status === "pending_payment" && (
-                    <Button size="sm" onClick={() => onPay(s.id)} disabled={paying === s.id}>
-                      {paying === s.id && <Loader2 className="size-4 animate-spin" />}
-                      {mode?.online ? "أكمل الدفع" : "تعليمات التحويل"}
-                    </Button>
-                  )}
-                  {(s.status === "active" || s.status === "pending_payment") && (
-                    <Button variant="ghost" size="sm" onClick={() => onCancel(s.id)}>
-                      إلغاء
-                    </Button>
-                  )}
-                </div>
+                {/* الأثر تحت كل كفالة لا في صفحة منفصلة: الكافل يفتح
+                    لوحته ليطمئنّ، فإن لزمته نقرة أخرى لم يطمئنّ. */}
+                {orphan && s.status !== "pending_payment" && (
+                  <details className="group mt-4">
+                    <summary className="text-primary cursor-pointer list-none text-sm font-medium">
+                      <span className="group-open:hidden">عرض الأثر والتقارير</span>
+                      <span className="hidden group-open:inline">إخفاء الأثر</span>
+                    </summary>
+                    <ImpactPanel orphanId={orphan.id} orphanName={orphan.display_name} />
+                  </details>
+                )}
               </article>
             );
           })
