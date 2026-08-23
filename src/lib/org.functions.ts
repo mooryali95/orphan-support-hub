@@ -41,6 +41,16 @@ export const registerOrganization = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
+    const { data: existing } = await context.supabase
+      .from("care_organizations")
+      .select("id")
+      .eq("owner_id", context.userId)
+      .maybeSingle();
+
+    if (existing) {
+      return { ok: false as const, error: "لديك جهة رعاية مسجّلة بالفعل" };
+    }
+
     const { error } = await context.supabase.from("care_organizations").insert({
       owner_id: context.userId,
       name: data.name,
@@ -77,6 +87,19 @@ export const createOrphanProfile = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+
+    const { data: org } = await supabase
+      .from("care_organizations")
+      .select("id, status")
+      .eq("id", data.orgId)
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (!org) return { ok: false as const, error: "غير مصرّح لك برفع ملفات لهذه الجهة" };
+    if (org.status !== "approved") {
+      return { ok: false as const, error: "جهتك بانتظار اعتماد الإدارة قبل رفع الملفات" };
+    }
+
     const code = `KFL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 
     const { data: created, error } = await supabase
