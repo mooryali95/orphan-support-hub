@@ -4,6 +4,7 @@ import { ShieldCheck, FileCheck2, HeartHandshake, LineChart, ArrowLeft } from "l
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { OrphanCard, type PublicOrphan } from "@/components/OrphanCard";
+import { BrandPattern } from "@/components/brand/BrandPattern";
 import { Button } from "@/components/ui/button";
 import { listPublicOrphans, getPlatformStats } from "@/lib/orphans.functions";
 import { formatMoney } from "@/lib/format";
@@ -70,10 +71,11 @@ function HomePage() {
       <SiteHeader />
 
       <main>
-        <section className="surface-warm border-b border-border/70">
-          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
+        <section className="surface-crossing relative overflow-hidden border-b border-border/70">
+          <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
+          <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-24">
             <div>
-              <span className="inline-flex rounded-full border border-primary/25 bg-background/70 px-3 py-1 text-xs font-medium text-primary">
+              <span className="inline-flex rounded-full border border-shore-need/25 bg-background/75 px-3 py-1 text-xs font-medium text-shore-need">
                 ملفات موثّقة من جهات رعاية معتمدة
               </span>
               <h1 className="mt-5 text-4xl font-extrabold leading-tight md:text-5xl">
@@ -82,8 +84,8 @@ function HomePage() {
                 وكن له سنداً كل شهر
               </h1>
               <p className="mt-5 max-w-xl text-base leading-8 text-muted-foreground">
-                منصة «كافل» تجمع اليتيم وجهة الرعاية والكافل والإدارة في مسار واحد واضح: توثيق
-                الملف، اعتماده، ثم كفالة شهرية شفافة مع متابعة أثر مستمرة.
+                نعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران: جهة رعاية معتمدة توثّق ملفه،
+                والإدارة تعتمده، ثم كفالة شهرية شفافة تحتضنه وتتابع أثرها.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg">
@@ -96,7 +98,7 @@ function HomePage() {
                   <Link to="/how-it-works">كيف تعمل الكفالة؟</Link>
                 </Button>
               </div>
-              <p className="mt-8 font-quran text-lg text-primary">
+              <p className="mt-8 font-quran text-lg text-shore-need">
                 «أنا وكافلُ اليتيمِ في الجنّةِ هكذا»
               </p>
             </div>
@@ -108,10 +110,7 @@ function HomePage() {
                 label="مبالغ الكفالة الشهرية"
                 value={formatMoney(data.stats.monthlyFunded)}
               />
-              <StatCard
-                label="الاحتياج الشهري الكلي"
-                value={formatMoney(data.stats.monthlyNeed)}
-              />
+              <StatCard label="الاحتياج الشهري الكلي" value={formatMoney(data.stats.monthlyNeed)} />
             </div>
           </div>
         </section>
@@ -121,7 +120,7 @@ function HomePage() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step) => (
               <div key={step.title} className="rounded-2xl border border-border bg-card p-5">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-bridge/12 text-bridge">
                   <step.icon className="size-5" />
                 </span>
                 <h3 className="mt-4 font-bold">{step.title}</h3>

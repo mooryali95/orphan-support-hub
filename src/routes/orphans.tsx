@@ -70,8 +70,8 @@ function OrphansPage() {
       <main className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">دليل الأيتام</h1>
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة. البيانات
-          الحسّاسة (الاسم الكامل والهوية) محجوبة حفاظاً على خصوصية اليتيم.
+          جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة. البيانات الحسّاسة
+          (الاسم الكامل والهوية) محجوبة حفاظاً على خصوصية اليتيم.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">

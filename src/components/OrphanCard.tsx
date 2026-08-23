@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, GraduationCap } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { ageFromBirthDate, formatMoney, fundingPercent } from "@/lib/format";
 
 export type PublicOrphan = {
@@ -41,13 +41,16 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
             className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="surface-warm flex size-full items-center justify-center text-4xl font-extrabold text-primary/40">
+          <div className="surface-crossing flex size-full items-center justify-center text-4xl font-extrabold text-shore-need/35">
             {orphan.display_name.slice(0, 1)}
           </div>
         )}
         <Badge
-          className="absolute end-3 top-3"
-          variant={full ? "secondary" : "default"}
+          className={
+            full
+              ? "absolute end-3 top-3 bg-shore-thrive text-white"
+              : "absolute end-3 top-3 bg-shore-need text-white"
+          }
         >
           {full ? "مكفول بالكامل" : "بحاجة لكافل"}
         </Badge>
@@ -77,7 +80,10 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
         )}
 
         <div className="mt-auto space-y-2">
-          <Progress value={percent} className="h-2" />
+          <CrossingProgress
+            percent={percent}
+            label={`تغطية احتياج ${orphan.display_name} الشهري`}
+          />
           <div className="flex items-center justify-between text-xs">
             <span className="font-medium text-foreground">
               {formatMoney(orphan.funded_monthly, orphan.currency)} /{" "}

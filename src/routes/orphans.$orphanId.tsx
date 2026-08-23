@@ -8,20 +8,15 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { getPublicOrphan } from "@/lib/orphans.functions";
 import { createSponsorship } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  ageFromBirthDate,
-  formatMoney,
-  fundingPercent,
-  NEED_CATEGORY_LABELS,
-} from "@/lib/format";
+import { ageFromBirthDate, formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -125,7 +120,7 @@ function OrphanDetail() {
                     className="size-full object-cover"
                   />
                 ) : (
-                  <div className="surface-warm flex size-full items-center justify-center text-6xl font-extrabold text-primary/40">
+                  <div className="surface-crossing flex size-full items-center justify-center text-6xl font-extrabold text-shore-need/35">
                     {orphan.display_name.slice(0, 1)}
                   </div>
                 )}
@@ -183,7 +178,7 @@ function OrphanDetail() {
             {data.org && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
                 <h2 className="flex items-center gap-2 text-lg font-bold">
-                  <Building2 className="size-5 text-primary" /> جهة الرعاية
+                  <Building2 className="size-5 text-shore-need" /> جهة الرعاية
                 </h2>
                 <p className="mt-2 font-medium">{data.org.name}</p>
                 <p className="text-sm text-muted-foreground">
@@ -202,7 +197,7 @@ function OrphanDetail() {
               <p className="mt-1 text-3xl font-extrabold text-primary">
                 {formatMoney(orphan.monthly_need, orphan.currency)}
               </p>
-              <Progress value={percent} className="mt-4 h-2" />
+              <CrossingProgress percent={percent} className="mt-4" />
               <p className="mt-2 text-xs text-muted-foreground">
                 تم تغطية {percent}% — المتبقي {formatMoney(remaining, orphan.currency)}
               </p>
@@ -244,10 +239,7 @@ function OrphanDetail() {
                 </div>
 
                 <label className="flex items-center gap-2 text-sm">
-                  <Checkbox
-                    checked={anonymous}
-                    onCheckedChange={(v) => setAnonymous(v === true)}
-                  />
+                  <Checkbox checked={anonymous} onCheckedChange={(v) => setAnonymous(v === true)} />
                   أرغب أن تكون كفالتي دون ذكر اسمي
                 </label>
 
@@ -257,7 +249,7 @@ function OrphanDetail() {
                 </Button>
 
                 <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
-                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
                   الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.
                 </p>
               </div>

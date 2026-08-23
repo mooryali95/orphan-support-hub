@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- رمز IOCO: اليدان المحتضنتان والنواة. الكرة تُحذف في الأحجام الصغيرة. -->
+  <rect width="120" height="120" rx="26" fill="#082C5C"/>
+  <g fill="none" stroke="#E0A440" stroke-linecap="round" stroke-linejoin="round" stroke-width="7">
+    <path d="M30,28 C19,55 28,79 60,96"/>
+    <path d="M90,28 C101,55 92,79 60,96"/>
+    <path d="M47,57 C41,50 48,44 52,51 C56,58 54,73 60,96"/>
+    <path d="M73,57 C79,50 72,44 68,51 C64,58 66,73 60,96"/>
+  </g>
+  <circle cx="60" cy="42" r="7" fill="#E0A440"/>
+</svg>

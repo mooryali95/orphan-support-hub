@@ -2,12 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, HandHeart } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { IocoLockup } from "@/components/brand/IocoMark";
+import { BrandPattern } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({ redirect: z.string().optional() });
@@ -91,13 +93,11 @@ function AuthPage() {
   }
 
   return (
-    <div className="surface-warm flex min-h-screen items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm">
-        <Link to="/" className="flex items-center justify-center gap-2">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <HandHeart className="size-5" />
-          </span>
-          <span className="text-lg font-extrabold">كافل</span>
+    <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
+      <div className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm">
+        <Link to="/" className="flex justify-center" aria-label="IOCO — الصفحة الرئيسية">
+          <IocoLockup />
         </Link>
 
         <div className="mt-6 flex rounded-lg border border-input p-1">

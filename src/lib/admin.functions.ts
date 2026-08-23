@@ -69,9 +69,7 @@ export const reviewOrphan = createServerFn({ method: "POST" })
 export const reviewOrganization = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z
-      .object({ id: z.string().uuid(), decision: z.enum(["approved", "rejected"]) })
-      .parse(input),
+    z.object({ id: z.string().uuid(), decision: z.enum(["approved", "rejected"]) }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { data: isAdmin } = await context.supabase.rpc("is_admin");

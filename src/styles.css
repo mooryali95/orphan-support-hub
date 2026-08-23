@@ -5,9 +5,16 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * نظام تصميم منصة «كافل» — طابع دافئ، مطمئن، عربي.
- * أخضر زيتوني عميق (رعاية ونماء) + ذهبي رملي (كرم وعطاء) + خلفية عاجية.
- * كل الألوان oklch وتُستخدم عبر رموز دلالية فقط.
+ * نظام تصميم IOCO — «الجسر الانسيابي».
+ *
+ * الألوان دلالات هيكلية لا زينة، كما في دليل الهوية:
+ *   الأزرق الملوكي  (الشاطئ الأول)  = الاحتياج، النزاهة، الرعاية الدولية.
+ *   الذهبي الدافئ   (الجسر)         = التدخل والاحتضان؛ فعل الكفالة نفسه.
+ *   الأخضر الفاتح   (الشاطئ الثاني) = العمران، الاستقرار، الاندماج المجتمعي.
+ *
+ * فرحلة اليتيم في المنصة تُقرأ لونياً: شريط التمويل يبدأ أزرق (احتياج)،
+ * يعبر بالذهبي (كفالة جارية)، وينتهي أخضر (مكفول بالكامل).
+ * القيم مُستخرَجة من بكسل دليل الهوية لا مُقدَّرة بالعين.
  */
 
 @theme inline {
@@ -53,83 +60,103 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-shore-need: var(--shore-need);
+  --color-bridge: var(--bridge);
+  --color-shore-thrive: var(--shore-thrive);
+  --color-navy: var(--navy);
+  --color-gold-line: var(--gold-line);
   --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", "Times New Roman", serif;
 }
 
 :root {
   --radius: 0.875rem;
-  --background: oklch(0.985 0.008 95);
-  --foreground: oklch(0.24 0.028 155);
+
+  /* دلالات الهوية الثلاث */
+  --shore-need: oklch(0.388 0.154 262.2); /* #103C95 أزرق ملوكي */
+  --bridge: oklch(0.654 0.12 78.1); /* #B8862B ذهبي الجسر */
+  --shore-thrive: oklch(0.473 0.09 152); /* #2F6A42 أخضر العمران */
+  --navy: oklch(0.3 0.095 257.5); /* #082C5C أرضية عميقة */
+  --gold-line: oklch(0.654 0.12 78.1); /* خطوط الباترن */
+
+  --background: oklch(0.973 0.004 157.2);
+  --foreground: oklch(0.258 0.061 253.4);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.028 155);
+  --card-foreground: oklch(0.258 0.061 253.4);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.028 155);
-  --primary: oklch(0.44 0.078 163);
-  --primary-foreground: oklch(0.985 0.008 95);
-  --secondary: oklch(0.95 0.021 95);
-  --secondary-foreground: oklch(0.3 0.04 150);
-  --muted: oklch(0.955 0.014 95);
-  --muted-foreground: oklch(0.51 0.024 145);
-  --accent: oklch(0.78 0.108 76);
-  --accent-foreground: oklch(0.26 0.045 70);
+  --popover-foreground: oklch(0.258 0.061 253.4);
+  --primary: oklch(0.388 0.154 262.2);
+  --primary-foreground: oklch(0.985 0.004 157);
+  --secondary: oklch(0.943 0.009 161.3);
+  --secondary-foreground: oklch(0.3 0.095 257.5);
+  --muted: oklch(0.952 0.007 161);
+  --muted-foreground: oklch(0.48 0.045 248.8);
+  --accent: oklch(0.851 0.109 91.5);
+  --accent-foreground: oklch(0.396 0.071 80.9);
   --destructive: oklch(0.55 0.196 27);
-  --destructive-foreground: oklch(0.985 0.008 95);
-  --success: oklch(0.6 0.116 152);
-  --success-foreground: oklch(0.985 0.008 95);
-  --border: oklch(0.9 0.017 95);
-  --input: oklch(0.9 0.017 95);
-  --ring: oklch(0.44 0.078 163);
-  --chart-1: oklch(0.44 0.078 163);
-  --chart-2: oklch(0.78 0.108 76);
-  --chart-3: oklch(0.6 0.116 152);
-  --chart-4: oklch(0.55 0.09 40);
-  --chart-5: oklch(0.68 0.06 200);
-  --sidebar: oklch(0.975 0.012 95);
-  --sidebar-foreground: oklch(0.24 0.028 155);
-  --sidebar-primary: oklch(0.44 0.078 163);
-  --sidebar-primary-foreground: oklch(0.985 0.008 95);
-  --sidebar-accent: oklch(0.94 0.022 95);
-  --sidebar-accent-foreground: oklch(0.3 0.04 150);
-  --sidebar-border: oklch(0.9 0.017 95);
-  --sidebar-ring: oklch(0.44 0.078 163);
+  --destructive-foreground: oklch(0.985 0.004 157);
+  --success: oklch(0.473 0.09 152);
+  --success-foreground: oklch(0.985 0.004 157);
+  --border: oklch(0.908 0.012 162);
+  --input: oklch(0.908 0.012 162);
+  --ring: oklch(0.388 0.154 262.2);
+  --chart-1: oklch(0.388 0.154 262.2);
+  --chart-2: oklch(0.654 0.12 78.1);
+  --chart-3: oklch(0.473 0.09 152);
+  --chart-4: oklch(0.758 0.134 76.7);
+  --chart-5: oklch(0.817 0.097 144.6);
+  --sidebar: oklch(0.962 0.006 160);
+  --sidebar-foreground: oklch(0.258 0.061 253.4);
+  --sidebar-primary: oklch(0.388 0.154 262.2);
+  --sidebar-primary-foreground: oklch(0.985 0.004 157);
+  --sidebar-accent: oklch(0.93 0.01 161);
+  --sidebar-accent-foreground: oklch(0.3 0.095 257.5);
+  --sidebar-border: oklch(0.908 0.012 162);
+  --sidebar-ring: oklch(0.388 0.154 262.2);
 }
 
 .dark {
-  --background: oklch(0.19 0.022 160);
-  --foreground: oklch(0.96 0.012 95);
-  --card: oklch(0.24 0.026 160);
-  --card-foreground: oklch(0.96 0.012 95);
-  --popover: oklch(0.24 0.026 160);
-  --popover-foreground: oklch(0.96 0.012 95);
-  --primary: oklch(0.72 0.09 163);
-  --primary-foreground: oklch(0.19 0.022 160);
-  --secondary: oklch(0.29 0.028 160);
-  --secondary-foreground: oklch(0.96 0.012 95);
-  --muted: oklch(0.29 0.028 160);
-  --muted-foreground: oklch(0.72 0.02 140);
-  --accent: oklch(0.78 0.108 76);
-  --accent-foreground: oklch(0.22 0.03 70);
+  /* على الأرضية الكحلية يتوهّج الذهبي — كما في صفحتَي الغلاف والختام */
+  --shore-need: oklch(0.643 0.148 262.5);
+  --bridge: oklch(0.758 0.134 76.7);
+  --shore-thrive: oklch(0.76 0.104 150.2);
+  --navy: oklch(0.23 0.068 257.9);
+  --gold-line: oklch(0.758 0.134 76.7);
+
+  --background: oklch(0.23 0.068 257.9);
+  --foreground: oklch(0.955 0.008 160);
+  --card: oklch(0.304 0.088 256.3);
+  --card-foreground: oklch(0.955 0.008 160);
+  --popover: oklch(0.304 0.088 256.3);
+  --popover-foreground: oklch(0.955 0.008 160);
+  --primary: oklch(0.643 0.148 262.5);
+  --primary-foreground: oklch(0.23 0.068 257.9);
+  --secondary: oklch(0.34 0.07 257);
+  --secondary-foreground: oklch(0.955 0.008 160);
+  --muted: oklch(0.34 0.07 257);
+  --muted-foreground: oklch(0.76 0.032 250);
+  --accent: oklch(0.758 0.134 76.7);
+  --accent-foreground: oklch(0.23 0.068 257.9);
   --destructive: oklch(0.65 0.19 25);
-  --destructive-foreground: oklch(0.96 0.012 95);
-  --success: oklch(0.7 0.12 152);
-  --success-foreground: oklch(0.19 0.022 160);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.72 0.09 163);
-  --chart-1: oklch(0.72 0.09 163);
-  --chart-2: oklch(0.78 0.108 76);
-  --chart-3: oklch(0.7 0.12 152);
-  --chart-4: oklch(0.65 0.1 40);
-  --chart-5: oklch(0.72 0.07 200);
-  --sidebar: oklch(0.22 0.024 160);
-  --sidebar-foreground: oklch(0.96 0.012 95);
-  --sidebar-primary: oklch(0.72 0.09 163);
-  --sidebar-primary-foreground: oklch(0.19 0.022 160);
-  --sidebar-accent: oklch(0.29 0.028 160);
-  --sidebar-accent-foreground: oklch(0.96 0.012 95);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.72 0.09 163);
+  --destructive-foreground: oklch(0.955 0.008 160);
+  --success: oklch(0.76 0.104 150.2);
+  --success-foreground: oklch(0.23 0.068 257.9);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.643 0.148 262.5);
+  --chart-1: oklch(0.643 0.148 262.5);
+  --chart-2: oklch(0.758 0.134 76.7);
+  --chart-3: oklch(0.76 0.104 150.2);
+  --chart-4: oklch(0.851 0.109 91.5);
+  --chart-5: oklch(0.817 0.097 144.6);
+  --sidebar: oklch(0.258 0.072 257);
+  --sidebar-foreground: oklch(0.955 0.008 160);
+  --sidebar-primary: oklch(0.643 0.148 262.5);
+  --sidebar-primary-foreground: oklch(0.23 0.068 257.9);
+  --sidebar-accent: oklch(0.34 0.07 257);
+  --sidebar-accent-foreground: oklch(0.955 0.008 160);
+  --sidebar-border: oklch(1 0 0 / 14%);
+  --sidebar-ring: oklch(0.643 0.148 262.5);
 }
 
 @layer base {
@@ -154,15 +181,51 @@
   font-family: var(--font-serif);
 }
 
-@utility surface-warm {
-  background-image: radial-gradient(
-      120% 80% at 100% 0%,
-      color-mix(in oklch, var(--color-accent) 22%, transparent) 0%,
-      transparent 60%
+/* «العبور»: من الشاطئ الأول (أزرق) عبر الجسر (ذهبي) إلى العمران (أخضر).
+   RTL، فيبدأ الأزرق يميناً حيث تبدأ القراءة. */
+@utility surface-crossing {
+  background-image:
+    radial-gradient(
+      115% 95% at 100% -10%,
+      color-mix(in oklch, var(--color-shore-need) 30%, transparent) 0%,
+      transparent 62%
     ),
     radial-gradient(
-      90% 70% at 0% 10%,
-      color-mix(in oklch, var(--color-primary) 16%, transparent) 0%,
-      transparent 55%
+      70% 65% at 52% 48%,
+      color-mix(in oklch, var(--color-bridge) 20%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      115% 95% at -8% 108%,
+      color-mix(in oklch, var(--color-shore-thrive) 30%, transparent) 0%,
+      transparent 62%
     );
+}
+
+/* اسم سابق أُبقي عليه لتفادي كسر أي استخدام قائم */
+@utility surface-warm {
+  background-image:
+    radial-gradient(
+      130% 90% at 100% 0%,
+      color-mix(in oklch, var(--color-shore-need) 18%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      120% 85% at 0% 100%,
+      color-mix(in oklch, var(--color-shore-thrive) 18%, transparent) 0%,
+      transparent 58%
+    );
+}
+
+/* الشريط الثلاثي: توقيع الهوية على حواف الأسطح الرسمية */
+@utility brand-rule {
+  background-image: linear-gradient(
+    to left,
+    var(--color-shore-need) 0%,
+    var(--color-shore-need) 33%,
+    var(--color-bridge) 33%,
+    var(--color-bridge) 66%,
+    var(--color-shore-thrive) 66%,
+    var(--color-shore-thrive) 100%
+  );
 }
