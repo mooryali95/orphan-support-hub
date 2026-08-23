@@ -1,6 +1,40 @@
 # دليل التشغيل — كافل
 
-## إنشاء أول حساب مدير
+## المدير المؤسّس
+
+`p.o.m2012@hotmail.com` مسجَّل في `public.protected_admins` ويحمل دور `admin`
+على الإنتاج. الحماية المطبَّقة:
+
+| الحماية | الآلية |
+|---|---|
+| لا يستطيع أحد إضافة نفسه للقائمة | `protected_admins` بلا `GRANT` وبلا سياسات — غير مرئية لـ`anon` و`authenticated` |
+| لا يمكن حذف الدور أو تخفيضه | `trg_guard_protected_admin_role` على `user_roles` |
+| لا يمكن حذف الحساب | `trg_guard_protected_admin_user` على `auth.users` |
+| لا يمكن إزالة آخر مدير | نفس الحارس يرفض إذا بقي مدير واحد |
+| استعادة تلقائية | لو حُذف الحساب بالتجاوز وأُعيد تسجيله بنفس البريد، يستعيد `admin` عبر `handle_new_user` |
+
+الحماية **مطلقة حتى أمام `service_role`**. مخرج الطوارئ الوحيد إعلان صريح في
+نفس الجلسة:
+
+```sql
+BEGIN;
+SET LOCAL app.allow_protected_admin_change = 'yes-i-am-sure';
+-- التعديل المطلوب هنا
+COMMIT;
+```
+
+لإضافة مدير محميّ آخر:
+
+```sql
+INSERT INTO public.protected_admins (email, reason)
+VALUES ('someone@example.com', 'سبب الحماية');
+-- ثم امنح الدور للحساب القائم:
+INSERT INTO public.user_roles (user_id, role)
+SELECT id, 'admin' FROM auth.users WHERE lower(email) = 'someone@example.com'
+ON CONFLICT DO NOTHING;
+```
+
+## إنشاء حساب مدير عادي (غير محميّ)
 
 بعد إغلاق الثغرة **C1**، لم يعد أي مستخدم قادراً على منح نفسه دور `admin` عند
 التسجيل. الأدوار القابلة للإسناد الذاتي هي `sponsor` و`care_org` فقط.
@@ -67,6 +101,7 @@ WHERE s.status = 'active'
 
 ```sh
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/phase0-verification.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verification.sql
 ```
 
 ينفّذ سيناريوهات الاستغلال الفعلية ويفشل إن نجح أيٌّ منها. كل شيء داخل معاملة

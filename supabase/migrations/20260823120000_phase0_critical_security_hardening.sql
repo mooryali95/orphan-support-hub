@@ -134,10 +134,12 @@ END; $$;
 REVOKE ALL ON FUNCTION public.guard_sponsorship_insert() FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.guard_sponsorship_update() FROM PUBLIC, anon, authenticated;
 
+DROP TRIGGER IF EXISTS trg_guard_sponsorship_insert ON public.sponsorships;
 CREATE TRIGGER trg_guard_sponsorship_insert
 BEFORE INSERT ON public.sponsorships FOR EACH ROW
 EXECUTE FUNCTION public.guard_sponsorship_insert();
 
+DROP TRIGGER IF EXISTS trg_guard_sponsorship_update ON public.sponsorships;
 CREATE TRIGGER trg_guard_sponsorship_update
 BEFORE UPDATE ON public.sponsorships FOR EACH ROW
 EXECUTE FUNCTION public.guard_sponsorship_update();
@@ -196,10 +198,12 @@ END; $$;
 REVOKE ALL ON FUNCTION public.guard_org_insert() FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.guard_org_update() FROM PUBLIC, anon, authenticated;
 
+DROP TRIGGER IF EXISTS trg_guard_org_insert ON public.care_organizations;
 CREATE TRIGGER trg_guard_org_insert
 BEFORE INSERT ON public.care_organizations FOR EACH ROW
 EXECUTE FUNCTION public.guard_org_insert();
 
+DROP TRIGGER IF EXISTS trg_guard_org_update ON public.care_organizations;
 CREATE TRIGGER trg_guard_org_update
 BEFORE UPDATE ON public.care_organizations FOR EACH ROW
 EXECUTE FUNCTION public.guard_org_update();
@@ -297,10 +301,12 @@ END; $$;
 REVOKE ALL ON FUNCTION public.guard_orphan_insert() FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.guard_orphan_update() FROM PUBLIC, anon, authenticated;
 
+DROP TRIGGER IF EXISTS trg_guard_orphan_insert ON public.orphans;
 CREATE TRIGGER trg_guard_orphan_insert
 BEFORE INSERT ON public.orphans FOR EACH ROW
 EXECUTE FUNCTION public.guard_orphan_insert();
 
+DROP TRIGGER IF EXISTS trg_guard_orphan_update ON public.orphans;
 CREATE TRIGGER trg_guard_orphan_update
 BEFORE UPDATE ON public.orphans FOR EACH ROW
 EXECUTE FUNCTION public.guard_orphan_update();
@@ -315,9 +321,11 @@ EXECUTE FUNCTION public.guard_orphan_update();
 
 DROP POLICY IF EXISTS "reports_write" ON public.progress_reports;
 
+DROP POLICY IF EXISTS "reports_insert" ON public.progress_reports;
 CREATE POLICY "reports_insert" ON public.progress_reports FOR INSERT TO authenticated
   WITH CHECK (public.can_manage_orphan(orphan_id) OR public.is_admin());
 
+DROP POLICY IF EXISTS "reports_update" ON public.progress_reports;
 CREATE POLICY "reports_update" ON public.progress_reports FOR UPDATE TO authenticated
   USING (public.can_manage_orphan(orphan_id) OR public.is_admin())
   WITH CHECK (public.can_manage_orphan(orphan_id) OR public.is_admin());
@@ -355,6 +363,7 @@ END; $$;
 
 REVOKE ALL ON FUNCTION public.guard_report_write() FROM PUBLIC, anon, authenticated;
 
+DROP TRIGGER IF EXISTS trg_guard_report_write ON public.progress_reports;
 CREATE TRIGGER trg_guard_report_write
 BEFORE INSERT OR UPDATE ON public.progress_reports FOR EACH ROW
 EXECUTE FUNCTION public.guard_report_write();
