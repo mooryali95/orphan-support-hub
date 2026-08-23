@@ -371,8 +371,15 @@ BEGIN
   SELECT count(*) INTO n FROM public.orphan_needs;
   RAISE NOTICE 'PASS H2g — orphan_needs policy still resolves for anon (% rows)', n;
 
-  SELECT count(*) INTO n FROM public.suggest_orphans_for_sponsor(200, NULL, 5);
-  RAISE NOTICE 'PASS H2h — suggest_orphans_for_sponsor callable by anon (% rows)', n;
+  -- شُدّد المنح لاحقاً في 20260823110111 (تدقيق Supabase الأمني): الدالة لم تعد
+  -- قابلة للاستدعاء من العميل إطلاقاً. عند تفعيل المطابقة في المرحلة 5 يجب
+  -- منح EXECUTE لـ authenticated صراحةً، أو استدعاؤها من الخادم عبر service_role.
+  BEGIN
+    PERFORM 1 FROM public.suggest_orphans_for_sponsor(200, NULL, 5);
+    RAISE EXCEPTION 'FAIL H2 — anon can still execute suggest_orphans_for_sponsor';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RAISE NOTICE 'PASS H2h — matching function not client-callable';
+  END;
 END $$;
 
 -- الدالة لم تعد تُعيد الأعمدة الداخلية

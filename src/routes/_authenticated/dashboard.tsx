@@ -6,14 +6,10 @@ import { Loader2, HeartHandshake } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { CrossingProgress } from "@/components/brand/CrossingProgress";
+import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { listMySponsorships, cancelSponsorship } from "@/lib/sponsorships.functions";
-import {
-  formatDate,
-  formatMoney,
-  fundingPercent,
-  SPONSORSHIP_STATUS_LABELS,
-} from "@/lib/format";
+import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -71,7 +67,7 @@ function DashboardPage() {
           </div>
         ) : sponsorships.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-border bg-card p-12 text-center">
-            <HeartHandshake className="mx-auto size-8 text-primary" />
+            <HeartHandshake className="mx-auto size-8 text-bridge" />
             <p className="mt-4 font-medium">لم تبدأ أي كفالة بعد</p>
             <p className="mt-1 text-sm text-muted-foreground">
               اختر ملفاً معتمداً من الدليل وابدأ كفالتك الأولى.
@@ -91,28 +87,19 @@ function DashboardPage() {
               monthly_need: number | string;
               funded_monthly: number | string;
             } | null;
-            const percent = orphan
-              ? fundingPercent(orphan.monthly_need, orphan.funded_monthly)
-              : 0;
+            const percent = orphan ? fundingPercent(orphan.monthly_need, orphan.funded_monthly) : 0;
 
             return (
               <article
                 key={s.id}
                 className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center"
               >
-                <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-secondary">
-                  {orphan?.photo_url ? (
-                    <img
-                      src={orphan.photo_url}
-                      alt={`صورة ${orphan.display_name}`}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="surface-warm flex size-full items-center justify-center font-bold text-primary/50">
-                      {orphan?.display_name.slice(0, 1) ?? "؟"}
-                    </div>
-                  )}
-                </div>
+                <MuralImage
+                  photoUrl={orphan?.photo_url ?? null}
+                  displayName={orphan?.display_name ?? "ملف محذوف"}
+                  register={registerFor(orphan ? "" : "", percent)}
+                  className="size-16 shrink-0 rounded-xl bg-secondary"
+                />
 
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -126,7 +113,7 @@ function DashboardPage() {
                     {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
                     {formatDate(s.created_at)}
                   </p>
-                  {orphan && <Progress value={percent} className="mt-3 h-1.5 max-w-sm" />}
+                  {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
                 </div>
 
                 <div className="flex gap-2">
@@ -155,7 +142,7 @@ function DashboardPage() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
-      <p className="text-2xl font-extrabold text-primary">{value}</p>
+      <p className="text-2xl font-extrabold text-shore-need">{value}</p>
       <p className="mt-1 text-xs text-muted-foreground">{label}</p>
     </div>
   );

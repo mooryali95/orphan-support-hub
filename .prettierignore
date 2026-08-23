@@ -6,3 +6,9 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# ملفات مولَّدة آلياً تحمل تحذير «لا تُعدَّل مباشرة»؛ إعادة تنسيقها تضيع
+# عند إعادة توليدها من Lovable وتُحدث ضجيجاً في كل PR.
+src/integrations/
+src/routeTree.gen.ts
+src/routes/README.md

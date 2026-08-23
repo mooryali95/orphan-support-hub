@@ -57,8 +57,8 @@ function HowItWorks() {
       <main className="mx-auto max-w-4xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «كافل»</h1>
         <p className="mt-3 leading-8 text-muted-foreground">
-          المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى
-          الكافل قبل التحقق منه واعتماده.
+          المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل
+          قبل التحقق منه واعتماده.
         </p>
 
         <section className="mt-10 grid gap-4 sm:grid-cols-2">

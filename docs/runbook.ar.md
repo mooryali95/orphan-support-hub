@@ -110,7 +110,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verifica
 
 ## نمط الحرّاس في القاعدة
 
-الحرّاس المضافون في `20260823120000_phase0_critical_security_hardening.sql`
+الحرّاس المضافون في `20260823100000_phase0_critical_security_hardening.sql`
 تتبع قاعدتين يجب الحفاظ عليهما عند أي تعديل لاحق:
 
 1. **الدوال `SECURITY INVOKER` عمداً.** `SECURITY DEFINER` يبدّل `current_user`

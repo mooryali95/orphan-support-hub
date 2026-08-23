@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { HandHeart, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IocoLockup } from "@/components/brand/IocoMark";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
@@ -26,12 +27,10 @@ export function DashboardShell({
   return (
     <div className="min-h-screen bg-secondary/30">
       <header className="border-b border-border bg-background">
+        <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <HandHeart className="size-5" />
-            </span>
-            <span className="font-extrabold">كافل</span>
+          <Link to="/" aria-label="IOCO — الصفحة الرئيسية">
+            <IocoLockup compact />
           </Link>
 
           <nav className="hidden items-center gap-1 text-sm md:flex">

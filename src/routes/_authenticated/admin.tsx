@@ -95,7 +95,8 @@ function AdminPage() {
                 size="sm"
                 onClick={async () => {
                   const res = await decideOrphan({ data: { id: o.id, decision: "approved" } });
-                  res.ok ? toast.success("تم اعتماد الملف") : toast.error(res.error!);
+                  if (res.ok) toast.success("تم اعتماد الملف");
+                  else toast.error(res.error ?? "تعذّر اعتماد الملف");
                   refresh();
                 }}
               >
@@ -109,7 +110,8 @@ function AdminPage() {
                   const res = await decideOrphan({
                     data: { id: o.id, decision: "rejected", reason },
                   });
-                  res.ok ? toast.success("تم رفض الملف") : toast.error(res.error!);
+                  if (res.ok) toast.success("تم رفض الملف");
+                  else toast.error(res.error ?? "تعذّر رفض الملف");
                   refresh();
                 }}
               >
@@ -121,7 +123,9 @@ function AdminPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="text-lg font-bold">جهات رعاية بانتظار الاعتماد ({data.pendingOrgs.length})</h2>
+        <h2 className="text-lg font-bold">
+          جهات رعاية بانتظار الاعتماد ({data.pendingOrgs.length})
+        </h2>
         <div className="mt-4 space-y-3">
           {data.pendingOrgs.length === 0 && (
             <p className="rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
@@ -144,7 +148,8 @@ function AdminPage() {
                 size="sm"
                 onClick={async () => {
                   const res = await decideOrg({ data: { id: org.id, decision: "approved" } });
-                  res.ok ? toast.success("تم اعتماد الجهة") : toast.error(res.error!);
+                  if (res.ok) toast.success("تم اعتماد الجهة");
+                  else toast.error(res.error ?? "تعذّر اعتماد الجهة");
                   refresh();
                 }}
               >
@@ -155,7 +160,8 @@ function AdminPage() {
                 variant="outline"
                 onClick={async () => {
                   const res = await decideOrg({ data: { id: org.id, decision: "rejected" } });
-                  res.ok ? toast.success("تم رفض الطلب") : toast.error(res.error!);
+                  if (res.ok) toast.success("تم رفض الطلب");
+                  else toast.error(res.error ?? "تعذّر رفض الطلب");
                   refresh();
                 }}
               >

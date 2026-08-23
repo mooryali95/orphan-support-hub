@@ -46,9 +46,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          تعذّر تحميل الصفحة
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">تعذّر تحميل الصفحة</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.
         </p>
@@ -79,19 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "كافل — منصة كفالة الأيتام" },
+      { title: "IOCO — منصة كفالة الأيتام" },
       {
         name: "description",
-        content: "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة.",
+        content:
+          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
       },
-      { property: "og:title", content: "كافل — منصة كفالة الأيتام" },
+      { property: "og:title", content: "IOCO — منصة كفالة الأيتام" },
       {
         property: "og:description",
-        content: "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة.",
+        content:
+          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#082C5C" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -101,7 +102,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "alternate icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,

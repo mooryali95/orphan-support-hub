@@ -1,16 +1,20 @@
 import { Link } from "@tanstack/react-router";
+import { IocoLockup } from "@/components/brand/IocoMark";
+import { BrandPattern } from "@/components/brand/BrandPattern";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-border/70 bg-secondary/40">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
+    <footer className="relative mt-20 overflow-hidden bg-secondary/40">
+      <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
+      <BrandPattern density="watermark" className="text-gold-line" opacity={0.1} tile={84} />
+      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
         <div className="md:col-span-2">
-          <h2 className="text-lg font-extrabold">كافل</h2>
-          <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-            منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية
-            وتقارير أثر شفافة.
+          <IocoLockup />
+          <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">
+            منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير
+            أثر شفافة.
           </p>
-          <p className="mt-4 font-quran text-sm text-primary">
+          <p className="mt-4 font-quran text-sm text-shore-need">
             «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» — رواه البخاري
           </p>
         </div>
@@ -50,8 +54,8 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} كافل — جميع الحقوق محفوظة
+      <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} IOCO — جميع الحقوق محفوظة
       </div>
     </footer>
   );

@@ -10,11 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  getMyOrgWorkspace,
-  registerOrganization,
-  createOrphanProfile,
-} from "@/lib/org.functions";
+import { getMyOrgWorkspace, registerOrganization, createOrphanProfile } from "@/lib/org.functions";
 import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/org")({
@@ -133,9 +129,8 @@ function OrgPage() {
               data: {
                 orgId: org.id,
                 displayName: String(form.get("displayName") ?? ""),
-                gender: (String(form.get("gender") ?? "male") === "female"
-                  ? "female"
-                  : "male") as "male" | "female",
+                gender: (String(form.get("gender") ?? "male") === "female" ? "female" : "male") as
+                  "male" | "female",
                 birthDate: String(form.get("birthDate") ?? "") || undefined,
                 city: String(form.get("city") ?? "") || undefined,
                 region: String(form.get("region") ?? "") || undefined,
