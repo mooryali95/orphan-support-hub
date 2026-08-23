@@ -32,6 +32,10 @@ type PlatformSettingsRow = {
   fee_percent: number;
   min_sponsorship: number;
   max_sponsorship: number;
+  /** تعليق التحصيل الإلكتروني — الافتراض `true`. */
+  payments_on_hold: boolean;
+  payments_hold_reason: string | null;
+  payments_hold_since: Iso | null;
   updated_at: Iso;
 };
 
@@ -300,4 +304,38 @@ export type Phase4Client = SupabaseClient<DatabaseWithPhase4, "public">;
 
 export function withPhase4(client: unknown): Phase4Client {
   return client as Phase4Client;
+}
+
+
+/* =====================================================================
+   امتداد المرحلة 7 — تحديد المعدّل وصحّة النظام والخدمات
+   ===================================================================== */
+
+export type DatabaseWithPhase7 = Omit<DatabaseWithPhase4, "public"> & {
+  public: Omit<DatabaseWithPhase4["public"], "Functions"> & {
+    Functions: DatabaseWithPhase4["public"]["Functions"] & {
+      hit_rate_limit: {
+        Args: { _bucket: string; _identity: string; _limit: number; _window_seconds: number };
+        Returns: unknown;
+      };
+      prune_rate_limits: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+      system_health: {
+        Args: Record<string, never>;
+        Returns: unknown;
+      };
+      orphan_program_plan: {
+        Args: { _orphan: string };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type Phase7Client = SupabaseClient<DatabaseWithPhase7, "public">;
+
+export function withPhase7(client: unknown): Phase7Client {
+  return client as Phase7Client;
 }

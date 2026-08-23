@@ -7,7 +7,7 @@ export function SiteFooter() {
     <footer className="relative mt-20 overflow-hidden bg-secondary/40">
       <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.1} tile={84} />
-      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
+      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
         <div className="md:col-span-2">
           <IocoLockup />
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">
@@ -49,6 +49,27 @@ export function SiteFooter() {
             <li>
               <Link to="/dashboard" className="hover:text-foreground">
                 لوحتي
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-bold">الشفافية</h2>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li>
+              <Link to="/legal/privacy" className="hover:text-foreground">
+                سياسة الخصوصية
+              </Link>
+            </li>
+            <li>
+              <Link to="/legal/terms" className="hover:text-foreground">
+                شروط الاستخدام
+              </Link>
+            </li>
+            <li>
+              <Link to="/legal/faq" className="hover:text-foreground">
+                الأسئلة الشائعة
               </Link>
             </li>
           </ul>

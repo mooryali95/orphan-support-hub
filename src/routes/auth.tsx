@@ -183,7 +183,15 @@ function AuthPage() {
         </Button>
 
         <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
-          بالمتابعة أنت توافق على سياسة الخصوصية وشروط استخدام المنصة.
+          بالمتابعة أنت توافق على{" "}
+          <Link to="/legal/terms" className="text-primary hover:underline">
+            شروط الاستخدام
+          </Link>{" "}
+          و
+          <Link to="/legal/privacy" className="text-primary hover:underline">
+            سياسة الخصوصية
+          </Link>
+          . وهذه منصة تعالج بيانات أطفال، فاقرأهما.
         </p>
       </main>
     </div>

@@ -14,10 +14,14 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
+import { Route as LegalFaqRouteImport } from './routes/legal.faq'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
@@ -47,6 +51,11 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
   path: '/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -66,6 +75,21 @@ const AuthenticatedOrgRoute = AuthenticatedOrgRouteImport.update({
   id: '/org',
   path: '/org',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const LegalFaqRoute = LegalFaqRouteImport.update({
+  id: '/legal/faq',
+  path: '/legal/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OrphansIndexRoute = OrphansIndexRouteImport.update({
   id: '/orphans/',
@@ -94,10 +118,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
+  '/legal/faq': typeof LegalFaqRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -108,10 +136,14 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
+  '/legal/faq': typeof LegalFaqRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -124,10 +156,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
+  '/legal/faq': typeof LegalFaqRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -140,10 +176,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
+    | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
     | '/guardian'
     | '/org'
+    | '/legal/faq'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
     | '/api/notifications/dispatch'
@@ -154,10 +194,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
+    | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
     | '/guardian'
     | '/org'
+    | '/legal/faq'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans'
     | '/api/notifications/dispatch'
@@ -169,10 +213,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/organizations'
+    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/guardian'
     | '/_authenticated/org'
+    | '/legal/faq'
+    | '/legal/privacy'
+    | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
     | '/api/notifications/dispatch'
@@ -185,6 +233,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  LegalFaqRoute: typeof LegalFaqRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalTermsRoute: typeof LegalTermsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
@@ -228,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -255,6 +314,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/org'
       preLoaderRoute: typeof AuthenticatedOrgRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/legal/faq': {
+      id: '/legal/faq'
+      path: '/legal/faq'
+      fullPath: '/legal/faq'
+      preLoaderRoute: typeof LegalFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/orphans/': {
       id: '/orphans/'
@@ -310,6 +390,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  LegalFaqRoute: LegalFaqRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalTermsRoute: LegalTermsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   OrphansIndexRoute: OrphansIndexRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,

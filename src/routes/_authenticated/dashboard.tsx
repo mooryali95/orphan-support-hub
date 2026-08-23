@@ -85,12 +85,24 @@ function DashboardPage() {
         <StatBox label="التزامك الشهري" value={formatMoney(activeTotal)} />
       </div>
 
-      {mode && !mode.online && sponsorships.some((s) => s.status === "pending_payment") && (
+      {mode?.onHold && (
+        // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
+        // والكافل الذي يظنّ المنصة معطوبة لا يعود.
         <p className="border-bridge/30 bg-bridge/8 text-foreground mt-6 rounded-2xl border p-4 text-sm leading-7">
-          الدفع الإلكتروني قيد التفعيل. حتى ذلك الحين تُستكمل الكفالة بتحويل بنكي تؤكّده الإدارة،
-          وتُفعّل كفالتك فور تأكيد الاستلام.
+          <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason} وحتى ذلك الحين تُستكمل
+          الكفالة بتحويل بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.
         </p>
       )}
+
+      {mode &&
+        !mode.online &&
+        !mode.onHold &&
+        sponsorships.some((s) => s.status === "pending_payment") && (
+          <p className="border-bridge/30 bg-bridge/8 text-foreground mt-6 rounded-2xl border p-4 text-sm leading-7">
+            الدفع الإلكتروني قيد التفعيل. حتى ذلك الحين تُستكمل الكفالة بتحويل بنكي تؤكّده الإدارة،
+            وتُفعّل كفالتك فور تأكيد الاستلام.
+          </p>
+        )}
 
       <div className="mt-8 space-y-4">
         {isLoading ? (

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Users } from "lucide-react";
@@ -11,6 +11,10 @@ import { getGuardianWorkspace } from "@/lib/impact.functions";
 import { formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/guardian")({
+  /* أولياء الأمور وحدهم — راحة لا حماية: الحارس الحقيقي في القاعدة. */
+  beforeLoad: ({ context }) => {
+    if (!context.roles.includes("guardian")) throw redirect({ to: "/dashboard" });
+  },
   head: () => ({
     meta: [
       { title: "مساحة ولي الأمر — IOCO" },

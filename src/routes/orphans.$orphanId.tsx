@@ -46,6 +46,31 @@ export const Route = createFileRoute("/orphans/$orphanId")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
       ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          // بيانات منظّمة كـ«خدمة» لا كـ«شخص»: الملف يعرض برنامج كفالة
+          // له سعر ومزوّد، ولا يجوز أن يُفهرَس طفلٌ بوصفه كياناً.
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: `كفالة ${loaderData.orphan.display_name}`,
+            description,
+            serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
+            provider: { "@type": "Organization", name: "IOCO" },
+            areaServed: loaderData.orphan.city ?? undefined,
+            offers: {
+              "@type": "Offer",
+              price: String(loaderData.orphan.monthly_need),
+              priceCurrency: loaderData.orphan.currency,
+              availability:
+                loaderData.orphan.status === "fully_sponsored"
+                  ? "https://schema.org/SoldOut"
+                  : "https://schema.org/InStock",
+            },
+          }),
+        },
+      ],
     };
   },
   component: OrphanDetail,

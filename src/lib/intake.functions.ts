@@ -135,6 +135,14 @@ export const submitOrphanIntake = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => intakeSchema.parse(input))
   .handler(async ({ data, context }) => {
+    // جهة واحدة لا تُقدّم عشرين ملفاً في الساعة بشراً؛ والحدّ يمنع
+    // استهلاك أرقام التسلسل ومساحة التخزين بمسودّات آلية.
+    const { hitRateLimit } = await import("@/lib/rate-limit");
+    const verdict = await hitRateLimit("intake", `u:${context.userId}`);
+    if (!verdict.allowed) {
+      return { ok: false as const, error: "طلبات كثيرة في وقت قصير. أعد المحاولة بعد قليل." };
+    }
+
     const missing = missingRequiredDocs(data.documents.map((d) => d.kind));
     if (missing.length > 0) {
       return {
