@@ -39,3 +39,6 @@ dist-ssr
 .env.*.local
 .env.production
 .env.*.key
+
+# المشروع يستخدم bun؛ قفل npm عارض يُربك التركيب
+package-lock.json

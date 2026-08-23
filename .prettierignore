@@ -12,3 +12,7 @@ routeTree.gen.ts
 src/integrations/
 src/routeTree.gen.ts
 src/routes/README.md
+
+# ملفات يملكها Lovable ويعيد توليدها؛ تنسيقها يُحدث ضجيجاً ويضيع.
+.lovable/
+AGENTS.md

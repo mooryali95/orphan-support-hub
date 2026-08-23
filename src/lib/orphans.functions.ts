@@ -25,7 +25,7 @@ const PUBLIC_COLUMNS =
 
 // يُدرج مصطلح البحث نصياً في تعبير PostgREST المنطقي، فالفاصلة والقوس
 // والنقطة تغيّر بنية الفلتر. نزيلها إضافةً إلى محارف بدل LIKE.
-function sanitizeSearch(value: string) {
+export function sanitizeSearch(value: string) {
   return value
     .replace(/[%_,().:*"'\\]/g, " ")
     .replace(/\s+/g, " ")

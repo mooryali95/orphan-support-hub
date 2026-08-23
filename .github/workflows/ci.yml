@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── فحوص قاعدة البيانات ───────────────────────────────────────────
+  # مستقلة عن npm عمداً: هي بوابة العمل الأمني، فلا يصحّ أن يُسقطها فشل
+  # في تركيب الحزم. تحتاج psql وPostgres فقط.
+  database:
+    name: RLS و سلسلة الهجرات
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: تثبيت عميل psql
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+          fi
+          psql --version
+
+      # يطبّق السلسلة على قاعدة نظيفة بترتيب المستودع، فيكشف أي هجرة
+      # تعتمد على أخرى تليها — وهو كسر لا يظهر على قاعدة قائمة.
+      - name: تطبيق الهجرات وتشغيل فحوص الاستغلال
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+        run: ./scripts/db-test.sh
+
+  # ── فحوص الواجهة ──────────────────────────────────────────────────
+  web:
+    name: أنواع ووبر وتنسيق واختبارات وبناء
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # bun.lock يشير إلى مرآة Lovable الخاصة. إن تعذّر الوصول إليها من
+      # العدّاء، نعيد الحلّ من سجلّ npm العام — الحزم كلها منشورة هناك.
+      - name: تركيب الحزم
+        run: |
+          bun install --frozen-lockfile || {
+            echo "::warning::تعذّر التركيب من المرآة المثبّتة في bun.lock؛ إعادة الحلّ من registry.npmjs.org"
+            bun install --registry https://registry.npmjs.org
+          }
+
+      - name: فحص الأنواع
+        run: bun run typecheck
+
+      - name: الوبر
+        run: bun run lint
+
+      - name: التنسيق
+        run: bun run format:check
+
+      - name: اختبارات الوحدة
+        run: bun run test
+
+      - name: البناء
+        run: bun run build

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# تشغيل مجموعات فحص RLS على قاعدة نظيفة.
+#
+#   scripts/db-test.sh                 # يستخدم DATABASE_URL أو الافتراضي المحلي
+#   DATABASE_URL=postgres://… scripts/db-test.sh
+#
+# يطبّق المحاكاة ثم كل الهجرات بترتيب المستودع، ثم ينفّذ سيناريوهات الاستغلال.
+# يفشل عند أول خطأ، فصلاحيته كبوابة دمج مضمونة.
+set -euo pipefail
+
+DB="${DATABASE_URL:-postgres://postgres:postgres@localhost:5432/postgres}"
+PSQL=(psql "$DB" -v ON_ERROR_STOP=1 --quiet --no-psqlrc)
+
+echo "▸ محاكاة بيئة Supabase"
+"${PSQL[@]}" -f supabase/tests/harness.sql
+
+echo "▸ تطبيق الهجرات بترتيب المستودع"
+for f in $(ls supabase/migrations/*.sql | sort); do
+  printf '  %s\n' "$(basename "$f")"
+  # DROP ... IF EXISTS تُصدر NOTICE على قاعدة نظيفة؛ ضجيج لا قيمة له هنا
+  "${PSQL[@]}" --set=client_min_messages=warning -f "$f"
+done
+
+# الهجرات لا تُعيد الترتيب بنفسها، فاكتشاف اعتماد سابق على لاحق يحتاج قاعدة
+# نظيفة — وهذا ما يفعله هذا السكربت في كل تشغيل.
+
+fail=0
+for suite in supabase/tests/phase0-verification.sql supabase/tests/founder-admin-verification.sql; do
+  echo "▸ $(basename "$suite")"
+  # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.
+  if out=$("${PSQL[@]}" -f "$suite" 2>&1); then
+    printf '%s\n' "$out" | grep -E 'NOTICE: *(PASS|──)' | sed 's/^NOTICE: */  /' || true
+    printf '  ✓ %s فحصاً\n' "$(printf '%s\n' "$out" | grep -c 'NOTICE: *PASS' || true)"
+  else
+    printf '%s\n' "$out" | grep -E 'FAIL|ERROR' | head -5 | sed 's/^/  ✗ /'
+    fail=1
+  fi
+done
+
+exit "$fail"
