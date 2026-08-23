@@ -10,7 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getMyOrgWorkspace, registerOrganization, createOrphanProfile } from "@/lib/org.functions";
+import { getMyOrgWorkspace, registerOrganization } from "@/lib/org.functions";
+import { OrphanIntakeForm } from "@/components/intake/OrphanIntakeForm";
+import { REJECTION_LABELS } from "@/lib/intake.functions";
 import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/org")({
@@ -29,7 +31,6 @@ export const Route = createFileRoute("/_authenticated/org")({
 function OrgPage() {
   const fetchWorkspace = useServerFn(getMyOrgWorkspace);
   const register = useServerFn(registerOrganization);
-  const createOrphan = useServerFn(createOrphanProfile);
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
 
@@ -120,65 +121,17 @@ function OrgPage() {
       </div>
 
       {showForm && org.status === "approved" && (
-        <form
-          className="mt-6 grid max-w-3xl gap-4 rounded-3xl border border-border bg-card p-6 sm:grid-cols-2"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const form = new FormData(e.currentTarget);
-            const res = await createOrphan({
-              data: {
-                orgId: org.id,
-                displayName: String(form.get("displayName") ?? ""),
-                gender: (String(form.get("gender") ?? "male") === "female" ? "female" : "male") as
-                  "male" | "female",
-                birthDate: String(form.get("birthDate") ?? "") || undefined,
-                city: String(form.get("city") ?? "") || undefined,
-                region: String(form.get("region") ?? "") || undefined,
-                educationStage: String(form.get("education") ?? "") || undefined,
-                story: String(form.get("story") ?? "") || undefined,
-                monthlyNeed: Number(form.get("monthlyNeed") ?? 0),
-                fullName: String(form.get("fullName") ?? "") || undefined,
-                guardianName: String(form.get("guardianName") ?? "") || undefined,
-                guardianPhone: String(form.get("guardianPhone") ?? "") || undefined,
-              },
-            });
-            if (!res.ok) {
-              toast.error(res.error ?? "تعذّر إنشاء الملف");
-              return;
-            }
-            toast.success("تم إرسال الملف للمراجعة");
-            setShowForm(false);
-            refresh();
-          }}
-        >
-          <Field name="displayName" label="الاسم المعروض (بدون الاسم الكامل)" required />
-          <div>
-            <Label htmlFor="gender">الجنس</Label>
-            <select
-              id="gender"
-              name="gender"
-              className="mt-2 h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              <option value="male">ذكر</option>
-              <option value="female">أنثى</option>
-            </select>
-          </div>
-          <Field name="birthDate" label="تاريخ الميلاد" type="date" />
-          <Field name="education" label="المرحلة الدراسية" />
-          <Field name="city" label="المدينة" />
-          <Field name="region" label="المنطقة" />
-          <Field name="monthlyNeed" label="الاحتياج الشهري (USD)" type="number" required />
-          <Field name="fullName" label="الاسم الكامل (سرّي)" />
-          <Field name="guardianName" label="اسم ولي الأمر (سرّي)" />
-          <Field name="guardianPhone" label="جوال ولي الأمر (سرّي)" />
-          <div className="sm:col-span-2">
-            <Label htmlFor="story">القصة المعروضة للكافلين</Label>
-            <Textarea id="story" name="story" rows={4} className="mt-2" />
-          </div>
-          <div className="sm:col-span-2">
-            <Button type="submit">إرسال للمراجعة</Button>
-          </div>
-        </form>
+        <div className="mt-6 max-w-3xl">
+          <OrphanIntakeForm
+            orgId={org.id}
+            onDone={(code) => {
+              toast.success(`أُرسل الملف ${code} للمراجعة`);
+              setShowForm(false);
+              refresh();
+            }}
+            onCancel={() => setShowForm(false)}
+          />
+        </div>
       )}
 
       <div className="mt-8 space-y-3">
@@ -201,6 +154,14 @@ function OrgPage() {
                   {o.code} — {o.city ?? "—"} — {formatMoney(o.funded_monthly, o.currency)} /{" "}
                   {formatMoney(o.monthly_need, o.currency)}
                 </p>
+                {o.status === "rejected" && (
+                  // الرفض بلا سبب لا يُمكّن الجهة من التصحيح، فالسبب
+                  // المُهيكل يُعرض هنا لا في بريد منفصل.
+                  <p className="text-bridge-ink mt-1 text-xs font-medium">
+                    سبب الرفض: {REJECTION_LABELS[o.rejection_code ?? ""] ?? "—"}
+                    {o.rejection_reason ? ` — ${o.rejection_reason}` : ""}
+                  </p>
+                )}
               </div>
             </div>
           ))

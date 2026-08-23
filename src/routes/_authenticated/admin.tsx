@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,8 @@ function AdminPage() {
   const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("overview");
+  // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
+  const [reviewing, setReviewing] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-overview"],
@@ -216,48 +219,54 @@ function AdminPage() {
             <div className="mt-4 space-y-3">
               {o.pending_orphans.length === 0 && <Empty>لا توجد ملفات معلّقة.</Empty>}
               {o.pending_orphans.map((p) => (
-                <div
-                  key={p.id}
-                  className="border-border bg-card flex flex-wrap items-center gap-3 rounded-2xl border p-4"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold">{p.name}</h3>
-                      <Badge variant="secondary">
-                        {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
-                      </Badge>
+                <div key={p.id} className="border-border bg-card rounded-2xl border p-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold">{p.name}</h3>
+                        <Badge variant="secondary">
+                          {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {p.code} — {[p.city, p.region].filter(Boolean).join("، ")} — احتياج{" "}
+                        {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
+                      </p>
                     </div>
-                    <p className="text-muted-foreground mt-1 text-xs">
-                      {p.code} — {[p.city, p.region].filter(Boolean).join("، ")} — احتياج{" "}
-                      {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
-                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      aria-expanded={reviewing === p.id}
+                      onClick={() => setReviewing(reviewing === p.id ? null : p.id)}
+                    >
+                      {reviewing === p.id ? "إغلاق المراجعة" : "مراجعة المستندات"}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={async () => {
-                      const res = await decideOrphan({ data: { id: p.id, decision: "approved" } });
-                      if (res.ok) toast.success("تم اعتماد الملف");
-                      else toast.error(res.error ?? "تعذّر اعتماد الملف");
-                      refresh();
-                    }}
-                  >
-                    اعتماد
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={async () => {
-                      const reason = window.prompt("سبب الرفض") ?? undefined;
-                      const res = await decideOrphan({
-                        data: { id: p.id, decision: "rejected", reason },
-                      });
-                      if (res.ok) toast.success("تم رفض الملف");
-                      else toast.error(res.error ?? "تعذّر رفض الملف");
-                      refresh();
-                    }}
-                  >
-                    رفض
-                  </Button>
+
+                  {reviewing === p.id && (
+                    <OrphanReviewPanel
+                      orphanId={p.id}
+                      onDecided={async (decision, code, reason) => {
+                        const res = await decideOrphan({
+                          data: {
+                            id: p.id,
+                            decision,
+                            ...(code ? { code: code as never } : {}),
+                            ...(reason ? { reason } : {}),
+                          },
+                        });
+                        if (res.ok) {
+                          toast.success(
+                            decision === "approved" ? "تم اعتماد الملف" : "تم رفض الملف",
+                          );
+                          setReviewing(null);
+                        } else {
+                          toast.error(res.error ?? "تعذّر تنفيذ القرار");
+                        }
+                        refresh();
+                      }}
+                    />
+                  )}
                 </div>
               ))}
             </div>
