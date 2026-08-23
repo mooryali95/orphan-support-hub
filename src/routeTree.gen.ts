@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as OrphansRouteImport } from './routes/orphans'
@@ -18,6 +19,11 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -43,6 +49,7 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/orphans': typeof OrphansRouteWithChildren
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/orphans': typeof OrphansRouteWithChildren
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/orphans': typeof OrphansRouteWithChildren
@@ -66,13 +75,24 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/how-it-works' | '/organizations' | '/orphans' | '/orphans/$orphanId'
+    | '/'
+    | '/auth'
+    | '/how-it-works'
+    | '/organizations'
+    | '/orphans'
+    | '/orphans/$orphanId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/how-it-works' | '/organizations' | '/orphans' | '/orphans/$orphanId'
+    | '/'
+    | '/auth'
+    | '/how-it-works'
+    | '/organizations'
+    | '/orphans'
+    | '/orphans/$orphanId'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/how-it-works'
     | '/organizations'
     | '/orphans'
@@ -81,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   OrphansRoute: typeof OrphansRouteWithChildren
@@ -93,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -139,6 +167,7 @@ const OrphansRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   OrphansRoute: OrphansRouteWithChildren,
