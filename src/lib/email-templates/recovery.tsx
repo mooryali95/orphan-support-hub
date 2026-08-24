@@ -1,23 +1,14 @@
-import * as React from 'react'
+import * as React from "react";
 
-import {
-  BrandButton,
-  BrandEmail,
-  BrandFallbackLink,
-  BrandText,
-} from './_brand'
+import { BrandButton, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
 
 interface RecoveryEmailProps {
-  siteName: string
-  siteUrl: string
-  confirmationUrl: string
+  siteName: string;
+  siteUrl: string;
+  confirmationUrl: string;
 }
 
-export const RecoveryEmail = ({
-  siteName,
-  siteUrl,
-  confirmationUrl,
-}: RecoveryEmailProps) => (
+export const RecoveryEmail = ({ siteName, siteUrl, confirmationUrl }: RecoveryEmailProps) => (
   <BrandEmail
     siteName={siteName}
     siteUrl={siteUrl}
@@ -32,6 +23,6 @@ export const RecoveryEmail = ({
     <BrandButton href={confirmationUrl}>تعيين كلمة مرور جديدة</BrandButton>
     <BrandFallbackLink url={confirmationUrl} />
   </BrandEmail>
-)
+);
 
-export default RecoveryEmail
+export default RecoveryEmail;

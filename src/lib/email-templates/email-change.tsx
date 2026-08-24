@@ -1,19 +1,14 @@
-import * as React from 'react'
+import * as React from "react";
 
-import {
-  BrandButton,
-  BrandEmail,
-  BrandFallbackLink,
-  BrandText,
-} from './_brand'
+import { BrandButton, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
 
 interface EmailChangeEmailProps {
-  siteName: string
-  siteUrl: string
-  oldEmail: string
-  email: string
-  newEmail: string
-  confirmationUrl: string
+  siteName: string;
+  siteUrl: string;
+  oldEmail: string;
+  email: string;
+  newEmail: string;
+  confirmationUrl: string;
 }
 
 export const EmailChangeEmail = ({
@@ -32,12 +27,12 @@ export const EmailChangeEmail = ({
     footNote="لن يُنفَّذ التغيير قبل التأكيد. إن لم تطلبه، تجاهل الرسالة وراجع أمان حسابك."
   >
     <BrandText>
-      طُلب تغيير بريد الحساب من <strong dir="ltr">{oldEmail}</strong> إلى{' '}
+      طُلب تغيير بريد الحساب من <strong dir="ltr">{oldEmail}</strong> إلى{" "}
       <strong dir="ltr">{newEmail}</strong>. أكّد العنوان الجديد لإتمام التغيير.
     </BrandText>
     <BrandButton href={confirmationUrl}>تأكيد التغيير</BrandButton>
     <BrandFallbackLink url={confirmationUrl} />
   </BrandEmail>
-)
+);
 
-export default EmailChangeEmail
+export default EmailChangeEmail;

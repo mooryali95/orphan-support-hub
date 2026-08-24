@@ -1,17 +1,12 @@
-import * as React from 'react'
+import * as React from "react";
 
-import {
-  BrandButton,
-  BrandEmail,
-  BrandFallbackLink,
-  BrandText,
-} from './_brand'
+import { BrandButton, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
 
 interface SignupEmailProps {
-  siteName: string
-  siteUrl: string
-  recipient: string
-  confirmationUrl: string
+  siteName: string;
+  siteUrl: string;
+  recipient: string;
+  confirmationUrl: string;
 }
 
 export const SignupEmail = ({
@@ -29,12 +24,12 @@ export const SignupEmail = ({
     footNote="إن لم تُنشئ هذا الحساب فلا حاجة لأي إجراء؛ يكفي تجاهل الرسالة."
   >
     <BrandText>
-      سجّلنا طلب إنشاء حساب باستخدام البريد <strong dir="ltr">{recipient}</strong>. أكّد ملكيتك
-      لهذا البريد لتفعيل الحساب والوصول إلى ملفّات الأيتام الموثّقة.
+      سجّلنا طلب إنشاء حساب باستخدام البريد <strong dir="ltr">{recipient}</strong>. أكّد ملكيتك لهذا
+      البريد لتفعيل الحساب والوصول إلى ملفّات الأيتام الموثّقة.
     </BrandText>
     <BrandButton href={confirmationUrl}>تأكيد البريد</BrandButton>
     <BrandFallbackLink url={confirmationUrl} />
   </BrandEmail>
-)
+);
 
-export default SignupEmail
+export default SignupEmail;
