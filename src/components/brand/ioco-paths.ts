@@ -8,7 +8,7 @@ export const IOCO_TRANSFORM = "translate(0,385) scale(0.1,-0.1)";
 export const IOCO_VIEWBOX = {
   logo: "0 0 1920 385",
   wordmark: "600 0 732 385",
-  mark: "1124 56 208 316",
+  mark: "615 0 380 385",
 } as const;
 
 /** الكفّ الأول والحروف الحاملة له — الأزرق الملوكي (شط الفقد). */
