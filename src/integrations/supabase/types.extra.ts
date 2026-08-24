@@ -436,3 +436,44 @@ export type PrefsClient = SupabaseClient<DatabaseWithPrefs, "public">;
 export function withPrefs(client: unknown): PrefsClient {
   return client as PrefsClient;
 }
+
+
+/* =====================================================================
+   امتداد مُصرِّف طابور البريد
+   ===================================================================== */
+
+/** صفٌّ مطالَبٌ به من الطابور، جاهزٌ للإرسال. */
+export type ClaimedEmail = {
+  id: string;
+  recipient: string;
+  kind: NotificationKind;
+  title: string;
+  body: string | null;
+  link: string | null;
+  unsubscribe_token: string;
+  attempts: number;
+};
+
+export type DatabaseWithOutbox = Omit<DatabaseWithPrefs, "public"> & {
+  public: Omit<DatabaseWithPrefs["public"], "Functions"> & {
+    Functions: DatabaseWithPrefs["public"]["Functions"] & {
+      sweep_email_outbox: { Args: Record<string, never>; Returns: number };
+      claim_email_batch: {
+        Args: { _limit?: number; _lease_seconds?: number; _max_attempts?: number };
+        Returns: ClaimedEmail[];
+      };
+      mark_email_sent: { Args: { _ids: string[] }; Returns: number };
+      mark_email_failed: {
+        Args: { _id: string; _error: string; _max_attempts?: number };
+        Returns: EmailState;
+      };
+      mark_email_suppressed: { Args: { _id: string }; Returns: undefined };
+    };
+  };
+};
+
+export type OutboxClient = SupabaseClient<DatabaseWithOutbox, "public">;
+
+export function withOutbox(client: unknown): OutboxClient {
+  return client as OutboxClient;
+}
