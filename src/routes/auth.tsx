@@ -4,7 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,17 +85,6 @@ function AuthPage() {
     }
   }
 
-  async function onGoogle() {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}${redirectTo}`,
-    });
-    if (result.error) {
-      toast.error("تعذّر تسجيل الدخول عبر Google");
-      return;
-    }
-    if (result.redirected) return;
-    navigate({ to: redirectTo });
-  }
 
   return (
     <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
@@ -178,14 +167,6 @@ function AuthPage() {
             {mode === "signin" ? "دخول" : "إنشاء الحساب"}
           </Button>
         </form>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="h-px flex-1 bg-border" /> أو <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <Button type="button" variant="outline" className="w-full" onClick={onGoogle}>
-          المتابعة عبر Google
-        </Button>
 
         <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
           بالمتابعة أنت توافق على{" "}
