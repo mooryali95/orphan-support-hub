@@ -78,9 +78,6 @@ export function BrandEmail({
             <Text style={headerTag}>منظمة الرعاية الدولية لليتيم</Text>
           </Section>
 
-          {/* الخيط الذهبي المتصل — العنصر الوحيد المسموح له بعبور العرض كاملاً. */}
-          <Section style={rule} />
-
           <Section style={card}>
             <Text style={eyebrowStyle}>{eyebrow}</Text>
             <Text style={h1}>{heading}</Text>
@@ -181,17 +178,11 @@ const headerTag = {
   letterSpacing: '0.04em',
   margin: '6px 0 0',
 }
-const rule = {
-  height: '3px',
-  lineHeight: '3px',
-  fontSize: '1px',
-  backgroundColor: BRAND.gold,
-}
 const card = {
   backgroundColor: BRAND.card,
   borderRadius: '0 0 14px 14px',
   border: `1px solid ${BRAND.line}`,
-  borderTop: 'none',
+  borderTop: `3px solid ${BRAND.gold}`,
   padding: '30px 28px 26px',
 }
 const eyebrowStyle = {
