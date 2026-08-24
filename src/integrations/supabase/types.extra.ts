@@ -400,3 +400,39 @@ export type M5Client = SupabaseClient<DatabaseWithM5, "public">;
 export function withM5(client: unknown): M5Client {
   return client as M5Client;
 }
+
+
+/* =====================================================================
+   امتداد تفضيلات الإشعارات وإلغاء الاشتراك
+   ===================================================================== */
+
+export type NotificationPrefs = {
+  email_enabled: boolean;
+  muted_kinds: NotificationKind[];
+  unsubscribe_token: string;
+};
+
+export type DatabaseWithPrefs = Omit<DatabaseWithM5, "public"> & {
+  public: Omit<DatabaseWithM5["public"], "Functions"> & {
+    Functions: DatabaseWithM5["public"]["Functions"] & {
+      my_notification_prefs: {
+        Args: Record<string, never>;
+        Returns: unknown;
+      };
+      set_notification_prefs: {
+        Args: { _email_enabled: boolean; _muted_kinds: string[] };
+        Returns: unknown;
+      };
+      unsubscribe_by_token: {
+        Args: { _token: string };
+        Returns: boolean;
+      };
+    };
+  };
+};
+
+export type PrefsClient = SupabaseClient<DatabaseWithPrefs, "public">;
+
+export function withPrefs(client: unknown): PrefsClient {
+  return client as PrefsClient;
+}

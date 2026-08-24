@@ -7,6 +7,11 @@
 \set ON_ERROR_STOP on
 BEGIN;
 
+-- قفل البريد افتراضه مقفول (هجرة 20260828110000)، وهو سلوك مقصود يفحصه
+-- `notification-prefs-verification.sql`. وهذه المجموعة موضوعها آليّة
+-- الطابور نفسها، فتُرفع هنا داخل معاملتها وحدها لتُفحص تلك الآليّة.
+UPDATE public.platform_settings SET email_on_hold = false WHERE id;
+
 INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('e1000000-0000-4000-8000-000000000001', 'p4-admin@example.test', '{}'::jsonb),
   ('e1000000-0000-4000-8000-000000000002', 'p4-org@example.test', '{"role":"care_org"}'::jsonb),
@@ -359,6 +364,8 @@ END $$;
 -- ---------------------------------------------------------------------
 -- صندوق البريد: كل إشعار يبدأ معلّقاً
 -- ---------------------------------------------------------------------
+-- بالقفل مرفوعاً وبلا تفضيلات مكتومة — أي حين لا مانع — كل إشعار يدخل
+-- الطابور. والموانع نفسها تُفحص في مجموعتها.
 DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM public.notifications WHERE email_state <> 'pending') THEN
     RAISE EXCEPTION 'FAIL — a notification started outside the pending state';

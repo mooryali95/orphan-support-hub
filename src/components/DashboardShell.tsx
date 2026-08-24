@@ -75,6 +75,15 @@ export function DashboardShell({
             >
               دليل الأيتام
             </Link>
+            {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
+                إلغاء الاشتراك حكراً على من وصلته رسالة. */}
+            <Link
+              to="/settings/notifications"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              الإشعارات
+            </Link>
           </nav>
 
           <div className="ms-auto flex items-center gap-3">
