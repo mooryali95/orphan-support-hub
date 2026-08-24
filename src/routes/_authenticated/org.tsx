@@ -23,10 +23,10 @@ export const Route = createFileRoute("/_authenticated/org")({
   },
   head: () => ({
     meta: [
-      { title: "مساحة جهة الرعاية — IOCO" },
-      { name: "description", content: "أدر ملفات الأيتام التابعة لجهتك وأرسلها للاعتماد." },
-      { property: "og:title", content: "مساحة جهة الرعاية — IOCO" },
-      { property: "og:description", content: "رفع ملفات الأيتام ومتابعة حالتها." },
+      { title: "مساحة جهة الرعاية — IOCO — اكفل يتيماً بملف موثّق" },
+      { name: "description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
+      { property: "og:title", content: "مساحة جهة الرعاية — IOCO — اكفل يتيماً بملف موثّق" },
+      { property: "og:description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
       { name: "robots", content: "noindex" },
     ],
   }),

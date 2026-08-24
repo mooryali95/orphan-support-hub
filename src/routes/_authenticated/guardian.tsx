@@ -17,8 +17,8 @@ export const Route = createFileRoute("/_authenticated/guardian")({
   },
   head: () => ({
     meta: [
-      { title: "مساحة ولي الأمر — IOCO" },
-      { name: "description", content: "تابع ملفات من تحت رعايتك والتقارير المنشورة عنهم." },
+      { title: "مساحة ولي الأمر — IOCO — اكفل يتيماً بملف موثّق" },
+      { name: "description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
       { name: "robots", content: "noindex" },
     ],
   }),

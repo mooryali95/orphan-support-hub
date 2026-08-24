@@ -112,17 +112,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "IOCO — منصة كفالة الأيتام" },
+      { title: "IOCO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "IOCO — منصة كفالة الأيتام" },
+      { property: "og:title", content: "IOCO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
