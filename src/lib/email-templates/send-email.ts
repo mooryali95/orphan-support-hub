@@ -6,7 +6,7 @@ import { TEMPLATES } from "./registry";
 // Server-only: reads LOVABLE_API_KEY. Never import from client components.
 
 // Configuration baked in at scaffold time
-const SITE_NAME = "Orphan Support Hub";
+const SITE_NAME = "IOCO";
 // SENDER_DOMAIN is the verified sender subdomain FQDN (e.g., "notify.example.com").
 // It MUST match the subdomain delegated to Lovable's nameservers. NEVER use the root domain.
 const SENDER_DOMAIN = "notify.ioco.sunkvalue.com";
@@ -41,7 +41,8 @@ export async function sendTemplateEmail(
     throw new Error("LOVABLE_API_KEY is not configured");
   }
 
-  const template = TEMPLATES[templateName];
+  // hasOwn لا الفهرسة وحدها، فاسم مثل "constructor" يمرّ فحص الصدق بدالة موروثة.
+  const template = Object.hasOwn(TEMPLATES, templateName) ? TEMPLATES[templateName] : undefined;
   if (!template) {
     throw new Error(
       `Template '${templateName}' not found. Available: ${Object.keys(TEMPLATES).join(", ")}`,
