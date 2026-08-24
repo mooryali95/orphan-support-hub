@@ -56,7 +56,7 @@ export function MuralImage({
           tile={72}
         />
         <span className="relative w-[38%] max-w-24 opacity-90">
-          <IocoMark globe={false} />
+          <IocoMark variant="mark" />
         </span>
       </div>
     );
