@@ -339,3 +339,29 @@ export type Phase7Client = SupabaseClient<DatabaseWithPhase7, "public">;
 export function withPhase7(client: unknown): Phase7Client {
   return client as Phase7Client;
 }
+
+
+/* =====================================================================
+   امتداد M5 — الفائض والاقتراحات
+   ===================================================================== */
+
+export type DatabaseWithM5 = Omit<DatabaseWithPhase7, "public"> & {
+  public: Omit<DatabaseWithPhase7["public"], "Functions"> & {
+    Functions: DatabaseWithPhase7["public"]["Functions"] & {
+      orphan_funding_state: {
+        Args: { _orphan: string };
+        Returns: unknown;
+      };
+      suggest_orphans_for_amount: {
+        Args: { _amount: number; _exclude?: string | null; _limit?: number };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type M5Client = SupabaseClient<DatabaseWithM5, "public">;
+
+export function withM5(client: unknown): M5Client {
+  return client as M5Client;
+}
