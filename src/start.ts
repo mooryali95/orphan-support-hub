@@ -5,8 +5,7 @@ import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 
 // مسارات /lovable/* (ويبهوك البريد والمعاينة) تصادق نفسها بنفسها،
 // فلا تمرّ على حراسة CSRF ولا على أي إعادة توجيه.
-const isLovableRoute = (request: Request) =>
-  new URL(request.url).pathname.startsWith("/lovable/");
+const isLovableRoute = (request: Request) => new URL(request.url).pathname.startsWith("/lovable/");
 
 const errorMiddleware = createMiddleware().server(async ({ next, request }) => {
   if (isLovableRoute(request)) return next();

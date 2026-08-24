@@ -10,7 +10,7 @@
 >
 > نُفِّذت المرحلة 0 في `supabase/migrations/20260823100000_phase0_critical_security_hardening.sql`،
 > وتغطي **C1–C5** و**H1–H5**. وأُغلقت **M3، M4، M7، M9** في المرحلة 2،
-> و**M1، M2، M6** في المرحلة 7. وتبقى **M5** (التمويل الزائد) و**M8** مفتوحتين.
+> و**M1، M2، M6** في المرحلة 7، و**M5** بسياسة الاقتراح. وتبقى **M8** وحدها.
 >
 > الإثبات في `supabase/tests/phase0-verification.sql` — ينفّذ سيناريوهات الاستغلال
 > الفعلية ويفشل إن نجح أيٌّ منها. تم تشغيله على PostgreSQL 16 بمحاكاة أدوار Supabase
@@ -458,6 +458,7 @@ if (data.search)
 > | M4 | **رمز الملف عرضة للتصادم** | `src/lib/org.functions.ts` — `KFL-${Math.random()...}` | قيد `UNIQUE` يرمي خطأً خاماً للمستخدم بلا إعادة محاولة | تسلسل Postgres أو إعادة محاولة عند التعارض |
 > M4: ✅ **أُغلقت** — تسلسل `orphan_code_seq`
 > | M5 | **لا سقف على المبلغ ولا منع تكرار** | `createSponsorship` | كافل واحد ينشئ كفالات متعددة لنفس اليتيم؛ ولا سقف عند الاحتياج المتبقّي | قيد `UNIQUE(sponsor_id, orphan_id) WHERE status IN ('active','pending_payment')` + تحقّق من المتبقّي |
+> M5: ✅ **أُغلقت** — التكرار يمنعه `uq_sponsorship_active_per_sponsor`، والتجاوز **يُقترَح لا يُرفَض**: يُعرض المتبقّي الحقيقي مع ملفّات يغطّيها الفائض، ويُقبل الإصرار ويُوسَم. والفائض يظهر «عطاءً فوق الاحتياج» بما يفتحه من برامج — [`docs/surplus.ar.md`](./surplus.ar.md).
 > | M6 | **لا تحديد معدّل (rate limiting)** | كل دوال الخادم | إساءة استخدام واستنزاف، خصوصاً `/auth` والبحث | تحديد معدّل على مستوى `requestMiddleware` |
 > | M7 | **لا سجلّ تدقيق فعلي** | `audit_log` بلا كاتب | قرارات الإدارة (اعتماد/رفض ملف يتيم) بلا أثر — مشكلة حوكمة وامتثال | كتابة قيد تدقيق في `reviewOrphan` / `reviewOrganization` |
 > M7: ✅ **أُغلقت** — `review_orphan`/`review_organization`/`verify_document` تكتب `audit_log`

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
@@ -15,7 +15,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { getPublicOrphan } from "@/lib/orphans.functions";
-import { createSponsorship } from "@/lib/sponsorships.functions";
+import { createSponsorship, type SuggestedOrphan } from "@/lib/sponsorships.functions";
+import { ExcessSuggestion } from "@/components/ExcessSuggestion";
+import { SurplusBadge } from "@/components/brand/SurplusBadge";
+import { getFundingState } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { ageFromBirthDate, formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
 
@@ -33,10 +36,16 @@ export const Route = createFileRoute("/orphans/$orphanId")({
   },
   head: ({ loaderData }) => {
     if (!loaderData?.orphan) {
-      return { meta: [{ title: "ملف غير متاح — IOCO — اكفل يتيماً بملف موثّق" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "ملف غير متاح — IOCO — اكفل يتيماً بملف موثّق" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const title = `كفالة ${loaderData.orphan.display_name} — IOCO — اكفل يتيماً بملف موثّق`;
-    const description = "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
+    const description =
+      "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
     return {
       meta: [
         { title },
@@ -84,14 +93,30 @@ function OrphanDetail() {
   const orphan = data.orphan!;
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const remaining = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
+  const surplus = Math.max(0, Number(orphan.funded_monthly) - Number(orphan.monthly_need));
+
+  // ما يفتحه الفائض يُقرأ من القاعدة: الكتالوج يتغيّر، وحسابه في الواجهة
+  // يجعل العرض يتخلّف عنه.
+  const fetchFunding = useServerFn(getFundingState);
+  const { data: funding } = useQuery({
+    queryKey: ["funding-state", orphanId],
+    queryFn: () => fetchFunding({ data: { orphanId } }),
+    enabled: surplus > 0,
+  });
   const age = ageFromBirthDate(orphan.birth_date);
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
   const [anonymous, setAnonymous] = useState(false);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  // اقتراح التجاوز يُملأ من ردّ الخادم حين يزيد المبلغ عن المتبقّي.
+  const [excessOffer, setExcessOffer] = useState<{
+    gap: number;
+    excess: number;
+    suggestions: SuggestedOrphan[];
+  } | null>(null);
 
-  async function onSponsor() {
+  async function onSponsor(confirmExcess = false) {
     if (!user) {
       navigate({ to: "/auth", search: { redirect: `/orphans/${orphanId}` } });
       return;
@@ -110,12 +135,23 @@ function OrphanDetail() {
           type: "monthly",
           isAnonymous: anonymous,
           message: message.trim() || undefined,
+          confirmExcess,
         },
       });
       if (!res.ok) {
+        // التجاوز ليس خطأً: يُعرض اقتراحاً لا رسالة حمراء.
+        if ("needsExcessConfirmation" in res && res.needsExcessConfirmation) {
+          setExcessOffer({
+            gap: res.gap,
+            excess: res.excess,
+            suggestions: res.suggestions,
+          });
+          return;
+        }
         toast.error(res.error ?? "تعذّر إنشاء الكفالة");
         return;
       }
+      setExcessOffer(null);
       toast.success("تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك");
       navigate({ to: "/dashboard" });
     } catch {
@@ -220,8 +256,19 @@ function OrphanDetail() {
               </p>
               <CrossingProgress percent={percent} className="mt-4" />
               <p className="mt-2 text-xs text-muted-foreground">
-                تم تغطية {percent}% — المتبقي {formatMoney(remaining, orphan.currency)}
+                {surplus > 0
+                  ? `تم تغطية احتياجه بالكامل`
+                  : `تم تغطية ${percent}% — المتبقي ${formatMoney(remaining, orphan.currency)}`}
               </p>
+
+              {surplus > 0 && (
+                <SurplusBadge
+                  surplus={surplus}
+                  currency={orphan.currency}
+                  unlocks={funding?.state?.surplus_unlocks ?? null}
+                  className="mt-4"
+                />
+              )}
 
               <div className="mt-6 space-y-4">
                 <div>
@@ -273,7 +320,27 @@ function OrphanDetail() {
                   أرغب أن تكون كفالتي دون ذكر اسمي
                 </label>
 
-                <Button className="w-full" size="lg" onClick={onSponsor} disabled={pending}>
+                {excessOffer && (
+                  <ExcessSuggestion
+                    gap={excessOffer.gap}
+                    excess={excessOffer.excess}
+                    currency={orphan.currency}
+                    suggestions={excessOffer.suggestions}
+                    pending={pending}
+                    onUseGapOnly={() => {
+                      setAmount(String(Math.round(excessOffer.gap)));
+                      setExcessOffer(null);
+                    }}
+                    onConfirm={() => void onSponsor(true)}
+                  />
+                )}
+
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => void onSponsor()}
+                  disabled={pending}
+                >
                   {pending && <Loader2 className="size-4 animate-spin" />}
                   {user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}
                 </Button>

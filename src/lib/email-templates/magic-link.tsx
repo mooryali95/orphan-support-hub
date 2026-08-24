@@ -1,23 +1,14 @@
-import * as React from 'react'
+import * as React from "react";
 
-import {
-  BrandButton,
-  BrandEmail,
-  BrandFallbackLink,
-  BrandText,
-} from './_brand'
+import { BrandButton, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
 
 interface MagicLinkEmailProps {
-  siteName: string
-  siteUrl: string
-  confirmationUrl: string
+  siteName: string;
+  siteUrl: string;
+  confirmationUrl: string;
 }
 
-export const MagicLinkEmail = ({
-  siteName,
-  siteUrl,
-  confirmationUrl,
-}: MagicLinkEmailProps) => (
+export const MagicLinkEmail = ({ siteName, siteUrl, confirmationUrl }: MagicLinkEmailProps) => (
   <BrandEmail
     siteName={siteName}
     siteUrl={siteUrl}
@@ -26,12 +17,10 @@ export const MagicLinkEmail = ({
     heading="ادخل بنقرة واحدة، دون كلمة مرور"
     footNote="الرابط صالح لمدة قصيرة ولمرّة واحدة. إن لم تطلبه، تجاهل الرسالة ولن يتغيّر شيء."
   >
-    <BrandText>
-      اضغط الزر أدناه للدخول إلى حسابك في {siteName}.
-    </BrandText>
+    <BrandText>اضغط الزر أدناه للدخول إلى حسابك في {siteName}.</BrandText>
     <BrandButton href={confirmationUrl}>تسجيل الدخول</BrandButton>
     <BrandFallbackLink url={confirmationUrl} />
   </BrandEmail>
-)
+);
 
-export default MagicLinkEmail
+export default MagicLinkEmail;

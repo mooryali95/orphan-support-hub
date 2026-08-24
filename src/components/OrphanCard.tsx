@@ -27,6 +27,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const full = orphan.status === "fully_sponsored" || percent >= 100;
   const gap = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
+  const surplus = Math.max(0, Number(orphan.funded_monthly) - Number(orphan.monthly_need));
 
   return (
     // البطاقة ليست رابطاً كاملاً: الاسم هو الرابط ويمتدّ غطاؤه على البطاقة.
@@ -93,7 +94,16 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
           {/* المتبقّي هو الرقم الذي يُتّخذ القرار عليه، فيسبق النسبة لا يتبعها. */}
           <div className="flex items-baseline justify-between gap-2">
             {full ? (
-              <span className="text-shore-thrive text-sm font-bold">اكتمل احتياجه الشهري</span>
+              <span className="text-sm font-bold">
+                <span className="text-shore-thrive">اكتمل احتياجه الشهري</span>
+                {/* الفائض يُذكر في البطاقة أيضاً: هو تمييز للملف لا خلل فيه. */}
+                {surplus > 0 && (
+                  <span className="text-bridge-ink font-normal">
+                    {" "}
+                    + {formatMoney(surplus, orphan.currency)} فائض
+                  </span>
+                )}
+              </span>
             ) : (
               <span className="text-sm font-bold">
                 <span className="text-bridge-ink">{formatMoney(gap, orphan.currency)}</span>
