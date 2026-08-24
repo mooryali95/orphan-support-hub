@@ -20,8 +20,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — IOCO" },
-      { name: "description", content: "صورة النظام: الأيتام والكفلاء والتمويل والمتبقّي." },
+      { title: "لوحة الإدارة — IOCO — اكفل يتيماً بملف موثّق" },
+      { name: "description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
       { name: "robots", content: "noindex" },
     ],
   }),

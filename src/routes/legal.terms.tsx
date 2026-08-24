@@ -6,8 +6,8 @@ import { LegalPage, Section } from "@/components/LegalPage";
 export const Route = createFileRoute("/legal/terms")({
   head: () => ({
     meta: [
-      { title: "شروط الاستخدام — IOCO" },
-      { name: "description", content: "شروط استخدام منصة IOCO للكفلاء وجهات الرعاية." },
+      { title: "شروط الاستخدام — IOCO — اكفل يتيماً بملف موثّق" },
+      { name: "description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
     ],
   }),
   component: () => (

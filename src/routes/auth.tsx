@@ -18,12 +18,13 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — IOCO" },
+      { title: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
-        content: "سجّل الدخول إلى منصة كافل لمتابعة كفالاتك أو إنشاء حساب كافل جديد.",
+        content:
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "الدخول والتسجيل — IOCO" },
+      { property: "og:title", content: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
       { property: "og:description", content: "حساب واحد لمتابعة كفالاتك وتقارير الأثر." },
       { name: "robots", content: "noindex" },
     ],

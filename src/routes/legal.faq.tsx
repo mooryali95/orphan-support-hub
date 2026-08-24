@@ -6,8 +6,8 @@ import { LegalPage, Section } from "@/components/LegalPage";
 export const Route = createFileRoute("/legal/faq")({
   head: () => ({
     meta: [
-      { title: "الأسئلة الشائعة — IOCO" },
-      { name: "description", content: "أسئلة الكفلاء وجهات الرعاية عن الكفالة والدفع والتقارير." },
+      { title: "الأسئلة الشائعة — IOCO — اكفل يتيماً بملف موثّق" },
+      { name: "description", content: "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية." },
     ],
   }),
   component: () => (
