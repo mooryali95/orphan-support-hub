@@ -85,12 +85,17 @@ export const Route = createFileRoute("/lovable/email/auth/preview")({
         let type: string;
         try {
           const body = await request.json();
+          if (typeof body?.type !== "string") {
+            return Response.json({ error: "Field 'type' must be a string" }, { status: 400 });
+          }
           type = body.type;
         } catch {
           return Response.json({ error: "Invalid JSON in request body" }, { status: 400 });
         }
 
-        const buildPreview = EMAIL_PREVIEWS[type];
+        // hasOwn لا الفهرسة وحدها: `type` يأتي من الطلب، و`EMAIL_PREVIEWS["constructor"]`
+        // يُرجع دالة موروثة من Object.prototype فتمرّ فحص الصدق ثم تنفجر عند العرض.
+        const buildPreview = Object.hasOwn(EMAIL_PREVIEWS, type) ? EMAIL_PREVIEWS[type] : undefined;
 
         if (!buildPreview) {
           return Response.json({ error: `Unknown email type: ${type}` }, { status: 400 });

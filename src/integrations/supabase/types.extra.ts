@@ -311,8 +311,43 @@ export function withPhase4(client: unknown): Phase4Client {
    امتداد المرحلة 7 — تحديد المعدّل وصحّة النظام والخدمات
    ===================================================================== */
 
+export type ProgramCategory =
+  | "education"
+  | "rehabilitation"
+  | "psychosocial"
+  | "health"
+  | "essentials";
+
+/**
+ * برنامج في الكتالوج — ما يشتريه الكافل فعلاً.
+ *
+ * تحويل العرض إلى خدمات ليس تجميلاً: سياسة Creem تمنع «التبرّع حيث لا
+ * منتج»، فصار للكفالة منتجٌ مسمّى بسعره ومدّته ومخرجاته ومقدّمه.
+ */
+export type ProgramRow = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  category: ProgramCategory;
+  monthly_price: number;
+  currency: string;
+  duration_months: number | null;
+  deliverables: string[];
+  status: "active" | "retired";
+  created_at: Iso;
+};
+
 export type DatabaseWithPhase7 = Omit<DatabaseWithPhase4, "public"> & {
-  public: Omit<DatabaseWithPhase4["public"], "Functions"> & {
+  public: Omit<DatabaseWithPhase4["public"], "Tables" | "Functions"> & {
+    Tables: DatabaseWithPhase4["public"]["Tables"] & {
+      programs: {
+        Row: ProgramRow;
+        Insert: Partial<ProgramRow>;
+        Update: Partial<ProgramRow>;
+        Relationships: [];
+      };
+    };
     Functions: DatabaseWithPhase4["public"]["Functions"] & {
       hit_rate_limit: {
         Args: { _bucket: string; _identity: string; _limit: number; _window_seconds: number };

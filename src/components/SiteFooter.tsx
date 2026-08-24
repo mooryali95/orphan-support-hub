@@ -14,9 +14,15 @@ export function SiteFooter() {
             منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير
             أثر شفافة.
           </p>
-          <p className="mt-4 font-quran text-sm text-shore-need">
-            «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» — رواه البخاري
-          </p>
+          {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
+          <blockquote className="mt-4 text-sm text-shore-need">
+            <p className="font-quran leading-8">
+              «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
+            </p>
+            <cite className="mt-1 block text-xs not-italic text-muted-foreground">
+              رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه
+            </cite>
+          </blockquote>
         </div>
         <div>
           <h2 className="text-sm font-bold">المنصة</h2>
