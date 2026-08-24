@@ -18,7 +18,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "Orphan Support Hub"
+const SITE_NAME = "IOCO"
 const ROOT_DOMAIN = "ioco.sunkvalue.com"
 
 // Sample data for preview mode ONLY (not used in actual email sending).
@@ -37,10 +37,12 @@ const SAMPLE_DATA: Record<string, object> = {
   },
   magiclink: {
     siteName: SITE_NAME,
+    siteUrl: SAMPLE_PROJECT_URL,
     confirmationUrl: SAMPLE_PROJECT_URL,
   },
   recovery: {
     siteName: SITE_NAME,
+    siteUrl: SAMPLE_PROJECT_URL,
     confirmationUrl: SAMPLE_PROJECT_URL,
   },
   invite: {
@@ -50,12 +52,15 @@ const SAMPLE_DATA: Record<string, object> = {
   },
   email_change: {
     siteName: SITE_NAME,
+    siteUrl: SAMPLE_PROJECT_URL,
     oldEmail: SAMPLE_EMAIL,
     email: SAMPLE_EMAIL,
     newEmail: SAMPLE_EMAIL,
     confirmationUrl: SAMPLE_PROJECT_URL,
   },
   reauthentication: {
+    siteName: SITE_NAME,
+    siteUrl: SAMPLE_PROJECT_URL,
     token: '123456',
   },
 }

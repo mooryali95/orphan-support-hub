@@ -137,11 +137,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap",
       },
-      // أيقونة المتصفّح تبقى العلامة المرسومة يدوياً: علامة الحقيبة
-      // مسارات متتبَّعة تنهار تحت 64px فتصير لطخة عند 16px.
+      // العلامة المضغوطة: مقطع «IO» بالطفل في الفراغ السالب — يصمد عند 16px
+      // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "alternate icon", href: "/favicon.ico", type: "image/x-icon" },
-      // أيقونات الحقيبة الرسمية حيث المساحة تكفي لتفاصيلها.
+      { rel: "alternate icon", href: "/favicon.png", type: "image/png", sizes: "64x64" },
       { rel: "apple-touch-icon", href: "/brand/ioco-192.png", sizes: "192x192" },
       { rel: "icon", href: "/brand/ioco-512.png", type: "image/png", sizes: "512x512" },
     ],
