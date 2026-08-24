@@ -112,17 +112,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "IOCO — منصة كفالة الأيتام" },
+      { title: "IOCO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "IOCO — منصة كفالة الأيتام" },
+      { property: "og:title", content: "IOCO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "IOCO تعبر باليتيم من شاطئ الاحتياج إلى شاطئ العمران عبر ملفات موثّقة من جهات رعاية معتمدة.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
@@ -137,11 +137,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap",
       },
-      // أيقونة المتصفّح تبقى العلامة المرسومة يدوياً: علامة الحقيبة
-      // مسارات متتبَّعة تنهار تحت 64px فتصير لطخة عند 16px.
+      // العلامة المضغوطة: مقطع «IO» بالطفل في الفراغ السالب — يصمد عند 16px
+      // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "alternate icon", href: "/favicon.ico", type: "image/x-icon" },
-      // أيقونات الحقيبة الرسمية حيث المساحة تكفي لتفاصيلها.
+      { rel: "alternate icon", href: "/favicon.png", type: "image/png", sizes: "64x64" },
       { rel: "apple-touch-icon", href: "/brand/ioco-192.png", sizes: "192x192" },
       { rel: "icon", href: "/brand/ioco-512.png", type: "image/png", sizes: "512x512" },
     ],

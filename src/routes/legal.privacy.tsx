@@ -6,10 +6,11 @@ import { LegalPage, Section } from "@/components/LegalPage";
 export const Route = createFileRoute("/legal/privacy")({
   head: () => ({
     meta: [
-      { title: "سياسة الخصوصية — IOCO" },
+      { title: "سياسة الخصوصية — IOCO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
-        content: "كيف تُجمع بيانات الأيتام والكفلاء وتُستعمل وتُحفظ وتُحذف في منصة IOCO.",
+        content:
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
     ],
   }),

@@ -21,15 +21,17 @@ const orphansQuery = queryOptions({
 export const Route = createFileRoute("/orphans/")({
   head: () => ({
     meta: [
-      { title: "دليل الأيتام — IOCO" },
+      { title: "دليل الأيتام — IOCO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
-        content: "تصفّح ملفات الأيتام المعتمدة واختر من تكفله حسب المنطقة والاحتياج الشهري.",
+        content:
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "دليل الأيتام — IOCO" },
+      { property: "og:title", content: "دليل الأيتام — IOCO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
-        content: "ملفات أيتام موثّقة ومعتمدة، جاهزة للكفالة الشهرية.",
+        content:
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
     ],
   }),

@@ -36,12 +36,10 @@ export const Route = createFileRoute("/orphans/$orphanId")({
   },
   head: ({ loaderData }) => {
     if (!loaderData?.orphan) {
-      return { meta: [{ title: "ملف غير متاح — IOCO" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "ملف غير متاح — IOCO — اكفل يتيماً بملف موثّق" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `كفالة ${loaderData.orphan.display_name} — IOCO`;
-    const description = `ملف موثّق لكفالة ${loaderData.orphan.display_name}${
-      loaderData.orphan.city ? ` من ${loaderData.orphan.city}` : ""
-    }. احتياج شهري ${formatMoney(loaderData.orphan.monthly_need, loaderData.orphan.currency)}.`;
+    const title = `كفالة ${loaderData.orphan.display_name} — IOCO — اكفل يتيماً بملف موثّق`;
+    const description = "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
     return {
       meta: [
         { title },
