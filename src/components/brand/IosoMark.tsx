@@ -50,6 +50,9 @@ export function IosoMark({
   const markOnly = variant === "mark";
 
   const disc = markOnly ? { cx: 120, cy: 120, r: 104 } : LETTER_O2;
+  // إحداثيات المستخدم لا صندوق العنصر: الضلع الرأسي للحرف I عرضه صفر،
+  // والتدرّج النسبي ينهار عليه فلا يُرسم أصلاً.
+  const [gw, gh] = markOnly ? [240, 240] : [910, 320];
 
   return (
     <svg
@@ -65,18 +68,33 @@ export function IosoMark({
       <defs>
         {!solid && (
           <>
-            <linearGradient id={`${id}-b`} x1="0" y1="1" x2="1" y2="0">
+            <linearGradient
+              id={`${id}-b`}
+              gradientUnits="userSpaceOnUse"
+              x1="0"
+              y1={gh}
+              x2={gw}
+              y2="0"
+            >
               <stop offset="0" stopColor="#17538F" />
               <stop offset="0.62" stopColor="#1D5AA3" />
               <stop offset="1" stopColor="#5E7488" />
             </linearGradient>
-            <linearGradient id={`${id}-g`} x1="0" y1="1" x2="1" y2="0">
+            <linearGradient
+              id={`${id}-g`}
+              gradientUnits="userSpaceOnUse"
+              x1="0"
+              y1={gh}
+              x2={gw}
+              y2="0"
+            >
               <stop offset="0" stopColor="#B48C46" />
               <stop offset="0.5" stopColor="#C9A058" />
               <stop offset="1" stopColor="#DCBB7C" />
             </linearGradient>
           </>
         )}
+
         {/* الطفل يُقتطع من القرص لا يُرسم فوقه: فراغٌ حقيقي يُظهر ما خلف الشعار. */}
         <mask id={`${id}-child`}>
           <circle cx={disc.cx} cy={disc.cy} r={disc.r} fill="#FFFFFF" />
