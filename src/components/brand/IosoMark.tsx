@@ -62,20 +62,29 @@ export function IosoMark({
     >
       {title && <title>{title}</title>}
 
-      {!solid && (
-        <defs>
-          <linearGradient id={`${id}-b`} x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0" stopColor="#17538F" />
-            <stop offset="0.62" stopColor="#1D5AA3" />
-            <stop offset="1" stopColor="#5E7488" />
-          </linearGradient>
-          <linearGradient id={`${id}-g`} x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0" stopColor="#B48C46" />
-            <stop offset="0.5" stopColor="#C9A058" />
-            <stop offset="1" stopColor="#DCBB7C" />
-          </linearGradient>
-        </defs>
-      )}
+      <defs>
+        {!solid && (
+          <>
+            <linearGradient id={`${id}-b`} x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stopColor="#17538F" />
+              <stop offset="0.62" stopColor="#1D5AA3" />
+              <stop offset="1" stopColor="#5E7488" />
+            </linearGradient>
+            <linearGradient id={`${id}-g`} x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stopColor="#B48C46" />
+              <stop offset="0.5" stopColor="#C9A058" />
+              <stop offset="1" stopColor="#DCBB7C" />
+            </linearGradient>
+          </>
+        )}
+        {/* الطفل يُقتطع من القرص لا يُرسم فوقه: فراغٌ حقيقي يُظهر ما خلف الشعار. */}
+        <mask id={`${id}-child`}>
+          <circle cx={disc.cx} cy={disc.cy} r={disc.r} fill="#FFFFFF" />
+          <g transform={childTransform(disc.cx, disc.cy, disc.r)}>
+            <path d={CHILD_PATH} fill="#000000" fillRule="evenodd" />
+          </g>
+        </mask>
+      </defs>
 
       {variant === "logo" && (
         <path
@@ -88,21 +97,15 @@ export function IosoMark({
       )}
 
       {!markOnly && (
-        <g stroke-linecap="round" strokeLinecap="round" strokeWidth={STROKE} fill="none">
+        <g strokeLinecap="round" strokeWidth={STROKE} fill="none">
           <path d={`M${LETTER_I.x} ${LETTER_I.y1} L${LETTER_I.x} ${LETTER_I.y2}`} stroke={blue} />
           <circle cx={LETTER_O1.cx} cy={BASE_Y} r={LETTER_O1.r} stroke={blue} />
           <path d={LETTER_S} stroke={gold} />
         </g>
       )}
 
-      <path
-        fill={gold}
-        fillRule="evenodd"
-        d={`M${disc.cx - disc.r} ${disc.cy} a${disc.r} ${disc.r} 0 1 0 ${disc.r * 2} 0 a${disc.r} ${disc.r} 0 1 0 ${-disc.r * 2} 0 Z`}
-      />
-      <g transform={childTransform(disc.cx, disc.cy, disc.r)}>
-        <path d={CHILD_PATH} fill="var(--background, #FFFFFF)" fillRule="evenodd" />
-      </g>
+      <circle cx={disc.cx} cy={disc.cy} r={disc.r} fill={gold} mask={`url(#${id}-child)`} />
+
     </svg>
   );
 }
