@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IocoLockup } from "@/components/brand/IocoMark";
+import { IosoLockup } from "@/components/brand/IosoMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
 
@@ -18,17 +18,17 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -93,8 +93,8 @@ function AuthPage() {
         id="main"
         className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
-        <Link to="/" className="flex justify-center" aria-label="IOCO — الصفحة الرئيسية">
-          <IocoLockup />
+        <Link to="/" className="flex justify-center" aria-label="IOSO — الصفحة الرئيسية">
+          <IosoLockup />
         </Link>
 
         <h1 className="mt-6 text-center text-lg font-extrabold">

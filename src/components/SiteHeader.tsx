@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { IocoLockup } from "@/components/brand/IocoMark";
+import { IosoLockup } from "@/components/brand/IosoMark";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
@@ -28,8 +28,8 @@ export function SiteHeader() {
         تخطّي إلى المحتوى
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label="IOCO — الصفحة الرئيسية">
-          <IocoLockup />
+        <Link to="/" aria-label="IOSO — الصفحة الرئيسية">
+          <IosoLockup />
         </Link>
 
         <nav className="hidden flex-1 items-center gap-1 md:flex">
