@@ -112,17 +112,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "IOCO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "IOSO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
@@ -141,8 +141,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "alternate icon", href: "/favicon.png", type: "image/png", sizes: "64x64" },
-      { rel: "apple-touch-icon", href: "/brand/ioco-192.png", sizes: "192x192" },
-      { rel: "icon", href: "/brand/ioco-512.png", type: "image/png", sizes: "512x512" },
+      { rel: "apple-touch-icon", href: "/brand/ioso-192.png", sizes: "192x192" },
+      { rel: "icon", href: "/brand/ioso-512.png", type: "image/png", sizes: "512x512" },
     ],
   }),
   shellComponent: RootShell,

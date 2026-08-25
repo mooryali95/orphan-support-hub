@@ -14,7 +14,7 @@ import {
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { IocoMark } from "@/components/brand/IocoMark";
+import { IosoMark } from "@/components/brand/IosoMark";
 import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
@@ -28,7 +28,7 @@ const homeQuery = queryOptions({
   },
 });
 
-const TITLE = "IOCO — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
+const TITLE = "IOSO — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
 const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
@@ -162,10 +162,10 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <IocoMark
+            <IosoMark
               variant="logo"
               className="mx-auto h-16 w-auto md:h-20"
-              title="شعار IOCO — الخيط المتصل والمضيق"
+              title="شعار IOSO — الخيط المتصل والمضيق"
             />
             <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
               لا نقدّم رعايةً مؤقّتة،

@@ -14,7 +14,7 @@ import {
 } from "@react-email/components";
 
 /**
- * الغلاف البريدي الموحّد لهوية IOCO.
+ * الغلاف البريدي الموحّد لهوية IOSO.
  *
  * البريد هنا امتداد لاستعارة «المضيق»: ترويسة بالأزرق الملوكي (شط الفقد)،
  * يفصلها عن المتن خيطٌ ذهبي واحد لا ينقطع (فعل العبور)، ثم متن فاتح هادئ
@@ -68,7 +68,7 @@ export function BrandEmail({
           <Section style={header}>
             <Link href={siteUrl}>
               <Img
-                src={assetUrl(siteUrl, "/brand/ioco-email-logo-white.png")}
+                src={assetUrl(siteUrl, "/brand/ioso-email-logo-white.png")}
                 alt={siteName}
                 width="168"
                 style={logo}

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { IocoLockup } from "@/components/brand/IocoMark";
+import { IosoLockup } from "@/components/brand/IosoMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 
 export function SiteFooter() {
@@ -9,7 +9,7 @@ export function SiteFooter() {
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.1} tile={84} />
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
         <div className="md:col-span-2">
-          <IocoLockup />
+          <IosoLockup />
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">
             منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير
             أثر شفافة.
@@ -82,7 +82,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} IOCO — جميع الحقوق محفوظة
+        © {new Date().getFullYear()} IOSO — جميع الحقوق محفوظة
       </div>
     </footer>
   );

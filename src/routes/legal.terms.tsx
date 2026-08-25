@@ -6,11 +6,11 @@ import { LegalPage, Section } from "@/components/LegalPage";
 export const Route = createFileRoute("/legal/terms")({
   head: () => ({
     meta: [
-      { title: "شروط الاستخدام — IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "شروط الاستخدام — IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
     ],
   }),
