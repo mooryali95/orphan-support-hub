@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 320" fill="none">
+<defs><mask id="m"><circle cx="760" cy="160" r="104" fill="#fff"/><g transform="translate(706.5142857142857 85.12) scale(1.0697142857142856)"><path d="M50 6 a17 17 0 1 0 0.1 0 Z M50 46 C40 46 34 52 34 61 L34 85 C34 89 31 93 28 98 L15 119 C12 124 14 129 19 131 C24 133 28 131 31 127 L44 106 L44 127 C44 133 48 137 53 137 C58 137 62 133 62 127 L62 97 L74 113 C77 117 82 118 86 115 C90 112 91 107 88 103 L70 77 L70 61 C70 52 62 46 52 46 Z" fill="#000" fill-rule="evenodd"/></g></mask></defs>
+<g stroke-linecap="round" stroke-width="34" fill="none"><path d="M60 72 L60 248" stroke="#17538F"/><circle cx="250" cy="160" r="88" stroke="#17538F"/><path d="M556 100 C540 76 512 62 480 62 C440 62 412 85 412 118 C412 175 552 151 552 208 C552 245 519 266 477 266 C443 266 414 251 398 226" stroke="#17538F"/></g>
+<circle cx="760" cy="160" r="104" fill="#17538F" mask="url(#m)"/>
+</svg>
