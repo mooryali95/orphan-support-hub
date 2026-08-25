@@ -52,7 +52,7 @@ export function IosoMark({
   const disc = markOnly ? { cx: 120, cy: 120, r: 104 } : LETTER_O2;
   // إحداثيات المستخدم لا صندوق العنصر: الضلع الرأسي للحرف I عرضه صفر،
   // والتدرّج النسبي ينهار عليه فلا يُرسم أصلاً.
-  const [gw, gh] = markOnly ? [240, 240] : [910, 320];
+  const [gw, gh] = markOnly ? [240, 240] : [885, 320];
 
   return (
     <svg
