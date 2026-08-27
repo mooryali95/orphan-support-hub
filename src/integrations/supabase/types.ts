@@ -241,7 +241,14 @@ export type Database = {
         Row: {
           body: string | null
           created_at: string
+          email_attempts: number
+          email_error: string | null
+          email_sent_at: string | null
+          email_state: Database["public"]["Enums"]["email_state"]
+          entity: string | null
+          entity_id: string | null
           id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
           link: string | null
           read_at: string | null
           title: string
@@ -250,7 +257,14 @@ export type Database = {
         Insert: {
           body?: string | null
           created_at?: string
+          email_attempts?: number
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_state?: Database["public"]["Enums"]["email_state"]
+          entity?: string | null
+          entity_id?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
           link?: string | null
           read_at?: string | null
           title: string
@@ -259,7 +273,14 @@ export type Database = {
         Update: {
           body?: string | null
           created_at?: string
+          email_attempts?: number
+          email_error?: string | null
+          email_sent_at?: string | null
+          email_state?: Database["public"]["Enums"]["email_state"]
+          entity?: string | null
+          entity_id?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
           link?: string | null
           read_at?: string | null
           title?: string
@@ -656,6 +677,7 @@ export type Database = {
       progress_reports: {
         Row: {
           attachment_url: string | null
+          attachments: string[]
           created_at: string
           created_by: string | null
           education_note: string | null
@@ -665,13 +687,17 @@ export type Database = {
           org_id: string | null
           orphan_id: string
           period: string
+          published_at: string | null
           review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: Database["public"]["Enums"]["report_status"]
           summary: string | null
           updated_at: string
         }
         Insert: {
           attachment_url?: string | null
+          attachments?: string[]
           created_at?: string
           created_by?: string | null
           education_note?: string | null
@@ -681,13 +707,17 @@ export type Database = {
           org_id?: string | null
           orphan_id: string
           period: string
+          published_at?: string | null
           review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["report_status"]
           summary?: string | null
           updated_at?: string
         }
         Update: {
           attachment_url?: string | null
+          attachments?: string[]
           created_at?: string
           created_by?: string | null
           education_note?: string | null
@@ -697,7 +727,10 @@ export type Database = {
           org_id?: string | null
           orphan_id?: string
           period?: string
+          published_at?: string | null
           review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["report_status"]
           summary?: string | null
           updated_at?: string
@@ -938,6 +971,15 @@ export type Database = {
     }
     Functions: {
       admin_overview: { Args: never; Returns: Json }
+      announce_payment: {
+        Args: {
+          _amount: number
+          _currency: string
+          _sponsorship: string
+          _succeeded: boolean
+        }
+        Returns: undefined
+      }
       can_manage_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       can_reach_orphan_folder: { Args: { _path: string }; Returns: boolean }
       create_orphan_intake: { Args: { _payload: Json }; Returns: Json }
@@ -951,6 +993,26 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       is_protected_admin_email: { Args: { _email: string }; Returns: boolean }
       next_orphan_code: { Args: never; Returns: string }
+      notification_recipients: {
+        Args: { _ids: string[] }
+        Returns: {
+          email: string
+          id: string
+        }[]
+      }
+      notify: {
+        Args: {
+          _body?: string
+          _entity?: string
+          _entity_id?: string
+          _kind: Database["public"]["Enums"]["notification_kind"]
+          _link?: string
+          _title: string
+          _user: string
+        }
+        Returns: string
+      }
+      orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
       protected_admin_override: { Args: never; Returns: boolean }
       review_organization: {
@@ -966,8 +1028,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      review_progress_report: {
+        Args: { _decision: string; _id: string; _note?: string }
+        Returns: undefined
+      }
       sponsors_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       start_orphan_draft: { Args: { _org_id: string }; Returns: Json }
+      submit_progress_report: { Args: { _payload: Json }; Returns: Json }
       suggest_orphans_for_sponsor: {
         Args: { _budget?: number; _limit?: number; _region?: string }
         Returns: {
@@ -1002,15 +1069,32 @@ export type Database = {
         }
         Returns: undefined
       }
+      write_timeline: {
+        Args: { _detail?: string; _event_type: string; _orphan: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "sponsor" | "care_org" | "guardian"
+      email_state: "pending" | "sent" | "failed" | "skipped"
       need_category:
         | "education"
         | "health"
         | "food"
         | "housing"
         | "clothing"
+        | "other"
+      notification_kind:
+        | "welcome"
+        | "orphan_approved"
+        | "orphan_rejected"
+        | "organization_approved"
+        | "organization_rejected"
+        | "sponsorship_started"
+        | "payment_succeeded"
+        | "payment_failed"
+        | "report_published"
+        | "report_rejected"
         | "other"
       org_status: "pending" | "approved" | "suspended" | "rejected"
       orphan_doc_type:
@@ -1180,12 +1264,26 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "sponsor", "care_org", "guardian"],
+      email_state: ["pending", "sent", "failed", "skipped"],
       need_category: [
         "education",
         "health",
         "food",
         "housing",
         "clothing",
+        "other",
+      ],
+      notification_kind: [
+        "welcome",
+        "orphan_approved",
+        "orphan_rejected",
+        "organization_approved",
+        "organization_rejected",
+        "sponsorship_started",
+        "payment_succeeded",
+        "payment_failed",
+        "report_published",
+        "report_rejected",
         "other",
       ],
       org_status: ["pending", "approved", "suspended", "rejected"],
