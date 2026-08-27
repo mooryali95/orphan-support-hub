@@ -449,7 +449,10 @@ export type Database = {
           photo_consent_doc: string | null
           photo_url: string | null
           region: string | null
+          rejection_code: Database["public"]["Enums"]["rejection_code"] | null
           rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: Database["public"]["Enums"]["orphan_status"]
           story: string | null
           updated_at: string
@@ -479,7 +482,10 @@ export type Database = {
           photo_consent_doc?: string | null
           photo_url?: string | null
           region?: string | null
+          rejection_code?: Database["public"]["Enums"]["rejection_code"] | null
           rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["orphan_status"]
           story?: string | null
           updated_at?: string
@@ -509,7 +515,10 @@ export type Database = {
           photo_consent_doc?: string | null
           photo_url?: string | null
           region?: string | null
+          rejection_code?: Database["public"]["Enums"]["rejection_code"] | null
           rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["orphan_status"]
           story?: string | null
           updated_at?: string
@@ -931,6 +940,7 @@ export type Database = {
       admin_overview: { Args: never; Returns: Json }
       can_manage_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       can_reach_orphan_folder: { Args: { _path: string }; Returns: boolean }
+      create_orphan_intake: { Args: { _payload: Json }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -940,9 +950,24 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_protected_admin_email: { Args: { _email: string }; Returns: boolean }
+      next_orphan_code: { Args: never; Returns: string }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
       protected_admin_override: { Args: never; Returns: boolean }
+      review_organization: {
+        Args: { _decision: string; _id: string; _reason?: string }
+        Returns: undefined
+      }
+      review_orphan: {
+        Args: {
+          _code?: Database["public"]["Enums"]["rejection_code"]
+          _decision: string
+          _id: string
+          _reason?: string
+        }
+        Returns: undefined
+      }
       sponsors_orphan: { Args: { _orphan_id: string }; Returns: boolean }
+      start_orphan_draft: { Args: { _org_id: string }; Returns: Json }
       suggest_orphans_for_sponsor: {
         Args: { _budget?: number; _limit?: number; _region?: string }
         Returns: {
@@ -963,6 +988,10 @@ export type Database = {
           status: Database["public"]["Enums"]["orphan_status"]
           story: string
         }[]
+      }
+      verify_document: {
+        Args: { _id: string; _note?: string; _verified: boolean }
+        Returns: undefined
       }
       write_audit: {
         Args: {
@@ -1005,6 +1034,16 @@ export type Database = {
         | "archived"
       payment_status: "pending" | "paid" | "failed" | "refunded"
       photo_consent_state: "none" | "face_hidden" | "granted" | "withdrawn"
+      rejection_code:
+        | "documents_missing"
+        | "documents_unclear"
+        | "documents_inconsistent"
+        | "identity_unverified"
+        | "guardianship_unproven"
+        | "needs_unjustified"
+        | "duplicate_profile"
+        | "photo_consent_missing"
+        | "other"
       report_status: "submitted" | "approved" | "rejected"
       sponsorship_status:
         | "pending_payment"
@@ -1173,6 +1212,17 @@ export const Constants = {
       ],
       payment_status: ["pending", "paid", "failed", "refunded"],
       photo_consent_state: ["none", "face_hidden", "granted", "withdrawn"],
+      rejection_code: [
+        "documents_missing",
+        "documents_unclear",
+        "documents_inconsistent",
+        "identity_unverified",
+        "guardianship_unproven",
+        "needs_unjustified",
+        "duplicate_profile",
+        "photo_consent_missing",
+        "other",
+      ],
       report_status: ["submitted", "approved", "rejected"],
       sponsorship_status: [
         "pending_payment",
