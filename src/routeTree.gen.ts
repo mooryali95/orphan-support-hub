@@ -26,6 +26,7 @@ import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
+import { Route as AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.transfer'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -115,6 +116,12 @@ const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   path: '/api/payments/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSponsorshipsSponsorshipIdTransferRoute =
+  AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/transfer',
+    path: '/sponsorships/$sponsorshipId/transfer',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   id: '/lovable/email/auth/preview',
   path: '/lovable/email/auth/preview',
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/orphans/': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -170,6 +178,7 @@ export interface FileRoutesByTo {
   '/orphans': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -193,6 +202,7 @@ export interface FileRoutesById {
   '/orphans/': typeof OrphansIndexRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/_authenticated/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -259,6 +271,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/_authenticated/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/sponsorships/$sponsorshipId/transfer': {
+      id: '/_authenticated/sponsorships/$sponsorshipId/transfer'
+      path: '/sponsorships/$sponsorshipId/transfer'
+      fullPath: '/sponsorships/$sponsorshipId/transfer'
+      preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/lovable/email/auth/preview': {
       id: '/lovable/email/auth/preview'
       path: '/lovable/email/auth/preview'
@@ -433,6 +453,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
+  AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -440,6 +461,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
+  AuthenticatedSponsorshipsSponsorshipIdTransferRoute:
+    AuthenticatedSponsorshipsSponsorshipIdTransferRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
