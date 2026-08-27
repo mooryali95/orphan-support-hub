@@ -1024,6 +1024,8 @@ export type Database = {
           currency: string
           ended_at: string | null
           enrollment_id: string | null
+          exceeds_gap: boolean
+          excess_at_creation: number | null
           id: string
           is_anonymous: boolean
           message: string | null
@@ -1043,6 +1045,8 @@ export type Database = {
           currency?: string
           ended_at?: string | null
           enrollment_id?: string | null
+          exceeds_gap?: boolean
+          excess_at_creation?: number | null
           id?: string
           is_anonymous?: boolean
           message?: string | null
@@ -1062,6 +1066,8 @@ export type Database = {
           currency?: string
           ended_at?: string | null
           enrollment_id?: string | null
+          exceeds_gap?: boolean
+          excess_at_creation?: number | null
           id?: string
           is_anonymous?: boolean
           message?: string | null
@@ -1204,6 +1210,7 @@ export type Database = {
         }
         Returns: string
       }
+      orphan_funding_state: { Args: { _orphan: string }; Returns: Json }
       orphan_program_plan: { Args: { _orphan: string }; Returns: Json }
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
@@ -1229,6 +1236,22 @@ export type Database = {
       sponsors_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       start_orphan_draft: { Args: { _org_id: string }; Returns: Json }
       submit_progress_report: { Args: { _payload: Json }; Returns: Json }
+      suggest_orphans_for_amount: {
+        Args: { _amount: number; _exclude?: string; _limit?: number }
+        Returns: {
+          city: string
+          code: string
+          currency: string
+          display_name: string
+          education_stage: string
+          funded_monthly: number
+          gap: number
+          id: string
+          monthly_need: number
+          photo_url: string
+          region: string
+        }[]
+      }
       suggest_orphans_for_sponsor: {
         Args: { _budget?: number; _limit?: number; _region?: string }
         Returns: {
