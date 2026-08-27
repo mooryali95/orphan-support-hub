@@ -273,30 +273,48 @@ export type Database = {
           doc_type: string
           file_name: string | null
           id: string
+          kind: Database["public"]["Enums"]["orphan_doc_type"]
+          mime_type: string | null
+          note: string | null
           orphan_id: string
+          size_bytes: number | null
           storage_path: string
           uploaded_by: string | null
           verified: boolean
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           created_at?: string
           doc_type: string
           file_name?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["orphan_doc_type"]
+          mime_type?: string | null
+          note?: string | null
           orphan_id: string
+          size_bytes?: number | null
           storage_path: string
           uploaded_by?: string | null
           verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           created_at?: string
           doc_type?: string
           file_name?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["orphan_doc_type"]
+          mime_type?: string | null
+          note?: string | null
           orphan_id?: string
+          size_bytes?: number | null
           storage_path?: string
           uploaded_by?: string | null
           verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -425,6 +443,10 @@ export type Database = {
           id: string
           monthly_need: number
           org_id: string | null
+          photo_consent: Database["public"]["Enums"]["photo_consent_state"]
+          photo_consent_at: string | null
+          photo_consent_by: string | null
+          photo_consent_doc: string | null
           photo_url: string | null
           region: string | null
           rejection_reason: string | null
@@ -451,6 +473,10 @@ export type Database = {
           id?: string
           monthly_need?: number
           org_id?: string | null
+          photo_consent?: Database["public"]["Enums"]["photo_consent_state"]
+          photo_consent_at?: string | null
+          photo_consent_by?: string | null
+          photo_consent_doc?: string | null
           photo_url?: string | null
           region?: string | null
           rejection_reason?: string | null
@@ -477,6 +503,10 @@ export type Database = {
           id?: string
           monthly_need?: number
           org_id?: string | null
+          photo_consent?: Database["public"]["Enums"]["photo_consent_state"]
+          photo_consent_at?: string | null
+          photo_consent_by?: string | null
+          photo_consent_doc?: string | null
           photo_url?: string | null
           region?: string | null
           rejection_reason?: string | null
@@ -900,6 +930,7 @@ export type Database = {
     Functions: {
       admin_overview: { Args: never; Returns: Json }
       can_manage_orphan: { Args: { _orphan_id: string }; Returns: boolean }
+      can_reach_orphan_folder: { Args: { _path: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -953,6 +984,17 @@ export type Database = {
         | "clothing"
         | "other"
       org_status: "pending" | "approved" | "suspended" | "rejected"
+      orphan_doc_type:
+        | "death_certificate"
+        | "birth_certificate"
+        | "guardianship_proof"
+        | "orphan_id"
+        | "guardian_id"
+        | "income_proof"
+        | "school_record"
+        | "medical_report"
+        | "photo_consent"
+        | "other"
       orphan_status:
         | "draft"
         | "submitted"
@@ -962,6 +1004,7 @@ export type Database = {
         | "fully_sponsored"
         | "archived"
       payment_status: "pending" | "paid" | "failed" | "refunded"
+      photo_consent_state: "none" | "face_hidden" | "granted" | "withdrawn"
       report_status: "submitted" | "approved" | "rejected"
       sponsorship_status:
         | "pending_payment"
@@ -1107,6 +1150,18 @@ export const Constants = {
         "other",
       ],
       org_status: ["pending", "approved", "suspended", "rejected"],
+      orphan_doc_type: [
+        "death_certificate",
+        "birth_certificate",
+        "guardianship_proof",
+        "orphan_id",
+        "guardian_id",
+        "income_proof",
+        "school_record",
+        "medical_report",
+        "photo_consent",
+        "other",
+      ],
       orphan_status: [
         "draft",
         "submitted",
@@ -1117,6 +1172,7 @@ export const Constants = {
         "archived",
       ],
       payment_status: ["pending", "paid", "failed", "refunded"],
+      photo_consent_state: ["none", "face_hidden", "granted", "withdrawn"],
       report_status: ["submitted", "approved", "rejected"],
       sponsorship_status: [
         "pending_payment",
