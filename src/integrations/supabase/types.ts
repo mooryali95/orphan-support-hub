@@ -618,6 +618,9 @@ export type Database = {
           id: boolean
           max_sponsorship: number
           min_sponsorship: number
+          payments_hold_reason: string | null
+          payments_hold_since: string | null
+          payments_on_hold: boolean
           updated_at: string
         }
         Insert: {
@@ -626,6 +629,9 @@ export type Database = {
           id?: boolean
           max_sponsorship?: number
           min_sponsorship?: number
+          payments_hold_reason?: string | null
+          payments_hold_since?: string | null
+          payments_on_hold?: boolean
           updated_at?: string
         }
         Update: {
@@ -634,6 +640,9 @@ export type Database = {
           id?: boolean
           max_sponsorship?: number
           min_sponsorship?: number
+          payments_hold_reason?: string | null
+          payments_hold_since?: string | null
+          payments_on_hold?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -673,6 +682,125 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      program_enrollments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          currency: string
+          ended_at: string | null
+          id: string
+          monthly_price: number
+          note: string | null
+          orphan_id: string
+          program_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["enrollment_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          ended_at?: string | null
+          id?: string
+          monthly_price: number
+          note?: string | null
+          orphan_id: string
+          program_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["enrollment_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          ended_at?: string | null
+          id?: string
+          monthly_price?: number
+          note?: string | null
+          orphan_id?: string
+          program_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["enrollment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_enrollments_orphan_id_fkey"
+            columns: ["orphan_id"]
+            isOneToOne: false
+            referencedRelation: "orphans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "program_enrollments_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programs: {
+        Row: {
+          category: Database["public"]["Enums"]["program_category"]
+          created_at: string
+          currency: string
+          deliverables: string[]
+          description: string | null
+          duration_months: number | null
+          id: string
+          monthly_price: number
+          provider_org_id: string | null
+          slug: string
+          status: Database["public"]["Enums"]["program_status"]
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["program_category"]
+          created_at?: string
+          currency?: string
+          deliverables?: string[]
+          description?: string | null
+          duration_months?: number | null
+          id?: string
+          monthly_price: number
+          provider_org_id?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["program_status"]
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["program_category"]
+          created_at?: string
+          currency?: string
+          deliverables?: string[]
+          description?: string | null
+          duration_months?: number | null
+          id?: string
+          monthly_price?: number
+          provider_org_id?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["program_status"]
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programs_provider_org_id_fkey"
+            columns: ["provider_org_id"]
+            isOneToOne: false
+            referencedRelation: "care_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       progress_reports: {
         Row: {
@@ -850,6 +978,7 @@ export type Database = {
           created_at: string
           currency: string
           ended_at: string | null
+          enrollment_id: string | null
           id: string
           is_anonymous: boolean
           message: string | null
@@ -868,6 +997,7 @@ export type Database = {
           created_at?: string
           currency?: string
           ended_at?: string | null
+          enrollment_id?: string | null
           id?: string
           is_anonymous?: boolean
           message?: string | null
@@ -886,6 +1016,7 @@ export type Database = {
           created_at?: string
           currency?: string
           ended_at?: string | null
+          enrollment_id?: string | null
           id?: string
           is_anonymous?: boolean
           message?: string | null
@@ -900,6 +1031,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "sponsorships_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "program_enrollments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sponsorships_orphan_id_fkey"
             columns: ["orphan_id"]
@@ -1012,6 +1150,7 @@ export type Database = {
         }
         Returns: string
       }
+      orphan_program_plan: { Args: { _orphan: string }; Returns: Json }
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
       protected_admin_override: { Args: never; Returns: boolean }
@@ -1077,6 +1216,12 @@ export type Database = {
     Enums: {
       app_role: "admin" | "sponsor" | "care_org" | "guardian"
       email_state: "pending" | "sent" | "failed" | "skipped"
+      enrollment_status:
+        | "proposed"
+        | "funded"
+        | "paused"
+        | "completed"
+        | "cancelled"
       need_category:
         | "education"
         | "health"
@@ -1118,6 +1263,13 @@ export type Database = {
         | "archived"
       payment_status: "pending" | "paid" | "failed" | "refunded"
       photo_consent_state: "none" | "face_hidden" | "granted" | "withdrawn"
+      program_category:
+        | "education"
+        | "rehabilitation"
+        | "psychosocial"
+        | "health"
+        | "essentials"
+      program_status: "draft" | "active" | "archived"
       rejection_code:
         | "documents_missing"
         | "documents_unclear"
@@ -1265,6 +1417,13 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "sponsor", "care_org", "guardian"],
       email_state: ["pending", "sent", "failed", "skipped"],
+      enrollment_status: [
+        "proposed",
+        "funded",
+        "paused",
+        "completed",
+        "cancelled",
+      ],
       need_category: [
         "education",
         "health",
@@ -1310,6 +1469,14 @@ export const Constants = {
       ],
       payment_status: ["pending", "paid", "failed", "refunded"],
       photo_consent_state: ["none", "face_hidden", "granted", "withdrawn"],
+      program_category: [
+        "education",
+        "rehabilitation",
+        "psychosocial",
+        "health",
+        "essentials",
+      ],
+      program_status: ["draft", "active", "archived"],
       rejection_code: [
         "documents_missing",
         "documents_unclear",
