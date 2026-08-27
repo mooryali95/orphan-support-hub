@@ -177,6 +177,30 @@ export type Database = {
         }
         Relationships: []
       }
+      data_retention_policy: {
+        Row: {
+          basis: Database["public"]["Enums"]["processing_basis"]
+          entity: string
+          note: string
+          retain_months: number | null
+          updated_at: string
+        }
+        Insert: {
+          basis: Database["public"]["Enums"]["processing_basis"]
+          entity: string
+          note: string
+          retain_months?: number | null
+          updated_at?: string
+        }
+        Update: {
+          basis?: Database["public"]["Enums"]["processing_basis"]
+          entity?: string
+          note?: string
+          retain_months?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       disbursements: {
         Row: {
           amount: number
@@ -898,6 +922,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          bucket: string
+          hits: number
+          identity: string
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          hits?: number
+          identity: string
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          hits?: number
+          identity?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       sponsorship_payments: {
         Row: {
           amount: number
@@ -1128,6 +1173,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      hit_rate_limit: {
+        Args: {
+          _bucket: string
+          _identity: string
+          _limit: number
+          _window_seconds: number
+        }
+        Returns: Json
+      }
       is_admin: { Args: never; Returns: boolean }
       is_protected_admin_email: { Args: { _email: string }; Returns: boolean }
       next_orphan_code: { Args: never; Returns: string }
@@ -1154,6 +1208,7 @@ export type Database = {
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
       protected_admin_override: { Args: never; Returns: boolean }
+      prune_rate_limits: { Args: never; Returns: number }
       review_organization: {
         Args: { _decision: string; _id: string; _reason?: string }
         Returns: undefined
@@ -1195,6 +1250,7 @@ export type Database = {
           story: string
         }[]
       }
+      system_health: { Args: never; Returns: Json }
       verify_document: {
         Args: { _id: string; _note?: string; _verified: boolean }
         Returns: undefined
@@ -1263,6 +1319,11 @@ export type Database = {
         | "archived"
       payment_status: "pending" | "paid" | "failed" | "refunded"
       photo_consent_state: "none" | "face_hidden" | "granted" | "withdrawn"
+      processing_basis:
+        | "guardian_consent"
+        | "legitimate_interest"
+        | "legal_obligation"
+        | "vital_interest"
       program_category:
         | "education"
         | "rehabilitation"
@@ -1469,6 +1530,12 @@ export const Constants = {
       ],
       payment_status: ["pending", "paid", "failed", "refunded"],
       photo_consent_state: ["none", "face_hidden", "granted", "withdrawn"],
+      processing_basis: [
+        "guardian_consent",
+        "legitimate_interest",
+        "legal_obligation",
+        "vital_interest",
+      ],
       program_category: [
         "education",
         "rehabilitation",
