@@ -83,7 +83,7 @@ export const reviewProgressReport = createServerFn({ method: "POST" })
     const { error } = await db.rpc("review_progress_report", {
       _id: data.id,
       _decision: data.decision,
-      _note: data.note ?? undefined,
+      ...(data.note ? { _note: data.note } : {}),
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
