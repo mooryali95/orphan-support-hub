@@ -123,8 +123,8 @@ export const reviewOrphan = createServerFn({ method: "POST" })
     const { error } = await db.rpc("review_orphan", {
       _id: data.id,
       _decision: data.decision,
-      _code: data.code ?? null,
-      _reason: data.reason ?? null,
+      _code: data.code ?? undefined,
+      _reason: data.reason ?? undefined,
     });
 
     if (error) return { ok: false as const, error: error.message };
@@ -147,7 +147,7 @@ export const reviewOrganization = createServerFn({ method: "POST" })
     const { error } = await db.rpc("review_organization", {
       _id: data.id,
       _decision: data.decision,
-      _reason: data.reason ?? null,
+      _reason: data.reason ?? undefined,
     });
 
     if (error) return { ok: false as const, error: error.message };

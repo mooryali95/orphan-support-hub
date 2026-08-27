@@ -319,7 +319,7 @@ export const verifyDocument = createServerFn({ method: "POST" })
     const { error } = await db.rpc("verify_document", {
       _id: data.id,
       _verified: data.verified,
-      _note: data.note ?? null,
+      _note: data.note ?? undefined,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
