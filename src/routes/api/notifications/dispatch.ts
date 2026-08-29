@@ -103,6 +103,10 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
         const baseUrl = process.env["PUBLIC_BASE_URL"] ?? "https://ioco.app";
         let sent = 0;
         let failed = 0;
+        let skipped = 0;
+        let attemptsUsed = 0;
+        let lastError: string | null = null;
+
 
         for (const n of pending) {
           const to = emailOf.get(n.id);
