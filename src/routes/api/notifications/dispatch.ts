@@ -112,12 +112,14 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
           const to = emailOf.get(n.id);
           if (!to) {
             // مستخدم بلا بريد: لا شيء يُرسَل، ولا معنى لإبقائه معلّقاً.
+            skipped += 1;
             await db
               .from("notifications")
               .update({ email_state: "skipped", email_error: "لا بريد للمستلم" })
               .eq("id", n.id);
             continue;
           }
+
 
           const mail = renderNotificationEmail({
             to,
