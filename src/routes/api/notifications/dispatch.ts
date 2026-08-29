@@ -132,6 +132,7 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
 
           const res = await provider.send(mail);
           const attempts = (n.email_attempts ?? 0) + 1;
+          attemptsUsed += 1;
 
           if (res.ok) {
             sent += 1;
@@ -146,6 +147,7 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
               .eq("id", n.id);
           } else {
             failed += 1;
+            lastError = res.error;
             // غير القابل للإعادة يُغلَق فوراً؛ والقابل يبقى معلّقاً حتى
             // يستنفد محاولاته، فلا يدور الطابور على رسالة ميّتة.
             const exhausted = !res.retryable || attempts >= MAX_ATTEMPTS;
@@ -160,7 +162,19 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
           }
         }
 
-        return Response.json({ ok: true, provider: provider.id, sent, failed });
+        await runs.from("dispatch_runs").insert({
+          ok: failed === 0,
+          provider: provider.id,
+          sent,
+          failed,
+          skipped,
+          attempts: attemptsUsed,
+          ...(failed > 0 ? { error_kind: "provider" } : {}),
+          ...(lastError ? { error: lastError.slice(0, 500) } : {}),
+        });
+
+        return Response.json({ ok: true, provider: provider.id, sent, failed, skipped });
+
       },
     },
   },
