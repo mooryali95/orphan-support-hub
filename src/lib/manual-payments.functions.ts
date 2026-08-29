@@ -13,12 +13,12 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * الصلاحية تُفحص بعميل المستخدم قبل أي كتابة بـservice_role.
  */
 
-async function assertAdmin(supabase: {
-  rpc: (fn: "is_admin") => Promise<{ data: unknown; error: unknown }>;
-}) {
-  const { data } = await supabase.rpc("is_admin");
+async function assertAdmin(supabase: unknown) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabase as any).rpc("is_admin");
   return data === true;
 }
+
 
 /** الكفالات المعلّقة بانتظار تأكيد تحويل. */
 export const listAwaitingTransfers = createServerFn({ method: "GET" })
