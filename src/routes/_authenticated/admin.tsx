@@ -8,6 +8,7 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
 import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
+import { AwaitingTransfers } from "@/components/admin/AwaitingTransfers";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -225,6 +226,8 @@ function AdminPage() {
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
+          <AwaitingTransfers />
+
           <section>
             <h2 className="text-lg font-bold">
               ملفات بانتظار المراجعة ({o.pending_orphans.length})
