@@ -400,3 +400,42 @@ export type M5Client = SupabaseClient<DatabaseWithM5, "public">;
 export function withM5(client: unknown): M5Client {
   return client as M5Client;
 }
+
+
+/* =====================================================================
+   امتداد المراقبة — سجلّ تشغيل تصريف الإشعارات
+   ===================================================================== */
+
+export type DispatchRunRow = {
+  id: string;
+  job: string;
+  ok: boolean;
+  schema_ready: boolean;
+  provider: string | null;
+  sent: number;
+  failed: number;
+  skipped: number;
+  attempts: number;
+  error_kind: string | null;
+  error: string | null;
+  created_at: Iso;
+};
+
+export type DatabaseWithDispatch = Omit<DatabaseWithM5, "public"> & {
+  public: Omit<DatabaseWithM5["public"], "Tables"> & {
+    Tables: DatabaseWithM5["public"]["Tables"] & {
+      dispatch_runs: {
+        Row: DispatchRunRow;
+        Insert: Partial<DispatchRunRow>;
+        Update: Partial<DispatchRunRow>;
+        Relationships: [];
+      };
+    };
+  };
+};
+
+export type DispatchClient = SupabaseClient<DatabaseWithDispatch, "public">;
+
+export function withDispatch(client: unknown): DispatchClient {
+  return client as DispatchClient;
+}
