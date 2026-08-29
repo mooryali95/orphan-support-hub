@@ -261,6 +261,51 @@ export type Database = {
           },
         ]
       }
+      dispatch_runs: {
+        Row: {
+          attempts: number
+          created_at: string
+          error: string | null
+          error_kind: string | null
+          failed: number
+          id: string
+          job: string
+          ok: boolean
+          provider: string | null
+          schema_ready: boolean
+          sent: number
+          skipped: number
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          error_kind?: string | null
+          failed?: number
+          id?: string
+          job?: string
+          ok?: boolean
+          provider?: string | null
+          schema_ready?: boolean
+          sent?: number
+          skipped?: number
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          error_kind?: string | null
+          failed?: number
+          id?: string
+          job?: string
+          ok?: boolean
+          provider?: string | null
+          schema_ready?: boolean
+          sent?: number
+          skipped?: number
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
