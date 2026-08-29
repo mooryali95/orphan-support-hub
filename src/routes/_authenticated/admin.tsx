@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
+import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "orphans" | "sponsors" | "queue";
+type Tab = "overview" | "orphans" | "sponsors" | "queue" | "monitoring";
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
@@ -81,6 +82,7 @@ function AdminPage() {
     ["orphans", "الأيتام", o.orphan_rows.length],
     ["sponsors", "الكفلاء", o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
+    ["monitoring", "المراقبة", null],
   ];
 
   return (
@@ -196,6 +198,8 @@ function AdminPage() {
           ])}
         />
       )}
+
+      {tab === "monitoring" && <DispatchHealthPanel />}
 
       {tab === "sponsors" && (
         <Table
