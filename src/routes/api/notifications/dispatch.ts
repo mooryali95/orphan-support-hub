@@ -31,12 +31,34 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
         const provider = emailProvider();
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { withPhase4 } = await import("@/integrations/supabase/types.extra");
+        const { withPhase4, withDispatch } = await import("@/integrations/supabase/types.extra");
         const db = withPhase4(supabaseAdmin);
+        const runs = withDispatch(supabaseAdmin);
+
+        // فحص المخطط قبل أي عمل: قاعدة متأخّرة عن الهجرات تُفشل كل صفّ
+        // على حدة وتستهلك محاولاته، فالتوقّف المبكر أنظف من الفشل البطيء.
+        const { checkDispatchSchema } = await import("@/lib/schema-preflight.server");
+        const schema = await checkDispatchSchema(supabaseAdmin);
+        if (!schema.ready) {
+          await runs.from("dispatch_runs").insert({
+            ok: false,
+            schema_ready: false,
+            provider: provider.id,
+            error_kind: "database",
+            error: `مخطط ناقص: ${schema.missing.join(" | ")}`.slice(0, 500),
+          });
+          return Response.json(
+            { ok: false, error: "schema_not_ready", missing: schema.missing },
+            { status: 503 },
+          );
+        }
 
         if (!provider.isConfigured()) {
           // لا مفتاح: لا يُعدّ هذا فشلاً ولا تُستهلك محاولات. الطابور
           // ينتظر، والإشعارات داخل التطبيق وصلت أصلاً.
+          await runs
+            .from("dispatch_runs")
+            .insert({ ok: true, provider: provider.id, error_kind: "unconfigured" });
           return Response.json({
             ok: true,
             provider: provider.id,
@@ -53,10 +75,20 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
           .order("created_at", { ascending: true })
           .limit(BATCH);
 
-        if (error) return Response.json({ ok: false, error: error.message }, { status: 500 });
+        if (error) {
+          await runs.from("dispatch_runs").insert({
+            ok: false,
+            provider: provider.id,
+            error_kind: "database",
+            error: error.message.slice(0, 500),
+          });
+          return Response.json({ ok: false, error: error.message }, { status: 500 });
+        }
         if (!pending || pending.length === 0) {
+          await runs.from("dispatch_runs").insert({ ok: true, provider: provider.id });
           return Response.json({ ok: true, provider: provider.id, sent: 0 });
         }
+
 
         const { data: recipients } = await db.rpc("notification_recipients", {
           _ids: pending.map((n) => n.id),
