@@ -683,6 +683,110 @@ BEGIN
   RAISE NOTICE 'PASS — لوحة المشرف تُريه مستفيديه وحدهم';
 END $$;
 
+-- ---------------------------------------------------------------------
+-- إدارة المشرفين: الاعتماد بالبريد، والسحب يُنهي ما ترتّب عليه
+-- ---------------------------------------------------------------------
+DO $$
+DECLARE _r JSONB; _n INTEGER;
+BEGIN
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000001","role":"authenticated"}';
+
+  -- بريدٌ لا حساب له يُرفض: اعتمادٌ معلّق لا يُستعمل.
+  BEGIN
+    PERFORM public.certify_supervisor_by_email('ghost@example.test', 'applied', 90);
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — اعتُمد بريدٌ لا حساب له';
+  EXCEPTION WHEN no_data_found THEN
+    RAISE NOTICE 'PASS — لا يُعتمد بريدٌ بلا حساب: المشرف يحتاج حساباً';
+  END;
+
+  _r := public.certify_supervisor_by_email('q-uncertified@example.test', 'applied', 90);
+  IF NOT (_r->>'independent')::boolean OR _r->>'level' <> 'applied' THEN
+    RAISE EXCEPTION 'FAIL — الاعتماد بالبريد لم يُثبت المستوى والاستقلالية (%)', _r::text;
+  END IF;
+  RAISE NOTICE 'PASS — الاعتماد بالبريد يُثبت المستوى والاستقلالية';
+
+  -- والقائمة تُظهر عدد من يُشرف عليهم، ليُعرَف أثر السحب قبل الضغط.
+  SELECT jsonb_array_length(public.admin_supervisors()) INTO _n;
+  IF _n < 3 THEN
+    RAISE EXCEPTION 'FAIL — قائمة المشرفين ناقصة (%)', _n;
+  END IF;
+  RESET ROLE;
+  RAISE NOTICE 'PASS — قائمة المشرفين تُظهر المعتمَدين وعدد مستفيديهم';
+END $$;
+
+-- والقائمة للإدارة وحدها: دليلُ حسابات لا يُفتح لغيرها.
+DO $$
+BEGIN
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+  BEGIN
+    PERFORM public.admin_supervisors();
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — جهةُ الرعاية قرأت قائمة المشرفين';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+    RAISE NOTICE 'PASS — قائمة المشرفين للإدارة وحدها';
+  END;
+END $$;
+
+-- والسحب يُنهي الإشراف القائم: اعتمادٌ منزوعٌ على الورق قائمٌ في الواقع
+-- أسوأ من عدم السحب.
+DO $$
+DECLARE _r JSONB; _live INTEGER; _e UUID;
+BEGIN
+  SELECT count(*) INTO _live FROM public.enrollment_roles
+   WHERE person_id = 'c1000000-0000-4000-8000-000000000003'
+     AND role = 'supervisor' AND ended_at IS NULL;
+  IF _live = 0 THEN
+    RAISE EXCEPTION 'FAIL — الفحص لا يقيس شيئاً: لا إشراف قائماً أصلاً';
+  END IF;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000001","role":"authenticated"}';
+  _r := public.revoke_supervisor('c1000000-0000-4000-8000-000000000003', 'انتهت الصلاحية');
+  RESET ROLE;
+
+  IF (_r->>'ended_assignments')::int <> _live THEN
+    RAISE EXCEPTION 'FAIL — السحب لم يُنهِ الإشراف القائم (% من %)',
+      _r->>'ended_assignments', _live;
+  END IF;
+
+  SELECT count(*) INTO _live FROM public.enrollment_roles
+   WHERE person_id = 'c1000000-0000-4000-8000-000000000003'
+     AND role = 'supervisor' AND ended_at IS NULL;
+  IF _live <> 0 THEN
+    RAISE EXCEPTION 'FAIL — بقي إشرافٌ قائمٌ بعد السحب (%)', _live;
+  END IF;
+  RAISE NOTICE 'PASS — سحب الاعتماد يُنهي الإشراف القائم ويُظهر عدده';
+
+  -- والملفّ يقف عن التقدّم حتى يُسنَد غيره — إظهارٌ للمشكلة لا تسبّبٌ فيها.
+  SELECT e.id INTO _e FROM public.program_enrollments e
+   WHERE e.orphan_id = 'c3000000-0000-4000-8000-00000000000b';
+  BEGIN
+    UPDATE public.program_enrollments SET stage = 'system' WHERE id = _e;
+    RAISE EXCEPTION 'FAIL — تقدّم البرنامج وقد سُحب اعتماد مشرفه';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — الملفّ يقف عن التقدّم بعد سحب اعتماد مشرفه';
+  END;
+END $$;
+
+-- والمسحوب لا يُسنَد ثانيةً حتى يُعاد اعتماده.
+DO $$
+DECLARE _e UUID;
+BEGIN
+  SELECT e.id INTO _e FROM public.program_enrollments e
+   WHERE e.orphan_id = 'c3000000-0000-4000-8000-00000000000b';
+  BEGIN
+    INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+    VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000003');
+    RAISE EXCEPTION 'FAIL — أُسند الإشراف لمن سُحب اعتماده';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — المسحوب لا يُسنَد حتى يُعاد اعتماده';
+  END;
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص بناء الأهلية اجتازت ──'; END $$;
 
 ROLLBACK;

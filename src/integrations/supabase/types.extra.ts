@@ -690,3 +690,40 @@ export type SupervisorClient = SupabaseClient<DatabaseWithSupervisor, "public">;
 export function withSupervisor(client: unknown): SupervisorClient {
   return client as SupervisorClient;
 }
+
+
+/* =====================================================================
+   امتداد إدارة المشرفين
+   ===================================================================== */
+
+export type AdminSupervisorRow = {
+  user_id: string;
+  email: string;
+  level: ProgramLevel;
+  independence_index: number;
+  independent: boolean;
+  certified_at: string | null;
+  active: boolean;
+  note: string | null;
+  /** عدد من يُشرف عليهم — ليُعرَف أثر السحب قبل الضغط لا بعده. */
+  assignments: number;
+};
+
+export type DatabaseWithSupervisorAdmin = Omit<DatabaseWithSupervisor, "public"> & {
+  public: Omit<DatabaseWithSupervisor["public"], "Functions"> & {
+    Functions: DatabaseWithSupervisor["public"]["Functions"] & {
+      admin_supervisors: { Args: Record<string, never>; Returns: unknown };
+      certify_supervisor_by_email: {
+        Args: { _email: string; _level?: string; _independence?: number; _note?: string | null };
+        Returns: unknown;
+      };
+      revoke_supervisor: { Args: { _user: string; _note?: string | null }; Returns: unknown };
+    };
+  };
+};
+
+export type SupervisorAdminClient = SupabaseClient<DatabaseWithSupervisorAdmin, "public">;
+
+export function withSupervisorAdmin(client: unknown): SupervisorAdminClient {
+  return client as SupervisorAdminClient;
+}
