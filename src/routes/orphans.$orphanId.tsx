@@ -15,6 +15,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { getPublicOrphan } from "@/lib/orphans.functions";
+import { getOrphanQualification } from "@/lib/qualification.functions";
+import { QualificationPanel } from "@/components/qualification/QualificationPanel";
 import { createSponsorship, type SuggestedOrphan } from "@/lib/sponsorships.functions";
 import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
@@ -97,6 +99,13 @@ function OrphanDetail() {
 
   // ما يفتحه الفائض يُقرأ من القاعدة: الكتالوج يتغيّر، وحسابه في الواجهة
   // يجعل العرض يتخلّف عنه.
+  // بناء الأهلية: ما اشتُرِي وأين وصل. لا تُسقط الصفحة إن غاب.
+  const fetchQualification = useServerFn(getOrphanQualification);
+  const { data: qualification } = useQuery({
+    queryKey: ["qualification", orphanId],
+    queryFn: () => fetchQualification({ data: { orphanId } }),
+  });
+
   const fetchFunding = useServerFn(getFundingState);
   const { data: funding } = useQuery({
     queryKey: ["funding-state", orphanId],
@@ -353,6 +362,12 @@ function OrphanDetail() {
             </div>
           </aside>
         </div>
+
+        {qualification?.programs && qualification.programs.length > 0 && (
+          <div className="mt-12 border-t border-border/70 pt-10">
+            <QualificationPanel programs={qualification.programs} />
+          </div>
+        )}
       </main>
       {/* على الجوال يقع نموذج الكفالة أسفل الصفحة بأربع شاشات؛ هذا الشريط
           يُبقي الفعل حاضراً ويقفز إليه. يُخفى على الشاشات الكبيرة حيث

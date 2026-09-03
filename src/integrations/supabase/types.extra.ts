@@ -335,6 +335,8 @@ export type ProgramRow = {
   duration_months: number | null;
   deliverables: string[];
   status: "active" | "retired";
+  /** خدمةٌ تُشترى، أو برنامج بناء أهلية له مفهومٌ وسمةٌ ورحلة. */
+  kind: "service" | "qualification";
   created_at: Iso;
 };
 
@@ -476,4 +478,64 @@ export type OutboxClient = SupabaseClient<DatabaseWithOutbox, "public">;
 
 export function withOutbox(client: unknown): OutboxClient {
   return client as OutboxClient;
+}
+
+
+/* =====================================================================
+   امتداد بناء الأهلية — منهجية «الرواد»
+   ===================================================================== */
+
+export type QualificationStage =
+  | "concept"
+  | "trait"
+  | "system"
+  | "actions"
+  | "measurement"
+  | "qualified";
+
+/**
+ * ما يُعرض من الأهلية للكافل والزائر.
+ *
+ * لا درجات ولا سمة جوهرية ولا وسم «تحت العتبة»: تلك حكمٌ على طفل، وقراره
+ * في `enrollment_assessments` خلف سياسة القراءة.
+ */
+export type PublicQualification = {
+  enrollment_id: string;
+  program: string;
+  summary: string;
+  level: "foundational" | "applied" | "advanced" | null;
+  concept: string | null;
+  concept_intent: string | null;
+  target_trait: string | null;
+  target_trait_summary: string | null;
+  inputs: string[];
+  processes: string[];
+  deliverables: string[];
+  stage: QualificationStage;
+  stage_order: number;
+  stage_changed_at: string;
+  monthly_price: number;
+  currency: string;
+  status: string;
+  has_supervisor: boolean;
+  has_consent: boolean;
+};
+
+export type DatabaseWithQualification = Omit<DatabaseWithOutbox, "public"> & {
+  public: Omit<DatabaseWithOutbox["public"], "Functions"> & {
+    Functions: DatabaseWithOutbox["public"]["Functions"] & {
+      orphan_qualification: { Args: { _orphan: string }; Returns: unknown };
+      enrollment_assessments: { Args: { _enrollment: string }; Returns: unknown };
+      record_trait_assessment: {
+        Args: { _enrollment: string; _scores: unknown; _phase?: string; _note?: string | null };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type QualificationClient = SupabaseClient<DatabaseWithQualification, "public">;
+
+export function withQualification(client: unknown): QualificationClient {
+  return client as QualificationClient;
 }

@@ -302,24 +302,54 @@ function HomePage() {
           <section className="border-y border-border/70 bg-secondary/30">
             <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="programs-heading">
               <h2 id="programs-heading" className="text-2xl font-extrabold">
-                الكفالة اشتراكٌ في برنامج، لا مبلغٌ في صندوق
+                الكفالة بناء أهلية، لا سدُّ احتياج
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                كل ريالٍ يُصرف على خدمة مسمّاة لها سعرٌ ومدّةٌ ومخرجاتٌ معلنة ومقدِّمٌ مسؤول — ويعود
-                إليك تقرير تسليم. هكذا تعرف ما اشتريتَه، ويعرف الطفل ما استحقّه.
+                ننقل العمل من منطق الرعاية إلى منطق البناء: لا نسدّ حاجة شهر، بل نكوّن قابليةً تُنتج
+                الفعل ذاتياً بعد أن ينتهي تدخّلنا.
+              </p>
+
+              {/* المعادلة الحاكمة — تُذكر لأنها تحكم التصميم لا لأنها شعار. */}
+              <figure className="mt-6 max-w-2xl rounded-2xl border border-bridge/30 bg-background p-5">
+                <blockquote className="text-center text-base leading-9 font-bold md:text-lg">
+                  الأهلية = القدرة على <span className="text-shore-need">تفهّم الخطاب</span> +{" "}
+                  <span className="text-shore-thrive">اكتساب الفعل</span>
+                </blockquote>
+                <figcaption className="mt-3 text-center text-xs leading-6 text-muted-foreground">
+                  تفهّم الخطاب: أن يدرك ما يُطلب منه ومسؤوليته تجاهه. واكتساب الفعل: أن يصير قادراً
+                  على إنتاج أفعالٍ جديدة متزايدة، لا أن يؤدّي فعلاً مرّة.
+                </figcaption>
+              </figure>
+
+              <p className="mt-6 max-w-2xl text-sm leading-7 text-muted-foreground">
+                ولذلك يبدأ كل برنامج من <strong>المفهوم</strong> لا من النشاط: يُعلَّم المفهوم
+                فيُشغّل <strong>سمةً</strong>، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات
+                أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.
               </p>
               <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {data.programs.map((program) => (
                   <li
                     key={program.id}
-                    className="flex flex-col rounded-2xl border border-border bg-card p-5"
+                    className={
+                      program.kind === "qualification"
+                        ? "flex flex-col rounded-2xl border-2 border-shore-thrive/35 bg-card p-5"
+                        : "flex flex-col rounded-2xl border border-border bg-card p-5"
+                    }
                   >
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="font-bold">{program.title}</h3>
                       {/* الذهبي خطّاً لا أرضيةً تحت نصّ: على أرضية bg-bridge/12 يهبط
                           bridge-ink إلى 4.34:1، ويستوفي 4.77:1 على أرضية البطاقة. */}
-                      <span className="shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-[11px] font-medium text-bridge-ink">
-                        {CATEGORY_LABEL[program.category] ?? program.category}
+                      <span
+                        className={
+                          program.kind === "qualification"
+                            ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-[11px] font-medium text-shore-thrive"
+                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-[11px] font-medium text-bridge-ink"
+                        }
+                      >
+                        {program.kind === "qualification"
+                          ? "بناء أهلية"
+                          : (CATEGORY_LABEL[program.category] ?? program.category)}
                       </span>
                     </div>
                     {program.summary && (
