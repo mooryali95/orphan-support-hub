@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FileText, Loader2, Plus } from "lucide-react";
+import { FileText, GraduationCap, Loader2, Plus } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getMyOrgWorkspace, registerOrganization } from "@/lib/org.functions";
+import { QualificationManager } from "@/components/qualification/QualificationManager";
 import { OrphanIntakeForm } from "@/components/intake/OrphanIntakeForm";
 import { ReportForm } from "@/components/impact/ReportForm";
 import { REJECTION_LABELS } from "@/lib/intake.functions";
@@ -47,6 +48,7 @@ function OrgPage() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [reporting, setReporting] = useState<string | null>(null);
+  const [building, setBuilding] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["org-workspace"],
@@ -179,17 +181,30 @@ function OrgPage() {
                 {/* التقرير الدوري متاح على الملفات المنشورة وحدها: ملفّ
                   لم يُعتمد بعدُ لا كافل له ينتظر خبراً. */}
                 {(o.status === "approved" || o.status === "fully_sponsored") && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    aria-expanded={reporting === o.id}
-                    onClick={() => setReporting(reporting === o.id ? null : o.id)}
-                  >
-                    <FileText className="size-4" aria-hidden="true" />
-                    {reporting === o.id ? "إغلاق" : "تقرير دوري"}
-                  </Button>
+                  <>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      aria-expanded={building === o.id}
+                      onClick={() => setBuilding(building === o.id ? null : o.id)}
+                    >
+                      <GraduationCap className="size-4" aria-hidden="true" />
+                      {building === o.id ? "إغلاق" : "بناء الأهلية"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      aria-expanded={reporting === o.id}
+                      onClick={() => setReporting(reporting === o.id ? null : o.id)}
+                    >
+                      <FileText className="size-4" aria-hidden="true" />
+                      {reporting === o.id ? "إغلاق" : "تقرير دوري"}
+                    </Button>
+                  </>
                 )}
               </div>
+
+              {building === o.id && <QualificationManager orphanId={o.id} />}
 
               {reporting === o.id && (
                 <ReportForm

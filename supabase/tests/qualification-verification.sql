@@ -147,14 +147,40 @@ BEGIN
     FROM public.programs p WHERE p.slug = 'ahliyyah-foundational'
   RETURNING id INTO _e;
 
-  INSERT INTO public.enrollment_roles (enrollment_id, role, person_name, consent_at)
-  VALUES (_e, 'guardian', 'ولي ثانٍ', now());
+  INSERT INTO public.enrollment_roles
+    (enrollment_id, role, person_name, consent_at, consent_document)
+  VALUES (_e, 'guardian', 'ولي ثانٍ', now(), 'consent-2.pdf');
 
   BEGIN
     UPDATE public.program_enrollments SET stage = 'trait' WHERE id = _e;
     RAISE EXCEPTION 'FAIL — تقدّم البرنامج بلا مشرف (والإذن موثَّق)';
   EXCEPTION WHEN check_violation THEN
     RAISE NOTICE 'PASS — لا يتقدّم البرنامج بلا مشرف معتمَد';
+  END;
+END $$;
+
+-- وإذنٌ بلا وثيقة دعوى: الجهة هي من توثّقه لا الوليّ، فتوقيعُ وقتٍ بلا
+-- ما يُثبته إقرارٌ من الجهة على نفسها.
+DO $$
+BEGIN
+  BEGIN
+    UPDATE public.enrollment_roles SET consent_at = now(), consent_document = NULL
+     WHERE enrollment_id = 'c4000000-0000-4000-8000-00000000000c' AND role = 'guardian';
+    RAISE EXCEPTION 'FAIL — قُبل إذنٌ بلا وثيقة تُثبته';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — الإذن يحتاج وثيقةً تُثبته، لا توقيع وقتٍ وحده';
+  END;
+END $$;
+
+-- و«إذن المشرف» لا معنى له: الإذن للولي والوصي وحدهما.
+DO $$
+BEGIN
+  BEGIN
+    UPDATE public.enrollment_roles SET consent_at = now(), consent_document = 'x.pdf'
+     WHERE enrollment_id = 'c4000000-0000-4000-8000-00000000000c' AND role = 'supervisor';
+    RAISE EXCEPTION 'FAIL — وُثّق إذنٌ من المشرف';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — الإذن للولي أو الوصي لا لدورٍ آخر';
   END;
 END $$;
 
@@ -360,8 +386,9 @@ BEGIN
     FROM public.programs p WHERE p.slug = 'ahliyyah-foundational'
   RETURNING id INTO _e;
 
-  INSERT INTO public.enrollment_roles (enrollment_id, role, person_name, consent_at)
-  VALUES (_e, 'trustee', 'الوصي', now());
+  INSERT INTO public.enrollment_roles
+    (enrollment_id, role, person_name, consent_at, consent_document)
+  VALUES (_e, 'trustee', 'الوصي', now(), 'consent-3.pdf');
   INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
   VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000003');
 
@@ -436,6 +463,87 @@ BEGIN
     RAISE EXCEPTION 'FAIL — غريبٌ قرأ قياسات طفل (% سجلّاً)', jsonb_array_length(_r);
   END IF;
   RAISE NOTICE 'PASS — القياس لا يُقرأ إلا لمن يملكه: السياسة تحكم لا الدالّة';
+END $$;
+
+-- ---------------------------------------------------------------------
+-- طبقة التشغيل: الباب مفتوحٌ محروساً
+-- ---------------------------------------------------------------------
+DO $$
+DECLARE _e UUID; _rid UUID; _stage public.qualification_stage;
+BEGIN
+  INSERT INTO public.orphans (id, code, display_name, org_id, created_by,
+                              monthly_need, status, approved_at)
+  VALUES ('c3000000-0000-4000-8000-00000000000f', 'AHL-4', 'يتيم التشغيل',
+          'c2000000-0000-4000-8000-00000000000a', 'c1000000-0000-4000-8000-000000000002',
+          200, 'approved', now());
+  INSERT INTO public.program_enrollments (orphan_id, program_id, monthly_price)
+  SELECT 'c3000000-0000-4000-8000-00000000000f', p.id, p.monthly_price
+    FROM public.programs p WHERE p.slug = 'ahliyyah-foundational'
+  RETURNING id INTO _e;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+
+  -- البريد المعروف يُحوَّل إلى حساب.
+  _rid := public.assign_enrollment_role(_e, 'supervisor', 'مشرف',
+            'q-supervisor@example.test');
+  IF (SELECT person_id FROM public.enrollment_roles WHERE id = _rid)
+     IS DISTINCT FROM 'c1000000-0000-4000-8000-000000000003' THEN
+    RAISE EXCEPTION 'FAIL — البريد المعروف لم يُربط بحسابه';
+  END IF;
+
+  -- والمجهول يُسجَّل باسمه لا يُرفض: كثيرٌ من الأولياء بلا حساب.
+  _rid := public.assign_enrollment_role(_e, 'guardian', 'ولي التشغيل',
+            'nobody@example.test', '05xxxxxxx');
+  IF (SELECT person_id FROM public.enrollment_roles WHERE id = _rid) IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — بريد مجهول أُنتج له حساب';
+  END IF;
+  RESET ROLE;
+  RAISE NOTICE 'PASS — الإسناد يربط البريد المعروف ويوثّق المجهول باسمه';
+
+  -- الإذن يمرّ بالدالّة ويحتاج وثيقة.
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+  BEGIN
+    PERFORM public.record_enrollment_consent(_rid, '   ');
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — قُبل توثيق إذنٍ بوثيقة فارغة';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — توثيق الإذن يرفض الوثيقة الفارغة';
+  END;
+
+  PERFORM public.record_enrollment_consent(_rid, 'consent-op.pdf');
+  _stage := public.set_enrollment_stage(_e, 'trait');
+  RESET ROLE;
+
+  IF _stage <> 'trait' THEN
+    RAISE EXCEPTION 'FAIL — لم تتقدّم المرحلة عبر الدالّة (%)', _stage;
+  END IF;
+  RAISE NOTICE 'PASS — بالتوثيق والمشرف تتقدّم المرحلة عبر الدالّة';
+
+  -- ولا نكوص: مرحلةٌ بُلغت لا يُرجَع عنها بضغطة.
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+  BEGIN
+    PERFORM public.set_enrollment_stage(_e, 'concept');
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — نُكص عن مرحلةٍ بُلغت';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+    RAISE NOTICE 'PASS — لا نكوص عن مرحلةٍ بُلغت إلا من الإدارة';
+  END;
+
+  -- والغريب لا يُسند دوراً ولا يقدّم مرحلة.
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000004","role":"authenticated"}';
+  BEGIN
+    PERFORM public.assign_enrollment_role(_e, 'mentor', 'دخيل');
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — غريبٌ أسند دوراً';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+    RAISE NOTICE 'PASS — الإسناد وتقديم المرحلة لمن يدير الملف وحده';
+  END;
 END $$;
 
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص بناء الأهلية اجتازت ──'; END $$;

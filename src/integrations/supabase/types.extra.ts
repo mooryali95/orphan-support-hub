@@ -539,3 +539,88 @@ export type QualificationClient = SupabaseClient<DatabaseWithQualification, "pub
 export function withQualification(client: unknown): QualificationClient {
   return client as QualificationClient;
 }
+
+
+/* =====================================================================
+   امتداد تشغيل بناء الأهلية
+   ===================================================================== */
+
+export type EnrollmentRoleKind =
+  | "supervisor"
+  | "jurist"
+  | "guardian"
+  | "trustee"
+  | "mentor";
+
+export type EnrollmentRoleRow = {
+  id: string;
+  role: EnrollmentRoleKind;
+  person_name: string | null;
+  person_contact: string | null;
+  has_account: boolean;
+  consent_at: string | null;
+  consent_document: string | null;
+  assigned_at: string;
+};
+
+export type AssessmentRow = {
+  id: string;
+  phase: "baseline" | "progress" | "final";
+  scores: Record<string, number>;
+  core_trait: string | null;
+  relational_trait: string | null;
+  below_threshold: boolean;
+  assessed_at: string;
+};
+
+export type EnrollmentDetail = {
+  enrollment_id: string;
+  orphan_id: string;
+  program: string;
+  kind: "service" | "qualification";
+  stage: QualificationStage;
+  stage_order: number;
+  status: string;
+  is_supervisor: boolean;
+  roles: EnrollmentRoleRow[];
+  assessments: AssessmentRow[];
+};
+
+export type OrphanEnrollmentRow = {
+  enrollment_id: string;
+  program: string;
+  kind: "service" | "qualification";
+  stage: QualificationStage;
+  status: string;
+};
+
+export type DatabaseWithQualificationOps = Omit<DatabaseWithQualification, "public"> & {
+  public: Omit<DatabaseWithQualification["public"], "Functions"> & {
+    Functions: DatabaseWithQualification["public"]["Functions"] & {
+      assign_enrollment_role: {
+        Args: {
+          _enrollment: string;
+          _role: string;
+          _person_name?: string | null;
+          _person_email?: string | null;
+          _person_contact?: string | null;
+          _note?: string | null;
+        };
+        Returns: string;
+      };
+      record_enrollment_consent: {
+        Args: { _role_id: string; _document: string };
+        Returns: undefined;
+      };
+      set_enrollment_stage: { Args: { _enrollment: string; _stage: string }; Returns: string };
+      enrollment_detail: { Args: { _enrollment: string }; Returns: unknown };
+      orphan_enrollments: { Args: { _orphan: string }; Returns: unknown };
+    };
+  };
+};
+
+export type QualificationOpsClient = SupabaseClient<DatabaseWithQualificationOps, "public">;
+
+export function withQualificationOps(client: unknown): QualificationOpsClient {
+  return client as QualificationOpsClient;
+}
