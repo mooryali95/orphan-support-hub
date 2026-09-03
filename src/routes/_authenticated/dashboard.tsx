@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Loader2, HeartHandshake } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
+import { SuggestionsPanel } from "@/components/matching/SuggestionsPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
@@ -203,6 +204,12 @@ function DashboardPage() {
             );
           })
         )}
+      </div>
+
+      {/* الترشيح بعد الكفالات لا قبلها: اللوحة تُفتح للاطمئنان على من
+          تكفلهم، ثم يُعرض من يليهم. */}
+      <div className="mt-12 border-t border-border pt-8">
+        <SuggestionsPanel />
       </div>
     </DashboardShell>
   );

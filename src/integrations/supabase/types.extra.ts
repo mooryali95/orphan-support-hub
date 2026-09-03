@@ -795,3 +795,69 @@ export type UnitsClient = SupabaseClient<DatabaseWithUnits, "public">;
 export function withUnits(client: unknown): UnitsClient {
   return client as UnitsClient;
 }
+
+/* =====================================================================
+   امتداد المطابقة
+   ===================================================================== */
+
+/**
+ * ترشيحٌ يحمل سببه.
+ *
+ * الحقول الخمسة الأخيرة ليست زينة: ترشيحٌ بلا سببٍ نُخزةٌ لا توصية،
+ * والكافل يقرّر على بيّنة أو لا يقرّر.
+ */
+export type SuggestedOrphan = {
+  id: string;
+  code: string;
+  display_name: string;
+  gender: string | null;
+  birth_date: string | null;
+  city: string | null;
+  region: string | null;
+  story: string | null;
+  photo_url: string | null;
+  education_stage: string | null;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  status: string;
+  org_id: string | null;
+  created_at: string;
+  gap: number;
+  /** برنامج أهليةٍ حيّ له مشرفٌ معتمَد وإذنٌ موثَّق. */
+  building: boolean;
+  /** ميزانيتك تسدّ ثغرته كاملةً. */
+  completes: boolean;
+  in_region: boolean;
+  waiting_days: number;
+};
+
+export type SponsorPreferences = {
+  monthly_budget: number | null;
+  preferred_region: string | null;
+  city: string | null;
+  full_name: string | null;
+} | null;
+
+export type DatabaseWithMatching = Omit<DatabaseWithUnits, "public"> & {
+  public: Omit<DatabaseWithUnits["public"], "Functions"> & {
+    Functions: DatabaseWithUnits["public"]["Functions"] & {
+      suggest_orphans_for_sponsor: {
+        Args: { _budget?: number | null; _region?: string | null; _limit?: number };
+        Returns: unknown;
+      };
+      my_sponsor_preferences: { Args: Record<string, never>; Returns: unknown };
+      published_regions: { Args: Record<string, never>; Returns: unknown };
+      save_sponsor_preferences: {
+        Args: { _budget?: number | null; _region?: string | null };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type MatchingClient = SupabaseClient<DatabaseWithMatching, "public">;
+
+export function withMatching(client: unknown): MatchingClient {
+  return client as MatchingClient;
+}
