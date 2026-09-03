@@ -524,6 +524,9 @@ export type PublicQualification = {
   /** عدّ الجلسات — كم قُبل من كم. لا مضمون ولا ملاحظات. */
   units_total?: number;
   units_accepted?: number;
+  /** وقوعُ القياس لا نتيجته: وعدٌ للكافل يصير قابلاً للتحقّق. */
+  measured_before?: boolean;
+  measured_after?: boolean;
 };
 
 export type DatabaseWithQualification = Omit<DatabaseWithOutbox, "public"> & {

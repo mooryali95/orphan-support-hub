@@ -1,4 +1,4 @@
-import { CircleCheck, Circle, ShieldCheck, UserCheck, ArrowDownLeft } from "lucide-react";
+import { CircleCheck, Circle, Ruler, ShieldCheck, UserCheck, ArrowDownLeft } from "lucide-react";
 
 import { QUALIFICATION_JOURNEY, stageReached } from "@/lib/qualification.functions";
 import type { PublicQualification } from "@/integrations/supabase/types.extra";
@@ -204,7 +204,25 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
               yes="مشرف معتمَد مُسنَد"
               no="بانتظار إسناد مشرف"
             />
+            {/* «خريطة سمات مقيسة قبل وبعد» مخرَجٌ موعود، والخريطة نفسها
+                محجوبة بحقّ. فيُعرض وقوعُ القياس لا نتيجته: يصير الوعد
+                قابلاً للتحقّق والطفل غير مكشوف. */}
+            <Guarantee
+              ok={Boolean(p.measured_before)}
+              icon={Ruler}
+              yes="قِيسَ قبل البرنامج"
+              no="بانتظار القياس الأوّلي"
+            />
+            <Guarantee
+              ok={Boolean(p.measured_after)}
+              icon={Ruler}
+              yes="قِيسَ بعد البرنامج"
+              no="القياس الختامي في آخر الرحلة"
+            />
           </div>
+          <p className="mt-2 text-xs leading-6 text-muted-foreground">
+            وقوعُ القياس يُعرض، ونتيجتُه لا: خريطة سمات طفلٍ حكمٌ عليه لا أثرٌ يُعرض على غريب.
+          </p>
 
           {/* أهلية المشرف — ثقة الكافل في البرنامج ثقةٌ في مَن يحمله */}
           {p.supervisor?.assigned && (

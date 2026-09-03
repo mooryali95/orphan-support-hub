@@ -925,6 +925,19 @@ BEGIN
     RAISE EXCEPTION 'FAIL — تسرّب مضمون التسليم إلى العرض العام';
   END IF;
   RAISE NOTICE 'PASS — الكافل يرى كم قُبل من كم، لا ما سلّمه الطفل';
+
+  /* ووقوعُ القياس يُعرض لأنه وعدٌ للكافل، ونتيجتُه لا: هذا الملفّ قِيسَ
+     قياساً ختامياً ولم يُقَس أوّلياً، فيظهر الفرق. */
+  IF (_row->>'measured_after')::boolean IS NOT TRUE THEN
+    RAISE EXCEPTION 'FAIL — القياس الختامي واقعٌ ولا يظهر للكافل';
+  END IF;
+  IF (_row->>'measured_before')::boolean IS NOT FALSE THEN
+    RAISE EXCEPTION 'FAIL — قياسٌ أوّليّ لم يقع ويظهر واقعاً';
+  END IF;
+  IF _txt LIKE '%core_trait%' OR _txt LIKE '%below_threshold%' THEN
+    RAISE EXCEPTION 'FAIL — تسرّب حكم القياس إلى العرض العام';
+  END IF;
+  RAISE NOTICE 'PASS — وقوع القياس يُعرض ونتيجته لا';
 END $$;
 
 -- ومنهج البرنامج معلَنٌ قبل الدفع: الخطّة لا ما سلّمه طفل.

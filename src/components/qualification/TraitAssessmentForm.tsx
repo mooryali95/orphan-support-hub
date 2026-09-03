@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { recordTraitAssessment } from "@/lib/qualification-ops.functions";
 import type { AssessmentRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
+import { TraitComparison } from "./TraitComparison";
 import { cn } from "@/lib/utils";
 
 /**
@@ -114,6 +115,9 @@ export function TraitAssessmentForm({
           ))}
         </ul>
       )}
+
+      {/* المقارنة قبل النموذج: القياس الجديد يُكتب على ضوء ما قبله. */}
+      {assessments.length > 0 && <TraitComparison assessments={assessments} />}
 
       {open && (
         <form
