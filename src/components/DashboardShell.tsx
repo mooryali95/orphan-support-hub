@@ -75,6 +75,15 @@ export function DashboardShell({
             >
               دليل الأيتام
             </Link>
+            {/* لوحة المشرف تظهر للجميع عمداً: من ليس مشرفاً تُخبره الصفحة
+                بذلك وتشرح كيف يصير، بدل أن يكون الباب مخفياً فلا يُعرف. */}
+            <Link
+              to="/supervisor"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              الإشراف
+            </Link>
             {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
                 إلغاء الاشتراك حكراً على من وصلته رسالة. */}
             <Link

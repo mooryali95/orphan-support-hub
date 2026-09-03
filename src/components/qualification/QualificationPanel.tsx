@@ -3,6 +3,7 @@ import { CircleCheck, Circle, ShieldCheck, UserCheck, ArrowDownLeft } from "luci
 import { QUALIFICATION_JOURNEY, stageReached } from "@/lib/qualification.functions";
 import type { PublicQualification } from "@/integrations/supabase/types.extra";
 import { formatMoney } from "@/lib/format";
+import { LEVEL_LABELS } from "@/lib/supervisor.functions";
 import { cn } from "@/lib/utils";
 
 const LEVEL_LABEL: Record<string, string> = {
@@ -169,8 +170,37 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
               no="بانتظار إسناد مشرف"
             />
           </div>
+
+          {/* أهلية المشرف — ثقة الكافل في البرنامج ثقةٌ في مَن يحمله */}
+          {p.supervisor?.assigned && (
+            <div className="mt-4 rounded-xl bg-secondary/50 p-4">
+              <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+                أهلية المشرف
+              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                <span className="font-bold text-shore-need">
+                  المستوى {LEVEL_LABELS[p.supervisor.level]}
+                </span>
+                {p.supervisor.independent ? (
+                  <span className="rounded-full bg-shore-thrive/12 px-2.5 py-1 text-xs font-medium text-shore-thrive">
+                    مشرف مستقلّ
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-bridge-bright/12 px-2.5 py-1 text-xs font-medium text-bridge-ink">
+                    قيد التأهيل — إشرافه مقرونٌ بمتابعة الإدارة
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من جهة الرعاية. واسمه لا يُعرض: ما
+                يعنيك أنه مؤهَّل، لا مَن هو.
+              </p>
+            </div>
+          )}
+
           <p className="mt-3 text-xs leading-6 text-muted-foreground">
-            قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته.
+            قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم
+            مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.
           </p>
         </article>
       ))}

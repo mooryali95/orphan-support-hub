@@ -519,6 +519,8 @@ export type PublicQualification = {
   status: string;
   has_supervisor: boolean;
   has_consent: boolean;
+  /** شهادة المشرف — مرتبةٌ بلا هوية. تُضاف في هجرة 20260831100000. */
+  supervisor?: SupervisorStanding;
 };
 
 export type DatabaseWithQualification = Omit<DatabaseWithOutbox, "public"> & {
@@ -623,4 +625,68 @@ export type QualificationOpsClient = SupabaseClient<DatabaseWithQualificationOps
 
 export function withQualificationOps(client: unknown): QualificationOpsClient {
   return client as QualificationOpsClient;
+}
+
+
+/* =====================================================================
+   امتداد أهلية المشرف
+   ===================================================================== */
+
+export type ProgramLevel = "foundational" | "applied" | "advanced";
+
+/** شهادة المشرف كما تُعرض: مرتبةٌ بلا هوية ولا رقم. */
+export type SupervisorStanding =
+  | { assigned: false }
+  | {
+      assigned: true;
+      level: ProgramLevel;
+      certified: boolean;
+      independent: boolean;
+      since: string;
+    };
+
+/** وأهليّته كما يراها هو — الرقم فيها، فهي أهليّته لا حكمٌ عليه. */
+export type MySupervisorProfile = {
+  level: ProgramLevel;
+  independence_index: number;
+  independent: boolean;
+  threshold: number;
+  certified_at: string | null;
+  active: boolean;
+} | null;
+
+export type SupervisedEnrollment = {
+  enrollment_id: string;
+  orphan_id: string;
+  orphan_name: string;
+  orphan_code: string;
+  program: string;
+  stage: QualificationStage;
+  stage_order: number;
+  status: string;
+  has_consent: boolean;
+  assessments: number;
+  has_final: boolean;
+  has_baseline: boolean;
+  since: string;
+};
+
+export type DatabaseWithSupervisor = Omit<DatabaseWithQualificationOps, "public"> & {
+  public: Omit<DatabaseWithQualificationOps["public"], "Functions"> & {
+    Functions: DatabaseWithQualificationOps["public"]["Functions"] & {
+      my_supervised_enrollments: { Args: Record<string, never>; Returns: unknown };
+      my_supervisor_profile: { Args: Record<string, never>; Returns: unknown };
+      certify_supervisor: {
+        Args: { _user: string; _level?: string; _independence?: number; _note?: string | null };
+        Returns: unknown;
+      };
+      enrollment_supervisor_standing: { Args: { _enrollment: string }; Returns: unknown };
+    };
+  };
+};
+
+export type SupervisorClient = SupabaseClient<DatabaseWithSupervisor, "public">;
+
+export function withSupervisor(client: unknown): SupervisorClient {
+  return client as SupervisorClient;
 }

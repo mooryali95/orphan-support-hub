@@ -15,9 +15,19 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('c1000000-0000-4000-8000-000000000001', 'q-admin@example.test', '{}'::jsonb),
   ('c1000000-0000-4000-8000-000000000002', 'q-org@example.test', '{"role":"care_org"}'::jsonb),
   ('c1000000-0000-4000-8000-000000000003', 'q-supervisor@example.test', '{}'::jsonb),
-  ('c1000000-0000-4000-8000-000000000004', 'q-stranger@example.test', '{}'::jsonb);
+  ('c1000000-0000-4000-8000-000000000004', 'q-stranger@example.test', '{}'::jsonb),
+  ('c1000000-0000-4000-8000-000000000005', 'q-sup2@example.test', '{}'::jsonb),
+  ('c1000000-0000-4000-8000-000000000006', 'q-uncertified@example.test', '{}'::jsonb);
 INSERT INTO public.user_roles (user_id, role)
 VALUES ('c1000000-0000-4000-8000-000000000001', 'admin');
+
+-- المشرف لا يُسنَد إلا معتمَداً؛ فيُعتمد اثنان هنا، ويبقى ثالثٌ بلا اعتماد
+-- ليُفحَص به المنع.
+INSERT INTO public.supervisor_profiles
+  (user_id, level, independence_index, certified_at)
+VALUES
+  ('c1000000-0000-4000-8000-000000000003', 'applied', 92, now()),
+  ('c1000000-0000-4000-8000-000000000005', 'foundational', 40, now());
 
 INSERT INTO public.care_organizations (id, owner_id, name, status)
 VALUES ('c2000000-0000-4000-8000-00000000000a',
@@ -188,8 +198,9 @@ END $$;
 DO $$
 BEGIN
   BEGIN
-    INSERT INTO public.enrollment_roles (enrollment_id, role, person_name)
-    VALUES ('c4000000-0000-4000-8000-00000000000c', 'supervisor', 'مشرف ثانٍ');
+    INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+    VALUES ('c4000000-0000-4000-8000-00000000000c', 'supervisor',
+            'c1000000-0000-4000-8000-000000000005');
     RAISE EXCEPTION 'FAIL — قُبل مشرفان حيّان لالتحاق واحد';
   EXCEPTION WHEN unique_violation THEN
     RAISE NOTICE 'PASS — دورٌ حيّ واحد من كل نوع لكل التحاق';
@@ -544,6 +555,132 @@ BEGIN
     RESET ROLE;
     RAISE NOTICE 'PASS — الإسناد وتقديم المرحلة لمن يدير الملف وحده';
   END;
+END $$;
+
+-- ---------------------------------------------------------------------
+-- المشرف: اعتمادٌ وحسابٌ وشهادةٌ بلا هوية
+-- ---------------------------------------------------------------------
+DO $$
+BEGIN
+  -- مشرفٌ بلا اعتماد لا يُسنَد: كطبيبٍ بلا ترخيص.
+  BEGIN
+    INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+    VALUES ('c4000000-0000-4000-8000-00000000000c', 'jurist',
+            'c1000000-0000-4000-8000-000000000006');
+    -- الفقيه يمرّ (لا يشترط اعتماداً)، ثم نجرّب الإشراف نفسه.
+    NULL;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE EXCEPTION 'FAIL — منع الاعتماد امتدّ إلى غير المشرف';
+  END;
+  RAISE NOTICE 'PASS — شرط الاعتماد يخصّ المشرف ولا يمتدّ إلى الفقيه';
+END $$;
+
+DO $$
+DECLARE _e UUID;
+BEGIN
+  SELECT e.id INTO _e FROM public.program_enrollments e
+   WHERE e.orphan_id = 'c3000000-0000-4000-8000-00000000000e';
+
+  BEGIN
+    INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+    VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000006');
+    RAISE EXCEPTION 'FAIL — أُسند الإشراف لغير معتمَد';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — لا يُسنَد الإشراف إلا لمشرفٍ معتمَد من الإدارة';
+  END;
+
+  -- ومشرفٌ بلا حساب لا يُسنَد: يرصد ويقيس داخل المنصّة، والقياس يشترط
+  -- تطابق `auth.uid()` — فاسمٌ بلا حساب دورٌ لا يُؤدّى.
+  BEGIN
+    INSERT INTO public.enrollment_roles (enrollment_id, role, person_name)
+    VALUES (_e, 'supervisor', 'مشرفٌ بلا حساب');
+    RAISE EXCEPTION 'FAIL — أُسند الإشراف لاسمٍ بلا حساب';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — المشرف يحتاج حساباً، خلافاً للولي والفقيه';
+  END;
+END $$;
+
+-- والاعتماد للإدارة وحدها: جهةٌ تعتمد مشرفيها كجهةٍ تعتمد ملفّاتها.
+DO $$
+BEGIN
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+  BEGIN
+    PERFORM public.certify_supervisor('c1000000-0000-4000-8000-000000000006', 'applied', 90);
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — جهةُ الرعاية اعتمدت مشرفاً';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+    RAISE NOTICE 'PASS — اعتماد المشرفين للإدارة وحدها';
+  END;
+END $$;
+
+-- والشهادة تُعرض للزائر: مرتبةً بلا هوية ولا رقم.
+DO $$
+DECLARE _st JSONB; _txt TEXT;
+BEGIN
+  SET LOCAL ROLE anon;
+  SELECT public.enrollment_supervisor_standing('c4000000-0000-4000-8000-00000000000c')
+    INTO _st;
+  RESET ROLE;
+  _txt := _st::text;
+
+  IF NOT (_st->>'assigned')::boolean THEN
+    RAISE EXCEPTION 'FAIL — الشهادة لا تُظهر وجود مشرف';
+  END IF;
+  IF _st->>'level' <> 'applied' OR NOT (_st->>'independent')::boolean THEN
+    RAISE EXCEPTION 'FAIL — الشهادة لا تحمل المستوى والاستقلالية (%)', _txt;
+  END IF;
+  RAISE NOTICE 'PASS — الكافل يرى مستوى المشرف واستقلاليته';
+
+  -- ولا تحمل هوية ولا رقماً: القاعدة التي طُبّقت على الطفل تُطبَّق عليه.
+  IF _txt LIKE '%independence_index%' OR _txt LIKE '%person%'
+     OR _txt LIKE '%user_id%' OR _txt LIKE '%email%' THEN
+    RAISE EXCEPTION 'FAIL — الشهادة تسرّب هوية المشرف أو رقمه (%)', _txt;
+  END IF;
+  RAISE NOTICE 'PASS — الشهادة مرتبةٌ بلا هوية ولا رقم';
+END $$;
+
+-- والمستقلّ من بلغ العتبة لا من قاربها: 40 ليست استقلالاً.
+DO $$
+DECLARE _e UUID; _st JSONB;
+BEGIN
+  SELECT e.id INTO _e FROM public.program_enrollments e
+   WHERE e.orphan_id = 'c3000000-0000-4000-8000-00000000000f';
+  UPDATE public.enrollment_roles SET ended_at = now()
+   WHERE enrollment_id = _e AND role = 'supervisor';
+  INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+  VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000005');
+
+  SELECT public.enrollment_supervisor_standing(_e) INTO _st;
+  IF (_st->>'independent')::boolean THEN
+    RAISE EXCEPTION 'FAIL — مؤشّر 40 عُدّ استقلالاً';
+  END IF;
+  RAISE NOTICE 'PASS — الاستقلالية تُعقد عند العتبة لا دونها';
+END $$;
+
+-- ولوحة المشرف تُريه من أُسندوا إليه هو، لا غيرَهم.
+DO $$
+DECLARE _mine JSONB; _other JSONB;
+BEGIN
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
+  SELECT public.my_supervised_enrollments() INTO _mine;
+  RESET ROLE;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000004","role":"authenticated"}';
+  SELECT public.my_supervised_enrollments() INTO _other;
+  RESET ROLE;
+
+  IF jsonb_array_length(_mine) = 0 THEN
+    RAISE EXCEPTION 'FAIL — المشرف لا يرى من أُسندوا إليه';
+  END IF;
+  IF jsonb_array_length(_other) <> 0 THEN
+    RAISE EXCEPTION 'FAIL — غيرُ المشرف يرى مستفيدين (% صفّاً)',
+      jsonb_array_length(_other);
+  END IF;
+  RAISE NOTICE 'PASS — لوحة المشرف تُريه مستفيديه وحدهم';
 END $$;
 
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص بناء الأهلية اجتازت ──'; END $$;

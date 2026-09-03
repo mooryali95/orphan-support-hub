@@ -20,6 +20,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
+import { Route as AuthenticatedSupervisorRouteImport } from './routes/_authenticated/supervisor'
 import { Route as LegalFaqRouteImport } from './routes/legal.faq'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
@@ -84,6 +85,11 @@ const AuthenticatedGuardianRoute = AuthenticatedGuardianRouteImport.update({
 const AuthenticatedOrgRoute = AuthenticatedOrgRouteImport.update({
   id: '/org',
   path: '/org',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSupervisorRoute = AuthenticatedSupervisorRouteImport.update({
+  id: '/supervisor',
+  path: '/supervisor',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const LegalFaqRoute = LegalFaqRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
+  '/supervisor': typeof AuthenticatedSupervisorRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
+  '/supervisor': typeof AuthenticatedSupervisorRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
+  '/_authenticated/supervisor': typeof AuthenticatedSupervisorRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/guardian'
     | '/org'
+    | '/supervisor'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/guardian'
     | '/org'
+    | '/supervisor'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/guardian'
     | '/_authenticated/org'
+    | '/_authenticated/supervisor'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
@@ -388,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrgRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/supervisor': {
+      id: '/_authenticated/supervisor'
+      path: '/supervisor'
+      fullPath: '/supervisor'
+      preLoaderRoute: typeof AuthenticatedSupervisorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/legal/faq': {
       id: '/legal/faq'
       path: '/legal/faq'
@@ -473,6 +492,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
+  AuthenticatedSupervisorRoute: typeof AuthenticatedSupervisorRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
 }
 
@@ -481,6 +501,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
+  AuthenticatedSupervisorRoute: AuthenticatedSupervisorRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
 }
