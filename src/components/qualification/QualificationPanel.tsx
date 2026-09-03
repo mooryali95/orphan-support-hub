@@ -148,6 +148,41 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
             </ol>
           </div>
 
+          {/* ورش الجلسات — عدداً لا مضموناً: ما سلّمه الطفل وملاحظات مشرفه
+              عليه من جنس الدرجات، حكمٌ عليه لا أثرٌ يُعرض على غريب. */}
+          {typeof p.units_total === "number" && p.units_total > 0 && (
+            <div className="mt-6 rounded-xl bg-secondary/50 p-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+                  ورش الجلسات
+                </p>
+                <p className="text-sm font-bold">
+                  <span className="text-shore-thrive">{p.units_accepted ?? 0}</span> من{" "}
+                  {p.units_total} مقبولة
+                </p>
+              </div>
+              <ol
+                className="mt-3 flex gap-1"
+                aria-label={`${p.units_accepted ?? 0} من ${p.units_total} جلسة مقبولة`}
+              >
+                {Array.from({ length: p.units_total }, (_, i) => (
+                  <li
+                    key={i}
+                    aria-hidden="true"
+                    className={cn(
+                      "h-1.5 flex-1 rounded-full",
+                      i < (p.units_accepted ?? 0) ? "bg-shore-thrive" : "bg-border",
+                    )}
+                  />
+                ))}
+              </ol>
+              <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                لا تُقبل جلسةٌ إلا بمخرَجٍ يُقوّمه مشرفٌ معتمَد، ولا تُقبل قبل قبول ما دونها. وما
+                سلّمه الطفل لا يُعرض: يعنيك أنه بُني، لا ما كتبه.
+              </p>
+            </div>
+          )}
+
           {/* المدخلات والعمليات والمخرجات */}
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <Column title="المدخلات" items={p.inputs} tone="text-shore-need" />

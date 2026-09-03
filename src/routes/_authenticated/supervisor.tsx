@@ -7,6 +7,7 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TraitAssessmentForm } from "@/components/qualification/TraitAssessmentForm";
+import { UnitProgressPanel } from "@/components/qualification/UnitProgressPanel";
 import { QUALIFICATION_JOURNEY } from "@/lib/qualification.functions";
 import { getEnrollmentDetail } from "@/lib/qualification-ops.functions";
 import {
@@ -150,7 +151,12 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
   const pending: string[] = [];
   if (!row.has_consent) pending.push("بانتظار توثيق إذن الولي من الجهة");
   if (!row.has_baseline) pending.push("لم يُسجَّل قياس أوّلي بعد");
+  if (row.units_awaiting > 0) pending.push(`${row.units_awaiting} جلسة سُلّمت وتنتظر تقويمك`);
   if (row.stage === "measurement" && !row.has_final) pending.push("القياس الختامي مستحقّ");
+  if (row.stage === "measurement" && row.units_accepted < row.units_total)
+    pending.push(
+      `${row.units_total - row.units_accepted} جلسة لم تُقبل بعد — ولا تُعلَن الأهلية دونها`,
+    );
 
   return (
     <li className="rounded-2xl border border-border bg-card p-4">
@@ -196,6 +202,15 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
           ))}
         </ul>
       )}
+
+      <div className="mt-4 border-t border-border pt-4">
+        <UnitProgressPanel
+          enrollmentId={row.enrollment_id}
+          onDone={() => {
+            void queryClient.invalidateQueries({ queryKey: ["supervised"] });
+          }}
+        />
+      </div>
 
       <div className="mt-4 border-t border-border pt-4">
         <TraitAssessmentForm

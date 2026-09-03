@@ -8,7 +8,10 @@ import {
   type AdminSupervisorRow,
   type MySupervisorProfile,
   type ProgramLevel,
+  type EnrollmentUnit,
   type SupervisedEnrollment,
+  type UnitStatus,
+  withUnits,
 } from "@/integrations/supabase/types.extra";
 
 /**
@@ -130,4 +133,57 @@ export const revokeSupervisor = createServerFn({ method: "POST" })
     if (error) return { ok: false as const, error: error.message, ended: 0 };
     const r = (res ?? {}) as { ended_assignments?: number };
     return { ok: true as const, error: null, ended: r.ended_assignments ?? 0 };
+  });
+
+/* ── ورش الجلسات — التسليم والتقويم ─────────────────────────────────── */
+
+export const UNIT_STATUS_LABELS: Record<UnitStatus, string> = {
+  pending: "لم تبدأ",
+  submitted: "سُلّمت وتنتظر التقويم",
+  returned: "أُعيدت للمراجعة",
+  accepted: "قُبلت",
+};
+
+export const getEnrollmentUnits = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ enrollmentId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const db = withUnits(context.supabase);
+    const { data: rows, error } = await db.rpc("enrollment_unit_progress", {
+      _enrollment: data.enrollmentId,
+    });
+    if (error) return { ok: false as const, error: error.message, units: [] };
+    return { ok: true as const, error: null, units: (rows ?? []) as EnrollmentUnit[] };
+  });
+
+/**
+ * تسجيل تقدّم جلسة.
+ *
+ * دالّةٌ واحدة للتسليم والتقويم: الطفل لا حساب له، والمشرف هو من يرصد.
+ * والوقتان في القاعدة يبقيان الفرق مسجّلاً — ما سُلّم وينتظر، وما قُوِّم.
+ */
+export const recordUnitProgress = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        enrollmentId: z.string().uuid(),
+        unitId: z.string().uuid(),
+        status: z.enum(["pending", "submitted", "returned", "accepted"]),
+        evidence: z.string().trim().max(500).optional(),
+        note: z.string().trim().max(1000).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const db = withUnits(context.supabase);
+    const { error } = await db.rpc("record_unit_progress", {
+      _enrollment: data.enrollmentId,
+      _unit: data.unitId,
+      _status: data.status,
+      _evidence: data.evidence || null,
+      _note: data.note || null,
+    });
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const, error: null };
   });

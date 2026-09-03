@@ -521,6 +521,9 @@ export type PublicQualification = {
   has_consent: boolean;
   /** شهادة المشرف — مرتبةٌ بلا هوية. تُضاف في هجرة 20260831100000. */
   supervisor?: SupervisorStanding;
+  /** عدّ الجلسات — كم قُبل من كم. لا مضمون ولا ملاحظات. */
+  units_total?: number;
+  units_accepted?: number;
 };
 
 export type DatabaseWithQualification = Omit<DatabaseWithOutbox, "public"> & {
@@ -668,6 +671,10 @@ export type SupervisedEnrollment = {
   assessments: number;
   has_final: boolean;
   has_baseline: boolean;
+  units_total: number;
+  units_accepted: number;
+  /** ما سُلّم وينتظر تقويماً — عملٌ يُرى من اللوحة لا يُبحث عنه. */
+  units_awaiting: number;
   since: string;
 };
 
@@ -726,4 +733,62 @@ export type SupervisorAdminClient = SupabaseClient<DatabaseWithSupervisorAdmin, 
 
 export function withSupervisorAdmin(client: unknown): SupervisorAdminClient {
   return client as SupervisorAdminClient;
+}
+
+
+/* =====================================================================
+   امتداد ورش الجلسات
+   ===================================================================== */
+
+export type UnitStatus = "pending" | "submitted" | "returned" | "accepted";
+
+export type EnrollmentUnit = {
+  unit_id: string;
+  ordinal: number;
+  title: string;
+  focus: string;
+  material: string;
+  task: string;
+  outputs: string[];
+  submission: string;
+  status: UnitStatus;
+  evidence: string | null;
+  note: string | null;
+  submitted_at: string | null;
+  decided_at: string | null;
+};
+
+/** الخطّة المعلَنة — لا ما سلّمه طفلٌ بعينه. */
+export type CurriculumUnit = {
+  ordinal: number;
+  title: string;
+  focus: string;
+  material: string;
+  task: string;
+  outputs: string[];
+};
+
+export type DatabaseWithUnits = Omit<DatabaseWithSupervisorAdmin, "public"> & {
+  public: Omit<DatabaseWithSupervisorAdmin["public"], "Functions"> & {
+    Functions: DatabaseWithSupervisorAdmin["public"]["Functions"] & {
+      enrollment_unit_progress: { Args: { _enrollment: string }; Returns: unknown };
+      program_curriculum: { Args: { _program: string }; Returns: unknown };
+      record_unit_progress: {
+        Args: {
+          _enrollment: string;
+          _unit: string;
+          _status: string;
+          _evidence?: string | null;
+          _note?: string | null;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type UnitsClient = SupabaseClient<DatabaseWithUnits, "public">;
+
+export function withUnits(client: unknown): UnitsClient {
+  return client as UnitsClient;
 }

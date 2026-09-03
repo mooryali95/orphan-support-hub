@@ -403,6 +403,16 @@ BEGIN
   INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
   VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000003');
 
+  /* جلسات البرنامج تُقبل كلّها هنا عمداً: بلا ذلك يمرّ الفحص بشرط
+     الجلسات لا بشرط القياس، فيصير زائفاً كما صار فحصُ الإذن قبله. */
+  INSERT INTO public.enrollment_units
+    (enrollment_id, unit_id, status, evidence, decided_at, decided_by)
+  SELECT _e, u.id, 'accepted', 'مخرَج-' || u.ordinal, now(),
+         'c1000000-0000-4000-8000-000000000003'
+    FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   ORDER BY u.ordinal;
+
   BEGIN
     UPDATE public.program_enrollments SET stage = 'qualified' WHERE id = _e;
     RAISE EXCEPTION 'FAIL — أُعلنت الأهلية بلا قياس ختامي';
@@ -682,6 +692,300 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — لوحة المشرف تُريه مستفيديه وحدهم';
 END $$;
+
+-- =====================================================================
+-- ورش الجلسات — البرنامج وحدةً واحدة لا يُبنى
+-- =====================================================================
+
+-- الجلسات الست مبذورة، مرتّبةً بلا ثغرة.
+DO $$
+DECLARE _n INTEGER; _max SMALLINT;
+BEGIN
+  SELECT count(*), max(u.ordinal) INTO _n, _max
+    FROM public.program_units u
+    JOIN public.programs p ON p.id = u.program_id
+   WHERE p.slug = 'ahliyyah-foundational' AND u.active;
+  IF _n <> 6 OR _max <> 6 THEN
+    RAISE EXCEPTION 'FAIL — جلسات البرنامج التأسيسي % برتبة قصوى %', _n, _max;
+  END IF;
+  RAISE NOTICE 'PASS — ورش المستوى التأسيسي ستّ، مرتّبةً بلا ثغرة';
+END $$;
+
+-- وجلسةٌ من برنامجٍ آخر لا تُعلَّق على ملفّ: تقدّمٌ في غير ما التحق به.
+DO $$
+DECLARE _e UUID; _other UUID; _p UUID;
+BEGIN
+  SELECT e.id INTO _e FROM public.program_enrollments e
+   WHERE e.id = 'c4000000-0000-4000-8000-00000000000c';
+
+  INSERT INTO public.programs
+    (slug, title, summary, category, monthly_price, kind, level,
+     inputs, processes, deliverables, concept_id, target_trait_id)
+  SELECT 'ahliyyah-other', 'برنامج آخر', 'لاختبار الانتماء', 'rehabilitation', 60,
+         'qualification', 'applied', ARRAY['مدخل'], ARRAY['عملية'], ARRAY['مخرَج'],
+         c.id, t.id
+    FROM public.qualification_concepts c, public.qualification_traits t
+   WHERE c.slug = 'omran-concept' AND t.slug = 'dirayah'
+  RETURNING id INTO _p;
+
+  INSERT INTO public.program_units
+    (program_id, ordinal, title, focus, material, task, outputs, submission)
+  VALUES (_p, 1, 'جلسة غريبة', 'محور', 'مادة', 'مهمّة', ARRAY['مخرَج'], 'قناة')
+  RETURNING id INTO _other;
+
+  BEGIN
+    INSERT INTO public.enrollment_units (enrollment_id, unit_id, status)
+    VALUES (_e, _other, 'pending');
+    RAISE EXCEPTION 'FAIL — عُلّقت على الملفّ جلسةٌ من برنامجٍ آخر';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — الجلسة لا تُعلَّق إلا على برنامج التحاقها';
+  END;
+END $$;
+
+-- والترتيب حكمٌ لا اقتراح: لا تُقبل الثانية قبل الأولى.
+DO $$
+DECLARE _e UUID := 'c4000000-0000-4000-8000-00000000000c'; _u2 UUID;
+BEGIN
+  SELECT u.id INTO _u2 FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal = 2;
+
+  BEGIN
+    INSERT INTO public.enrollment_units
+      (enrollment_id, unit_id, status, evidence, decided_at, decided_by)
+    VALUES (_e, _u2, 'accepted', 'مخرَج', now(),
+            'c1000000-0000-4000-8000-000000000003');
+    RAISE EXCEPTION 'FAIL — قُبلت الجلسة الثانية وما قبلها لم يُقبل';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — لا تُقبل جلسةٌ قبل قبول ما دونها';
+  END;
+END $$;
+
+-- وقبولٌ بلا مخرَجٍ توقيعٌ على بياض؛ وإعادةٌ بلا سببٍ لا تُصلح.
+DO $$
+DECLARE _e UUID := 'c4000000-0000-4000-8000-00000000000c'; _u1 UUID;
+BEGIN
+  SELECT u.id INTO _u1 FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal = 1;
+
+  BEGIN
+    INSERT INTO public.enrollment_units
+      (enrollment_id, unit_id, status, decided_at, decided_by)
+    VALUES (_e, _u1, 'accepted', now(), 'c1000000-0000-4000-8000-000000000003');
+    RAISE EXCEPTION 'FAIL — قُبلت جلسةٌ بلا مخرَج مسجَّل';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — لا تُقبل جلسةٌ بلا مخرَج';
+  END;
+
+  BEGIN
+    INSERT INTO public.enrollment_units (enrollment_id, unit_id, status)
+    VALUES (_e, _u1, 'returned');
+    RAISE EXCEPTION 'FAIL — أُعيدت جلسةٌ بلا سبب';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — لا تُعاد جلسةٌ بلا سبب مكتوب';
+  END;
+END $$;
+
+-- والتقويم للمشرف المعتمَد أو الإدارة — لا لغريبٍ ولا لكافل.
+DO $$
+DECLARE _e UUID := 'c4000000-0000-4000-8000-00000000000c'; _u1 UUID;
+BEGIN
+  SELECT u.id INTO _u1 FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal = 1;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000004","role":"authenticated"}';
+  BEGIN
+    PERFORM public.record_unit_progress(_e, _u1, 'accepted', 'مخرَج مزعوم');
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — قوّم الغريب جلسةً ليست له';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+    RAISE NOTICE 'PASS — تقويم الجلسات للمشرف المعتمَد أو الإدارة';
+  END;
+END $$;
+
+-- والتقويم لا يمحو ما سُلّم: إعادةٌ بملاحظةٍ وحدها تُبقي المخرَج.
+DO $$
+DECLARE _e UUID := 'c4000000-0000-4000-8000-00000000000c'; _u1 UUID; _ev TEXT; _st TEXT;
+BEGIN
+  SELECT u.id INTO _u1 FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal = 1;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
+  PERFORM public.record_unit_progress(_e, _u1, 'submitted', 'عرض-الجلسة-الأولى.pdf');
+  PERFORM public.record_unit_progress(_e, _u1, 'returned', NULL, 'الخريطة الذهنية ناقصة');
+  RESET ROLE;
+
+  SELECT eu.evidence, eu.status INTO _ev, _st
+    FROM public.enrollment_units eu
+   WHERE eu.enrollment_id = _e AND eu.unit_id = _u1;
+
+  IF _st <> 'returned' THEN
+    RAISE EXCEPTION 'FAIL — الحالة % لا «returned»', _st;
+  END IF;
+  IF _ev IS DISTINCT FROM 'عرض-الجلسة-الأولى.pdf' THEN
+    RAISE EXCEPTION 'FAIL — مُحي المخرَج عند الإعادة (%)', COALESCE(_ev, 'NULL');
+  END IF;
+  RAISE NOTICE 'PASS — الإعادة تُقوّم ولا تمحو ما سُلّم';
+END $$;
+
+-- ولا تُعلَن الأهلية وفي البرنامج جلسةٌ لم تُقبل — والقياس الختامي حاضر
+-- فيبقى شرط الجلسات وحده متغيّراً.
+DO $$
+DECLARE _e UUID; _sup UUID := 'c1000000-0000-4000-8000-000000000003'; _left INTEGER;
+BEGIN
+  INSERT INTO public.orphans (id, code, display_name, org_id, created_by, monthly_need, status, approved_at)
+  VALUES ('c3000000-0000-4000-8000-00000000001a', 'AHL-5', 'يتيم خامس',
+          'c2000000-0000-4000-8000-00000000000a', 'c1000000-0000-4000-8000-000000000002',
+          200, 'approved', now());
+
+  INSERT INTO public.program_enrollments (orphan_id, program_id, monthly_price)
+  SELECT 'c3000000-0000-4000-8000-00000000001a', p.id, p.monthly_price
+    FROM public.programs p WHERE p.slug = 'ahliyyah-foundational'
+  RETURNING id INTO _e;
+
+  INSERT INTO public.enrollment_roles
+    (enrollment_id, role, person_name, consent_at, consent_document)
+  VALUES (_e, 'guardian', 'الولي', now(), 'consent-4.pdf');
+  INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+  VALUES (_e, 'supervisor', _sup);
+
+  -- قياسٌ ختاميّ حاضر
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
+  PERFORM public.record_trait_assessment(
+    _e, '{"dirayah":60,"himmah":20,"azm":10,"rushd":10}'::jsonb, 'final');
+  RESET ROLE;
+
+  -- خمسٌ من ستّ تُقبل
+  INSERT INTO public.enrollment_units
+    (enrollment_id, unit_id, status, evidence, decided_at, decided_by)
+  SELECT _e, u.id, 'accepted', 'مخرَج-' || u.ordinal, now(), _sup
+    FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal < 6
+   ORDER BY u.ordinal;
+
+  SELECT count(*) INTO _left FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.active AND NOT EXISTS (
+     SELECT 1 FROM public.enrollment_units eu
+      WHERE eu.enrollment_id = _e AND eu.unit_id = u.id AND eu.status = 'accepted');
+  IF _left <> 1 THEN
+    RAISE EXCEPTION 'FAIL — الفحص لا يقيس شيئاً: الجلسات المتبقّية %', _left;
+  END IF;
+
+  BEGIN
+    UPDATE public.program_enrollments SET stage = 'qualified' WHERE id = _e;
+    RAISE EXCEPTION 'FAIL — أُعلنت الأهلية وجلسةٌ لم تُقبل';
+  EXCEPTION WHEN check_violation THEN
+    RAISE NOTICE 'PASS — لا تُعلَن الأهلية وفي البرنامج جلسةٌ لم تُقبل';
+  END;
+
+  -- ثم تُقبل السادسة، فتُعلَن — وإلا كان الحارس سدّاً لا شرطاً.
+  INSERT INTO public.enrollment_units
+    (enrollment_id, unit_id, status, evidence, decided_at, decided_by)
+  SELECT _e, u.id, 'accepted', 'مخرَج-6', now(), _sup
+    FROM public.program_units u
+    JOIN public.program_enrollments e ON e.id = _e AND e.program_id = u.program_id
+   WHERE u.ordinal = 6;
+
+  UPDATE public.program_enrollments SET stage = 'qualified' WHERE id = _e;
+  IF (SELECT stage FROM public.program_enrollments WHERE id = _e) <> 'qualified' THEN
+    RAISE EXCEPTION 'FAIL — لم تُعلَن الأهلية وقد تمّت الجلسات والقياس';
+  END IF;
+  RAISE NOTICE 'PASS — تُعلَن الأهلية حين تتمّ الجلسات ويحضر القياس الختامي';
+END $$;
+
+-- والكافل يرى العدد لا المضمون: ما سلّمه الطفل وملاحظات مشرفه عليه من
+-- جنس الدرجات — حكمٌ على طفلٍ لا يُعرض على غريب.
+DO $$
+DECLARE _j JSONB; _row JSONB; _txt TEXT;
+BEGIN
+  SET LOCAL ROLE anon;
+  _j := public.orphan_qualification('c3000000-0000-4000-8000-00000000001a');
+  RESET ROLE;
+
+  _row := _j->0;
+  IF _row IS NULL THEN
+    RAISE EXCEPTION 'FAIL — لا التحاق معروضاً للزائر';
+  END IF;
+  IF (_row->>'units_total')::int <> 6 OR (_row->>'units_accepted')::int <> 6 THEN
+    RAISE EXCEPTION 'FAIL — العدّ المعروض % من %',
+      _row->>'units_accepted', _row->>'units_total';
+  END IF;
+
+  _txt := _j::text;
+  IF _txt LIKE '%evidence%' OR _txt LIKE '%مخرَج-%' OR _txt LIKE '%scores%' THEN
+    RAISE EXCEPTION 'FAIL — تسرّب مضمون التسليم إلى العرض العام';
+  END IF;
+  RAISE NOTICE 'PASS — الكافل يرى كم قُبل من كم، لا ما سلّمه الطفل';
+END $$;
+
+-- ومنهج البرنامج معلَنٌ قبل الدفع: الخطّة لا ما سلّمه طفل.
+DO $$
+DECLARE _j JSONB; _p UUID;
+BEGIN
+  SELECT id INTO _p FROM public.programs WHERE slug = 'ahliyyah-foundational';
+  SET LOCAL ROLE anon;
+  _j := public.program_curriculum(_p);
+  RESET ROLE;
+  IF jsonb_array_length(_j) <> 6 THEN
+    RAISE EXCEPTION 'FAIL — المنهج المعلَن % جلسة', jsonb_array_length(_j);
+  END IF;
+  IF (_j->0->>'ordinal')::int <> 1 THEN
+    RAISE EXCEPTION 'FAIL — المنهج غير مرتّب';
+  END IF;
+  RAISE NOTICE 'PASS — منهج الجلسات معلَنٌ للزائر مرتّباً';
+END $$;
+
+-- وأثر المرحلة يُكتب: العمود يُدهس، فبلا أثرٍ لا يُعرف أن ملفّاً رجع.
+DO $$
+DECLARE _e UUID; _n INTEGER; _actor UUID;
+BEGIN
+  -- التحاقٌ خاصّ بهذا الفحص: مراحل غيره حرّكتها فحوصٌ سابقة، فلا يُقاس
+  -- عليها انتقالٌ بعينه.
+  INSERT INTO public.orphans (id, code, display_name, org_id, created_by, monthly_need, status, approved_at)
+  VALUES ('c3000000-0000-4000-8000-00000000001b', 'AHL-6', 'يتيم الأثر',
+          'c2000000-0000-4000-8000-00000000000a', 'c1000000-0000-4000-8000-000000000002',
+          200, 'approved', now());
+  INSERT INTO public.program_enrollments (orphan_id, program_id, monthly_price)
+  SELECT 'c3000000-0000-4000-8000-00000000001b', p.id, p.monthly_price
+    FROM public.programs p WHERE p.slug = 'ahliyyah-foundational'
+  RETURNING id INTO _e;
+
+  INSERT INTO public.enrollment_roles
+    (enrollment_id, role, person_name, consent_at, consent_document)
+  VALUES (_e, 'guardian', 'الولي', now(), 'consent-5.pdf');
+  INSERT INTO public.enrollment_roles (enrollment_id, role, person_id)
+  VALUES (_e, 'supervisor', 'c1000000-0000-4000-8000-000000000003');
+
+  IF (SELECT stage FROM public.program_enrollments WHERE id = _e) <> 'concept' THEN
+    RAISE EXCEPTION 'FAIL — الفحص لا يقيس شيئاً: المرحلة ليست البداية';
+  END IF;
+
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000002","role":"authenticated"}';
+  PERFORM public.set_enrollment_stage(_e, 'trait');
+  RESET ROLE;
+
+  SELECT count(*), max(actor_id::text)::uuid INTO _n, _actor FROM public.audit_log
+   WHERE action = 'enrollment.stage' AND entity_id = _e
+     AND meta->>'from' = 'concept' AND meta->>'to' = 'trait';
+  IF _n <> 1 THEN
+    RAISE EXCEPTION 'FAIL — أثر تغيّر المرحلة % سطراً لا واحداً', _n;
+  END IF;
+  IF _actor <> 'c1000000-0000-4000-8000-000000000002' THEN
+    RAISE EXCEPTION 'FAIL — الفاعل في الأثر % لا صاحب الجلسة', _actor;
+  END IF;
+  RAISE NOTICE 'PASS — تغيّر المرحلة يترك أثراً بمن ومن أين إلى أين';
+END $$;
+
 
 -- ---------------------------------------------------------------------
 -- إدارة المشرفين: الاعتماد بالبريد، والسحب يُنهي ما ترتّب عليه
