@@ -22,7 +22,9 @@ import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
-import { ageFromBirthDate, formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
+import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
+import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
+import { AccessGate } from "@/components/protection/AccessGate";
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -67,7 +69,7 @@ export const Route = createFileRoute("/orphans/$orphanId")({
             description,
             serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
             provider: { "@type": "Organization", name: "IOCO" },
-            areaServed: loaderData.orphan.city ?? undefined,
+            areaServed: loaderData.orphan.country ?? undefined,
             offers: {
               "@type": "Offer",
               price: String(loaderData.orphan.monthly_need),
@@ -112,7 +114,8 @@ function OrphanDetail() {
     queryFn: () => fetchFunding({ data: { orphanId } }),
     enabled: surplus > 0,
   });
-  const age = ageFromBirthDate(orphan.birth_date);
+  // التفاصيل موجودةٌ في المُعاد أو غائبة — والقاعدة هي من تقرّر، لا هذه الصفحة.
+  const detail = orphan.detail ?? null;
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
   const [anonymous, setAnonymous] = useState(false);
@@ -182,7 +185,7 @@ function OrphanDetail() {
           <div>
             <div className="overflow-hidden rounded-3xl border border-border bg-card">
               <MuralImage
-                photoUrl={orphan.photo_url}
+                photoUrl={detail?.photo_url ?? null}
                 displayName={orphan.display_name}
                 register={registerFor(orphan.status, percent)}
                 className="aspect-[16/9] bg-secondary"
@@ -197,11 +200,13 @@ function OrphanDetail() {
 
                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                   <span>{orphan.gender === "female" ? "أنثى" : "ذكر"}</span>
-                  {age !== null && <span>{age} سنة</span>}
-                  {orphan.city && (
+                  {orphan.age_band !== "unknown" && (
+                    <span>{AGE_BAND_LABELS[orphan.age_band]} سنة</span>
+                  )}
+                  {(orphan.country ?? orphan.region) && (
                     <span className="inline-flex items-center gap-1">
-                      <MapPin className="size-4" /> {orphan.city}
-                      {orphan.region ? ` — ${orphan.region}` : ""}
+                      <MapPin className="size-4" />{" "}
+                      {[orphan.country, orphan.region, detail?.city].filter(Boolean).join(" — ")}
                     </span>
                   )}
                   {orphan.education_stage && (
@@ -211,17 +216,27 @@ function OrphanDetail() {
                   )}
                 </div>
 
-                {orphan.story && (
-                  <p className="mt-6 whitespace-pre-line text-base leading-8">{orphan.story}</p>
+                {detail?.story && (
+                  <p className="mt-6 whitespace-pre-line text-base leading-8">{detail.story}</p>
                 )}
               </div>
             </div>
 
-            {data.needs.length > 0 && (
+            {/* الحاجب: يُعرض حين لا إذن، ويختفي حين يُؤذن. */}
+            {!orphan.may_view_detail && (
+              <AccessGate
+                orphanId={orphanId}
+                orphanName={orphan.display_name}
+                access={orphan.access}
+                signedIn={Boolean(user)}
+              />
+            )}
+
+            {(detail?.needs.length ?? 0) > 0 && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
                 <h2 className="text-lg font-bold">تفاصيل الاحتياج الشهري</h2>
                 <ul className="mt-4 divide-y divide-border">
-                  {data.needs.map((need) => (
+                  {(detail?.needs ?? []).map((need) => (
                     <li key={need.id} className="flex items-center justify-between py-3">
                       <div>
                         <p className="text-sm font-medium">{need.title}</p>

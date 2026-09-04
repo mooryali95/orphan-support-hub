@@ -9,6 +9,7 @@ import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
+import { AccessQueue } from "@/components/protection/AccessQueue";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "orphans" | "sponsors" | "queue" | "supervisors";
+type Tab = "overview" | "orphans" | "sponsors" | "queue" | "supervisors" | "access";
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
@@ -83,6 +84,7 @@ function AdminPage() {
     ["sponsors", "الكفلاء", o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
+    ["access", "الإذن بالاطّلاع", null],
   ];
 
   return (
@@ -334,6 +336,12 @@ function AdminPage() {
       {tab === "supervisors" && (
         <div className="mt-8">
           <SupervisorAdmin />
+        </div>
+      )}
+
+      {tab === "access" && (
+        <div className="mt-8">
+          <AccessQueue />
         </div>
       )}
     </DashboardShell>

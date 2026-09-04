@@ -1,29 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, GraduationCap } from "lucide-react";
+import { MapPin, GraduationCap, Hammer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
-import { ageFromBirthDate, formatMoney, fundingPercent } from "@/lib/format";
+import { formatMoney, fundingPercent } from "@/lib/format";
+import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/types.extra";
 
-export type PublicOrphan = {
-  id: string;
-  code: string;
-  display_name: string;
-  gender: string;
-  birth_date: string | null;
-  city: string | null;
-  region: string | null;
-  story: string | null;
-  photo_url: string | null;
-  education_stage: string | null;
-  monthly_need: number | string;
-  funded_monthly: number | string;
-  currency: string;
-  status: string;
-};
+/**
+ * بطاقة الدليل — ما يكفي ليُقرَّر، ولا يكفي ليُعرَف الطفل.
+ *
+ * لا قصّة، ولا صورة، ولا مدينة، ولا عمرٌ بالسنة: **فئةٌ عمرية وبلد**.
+ * والقاعدة هي من تمنع لا هذا المكوّن — المنح مضيَّقة على الجدول نفسه،
+ * فلا يُلتفّ على البطاقة بنداءٍ مباشر.
+ */
+export type PublicOrphan = OrphanCardRow;
 
 export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
-  const age = ageFromBirthDate(orphan.birth_date);
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const full = orphan.status === "fully_sponsored" || percent >= 100;
   const gap = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
@@ -33,16 +25,11 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
     // البطاقة ليست رابطاً كاملاً: الاسم هو الرابط ويمتدّ غطاؤه على البطاقة.
     // فيبقى الاسم وحده هو الاسم المتاح لقارئ الشاشة بدل فقرة كاملة.
     <article className="group border-border bg-card relative flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-      <div
-        className={
-          // الصورة الحقيقية تستحق مساحتها؛ النائب لا يحمل معلومة فيُختصر.
-          orphan.photo_url
-            ? "bg-secondary relative aspect-[4/3] overflow-hidden"
-            : "bg-secondary relative aspect-[16/6] overflow-hidden"
-        }
-      >
+      {/* لا صورة في الدليل: الصورة تفصيلٌ خلف الإذن، فيبقى النائب
+          الهوياتيّ وحده — وهو لا يحمل معلومةً عن الطفل فيُختصر. */}
+      <div className="bg-secondary relative aspect-[16/6] overflow-hidden">
         <MuralImage
-          photoUrl={orphan.photo_url}
+          photoUrl={null}
           displayName={orphan.display_name}
           register={registerFor(orphan.status, percent)}
           className="size-full"
@@ -72,10 +59,11 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
           </h2>
           <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             <span>{orphan.gender === "female" ? "أنثى" : "ذكر"}</span>
-            {age !== null && <span>{age} سنة</span>}
-            {orphan.city && (
+            {orphan.age_band !== "unknown" && <span>{AGE_BAND_LABELS[orphan.age_band]} سنة</span>}
+            {(orphan.country ?? orphan.region) && (
               <span className="inline-flex items-center gap-1">
-                <MapPin className="size-3" aria-hidden="true" /> {orphan.city}
+                <MapPin className="size-3" aria-hidden="true" />{" "}
+                {[orphan.country, orphan.region].filter(Boolean).join(" — ")}
               </span>
             )}
             {orphan.education_stage && (
@@ -86,8 +74,15 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
           </p>
         </div>
 
-        {orphan.story && (
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-6">{orphan.story}</p>
+        {/* بدل القصّة: حالُ البناء — وهو ما يعني الكافل فعلاً، وليس
+            حكايةَ فقدٍ تُروى عن طفلٍ لغريب. */}
+        {orphan.building ? (
+          <p className="text-shore-thrive inline-flex items-center gap-1.5 text-xs font-medium">
+            <Hammer className="size-3.5" aria-hidden="true" />
+            برنامج بناء أهلية قائم
+          </p>
+        ) : (
+          <p className="text-muted-foreground text-xs">برنامجه لم يبدأ بعد</p>
         )}
 
         <div className="mt-auto space-y-2">

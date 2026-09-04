@@ -861,3 +861,155 @@ export type MatchingClient = SupabaseClient<DatabaseWithMatching, "public">;
 export function withMatching(client: unknown): MatchingClient {
   return client as MatchingClient;
 }
+
+/* =====================================================================
+   امتداد حاجب الأطفال والفلترة
+   ===================================================================== */
+
+export type AgeBand =
+  | "under_6"
+  | "age_6_11"
+  | "age_12_14"
+  | "age_15_17"
+  | "age_18_plus"
+  | "unknown";
+
+export const AGE_BAND_LABELS: Record<AgeBand, string> = {
+  under_6: "دون السادسة",
+  age_6_11: "٦ – ١١",
+  age_12_14: "١٢ – ١٤",
+  age_15_17: "١٥ – ١٧",
+  age_18_plus: "١٨ فأكثر",
+  unknown: "غير محدّدة",
+};
+
+/** البطاقة — ما يكفي ليُقرَّر، ولا يكفي ليُعرَف الطفل. */
+export type OrphanCardRow = {
+  id: string;
+  code: string;
+  display_name: string;
+  gender: string | null;
+  country: string | null;
+  region: string | null;
+  education_stage: string | null;
+  age_band: AgeBand;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  status: string;
+  org_id: string | null;
+  created_at: string;
+  gap: number;
+  building: boolean;
+  waiting_days: number;
+};
+
+export type AccessStatus = "pending" | "approved" | "rejected" | "revoked";
+
+export type MyAccess = {
+  request_id: string;
+  status: AccessStatus;
+  expires_at: string | null;
+  decision_note: string | null;
+  created_at: string;
+} | null;
+
+/** الملفّ: بطاقةٌ دائماً، وتفاصيلُ عند الإذن وحده. */
+export type OrphanView = OrphanCardRow & {
+  may_view_detail: boolean;
+  access: MyAccess;
+  detail?: {
+    birth_date: string | null;
+    city: string | null;
+    story: string | null;
+    photo_url: string | null;
+    needs: Array<{
+      id: string;
+      category: string;
+      title: string;
+      monthly_amount: number;
+    }>;
+  };
+};
+
+export type AccessRequestRow = {
+  id: string;
+  orphan_id: string;
+  orphan_name: string;
+  orphan_code: string;
+  requester_email: string;
+  reason: string;
+  status: AccessStatus;
+  created_at: string;
+  decided_at: string | null;
+  expires_at: string | null;
+  sponsorships: number;
+};
+
+export type OrphanFilterOptions = {
+  countries: string[];
+  regions: string[];
+  stages: string[];
+};
+
+export type DatabaseWithProtection = Omit<DatabaseWithMatching, "public"> & {
+  public: Omit<DatabaseWithMatching["public"], "Functions"> & {
+    Functions: DatabaseWithMatching["public"]["Functions"] & {
+      list_orphan_cards: {
+        Args: {
+          _country?: string | null;
+          _region?: string | null;
+          _age_band?: string | null;
+          _gender?: string | null;
+          _education_stage?: string | null;
+          _funding?: string | null;
+          _building?: boolean | null;
+          _search?: string | null;
+          _sort?: string | null;
+          _limit?: number;
+          _offset?: number;
+        };
+        Returns: unknown;
+      };
+      orphan_filter_options: { Args: Record<string, never>; Returns: unknown };
+      orphan_view: { Args: { _orphan: string }; Returns: unknown };
+      request_orphan_access: { Args: { _orphan: string; _reason: string }; Returns: unknown };
+      decide_orphan_access: {
+        Args: { _request: string; _decision: string; _note?: string | null; _days?: number };
+        Returns: unknown;
+      };
+      revoke_orphan_access: { Args: { _request: string; _note?: string | null }; Returns: unknown };
+      admin_access_requests: { Args: { _status?: string }; Returns: unknown };
+      my_access_requests: { Args: Record<string, never>; Returns: unknown };
+      guardian_orphans: { Args: Record<string, never>; Returns: unknown };
+      org_orphans: { Args: Record<string, never>; Returns: unknown };
+    };
+  };
+};
+
+export type ProtectionClient = SupabaseClient<DatabaseWithProtection, "public">;
+
+export function withProtection(client: unknown): ProtectionClient {
+  return client as ProtectionClient;
+}
+
+/** صفوف لوحات من يملك الملفّ — تمرّ بدالّة لا بمنحٍ عريض. */
+export type GuardianOrphanRow = {
+  id: string;
+  code: string;
+  display_name: string;
+  city: string | null;
+  country: string | null;
+  region: string | null;
+  status: string;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  photo_consent: string | null;
+  created_at: string;
+};
+
+export type OrgOrphanRow = GuardianOrphanRow & {
+  rejection_code: string | null;
+  rejection_reason: string | null;
+};
