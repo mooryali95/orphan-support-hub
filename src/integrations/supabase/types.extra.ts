@@ -1013,3 +1013,89 @@ export type OrgOrphanRow = GuardianOrphanRow & {
   rejection_code: string | null;
   rejection_reason: string | null;
 };
+
+/* =====================================================================
+   امتداد التكامل مع المنصّات الأخرى
+   ===================================================================== */
+
+export type ApiClientSummary = {
+  id: string;
+  name: string;
+  client_key: string;
+  secret_prefix: string | null;
+  scopes: string[];
+  org_id: string | null;
+  org_name: string | null;
+  active: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  last_import_at: string | null;
+  imports: number;
+  orphans: number;
+};
+
+export type ImportJobRow = {
+  client_id: string;
+  source: string | null;
+  idempotency_key: string | null;
+  request_digest: string | null;
+  received_count: number;
+  created_count: number;
+  updated_count: number;
+  failed_count: number;
+  result: Record<string, unknown>;
+};
+
+export type DatabaseWithIntegration = Omit<DatabaseWithProtection, "public"> & {
+  public: Omit<DatabaseWithProtection["public"], "Functions" | "Tables"> & {
+    Tables: DatabaseWithProtection["public"]["Tables"] & {
+      api_import_jobs: {
+        Row: ImportJobRow & { id: string; created_at: string };
+        Insert: Partial<ImportJobRow> & { client_id: string };
+        Update: Partial<ImportJobRow>;
+        Relationships: [];
+      };
+    };
+    Functions: DatabaseWithProtection["public"]["Functions"] & {
+      import_orphan_record: {
+        Args: { _client: string; _payload: Record<string, unknown> };
+        Returns: unknown;
+      };
+      api_orphan_cards: {
+        Args: {
+          _client: string;
+          _country?: string | null;
+          _region?: string | null;
+          _age_band?: string | null;
+          _gender?: string | null;
+          _funding?: string | null;
+          _limit?: number;
+          _offset?: number;
+        };
+        Returns: unknown;
+      };
+      touch_api_client: { Args: { _client: string; _imported?: boolean }; Returns: unknown };
+      admin_api_clients: { Args: Record<string, never>; Returns: unknown };
+      revoke_api_client: { Args: { _client: string }; Returns: unknown };
+      admin_approved_orgs: { Args: Record<string, never>; Returns: unknown };
+      create_api_client: {
+        Args: {
+          _name: string;
+          _org: string | null;
+          _scopes: string[];
+          _key: string;
+          _salt: string;
+          _hash: string;
+          _prefix: string;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type IntegrationClient = SupabaseClient<DatabaseWithIntegration, "public">;
+
+export function withIntegration(client: unknown): IntegrationClient {
+  return client as IntegrationClient;
+}

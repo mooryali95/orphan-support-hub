@@ -27,6 +27,7 @@ import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
+import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -123,6 +124,11 @@ const AuthenticatedSettingsNotificationsRoute =
     path: '/settings/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiIntegrationsOrphansRoute = ApiIntegrationsOrphansRouteImport.update({
+  id: '/api/integrations/orphans',
+  path: '/api/integrations/orphans',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNotificationsDispatchRoute =
   ApiNotificationsDispatchRouteImport.update({
     id: '/api/notifications/dispatch',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans': typeof OrphansIndexRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/orphans/'
     | '/settings/notifications'
+    | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -269,6 +279,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/orphans'
     | '/settings/notifications'
+    | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/orphans/'
     | '/_authenticated/settings/notifications'
+    | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   LegalTermsRoute: typeof LegalTermsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
+  ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/integrations/orphans': {
+      id: '/api/integrations/orphans'
+      path: '/api/integrations/orphans'
+      fullPath: '/api/integrations/orphans'
+      preLoaderRoute: typeof ApiIntegrationsOrphansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/notifications/dispatch': {
       id: '/api/notifications/dispatch'
       path: '/api/notifications/dispatch'
@@ -522,6 +542,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalTermsRoute: LegalTermsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   OrphansIndexRoute: OrphansIndexRoute,
+  ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

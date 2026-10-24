@@ -10,6 +10,7 @@ import { ReportQueue } from "@/components/impact/ReportQueue";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
+import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -34,7 +35,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "orphans" | "sponsors" | "queue" | "supervisors" | "access";
+type Tab =
+  "overview" | "orphans" | "sponsors" | "queue" | "supervisors" | "access" | "integrations";
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
@@ -85,6 +87,7 @@ function AdminPage() {
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
+    ["integrations", "التكامل", null],
   ];
 
   return (
@@ -342,6 +345,12 @@ function AdminPage() {
       {tab === "access" && (
         <div className="mt-8">
           <AccessQueue />
+        </div>
+      )}
+
+      {tab === "integrations" && (
+        <div className="mt-8">
+          <ApiClientsAdmin />
         </div>
       )}
     </DashboardShell>
