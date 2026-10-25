@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
+import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
+import { AwaitingTransfers } from "@/components/admin/AwaitingTransfers";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
@@ -23,11 +25,11 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "لوحة الإدارة — IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -36,7 +38,14 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Tab =
-  "overview" | "orphans" | "sponsors" | "queue" | "supervisors" | "access" | "integrations";
+  | "overview"
+  | "orphans"
+  | "sponsors"
+  | "queue"
+  | "supervisors"
+  | "access"
+  | "integrations"
+  | "monitoring";
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
@@ -88,6 +97,7 @@ function AdminPage() {
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
     ["integrations", "التكامل", null],
+    ["monitoring", "المراقبة", null],
   ];
 
   return (
@@ -204,6 +214,8 @@ function AdminPage() {
         />
       )}
 
+      {tab === "monitoring" && <DispatchHealthPanel />}
+
       {tab === "sponsors" && (
         <Table
           head={["الكافل", "كفالات", "نشطة", "التزام شهري", "المسدَّد", "منذ"]}
@@ -228,6 +240,8 @@ function AdminPage() {
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
+          <AwaitingTransfers />
+
           <section>
             <h2 className="text-lg font-bold">
               ملفات بانتظار المراجعة ({o.pending_orphans.length})

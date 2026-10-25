@@ -28,15 +28,15 @@ INSERT INTO public.care_organizations (id, owner_id, name, status) VALUES
    'f1000000-0000-4000-8000-000000000004', 'جهة معلّقة', 'pending');
 
 INSERT INTO public.api_clients (id, name, client_key, secret_hash, org_id, scopes) VALUES
-  ('f3000000-0000-4000-8000-00000000000d', 'الشريك الأول', 'ioco_live_one', 'x',
+  ('f3000000-0000-4000-8000-00000000000d', 'الشريك الأول', 'ioso_live_one', 'x',
    'f2000000-0000-4000-8000-00000000000a', ARRAY['orphans:read','orphans:import']),
-  ('f3000000-0000-4000-8000-00000000000e', 'الشريك الثاني', 'ioco_live_two', 'x',
+  ('f3000000-0000-4000-8000-00000000000e', 'الشريك الثاني', 'ioso_live_two', 'x',
    'f2000000-0000-4000-8000-00000000000b', ARRAY['orphans:read','orphans:import']),
   /* قارئٌ **بجهةٍ معتمدة**: بلا جهةٍ كان شرط الجهة يلتقطه فيمرّ فحصُ
      النطاق بلا أن يقيس النطاق — وهو ما كشفه الإبطال. */
-  ('f3000000-0000-4000-8000-00000000000f', 'قارئ فقط', 'ioco_live_read', 'x',
+  ('f3000000-0000-4000-8000-00000000000f', 'قارئ فقط', 'ioso_live_read', 'x',
    'f2000000-0000-4000-8000-00000000000a', ARRAY['orphans:read']),
-  ('f3000000-0000-4000-8000-000000000010', 'شريك جهة معلّقة', 'ioco_live_pend', 'x',
+  ('f3000000-0000-4000-8000-000000000010', 'شريك جهة معلّقة', 'ioso_live_pend', 'x',
    'f2000000-0000-4000-8000-00000000000c', ARRAY['orphans:import']);
 
 
@@ -47,7 +47,7 @@ DO $$
 BEGIN
   BEGIN
     INSERT INTO public.api_clients (name, client_key, secret_hash, org_id, scopes)
-    VALUES ('نطاق مجهول', 'ioco_bad_scope', 'x',
+    VALUES ('نطاق مجهول', 'ioso_bad_scope', 'x',
             'f2000000-0000-4000-8000-00000000000a', ARRAY['orphans:delete']);
     RAISE EXCEPTION 'FAIL — قُبل نطاقٌ غير معروف';
   EXCEPTION WHEN check_violation THEN
@@ -56,7 +56,7 @@ BEGIN
 
   BEGIN
     INSERT INTO public.api_clients (name, client_key, secret_hash, org_id, scopes)
-    VALUES ('مستورد بلا جهة', 'ioco_no_org', 'x', NULL, ARRAY['orphans:import']);
+    VALUES ('مستورد بلا جهة', 'ioso_no_org', 'x', NULL, ARRAY['orphans:import']);
     RAISE EXCEPTION 'FAIL — قُبل مستوردٌ بلا جهة مسؤولة';
   EXCEPTION WHEN check_violation THEN
     RAISE NOTICE 'PASS — الاستيراد يحتاج جهةً مسؤولة';
@@ -104,7 +104,7 @@ BEGIN
     (code, display_name, org_id, external_source, external_ref,
      monthly_need, funded_monthly, status, approved_at)
   VALUES (public.next_orphan_code(), 'كتابة مباشرة',
-          'f2000000-0000-4000-8000-00000000000a', 'ioco_live_one', 'EXT-DIRECT',
+          'f2000000-0000-4000-8000-00000000000a', 'ioso_live_one', 'EXT-DIRECT',
           100, 100, 'approved', now());
 
   SELECT status::text INTO _st FROM public.orphans WHERE external_ref = 'EXT-DIRECT';
@@ -220,7 +220,7 @@ DO $$
 DECLARE _r JSONB; _need NUMERIC; _story TEXT; _id UUID;
 BEGIN
   SELECT id INTO _id FROM public.orphans
-   WHERE external_source = 'ioco_live_one' AND external_ref = 'EXT-1';
+   WHERE external_source = 'ioso_live_one' AND external_ref = 'EXT-1';
 
   -- وهو تحت المراجعة: الاحتياج يتغيّر بلا اعتراض.
   _r := public.import_orphan_record('f3000000-0000-4000-8000-00000000000d',
@@ -306,10 +306,10 @@ END $$;
 DO $$
 BEGIN
   INSERT INTO public.api_import_jobs (client_id, source, idempotency_key, request_digest)
-  VALUES ('f3000000-0000-4000-8000-00000000000d', 'ioco_live_one', 'idem-1', 'digest-1');
+  VALUES ('f3000000-0000-4000-8000-00000000000d', 'ioso_live_one', 'idem-1', 'digest-1');
   BEGIN
     INSERT INTO public.api_import_jobs (client_id, source, idempotency_key, request_digest)
-    VALUES ('f3000000-0000-4000-8000-00000000000d', 'ioco_live_one', 'idem-1', 'digest-1');
+    VALUES ('f3000000-0000-4000-8000-00000000000d', 'ioso_live_one', 'idem-1', 'digest-1');
     RAISE EXCEPTION 'FAIL — قُبل طلبٌ مكرّر بنفس مفتاح التكرار';
   EXCEPTION WHEN unique_violation THEN
     RAISE NOTICE 'PASS — مفتاح التكرار يمنع إنشاء ملفّاتٍ مكرّرة لأطفالٍ حقيقيين';

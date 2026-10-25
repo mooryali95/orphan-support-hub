@@ -1,11 +1,11 @@
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { IocoMark } from "@/components/brand/IocoMark";
+import { IosoMark } from "@/components/brand/IosoMark";
 import { cn } from "@/lib/utils";
 
 /**
  * نظام «الجداريات» — معالجة صور الملفات كما تعرّفها الاستراتيجية البصرية للعمران.
  *
- * الصورة في IOCO ليست توثيقاً بل «أداة نفوذ تقود مسار التغيير الأسي نحو
+ * الصورة في IOSO ليست توثيقاً بل «أداة نفوذ تقود مسار التغيير الأسي نحو
  * الاستخلاف»، ولها سجلّان متقابلان:
  *
  *   need   — الجداريات المؤلمة: المنهج التفكيكي النقدي. تصوير مقرّب جداً يعزل
@@ -56,7 +56,7 @@ export function MuralImage({
           tile={72}
         />
         <span className="relative w-[38%] max-w-24 opacity-90">
-          <IocoMark variant="mark" />
+          <IosoMark variant="mark" />
         </span>
       </div>
     );

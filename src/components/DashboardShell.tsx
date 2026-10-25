@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IocoLockup } from "@/components/brand/IocoMark";
+import { IosoLockup } from "@/components/brand/IosoMark";
 import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,8 +30,8 @@ export function DashboardShell({
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-          <Link to="/" aria-label="IOCO — الصفحة الرئيسية">
-            <IocoLockup compact />
+          <Link to="/" aria-label="IOSO — الصفحة الرئيسية">
+            <IosoLockup compact />
           </Link>
 
           <nav className="hidden items-center gap-1 text-sm md:flex">

@@ -18,17 +18,17 @@ import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } fr
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "كفالاتي — IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "كفالاتي — IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "كفالاتي — IOCO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "كفالاتي — IOSO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],

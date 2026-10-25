@@ -42,14 +42,14 @@ export const Route = createFileRoute("/orphans/$orphanId")({
     if (!loaderData?.orphan) {
       return {
         meta: [
-          { title: "ملف غير متاح — IOCO — اكفل يتيماً بملف موثّق" },
+          { title: "ملف غير متاح — IOSO — اكفل يتيماً بملف موثّق" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
-    const title = `كفالة ${loaderData.orphan.display_name} — IOCO — اكفل يتيماً بملف موثّق`;
+    const title = `كفالة ${loaderData.orphan.display_name} — IOSO — اكفل يتيماً بملف موثّق`;
     const description =
-      "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
+      "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
     return {
       meta: [
         { title },
@@ -68,7 +68,9 @@ export const Route = createFileRoute("/orphans/$orphanId")({
             name: `كفالة ${loaderData.orphan.display_name}`,
             description,
             serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
-            provider: { "@type": "Organization", name: "IOCO" },
+            // الاسم من main (IOCO ← IOSO)، والمنطقة من الحاجب: المدينة
+            // صارت تفصيلاً خلف الإذن فلا تُفهرَس ولا تُعرض للزائر.
+            provider: { "@type": "Organization", name: "IOSO" },
             areaServed: loaderData.orphan.country ?? undefined,
             offers: {
               "@type": "Offer",

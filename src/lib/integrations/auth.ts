@@ -18,13 +18,13 @@ const SCRYPT_KEYLEN = 32;
 const WINDOW_SECONDS = 300;
 
 export function newSecret(): { secret: string; salt: string; hash: string; prefix: string } {
-  const secret = `ioco_sk_${randomBytes(24).toString("base64url")}`;
+  const secret = `ioso_sk_${randomBytes(24).toString("base64url")}`;
   const salt = randomBytes(16).toString("hex");
   return { secret, salt, hash: hashSecret(secret, salt), prefix: secret.slice(0, 16) };
 }
 
 export function newClientKey(): string {
-  return `ioco_ck_${randomBytes(12).toString("base64url")}`;
+  return `ioso_ck_${randomBytes(12).toString("base64url")}`;
 }
 
 export function hashSecret(secret: string, salt: string): string {
@@ -64,7 +64,7 @@ export const AUTH_ERRORS: Record<string, AuthFailure> = {
   missing_credentials: {
     code: "missing_credentials",
     status: 401,
-    message: "مطلوب X-IOCO-Key و X-IOCO-Secret و X-IOCO-Timestamp.",
+    message: "مطلوب X-IOSO-Key و X-IOSO-Secret و X-IOSO-Timestamp.",
   },
   stale_timestamp: {
     code: "stale_timestamp",

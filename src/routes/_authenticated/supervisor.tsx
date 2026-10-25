@@ -18,7 +18,7 @@ import {
 import type { SupervisedEnrollment } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
 
-const TITLE = "لوحة المشرف — IOCO";
+const TITLE = "لوحة المشرف — IOSO";
 
 export const Route = createFileRoute("/_authenticated/supervisor")({
   head: () => ({

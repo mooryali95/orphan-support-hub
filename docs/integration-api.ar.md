@@ -21,9 +21,9 @@
 
 | الترويسة           | القيمة                                |
 | ------------------ | ------------------------------------- |
-| `X-IOCO-Key`       | مفتاح العميل (`ioco_ck_…`)            |
-| `X-IOCO-Secret`    | السرّ (`ioco_sk_…`)                   |
-| `X-IOCO-Timestamp` | الوقت الآن، بالثواني أو بالمللي ثانية |
+| `X-IOSO-Key`       | مفتاح العميل (`ioso_ck_…`)            |
+| `X-IOSO-Secret`    | السرّ (`ioso_sk_…`)                   |
+| `X-IOSO-Timestamp` | الوقت الآن، بالثواني أو بالمللي ثانية |
 
 ختمُ الوقت يجب أن يقع داخل **خمس دقائق** من وقتنا، وإلّا رُفض الطلب
 (`stale_timestamp`) — وبدون هذه النافذة يُعاد الطلب الملتقَط إلى الأبد.
@@ -50,9 +50,9 @@
 
 ```http
 POST /api/integrations/orphans
-X-IOCO-Key: ioco_ck_…
-X-IOCO-Secret: ioco_sk_…
-X-IOCO-Timestamp: 1790000000
+X-IOSO-Key: ioso_ck_…
+X-IOSO-Secret: ioso_sk_…
+X-IOSO-Timestamp: 1790000000
 Idempotency-Key: batch-2026-10-24-001
 Content-Type: application/json
 

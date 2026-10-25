@@ -4,11 +4,11 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IocoLockup } from "@/components/brand/IocoMark";
+import { IosoLockup } from "@/components/brand/IosoMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
 
@@ -18,17 +18,17 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
+      { title: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "الدخول والتسجيل — IOCO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOCO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -85,18 +85,6 @@ function AuthPage() {
     }
   }
 
-  async function onGoogle() {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}${redirectTo}`,
-    });
-    if (result.error) {
-      toast.error("تعذّر تسجيل الدخول عبر Google");
-      return;
-    }
-    if (result.redirected) return;
-    navigate({ to: redirectTo });
-  }
-
   return (
     <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
@@ -104,8 +92,8 @@ function AuthPage() {
         id="main"
         className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
-        <Link to="/" className="flex justify-center" aria-label="IOCO — الصفحة الرئيسية">
-          <IocoLockup />
+        <Link to="/" className="flex justify-center" aria-label="IOSO — الصفحة الرئيسية">
+          <IosoLockup />
         </Link>
 
         <h1 className="mt-6 text-center text-lg font-extrabold">
@@ -178,14 +166,6 @@ function AuthPage() {
             {mode === "signin" ? "دخول" : "إنشاء الحساب"}
           </Button>
         </form>
-
-        <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="h-px flex-1 bg-border" /> أو <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <Button type="button" variant="outline" className="w-full" onClick={onGoogle}>
-          المتابعة عبر Google
-        </Button>
 
         <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
           بالمتابعة أنت توافق على{" "}

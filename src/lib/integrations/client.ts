@@ -22,9 +22,9 @@ export type AuthResult = { ok: true; client: ApiClientRow } | { ok: false; failu
  * يعدّ به المفاتيح الصالحة.
  */
 export async function authenticateClient(request: Request): Promise<AuthResult> {
-  const key = request.headers.get("x-ioco-key");
-  const secret = request.headers.get("x-ioco-secret");
-  const stamp = request.headers.get("x-ioco-timestamp");
+  const key = request.headers.get("x-ioso-key");
+  const secret = request.headers.get("x-ioso-secret");
+  const stamp = request.headers.get("x-ioso-timestamp");
 
   if (!key || !secret || !stamp) {
     return { ok: false, failure: AUTH_ERRORS["missing_credentials"]! };
@@ -72,7 +72,7 @@ export function apiOk(body: Record<string, unknown>, status = 200): Response {
 }
 
 const EN: Record<string, string> = {
-  missing_credentials: "X-IOCO-Key, X-IOCO-Secret and X-IOCO-Timestamp headers are required.",
+  missing_credentials: "X-IOSO-Key, X-IOSO-Secret and X-IOSO-Timestamp headers are required.",
   stale_timestamp: "Timestamp outside the 5-minute window.",
   invalid_credentials: "Invalid or revoked credentials.",
   scope_denied: "The key lacks the scope required for this operation.",
