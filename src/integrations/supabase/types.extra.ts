@@ -1137,3 +1137,62 @@ export type DispatchClient = SupabaseClient<DatabaseWithDispatch, "public">;
 export function withDispatch(client: unknown): DispatchClient {
   return client as DispatchClient;
 }
+
+/* =====================================================================
+   امتداد البروفايل الكامل
+   ===================================================================== */
+
+export type ProfileSection =
+  | "education"
+  | "health"
+  | "family"
+  | "social"
+  | "aspiration"
+  | "supervisor_note";
+
+export type ProfileSectionRow = {
+  section: ProfileSection;
+  data: Record<string, string>;
+  note: string | null;
+  updated_role: string | null;
+  updated_at: string;
+  age_days: number;
+};
+
+export type OrphanProfile = {
+  may_read: boolean;
+  may_write?: boolean;
+  sees_sensitive?: boolean;
+  sections: ProfileSectionRow[];
+  hidden_sections?: number;
+};
+
+export type ProfileCompleteness = {
+  filled: number;
+  total: number;
+  missing: ProfileSection[];
+};
+
+export type DatabaseWithProfile = Omit<DatabaseWithIntegration, "public"> & {
+  public: Omit<DatabaseWithIntegration["public"], "Functions"> & {
+    Functions: DatabaseWithIntegration["public"]["Functions"] & {
+      orphan_profile: { Args: { _orphan: string }; Returns: unknown };
+      orphan_profile_completeness: { Args: { _orphan: string }; Returns: unknown };
+      save_orphan_profile_section: {
+        Args: {
+          _orphan: string;
+          _section: string;
+          _data?: Record<string, string>;
+          _note?: string | null;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type ProfileClient = SupabaseClient<DatabaseWithProfile, "public">;
+
+export function withProfile(client: unknown): ProfileClient {
+  return client as ProfileClient;
+}

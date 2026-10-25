@@ -25,6 +25,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
 import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
+import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -233,6 +234,9 @@ function OrphanDetail() {
                 signedIn={Boolean(user)}
               />
             )}
+
+            {/* البروفايل — يُقرأ بحسب الصلة، والقاعدة هي من تقسم. */}
+            {user && <OrphanProfilePanel orphanId={orphanId} orphanName={orphan.display_name} />}
 
             {(detail?.needs.length ?? 0) > 0 && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
