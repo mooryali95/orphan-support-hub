@@ -369,7 +369,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"e1000000-0000-4000-8000-000000000002","role":"authenticated"}';
   BEGIN
-    PERFORM public.decide_orphan_access(_req, 'approved');
+    PERFORM public.decide_orphan_access(_req, 'approved', ARRAY['journey']);
     RESET ROLE;
     RAISE EXCEPTION 'FAIL — أذنت جهةُ الرعاية في ملفّها';
   EXCEPTION WHEN insufficient_privilege THEN
@@ -387,7 +387,11 @@ BEGIN
 
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"e1000000-0000-4000-8000-000000000001","role":"authenticated"}';
-  _r := public.decide_orphan_access(_req, 'approved', 'كافلٌ محتمل', 30);
+  /* النطاقات صارت جزءاً من القرار: قبولٌ بلا نطاقٍ مرفوض. */
+  _r := public.decide_orphan_access(
+    _req, 'approved',
+    ARRAY['identity', 'journey', 'progress', 'profile_deep'],
+    'كافلٌ محتمل', 30);
   RESET ROLE;
 
   IF _r->>'expires_at' IS NULL THEN

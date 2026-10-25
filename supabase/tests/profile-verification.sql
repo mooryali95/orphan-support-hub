@@ -45,10 +45,14 @@ VALUES ('a4000000-0000-4000-8000-00000000000c', 'supervisor',
 
 /* كافلٌ له إذنُ اطّلاعٍ قائم — لا كفالة: نريد أن نقيس الإذن وحده. */
 INSERT INTO public.orphan_access_requests
-  (orphan_id, requester_id, reason, status, decided_by, decided_at, expires_at)
+  (orphan_id, requester_id, reason, status, decided_by, decided_at, expires_at,
+   granted_scopes)
 VALUES ('a3000000-0000-4000-8000-00000000000b', 'a1000000-0000-4000-8000-000000000004',
         'أنوي الكفالة وأحتاج الاطّلاع على تفاصيل الملفّ.', 'approved',
-        'a1000000-0000-4000-8000-000000000001', now(), now() + interval '90 days');
+        'a1000000-0000-4000-8000-000000000001', now(), now() + interval '90 days',
+        /* نطاقاتٌ لا تشمل `profile_deep`: فحصُ البروفايل يقيس أنّ
+           الأقسام الحسّاسة محجوبة عمّن لم يُمنحها. */
+        ARRAY['journey', 'progress']);
 
 
 -- ---------------------------------------------------------------------
