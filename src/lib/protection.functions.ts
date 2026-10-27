@@ -122,15 +122,27 @@ export const requestOrphanAccess = createServerFn({ method: "POST" })
         orphanId: z.string().uuid(),
         // عشرون حرفاً هي حدّ القاعدة نفسه: تكرارُه هنا يمنع رحلةً ضائعة.
         reason: z.string().trim().min(20).max(1000),
+        package: z
+          .string()
+          .regex(/^[a-z_]{2,40}$/)
+          .optional(),
       })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const db = withProtection(context.supabase);
-    const { data: res, error } = await db.rpc("request_orphan_access", {
-      _orphan: data.orphanId,
-      _reason: data.reason,
-    });
+    // بحزمةٍ أو بدونها: النسخة الثلاثية تُسجّل الحزمة وتمرّ بالنسخة الأصل.
+    const db = context.supabase as unknown as {
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+    };
+    const { data: res, error } = await db.rpc(
+      "request_orphan_access",
+      data.package
+        ? { _orphan: data.orphanId, _reason: data.reason, _package: data.package }
+        : { _orphan: data.orphanId, _reason: data.reason },
+    );
     if (error) return { ok: false as const, error: error.message, status: null };
     const r = (res ?? {}) as { status?: string };
     return { ok: true as const, error: null, status: r.status ?? "pending" };

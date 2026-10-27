@@ -948,6 +948,9 @@ export type AccessRequestRow = {
   decided_at: string | null;
   expires_at: string | null;
   sponsorships: number;
+  requested_package?: string | null;
+  package_scopes?: string[] | null;
+  granted_scopes?: string[] | null;
 };
 
 export type OrphanFilterOptions = {

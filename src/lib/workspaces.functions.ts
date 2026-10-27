@@ -349,3 +349,65 @@ export const recordPledgeDelivery = createServerFn({ method: "POST" })
       ? { ok: false as const, error: error.message }
       : { ok: true as const, error: null };
   });
+
+export type DonorMember = { email: string; role: "owner" | "finance" | "member" };
+export type DonorPledge = {
+  id: string;
+  kind: "qualification" | "in_kind";
+  target_type: string;
+  target: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+  country: string;
+  delivered_at: string | null;
+};
+
+export const DONOR_ROLE_LABELS: Record<DonorMember["role"], string> = {
+  owner: "مالك",
+  finance: "مالي",
+  member: "مطّلع",
+};
+
+export const getDonorMembers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ entityId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("donor_members_list", {
+      _entity: data.entityId,
+    });
+    return error ? ([] as DonorMember[]) : ((rows ?? []) as DonorMember[]);
+  });
+
+export const setDonorMember = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        entityId: z.string().uuid(),
+        email: z.string().trim().email(),
+        role: z.enum(["owner", "finance", "member", "remove"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("donor_set_member", {
+      _entity: data.entityId,
+      _email: data.email,
+      _role: data.role,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+export const getDonorPledges = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ entityId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("donor_entity_pledges", {
+      _entity: data.entityId,
+    });
+    return error ? ([] as DonorPledge[]) : ((rows ?? []) as DonorPledge[]);
+  });

@@ -228,3 +228,22 @@ export const UNIT_STATUS_LABELS: Record<string, string> = {
   returned: "أُعيدت للتحسين",
   accepted: "مقبولة",
 };
+
+export type MyAccessRow = {
+  id: string;
+  orphan_id: string;
+  orphan: string;
+  code: string;
+  status: "pending" | "approved" | "rejected" | "revoked";
+  requested_package: string | null;
+  granted_scopes: string[] | null;
+  expires_at: string | null;
+  created_at: string;
+};
+
+export const getMyAccess = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await rpc(context.supabase).rpc("my_access_requests");
+    return error ? ([] as MyAccessRow[]) : ((data ?? []) as MyAccessRow[]);
+  });

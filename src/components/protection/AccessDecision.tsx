@@ -50,7 +50,10 @@ export function AccessDecision({
     queryFn: () => fetchThread({ data: { requestId: row.id } }),
   });
 
-  const [scopes, setScopes] = useState<string[]>([]);
+  // تبدأ بما طلبه صاحب الطلب أو بما مُنح سابقاً — والإدارة تعدّل.
+  const [scopes, setScopes] = useState<string[]>(
+    (mode === "approved" ? row.granted_scopes : row.package_scopes) ?? [],
+  );
   const [reply, setReply] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
