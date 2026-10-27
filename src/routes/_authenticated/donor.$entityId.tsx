@@ -7,6 +7,7 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { getDonorDashboard, KIND_LABELS, TARGET_LABELS } from "@/lib/workspaces.functions";
 import { pageTitle } from "@/config/brand";
+import { StatTile } from "@/components/kit/StatTile";
 
 export const Route = createFileRoute("/_authenticated/donor/$entityId")({
   head: () => ({
@@ -55,12 +56,11 @@ function DonorPage() {
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         {(["qualification", "in_kind"] as const).map((k) => (
-          <div key={k} className="rounded-xl border border-border bg-background p-5">
-            <p className="text-sm text-muted-foreground">{KIND_LABELS[k]}</p>
-            <p className="mt-2 text-2xl font-extrabold tabular-nums">
-              {(d.by_kind[k] ?? 0).toLocaleString("ar")}
-            </p>
-          </div>
+          <StatTile
+            key={k}
+            label={KIND_LABELS[k] ?? k}
+            value={(d.by_kind[k] ?? 0).toLocaleString("ar")}
+          />
         ))}
       </div>
       <h2 className="mt-8 text-lg font-bold">توزيع الدعم حسب الهدف</h2>

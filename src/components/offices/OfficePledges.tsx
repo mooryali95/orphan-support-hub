@@ -16,6 +16,7 @@ import {
   TARGET_LABELS,
   type OpenPledge,
 } from "@/lib/workspaces.functions";
+import { EmptyState } from "@/components/kit/EmptyState";
 
 /**
  * تعهّدات منطقة المكتب: يُعلَن التجهيز، ثم يُثبَت التسليم بمستند،
@@ -32,7 +33,11 @@ export function OfficePledges({ officeId, canWrite }: { officeId: string; canWri
     <section className="mt-10">
       <h2 className="text-lg font-bold">تعهّدات بانتظار التسليم</h2>
       {pledges.length === 0 ? (
-        <p className="mt-2 text-sm text-muted-foreground">لا تعهّدات مفتوحة في نطاق المكتب.</p>
+        <EmptyState
+          className="mt-3"
+          title="لا تعهّدات مفتوحة"
+          text="حين يدعم أحدٌ منطقة المكتب أو مجموعاتها يظهر هنا لتجهيزه وتسليمه."
+        />
       ) : (
         <ul className="mt-3 divide-y divide-border rounded-xl border border-border bg-background">
           {pledges.map((p) => (

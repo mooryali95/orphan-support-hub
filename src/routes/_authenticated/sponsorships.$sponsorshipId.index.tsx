@@ -17,6 +17,7 @@ import {
 } from "@/lib/ledger.functions";
 import { cn } from "@/lib/utils";
 import { pageTitle } from "@/config/brand";
+import { StatTile } from "@/components/kit/StatTile";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/")({
   head: () => ({
@@ -109,9 +110,9 @@ function SponsorshipPage() {
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Stat label="مجموع ما دفعته" value={formatMoney(l.totals.paid, s.currency)} />
-        <Stat label="أشهرٌ مدفوعة" value={String(l.totals.months_paid)} />
-        <Stat label="أشهرٌ وصلت الطفل موثّقة" value={String(l.totals.months_delivered)} />
+        <StatTile label="مجموع ما دفعته" value={formatMoney(l.totals.paid, s.currency)} />
+        <StatTile label="أشهرٌ مدفوعة" value={String(l.totals.months_paid)} />
+        <StatTile label="أشهرٌ وصلت الطفل موثّقة" value={String(l.totals.months_delivered)} />
       </div>
 
       {s.message_status !== "none" && (
@@ -173,14 +174,5 @@ function Row({ m, currency }: { m: LedgerMonth; currency: string }) {
         )}
       </td>
     </tr>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-5">
-      <p className="text-2xl font-extrabold tabular-nums text-primary">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
-    </div>
   );
 }

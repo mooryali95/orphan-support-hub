@@ -52,7 +52,9 @@ describe("formatDate", () => {
 describe("formatMoney", () => {
   it("يعرض العملة الافتراضية بالدولار", () => {
     expect(formatMoney(80)).toContain("80");
-    expect(formatMoney(80)).toMatch(/US\$|USD|\$/);
+    expect(formatMoney(80)).toMatch(/\$/);
+    // لا «US$»: تنقلبها خوارزمية الاتجاه إلى «$US» في السطر العربي.
+    expect(formatMoney(80)).not.toContain("US$");
   });
 
   it("يعيد صفراً للقيم الفارغة بدل NaN معروضاً للكافل", () => {

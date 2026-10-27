@@ -20,6 +20,7 @@ import {
   type OfficeReport,
 } from "@/lib/workspaces.functions";
 import { pageTitle } from "@/config/brand";
+import { StatTile } from "@/components/kit/StatTile";
 
 export const Route = createFileRoute("/_authenticated/office/$officeId")({
   head: () => ({
@@ -79,12 +80,7 @@ function OfficePage() {
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-border bg-background p-5">
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="mt-2 text-2xl font-extrabold tabular-nums">
-              {value.toLocaleString("ar")}
-            </p>
-          </div>
+          <StatTile key={label} label={label} value={value.toLocaleString("ar")} />
         ))}
       </div>
 

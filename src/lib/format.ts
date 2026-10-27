@@ -6,11 +6,17 @@ const AR_NUM = "ar-u-nu-latn";
 
 export function formatMoney(amount: number | string | null | undefined, currency = "USD") {
   const value = Number(amount ?? 0);
-  return new Intl.NumberFormat(AR_NUM, {
+  // «US$» حروفٌ لاتينية تقلبها خوارزمية الاتجاه في سطرٍ عربي فتظهر «$US».
+  // الرمز وحده لا يُقلب، والعزل (FSI…PDI) يُبقي المبلغ كتلةً واحدة وسط النصّ.
+  const text = new Intl.NumberFormat(AR_NUM, {
     style: "currency",
     currency,
+    currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
-  }).format(value);
+  })
+    .format(value)
+    .replace("US$", "$");
+  return `\u2068${text}\u2069`;
 }
 
 export function ageFromBirthDate(birthDate: string | null | undefined) {
