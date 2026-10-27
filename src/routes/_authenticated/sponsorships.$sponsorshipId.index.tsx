@@ -103,6 +103,11 @@ function SponsorshipPage() {
           </span>
         )}
         <Button asChild variant="outline" size="sm" className="ms-auto">
+          <Link to="/sponsorships/$sponsorshipId/report" params={{ sponsorshipId }}>
+            التقرير السنوي
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="sm">
           <Link to="/orphans/$orphanId" params={{ orphanId: l.orphan.id }}>
             ملف الطفل
           </Link>

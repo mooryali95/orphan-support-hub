@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { renderNotificationEmail } from "./templates";
+import { renderMonthlyDigest, renderNotificationEmail } from "./templates";
 import { BRAND } from "@/config/brand";
 
 const base = {
@@ -75,5 +75,26 @@ describe("renderNotificationEmail", () => {
   it("يختار نصّ الزرّ حسب نوع الحدث", () => {
     expect(renderNotificationEmail(base).html).toContain("اقرأ التقرير");
     expect(renderNotificationEmail({ ...base, kind: "welcome" }).html).toContain("تصفّح الملفات");
+  });
+});
+
+describe("رسالة الشهر", () => {
+  const zero = {
+    paid: 0,
+    delivered_months: 0,
+    reports: 0,
+    units: 0,
+    traits: 0,
+    pledges_delivered: 0,
+  };
+  it("لا تكتب سطراً قيمته صفر", () => {
+    const m = renderMonthlyDigest("a@b.c", { ...zero, reports: 2 }, "https://x.test");
+    expect(m.text).toContain("نُشر 2");
+    expect(m.text).not.toContain("جلسة");
+    expect(m.html).toContain("https://x.test/dashboard");
+  });
+  it("الشهر الهادئ يقول ذلك ولا يُرسل أصفاراً", () => {
+    const m = renderMonthlyDigest("a@b.c", zero, "https://x.test");
+    expect(m.text).toContain("لم يُسجَّل جديد");
   });
 });

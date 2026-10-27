@@ -28,6 +28,7 @@ export const TIMELINE_LABELS: Record<string, string> = {
   "report.published": "نُشر تقرير الأثر",
   "report.rejected": "أُعيد التقرير للتصحيح",
   "sponsorship.started": "بدأت الكفالة",
+  disbursement_delivered: "وصلت كفالة الشهر موثّقة",
 };
 
 /** الفترة بصيغة YYYY-MM — نفس ما تفرضه القاعدة. */

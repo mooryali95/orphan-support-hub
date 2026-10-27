@@ -490,7 +490,7 @@ function OrphanDetail() {
             </p>
           </div>
           <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">{user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}</a>
+            <a href="#sponsor-form">ادعم {orphan.display_name}</a>
           </Button>
         </div>
       </div>

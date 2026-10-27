@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { MyPledges } from "@/components/support/MyPledges";
+import { MyJourney } from "@/components/support/MyJourney";
 import { DashboardShell } from "@/components/DashboardShell";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { SuggestionsPanel } from "@/components/matching/SuggestionsPanel";
@@ -87,6 +88,7 @@ function DashboardPage() {
 
   return (
     <DashboardShell title="كفالاتي" description="متابعة كفالاتك الشهرية وحالة كل ملف.">
+      <MyJourney />
       <MyPledges />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="عدد الكفالات" value={String(sponsorships.length)} />

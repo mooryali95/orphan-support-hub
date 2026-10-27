@@ -50,6 +50,7 @@ const filterSchema = z.object({
   sort: z.enum(["waiting", "closest", "newest"]).nullish(),
   limit: z.number().int().min(1).max(60).optional(),
   offset: z.number().int().min(0).max(10_000).optional(),
+  group: z.string().uuid().nullish(),
 });
 
 export const listOrphanCards = createServerFn({ method: "GET" })
@@ -68,6 +69,7 @@ export const listOrphanCards = createServerFn({ method: "GET" })
       _sort: data.sort ?? "waiting",
       _limit: data.limit ?? 24,
       _offset: data.offset ?? 0,
+      _group: data.group ?? null,
     });
     if (error) return { rows: [] as OrphanCardRow[], total: 0, error: error.message };
     const payload = (res ?? {}) as { rows?: OrphanCardRow[]; total?: number };

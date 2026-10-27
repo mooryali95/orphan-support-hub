@@ -36,6 +36,7 @@ import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integra
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.index'
+import { Route as AuthenticatedSponsorshipsSponsorshipIdReportRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.report'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.transfer'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -180,6 +181,12 @@ const AuthenticatedSponsorshipsSponsorshipIdIndexRoute =
     path: '/sponsorships/$sponsorshipId/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSponsorshipsSponsorshipIdReportRoute =
+  AuthenticatedSponsorshipsSponsorshipIdReportRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/report',
+    path: '/sponsorships/$sponsorshipId/report',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSponsorshipsSponsorshipIdTransferRoute =
   AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport.update({
     id: '/sponsorships/$sponsorshipId/transfer',
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -261,6 +269,7 @@ export interface FileRoutesByTo {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -295,6 +304,7 @@ export interface FileRoutesById {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -329,6 +339,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -394,6 +406,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/_authenticated/sponsorships/$sponsorshipId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -615,6 +628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sponsorships/$sponsorshipId/report': {
+      id: '/_authenticated/sponsorships/$sponsorshipId/report'
+      path: '/sponsorships/$sponsorshipId/report'
+      fullPath: '/sponsorships/$sponsorshipId/report'
+      preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sponsorships/$sponsorshipId/transfer': {
       id: '/_authenticated/sponsorships/$sponsorshipId/transfer'
       path: '/sponsorships/$sponsorshipId/transfer'
@@ -656,6 +676,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDonorEntityIdRoute: typeof AuthenticatedDonorEntityIdRoute
   AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedSponsorshipsSponsorshipIdReportRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   AuthenticatedSponsorshipsSponsorshipIdIndexRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
@@ -671,6 +692,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOfficeOfficeIdRoute: AuthenticatedOfficeOfficeIdRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
+  AuthenticatedSponsorshipsSponsorshipIdReportRoute:
+    AuthenticatedSponsorshipsSponsorshipIdReportRoute,
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute:
     AuthenticatedSponsorshipsSponsorshipIdTransferRoute,
   AuthenticatedSponsorshipsSponsorshipIdIndexRoute:

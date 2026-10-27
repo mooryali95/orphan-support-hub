@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { listOrphanCards, getFilterOptions } from "@/lib/protection.functions";
+import { getSupportCatalog } from "@/lib/support.functions";
 import { AGE_BAND_LABELS, type AgeBand } from "@/integrations/supabase/types.extra";
 import { cn } from "@/lib/utils";
 import { BRAND, pageTitle } from "@/config/brand";
@@ -74,6 +75,12 @@ const PAGE = 24;
 function OrphansPage() {
   const { data: first } = useSuspenseQuery(firstPageQuery);
   const { data: options } = useQuery(optionsQuery);
+  // المجموعات من كتالوج الدعم العامّ: اسمٌ ومنطقة وعدد، بلا مشرف ولا أسماء.
+  const { data: catalog } = useQuery({
+    queryKey: ["support-catalog"],
+    queryFn: () => getSupportCatalog(),
+  });
+  const groups = catalog?.catalog?.groups ?? [];
 
   const [search, setSearch] = useState("");
   const [country, setCountry] = useState("");
@@ -81,6 +88,7 @@ function OrphansPage() {
   const [ageBand, setAgeBand] = useState("");
   const [gender, setGender] = useState("");
   const [stage, setStage] = useState("");
+  const [group, setGroup] = useState("");
   const [funding, setFunding] = useState<Funding>("any");
   const [building, setBuilding] = useState(false);
   const [sort, setSort] = useState<Sort>("waiting");
@@ -93,6 +101,7 @@ function OrphansPage() {
     ...(ageBand ? { ageBand: ageBand as AgeBand } : {}),
     ...(gender ? { gender: gender as "male" | "female" } : {}),
     ...(stage ? { educationStage: stage } : {}),
+    ...(group ? { group } : {}),
     ...(funding !== "any" ? { funding } : {}),
     ...(building ? { building: true } : {}),
     sort,
@@ -107,6 +116,7 @@ function OrphansPage() {
     !ageBand &&
     !gender &&
     !stage &&
+    !group &&
     funding === "any" &&
     !building &&
     sort === "waiting" &&
@@ -131,6 +141,7 @@ function OrphansPage() {
     setAgeBand("");
     setGender("");
     setStage("");
+    setGroup("");
     setFunding("any");
     setBuilding(false);
     setSort("waiting");
@@ -279,6 +290,27 @@ function OrphansPage() {
               all="كل المراحل"
               options={options?.stages ?? []}
             />
+            {groups.length > 0 && (
+              <div>
+                <Label htmlFor="f-group" className="text-xs">
+                  المجموعة
+                </Label>
+                <select
+                  id="f-group"
+                  value={group}
+                  onChange={(e) => onFilter(setGroup)(e.target.value)}
+                  className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="">كل المجموعات</option>
+                  {groups.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name}
+                      {g.region ? ` — ${g.region}` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <label className="flex items-center gap-2 pb-2 text-xs">
               <input
                 type="checkbox"
