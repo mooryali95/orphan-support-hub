@@ -13,6 +13,7 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
+import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
@@ -423,6 +424,7 @@ function AdminPage() {
       {tab === "integrations" && (
         <div className="mt-8">
           <ApiClientsAdmin />
+          <MirrorStatusPanel />
         </div>
       )}
     </DashboardShell>

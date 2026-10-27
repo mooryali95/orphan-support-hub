@@ -31,6 +31,7 @@ import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
+import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
@@ -154,6 +155,11 @@ const AuthenticatedSettingsNotificationsRoute =
     path: '/settings/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiIntegrationsMirrorRoute = ApiIntegrationsMirrorRouteImport.update({
+  id: '/api/integrations/mirror',
+  path: '/api/integrations/mirror',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiIntegrationsOrphansRoute = ApiIntegrationsOrphansRouteImport.update({
   id: '/api/integrations/orphans',
   path: '/api/integrations/orphans',
@@ -239,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/orphans/': typeof OrphansIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/orphans': typeof OrphansIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/orphans/': typeof OrphansIndexRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
@@ -345,6 +354,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
@@ -442,6 +454,7 @@ export interface RootRouteChildren {
   LegalTermsRoute: typeof LegalTermsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
+  ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
@@ -606,6 +619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/integrations/mirror': {
+      id: '/api/integrations/mirror'
+      path: '/api/integrations/mirror'
+      fullPath: '/api/integrations/mirror'
+      preLoaderRoute: typeof ApiIntegrationsMirrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/integrations/orphans': {
       id: '/api/integrations/orphans'
       path: '/api/integrations/orphans'
@@ -740,6 +760,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalTermsRoute: LegalTermsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   OrphansIndexRoute: OrphansIndexRoute,
+  ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,

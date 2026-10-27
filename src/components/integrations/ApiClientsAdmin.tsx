@@ -20,6 +20,7 @@ import { formatDate } from "@/lib/format";
 const SCOPES = [
   ["orphans:read", "قراءة البطاقات"],
   ["orphans:import", "استيراد المستفيدين"],
+  ["mirror:write", "مزامنة منصّة التشغيل (الرواد)"],
 ] as const;
 
 type Scope = (typeof SCOPES)[number][0];
@@ -76,7 +77,13 @@ export function ApiClientsAdmin() {
     setBusy(true);
     try {
       const res = await issue({
-        data: { name: name.trim(), orgId: orgId || null, scopes },
+        data: {
+          name: name.trim(),
+          orgId: orgId || null,
+          scopes,
+          // مفتاح المزامنة يرتبط بمنصّة التشغيل الوحيدة المفعّلة اليوم.
+          ...(scopes.includes("mirror:write") ? { source: "rowad-albania" } : {}),
+        },
       });
       if (!res.ok || !res.credentials) {
         toast.error(res.error ?? "تعذّر الإصدار");
