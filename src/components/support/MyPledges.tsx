@@ -14,6 +14,14 @@ const STATUS: Record<MyPledge["status"], string> = {
   cancelled: "أُلغي",
 };
 
+/** المرحلة الأحدث من مسار التسليم إن بدأ، وإلا حالة التعهّد. */
+function stageLabel(p: MyPledge): string {
+  const last = p.deliveries?.[p.deliveries.length - 1];
+  if (last?.stage === "delivered") return "وصل · موثّق";
+  if (last?.stage === "preparing") return "قيد التجهيز";
+  return STATUS[p.status];
+}
+
 /** تعهّدات الداعم — العيني وبناء الأهلية بأهدافهما. */
 export function MyPledges() {
   const fetchPledges = useServerFn(getMyPledges);
@@ -47,7 +55,7 @@ export function MyPledges() {
                 <span className="tabular-nums font-semibold">
                   {p.amount} {p.currency === "EUR" ? "€" : p.currency}
                 </span>
-                <Badge variant="secondary">{STATUS[p.status]}</Badge>
+                <Badge variant="secondary">{stageLabel(p)}</Badge>
               </span>
             </li>
           ))}

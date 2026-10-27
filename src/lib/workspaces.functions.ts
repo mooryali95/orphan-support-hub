@@ -299,3 +299,51 @@ export const setDonorEntityStatus = createServerFn({ method: "POST" })
       ? { ok: false as const, error: error.message }
       : { ok: true as const, error: null };
   });
+
+export type OpenPledge = {
+  id: string;
+  kind: "qualification" | "in_kind";
+  target_type: string;
+  target: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+  last_stage: "preparing" | "delivered" | null;
+};
+
+export const getOfficeOpenPledges = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ officeId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("office_open_pledges", {
+      _office: data.officeId,
+    });
+    return error ? ([] as OpenPledge[]) : ((rows ?? []) as OpenPledge[]);
+  });
+
+export const recordPledgeDelivery = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        pledgeId: z.string().uuid(),
+        officeId: z.string().uuid(),
+        stage: z.enum(["preparing", "delivered"]),
+        proofPath: z.string().trim().max(300).optional(),
+        note: z.string().trim().max(1000).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("record_pledge_delivery", {
+      _pledge: data.pledgeId,
+      _office: data.officeId,
+      _stage: data.stage,
+      _proof_path: data.proofPath ?? null,
+      _note: data.note || null,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });

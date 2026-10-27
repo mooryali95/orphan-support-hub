@@ -27,6 +27,7 @@ import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
 import { getOrphanViewAuthed } from "@/lib/protection.functions";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 import { BRAND, pageTitle } from "@/config/brand";
@@ -256,6 +257,21 @@ function OrphanDetail() {
 
             {/* البروفايل — يُقرأ بحسب الصلة، والقاعدة هي من تقسم. */}
             {user && <OrphanProfilePanel orphanId={orphanId} orphanName={orphan.display_name} />}
+
+            {/* ما تمنحه الإدارة يظهر هنا قسماً قسماً، وما لم يُمنح مقفلٌ يدلّ على طريقه. */}
+            {user && (
+              <ScopedSections
+                orphanId={orphanId}
+                onRequest={
+                  orphan.may_view_detail
+                    ? undefined
+                    : () =>
+                        document
+                          .getElementById("gate-title")
+                          ?.scrollIntoView({ behavior: "smooth", block: "center" })
+                }
+              />
+            )}
 
             {(detail?.needs.length ?? 0) > 0 && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">

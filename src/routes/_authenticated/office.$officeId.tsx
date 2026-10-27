@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { FileText, ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
 
+import { OfficePledges } from "@/components/offices/OfficePledges";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,8 @@ function OfficePage() {
           </div>
         ))}
       </div>
+
+      <OfficePledges officeId={officeId} canWrite={d.can_write} />
 
       {d.can_write && <ReportForm officeId={officeId} canPublish={d.can_publish} />}
 
