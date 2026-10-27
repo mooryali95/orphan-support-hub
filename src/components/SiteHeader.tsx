@@ -6,6 +6,7 @@ import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
+import { BRAND } from "@/config/brand";
 
 const NAV = [
   { to: "/", label: "الرئيسية" },
@@ -30,7 +31,7 @@ export function SiteHeader() {
         تخطّي إلى المحتوى
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
+        <Link to="/" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
           <KahataynLockup />
         </Link>
 

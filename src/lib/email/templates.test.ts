@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { renderNotificationEmail } from "./templates";
+import { BRAND } from "@/config/brand";
 
 const base = {
   to: "sponsor@example.test",
@@ -60,7 +61,7 @@ describe("renderNotificationEmail", () => {
     const mail = renderNotificationEmail({ ...base, link: null, body: null });
     expect(mail.html).not.toContain('href="null"');
     expect(mail.html).not.toContain("undefined");
-    expect(mail.subject).toContain("كهاتين");
+    expect(mail.subject).toContain(`${BRAND.name}`);
   });
 
   // نصّ الدفعة الفاشلة يجب ألّا يُفزع: المزوّد يُعيد المحاولة تلقائياً.

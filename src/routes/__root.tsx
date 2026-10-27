@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { BRAND } from "@/config/brand";
 
 function NotFoundComponent() {
   return (
@@ -112,22 +113,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: `${BRAND.name} — اكفل يتيماً بملف موثّق` },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: `${BRAND.name} — اكفل يتيماً بملف موثّق` },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#0F4D3F" },
+      { name: "theme-color", content: BRAND.themeColor },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -141,8 +140,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "alternate icon", href: "/favicon.png", type: "image/png", sizes: "64x64" },
-      { rel: "apple-touch-icon", href: "/brand/kahatayn-192.png", sizes: "192x192" },
-      { rel: "icon", href: "/brand/kahatayn-512.png", type: "image/png", sizes: "512x512" },
+      { rel: "apple-touch-icon", href: "/brand/app-192.png", sizes: "192x192" },
+      { rel: "icon", href: "/brand/app-512.png", type: "image/png", sizes: "512x512" },
     ],
   }),
   shellComponent: RootShell,

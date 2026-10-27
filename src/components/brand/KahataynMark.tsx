@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { BRAND as BRAND_TEXT } from "@/config/brand";
 
 /**
  * شعار «كهاتين» — «أنا وكافل اليتيم في الجنة كهاتين».
@@ -94,7 +95,7 @@ export function KahataynLockup({
             onDark ? "text-white" : "text-[#0F4D3F] dark:text-primary",
           )}
         >
-          كهاتين
+          {BRAND_TEXT.name}
         </span>
         {!compact && (
           <span
@@ -103,7 +104,7 @@ export function KahataynLockup({
               onDark ? "text-white/75" : "text-bridge-ink",
             )}
           >
-            نكفل… ونبني
+            {BRAND_TEXT.tagline}
           </span>
         )}
       </span>

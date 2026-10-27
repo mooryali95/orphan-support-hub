@@ -7,11 +7,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { getTraitModel } from "@/lib/support.functions";
+import { pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/traits")({
   head: () => ({
     meta: [
-      { title: "نموذج السمات — كهاتين" },
+      { title: pageTitle("نموذج السمات", false) },
       {
         name: "description",
         content: "السمات التي تُبنى في رحلة التأهيل، مقسّمةً على أبعادها، وما يُلاحَظ في كل سمة.",

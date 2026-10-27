@@ -15,21 +15,20 @@ import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { listMySponsorships, cancelSponsorship } from "@/lib/sponsorships.functions";
 import { startCheckout, getPaymentMode } from "@/lib/payments.functions";
 import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "كفالاتي — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("كفالاتي") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "كفالاتي — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("كفالاتي") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],

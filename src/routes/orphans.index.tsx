@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { listOrphanCards, getFilterOptions } from "@/lib/protection.functions";
 import { AGE_BAND_LABELS, type AgeBand } from "@/integrations/supabase/types.extra";
 import { cn } from "@/lib/utils";
+import { BRAND, pageTitle } from "@/config/brand";
 
 const optionsQuery = queryOptions({
   queryKey: ["orphan-filter-options"],
@@ -25,17 +26,15 @@ const firstPageQuery = queryOptions({
 export const Route = createFileRoute("/orphans/")({
   head: () => ({
     meta: [
-      { title: "دليل الأيتام — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("دليل الأيتام") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "دليل الأيتام — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("دليل الأيتام") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
     ],
   }),

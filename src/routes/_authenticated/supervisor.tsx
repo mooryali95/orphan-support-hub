@@ -17,8 +17,9 @@ import {
 } from "@/lib/supervisor.functions";
 import type { SupervisedEnrollment } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
+import { pageTitle } from "@/config/brand";
 
-const TITLE = "لوحة المشرف — كهاتين";
+const TITLE = pageTitle("لوحة المشرف", false);
 
 export const Route = createFileRoute("/_authenticated/supervisor")({
   head: () => ({

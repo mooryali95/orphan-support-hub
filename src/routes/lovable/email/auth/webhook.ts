@@ -7,9 +7,10 @@ import { MagicLinkEmail } from "@/lib/email-templates/magic-link";
 import { RecoveryEmail } from "@/lib/email-templates/recovery";
 import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
+import { BRAND } from "@/config/brand";
 
 // Configuration
-const SITE_NAME = "كهاتين";
+const SITE_NAME = `${BRAND.name}`;
 const SENDER_DOMAIN = "notify.ioco.sunkvalue.com";
 const ROOT_DOMAIN = "ioco.sunkvalue.com";
 const FROM_DOMAIN = "ioco.sunkvalue.com";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             invite: {
-              subject: "دعوة للانضمام إلى كهاتين",
+              subject: `دعوة للانضمام إلى ${BRAND.name}`,
               render: (data) =>
                 React.createElement(InviteEmail, {
                   siteName: SITE_NAME,
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             magiclink: {
-              subject: "رابط دخولك إلى كهاتين",
+              subject: `رابط دخولك إلى ${BRAND.name}`,
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,

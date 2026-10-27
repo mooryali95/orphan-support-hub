@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
+import { BRAND } from "@/config/brand";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -28,7 +29,7 @@ const homeQuery = queryOptions({
   },
 });
 
-const TITLE = "كهاتين — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
+const TITLE = `${BRAND.name} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`;
 const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
@@ -162,9 +163,11 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title="شعار كهاتين" />
-            <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">كهاتين</p>
-            <p className="mt-1 text-sm font-medium text-bridge-ink">نكفل… ونبني</p>
+            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={`شعار ${BRAND.name}`} />
+            <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">
+              {BRAND.name}
+            </p>
+            <p className="mt-1 text-sm font-medium text-bridge-ink">{BRAND.tagline}</p>
             <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
               لا نقدّم رعايةً مؤقّتة،
               <br />

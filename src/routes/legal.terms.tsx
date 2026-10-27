@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LegalPage, Section } from "@/components/LegalPage";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/legal/terms")({
   head: () => ({
     meta: [
-      { title: "شروط الاستخدام — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("شروط الاستخدام") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
     ],
   }),

@@ -10,6 +10,7 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { getGuardianWorkspace } from "@/lib/impact.functions";
 import { formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/guardian")({
   /* أولياء الأمور وحدهم — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -18,11 +19,10 @@ export const Route = createFileRoute("/_authenticated/guardian")({
   },
   head: () => ({
     meta: [
-      { title: "مساحة ولي الأمر — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("مساحة ولي الأمر") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],

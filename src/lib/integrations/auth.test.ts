@@ -31,8 +31,8 @@ describe("مصادقة شركاء التكامل", () => {
   it("المفاتيح والأسرار مولَّدة لا متوقَّعة", () => {
     expect(newClientKey()).not.toBe(newClientKey());
     expect(newSecret().secret).not.toBe(newSecret().secret);
-    expect(newSecret().secret.startsWith("ioso_sk_")).toBe(true);
-    expect(newClientKey().startsWith("ioso_ck_")).toBe(true);
+    expect(newSecret().secret.startsWith("sk_live_")).toBe(true);
+    expect(newClientKey().startsWith("ck_live_")).toBe(true);
   });
 
   it("البادئة تُعرض ولا تكشف: جزءٌ من السرّ لا كلُّه", () => {

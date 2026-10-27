@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
 import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   /* الإدارة وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -26,11 +27,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("لوحة الإدارة") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],

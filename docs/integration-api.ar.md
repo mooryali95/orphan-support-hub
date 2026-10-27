@@ -21,9 +21,9 @@
 
 | الترويسة           | القيمة                                |
 | ------------------ | ------------------------------------- |
-| `X-IOSO-Key`       | مفتاح العميل (`ioso_ck_…`)            |
-| `X-IOSO-Secret`    | السرّ (`ioso_sk_…`)                   |
-| `X-IOSO-Timestamp` | الوقت الآن، بالثواني أو بالمللي ثانية |
+| `X-Api-Key`       | مفتاح العميل (`ck_live_…`)            |
+| `X-Api-Secret`    | السرّ (`sk_live_…`)                   |
+| `X-Api-Timestamp` | الوقت الآن، بالثواني أو بالمللي ثانية |
 
 ختمُ الوقت يجب أن يقع داخل **خمس دقائق** من وقتنا، وإلّا رُفض الطلب
 (`stale_timestamp`) — وبدون هذه النافذة يُعاد الطلب الملتقَط إلى الأبد.
@@ -50,9 +50,9 @@
 
 ```http
 POST /api/integrations/orphans
-X-IOSO-Key: ioso_ck_…
-X-IOSO-Secret: ioso_sk_…
-X-IOSO-Timestamp: 1790000000
+X-Api-Key: ck_live_…
+X-Api-Secret: sk_live_…
+X-Api-Timestamp: 1790000000
 Idempotency-Key: batch-2026-10-24-001
 Content-Type: application/json
 
@@ -168,3 +168,6 @@ GET /api/integrations/orphans?country=الأردن&age_band=age_6_11&funding=ope
 والسرّ الحامل فوق TLS يُعرّض السرّ للسلك وحده (وهو مُعمّى)، ويُخزَّن
 عندنا مُجزَّأً بـ`scrypt` وملحٍ لكل عميل فلا يُستردّ. والمقايضة في صالح
 الشركاء. ويبقى ختمُ الوقت شرطاً لسدّ إعادة الإرسال.
+
+
+> **ملاحظة توافق:** الرؤوس القديمة `X-IOSO-Key` و`X-IOSO-Secret` و`X-IOSO-Timestamp` ما زالت مقبولة، والمفاتيح القديمة (`ioso_ck_…`) تعمل كما هي. الرؤوس الجديدة محايدة لا تحمل اسم المنصّة، فلا يتأثّر الربط بتغيير الاسم.

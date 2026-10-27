@@ -6,10 +6,11 @@ import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { getDonorDashboard, KIND_LABELS, TARGET_LABELS } from "@/lib/workspaces.functions";
+import { pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/donor/$entityId")({
   head: () => ({
-    meta: [{ title: "الجهة المانحة — كهاتين" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: pageTitle("الجهة المانحة", false) }, { name: "robots", content: "noindex" }],
   }),
   component: DonorPage,
 });

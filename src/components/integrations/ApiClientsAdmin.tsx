@@ -204,8 +204,8 @@ export function ApiClientsAdmin() {
           <dl className="mt-4 space-y-2 text-xs">
             {(
               [
-                ["المفتاح (X-IOSO-Key)", issued.clientKey],
-                ["السرّ (X-IOSO-Secret)", issued.secret],
+                ["المفتاح (X-Api-Key)", issued.clientKey],
+                ["السرّ (X-Api-Secret)", issued.secret],
               ] as const
             ).map(([label, value]) => (
               <div key={label} className="flex flex-wrap items-center gap-2">

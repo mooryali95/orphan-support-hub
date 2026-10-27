@@ -16,10 +16,11 @@ import {
   type LedgerMonth,
 } from "@/lib/ledger.functions";
 import { cn } from "@/lib/utils";
+import { pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/")({
   head: () => ({
-    meta: [{ title: "كفالتي — كهاتين" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: pageTitle("كفالتي", false) }, { name: "robots", content: "noindex" }],
   }),
   component: SponsorshipPage,
 });

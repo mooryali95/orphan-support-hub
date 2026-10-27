@@ -7,9 +7,10 @@ import { MagicLinkEmail } from "@/lib/email-templates/magic-link";
 import { RecoveryEmail } from "@/lib/email-templates/recovery";
 import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
+import { BRAND } from "@/config/brand";
 
 // Configuration
-const SITE_NAME = "كهاتين";
+const SITE_NAME = `${BRAND.name}`;
 const ROOT_DOMAIN = "ioco.sunkvalue.com";
 
 // Sample data for preview mode ONLY (not used in actual email sending).

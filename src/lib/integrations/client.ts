@@ -21,10 +21,25 @@ export type AuthResult = { ok: true; client: ApiClientRow } | { ok: false; failu
  * «مفتاح غير موجود» و«سرّ خاطئ» و«مفتاح مبطَل» يُعطي المهاجم مِسباراً
  * يعدّ به المفاتيح الصالحة.
  */
+/**
+ * الرؤوس محايدة لا تحمل اسم المنصّة (`X-Api-Key`…)، فتغيير الاسم لا يقطع
+ * شريكاً. والرؤوس القديمة `X-IOSO-*` مقبولة لمن ربط قبل ذلك.
+ */
+export const API_HEADERS = {
+  key: "X-Api-Key",
+  secret: "X-Api-Secret",
+  timestamp: "X-Api-Timestamp",
+} as const;
+const LEGACY_PREFIX = "x-ioso-";
+
+function header(request: Request, part: keyof typeof API_HEADERS): string | null {
+  return request.headers.get(API_HEADERS[part]) ?? request.headers.get(`${LEGACY_PREFIX}${part}`);
+}
+
 export async function authenticateClient(request: Request): Promise<AuthResult> {
-  const key = request.headers.get("x-ioso-key");
-  const secret = request.headers.get("x-ioso-secret");
-  const stamp = request.headers.get("x-ioso-timestamp");
+  const key = header(request, "key");
+  const secret = header(request, "secret");
+  const stamp = header(request, "timestamp");
 
   if (!key || !secret || !stamp) {
     return { ok: false, failure: AUTH_ERRORS["missing_credentials"]! };
@@ -72,7 +87,7 @@ export function apiOk(body: Record<string, unknown>, status = 200): Response {
 }
 
 const EN: Record<string, string> = {
-  missing_credentials: "X-IOSO-Key, X-IOSO-Secret and X-IOSO-Timestamp headers are required.",
+  missing_credentials: "X-Api-Key, X-Api-Secret and X-Api-Timestamp headers are required.",
   stale_timestamp: "Timestamp outside the 5-minute window.",
   invalid_credentials: "Invalid or revoked credentials.",
   scope_denied: "The key lacks the scope required for this operation.",

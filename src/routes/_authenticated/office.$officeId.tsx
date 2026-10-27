@@ -18,10 +18,11 @@ import {
   saveOfficeReport,
   type OfficeReport,
 } from "@/lib/workspaces.functions";
+import { pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/office/$officeId")({
   head: () => ({
-    meta: [{ title: "لوحة المكتب — كهاتين" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: pageTitle("لوحة المكتب", false) }, { name: "robots", content: "noindex" }],
   }),
   component: OfficePage,
 });
