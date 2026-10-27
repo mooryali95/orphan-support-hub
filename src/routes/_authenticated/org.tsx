@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { FileText, GraduationCap, Loader2, Plus } from "lucide-react";
+import { OrgInbox } from "@/components/org/OrgInbox";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -119,6 +120,7 @@ function OrgPage() {
 
   return (
     <DashboardShell title={org.name} description="ملفات الأيتام التابعة لجهتك وحالتها.">
+      <OrgInbox />
       <div className="flex flex-wrap items-center gap-3">
         <Badge variant={org.status === "approved" ? "default" : "secondary"}>
           {org.status === "approved"

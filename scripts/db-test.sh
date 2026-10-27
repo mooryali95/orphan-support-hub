@@ -43,6 +43,7 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/mirror-verification.sql \
               supabase/tests/offices-verification.sql \
               supabase/tests/catalog-verification.sql \
+              supabase/tests/ledger-verification.sql \
               supabase/tests/audit-path-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.

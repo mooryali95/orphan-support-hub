@@ -35,6 +35,7 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
+import { Route as AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.index'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.transfer'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -173,6 +174,12 @@ const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   path: '/api/payments/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSponsorshipsSponsorshipIdIndexRoute =
+  AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/',
+    path: '/sponsorships/$sponsorshipId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSponsorshipsSponsorshipIdTransferRoute =
   AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport.update({
     id: '/sponsorships/$sponsorshipId/transfer',
@@ -226,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -257,6 +265,7 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/sponsorships/$sponsorshipId': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -290,6 +299,7 @@ export interface FileRoutesById {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/_authenticated/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/sponsorships/$sponsorshipId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -354,6 +365,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/sponsorships/$sponsorshipId'
   id:
     | '__root__'
     | '/'
@@ -386,6 +398,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/_authenticated/sponsorships/$sponsorshipId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -595,6 +608,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/sponsorships/$sponsorshipId/': {
+      id: '/_authenticated/sponsorships/$sponsorshipId/'
+      path: '/sponsorships/$sponsorshipId'
+      fullPath: '/sponsorships/$sponsorshipId/'
+      preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sponsorships/$sponsorshipId/transfer': {
       id: '/_authenticated/sponsorships/$sponsorshipId/transfer'
       path: '/sponsorships/$sponsorshipId/transfer'
@@ -637,6 +657,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
+  AuthenticatedSponsorshipsSponsorshipIdIndexRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -652,6 +673,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedSettingsNotificationsRoute,
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute:
     AuthenticatedSponsorshipsSponsorshipIdTransferRoute,
+  AuthenticatedSponsorshipsSponsorshipIdIndexRoute:
+    AuthenticatedSponsorshipsSponsorshipIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

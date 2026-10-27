@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Users } from "lucide-react";
 
 import { DashboardShell } from "@/components/DashboardShell";
+import { OrgInbox } from "@/components/org/OrgInbox";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
@@ -43,6 +44,7 @@ function GuardianPage() {
       title="مساحة ولي الأمر"
       description="ملفات من تحت رعايتك وما نُشر عنهم من تقارير."
     >
+      <OrgInbox />
       {isLoading ? (
         <div className="flex justify-center py-16">
           <Loader2 className="text-muted-foreground size-6 animate-spin" aria-hidden="true" />

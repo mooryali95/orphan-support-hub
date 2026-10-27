@@ -26,6 +26,14 @@ import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format"
 import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
+import { cn } from "@/lib/utils";
+
+const SUPPORT_MODES: Array<["monthly" | SupportKind, string]> = [
+  ["monthly", "كفالة شهرية"],
+  ["qualification", "بناء أهلية"],
+  ["in_kind", "دعم عيني"],
+];
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -122,6 +130,7 @@ function OrphanDetail() {
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
   const [anonymous, setAnonymous] = useState(false);
+  const [mode, setMode] = useState<"monthly" | SupportKind>("monthly");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   // اقتراح التجاوز يُملأ من ردّ الخادم حين يزيد المبلغ عن المتبقّي.
@@ -197,6 +206,9 @@ function OrphanDetail() {
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl font-extrabold">{orphan.display_name}</h1>
+                  {detail?.real_name && (
+                    <span className="text-sm text-muted-foreground">({detail.real_name})</span>
+                  )}
                   <Badge variant="secondary">ملف رقم {orphan.code}</Badge>
                   {orphan.status === "fully_sponsored" && <Badge>مكفول بالكامل</Badge>}
                 </div>
@@ -266,7 +278,10 @@ function OrphanDetail() {
                 </h2>
                 <p className="mt-2 font-medium">{data.org.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {[data.org.city, data.org.region].filter(Boolean).join(" — ")}
+                  {/* في حشدٍ صغير تدلّ مدينة الجهة على الطفل، فتُحجب. */}
+                  {orphan.cohort_small
+                    ? "الموقع التفصيلي محجوب حمايةً للطفل"
+                    : [data.org.city, data.org.region].filter(Boolean).join(" — ")}
                 </p>
                 {data.org.about && (
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">{data.org.about}</p>
@@ -276,117 +291,161 @@ function OrphanDetail() {
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
+            {/* ثلاثة أبواب متساوية: الكفالة الشهرية، وبناء الأهلية، والعيني. */}
             <div
-              id="sponsor-form"
-              className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+              role="tablist"
+              aria-label="نوع الدعم"
+              className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-border bg-card p-1"
             >
-              <p className="text-sm text-muted-foreground">الاحتياج الشهري</p>
-              <p className="mt-1 text-3xl font-extrabold text-primary">
-                {formatMoney(orphan.monthly_need, orphan.currency)}
-              </p>
-              <CrossingProgress percent={percent} className="mt-4" />
-              <p className="mt-2 text-xs text-muted-foreground">
-                {surplus > 0
-                  ? `تم تغطية احتياجه بالكامل`
-                  : `تم تغطية ${percent}% — المتبقي ${formatMoney(remaining, orphan.currency)}`}
-              </p>
+              {SUPPORT_MODES.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={mode === key}
+                  onClick={() => setMode(key)}
+                  className={cn(
+                    "rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:text-sm",
+                    mode === key
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {mode === "monthly" ? (
+              <div
+                id="sponsor-form"
+                className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+              >
+                <p className="text-sm text-muted-foreground">الاحتياج الشهري</p>
+                <p className="mt-1 text-3xl font-extrabold text-primary">
+                  {formatMoney(orphan.monthly_need, orphan.currency)}
+                </p>
+                <CrossingProgress percent={percent} className="mt-4" />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {surplus > 0
+                    ? `تم تغطية احتياجه بالكامل`
+                    : `تم تغطية ${percent}% — المتبقي ${formatMoney(remaining, orphan.currency)}`}
+                </p>
 
-              {surplus > 0 && (
-                <SurplusBadge
-                  surplus={surplus}
-                  currency={orphan.currency}
-                  unlocks={funding?.state?.surplus_unlocks ?? null}
-                  className="mt-4"
-                />
-              )}
-
-              <div className="mt-6 space-y-4">
-                <div>
-                  <Label htmlFor="amount">مبلغ الكفالة الشهري ({orphan.currency})</Label>
-                  <Input
-                    id="amount"
-                    inputMode="numeric"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="mt-2"
-                  />
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {remaining > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setAmount(String(Math.round(remaining)))}
-                        className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
-                      >
-                        المتبقّي كاملاً
-                      </button>
-                    )}
-                    {[25, 50, 100].map((v) => (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => setAmount(String(v))}
-                        className="rounded-md border border-input px-3 py-1 text-xs hover:bg-secondary"
-                      >
-                        {v}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="message">رسالة لليتيم (اختياري)</Label>
-                  <Textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={3}
-                    className="mt-2"
-                    placeholder="كلمة تشجيعية تصل عبر جهة الرعاية"
-                  />
-                </div>
-
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox checked={anonymous} onCheckedChange={(v) => setAnonymous(v === true)} />
-                  أرغب أن تكون كفالتي دون ذكر اسمي
-                </label>
-
-                {excessOffer && (
-                  <ExcessSuggestion
-                    gap={excessOffer.gap}
-                    excess={excessOffer.excess}
+                {surplus > 0 && (
+                  <SurplusBadge
+                    surplus={surplus}
                     currency={orphan.currency}
-                    suggestions={excessOffer.suggestions}
-                    pending={pending}
-                    onUseGapOnly={() => {
-                      setAmount(String(Math.round(excessOffer.gap)));
-                      setExcessOffer(null);
-                    }}
-                    onConfirm={() => void onSponsor(true)}
+                    unlocks={funding?.state?.surplus_unlocks ?? null}
+                    className="mt-4"
                   />
                 )}
 
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => void onSponsor()}
-                  disabled={pending}
-                >
-                  {pending && <Loader2 className="size-4 animate-spin" />}
-                  {user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}
-                </Button>
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <Label htmlFor="amount">مبلغ الكفالة الشهري ({orphan.currency})</Label>
+                    <Input
+                      id="amount"
+                      inputMode="numeric"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="mt-2"
+                    />
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {remaining > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setAmount(String(Math.round(remaining)))}
+                          className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
+                        >
+                          المتبقّي كاملاً
+                        </button>
+                      )}
+                      {[25, 50, 100].map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setAmount(String(v))}
+                          className="rounded-md border border-input px-3 py-1 text-xs hover:bg-secondary"
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/support" search={{ orphan: orphan.id, name: orphan.display_name }}>
-                    دعمٌ عيني أو لبناء الأهلية
+                  <div>
+                    <Label htmlFor="message">رسالة لليتيم (اختياري)</Label>
+                    <Textarea
+                      id="message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={3}
+                      className="mt-2"
+                      placeholder="كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل"
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={anonymous}
+                      onCheckedChange={(v) => setAnonymous(v === true)}
+                    />
+                    أرغب أن تكون كفالتي دون ذكر اسمي
+                  </label>
+
+                  {excessOffer && (
+                    <ExcessSuggestion
+                      gap={excessOffer.gap}
+                      excess={excessOffer.excess}
+                      currency={orphan.currency}
+                      suggestions={excessOffer.suggestions}
+                      pending={pending}
+                      onUseGapOnly={() => {
+                        setAmount(String(Math.round(excessOffer.gap)));
+                        setExcessOffer(null);
+                      }}
+                      onConfirm={() => void onSponsor(true)}
+                    />
+                  )}
+
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={() => void onSponsor()}
+                    disabled={pending}
+                  >
+                    {pending && <Loader2 className="size-4 animate-spin" />}
+                    {user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}
+                  </Button>
+
+                  <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
+                    <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
+                    الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div
+                id="sponsor-form"
+                className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+              >
+                <p className="font-semibold">{KIND_INFO[mode].label}</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {KIND_INFO[mode].text}
+                </p>
+                <Button asChild className="mt-5 w-full" size="lg">
+                  <Link
+                    to="/support"
+                    search={{ orphan: orphan.id, name: orphan.display_name, kind: mode }}
+                  >
+                    تابع — {KIND_INFO[mode].label} لـ{orphan.display_name}
                   </Link>
                 </Button>
-
-                <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
-                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
-                  الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.
+                <p className="mt-3 text-xs text-muted-foreground">
+                  تتابعه من «بواباتي» بتقارير المكتب وصوره.
                 </p>
               </div>
-            </div>
+            )}
           </aside>
         </div>
 

@@ -49,7 +49,10 @@ export const getPublicOrphan = createServerFn({ method: "GET" })
           .maybeSingle()
       : { data: null };
 
-    return { orphan, org: org ?? null };
+    // في حشدٍ صغير تدلّ مدينة الجهة على الطفل: تُحذف من الردّ نفسه لا
+    // من العرض فقط، فما يصل المتصفّح قد قُرئ.
+    const safeOrg = org && orphan.cohort_small ? { ...org, city: null, region: null } : org;
+    return { orphan, org: safeOrg ?? null };
   });
 
 export const getPlatformStats = createServerFn({ method: "GET" }).handler(async () => {
