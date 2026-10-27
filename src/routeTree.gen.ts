@@ -21,11 +21,14 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
 import { Route as AuthenticatedSupervisorRouteImport } from './routes/_authenticated/supervisor'
+import { Route as AuthenticatedWorkspacesRouteImport } from './routes/_authenticated/workspaces'
 import { Route as LegalFaqRouteImport } from './routes/legal.faq'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
+import { Route as AuthenticatedDonorEntityIdRouteImport } from './routes/_authenticated/donor.$entityId'
+import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
@@ -94,6 +97,11 @@ const AuthenticatedSupervisorRoute = AuthenticatedSupervisorRouteImport.update({
   path: '/supervisor',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWorkspacesRoute = AuthenticatedWorkspacesRouteImport.update({
+  id: '/workspaces',
+  path: '/workspaces',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const LegalFaqRoute = LegalFaqRouteImport.update({
   id: '/legal/faq',
   path: '/legal/faq',
@@ -119,6 +127,18 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   path: '/orphans/$orphanId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDonorEntityIdRoute =
+  AuthenticatedDonorEntityIdRouteImport.update({
+    id: '/donor/$entityId',
+    path: '/donor/$entityId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOfficeOfficeIdRoute =
+  AuthenticatedOfficeOfficeIdRouteImport.update({
+    id: '/office/$officeId',
+    path: '/office/$officeId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
     id: '/settings/notifications',
@@ -176,11 +196,14 @@ export interface FileRoutesByFullPath {
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
   '/supervisor': typeof AuthenticatedSupervisorRoute
+  '/workspaces': typeof AuthenticatedWorkspacesRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
+  '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -202,11 +225,14 @@ export interface FileRoutesByTo {
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
   '/supervisor': typeof AuthenticatedSupervisorRoute
+  '/workspaces': typeof AuthenticatedWorkspacesRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans': typeof OrphansIndexRoute
+  '/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
+  '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -230,11 +256,14 @@ export interface FileRoutesById {
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
   '/_authenticated/supervisor': typeof AuthenticatedSupervisorRoute
+  '/_authenticated/workspaces': typeof AuthenticatedWorkspacesRoute
   '/legal/faq': typeof LegalFaqRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/_authenticated/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
+  '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -258,11 +287,14 @@ export interface FileRouteTypes {
     | '/guardian'
     | '/org'
     | '/supervisor'
+    | '/workspaces'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
+    | '/donor/$entityId'
+    | '/office/$officeId'
     | '/settings/notifications'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -284,11 +316,14 @@ export interface FileRouteTypes {
     | '/guardian'
     | '/org'
     | '/supervisor'
+    | '/workspaces'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans'
+    | '/donor/$entityId'
+    | '/office/$officeId'
     | '/settings/notifications'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -311,11 +346,14 @@ export interface FileRouteTypes {
     | '/_authenticated/guardian'
     | '/_authenticated/org'
     | '/_authenticated/supervisor'
+    | '/_authenticated/workspaces'
     | '/legal/faq'
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
+    | '/_authenticated/donor/$entityId'
+    | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -433,6 +471,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSupervisorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/workspaces': {
+      id: '/_authenticated/workspaces'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof AuthenticatedWorkspacesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/legal/faq': {
       id: '/legal/faq'
       path: '/legal/faq'
@@ -467,6 +512,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/orphans/$orphanId'
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/donor/$entityId': {
+      id: '/_authenticated/donor/$entityId'
+      path: '/donor/$entityId'
+      fullPath: '/donor/$entityId'
+      preLoaderRoute: typeof AuthenticatedDonorEntityIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/office/$officeId': {
+      id: '/_authenticated/office/$officeId'
+      path: '/office/$officeId'
+      fullPath: '/office/$officeId'
+      preLoaderRoute: typeof AuthenticatedOfficeOfficeIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/notifications': {
       id: '/_authenticated/settings/notifications'
@@ -533,6 +592,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
   AuthenticatedSupervisorRoute: typeof AuthenticatedSupervisorRoute
+  AuthenticatedWorkspacesRoute: typeof AuthenticatedWorkspacesRoute
+  AuthenticatedDonorEntityIdRoute: typeof AuthenticatedDonorEntityIdRoute
+  AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
 }
@@ -543,6 +605,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
   AuthenticatedSupervisorRoute: AuthenticatedSupervisorRoute,
+  AuthenticatedWorkspacesRoute: AuthenticatedWorkspacesRoute,
+  AuthenticatedDonorEntityIdRoute: AuthenticatedDonorEntityIdRoute,
+  AuthenticatedOfficeOfficeIdRoute: AuthenticatedOfficeOfficeIdRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute:

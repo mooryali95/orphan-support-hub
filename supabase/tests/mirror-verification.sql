@@ -120,16 +120,11 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — التأهيل: يتيم | مجموعة | منطقة | دولة؛ والعيني يصل المؤسسة';
 
-  _ok := false;
-  BEGIN
-    SET LOCAL ROLE authenticated;
-    SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
-    PERFORM public.create_support_pledge('qualification', 'institution', 'c2000000-0000-4000-8000-00000000000a', 50, 'AL');
-  EXCEPTION WHEN check_violation THEN _ok := true;
-  END;
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
+  PERFORM public.create_support_pledge('qualification', 'institution', 'c2000000-0000-4000-8000-00000000000a', 50, 'AL');
   RESET ROLE;
-  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — قُبل تأهيلٌ لمؤسسة'; END IF;
-  RAISE NOTICE 'PASS — التأهيل لا يُوجَّه لمؤسسة';
+  RAISE NOTICE 'PASS — التأهيل يصل المؤسسة أيضاً (مركز، مكتب…)';
 
   INSERT INTO public.countries (code, name_ar) VALUES ('XK', 'كوسوفو');
   _ok := false;

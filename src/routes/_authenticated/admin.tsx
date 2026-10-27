@@ -13,6 +13,7 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
+import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -44,6 +45,7 @@ type Tab =
   | "queue"
   | "supervisors"
   | "access"
+  | "offices"
   | "integrations"
   | "monitoring";
 
@@ -96,6 +98,7 @@ function AdminPage() {
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
+    ["offices", "المكاتب والجهات", null],
     ["integrations", "التكامل", null],
     ["monitoring", "المراقبة", null],
   ];
@@ -359,6 +362,12 @@ function AdminPage() {
       {tab === "access" && (
         <div className="mt-8">
           <AccessQueue />
+        </div>
+      )}
+
+      {tab === "offices" && (
+        <div className="mt-8">
+          <OfficesAdmin />
         </div>
       )}
 

@@ -36,6 +36,13 @@ export function DashboardShell({
 
           <nav className="hidden items-center gap-1 text-sm md:flex">
             <Link
+              to="/workspaces"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              بواباتي
+            </Link>
+            <Link
               to="/dashboard"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
