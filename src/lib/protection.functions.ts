@@ -19,7 +19,7 @@ import {
  * الخادم وحده يلتفّ عليها نداءُ REST مباشر بالمفتاح المنشور.
  */
 
-function publicClient() {
+export function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
   return createClient(process.env["SUPABASE_URL"]!, key, {
     auth: { persistSession: false, autoRefreshToken: false },

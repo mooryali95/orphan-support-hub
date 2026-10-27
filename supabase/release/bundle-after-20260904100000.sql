@@ -1,0 +1,2784 @@
+-- ملف نشر كهاتين — كل الهجرات بعد 20260904100000
+-- يُولَّد آلياً؛ لا تعدّله يدوياً. أُنشئ: 2026-10-27T18:23Z
+\set ON_ERROR_STOP on
+BEGIN;
+
+-- >>> migration 20260905100000 child_protection_gate
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260905100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260905100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- حاجب الأطفال — الدليل يعرض بطاقةً، والملفّ يُطلَب ويُؤذَن فيه
+-- ---------------------------------------------------------------------
+-- اليوم: `authenticated` يملك `SELECT` على **كل أعمدة `orphans`**،
+-- وسياسة `orphans_read_auth` تفتح كل صفٍّ منشور. أي أنّ أيّ مستخدمٍ
+-- مسجَّل — بحسابٍ مجّاني أنشأه قبل دقيقة — يقرأ بنداء REST واحد:
+-- قصّةَ كل طفل، وتاريخَ ميلاده، ومدينته، ومعرّفَ وليّه، ومسارَ وثيقة
+-- إذن صورته، وسببَ رفض ملفّه.
+--
+-- والمفتاح المنشور في المتصفّح يجعل هذا النداء متاحاً لكل من يفتح
+-- أدوات المطوّر. فبناء «طلب إذنٍ» فوق هذا **مسرحٌ لا حماية**: الحاجب
+-- يُلتفّ عليه لا يُكسر.
+--
+-- فالبناء هنا من الأساس:
+--
+--   (١) **تضييق المنح.** يبقى للعموم ما تحتاجه بطاقةٌ ليُقرَّر بها:
+--       اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، ومرحلةٌ دراسية، وحال
+--       التمويل. وتُسحب الأعمدة المُعرِّفة: **تاريخ الميلاد الدقيق،
+--       والقصّة، والصورة، والمدينة** — ومعها ما لم يكن للعموم أصلاً.
+--
+--   (٢) **الفئة العمرية لا تاريخ الميلاد.** الفلترة بالعمر مطلوبة،
+--       وتاريخ الميلاد الدقيق مُعرِّف. فتُحسب فئةٌ في الخادم ويُحجب
+--       التاريخ: يُفلتَر بالعمر ولا يُعرف اليوم.
+--
+--   (٣) **الطلب والإذن.** من أراد الملفّ كاملاً طلبه **بسبب مكتوب**،
+--       فتقرّر الإدارة. والإذن **يَنقضي** — إذنٌ أبديّ نسخةٌ دائمة من
+--       ملفّ طفل — و**يُسحَب** متى شاءت الإدارة.
+--
+--   (٤) **من له علاقة قائمة لا يستأذن.** الجهة الراعية، والوليّ،
+--       والمشرف وأصحاب الأدوار، والكافل الحاليّ — هؤلاء علاقتهم هي
+--       الإذن. والاستئذان هنا حاجزٌ بلا فائدة.
+-- =====================================================================
+
+
+-- ---------------------------------------------------------------------
+-- 1) تضييق المنح — الأساس الذي بدونه الباقي زينة
+-- ---------------------------------------------------------------------
+REVOKE SELECT ON public.orphans FROM anon, authenticated;
+
+GRANT SELECT (
+  id, code, display_name, gender, country, region, education_stage,
+  monthly_need, funded_monthly, currency, status, org_id, created_at
+) ON public.orphans TO anon, authenticated;
+
+/* وللمسجَّل أعمدةُ إدارةٍ لا تُعرِّف طفلاً: متى اعتُمد، ومتى عُدّل،
+   وسببُ الرفض، وحالُ إذن الصورة. أمّا `guardian_id` و`created_by`
+   و`reviewed_by` و`photo_consent_by` فتبقى محجوبة — وهي **معرّفات
+   بالغين**، وكشفُها يربط شخصاً حقيقياً بطفلٍ بعينه. */
+GRANT SELECT (
+  approved_at, updated_at, rejection_code, rejection_reason, photo_consent
+) ON public.orphans TO authenticated;
+
+/* `UPDATE` تبقى كما هي: سياسة `orphans_update` تحصرها بمن يملك الملفّ،
+   والكتابة بلا قراءة لا تكشف شيئاً — و`WHERE` على عمودٍ محجوب يحتاج
+   `SELECT` عليه فيُرفض. */
+
+
+-- ---------------------------------------------------------------------
+-- 2) الفئة العمرية — يُفلتَر بالعمر ولا يُعرف اليوم
+-- ---------------------------------------------------------------------
+DO $$ BEGIN
+  CREATE TYPE public.age_band AS ENUM
+    ('under_6', 'age_6_11', 'age_12_14', 'age_15_17', 'age_18_plus', 'unknown');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+CREATE OR REPLACE FUNCTION public.age_band_of(_birth DATE)
+RETURNS public.age_band LANGUAGE sql IMMUTABLE AS $fn$
+  SELECT CASE
+    WHEN _birth IS NULL THEN 'unknown'
+    WHEN _birth > CURRENT_DATE THEN 'unknown'
+    ELSE CASE
+      WHEN (CURRENT_DATE - _birth) / 365 < 6  THEN 'under_6'
+      WHEN (CURRENT_DATE - _birth) / 365 < 12 THEN 'age_6_11'
+      WHEN (CURRENT_DATE - _birth) / 365 < 15 THEN 'age_12_14'
+      WHEN (CURRENT_DATE - _birth) / 365 < 18 THEN 'age_15_17'
+      ELSE 'age_18_plus'
+    END
+  END::public.age_band;
+$fn$;
+GRANT EXECUTE ON FUNCTION public.age_band_of(DATE) TO anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 3) طلبات الاطّلاع
+-- ---------------------------------------------------------------------
+DO $$ BEGIN
+  CREATE TYPE public.access_status AS ENUM
+    ('pending', 'approved', 'rejected', 'revoked');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS public.orphan_access_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  orphan_id UUID NOT NULL REFERENCES public.orphans(id) ON DELETE CASCADE,
+  requester_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  /* سببٌ مكتوب: «لماذا تريد ملفّ هذا الطفل؟» سؤالٌ من حقّ الطفل أن
+     يُسأل، وجوابُه أثرٌ يُراجَع. */
+  reason TEXT NOT NULL,
+  status public.access_status NOT NULL DEFAULT 'pending',
+  decided_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  decided_at TIMESTAMPTZ,
+  decision_note TEXT,
+  /* الإذن ينقضي: إذنٌ أبديّ نسخةٌ دائمة من ملفّ طفل. */
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT ck_access_reason_written CHECK (length(btrim(reason)) >= 20),
+  CONSTRAINT ck_access_decision_signed CHECK (
+    status = 'pending' OR (decided_by IS NOT NULL AND decided_at IS NOT NULL)
+  ),
+  CONSTRAINT ck_access_approval_expires CHECK (
+    status <> 'approved' OR expires_at IS NOT NULL
+  )
+);
+
+/* طلبٌ حيٌّ واحد لكل (ملفّ، طالب): تكرارُ الطلب ضغطٌ على الإدارة لا حقّ. */
+CREATE UNIQUE INDEX IF NOT EXISTS uq_live_access_request
+  ON public.orphan_access_requests(orphan_id, requester_id)
+  WHERE status IN ('pending', 'approved');
+
+CREATE INDEX IF NOT EXISTS idx_access_requests_orphan
+  ON public.orphan_access_requests(orphan_id);
+CREATE INDEX IF NOT EXISTS idx_access_requests_requester
+  ON public.orphan_access_requests(requester_id);
+CREATE INDEX IF NOT EXISTS idx_access_requests_pending
+  ON public.orphan_access_requests(created_at) WHERE status = 'pending';
+CREATE INDEX IF NOT EXISTS idx_access_requests_decided_by
+  ON public.orphan_access_requests(decided_by) WHERE decided_by IS NOT NULL;
+
+GRANT SELECT ON public.orphan_access_requests TO authenticated;
+GRANT ALL ON public.orphan_access_requests TO service_role;
+ALTER TABLE public.orphan_access_requests ENABLE ROW LEVEL SECURITY;
+
+/* يقرؤها صاحبها والإدارة. ولا يكتبها أحدٌ مباشرةً: الكتابة من الدوالّ
+   وحدها، لأن الهوية والقرار فيها. */
+DROP POLICY IF EXISTS "access_requests_read" ON public.orphan_access_requests;
+CREATE POLICY "access_requests_read" ON public.orphan_access_requests
+  FOR SELECT TO authenticated
+  USING (requester_id = auth.uid() OR public.is_admin());
+
+
+-- ---------------------------------------------------------------------
+-- 4) الحاجب
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.can_view_orphan_detail(_orphan UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT auth.uid() IS NOT NULL AND (
+    public.is_admin()
+    OR public.can_manage_orphan(_orphan)
+    OR public.sponsors_orphan(_orphan)
+    OR EXISTS (
+      SELECT 1 FROM public.orphans o
+       WHERE o.id = _orphan AND o.guardian_id = auth.uid()
+    )
+    /* أصحاب الأدوار حول برنامجه: مشرفٌ ووليٌّ ووصيٌّ وفقيه. */
+    OR EXISTS (
+      SELECT 1 FROM public.enrollment_roles r
+        JOIN public.program_enrollments e ON e.id = r.enrollment_id
+       WHERE e.orphan_id = _orphan
+         AND r.person_id = auth.uid()
+         AND r.ended_at IS NULL
+    )
+    /* أو إذنٌ قائمٌ لم ينقضِ ولم يُسحب. */
+    OR EXISTS (
+      SELECT 1 FROM public.orphan_access_requests a
+       WHERE a.orphan_id = _orphan
+         AND a.requester_id = auth.uid()
+         AND a.status = 'approved'
+         AND a.expires_at > now()
+    )
+  );
+$fn$;
+REVOKE ALL ON FUNCTION public.can_view_orphan_detail(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.can_view_orphan_detail(UUID) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 5) الطلب والقرار
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.request_orphan_access(_orphan UUID, _reason TEXT)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _id UUID; _published BOOLEAN;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'request_orphan_access: تحتاج جلسة' USING ERRCODE = '42501';
+  END IF;
+
+  SELECT true INTO _published FROM public.orphans o
+   WHERE o.id = _orphan AND o.status IN ('approved', 'fully_sponsored');
+  IF _published IS NOT TRUE THEN
+    RAISE EXCEPTION 'لا ملفّ منشوراً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  /* من له علاقةٌ قائمة لا يستأذن: حاجزٌ بلا فائدة، وطابورٌ بلا معنى. */
+  IF public.can_view_orphan_detail(_orphan) THEN
+    RETURN jsonb_build_object('status', 'approved', 'already', true);
+  END IF;
+
+  INSERT INTO public.orphan_access_requests (orphan_id, requester_id, reason)
+  VALUES (_orphan, auth.uid(), btrim(_reason))
+  RETURNING id INTO _id;
+
+  PERFORM public.write_audit('orphan.access_requested', 'orphan', _orphan,
+    jsonb_build_object('request', _id));
+
+  RETURN jsonb_build_object('status', 'pending', 'request_id', _id);
+END $fn$;
+REVOKE ALL ON FUNCTION public.request_orphan_access(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.request_orphan_access(UUID, TEXT) TO authenticated;
+
+
+/* القرار للإدارة وحدها — لا لجهة الرعاية: جهةٌ تأذن في ملفّاتها كجهةٍ
+   تعتمد نفسها، والقاعدة نفسها التي بُني عليها اعتماد المشرفين. */
+CREATE OR REPLACE FUNCTION public.decide_orphan_access(
+  _request UUID,
+  _decision TEXT,
+  _note TEXT DEFAULT NULL,
+  _days INTEGER DEFAULT 180
+)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _orphan UUID; _st public.access_status; _exp TIMESTAMPTZ;
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'الإذن بالاطّلاع للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+  IF _decision NOT IN ('approved', 'rejected') THEN
+    RAISE EXCEPTION 'القرار إمّا قبولٌ أو رفض' USING ERRCODE = 'check_violation';
+  END IF;
+
+  _st := _decision::public.access_status;
+  IF _st = 'approved' THEN
+    _exp := now() + make_interval(days => GREATEST(LEAST(COALESCE(_days, 180), 365), 1));
+  END IF;
+
+  UPDATE public.orphan_access_requests
+     SET status = _st, decided_by = auth.uid(), decided_at = now(),
+         decision_note = NULLIF(btrim(COALESCE(_note, '')), ''),
+         expires_at = _exp
+   WHERE id = _request AND status = 'pending'
+  RETURNING orphan_id INTO _orphan;
+
+  IF _orphan IS NULL THEN
+    RAISE EXCEPTION 'لا طلبَ معلّقاً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  PERFORM public.write_audit('orphan.access_' || _decision, 'orphan', _orphan,
+    jsonb_build_object('request', _request, 'expires_at', _exp));
+
+  RETURN jsonb_build_object('status', _st, 'expires_at', _exp);
+END $fn$;
+REVOKE ALL ON FUNCTION public.decide_orphan_access(UUID, TEXT, TEXT, INTEGER)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.decide_orphan_access(UUID, TEXT, TEXT, INTEGER)
+  TO authenticated;
+
+
+/* والسحب بعد الإذن: إذنٌ لا يُسحب ليس إذناً بل تسليم. */
+CREATE OR REPLACE FUNCTION public.revoke_orphan_access(_request UUID, _note TEXT DEFAULT NULL)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _orphan UUID;
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'سحب الإذن للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE public.orphan_access_requests
+     SET status = 'revoked', decided_by = auth.uid(), decided_at = now(),
+         decision_note = COALESCE(NULLIF(btrim(COALESCE(_note, '')), ''), decision_note)
+   WHERE id = _request AND status = 'approved'
+  RETURNING orphan_id INTO _orphan;
+
+  IF _orphan IS NULL THEN
+    RAISE EXCEPTION 'لا إذنَ قائماً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  PERFORM public.write_audit('orphan.access_revoked', 'orphan', _orphan,
+    jsonb_build_object('request', _request));
+
+  RETURN jsonb_build_object('revoked', true);
+END $fn$;
+REVOKE ALL ON FUNCTION public.revoke_orphan_access(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.revoke_orphan_access(UUID, TEXT) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 6) الطبقة الأولى — البطاقة، وما يُفلتَر به
+-- ---------------------------------------------------------------------
+-- ما يكفي ليقرّر الزائر أن يعرف أكثر، ولا يكفي ليعرف الطفل: اسمٌ مستعار
+-- وبلدٌ ومنطقة وفئةٌ عمرية ومرحلةٌ دراسية وحالُ التمويل وحالُ البرنامج.
+-- ولا قصّة، ولا صورة، ولا مدينة، ولا تاريخ ميلاد.
+CREATE OR REPLACE FUNCTION public.list_orphan_cards(
+  _country TEXT DEFAULT NULL,
+  _region TEXT DEFAULT NULL,
+  _age_band TEXT DEFAULT NULL,
+  _gender TEXT DEFAULT NULL,
+  _education_stage TEXT DEFAULT NULL,
+  _funding TEXT DEFAULT NULL,     -- open | full | any
+  _building BOOLEAN DEFAULT NULL, -- برنامجه قائم من عدمه
+  _search TEXT DEFAULT NULL,
+  _sort TEXT DEFAULT 'waiting',   -- waiting | closest | newest
+  _limit INT DEFAULT 24,
+  _offset INT DEFAULT 0
+)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _rows JSONB; _total INTEGER; _q TEXT;
+BEGIN
+  /* البحث يُهرَّب هنا لا في العميل: `ILIKE` بنصٍّ خام يجعل «%» تعني
+     «كل شيء». و**التهريب لا الحذف**: حذفُ محارف البدل يحوّل بحثاً من
+     «%» وحده إلى فراغٍ، والفراغ يعني «بلا فلترة» — فيعيد البحثُ عن
+     محرف بدلٍ كلَّ الملفّات، وهو نقيض المقصود. أمّا التهريب فيجعلها
+     محرفاً عادياً يُبحث عنه فلا يُطابق شيئاً. */
+  _q := NULLIF(btrim(COALESCE(_search, '')), '');
+  IF _q IS NOT NULL THEN
+    _q := replace(replace(replace(_q, '\', '\\'), '%', '\%'), '_', '\_');
+  END IF;
+
+  WITH base AS (
+    SELECT o.id, o.code, o.display_name, o.gender, o.country, o.region,
+           o.education_stage, o.monthly_need, o.funded_monthly, o.currency,
+           o.status, o.org_id, o.created_at,
+           public.age_band_of(o.birth_date) AS age_band,
+           (o.monthly_need - o.funded_monthly) AS gap,
+           EXISTS (
+             SELECT 1 FROM public.program_enrollments e
+               JOIN public.programs pr ON pr.id = e.program_id
+              WHERE e.orphan_id = o.id AND pr.kind = 'qualification'
+                AND e.status IN ('proposed', 'funded')
+                AND public.enrollment_supervisor(e.id) IS NOT NULL
+                AND public.enrollment_has_consent(e.id)
+           ) AS building,
+           GREATEST(0, (now()::date - COALESCE(o.approved_at, o.created_at)::date))::INTEGER
+             AS waiting_days
+      FROM public.orphans o
+     WHERE o.status IN ('approved', 'fully_sponsored')
+  ),
+  filtered AS (
+    SELECT b.* FROM base b
+     WHERE (_country IS NULL OR b.country = _country)
+       AND (_region IS NULL OR b.region = _region)
+       AND (_age_band IS NULL OR b.age_band = _age_band::public.age_band)
+       AND (_gender IS NULL OR b.gender = _gender)
+       AND (_education_stage IS NULL OR b.education_stage = _education_stage)
+       AND (_building IS NULL OR b.building = _building)
+       AND (COALESCE(_funding, 'any') = 'any'
+            OR (_funding = 'open' AND b.gap > 0)
+            OR (_funding = 'full' AND b.gap <= 0))
+       /* البحث بالاسم المستعار والرمز وحدهما: البحث بالمدينة كان يكشف
+          ما حجبناه — يُجرَّب اسمُ مدينةٍ فيُعرف من فيها. */
+       AND (_q IS NULL
+            OR b.display_name ILIKE '%' || _q || '%' ESCAPE '\'
+            OR b.code ILIKE '%' || _q || '%' ESCAPE '\')
+  )
+  SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY t.ord), '[]'::jsonb),
+         (SELECT count(*) FROM filtered)
+    INTO _rows, _total
+    FROM (
+      SELECT f.*, row_number() OVER (
+        ORDER BY
+          CASE WHEN COALESCE(_sort,'waiting') = 'closest'
+               THEN -(f.funded_monthly / NULLIF(f.monthly_need, 0)) END,
+          CASE WHEN _sort = 'newest' THEN f.created_at END DESC,
+          CASE WHEN COALESCE(_sort,'waiting') = 'waiting' THEN f.waiting_days END DESC,
+          f.id
+      ) AS ord
+        FROM filtered f
+       ORDER BY ord
+       LIMIT LEAST(GREATEST(COALESCE(_limit, 24), 1), 60)
+      OFFSET GREATEST(COALESCE(_offset, 0), 0)
+    ) t;
+
+  RETURN jsonb_build_object('rows', _rows, 'total', _total);
+END $fn$;
+REVOKE ALL ON FUNCTION public.list_orphan_cards(
+  TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, TEXT, TEXT, INT, INT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.list_orphan_cards(
+  TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, TEXT, TEXT, INT, INT)
+  TO anon, authenticated;
+
+
+/* خيارات الفلترة تُقرأ من المنشور نفسه لا من قائمةٍ مكتوبة تشيخ بصمت. */
+CREATE OR REPLACE FUNCTION public.orphan_filter_options()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT jsonb_build_object(
+    'countries', COALESCE((SELECT jsonb_agg(DISTINCT o.country) FROM public.orphans o
+                            WHERE o.status IN ('approved','fully_sponsored')
+                              AND COALESCE(btrim(o.country), '') <> ''), '[]'::jsonb),
+    'regions', COALESCE((SELECT jsonb_agg(DISTINCT o.region) FROM public.orphans o
+                          WHERE o.status IN ('approved','fully_sponsored')
+                            AND COALESCE(btrim(o.region), '') <> ''), '[]'::jsonb),
+    'stages', COALESCE((SELECT jsonb_agg(DISTINCT o.education_stage) FROM public.orphans o
+                         WHERE o.status IN ('approved','fully_sponsored')
+                           AND COALESCE(btrim(o.education_stage), '') <> ''), '[]'::jsonb)
+  );
+$fn$;
+REVOKE ALL ON FUNCTION public.orphan_filter_options() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.orphan_filter_options() TO anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 7) الطبقة الثانية — الملفّ، خلف الحاجب
+-- ---------------------------------------------------------------------
+-- تُعيد البطاقة دائماً، والتفاصيل عند الإذن وحده، ومعها **حالُ إذنك**
+-- ليعرف الطالب أين طلبه بدل أن يظنّ العطبَ منعاً.
+CREATE OR REPLACE FUNCTION public.orphan_view(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _o RECORD; _may BOOLEAN; _acc JSONB; _out JSONB;
+BEGIN
+  SELECT * INTO _o FROM public.orphans o
+   WHERE o.id = _orphan AND o.status IN ('approved', 'fully_sponsored');
+  IF NOT FOUND THEN RETURN 'null'::jsonb; END IF;
+
+  _may := public.can_view_orphan_detail(_orphan);
+
+  SELECT COALESCE(jsonb_build_object(
+           'request_id', a.id, 'status', a.status,
+           'expires_at', a.expires_at, 'decision_note', a.decision_note,
+           'created_at', a.created_at),
+         'null'::jsonb)
+    INTO _acc
+    FROM public.orphan_access_requests a
+   WHERE a.orphan_id = _orphan AND a.requester_id = auth.uid()
+   ORDER BY a.created_at DESC LIMIT 1;
+
+  _out := jsonb_build_object(
+    'id', _o.id, 'code', _o.code, 'display_name', _o.display_name,
+    'gender', _o.gender, 'country', _o.country, 'region', _o.region,
+    'education_stage', _o.education_stage, 'age_band', public.age_band_of(_o.birth_date),
+    'monthly_need', _o.monthly_need, 'funded_monthly', _o.funded_monthly,
+    'currency', _o.currency, 'status', _o.status, 'org_id', _o.org_id,
+    'created_at', _o.created_at,
+    'may_view_detail', _may,
+    'access', COALESCE(_acc, 'null'::jsonb)
+  );
+
+  IF _may THEN
+    _out := _out || jsonb_build_object(
+      'detail', jsonb_build_object(
+        'birth_date', _o.birth_date,
+        'city', _o.city,
+        'story', _o.story,
+        /* الصورة مشروطةٌ بإذنها الخاصّ: إذنُ الاطّلاع لا يُنشئ إذناً
+           بالصورة، وهما إذنان مختلفان لصاحبين مختلفين. والحالتان
+           المسموحتان هما ما تقبله `guard_photo_consent` نفسها —
+           `granted` و`face_hidden` — فتضييقٌ هنا دونها يُخفي صوراً
+           مأذوناً بها بلا سبب.
+
+           وهذه طبقةٌ ثانية لا أولى: الحارس والمُشغّل يمنعان أصلاً
+           وجودَ صورةٍ بلا إذن، فلا حالةَ يمكن بلوغها لتُفحص بها هذه
+           الحالةُ وحدها. تبقى لأنها تكلّف سطراً وتحمي لو سقط ما قبلها. */
+        'photo_url', CASE WHEN _o.photo_consent IN ('granted', 'face_hidden')
+                          THEN _o.photo_url END,
+        'needs', COALESCE((
+          SELECT jsonb_agg(jsonb_build_object(
+            'id', n.id, 'category', n.category, 'title', n.title,
+            'monthly_amount', n.monthly_amount) ORDER BY n.monthly_amount DESC)
+          FROM public.orphan_needs n WHERE n.orphan_id = _orphan), '[]'::jsonb)
+      ));
+  END IF;
+
+  RETURN _out;
+END $fn$;
+REVOKE ALL ON FUNCTION public.orphan_view(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.orphan_view(UUID) TO anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 8) طابور الإدارة، وطلباتي
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.admin_access_requests(_status TEXT DEFAULT 'pending')
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'طابور الأذونات للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN COALESCE((
+    SELECT jsonb_agg(jsonb_build_object(
+      'id', a.id,
+      'orphan_id', o.id,
+      'orphan_name', o.display_name,
+      'orphan_code', o.code,
+      'requester_email', u.email,
+      'reason', a.reason,
+      'status', a.status,
+      'created_at', a.created_at,
+      'decided_at', a.decided_at,
+      'expires_at', a.expires_at,
+      /* هل يكفل هذا الطالبُ أحداً؟ سياقٌ يُقرَّر به، لا حكم. */
+      'sponsorships', (SELECT count(*) FROM public.sponsorships s
+                        WHERE s.sponsor_id = a.requester_id
+                          AND s.status IN ('active', 'paused'))
+    ) ORDER BY a.created_at)
+    FROM public.orphan_access_requests a
+    JOIN public.orphans o ON o.id = a.orphan_id
+    JOIN auth.users u ON u.id = a.requester_id
+   WHERE COALESCE(_status, 'pending') = 'any' OR a.status = _status::public.access_status
+  ), '[]'::jsonb);
+END $fn$;
+REVOKE ALL ON FUNCTION public.admin_access_requests(TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_access_requests(TEXT) TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.my_access_requests()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'id', a.id, 'orphan_id', a.orphan_id, 'status', a.status,
+    'reason', a.reason, 'decision_note', a.decision_note,
+    'expires_at', a.expires_at, 'created_at', a.created_at
+  ) ORDER BY a.created_at DESC), '[]'::jsonb)
+  FROM public.orphan_access_requests a
+  WHERE a.requester_id = auth.uid() AND auth.uid() IS NOT NULL;
+$fn$;
+REVOKE ALL ON FUNCTION public.my_access_requests() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.my_access_requests() TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 9) سدّ الأبواب الخلفية — كل مُرشِّحٍ كان يُعيد ما حجبناه
+-- ---------------------------------------------------------------------
+-- حاجبٌ يُغلق البابَ ويترك الشبّاك ليس حاجباً. والمرشِّحان كانا يُعيدان
+-- `story` و`photo_url` و`city` و`birth_date` — أي كلَّ ما سُحب للتوّ.
+-- والأول `SECURITY DEFINER` فكان يلتفّ على المنح نفسه.
+
+DROP FUNCTION IF EXISTS public.suggest_orphans_for_sponsor(NUMERIC, TEXT, INT);
+CREATE OR REPLACE FUNCTION public.suggest_orphans_for_sponsor(
+  _budget NUMERIC DEFAULT NULL,
+  _region TEXT DEFAULT NULL,
+  _limit INT DEFAULT 12
+)
+RETURNS TABLE (
+  id UUID, code TEXT, display_name TEXT, gender TEXT,
+  country TEXT, region TEXT, education_stage TEXT, age_band public.age_band,
+  monthly_need NUMERIC, funded_monthly NUMERIC, currency TEXT,
+  status public.orphan_status, org_id UUID, created_at TIMESTAMPTZ,
+  gap NUMERIC, building BOOLEAN, completes BOOLEAN, in_region BOOLEAN,
+  waiting_days INTEGER
+)
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  WITH me AS (
+    SELECT COALESCE(_budget, p.monthly_budget) AS budget,
+           COALESCE(NULLIF(btrim(COALESCE(_region, '')), ''), p.preferred_region) AS region
+      FROM (SELECT NULL::UUID) z
+      LEFT JOIN public.profiles p ON p.id = auth.uid()
+  ),
+  cand AS (
+    SELECT o.*,
+           (o.monthly_need - o.funded_monthly) AS gap,
+           EXISTS (
+             SELECT 1 FROM public.program_enrollments e
+              JOIN public.programs pr ON pr.id = e.program_id
+              WHERE e.orphan_id = o.id
+                AND pr.kind = 'qualification'
+                AND e.status IN ('proposed', 'funded')
+                AND public.enrollment_supervisor(e.id) IS NOT NULL
+                AND public.enrollment_has_consent(e.id)
+           ) AS building
+      FROM public.orphans o
+     WHERE o.status = 'approved'
+       AND (o.monthly_need - o.funded_monthly) > 0
+       AND NOT EXISTS (
+         SELECT 1 FROM public.sponsorships s
+          WHERE s.orphan_id = o.id
+            AND s.sponsor_id = auth.uid()
+            AND s.status IN ('pending_payment', 'active', 'paused')
+       )
+  )
+  SELECT c.id, c.code, c.display_name, c.gender, c.country, c.region,
+         c.education_stage, public.age_band_of(c.birth_date),
+         c.monthly_need, c.funded_monthly, c.currency, c.status, c.org_id,
+         c.created_at,
+         c.gap,
+         c.building,
+         (me.budget IS NOT NULL AND c.gap <= me.budget) AS completes,
+         (me.region IS NOT NULL AND c.region = me.region) AS in_region,
+         GREATEST(0, (now()::date - COALESCE(c.approved_at, c.created_at)::date))::INTEGER
+    FROM cand c CROSS JOIN me
+   ORDER BY
+     c.building DESC,
+     (me.budget IS NOT NULL AND c.gap <= me.budget) DESC,
+     (me.region IS NOT NULL AND c.region = me.region) DESC,
+     COALESCE(c.approved_at, c.created_at) ASC,
+     c.id
+   LIMIT LEAST(GREATEST(COALESCE(_limit, 12), 1), 48);
+$fn$;
+REVOKE ALL ON FUNCTION public.suggest_orphans_for_sponsor(NUMERIC, TEXT, INT)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.suggest_orphans_for_sponsor(NUMERIC, TEXT, INT)
+  TO authenticated;
+
+
+DROP FUNCTION IF EXISTS public.suggest_orphans_for_amount(NUMERIC, UUID, INTEGER);
+CREATE OR REPLACE FUNCTION public.suggest_orphans_for_amount(
+  _amount NUMERIC, _exclude UUID DEFAULT NULL, _limit INTEGER DEFAULT 3
+)
+RETURNS TABLE (
+  id UUID, code TEXT, display_name TEXT, country TEXT, region TEXT,
+  education_stage TEXT, currency TEXT,
+  monthly_need NUMERIC, funded_monthly NUMERIC, gap NUMERIC
+)
+/* تبقى `SECURITY INVOKER` كما بُنيت، ولذلك **بلا فئةٍ عمرية**:
+   حسابُها يقرأ `birth_date` وقد حُجب، ودالّةٌ بحقوق المستدعي لا تقرؤه.
+   وتحويلها إلى `DEFINER` لأجل حقلٍ لا يحتاجه اقتراحُ فائضٍ من ثلاثة
+   أسطر توسيعُ صلاحيةٍ بلا داعٍ. */
+LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+  SELECT o.id, o.code, o.display_name, o.country, o.region,
+         o.education_stage, o.currency,
+         o.monthly_need, o.funded_monthly,
+         (o.monthly_need - o.funded_monthly) AS gap
+    FROM public.orphans o
+   WHERE o.status = 'approved'
+     AND o.monthly_need > o.funded_monthly
+     AND (_exclude IS NULL OR o.id <> _exclude)
+   ORDER BY abs((o.monthly_need - o.funded_monthly) - _amount), o.created_at
+   LIMIT LEAST(GREATEST(_limit, 1), 10);
+$fn$;
+REVOKE ALL ON FUNCTION public.suggest_orphans_for_amount(NUMERIC, UUID, INTEGER) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.suggest_orphans_for_amount(NUMERIC, UUID, INTEGER)
+  TO anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 10) شاشات من يملك الملفّ — تمرّ بدالّة لا بمنحٍ عريض
+-- ---------------------------------------------------------------------
+-- منحُ الأعمدة دورٌ كامل لا صفٌّ بعينه، فلا يُقال «للجهة قصّةُ ملفّاتها
+-- وحدها» بالمنح. فتمرّ بدالّةٍ تفحص الصلة صفّاً صفّاً.
+CREATE OR REPLACE FUNCTION public.guardian_orphans()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'id', o.id, 'code', o.code, 'display_name', o.display_name,
+    'city', o.city, 'country', o.country, 'region', o.region,
+    'status', o.status, 'monthly_need', o.monthly_need,
+    'funded_monthly', o.funded_monthly, 'currency', o.currency,
+    'photo_consent', o.photo_consent, 'created_at', o.created_at
+  ) ORDER BY o.created_at DESC), '[]'::jsonb)
+  FROM public.orphans o
+  WHERE o.guardian_id = auth.uid() AND auth.uid() IS NOT NULL;
+$fn$;
+REVOKE ALL ON FUNCTION public.guardian_orphans() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.guardian_orphans() TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.org_orphans()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'id', o.id, 'code', o.code, 'display_name', o.display_name,
+    'city', o.city, 'country', o.country, 'region', o.region,
+    'status', o.status, 'monthly_need', o.monthly_need,
+    'funded_monthly', o.funded_monthly, 'currency', o.currency,
+    'created_at', o.created_at, 'rejection_code', o.rejection_code,
+    'rejection_reason', o.rejection_reason, 'photo_consent', o.photo_consent
+  ) ORDER BY o.created_at DESC), '[]'::jsonb)
+  FROM public.orphans o
+  WHERE auth.uid() IS NOT NULL AND public.owns_org(o.org_id);
+$fn$;
+REVOKE ALL ON FUNCTION public.org_orphans() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.org_orphans() TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260905100000', 'child_protection_gate');
+
+-- >>> migration 20260906100000 integration_api
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260906100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260906100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- التكامل مع المنصّات الأخرى — استيرادٌ لا يَنشر، وقراءةٌ لا تلتفّ
+-- ---------------------------------------------------------------------
+-- `api_clients` في المخطّط منذ أول هجرة ولا يستدعيها سطرٌ واحد، و
+-- `external_ref` و`external_source` عمودان لا يكتبهما أحد. أي أنّ
+-- التكامل **هيكلٌ بلا جسد** — كما كانت المطابقة قبلها.
+--
+-- وأربعة قرارات تحكم هذه الطبقة:
+--
+-- (١) **المستورَد لا يُنشَر.** ملفٌّ يدخل من منصّةٍ أخرى يقف عند
+--     `under_review` مهما قال المُرسِل. والاعتماد قرارُ إدارتنا بعد
+--     مراجعة وثائقه — وإلا صار بابُ التكامل باباً لنشر ملفّات أطفالٍ
+--     لم يرها أحد.
+--
+-- (٢) **المفتاح لا يلتفّ على حاجب الأطفال.** القراءة من الـAPI تُعيد
+--     **البطاقة** كما يراها الزائر: لا قصّة ولا صورة ولا مدينة ولا
+--     تاريخ ميلاد. ومفتاحُ شريكٍ ليس إذناً برؤية ملفّ طفل؛ الإذن يُطلَب
+--     ويُمنح لشخصٍ بعينه.
+--
+-- (٣) **السرّ مُجزَّأ لا مخزَّن.** يُخزَّن تجزيءُ السرّ لا السرّ، فتسرُّبُ
+--     قاعدتنا لا يُمكّن أحداً من انتحال شريك. والتجزيء في التطبيق لا
+--     هنا: مكانٌ واحد للتعمية خيرٌ من اثنين.
+--
+-- (٤) **الاستيراد لا يُحرّك احتياج ملفٍّ معتمَد.** كافلٌ التزم بمبلغٍ
+--     على احتياجٍ معلن، فتغييرُه من منصّةٍ خارجية نقلٌ للمرمى بعد
+--     التسديد. تُقبل التعديلات الوصفية ويُردّ الباقي **مع بيان سببه**.
+-- =====================================================================
+
+
+-- ---------------------------------------------------------------------
+-- 1) عميل التكامل
+-- ---------------------------------------------------------------------
+ALTER TABLE public.api_clients
+  /* ملحٌ لكل عميل: تجزيءٌ بلا ملحٍ يُكسر بجداول محسوبة مسبقاً. */
+  ADD COLUMN IF NOT EXISTS secret_salt TEXT,
+  /* بادئة السرّ تُعرض في القوائم ليُعرف المفتاح دون كشفه. */
+  ADD COLUMN IF NOT EXISTS secret_prefix TEXT,
+  ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['orphans:read'],
+  ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  ADD COLUMN IF NOT EXISTS last_import_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_api_clients_org ON public.api_clients(org_id)
+  WHERE org_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_api_clients_created_by ON public.api_clients(created_by)
+  WHERE created_by IS NOT NULL;
+
+/* نطاقٌ غير معروف يُرفض: نطاقٌ مكتوبٌ خطأً يصير صلاحيةً صامتة. */
+ALTER TABLE public.api_clients DROP CONSTRAINT IF EXISTS ck_api_scopes_known;
+ALTER TABLE public.api_clients ADD CONSTRAINT ck_api_scopes_known CHECK (
+  scopes <@ ARRAY['orphans:read', 'orphans:import']
+  AND cardinality(scopes) > 0
+);
+
+/* ومن يستورد يحتاج جهةً مسؤولة: ملفٌّ بلا جهةٍ معتمدة لا صاحب له. */
+ALTER TABLE public.api_clients DROP CONSTRAINT IF EXISTS ck_api_import_needs_org;
+ALTER TABLE public.api_clients ADD CONSTRAINT ck_api_import_needs_org CHECK (
+  NOT ('orphans:import' = ANY(scopes)) OR org_id IS NOT NULL
+);
+
+
+-- ---------------------------------------------------------------------
+-- 2) سجلّ الاستيراد — ولا تكرار
+-- ---------------------------------------------------------------------
+-- الجدول قائمٌ منذ أول هجرة بأعمدة العدّ (`received_count` وأخواتها)،
+-- فيُوسَّع ولا يُبنى موازٍ له: جدولان لمعنى واحد يفترقان بعد أسبوع.
+ALTER TABLE public.api_import_jobs
+  /* مفتاح التكرار: الشبكة تُعيد الإرسال عند أي شكّ، فتُعاد النتيجة
+     الأولى بدل إنشاء ملفّاتٍ مكرّرة لأطفالٍ حقيقيين. */
+  ADD COLUMN IF NOT EXISTS idempotency_key TEXT,
+  ADD COLUMN IF NOT EXISTS request_digest TEXT,
+  ADD COLUMN IF NOT EXISTS result JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+/* الفرادة جزئية: الصفوف القديمة بلا مفتاحِ تكرارٍ تبقى كما هي. */
+CREATE UNIQUE INDEX IF NOT EXISTS uq_import_idempotency
+  ON public.api_import_jobs(client_id, idempotency_key)
+  WHERE idempotency_key IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_import_jobs_client
+  ON public.api_import_jobs(client_id, created_at DESC);
+
+
+-- ---------------------------------------------------------------------
+-- 3) الحارس: المستورَد لا يُنشَر
+-- ---------------------------------------------------------------------
+-- الاستيراد يمرّ بـ`service_role`، وهي تتجاوز RLS وتتجاوز حرّاس
+-- المرحلة 0 (فهي تُعفي ما ليس `authenticated`/`anon`). فلو بقي الشرط
+-- في الدالّة وحدها لكان سطراً واحداً يفصل بين «ملفّ للمراجعة» و«ملفّ
+-- منشور لطفلٍ لم يره أحد». والحارس هنا **لا يُعفي أحداً**.
+CREATE OR REPLACE FUNCTION public.guard_imported_orphan()
+RETURNS TRIGGER LANGUAGE plpgsql SET search_path = public AS $fn$
+BEGIN
+  IF COALESCE(NEW.external_source, '') = '' THEN
+    RETURN NEW;
+  END IF;
+
+  IF TG_OP = 'INSERT' THEN
+    /* يدخل للمراجعة دائماً، وبلا تمويلٍ ولا اعتماد مهما أرسل المُرسِل. */
+    NEW.status := 'under_review';
+    NEW.approved_at := NULL;
+    NEW.reviewed_at := NULL;
+    NEW.reviewed_by := NULL;
+    NEW.funded_monthly := 0;
+    RETURN NEW;
+  END IF;
+
+  /* وعلى التحديث لا يُفرض شيء: دالّة الاستيراد لا تكتب `status` أصلاً،
+     والاعتماد يمرّ بمسار المراجعة وحده. وفرضُ الحالة هنا كان يمنع
+     الإدارةَ من اعتماد ملفٍّ مستورَد — وهو عين ما نريده أن يحدث. */
+  RETURN NEW;
+END $fn$;
+REVOKE ALL ON FUNCTION public.guard_imported_orphan() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS trg_guard_imported_orphan ON public.orphans;
+CREATE TRIGGER trg_guard_imported_orphan
+BEFORE INSERT OR UPDATE ON public.orphans
+FOR EACH ROW EXECUTE FUNCTION public.guard_imported_orphan();
+
+
+-- ---------------------------------------------------------------------
+-- 4) الاستيراد
+-- ---------------------------------------------------------------------
+-- يُنادى من الخادم بـ`service_role` بعد التحقّق من المفتاح. والمفتاح
+-- يُمرَّر معرّفَ عميلٍ لا ادّعاءً: الجهة تُقرأ من العميل لا من الحمولة،
+-- فلا يكتب شريكٌ في ملفّات شريكٍ آخر.
+CREATE OR REPLACE FUNCTION public.import_orphan_record(_client UUID, _payload JSONB)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE
+  _org UUID; _source TEXT; _ref TEXT; _existing public.orphans%ROWTYPE;
+  _id UUID; _ignored TEXT[] := '{}'; _action TEXT;
+BEGIN
+  SELECT c.org_id, COALESCE(NULLIF(btrim(c.client_key), ''), c.id::text)
+    INTO _org, _source
+    FROM public.api_clients c
+   WHERE c.id = _client AND c.active AND c.revoked_at IS NULL
+     AND 'orphans:import' = ANY(c.scopes);
+
+  IF _org IS NULL THEN
+    RETURN jsonb_build_object('ok', false, 'code', 'client_not_permitted');
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM public.care_organizations o
+                  WHERE o.id = _org AND o.status = 'approved') THEN
+    RETURN jsonb_build_object('ok', false, 'code', 'org_not_approved');
+  END IF;
+
+  _ref := NULLIF(btrim(COALESCE(_payload->>'external_ref', '')), '');
+  IF _ref IS NULL THEN
+    RETURN jsonb_build_object('ok', false, 'code', 'external_ref_required');
+  END IF;
+
+  SELECT * INTO _existing FROM public.orphans o
+   WHERE o.org_id = _org AND o.external_source = _source AND o.external_ref = _ref;
+
+  IF _existing.id IS NULL THEN
+    /* الاسم والبلد إلزاميان عند الإنشاء. وللعمود قيمةٌ افتراضية
+       (`'SA'`)، فلو تُرك لها لظهر طفلٌ أردنيّ تحت السعودية في الفلترة —
+       وفلترةٌ تكذب أسوأ من فلترةٍ ناقصة. والمنصّة الشريكة تعرف بلد
+       مستفيدها دائماً. */
+    IF NULLIF(btrim(COALESCE(_payload->>'display_name', '')), '') IS NULL THEN
+      RETURN jsonb_build_object('ok', false, 'code', 'display_name_required',
+                                'external_ref', _ref);
+    END IF;
+    IF NULLIF(btrim(COALESCE(_payload->>'country', '')), '') IS NULL THEN
+      RETURN jsonb_build_object('ok', false, 'code', 'country_required',
+                                'external_ref', _ref);
+    END IF;
+
+    INSERT INTO public.orphans (
+      code, org_id, external_source, external_ref, display_name, gender,
+      birth_date, city, country, region, story, education_stage,
+      monthly_need, currency, status
+    ) VALUES (
+      public.next_orphan_code(), _org, _source, _ref,
+      _payload->>'display_name',
+      COALESCE(_payload->>'gender', 'male'),
+      NULLIF(_payload->>'birth_date', '')::date,
+      NULLIF(_payload->>'city', ''),
+      btrim(_payload->>'country'),
+      NULLIF(_payload->>'region', ''),
+      NULLIF(_payload->>'story', ''),
+      NULLIF(_payload->>'education_stage', ''),
+      COALESCE(NULLIF(_payload->>'monthly_need', '')::numeric, 0),
+      COALESCE(NULLIF(_payload->>'currency', ''), 'USD'),
+      'under_review'
+    )
+    RETURNING id INTO _id;
+    _action := 'created';
+  ELSE
+    _id := _existing.id;
+    _action := 'updated';
+
+    /* ملفٌّ معتمَد: تُقبل الأوصاف ويُردّ الاحتياج — كافلٌ التزم على
+       رقمٍ معلن، وتغييرُه من الخارج نقلٌ للمرمى بعد التسديد. */
+    IF _existing.status IN ('approved', 'fully_sponsored')
+       AND _payload ? 'monthly_need'
+       AND COALESCE(NULLIF(_payload->>'monthly_need', '')::numeric, _existing.monthly_need)
+           <> _existing.monthly_need THEN
+      _ignored := array_append(_ignored, 'monthly_need');
+    END IF;
+
+    UPDATE public.orphans o SET
+      display_name = COALESCE(NULLIF(_payload->>'display_name', ''), o.display_name),
+      gender = COALESCE(NULLIF(_payload->>'gender', ''), o.gender),
+      birth_date = COALESCE(NULLIF(_payload->>'birth_date', '')::date, o.birth_date),
+      city = COALESCE(NULLIF(_payload->>'city', ''), o.city),
+      country = COALESCE(NULLIF(_payload->>'country', ''), o.country),
+      region = COALESCE(NULLIF(_payload->>'region', ''), o.region),
+      story = COALESCE(NULLIF(_payload->>'story', ''), o.story),
+      education_stage = COALESCE(NULLIF(_payload->>'education_stage', ''), o.education_stage),
+      monthly_need = CASE
+        WHEN 'monthly_need' = ANY(_ignored) THEN o.monthly_need
+        ELSE COALESCE(NULLIF(_payload->>'monthly_need', '')::numeric, o.monthly_need)
+      END
+     WHERE o.id = _id;
+  END IF;
+
+  RETURN jsonb_build_object(
+    'ok', true, 'action', _action, 'id', _id,
+    'external_ref', _ref,
+    'status', (SELECT status FROM public.orphans WHERE id = _id),
+    'ignored_fields', to_jsonb(_ignored)
+  );
+END $fn$;
+REVOKE ALL ON FUNCTION public.import_orphan_record(UUID, JSONB)
+  FROM PUBLIC, anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 5) قراءة الشريك — البطاقة لا الملفّ
+-- ---------------------------------------------------------------------
+-- تُعيد ما يراه الزائر حرفياً: مفتاحُ شريكٍ ليس إذناً برؤية ملفّ طفل.
+CREATE OR REPLACE FUNCTION public.api_orphan_cards(
+  _client UUID,
+  _country TEXT DEFAULT NULL,
+  _region TEXT DEFAULT NULL,
+  _age_band TEXT DEFAULT NULL,
+  _gender TEXT DEFAULT NULL,
+  _funding TEXT DEFAULT NULL,
+  _limit INT DEFAULT 50,
+  _offset INT DEFAULT 0
+)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _ok BOOLEAN;
+BEGIN
+  SELECT true INTO _ok FROM public.api_clients c
+   WHERE c.id = _client AND c.active AND c.revoked_at IS NULL
+     AND 'orphans:read' = ANY(c.scopes);
+  IF _ok IS NOT TRUE THEN
+    RETURN jsonb_build_object('ok', false, 'code', 'client_not_permitted');
+  END IF;
+
+  RETURN jsonb_build_object('ok', true) || public.list_orphan_cards(
+    _country => _country, _region => _region, _age_band => _age_band,
+    _gender => _gender, _funding => _funding,
+    _limit => LEAST(GREATEST(COALESCE(_limit, 50), 1), 60),
+    _offset => GREATEST(COALESCE(_offset, 0), 0)
+  );
+END $fn$;
+REVOKE ALL ON FUNCTION public.api_orphan_cards(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, INT, INT)
+  FROM PUBLIC, anon, authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 6) إدارة المفاتيح — للإدارة وحدها
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.admin_api_clients()
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'مفاتيح التكامل للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+
+  RETURN COALESCE((
+    SELECT jsonb_agg(jsonb_build_object(
+      'id', c.id, 'name', c.name, 'client_key', c.client_key,
+      'secret_prefix', c.secret_prefix, 'scopes', to_jsonb(c.scopes),
+      'org_id', c.org_id, 'org_name', o.name,
+      'active', c.active AND c.revoked_at IS NULL,
+      'created_at', c.created_at, 'last_used_at', c.last_used_at,
+      'last_import_at', c.last_import_at,
+      'imports', (SELECT count(*) FROM public.api_import_jobs j WHERE j.client_id = c.id),
+      'orphans', (SELECT count(*) FROM public.orphans x
+                   WHERE x.external_source = c.client_key AND x.org_id = c.org_id)
+    ) ORDER BY c.created_at DESC)
+    FROM public.api_clients c
+    LEFT JOIN public.care_organizations o ON o.id = c.org_id
+  ), '[]'::jsonb);
+END $fn$;
+REVOKE ALL ON FUNCTION public.admin_api_clients() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_api_clients() TO authenticated;
+
+
+/* الإبطال فوريّ: مفتاحٌ مسرَّب يُبطَل الآن لا بعد انتهاء مدّة. */
+CREATE OR REPLACE FUNCTION public.revoke_api_client(_client UUID)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'إبطال المفاتيح للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE public.api_clients
+     SET active = false, revoked_at = now()
+   WHERE id = _client AND revoked_at IS NULL;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'لا مفتاح قائماً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  PERFORM public.write_audit('api_client.revoked', 'api_client', _client, '{}'::jsonb);
+  RETURN jsonb_build_object('revoked', true);
+END $fn$;
+REVOKE ALL ON FUNCTION public.revoke_api_client(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.revoke_api_client(UUID) TO authenticated;
+
+
+/* إصدار مفتاح — تُنادى من جلسة الإدارة، والتعمية في التطبيق فتصل
+   مُجزَّأةً. ولا تُعيد السرّ: من أصدره يعرفه، والقاعدة لا تحفظه. */
+CREATE OR REPLACE FUNCTION public.create_api_client(
+  _name TEXT, _org UUID, _scopes TEXT[], _key TEXT,
+  _salt TEXT, _hash TEXT, _prefix TEXT
+)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _id UUID;
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'إصدار المفاتيح للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+  IF COALESCE(btrim(_name), '') = '' THEN
+    RAISE EXCEPTION 'اسم العميل مطلوب' USING ERRCODE = 'check_violation';
+  END IF;
+
+  INSERT INTO public.api_clients
+    (name, client_key, secret_hash, secret_salt, secret_prefix, org_id, scopes, created_by)
+  VALUES (btrim(_name), _key, _hash, _salt, _prefix, _org, _scopes, auth.uid())
+  RETURNING id INTO _id;
+
+  PERFORM public.write_audit('api_client.created', 'api_client', _id,
+    jsonb_build_object('scopes', to_jsonb(_scopes), 'org', _org));
+
+  RETURN jsonb_build_object('id', _id, 'client_key', _key);
+END $fn$;
+REVOKE ALL ON FUNCTION public.create_api_client(TEXT, UUID, TEXT[], TEXT, TEXT, TEXT, TEXT)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.create_api_client(TEXT, UUID, TEXT[], TEXT, TEXT, TEXT, TEXT)
+  TO authenticated;
+
+
+/* وتسجيل الاستعمال: مفتاحٌ لا يُعرف آخر استعماله لا يُعرف متى يُبطَل. */
+CREATE OR REPLACE FUNCTION public.touch_api_client(_client UUID, _imported BOOLEAN DEFAULT false)
+RETURNS VOID LANGUAGE sql SECURITY DEFINER SET search_path = public AS $fn$
+  UPDATE public.api_clients
+     SET last_used_at = now(),
+         last_import_at = CASE WHEN _imported THEN now() ELSE last_import_at END
+   WHERE id = _client;
+$fn$;
+REVOKE ALL ON FUNCTION public.touch_api_client(UUID, BOOLEAN)
+  FROM PUBLIC, anon, authenticated;
+
+
+/* الجهات المعتمدة بأسمائها — لاختيار المسؤولة عن مفتاح الاستيراد.
+   للإدارة وحدها: قائمةٌ بكل الجهات ليست بياناً عامّاً. */
+CREATE OR REPLACE FUNCTION public.admin_approved_orgs()
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'قائمة الجهات للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+  RETURN COALESCE((
+    SELECT jsonb_agg(jsonb_build_object('id', o.id, 'name', o.name) ORDER BY o.name)
+    FROM public.care_organizations o WHERE o.status = 'approved'
+  ), '[]'::jsonb);
+END $fn$;
+REVOKE ALL ON FUNCTION public.admin_approved_orgs() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_approved_orgs() TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260906100000', 'integration_api');
+
+-- >>> migration 20260907100000 orphan_profile
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260907100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260907100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- البروفايل الكامل — يعبّئه من حول الطفل، لا من يدفع
+-- ---------------------------------------------------------------------
+-- ما عند المنصّة اليوم عن الطفل: اسمٌ مستعار، واحتياجٌ بمبلغ، وقصّةٌ
+-- نثرية. وهذا يكفي للكفالة ولا يكفي **للبناء**: المشرف يصمّم مساراً
+-- تأهيلياً لطفلٍ لا يعرف صفّه الدراسي ولا من يعيش معه ولا ما يطمح إليه.
+--
+-- وأربعة قرارات تحكم هذا الجدول:
+--
+-- (١) **من يكتبه من حول الطفل.** الوليّ والوصيّ والمشرف والفقيه وجهة
+--     الرعاية — من له صلةٌ قائمة. لا الكافل، ولا كلُّ مسجَّل. والكتابة
+--     عن طفلٍ ليست مساهمةً مفتوحة.
+--
+-- (٢) **حساسيّتان لا واحدة.** حاجبُ الاطّلاع يفتح القصّة والمدينة،
+--     وليس من حقّ من أُذن له أن يقرأ **حالةَ الطفل الصحّية ووضعَه
+--     النفسيّ وتركيبةَ أسرته**. فالأقسام قسمان: ما يُفتح بالإذن، وما
+--     يبقى في دائرة من حول الطفل وحدها.
+--
+-- (٣) **كلُّ قسمٍ يحمل كاتبَه وتاريخه.** بروفايلٌ لم يُحدَّث منذ سنتين
+--     يُعرض بوصفه واقعاً هو مسؤوليةٌ لا معلومة. فيُعرض عمرُه، ويُوسَم
+--     ما قدُم.
+--
+-- (٤) **حقولٌ معروفة لا كيسٌ مفتوح.** `JSONB` بلا شكلٍ يصير مكبّاً بعد
+--     شهر: مفتاحٌ لا يعرفه النظام يُرفض، فيبقى البروفايل قابلاً للقراءة
+--     والبناء عليه.
+-- =====================================================================
+
+
+DO $$ BEGIN
+  CREATE TYPE public.profile_section AS ENUM (
+    'education',       -- التعليم
+    'health',          -- الصحة
+    'family',          -- الأسرة والسكن
+    'social',          -- النفسي والاجتماعي
+    'aspiration',      -- الطموح والميول
+    'supervisor_note'  -- ملاحظة المشرف
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+
+/* ما يُفتح بإذن الاطّلاع، وما يبقى في الدائرة.
+   الصحة والأسرة والنفسي وملاحظة المشرف **لا تُفتح بالإذن**: إذن
+   الاطّلاع يُمنح لكافلٍ محتمل، وملفٌّ طبّيٌّ لطفلٍ ليس مما يُطّلع عليه
+   ليُتّخذ قرار تبرّع. */
+CREATE OR REPLACE FUNCTION public.profile_section_is_sensitive(_s public.profile_section)
+RETURNS BOOLEAN LANGUAGE sql IMMUTABLE AS $fn$
+  SELECT _s IN ('health', 'family', 'social', 'supervisor_note');
+$fn$;
+GRANT EXECUTE ON FUNCTION public.profile_section_is_sensitive(public.profile_section)
+  TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- دائرة من حول الطفل
+-- ---------------------------------------------------------------------
+-- الجهة الراعية، والوليّ المسجَّل، وأصحاب الأدوار حول برنامجه، والإدارة.
+-- وليس منها الكافل: الكفالة مشاركةٌ في البناء لا ولايةٌ على الطفل.
+CREATE OR REPLACE FUNCTION public.in_orphan_circle(_orphan UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT auth.uid() IS NOT NULL AND (
+    public.is_admin()
+    OR public.can_manage_orphan(_orphan)
+    OR EXISTS (SELECT 1 FROM public.orphans o
+                WHERE o.id = _orphan AND o.guardian_id = auth.uid())
+    OR EXISTS (
+      SELECT 1 FROM public.enrollment_roles r
+        JOIN public.program_enrollments e ON e.id = r.enrollment_id
+       WHERE e.orphan_id = _orphan AND r.person_id = auth.uid() AND r.ended_at IS NULL
+    )
+  );
+$fn$;
+REVOKE ALL ON FUNCTION public.in_orphan_circle(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.in_orphan_circle(UUID) TO authenticated;
+
+
+CREATE TABLE IF NOT EXISTS public.orphan_profile_sections (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  orphan_id UUID NOT NULL REFERENCES public.orphans(id) ON DELETE CASCADE,
+  section public.profile_section NOT NULL,
+  /* حقولٌ معروفة — يفرضها الحارس أدناه. */
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  /* وحيث يسكن الحكم: نصٌّ حرّ. */
+  note TEXT,
+  updated_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  /* بأيّ صفةٍ كتب: وليّاً أم مشرفاً أم جهةً — فالقارئ يزن بها. */
+  updated_role TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT uq_profile_section UNIQUE (orphan_id, section),
+  /* قسمٌ فارغٌ تماماً لا يُحفظ: صفٌّ بلا محتوى يُعرض «مُحدَّثاً» وهو خالٍ. */
+  CONSTRAINT ck_profile_not_empty CHECK (
+    data <> '{}'::jsonb OR COALESCE(btrim(note), '') <> ''
+  )
+);
+
+CREATE INDEX IF NOT EXISTS idx_profile_sections_orphan
+  ON public.orphan_profile_sections(orphan_id);
+CREATE INDEX IF NOT EXISTS idx_profile_sections_updated_by
+  ON public.orphan_profile_sections(updated_by) WHERE updated_by IS NOT NULL;
+
+/* تُقرأ بالدوالّ وحدها ولا تُكتب مباشرةً: الصلاحية والحساسية فيهما. */
+GRANT SELECT ON public.orphan_profile_sections TO authenticated;
+GRANT ALL ON public.orphan_profile_sections TO service_role;
+ALTER TABLE public.orphan_profile_sections ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "profile_circle_read" ON public.orphan_profile_sections;
+CREATE POLICY "profile_circle_read" ON public.orphan_profile_sections
+  FOR SELECT TO authenticated USING (public.in_orphan_circle(orphan_id));
+
+
+-- ---------------------------------------------------------------------
+-- الحقول المعروفة لكل قسم
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.profile_section_fields(_s public.profile_section)
+RETURNS TEXT[] LANGUAGE sql IMMUTABLE AS $fn$
+  SELECT CASE _s
+    WHEN 'education' THEN ARRAY[
+      'school_name', 'grade', 'performance', 'favourite_subject',
+      'challenges', 'support_needed']
+    WHEN 'health' THEN ARRAY[
+      'general_state', 'chronic_conditions', 'medications',
+      'disability', 'last_checkup']
+    WHEN 'family' THEN ARRAY[
+      'lives_with', 'siblings_count', 'housing_type', 'income_source',
+      'caregiver_relation']
+    WHEN 'social' THEN ARRAY[
+      'peer_relations', 'confidence', 'interests', 'concerns']
+    WHEN 'aspiration' THEN ARRAY[
+      'wants_to_be', 'skills', 'strengths', 'what_would_help']
+    WHEN 'supervisor_note' THEN ARRAY['readiness', 'recommendation']
+  END;
+$fn$;
+GRANT EXECUTE ON FUNCTION public.profile_section_fields(public.profile_section)
+  TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.guard_profile_section()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER SET search_path = public AS $fn$
+DECLARE _unknown TEXT;
+BEGIN
+  IF jsonb_typeof(NEW.data) <> 'object' THEN
+    RAISE EXCEPTION 'بيانات القسم كائنٌ من حقلٍ وقيمة' USING ERRCODE = 'check_violation';
+  END IF;
+
+  SELECT string_agg(k, '، ') INTO _unknown
+    FROM jsonb_object_keys(NEW.data) k
+   WHERE k <> ALL(public.profile_section_fields(NEW.section));
+
+  IF _unknown IS NOT NULL THEN
+    RAISE EXCEPTION 'حقولٌ لا يعرفها القسم «%»: %', NEW.section, _unknown
+      USING ERRCODE = 'check_violation';
+  END IF;
+
+  /* التاريخ يتحرّك بالتغيير لا باللمس: إعادةُ حفظٍ بلا تغيير تُظهر
+     بروفايلاً قديماً حديثاً — وهو عين الخطر الذي وُضع التاريخ لأجله. */
+  IF TG_OP = 'INSERT'
+     OR NEW.data IS DISTINCT FROM OLD.data
+     OR NEW.note IS DISTINCT FROM OLD.note THEN
+    NEW.updated_at := now();
+  END IF;
+
+  RETURN NEW;
+END $fn$;
+
+DROP TRIGGER IF EXISTS trg_guard_profile_section ON public.orphan_profile_sections;
+CREATE TRIGGER trg_guard_profile_section
+BEFORE INSERT OR UPDATE ON public.orphan_profile_sections
+FOR EACH ROW EXECUTE FUNCTION public.guard_profile_section();
+
+
+-- ---------------------------------------------------------------------
+-- الكتابة
+-- ---------------------------------------------------------------------
+-- `SECURITY DEFINER` لأن الكتابة المباشرة مسحوبة، والحارس هو الفحص
+-- الصريح. والصفة تُحسب من القاعدة لا تُرسل: من يكتب «بصفتي الوليّ»
+-- وليس وليّاً يكذب في سجلٍّ عن طفل.
+CREATE OR REPLACE FUNCTION public.save_orphan_profile_section(
+  _orphan UUID, _section TEXT, _data JSONB DEFAULT '{}'::jsonb, _note TEXT DEFAULT NULL
+)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _role TEXT; _id UUID; _sec public.profile_section;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'save_orphan_profile_section: تحتاج جلسة' USING ERRCODE = '42501';
+  END IF;
+  IF NOT public.in_orphan_circle(_orphan) THEN
+    RAISE EXCEPTION 'البروفايل يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته'
+      USING ERRCODE = '42501';
+  END IF;
+
+  _sec := _section::public.profile_section;
+
+  /* الصفة من القاعدة: أدقُّ ما نعرفه عن صلة الكاتب. */
+  SELECT r.role::text INTO _role
+    FROM public.enrollment_roles r
+    JOIN public.program_enrollments e ON e.id = r.enrollment_id
+   WHERE e.orphan_id = _orphan AND r.person_id = auth.uid() AND r.ended_at IS NULL
+   ORDER BY CASE r.role WHEN 'supervisor' THEN 1 WHEN 'guardian' THEN 2
+                        WHEN 'trustee' THEN 3 ELSE 4 END
+   LIMIT 1;
+
+  IF _role IS NULL THEN
+    _role := CASE
+      WHEN EXISTS (SELECT 1 FROM public.orphans o
+                    WHERE o.id = _orphan AND o.guardian_id = auth.uid()) THEN 'guardian'
+      WHEN public.can_manage_orphan(_orphan) THEN 'care_org'
+      ELSE 'admin'
+    END;
+  END IF;
+
+  INSERT INTO public.orphan_profile_sections AS t
+    (orphan_id, section, data, note, updated_by, updated_role)
+  VALUES (_orphan, _sec, COALESCE(_data, '{}'::jsonb),
+          NULLIF(btrim(COALESCE(_note, '')), ''), auth.uid(), _role)
+  ON CONFLICT ON CONSTRAINT uq_profile_section DO UPDATE SET
+    data = COALESCE(EXCLUDED.data, t.data),
+    note = COALESCE(EXCLUDED.note, t.note),
+    updated_by = auth.uid(),
+    updated_role = _role
+  RETURNING t.id INTO _id;
+
+  PERFORM public.write_audit('orphan.profile_saved', 'orphan', _orphan,
+    jsonb_build_object('section', _sec, 'role', _role));
+
+  RETURN jsonb_build_object('id', _id, 'section', _sec, 'role', _role);
+END $fn$;
+REVOKE ALL ON FUNCTION public.save_orphan_profile_section(UUID, TEXT, JSONB, TEXT)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.save_orphan_profile_section(UUID, TEXT, JSONB, TEXT)
+  TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- القراءة — بحسب الصلة
+-- ---------------------------------------------------------------------
+-- للدائرة: الأقسام كلّها. ولمن أُذن له بالاطّلاع: غير الحسّاسة منها.
+-- ولغيرهما: لا شيء. وكلُّ قسمٍ يحمل عمره، فيُعرف ما قدُم.
+CREATE OR REPLACE FUNCTION public.orphan_profile(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _circle BOOLEAN; _detail BOOLEAN;
+BEGIN
+  _circle := public.in_orphan_circle(_orphan);
+  _detail := public.can_view_orphan_detail(_orphan);
+
+  IF NOT _circle AND NOT _detail THEN
+    RETURN jsonb_build_object('may_read', false, 'sections', '[]'::jsonb);
+  END IF;
+
+  RETURN jsonb_build_object(
+    'may_read', true,
+    'may_write', _circle,
+    /* يُقال صراحةً أنّ ثمّة أقساماً محجوبة، فلا يُظنّ البروفايل ناقصاً. */
+    'sees_sensitive', _circle,
+    'sections', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'section', p.section,
+        'data', p.data,
+        'note', p.note,
+        'updated_role', p.updated_role,
+        'updated_at', p.updated_at,
+        'age_days', (now()::date - p.updated_at::date)
+      ) ORDER BY p.section)
+      FROM public.orphan_profile_sections p
+     WHERE p.orphan_id = _orphan
+       AND (_circle OR NOT public.profile_section_is_sensitive(p.section))
+    ), '[]'::jsonb),
+    'hidden_sections', CASE WHEN _circle THEN 0 ELSE (
+      SELECT count(*) FROM public.orphan_profile_sections p
+       WHERE p.orphan_id = _orphan AND public.profile_section_is_sensitive(p.section)
+    ) END
+  );
+END $fn$;
+REVOKE ALL ON FUNCTION public.orphan_profile(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.orphan_profile(UUID) TO authenticated;
+
+
+/* وتمامُ البروفايل — لتعرف الجهة ما ينقص بدل أن تبحث عنه. */
+CREATE OR REPLACE FUNCTION public.orphan_profile_completeness(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _filled INTEGER; _total INTEGER := 6; _missing TEXT[];
+BEGIN
+  IF NOT public.in_orphan_circle(_orphan) THEN
+    RAISE EXCEPTION 'تمام البروفايل لمن حول الطفل' USING ERRCODE = '42501';
+  END IF;
+
+  SELECT count(*) INTO _filled FROM public.orphan_profile_sections p
+   WHERE p.orphan_id = _orphan;
+
+  SELECT array_agg(s::text ORDER BY s) INTO _missing
+    FROM unnest(enum_range(NULL::public.profile_section)) s
+   WHERE s NOT IN (SELECT p.section FROM public.orphan_profile_sections p
+                    WHERE p.orphan_id = _orphan);
+
+  RETURN jsonb_build_object(
+    'filled', _filled, 'total', _total,
+    'missing', to_jsonb(COALESCE(_missing, '{}'::text[])));
+END $fn$;
+REVOKE ALL ON FUNCTION public.orphan_profile_completeness(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.orphan_profile_completeness(UUID) TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260907100000', 'orphan_profile');
+
+-- >>> migration 20260908100000 access_scopes
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260908100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260908100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- نطاقات الاطّلاع — إذنٌ مُفصَّل تختاره الإدارة، لا بابٌ واحد
+-- ---------------------------------------------------------------------
+-- بُني الإذن أوّلاً **ثنائياً**: مقبولٌ فيُفتح الملفّ كلُّه، أو مرفوضٌ
+-- فلا شيء. وبُنيت معه قاعدةٌ **مطلقة** تمنع عرض الدرجات والسمات على أيّ
+-- داعم.
+--
+-- وكلاهما خطأ. المالك يريد: داعمٌ يُقدّم طلباً، فتحاوره الإدارة، فتقرّر،
+-- **وتختار له هو بعينه** ماذا يرى — اسماً أو مجموعةً أو رحلةً تعليمية أو
+-- تقدّماً أو نتائج أو سمات. فالحماية ليست حُرمةً مطلقة بل **قراراً
+-- مُدارًا**.
+--
+-- وثلاثة قرارات في البناء:
+--
+-- (١) **النطاقات سجلٌّ لا تعداد.** `ENUM` يجعل كلّ نطاقٍ جديد هجرةً،
+--     والمالك صرّح أنّ ما سمّاه أمثلة: «تُبنى وتُستقبَل حسب ما هو
+--     موجود». فما يأتي من الرواد من رحلاتٍ وتفاعلاتٍ وأنشطة يصير
+--     نطاقاً **بإضافة صفّ**.
+--
+-- (٢) **سجلٌّ لا كيسٌ مفتوح.** والدينامية لا تعني فوضى: النطاق المَمنوح
+--     يجب أن يكون **مُعرَّفاً في السجلّ وفاعلاً**، وإلا صار الإذن نصّاً
+--     حرّاً لا يُفحص. فالشكل مُعلَن والمحتوى ديناميّ.
+--
+-- (٣) **حزمٌ لا اختيارٌ حرّ وحده.** ثمانيةُ نطاقاتٍ تُختار يدوياً لكل
+--     داعم تُتعب وتُخطئ. فحزمٌ جاهزة تُختار ثمّ تُعدَّل — والقرار يبقى
+--     للإدارة في الحالين.
+--
+-- وقاعدةٌ لا تُخرَق: **الافتراض مغلق.** لا يُفتح نطاقٌ إلا باختيارٍ
+-- صريح، ويُسجَّل من فتحه ومتى.
+-- =====================================================================
+
+
+-- ---------------------------------------------------------------------
+-- 1) سجلّ النطاقات
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.access_scopes (
+  key TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  description TEXT NOT NULL,
+  /* ١ معلومة · ٢ يُعرِّف الطفل · ٣ حكمٌ عليه.
+     ليست حاجزاً بل **تحذيرٌ عند المنح وترتيبٌ عند العرض**: من يمنح
+     «السمات» ينبغي أن يرى أنها من الدرجة الثالثة قبل أن يضغط. */
+  sensitivity SMALLINT NOT NULL DEFAULT 1 CHECK (sensitivity BETWEEN 1 AND 3),
+  sort_order SMALLINT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+GRANT SELECT ON public.access_scopes TO authenticated;
+GRANT ALL ON public.access_scopes TO service_role;
+ALTER TABLE public.access_scopes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "scopes_read" ON public.access_scopes;
+CREATE POLICY "scopes_read" ON public.access_scopes
+  FOR SELECT TO authenticated USING (active OR public.is_admin());
+
+DROP POLICY IF EXISTS "scopes_admin_write" ON public.access_scopes;
+CREATE POLICY "scopes_admin_write" ON public.access_scopes
+  FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+/* بذرةٌ لا حصر: هذه ما نعرفه اليوم، وما يأتي من الرواد يُضاف صفّاً. */
+INSERT INTO public.access_scopes (key, label, description, sensitivity, sort_order) VALUES
+  ('identity', 'الاسم والصورة',
+   'الاسم الحقيقي وصورة الطفل بدل الاسم المستعار.', 3, 10),
+  ('group', 'المجموعة',
+   'مجموعته في برنامج الرواد وأعضاؤها ومشرفها الأساسي.', 2, 20),
+  ('journey', 'الرحلة التعليمية',
+   'الجلسات ومحاورها وما قُبل منها.', 1, 30),
+  ('progress', 'التقدّم',
+   'المرحلة التي بلغها وما بقي من مساره.', 1, 40),
+  ('results', 'النتائج والمخرجات',
+   'ما سلّمه في كل جلسة وتقويم مشرفه له.', 2, 50),
+  ('traits', 'مقياس السمات',
+   'خريطة سماته ودرجاتها، والسمة الجوهرية والاتصالية.', 3, 60),
+  ('reports', 'التقارير الدورية',
+   'الرصد والتقرير الأسبوعي وتقرير الدورة.', 2, 70),
+  ('profile_deep', 'الملفّ العميق',
+   'الصحّة والأسرة والسكن والوضع النفسي.', 3, 80),
+  ('contact', 'التواصل',
+   'قناة تواصلٍ مع المشرف أو جهة الرعاية بشأن الطفل.', 2, 90)
+ON CONFLICT (key) DO NOTHING;
+
+
+-- ---------------------------------------------------------------------
+-- 2) الحزم
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.access_scope_packages (
+  key TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  description TEXT NOT NULL,
+  scopes TEXT[] NOT NULL CHECK (cardinality(scopes) > 0),
+  sort_order SMALLINT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+GRANT SELECT ON public.access_scope_packages TO authenticated;
+GRANT ALL ON public.access_scope_packages TO service_role;
+ALTER TABLE public.access_scope_packages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "packages_read" ON public.access_scope_packages;
+CREATE POLICY "packages_read" ON public.access_scope_packages
+  FOR SELECT TO authenticated USING (active OR public.is_admin());
+
+DROP POLICY IF EXISTS "packages_admin_write" ON public.access_scope_packages;
+CREATE POLICY "packages_admin_write" ON public.access_scope_packages
+  FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+INSERT INTO public.access_scope_packages (key, label, description, scopes, sort_order) VALUES
+  ('follower', 'متابِع',
+   'يرى مسار الطفل في البرنامج بلا اسمٍ ولا حكم.',
+   ARRAY['journey', 'progress'], 10),
+  ('group_supporter', 'داعم مجموعة',
+   'يرى المجموعة ومسارها ونتائج جلساتها.',
+   ARRAY['group', 'journey', 'progress', 'results'], 20),
+  ('committed_sponsor', 'كافل ملتزم',
+   'يرى الطفل باسمه ومساره ونتائجه وتقاريره.',
+   ARRAY['identity', 'group', 'journey', 'progress', 'results', 'reports'], 30),
+  ('full_partner', 'شريك كامل',
+   'كلُّ ما في الملفّ — يُمنح لشريكٍ مؤسّسيّ بعقد.',
+   ARRAY['identity', 'group', 'journey', 'progress', 'results', 'traits',
+         'reports', 'profile_deep', 'contact'], 40)
+ON CONFLICT (key) DO NOTHING;
+
+
+/* حزمةٌ تحمل نطاقاً لا وجود له تصير إذناً لا يُفحص. */
+CREATE OR REPLACE FUNCTION public.guard_scope_package()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER SET search_path = public AS $fn$
+DECLARE _unknown TEXT;
+BEGIN
+  SELECT string_agg(s, '، ') INTO _unknown
+    FROM unnest(NEW.scopes) s
+   WHERE NOT EXISTS (SELECT 1 FROM public.access_scopes a WHERE a.key = s);
+  IF _unknown IS NOT NULL THEN
+    RAISE EXCEPTION 'نطاقاتٌ غير معرّفة في السجلّ: %', _unknown
+      USING ERRCODE = 'check_violation';
+  END IF;
+  RETURN NEW;
+END $fn$;
+
+DROP TRIGGER IF EXISTS trg_guard_scope_package ON public.access_scope_packages;
+CREATE TRIGGER trg_guard_scope_package
+BEFORE INSERT OR UPDATE ON public.access_scope_packages
+FOR EACH ROW EXECUTE FUNCTION public.guard_scope_package();
+
+
+-- ---------------------------------------------------------------------
+-- 3) الطلب يحمل نطاقاته ومحادثته
+-- ---------------------------------------------------------------------
+ALTER TABLE public.orphan_access_requests
+  /* ما طلبه هو — اقتراحٌ لا قرار. */
+  ADD COLUMN IF NOT EXISTS requested_package TEXT
+    REFERENCES public.access_scope_packages(key) ON DELETE SET NULL,
+  /* وما منحته الإدارة — وهو الحاكم. */
+  ADD COLUMN IF NOT EXISTS granted_scopes TEXT[] NOT NULL DEFAULT '{}';
+
+CREATE INDEX IF NOT EXISTS idx_access_requests_package
+  ON public.orphan_access_requests(requested_package)
+  WHERE requested_package IS NOT NULL;
+
+/* قبولٌ بلا نطاقٍ واحد رفضٌ يلبس ثوب القبول: يَعِد الطالبَ بما لا يصل. */
+ALTER TABLE public.orphan_access_requests
+  DROP CONSTRAINT IF EXISTS ck_approval_grants_something;
+ALTER TABLE public.orphan_access_requests
+  ADD CONSTRAINT ck_approval_grants_something CHECK (
+    status <> 'approved' OR cardinality(granted_scopes) > 0
+  );
+
+
+/* والمنح لا يتجاوز السجلّ: نطاقٌ مكتوبٌ خطأً يصير صلاحيةً صامتة. */
+CREATE OR REPLACE FUNCTION public.guard_granted_scopes()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER SET search_path = public AS $fn$
+DECLARE _unknown TEXT;
+BEGIN
+  IF cardinality(NEW.granted_scopes) = 0 THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT string_agg(s, '، ') INTO _unknown
+    FROM unnest(NEW.granted_scopes) s
+   WHERE NOT EXISTS (
+     SELECT 1 FROM public.access_scopes a WHERE a.key = s AND a.active);
+
+  IF _unknown IS NOT NULL THEN
+    RAISE EXCEPTION 'نطاقاتٌ غير معرّفة أو معطّلة: %', _unknown
+      USING ERRCODE = 'check_violation';
+  END IF;
+  RETURN NEW;
+END $fn$;
+
+DROP TRIGGER IF EXISTS trg_guard_granted_scopes ON public.orphan_access_requests;
+CREATE TRIGGER trg_guard_granted_scopes
+BEFORE INSERT OR UPDATE ON public.orphan_access_requests
+FOR EACH ROW EXECUTE FUNCTION public.guard_granted_scopes();
+
+
+-- المحادثة: الإدارة تقرّر عن طفل، فحوارُها مع الطالب **مستند القرار**.
+CREATE TABLE IF NOT EXISTS public.access_request_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  request_id UUID NOT NULL
+    REFERENCES public.orphan_access_requests(id) ON DELETE CASCADE,
+  author_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  from_admin BOOLEAN NOT NULL,
+  body TEXT NOT NULL CHECK (length(btrim(body)) >= 2),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_access_messages_request
+  ON public.access_request_messages(request_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_access_messages_author
+  ON public.access_request_messages(author_id);
+
+GRANT SELECT ON public.access_request_messages TO authenticated;
+GRANT ALL ON public.access_request_messages TO service_role;
+ALTER TABLE public.access_request_messages ENABLE ROW LEVEL SECURITY;
+
+/* يقرؤها طرفاها وحدهما. */
+DROP POLICY IF EXISTS "access_messages_read" ON public.access_request_messages;
+CREATE POLICY "access_messages_read" ON public.access_request_messages
+  FOR SELECT TO authenticated USING (
+    public.is_admin()
+    OR EXISTS (SELECT 1 FROM public.orphan_access_requests r
+                WHERE r.id = request_id AND r.requester_id = auth.uid())
+  );
+
+
+-- ---------------------------------------------------------------------
+-- 4) ما يملكه القارئ من نطاقات
+-- ---------------------------------------------------------------------
+-- دائرة الطفل تملكها كلّها ضمناً: صلتُها هي الإذن. ومن أُذن له يملك
+-- ما مُنح له نصّاً. وغيرهما لا شيء.
+CREATE OR REPLACE FUNCTION public.my_orphan_scopes(_orphan UUID)
+RETURNS TEXT[] LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT CASE
+    WHEN auth.uid() IS NULL THEN '{}'::TEXT[]
+    WHEN public.in_orphan_circle(_orphan)
+      THEN (SELECT COALESCE(array_agg(a.key ORDER BY a.sort_order), '{}'::TEXT[])
+              FROM public.access_scopes a WHERE a.active)
+    ELSE COALESCE((
+      SELECT r.granted_scopes FROM public.orphan_access_requests r
+       WHERE r.orphan_id = _orphan AND r.requester_id = auth.uid()
+         AND r.status = 'approved' AND r.expires_at > now()
+       LIMIT 1), '{}'::TEXT[])
+  END;
+$fn$;
+REVOKE ALL ON FUNCTION public.my_orphan_scopes(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.my_orphan_scopes(UUID) TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.has_orphan_scope(_orphan UUID, _scope TEXT)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT _scope = ANY(public.my_orphan_scopes(_orphan));
+$fn$;
+REVOKE ALL ON FUNCTION public.has_orphan_scope(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.has_orphan_scope(UUID, TEXT) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 5) القرار بالنطاقات، والمحادثة
+-- ---------------------------------------------------------------------
+DROP FUNCTION IF EXISTS public.decide_orphan_access(UUID, TEXT, TEXT, INTEGER);
+
+CREATE OR REPLACE FUNCTION public.decide_orphan_access(
+  _request UUID,
+  _decision TEXT,
+  _scopes TEXT[] DEFAULT NULL,
+  _note TEXT DEFAULT NULL,
+  _days INTEGER DEFAULT 180
+)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _orphan UUID; _st public.access_status; _exp TIMESTAMPTZ; _grant TEXT[];
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'الإذن بالاطّلاع للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+  IF _decision NOT IN ('approved', 'rejected') THEN
+    RAISE EXCEPTION 'القرار إمّا قبولٌ أو رفض' USING ERRCODE = 'check_violation';
+  END IF;
+
+  _st := _decision::public.access_status;
+
+  IF _st = 'approved' THEN
+    _grant := COALESCE(_scopes, '{}'::TEXT[]);
+    IF cardinality(_grant) = 0 THEN
+      RAISE EXCEPTION 'القبول بلا نطاقٍ واحد رفضٌ يلبس ثوب القبول'
+        USING ERRCODE = 'check_violation';
+    END IF;
+    _exp := now() + make_interval(days => GREATEST(LEAST(COALESCE(_days, 180), 365), 1));
+  ELSE
+    _grant := '{}'::TEXT[];
+  END IF;
+
+  UPDATE public.orphan_access_requests
+     SET status = _st, decided_by = auth.uid(), decided_at = now(),
+         decision_note = NULLIF(btrim(COALESCE(_note, '')), ''),
+         granted_scopes = _grant,
+         expires_at = _exp
+   WHERE id = _request AND status = 'pending'
+  RETURNING orphan_id INTO _orphan;
+
+  IF _orphan IS NULL THEN
+    RAISE EXCEPTION 'لا طلبَ معلّقاً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  /* الأثر يحمل ما فُتح: «أُذن له» وحدها لا تكفي للمراجعة بعد سنة. */
+  PERFORM public.write_audit('orphan.access_' || _decision, 'orphan', _orphan,
+    jsonb_build_object('request', _request, 'scopes', to_jsonb(_grant),
+                       'expires_at', _exp));
+
+  RETURN jsonb_build_object('status', _st, 'scopes', to_jsonb(_grant),
+                            'expires_at', _exp);
+END $fn$;
+REVOKE ALL ON FUNCTION public.decide_orphan_access(UUID, TEXT, TEXT[], TEXT, INTEGER)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.decide_orphan_access(UUID, TEXT, TEXT[], TEXT, INTEGER)
+  TO authenticated;
+
+
+/* وتعديل ما مُنح بعد القبول: حاجةُ الداعم تتغيّر، وسحبُ الإذن كلِّه
+   لتضييق نطاقٍ واحد عقوبةٌ لا تصحيح. */
+CREATE OR REPLACE FUNCTION public.amend_orphan_access(
+  _request UUID, _scopes TEXT[], _note TEXT DEFAULT NULL
+)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _orphan UUID; _old TEXT[];
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'تعديل النطاقات للإدارة وحدها' USING ERRCODE = '42501';
+  END IF;
+  IF cardinality(COALESCE(_scopes, '{}'::TEXT[])) = 0 THEN
+    RAISE EXCEPTION 'تضييقٌ إلى لا شيء سحبٌ — استعمل revoke_orphan_access'
+      USING ERRCODE = 'check_violation';
+  END IF;
+
+  SELECT granted_scopes INTO _old FROM public.orphan_access_requests
+   WHERE id = _request AND status = 'approved';
+
+  UPDATE public.orphan_access_requests
+     SET granted_scopes = _scopes,
+         decided_by = auth.uid(), decided_at = now(),
+         decision_note = COALESCE(NULLIF(btrim(COALESCE(_note, '')), ''), decision_note)
+   WHERE id = _request AND status = 'approved'
+  RETURNING orphan_id INTO _orphan;
+
+  IF _orphan IS NULL THEN
+    RAISE EXCEPTION 'لا إذنَ قائماً بهذا المعرّف' USING ERRCODE = 'no_data_found';
+  END IF;
+
+  PERFORM public.write_audit('orphan.access_amended', 'orphan', _orphan,
+    jsonb_build_object('request', _request, 'from', to_jsonb(_old),
+                       'to', to_jsonb(_scopes)));
+
+  RETURN jsonb_build_object('scopes', to_jsonb(_scopes));
+END $fn$;
+REVOKE ALL ON FUNCTION public.amend_orphan_access(UUID, TEXT[], TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.amend_orphan_access(UUID, TEXT[], TEXT) TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.post_access_message(_request UUID, _body TEXT)
+RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _mine BOOLEAN; _admin BOOLEAN; _id UUID;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'post_access_message: تحتاج جلسة' USING ERRCODE = '42501';
+  END IF;
+
+  _admin := public.is_admin();
+  SELECT true INTO _mine FROM public.orphan_access_requests r
+   WHERE r.id = _request AND r.requester_id = auth.uid();
+
+  IF NOT _admin AND _mine IS NOT TRUE THEN
+    RAISE EXCEPTION 'المحادثة بين الإدارة وصاحب الطلب' USING ERRCODE = '42501';
+  END IF;
+
+  INSERT INTO public.access_request_messages (request_id, author_id, from_admin, body)
+  VALUES (_request, auth.uid(), _admin, btrim(_body))
+  RETURNING id INTO _id;
+
+  RETURN jsonb_build_object('id', _id);
+END $fn$;
+REVOKE ALL ON FUNCTION public.post_access_message(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.post_access_message(UUID, TEXT) TO authenticated;
+
+
+/* `SECURITY INVOKER` عمداً: تبقى `access_messages_read` هي الحاكمة. */
+CREATE OR REPLACE FUNCTION public.access_thread(_request UUID)
+RETURNS JSONB LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+    'id', m.id, 'from_admin', m.from_admin, 'body', m.body,
+    'mine', m.author_id = auth.uid(), 'created_at', m.created_at
+  ) ORDER BY m.created_at), '[]'::jsonb)
+  FROM public.access_request_messages m
+  WHERE m.request_id = _request;
+$fn$;
+REVOKE ALL ON FUNCTION public.access_thread(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.access_thread(UUID) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 6) كتالوج النطاقات والحزم — لشاشة الإدارة
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.access_scope_catalog()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+  SELECT jsonb_build_object(
+    'scopes', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'key', a.key, 'label', a.label, 'description', a.description,
+        'sensitivity', a.sensitivity) ORDER BY a.sort_order)
+      FROM public.access_scopes a WHERE a.active), '[]'::jsonb),
+    'packages', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'key', p.key, 'label', p.label, 'description', p.description,
+        'scopes', to_jsonb(p.scopes)) ORDER BY p.sort_order)
+      FROM public.access_scope_packages p WHERE p.active), '[]'::jsonb)
+  );
+$fn$;
+REVOKE ALL ON FUNCTION public.access_scope_catalog() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.access_scope_catalog() TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 7) ربط النطاقات بما تفتحه فعلاً
+-- ---------------------------------------------------------------------
+-- نطاقاتٌ تُمنح ولا تحكم زينةٌ أخطر من عدمها: تُطمئن الإدارة أنها
+-- ضيّقت وهي لم تضيّق. فيُعاد بناء القارئَين على النطاقات.
+--
+-- والقسمة: **القبول** يفتح طبقة التفصيل الأساسية (القصّة والمدينة
+-- وتفصيل الاحتياج) — وهي «التفاصيل» التي يطلبها الداعم. و**النطاقات**
+-- تفتح ما فوقها: الاسم والصورة، والملفّ العميق، وما يأتي من الرواد.
+CREATE OR REPLACE FUNCTION public.orphan_view(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _o RECORD; _may BOOLEAN; _acc JSONB; _out JSONB; _scopes TEXT[];
+BEGIN
+  SELECT * INTO _o FROM public.orphans o
+   WHERE o.id = _orphan AND o.status IN ('approved', 'fully_sponsored');
+  IF NOT FOUND THEN RETURN 'null'::jsonb; END IF;
+
+  _may := public.can_view_orphan_detail(_orphan);
+  _scopes := public.my_orphan_scopes(_orphan);
+
+  SELECT COALESCE(jsonb_build_object(
+           'request_id', a.id, 'status', a.status,
+           'expires_at', a.expires_at, 'decision_note', a.decision_note,
+           'granted_scopes', to_jsonb(a.granted_scopes),
+           'created_at', a.created_at),
+         'null'::jsonb)
+    INTO _acc
+    FROM public.orphan_access_requests a
+   WHERE a.orphan_id = _orphan AND a.requester_id = auth.uid()
+   ORDER BY a.created_at DESC LIMIT 1;
+
+  _out := jsonb_build_object(
+    'id', _o.id, 'code', _o.code, 'display_name', _o.display_name,
+    'gender', _o.gender, 'country', _o.country, 'region', _o.region,
+    'education_stage', _o.education_stage, 'age_band', public.age_band_of(_o.birth_date),
+    'monthly_need', _o.monthly_need, 'funded_monthly', _o.funded_monthly,
+    'currency', _o.currency, 'status', _o.status, 'org_id', _o.org_id,
+    'created_at', _o.created_at,
+    'may_view_detail', _may,
+    /* ما يملكه القارئ — تبني عليه الواجهة ما تعرض بلا تخمين. */
+    'scopes', to_jsonb(_scopes),
+    'access', COALESCE(_acc, 'null'::jsonb)
+  );
+
+  IF _may THEN
+    _out := _out || jsonb_build_object(
+      'detail', jsonb_build_object(
+        'birth_date', _o.birth_date,
+        'city', _o.city,
+        'story', _o.story,
+        /* الاسم الحقيقي والصورة خلف نطاق `identity` — ومعهما إذن
+           الصورة الخاصّ، فهما إذنان لصاحبين مختلفين. */
+        'real_name', CASE WHEN 'identity' = ANY(_scopes) THEN _o.display_name END,
+        'photo_url', CASE
+          WHEN 'identity' = ANY(_scopes)
+           AND _o.photo_consent IN ('granted', 'face_hidden')
+          THEN _o.photo_url END,
+        'needs', COALESCE((
+          SELECT jsonb_agg(jsonb_build_object(
+            'id', n.id, 'category', n.category, 'title', n.title,
+            'monthly_amount', n.monthly_amount) ORDER BY n.monthly_amount DESC)
+          FROM public.orphan_needs n WHERE n.orphan_id = _orphan), '[]'::jsonb)
+      ));
+  END IF;
+
+  RETURN _out;
+END $fn$;
+
+
+-- والملفّ العميق: للدائرة، أو لمن مُنح نطاقه.
+CREATE OR REPLACE FUNCTION public.orphan_profile(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _circle BOOLEAN; _detail BOOLEAN; _deep BOOLEAN;
+BEGIN
+  _circle := public.in_orphan_circle(_orphan);
+  _detail := public.can_view_orphan_detail(_orphan);
+  /* الدائرة تملك النطاقات كلَّها ضمناً، فهذا يشمله. */
+  _deep := public.has_orphan_scope(_orphan, 'profile_deep');
+
+  IF NOT _circle AND NOT _detail THEN
+    RETURN jsonb_build_object('may_read', false, 'sections', '[]'::jsonb);
+  END IF;
+
+  RETURN jsonb_build_object(
+    'may_read', true,
+    'may_write', _circle,
+    'sees_sensitive', _deep,
+    'sections', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'section', p.section,
+        'data', p.data,
+        'note', p.note,
+        'updated_role', p.updated_role,
+        'updated_at', p.updated_at,
+        'age_days', (now()::date - p.updated_at::date)
+      ) ORDER BY p.section)
+      FROM public.orphan_profile_sections p
+     WHERE p.orphan_id = _orphan
+       AND (_deep OR NOT public.profile_section_is_sensitive(p.section))
+    ), '[]'::jsonb),
+    'hidden_sections', CASE WHEN _deep THEN 0 ELSE (
+      SELECT count(*) FROM public.orphan_profile_sections p
+       WHERE p.orphan_id = _orphan AND public.profile_section_is_sensitive(p.section)
+    ) END
+  );
+END $fn$;
+
+
+/* وسياسة الجدول **تبقى على الدائرة وحدها** عمداً.
+   جرّبتُ توسيعها لتطابق الدالّة، ثمّ تراجعت: الدالّة `SECURITY DEFINER`
+   فتخدم المأذون له بلا حاجةٍ إلى فتح الجدول. و**بابٌ واحد** أصحّ من
+   بابين متطابقين — فالتطابق يُحفظ اليوم ويُكسر غداً حين يُعدَّل أحدهما
+   وحده. والقاعدة هنا: «لا يمسّ هذا الجدولَ إلا من حول الطفل». */
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260908100000', 'access_scopes');
+
+-- >>> migration 20260909100000 kahatayn_mirror
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260909100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260909100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- كهاتين — الدول، مرآة منصّات التشغيل، نموذج السمات، وأهداف الدعم
+-- ---------------------------------------------------------------------
+-- «أنا وكافل اليتيم في الجنة كهاتين».
+--
+-- المبادئ:
+--   1) الدولة صفٌّ لا هجرة: المنصّة ستخدم دولاً كثيرة تدريجياً، والمفعّلة
+--      اليوم ألبانيا وحدها لأن الرواد ألبانيا هي منصّة التشغيل الوحيدة.
+--   2) المرآة باتجاهٍ واحد: منصّة التشغيل تكتب، وكهاتين تقرأ. كل صفٍّ
+--      مرآويّ مفتاحه (source, external_ref)، والحذف علامةٌ deleted_at
+--      لا مسح، كي لا يضيع تاريخٌ رآه داعم.
+--   3) نموذج السمات سجلٌّ لا تعداد: الأبعاد (المقاصد الخمسة في الرواد
+--      مثال) والسمات وعناصرها تُستورد كما هي، فإن أضاف الرواد بُعداً
+--      ظهر هنا دون تعديل كود.
+--   4) المرآة تصل مغلقة: لا anon ولا authenticated يقرأ الجداول مباشرة؛
+--      الأبواب دوالّ تفحص النطاق (traits / group) المصروف لكل طفل.
+--   5) هدف الدعم متعدّد الأشكال: التأهيل = يتيم | مجموعة | منطقة | دولة،
+--      والعيني يضيف المؤسسة.
+-- =====================================================================
+
+
+-- ---------------------------------------------------------------------
+-- 1) الدول ومنصّات التشغيل
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.countries (
+  code        TEXT PRIMARY KEY CHECK (code ~ '^[A-Z]{2}$'),
+  name_ar     TEXT NOT NULL,
+  name_local  TEXT,
+  status      TEXT NOT NULL DEFAULT 'planned'
+              CHECK (status IN ('planned', 'active', 'paused')),
+  sort_order  INTEGER NOT NULL DEFAULT 100,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE public.countries ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS countries_read ON public.countries;
+CREATE POLICY countries_read ON public.countries FOR SELECT TO anon, authenticated
+  USING (status <> 'planned' OR public.is_admin());
+DROP POLICY IF EXISTS countries_admin ON public.countries;
+CREATE POLICY countries_admin ON public.countries FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+GRANT SELECT ON public.countries TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.countries TO authenticated;
+
+INSERT INTO public.countries (code, name_ar, name_local, status, sort_order)
+VALUES ('AL', 'ألبانيا', 'Shqipëri', 'active', 1)
+ON CONFLICT (code) DO NOTHING;
+
+
+CREATE TABLE IF NOT EXISTS public.operating_platforms (
+  key          TEXT PRIMARY KEY CHECK (key ~ '^[a-z0-9-]{2,40}$'),
+  name         TEXT NOT NULL,
+  country_code TEXT NOT NULL REFERENCES public.countries(code),
+  base_url     TEXT,
+  active       BOOLEAN NOT NULL DEFAULT true,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE public.operating_platforms ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS op_admin ON public.operating_platforms;
+CREATE POLICY op_admin ON public.operating_platforms FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+GRANT SELECT, INSERT, UPDATE ON public.operating_platforms TO authenticated;
+
+INSERT INTO public.operating_platforms (key, name, country_code, base_url)
+VALUES ('rowad-albania', 'الرواد ألبانيا', 'AL', 'https://rowad-albania.manzoma.sa')
+ON CONFLICT (key) DO NOTHING;
+
+
+-- مؤشّر المزامنة لكل (منصّة، كيان): الدفع (webhook) يوقظ، والسحب يكمل
+-- من (cursor_at, cursor_ref)، والمطابقة الدورية تكتب الانحراف.
+CREATE TABLE IF NOT EXISTS public.mirror_sync_state (
+  source       TEXT NOT NULL REFERENCES public.operating_platforms(key),
+  entity       TEXT NOT NULL CHECK (entity ~ '^[a-z_]{2,40}$'),
+  cursor_at    TIMESTAMPTZ,
+  cursor_ref   TEXT,
+  last_run_at  TIMESTAMPTZ,
+  last_error   TEXT,
+  drift        JSONB,
+  PRIMARY KEY (source, entity)
+);
+ALTER TABLE public.mirror_sync_state ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS mss_admin ON public.mirror_sync_state;
+CREATE POLICY mss_admin ON public.mirror_sync_state FOR SELECT TO authenticated
+  USING (public.is_admin());
+GRANT SELECT ON public.mirror_sync_state TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 2) المجموعات: لكل يتيم في الرواد مجموعة ومشرف أساسي
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.mirror_groups (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source              TEXT NOT NULL REFERENCES public.operating_platforms(key),
+  external_ref        TEXT NOT NULL,
+  name                TEXT NOT NULL,
+  country_code        TEXT NOT NULL REFERENCES public.countries(code),
+  region              TEXT,
+  institution_ref     TEXT,            -- المدرسة في الرواد
+  institution_name    TEXT,
+  supervisor_ref      TEXT,            -- المعلّم = المشرف الأساسي
+  supervisor_name     TEXT,
+  source_updated_at   TIMESTAMPTZ,
+  synced_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deleted_at          TIMESTAMPTZ,
+  UNIQUE (source, external_ref)
+);
+ALTER TABLE public.mirror_groups ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS mg_admin ON public.mirror_groups;
+CREATE POLICY mg_admin ON public.mirror_groups FOR SELECT TO authenticated
+  USING (public.is_admin());
+GRANT SELECT ON public.mirror_groups TO authenticated;
+
+ALTER TABLE public.orphans
+  ADD COLUMN IF NOT EXISTS group_id UUID REFERENCES public.mirror_groups(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_orphans_group ON public.orphans(group_id);
+
+
+-- ---------------------------------------------------------------------
+-- 3) نموذج السمات — سجلٌّ مستورد
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.trait_dimensions (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source        TEXT NOT NULL REFERENCES public.operating_platforms(key),
+  key           TEXT NOT NULL,            -- DEEN | AQL | NAFS | NASL | MAL … كما يرد
+  label_ar      TEXT NOT NULL,
+  label_local   TEXT,
+  description   TEXT,
+  sort_order    INTEGER NOT NULL DEFAULT 100,
+  UNIQUE (source, key)
+);
+
+CREATE TABLE IF NOT EXISTS public.trait_definitions (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source            TEXT NOT NULL REFERENCES public.operating_platforms(key),
+  external_ref      TEXT NOT NULL,
+  dimension_id      UUID NOT NULL REFERENCES public.trait_dimensions(id) ON DELETE CASCADE,
+  stage_label       TEXT,                 -- مرحلة خارطة الطريق إن وُجدت
+  name_ar           TEXT NOT NULL,
+  name_local        TEXT,
+  definition_ar     TEXT,
+  definition_local  TEXT,
+  elements          JSONB NOT NULL DEFAULT '[]'::jsonb
+                    CHECK (jsonb_typeof(elements) = 'array'),
+  sort_order        INTEGER NOT NULL DEFAULT 100,
+  deleted_at        TIMESTAMPTZ,
+  UNIQUE (source, external_ref)
+);
+
+-- القياس: كل تقييم من الرواد صفّ؛ الدرجة كما وردت مع سقفها، فلا نفترض
+-- مقياساً واحداً لكل المنصّات.
+CREATE TABLE IF NOT EXISTS public.orphan_trait_scores (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source         TEXT NOT NULL REFERENCES public.operating_platforms(key),
+  external_ref   TEXT NOT NULL,
+  orphan_id      UUID NOT NULL REFERENCES public.orphans(id) ON DELETE CASCADE,
+  trait_id       UUID NOT NULL REFERENCES public.trait_definitions(id) ON DELETE CASCADE,
+  score          NUMERIC NOT NULL,
+  scale_max      NUMERIC NOT NULL DEFAULT 100 CHECK (scale_max > 0),
+  observed_at    TIMESTAMPTZ NOT NULL,
+  note           TEXT,                    -- ملاحظة المشرف: لا تظهر للداعم
+  deleted_at     TIMESTAMPTZ,
+  UNIQUE (source, external_ref),
+  CHECK (score >= 0 AND score <= scale_max)
+);
+CREATE INDEX IF NOT EXISTS idx_ots_orphan ON public.orphan_trait_scores(orphan_id, observed_at);
+
+ALTER TABLE public.trait_dimensions    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.trait_definitions   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orphan_trait_scores ENABLE ROW LEVEL SECURITY;
+-- النموذج نفسه منهجٌ عامّ يُعرض للجميع؛ الدرجات بابها دالّة.
+DROP POLICY IF EXISTS td_read ON public.trait_dimensions;
+CREATE POLICY td_read ON public.trait_dimensions FOR SELECT TO anon, authenticated USING (true);
+DROP POLICY IF EXISTS tdef_read ON public.trait_definitions;
+CREATE POLICY tdef_read ON public.trait_definitions FOR SELECT TO anon, authenticated
+  USING (deleted_at IS NULL);
+DROP POLICY IF EXISTS ots_admin ON public.orphan_trait_scores;
+CREATE POLICY ots_admin ON public.orphan_trait_scores FOR SELECT TO authenticated
+  USING (public.is_admin());
+GRANT SELECT ON public.trait_dimensions, public.trait_definitions TO anon, authenticated;
+GRANT SELECT ON public.orphan_trait_scores TO authenticated;
+
+
+-- النموذج للعرض العامّ: أبعاد ← سمات ← عناصر.
+CREATE OR REPLACE FUNCTION public.trait_model(_source TEXT DEFAULT 'rowad-albania')
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+           'key', d.key, 'label', d.label_ar, 'label_local', d.label_local,
+           'description', d.description,
+           'traits', COALESCE((
+             SELECT jsonb_agg(jsonb_build_object(
+                      'id', t.id, 'name', t.name_ar, 'name_local', t.name_local,
+                      'definition', t.definition_ar, 'stage', t.stage_label,
+                      'elements', t.elements)
+                    ORDER BY t.sort_order, t.name_ar)
+               FROM public.trait_definitions t
+              WHERE t.dimension_id = d.id AND t.deleted_at IS NULL), '[]'::jsonb))
+         ORDER BY d.sort_order, d.key), '[]'::jsonb)
+    FROM public.trait_dimensions d
+   WHERE d.source = _source;
+$fn$;
+GRANT EXECUTE ON FUNCTION public.trait_model(TEXT) TO anon, authenticated;
+
+
+-- سمات طفلٍ بعينه: آخر قياس لكل سمة وأوّله، بلا ملاحظة المشرف.
+-- الباب نطاق «traits» — دائرة الطفل تملكه ضمناً.
+CREATE OR REPLACE FUNCTION public.orphan_traits(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.has_orphan_scope(_orphan, 'traits') THEN
+    RETURN jsonb_build_object('allowed', false);
+  END IF;
+  RETURN jsonb_build_object('allowed', true, 'traits', COALESCE((
+    SELECT jsonb_agg(row_to_json(x)::jsonb ORDER BY x.dimension_order, x.dimension, x.name)
+      FROM (
+        SELECT d.key AS dimension, d.label_ar AS dimension_label, d.sort_order AS dimension_order,
+               t.id AS trait_id, t.name_ar AS name,
+               (SELECT round(100 * s.score / s.scale_max, 1) FROM public.orphan_trait_scores s
+                 WHERE s.orphan_id = _orphan AND s.trait_id = t.id AND s.deleted_at IS NULL
+                 ORDER BY s.observed_at ASC LIMIT 1) AS first_percent,
+               (SELECT round(100 * s.score / s.scale_max, 1) FROM public.orphan_trait_scores s
+                 WHERE s.orphan_id = _orphan AND s.trait_id = t.id AND s.deleted_at IS NULL
+                 ORDER BY s.observed_at DESC LIMIT 1) AS latest_percent,
+               (SELECT count(*) FROM public.orphan_trait_scores s
+                 WHERE s.orphan_id = _orphan AND s.trait_id = t.id AND s.deleted_at IS NULL) AS observations
+          FROM public.trait_definitions t
+          JOIN public.trait_dimensions d ON d.id = t.dimension_id
+         WHERE t.deleted_at IS NULL
+           AND EXISTS (SELECT 1 FROM public.orphan_trait_scores s
+                        WHERE s.orphan_id = _orphan AND s.trait_id = t.id AND s.deleted_at IS NULL)
+      ) x), '[]'::jsonb));
+END $fn$;
+REVOKE ALL ON FUNCTION public.orphan_traits(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.orphan_traits(UUID) TO authenticated;
+
+
+-- مجموعة الطفل: الاسم والمشرف دائماً لمن يملك «group»، وأسماء الزملاء
+-- المستعارة فقط (display_name)، ولا يُعدّ في القائمة إلا المعتمَد.
+CREATE OR REPLACE FUNCTION public.orphan_group(_orphan UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _g public.mirror_groups;
+BEGIN
+  IF NOT public.has_orphan_scope(_orphan, 'group') THEN
+    RETURN jsonb_build_object('allowed', false);
+  END IF;
+  SELECT g.* INTO _g FROM public.mirror_groups g
+    JOIN public.orphans o ON o.group_id = g.id
+   WHERE o.id = _orphan AND g.deleted_at IS NULL;
+  IF _g.id IS NULL THEN
+    RETURN jsonb_build_object('allowed', true, 'group', NULL);
+  END IF;
+  RETURN jsonb_build_object('allowed', true, 'group', jsonb_build_object(
+    'name', _g.name, 'country', _g.country_code, 'region', _g.region,
+    'institution', _g.institution_name, 'supervisor', _g.supervisor_name,
+    'members', COALESCE((SELECT jsonb_agg(jsonb_build_object('code', o.code, 'name', o.display_name)
+                                          ORDER BY o.display_name)
+                           FROM public.orphans o
+                          WHERE o.group_id = _g.id AND o.status = 'approved'), '[]'::jsonb)));
+END $fn$;
+REVOKE ALL ON FUNCTION public.orphan_group(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.orphan_group(UUID) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 4) أهداف الدعم
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.support_pledges (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  supporter_id   UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  kind           TEXT NOT NULL CHECK (kind IN ('qualification', 'in_kind')),
+  target_type    TEXT NOT NULL CHECK (target_type IN ('orphan', 'group', 'region', 'country', 'institution')),
+  orphan_id      UUID REFERENCES public.orphans(id) ON DELETE RESTRICT,
+  group_id       UUID REFERENCES public.mirror_groups(id) ON DELETE RESTRICT,
+  org_id         UUID REFERENCES public.care_organizations(id) ON DELETE RESTRICT,
+  country_code   TEXT NOT NULL REFERENCES public.countries(code),
+  region         TEXT,
+  amount         NUMERIC NOT NULL CHECK (amount > 0),
+  currency       TEXT NOT NULL DEFAULT 'EUR',
+  note           TEXT CHECK (note IS NULL OR length(note) <= 1000),
+  status         TEXT NOT NULL DEFAULT 'pending'
+                 CHECK (status IN ('pending', 'active', 'fulfilled', 'cancelled')),
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  -- التأهيل لا يذهب لمؤسسة: هو بناء أهلية طفلٍ أو جماعة أطفال.
+  CONSTRAINT ck_pledge_kind_target CHECK (kind = 'in_kind' OR target_type <> 'institution'),
+  -- مرجعٌ واحد يطابق النوع، لا أكثر ولا أقل.
+  CONSTRAINT ck_pledge_target_shape CHECK (
+    (target_type = 'orphan'      AND orphan_id IS NOT NULL AND group_id IS NULL AND org_id IS NULL) OR
+    (target_type = 'group'       AND group_id IS NOT NULL AND orphan_id IS NULL AND org_id IS NULL) OR
+    (target_type = 'institution' AND org_id IS NOT NULL AND orphan_id IS NULL AND group_id IS NULL) OR
+    (target_type = 'region'      AND region IS NOT NULL AND orphan_id IS NULL AND group_id IS NULL AND org_id IS NULL) OR
+    (target_type = 'country'     AND region IS NULL AND orphan_id IS NULL AND group_id IS NULL AND org_id IS NULL))
+);
+CREATE INDEX IF NOT EXISTS idx_pledges_supporter ON public.support_pledges(supporter_id, created_at DESC);
+ALTER TABLE public.support_pledges ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS sp_read ON public.support_pledges;
+CREATE POLICY sp_read ON public.support_pledges FOR SELECT TO authenticated
+  USING (supporter_id = auth.uid() OR public.is_admin());
+GRANT SELECT ON public.support_pledges TO authenticated;
+-- لا INSERT مباشر: الباب create_support_pledge.
+
+
+CREATE OR REPLACE FUNCTION public.create_support_pledge(
+  _kind TEXT, _target_type TEXT, _target TEXT, _amount NUMERIC,
+  _country TEXT DEFAULT NULL, _note TEXT DEFAULT NULL)
+RETURNS UUID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE
+  _uid UUID := auth.uid();
+  _id UUID;
+  _orphan UUID; _group UUID; _org UUID; _region TEXT; _cc TEXT;
+BEGIN
+  IF _uid IS NULL THEN RAISE EXCEPTION 'auth_required' USING ERRCODE = '42501'; END IF;
+
+  IF _target_type = 'orphan' THEN
+    -- يتيمٌ معتمدٌ فقط؛ ودولته من مجموعته إن كانت مرآة، وإلا ما مُرّر.
+    SELECT o.id, g.country_code INTO _orphan, _cc
+      FROM public.orphans o LEFT JOIN public.mirror_groups g ON g.id = o.group_id
+     WHERE o.id = _target::UUID AND o.status = 'approved';
+    IF _orphan IS NULL THEN RAISE EXCEPTION 'target_not_found'; END IF;
+    _cc := COALESCE(_cc, _country);
+  ELSIF _target_type = 'group' THEN
+    SELECT g.id, g.country_code INTO _group, _cc FROM public.mirror_groups g
+     WHERE g.id = _target::UUID AND g.deleted_at IS NULL;
+    IF _group IS NULL THEN RAISE EXCEPTION 'target_not_found'; END IF;
+  ELSIF _target_type = 'institution' THEN
+    SELECT c.id INTO _org FROM public.care_organizations c
+     WHERE c.id = _target::UUID AND c.status = 'approved';
+    IF _org IS NULL THEN RAISE EXCEPTION 'target_not_found'; END IF;
+    _cc := _country;
+  ELSIF _target_type = 'region' THEN
+    _region := NULLIF(btrim(_target), '');
+    IF _region IS NULL THEN RAISE EXCEPTION 'target_not_found'; END IF;
+    _cc := _country;
+  ELSIF _target_type = 'country' THEN
+    _cc := COALESCE(NULLIF(btrim(_target), ''), _country);
+  ELSE
+    RAISE EXCEPTION 'invalid_target_type';
+  END IF;
+
+  -- الدعم لا يُفتح إلا في دولةٍ مفعّلة.
+  IF _cc IS NULL OR NOT EXISTS (SELECT 1 FROM public.countries WHERE code = _cc AND status = 'active') THEN
+    RAISE EXCEPTION 'country_not_active';
+  END IF;
+
+  INSERT INTO public.support_pledges
+    (supporter_id, kind, target_type, orphan_id, group_id, org_id, country_code, region, amount, note)
+  VALUES (_uid, _kind, _target_type, _orphan, _group, _org, _cc, _region, _amount, NULLIF(btrim(_note), ''))
+  RETURNING id INTO _id;
+  RETURN _id;
+END $fn$;
+REVOKE ALL ON FUNCTION public.create_support_pledge(TEXT, TEXT, TEXT, NUMERIC, TEXT, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.create_support_pledge(TEXT, TEXT, TEXT, NUMERIC, TEXT, TEXT) TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260909100000', 'kahatayn_mirror');
+
+-- >>> migration 20260910100000 offices_portals
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260910100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260910100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- كهاتين — المكاتب، أصناف المؤسسات، الجهات المانحة، ولوحاتها
+-- ---------------------------------------------------------------------
+-- تصحيح: دعم التأهيل يصل المؤسسة أيضاً (مركز، مكتب، مدرسة…)، فيُرفع
+-- القيد السابق.
+--
+-- البنية:
+--   المكتب  — مسؤول عن دولة أو منطقة منها، وقد يتبع مكتباً أعلى. أعضاؤه
+--             بأدوار من سجلّ (مدير، منسّق، ميداني، مطّلع — أمثلة).
+--             يرفع تقارير بصور ومرفقات في خزنةٍ خاصّة بمجلّده.
+--   المؤسسة — care_organizations مع صنفٍ من سجلّ institution_kinds.
+--   الجهة المانحة — شركة/مؤسسة خيرية تدعم باسمها، وأعضاؤها يرون تعهّداتها.
+--
+-- كل الأصناف والأدوار صفوف، لا تعدادات: تُضاف دون هجرة.
+-- =====================================================================
+
+ALTER TABLE public.support_pledges DROP CONSTRAINT IF EXISTS ck_pledge_kind_target;
+
+
+-- ---------------------------------------------------------------------
+-- 1) أصناف المؤسسات
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.institution_kinds (
+  key        TEXT PRIMARY KEY CHECK (key ~ '^[a-z_]{2,40}$'),
+  label      TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 100,
+  active     BOOLEAN NOT NULL DEFAULT true
+);
+ALTER TABLE public.institution_kinds ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS ik_read ON public.institution_kinds;
+CREATE POLICY ik_read ON public.institution_kinds FOR SELECT TO anon, authenticated USING (true);
+DROP POLICY IF EXISTS ik_admin ON public.institution_kinds;
+CREATE POLICY ik_admin ON public.institution_kinds FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+GRANT SELECT ON public.institution_kinds TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.institution_kinds TO authenticated;
+
+INSERT INTO public.institution_kinds (key, label, sort_order) VALUES
+  ('center', 'مركز', 1), ('office', 'مكتب', 2), ('school', 'مدرسة', 3),
+  ('association', 'جمعية', 4), ('care_home', 'دار رعاية', 5)
+ON CONFLICT (key) DO NOTHING;
+
+ALTER TABLE public.care_organizations
+  ADD COLUMN IF NOT EXISTS kind TEXT REFERENCES public.institution_kinds(key),
+  ADD COLUMN IF NOT EXISTS country_code TEXT REFERENCES public.countries(code),
+  ADD COLUMN IF NOT EXISTS region TEXT;
+
+
+-- ---------------------------------------------------------------------
+-- 2) المكاتب
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.offices (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name          TEXT NOT NULL CHECK (length(btrim(name)) >= 2),
+  country_code  TEXT NOT NULL REFERENCES public.countries(code),
+  region        TEXT,                    -- NULL = الدولة كلّها
+  parent_id     UUID REFERENCES public.offices(id) ON DELETE SET NULL,
+  active        BOOLEAN NOT NULL DEFAULT true,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CHECK (parent_id IS DISTINCT FROM id)
+);
+
+CREATE TABLE IF NOT EXISTS public.office_roles (
+  key        TEXT PRIMARY KEY CHECK (key ~ '^[a-z_]{2,40}$'),
+  label      TEXT NOT NULL,
+  can_write  BOOLEAN NOT NULL DEFAULT false,   -- يرفع تقارير وبيانات
+  can_publish BOOLEAN NOT NULL DEFAULT false,  -- ينشر التقرير للداعمين
+  sort_order INTEGER NOT NULL DEFAULT 100
+);
+INSERT INTO public.office_roles (key, label, can_write, can_publish, sort_order) VALUES
+  ('manager', 'مدير المكتب', true, true, 1),
+  ('coordinator', 'منسّق', true, false, 2),
+  ('field_officer', 'موظّف ميداني', true, false, 3),
+  ('viewer', 'مطّلع', false, false, 4)
+ON CONFLICT (key) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS public.office_members (
+  office_id  UUID NOT NULL REFERENCES public.offices(id) ON DELETE CASCADE,
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  role       TEXT NOT NULL REFERENCES public.office_roles(key),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (office_id, user_id)
+);
+
+-- عضوية المكتب تسري على ما تحته: مدير مكتب الدولة يرى مكاتب مناطقها.
+CREATE OR REPLACE FUNCTION public.office_permission(_office UUID, _need TEXT DEFAULT 'read')
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  WITH RECURSIVE up AS (
+    SELECT id, parent_id, 0 AS depth FROM public.offices WHERE id = _office
+    UNION ALL
+    SELECT o.id, o.parent_id, up.depth + 1 FROM public.offices o
+      JOIN up ON o.id = up.parent_id WHERE up.depth < 10
+  )
+  SELECT public.is_admin() OR EXISTS (
+    SELECT 1 FROM up JOIN public.office_members m ON m.office_id = up.id
+      JOIN public.office_roles r ON r.key = m.role
+     WHERE m.user_id = auth.uid()
+       AND CASE _need WHEN 'read' THEN true
+                      WHEN 'write' THEN r.can_write
+                      WHEN 'publish' THEN r.can_publish
+                      ELSE false END);
+$fn$;
+REVOKE ALL ON FUNCTION public.office_permission(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.office_permission(UUID, TEXT) TO authenticated;
+
+ALTER TABLE public.offices        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.office_roles   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.office_members ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS offices_read ON public.offices;
+CREATE POLICY offices_read ON public.offices FOR SELECT TO authenticated
+  USING (public.office_permission(id, 'read'));
+DROP POLICY IF EXISTS offices_admin ON public.offices;
+CREATE POLICY offices_admin ON public.offices FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+DROP POLICY IF EXISTS oroles_read ON public.office_roles;
+CREATE POLICY oroles_read ON public.office_roles FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS oroles_admin ON public.office_roles;
+CREATE POLICY oroles_admin ON public.office_roles FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+DROP POLICY IF EXISTS omembers_read ON public.office_members;
+CREATE POLICY omembers_read ON public.office_members FOR SELECT TO authenticated
+  USING (user_id = auth.uid() OR public.office_permission(office_id, 'publish'));
+DROP POLICY IF EXISTS omembers_admin ON public.office_members;
+CREATE POLICY omembers_admin ON public.office_members FOR ALL TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.offices, public.office_roles, public.office_members TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 3) تقارير المكتب ومرفقاته
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.office_reports (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  office_id     UUID NOT NULL REFERENCES public.offices(id) ON DELETE CASCADE,
+  author_id     UUID NOT NULL REFERENCES auth.users(id),
+  title         TEXT NOT NULL CHECK (length(btrim(title)) BETWEEN 3 AND 200),
+  body          TEXT NOT NULL DEFAULT '' CHECK (length(body) <= 20000),
+  -- مؤشّرات حرّة بأسماء يختارها المكتب: {"visits": 12, "kits": 40}
+  metrics       JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metrics) = 'object'),
+  -- مسارات داخل خزنة office-media، وكلها في مجلّد المكتب نفسه.
+  attachments   TEXT[] NOT NULL DEFAULT '{}',
+  period_start  DATE,
+  period_end    DATE,
+  status        TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'submitted', 'published')),
+  published_at  TIMESTAMPTZ,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start),
+  CHECK (cardinality(attachments) <= 30)
+);
+CREATE INDEX IF NOT EXISTS idx_office_reports ON public.office_reports(office_id, created_at DESC);
+ALTER TABLE public.office_reports ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS oreports_read ON public.office_reports;
+CREATE POLICY oreports_read ON public.office_reports FOR SELECT TO authenticated
+  USING (public.office_permission(office_id, 'read'));
+GRANT SELECT ON public.office_reports TO authenticated;
+-- الكتابة عبر save_office_report وحدها.
+
+CREATE OR REPLACE FUNCTION public.save_office_report(
+  _office UUID, _title TEXT, _body TEXT, _metrics JSONB DEFAULT '{}'::jsonb,
+  _attachments TEXT[] DEFAULT '{}', _period_start DATE DEFAULT NULL,
+  _period_end DATE DEFAULT NULL, _status TEXT DEFAULT 'draft', _id UUID DEFAULT NULL)
+RETURNS UUID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _rid UUID; _p TEXT;
+BEGIN
+  IF NOT public.office_permission(_office, 'write') THEN
+    RAISE EXCEPTION 'office_write_denied' USING ERRCODE = '42501';
+  END IF;
+  IF _status = 'published' AND NOT public.office_permission(_office, 'publish') THEN
+    RAISE EXCEPTION 'office_publish_denied' USING ERRCODE = '42501';
+  END IF;
+  -- مرفقٌ من مجلّد مكتبٍ آخر يُرفض: لا يُستعار ملفّ غيرك.
+  FOREACH _p IN ARRAY COALESCE(_attachments, '{}') LOOP
+    IF split_part(_p, '/', 1) <> _office::text THEN
+      RAISE EXCEPTION 'attachment_outside_office';
+    END IF;
+  END LOOP;
+
+  IF _id IS NULL THEN
+    INSERT INTO public.office_reports
+      (office_id, author_id, title, body, metrics, attachments, period_start, period_end, status,
+       published_at)
+    VALUES (_office, auth.uid(), btrim(_title), COALESCE(_body, ''), COALESCE(_metrics, '{}'),
+            COALESCE(_attachments, '{}'), _period_start, _period_end, _status,
+            CASE WHEN _status = 'published' THEN now() END)
+    RETURNING id INTO _rid;
+  ELSE
+    UPDATE public.office_reports
+       SET title = btrim(_title), body = COALESCE(_body, ''), metrics = COALESCE(_metrics, '{}'),
+           attachments = COALESCE(_attachments, '{}'), period_start = _period_start,
+           period_end = _period_end, status = _status, updated_at = now(),
+           published_at = CASE WHEN _status = 'published' THEN COALESCE(published_at, now()) END
+     WHERE id = _id AND office_id = _office
+     RETURNING id INTO _rid;
+    IF _rid IS NULL THEN RAISE EXCEPTION 'report_not_found'; END IF;
+  END IF;
+  RETURN _rid;
+END $fn$;
+REVOKE ALL ON FUNCTION public.save_office_report(UUID, TEXT, TEXT, JSONB, TEXT[], DATE, DATE, TEXT, UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.save_office_report(UUID, TEXT, TEXT, JSONB, TEXT[], DATE, DATE, TEXT, UUID) TO authenticated;
+
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('office-media', 'office-media', false, 10485760,
+        ARRAY['image/jpeg','image/png','image/webp','application/pdf'])
+ON CONFLICT (id) DO NOTHING;
+
+CREATE OR REPLACE FUNCTION public.can_reach_office_folder(_path TEXT, _need TEXT)
+RETURNS BOOLEAN LANGUAGE plpgsql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+DECLARE _id UUID;
+BEGIN
+  BEGIN
+    _id := (storage.foldername(_path))[1]::uuid;
+  EXCEPTION WHEN others THEN RETURN false;
+  END;
+  IF _id IS NULL THEN RETURN false; END IF;
+  RETURN public.office_permission(_id, _need);
+END $fn$;
+REVOKE ALL ON FUNCTION public.can_reach_office_folder(TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.can_reach_office_folder(TEXT, TEXT) TO authenticated;
+
+DROP POLICY IF EXISTS office_media_read ON storage.objects;
+CREATE POLICY office_media_read ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'office-media' AND public.can_reach_office_folder(name, 'read'));
+DROP POLICY IF EXISTS office_media_write ON storage.objects;
+CREATE POLICY office_media_write ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'office-media' AND public.can_reach_office_folder(name, 'write'));
+DROP POLICY IF EXISTS office_media_delete ON storage.objects;
+CREATE POLICY office_media_delete ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'office-media' AND public.can_reach_office_folder(name, 'write'));
+
+
+-- ---------------------------------------------------------------------
+-- 4) الجهات المانحة
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.donor_entities (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL CHECK (length(btrim(name)) >= 2),
+  entity_type TEXT NOT NULL DEFAULT 'foundation',  -- شركة، وقف، مؤسسة… نصّ حرّ
+  country     TEXT,
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'suspended')),
+  created_by  UUID NOT NULL REFERENCES auth.users(id),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS public.donor_members (
+  entity_id  UUID NOT NULL REFERENCES public.donor_entities(id) ON DELETE CASCADE,
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  role       TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'member')),
+  PRIMARY KEY (entity_id, user_id)
+);
+
+CREATE OR REPLACE FUNCTION public.is_donor_member(_entity UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT EXISTS (SELECT 1 FROM public.donor_members WHERE entity_id = _entity AND user_id = auth.uid());
+$fn$;
+REVOKE ALL ON FUNCTION public.is_donor_member(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.is_donor_member(UUID) TO authenticated;
+
+ALTER TABLE public.donor_entities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.donor_members  ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS de_read ON public.donor_entities;
+CREATE POLICY de_read ON public.donor_entities FOR SELECT TO authenticated
+  USING (public.is_donor_member(id) OR public.is_admin());
+DROP POLICY IF EXISTS de_admin ON public.donor_entities;
+CREATE POLICY de_admin ON public.donor_entities FOR UPDATE TO authenticated
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+DROP POLICY IF EXISTS dm_read ON public.donor_members;
+CREATE POLICY dm_read ON public.donor_members FOR SELECT TO authenticated
+  USING (public.is_donor_member(entity_id) OR public.is_admin());
+GRANT SELECT, UPDATE ON public.donor_entities TO authenticated;
+GRANT SELECT ON public.donor_members TO authenticated;
+
+-- تسجيل جهة: المنشئ مالكها، وتبقى «قيد المراجعة» حتى تعتمدها الإدارة.
+CREATE OR REPLACE FUNCTION public.register_donor_entity(_name TEXT, _type TEXT DEFAULT 'foundation', _country TEXT DEFAULT NULL)
+RETURNS UUID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _id UUID;
+BEGIN
+  IF auth.uid() IS NULL THEN RAISE EXCEPTION 'auth_required' USING ERRCODE = '42501'; END IF;
+  INSERT INTO public.donor_entities (name, entity_type, country, created_by)
+  VALUES (btrim(_name), COALESCE(NULLIF(btrim(_type), ''), 'foundation'), NULLIF(btrim(_country), ''), auth.uid())
+  RETURNING id INTO _id;
+  INSERT INTO public.donor_members (entity_id, user_id, role) VALUES (_id, auth.uid(), 'owner');
+  RETURN _id;
+END $fn$;
+REVOKE ALL ON FUNCTION public.register_donor_entity(TEXT, TEXT, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.register_donor_entity(TEXT, TEXT, TEXT) TO authenticated;
+
+ALTER TABLE public.support_pledges
+  ADD COLUMN IF NOT EXISTS donor_entity_id UUID REFERENCES public.donor_entities(id) ON DELETE RESTRICT;
+
+DROP POLICY IF EXISTS sp_read ON public.support_pledges;
+CREATE POLICY sp_read ON public.support_pledges FOR SELECT TO authenticated
+  USING (supporter_id = auth.uid() OR public.is_admin()
+         OR (donor_entity_id IS NOT NULL AND public.is_donor_member(donor_entity_id)));
+
+-- التعهّد باسم جهة: عضوٌ في جهةٍ معتمدة فقط.
+CREATE OR REPLACE FUNCTION public.set_pledge_entity(_pledge UUID, _entity UUID)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_donor_member(_entity)
+     OR NOT EXISTS (SELECT 1 FROM public.donor_entities WHERE id = _entity AND status = 'approved') THEN
+    RAISE EXCEPTION 'donor_entity_denied' USING ERRCODE = '42501';
+  END IF;
+  UPDATE public.support_pledges SET donor_entity_id = _entity
+   WHERE id = _pledge AND supporter_id = auth.uid() AND donor_entity_id IS NULL;
+  IF NOT FOUND THEN RAISE EXCEPTION 'pledge_not_found'; END IF;
+END $fn$;
+REVOKE ALL ON FUNCTION public.set_pledge_entity(UUID, UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.set_pledge_entity(UUID, UUID) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 5) اللوحات
+-- ---------------------------------------------------------------------
+-- نطاق المكتب: دولته، ومنطقته إن حُدّدت. يُحسب من المجموعات المرآوية
+-- والتعهّدات، لا من نصّ orphans.country الحرّ.
+CREATE OR REPLACE FUNCTION public.office_dashboard(_office UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _o public.offices;
+BEGIN
+  IF NOT public.office_permission(_office, 'read') THEN
+    RAISE EXCEPTION 'office_read_denied' USING ERRCODE = '42501';
+  END IF;
+  SELECT * INTO _o FROM public.offices WHERE id = _office;
+  RETURN jsonb_build_object(
+    'office', jsonb_build_object('id', _o.id, 'name', _o.name, 'country', _o.country_code, 'region', _o.region),
+    'groups', (SELECT count(*) FROM public.mirror_groups g
+                WHERE g.deleted_at IS NULL AND g.country_code = _o.country_code
+                  AND (_o.region IS NULL OR g.region = _o.region)),
+    'orphans', (SELECT count(*) FROM public.orphans o JOIN public.mirror_groups g ON g.id = o.group_id
+                 WHERE o.status = 'approved' AND g.deleted_at IS NULL
+                   AND g.country_code = _o.country_code
+                   AND (_o.region IS NULL OR g.region = _o.region)),
+    'pledges', COALESCE((
+      SELECT jsonb_object_agg(k.kind, k.v) FROM (
+        SELECT p.kind, jsonb_build_object('count', count(*), 'amount', sum(p.amount)) AS v
+          FROM public.support_pledges p
+          LEFT JOIN public.mirror_groups g ON g.id = p.group_id
+          LEFT JOIN public.orphans o ON o.id = p.orphan_id
+          LEFT JOIN public.mirror_groups og ON og.id = o.group_id
+          LEFT JOIN public.care_organizations c ON c.id = p.org_id
+         WHERE p.status IN ('pending', 'active') AND p.country_code = _o.country_code
+           AND (_o.region IS NULL
+                OR COALESCE(p.region, g.region, og.region, c.region) = _o.region)
+         GROUP BY p.kind) k), '{}'::jsonb),
+    'reports', jsonb_build_object(
+      'draft', (SELECT count(*) FROM public.office_reports WHERE office_id = _office AND status = 'draft'),
+      'submitted', (SELECT count(*) FROM public.office_reports WHERE office_id = _office AND status = 'submitted'),
+      'published', (SELECT count(*) FROM public.office_reports WHERE office_id = _office AND status = 'published')),
+    'can_write', public.office_permission(_office, 'write'),
+    'can_publish', public.office_permission(_office, 'publish'));
+END $fn$;
+REVOKE ALL ON FUNCTION public.office_dashboard(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.office_dashboard(UUID) TO authenticated;
+
+
+-- بوابات المستخدم: ما يملكه من أدوار ليُظهر له الواجهة المناسبة.
+CREATE OR REPLACE FUNCTION public.my_workspaces()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT jsonb_build_object(
+    'admin', public.is_admin(),
+    'offices', COALESCE((SELECT jsonb_agg(jsonb_build_object('id', o.id, 'name', o.name, 'role', m.role,
+                                                             'country', o.country_code, 'region', o.region)
+                                          ORDER BY o.name)
+                           FROM public.office_members m JOIN public.offices o ON o.id = m.office_id
+                          WHERE m.user_id = auth.uid() AND o.active), '[]'::jsonb),
+    'donor_entities', COALESCE((SELECT jsonb_agg(jsonb_build_object('id', e.id, 'name', e.name,
+                                                                    'status', e.status, 'role', m.role)
+                                                 ORDER BY e.name)
+                                  FROM public.donor_members m JOIN public.donor_entities e ON e.id = m.entity_id
+                                 WHERE m.user_id = auth.uid()), '[]'::jsonb),
+    'care_org', EXISTS (SELECT 1 FROM public.care_organizations WHERE owner_id = auth.uid()),
+    'guardian', EXISTS (SELECT 1 FROM public.orphans WHERE guardian_id = auth.uid()),
+    'pledges', (SELECT count(*) FROM public.support_pledges WHERE supporter_id = auth.uid()));
+$fn$;
+REVOKE ALL ON FUNCTION public.my_workspaces() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.my_workspaces() TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.donor_entity_dashboard(_entity UUID)
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT (public.is_donor_member(_entity) OR public.is_admin()) THEN
+    RAISE EXCEPTION 'donor_entity_denied' USING ERRCODE = '42501';
+  END IF;
+  RETURN jsonb_build_object(
+    'entity', (SELECT jsonb_build_object('id', id, 'name', name, 'type', entity_type, 'status', status)
+                 FROM public.donor_entities WHERE id = _entity),
+    'by_kind', COALESCE((SELECT jsonb_object_agg(kind, total) FROM (
+                 SELECT kind, sum(amount) AS total FROM public.support_pledges
+                  WHERE donor_entity_id = _entity AND status <> 'cancelled' GROUP BY kind) x), '{}'::jsonb),
+    'by_target', COALESCE((SELECT jsonb_object_agg(target_type, n) FROM (
+                 SELECT target_type, count(*) AS n FROM public.support_pledges
+                  WHERE donor_entity_id = _entity AND status <> 'cancelled' GROUP BY target_type) x), '{}'::jsonb),
+    'members', (SELECT count(*) FROM public.donor_members WHERE entity_id = _entity));
+END $fn$;
+REVOKE ALL ON FUNCTION public.donor_entity_dashboard(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.donor_entity_dashboard(UUID) TO authenticated;
+
+
+-- ---------------------------------------------------------------------
+-- 6) أبواب الإدارة
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.admin_assign_office_member(_office UUID, _email TEXT, _role TEXT)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _user UUID;
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'admin_only' USING ERRCODE = '42501';
+  END IF;
+  SELECT u.id INTO _user FROM auth.users u WHERE lower(u.email) = lower(btrim(COALESCE(_email, '')));
+  IF _user IS NULL THEN
+    RAISE EXCEPTION 'لا حساب بهذا البريد' USING ERRCODE = 'no_data_found';
+  END IF;
+  INSERT INTO public.office_members (office_id, user_id, role) VALUES (_office, _user, _role)
+  ON CONFLICT (office_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+END $fn$;
+REVOKE ALL ON FUNCTION public.admin_assign_office_member(UUID, TEXT, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_assign_office_member(UUID, TEXT, TEXT) TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.admin_offices_overview()
+RETURNS JSONB LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'admin_only' USING ERRCODE = '42501';
+  END IF;
+  RETURN jsonb_build_object(
+    'countries', COALESCE((SELECT jsonb_agg(jsonb_build_object('code', code, 'name', name_ar, 'status', status)
+                                            ORDER BY sort_order, code) FROM public.countries), '[]'::jsonb),
+    'roles', COALESCE((SELECT jsonb_agg(jsonb_build_object('key', key, 'label', label) ORDER BY sort_order)
+                         FROM public.office_roles), '[]'::jsonb),
+    'offices', COALESCE((SELECT jsonb_agg(jsonb_build_object(
+        'id', o.id, 'name', o.name, 'country', o.country_code, 'region', o.region,
+        'parent_id', o.parent_id, 'active', o.active,
+        'members', COALESCE((SELECT jsonb_agg(jsonb_build_object('email', u.email, 'role', m.role) ORDER BY u.email)
+                               FROM public.office_members m JOIN auth.users u ON u.id = m.user_id
+                              WHERE m.office_id = o.id), '[]'::jsonb))
+      ORDER BY o.country_code, o.region NULLS FIRST, o.name) FROM public.offices o), '[]'::jsonb),
+    'donor_entities', COALESCE((SELECT jsonb_agg(jsonb_build_object(
+        'id', e.id, 'name', e.name, 'type', e.entity_type, 'status', e.status, 'created_at', e.created_at)
+      ORDER BY e.status <> 'pending', e.created_at DESC) FROM public.donor_entities e), '[]'::jsonb));
+END $fn$;
+REVOKE ALL ON FUNCTION public.admin_offices_overview() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_offices_overview() TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260910100000', 'offices_portals');
+
+-- >>> migration 20260911100000 support_catalog
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260911100000') THEN
+    RAISE EXCEPTION 'الهجرة 20260911100000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- كهاتين — كتالوج أهداف الدعم وتعهّداتي
+-- ---------------------------------------------------------------------
+-- مسار الدعم يحتاج أن يعرض للداعم ما يمكنه اختياره دون أن يفتح جداول
+-- المرآة: المجموعة تظهر باسمها ومنطقتها وعدد أطفالها فقط — لا أسماء
+-- ولا مشرف (ذلك نطاق «group» بإذن الإدارة).
+-- =====================================================================
+
+CREATE OR REPLACE FUNCTION public.support_catalog(_country TEXT DEFAULT NULL)
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  WITH c AS (
+    SELECT code, name_ar FROM public.countries
+     WHERE status = 'active' AND (_country IS NULL OR code = _country)
+  )
+  SELECT jsonb_build_object(
+    'countries', COALESCE((SELECT jsonb_agg(jsonb_build_object('code', code, 'name', name_ar) ORDER BY name_ar)
+                             FROM c), '[]'::jsonb),
+    'regions', COALESCE((SELECT jsonb_agg(DISTINCT jsonb_build_object('country', r.country, 'name', r.region))
+                           FROM (SELECT g.country_code AS country, g.region FROM public.mirror_groups g
+                                  WHERE g.deleted_at IS NULL AND g.region IS NOT NULL
+                                 UNION
+                                 SELECT o.country_code, o.region FROM public.offices o
+                                  WHERE o.active AND o.region IS NOT NULL) r
+                          WHERE r.country IN (SELECT code FROM c)), '[]'::jsonb),
+    'groups', COALESCE((SELECT jsonb_agg(jsonb_build_object(
+                          'id', g.id, 'name', g.name, 'country', g.country_code, 'region', g.region,
+                          'children', (SELECT count(*) FROM public.orphans o
+                                        WHERE o.group_id = g.id AND o.status = 'approved'))
+                        ORDER BY g.region NULLS LAST, g.name)
+                          FROM public.mirror_groups g
+                         WHERE g.deleted_at IS NULL AND g.country_code IN (SELECT code FROM c)), '[]'::jsonb),
+    'institutions', COALESCE((SELECT jsonb_agg(jsonb_build_object(
+                          'id', o.id, 'name', o.name, 'kind', k.label, 'country', o.country_code,
+                          'region', o.region)
+                        ORDER BY o.name)
+                          FROM public.care_organizations o
+                          LEFT JOIN public.institution_kinds k ON k.key = o.kind
+                         WHERE o.status = 'approved' AND o.country_code IN (SELECT code FROM c)), '[]'::jsonb));
+$fn$;
+GRANT EXECUTE ON FUNCTION public.support_catalog(TEXT) TO anon, authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.my_pledges()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT COALESCE(jsonb_agg(jsonb_build_object(
+           'id', p.id, 'kind', p.kind, 'target_type', p.target_type, 'amount', p.amount,
+           'currency', p.currency, 'status', p.status, 'created_at', p.created_at,
+           'target', CASE p.target_type
+                       WHEN 'orphan' THEN (SELECT display_name FROM public.orphans WHERE id = p.orphan_id)
+                       WHEN 'group' THEN (SELECT name FROM public.mirror_groups WHERE id = p.group_id)
+                       WHEN 'institution' THEN (SELECT name FROM public.care_organizations WHERE id = p.org_id)
+                       WHEN 'region' THEN p.region
+                       ELSE (SELECT name_ar FROM public.countries WHERE code = p.country_code)
+                     END)
+         ORDER BY p.created_at DESC), '[]'::jsonb)
+    FROM public.support_pledges p
+   WHERE p.supporter_id = auth.uid();
+$fn$;
+REVOKE ALL ON FUNCTION public.my_pledges() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.my_pledges() TO authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260911100000', 'support_catalog');
+
+COMMIT;

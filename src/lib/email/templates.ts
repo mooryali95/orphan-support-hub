@@ -16,18 +16,18 @@ import type { OutgoingEmail } from "./types";
  * تصل فارغة.
  */
 
-const NAVY = "#142F52";
-const BLUE = "#1D5AA6";
-const INK = "#8F6E05";
-const MUTED = "#6F7780";
-const BORDER = "#E5E7EB";
+const NAVY = "#0B3A30";
+const BLUE = "#0F4D3F";
+const INK = "#7A5E1C";
+const MUTED = "#5F6461";
+const BORDER = "#E4E1D9";
 
 function shell(heading: string, bodyHtml: string, cta?: { label: string; url: string }) {
   return `<!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body dir="rtl" style="margin:0;padding:0;background:#F5F6F7;font-family:Tahoma,Arial,sans-serif;">
-<table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F5F6F7;padding:24px 12px;">
+<body dir="rtl" style="margin:0;padding:0;background:#FAF8F3;font-family:Tahoma,Arial,sans-serif;">
+<table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F3;padding:24px 12px;">
 <tr><td align="center">
   <table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0"
          style="max-width:560px;background:#ffffff;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
@@ -39,7 +39,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
     <tr><td style="padding:8px 24px 0;">
       <h1 style="margin:0;font-size:18px;color:${NAVY};">${heading}</h1>
     </td></tr>
-    <tr><td style="padding:12px 24px 4px;font-size:14px;line-height:26px;color:#1F2937;">
+    <tr><td style="padding:12px 24px 4px;font-size:14px;line-height:26px;color:#1E2B27;">
       ${bodyHtml}
     </td></tr>
     ${

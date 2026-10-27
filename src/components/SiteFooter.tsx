@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { IosoLockup } from "@/components/brand/IosoMark";
+import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 
 export function SiteFooter() {
@@ -9,7 +9,7 @@ export function SiteFooter() {
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.1} tile={84} />
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
         <div className="md:col-span-2">
-          <IosoLockup />
+          <KahataynLockup />
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">
             منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير
             أثر شفافة.

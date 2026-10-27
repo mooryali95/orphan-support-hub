@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IosoLockup } from "@/components/brand/IosoMark";
+import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
 
@@ -93,7 +93,7 @@ function AuthPage() {
         className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
         <Link to="/" className="flex justify-center" aria-label="كهاتين — الصفحة الرئيسية">
-          <IosoLockup />
+          <KahataynLockup />
         </Link>
 
         <h1 className="mt-6 text-center text-lg font-extrabold">

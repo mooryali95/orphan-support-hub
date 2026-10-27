@@ -127,7 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_SA" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#142F52" },
+      { name: "theme-color", content: "#0F4D3F" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -141,8 +141,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "alternate icon", href: "/favicon.png", type: "image/png", sizes: "64x64" },
-      { rel: "apple-touch-icon", href: "/brand/ioso-192.png", sizes: "192x192" },
-      { rel: "icon", href: "/brand/ioso-512.png", type: "image/png", sizes: "512x512" },
+      { rel: "apple-touch-icon", href: "/brand/kahatayn-192.png", sizes: "192x192" },
+      { rel: "icon", href: "/brand/kahatayn-512.png", type: "image/png", sizes: "512x512" },
     ],
   }),
   shellComponent: RootShell,
