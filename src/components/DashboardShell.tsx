@@ -30,7 +30,7 @@ export function DashboardShell({
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-          <Link to="/" aria-label="IOSO — الصفحة الرئيسية">
+          <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
             <IosoLockup compact />
           </Link>
 

@@ -60,7 +60,7 @@ describe("renderNotificationEmail", () => {
     const mail = renderNotificationEmail({ ...base, link: null, body: null });
     expect(mail.html).not.toContain('href="null"');
     expect(mail.html).not.toContain("undefined");
-    expect(mail.subject).toContain("IOSO");
+    expect(mail.subject).toContain("كهاتين");
   });
 
   // نصّ الدفعة الفاشلة يجب ألّا يُفزع: المزوّد يُعيد المحاولة تلقائياً.

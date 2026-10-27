@@ -16,15 +16,15 @@ import { formatMoney } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/transfer")({
   head: () => ({
     meta: [
-      { title: "تعليمات التحويل — IOSO" },
+      { title: "تعليمات التحويل — كهاتين" },
       {
         name: "description",
-        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة IOSO.",
+        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة كهاتين.",
       },
-      { property: "og:title", content: "تعليمات التحويل — IOSO" },
+      { property: "og:title", content: "تعليمات التحويل — كهاتين" },
       {
         property: "og:description",
-        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة IOSO.",
+        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة كهاتين.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

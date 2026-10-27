@@ -28,7 +28,7 @@ const homeQuery = queryOptions({
   },
 });
 
-const TITLE = "IOSO — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
+const TITLE = "كهاتين — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
 const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
@@ -165,7 +165,7 @@ function HomePage() {
             <IosoMark
               variant="logo"
               className="mx-auto h-16 w-auto md:h-20"
-              title="شعار IOSO — الخيط المتصل والمضيق"
+              title="شعار كهاتين — الخيط المتصل والمضيق"
             />
             <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
               لا نقدّم رعايةً مؤقّتة،
