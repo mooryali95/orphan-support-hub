@@ -1,0 +1,157 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+/**
+ * صندوق قرارات الإدارة، وسجلّات المنصّة (الدول، أصناف المؤسسات، أدوار
+ * المكاتب). كل كتابةٍ هنا تمرّ بسياسات الإدارة في القاعدة.
+ */
+
+type RpcClient = {
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+};
+const rpc = (client: unknown) => client as RpcClient;
+
+export type InboxKind =
+  "orphan" | "org" | "access" | "donor" | "progress_report" | "office_report" | "pledge";
+
+export type InboxItem = {
+  kind: InboxKind;
+  id: string;
+  title: string;
+  subtitle: string;
+  created_at: string;
+};
+
+export const INBOX_LABELS: Record<InboxKind, string> = {
+  orphan: "ملف طفل",
+  org: "جهة رعاية",
+  access: "طلب اطّلاع",
+  donor: "جهة مانحة",
+  progress_report: "تقرير جهة",
+  office_report: "تقرير مكتب",
+  pledge: "تعهّد",
+};
+
+export const getDecisionInbox = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await rpc(context.supabase).rpc("admin_decision_inbox");
+    return error ? ([] as InboxItem[]) : ((data ?? []) as InboxItem[]);
+  });
+
+export const getDecisionContext = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ kind: z.string().regex(/^[a-z_]{2,30}$/), id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: c, error } = await rpc(context.supabase).rpc("admin_decision_context", {
+      _kind: data.kind,
+      _id: data.id,
+    });
+    return JSON.stringify(error ? null : c);
+  });
+
+export const reviewOfficeReport = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), publish: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("admin_review_office_report", {
+      _report: data.id,
+      _publish: data.publish,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+export const setPledgeStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), status: z.enum(["active", "cancelled"]) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("admin_set_pledge_status", {
+      _pledge: data.id,
+      _status: data.status,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+// ---------------------------------------------------------------------
+// سجلّات المنصّة — ثلاثة جداول بأعمدتها المسموحة وحدها
+// ---------------------------------------------------------------------
+const REGISTRY = {
+  countries: {
+    key: "code",
+    columns: ["code", "name_ar", "name_local", "status", "sort_order"],
+  },
+  institution_kinds: { key: "key", columns: ["key", "label", "sort_order", "active"] },
+  office_roles: {
+    key: "key",
+    columns: ["key", "label", "can_write", "can_publish", "sort_order"],
+  },
+} as const;
+export type RegistryName = keyof typeof REGISTRY;
+
+type TableClient = {
+  from: (t: string) => {
+    select: (c: string) => {
+      order: (k: string) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+    };
+    upsert: (
+      row: Record<string, unknown>,
+      opts: { onConflict: string },
+    ) => PromiseLike<{ error: { message: string } | null }>;
+  };
+};
+
+export const listRegistry = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ table: z.enum(["countries", "institution_kinds", "office_roles"]) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const def = REGISTRY[data.table];
+    const { data: rows, error } = await (context.supabase as unknown as TableClient)
+      .from(data.table)
+      .select(def.columns.join(","))
+      .order("sort_order");
+    return JSON.stringify(error ? [] : rows);
+  });
+
+export const upsertRegistry = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        table: z.enum(["countries", "institution_kinds", "office_roles"]),
+        row: z.record(
+          z.string(),
+          z.union([z.string().max(120), z.number(), z.boolean(), z.null()]),
+        ),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const def = REGISTRY[data.table];
+    // عمودٌ خارج القائمة لا يُكتب — حتى لو أُرسل.
+    const row = Object.fromEntries(
+      Object.entries(data.row).filter(([k]) => (def.columns as readonly string[]).includes(k)),
+    );
+    const { error } = await (context.supabase as unknown as TableClient)
+      .from(data.table)
+      .upsert(row, { onConflict: def.key });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
