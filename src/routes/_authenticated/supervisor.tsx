@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Ruler, ShieldCheck, TriangleAlert, ArrowLeft } from "lucide-react";
@@ -19,6 +20,7 @@ import {
 } from "@/lib/supervisor.functions";
 import type { SupervisedEnrollment } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
+import { readLang, saveLang, t, type Lang } from "@/lib/i18n";
 import { pageTitle } from "@/config/brand";
 
 const TITLE = pageTitle("لوحة المشرف", false);
@@ -245,25 +247,40 @@ function TodayList() {
     queryKey: ["supervisor-today"],
     queryFn: () => fetchToday(),
   });
+  const [lang, setLang] = useState<Lang>("ar");
+  useEffect(() => setLang(readLang()), []);
   return (
     <section className="mt-8" aria-labelledby="today">
-      <h2 id="today" className="text-sm font-bold">
-        اليوم ({tasks.length})
-      </h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 id="today" className="text-sm font-bold">
+          {t("today", lang)} ({tasks.length})
+        </h2>
+        <button
+          type="button"
+          className="text-xs underline"
+          onClick={() => {
+            const next = lang === "ar" ? "sq" : "ar";
+            setLang(next);
+            saveLang(next);
+          }}
+        >
+          {lang === "ar" ? "Shqip" : "العربية"}
+        </button>
+      </div>
       {tasks.length === 0 ? (
         <p className="mt-3 rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          لا شيء ينتظرك اليوم.
+          {t("nothingToday", lang)}
         </p>
       ) : (
         <ul className="mt-3 divide-y divide-border rounded-2xl border border-border bg-card">
-          {tasks.map((t, i) => (
+          {tasks.map((task, i) => (
             <li
-              key={`${t.task}-${t.enrollment_id}-${i}`}
+              key={`${task.task}-${task.enrollment_id}-${i}`}
               className="flex flex-wrap items-center gap-3 px-4 py-3"
             >
               <span
                 className={
-                  t.priority === 1
+                  task.priority === 1
                     ? "size-2.5 rounded-full bg-primary"
                     : "size-2.5 rounded-full bg-bridge"
                 }
@@ -271,14 +288,15 @@ function TodayList() {
               />
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">
-                  {TASK_LABELS[t.task]} — {t.orphan}
+                  {lang === "ar" ? TASK_LABELS[task.task] : t(`task_${task.task}`, lang)} —{" "}
+                  {task.orphan}
                 </span>
-                {t.detail && (
-                  <span className="block text-xs text-muted-foreground">{t.detail}</span>
+                {task.detail && (
+                  <span className="block text-xs text-muted-foreground">{task.detail}</span>
                 )}
               </span>
-              {t.since && (
-                <span className="text-xs text-muted-foreground">{formatDate(t.since)}</span>
+              {task.since && (
+                <span className="text-xs text-muted-foreground">{formatDate(task.since)}</span>
               )}
             </li>
           ))}

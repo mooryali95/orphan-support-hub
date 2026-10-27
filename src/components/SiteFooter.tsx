@@ -79,6 +79,11 @@ export function SiteFooter() {
                 الأسئلة الشائعة
               </Link>
             </li>
+            <li>
+              <Link to="/developers" className="hover:text-foreground">
+                للمطوّرين
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

@@ -3,7 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Users } from "lucide-react";
 
+import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { GuardianChildCard } from "@/components/guardian/GuardianChildCard";
+import { getGuardianChildren } from "@/lib/guardian.functions";
+import { readLang, saveLang, t, type Lang } from "@/lib/i18n";
 import { OrgInbox } from "@/components/org/OrgInbox";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
@@ -38,12 +42,47 @@ function GuardianPage() {
   });
 
   const orphans = data?.orphans ?? [];
+  const fetchChildren = useServerFn(getGuardianChildren);
+  const { data: children = [] } = useQuery({
+    queryKey: ["guardian-children"],
+    queryFn: () => fetchChildren(),
+  });
+  const [lang, setLang] = useState<Lang>("ar");
+  useEffect(() => setLang(readLang()), []);
 
   return (
-    <DashboardShell
-      title="مساحة ولي الأمر"
-      description="ملفات من تحت رعايتك وما نُشر عنهم من تقارير."
-    >
+    <DashboardShell title={t("guardianTitle", lang)} description={t("guardianIntro", lang)}>
+      <div className="mb-6 flex justify-end">
+        <div
+          role="group"
+          aria-label="اللغة"
+          className="flex rounded-md border border-input p-1 text-xs"
+        >
+          {(["ar", "sq"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={lang === l}
+              onClick={() => {
+                setLang(l);
+                saveLang(l);
+              }}
+              className={
+                lang === l ? "rounded bg-primary px-3 py-1 text-primary-foreground" : "px-3 py-1"
+              }
+            >
+              {l === "ar" ? "العربية" : "Shqip"}
+            </button>
+          ))}
+        </div>
+      </div>
+      {children.length > 0 && (
+        <div className="mb-8 space-y-4">
+          {children.map((c) => (
+            <GuardianChildCard key={c.id} child={c} lang={lang} />
+          ))}
+        </div>
+      )}
       <OrgInbox />
       {isLoading ? (
         <div className="flex justify-center py-16">
