@@ -157,6 +157,17 @@ BEGIN
   RAISE NOTICE 'PASS — البطاقة تحمل فئةً عمرية ولا تحمل تاريخ ميلاد';
 END $$;
 
+/* أقرانٌ لـPR-1 في حشده (بلد، منطقة، جنس، فئة عمرية) كي يبلغ حدّ
+   الأمان: دونه تُحجب المرحلة الدراسية فلا يُفلتَر بها — وذلك مقصود
+   ومفحوص في ledger-verification. المرحلة هنا مختلفة فلا تُطابق. */
+INSERT INTO public.orphans
+  (code, display_name, gender, birth_date, country, region, education_stage,
+   org_id, created_by, monthly_need, status, approved_at)
+SELECT 'PR-PEER-' || i, 'قرين ' || i, 'male', CURRENT_DATE - interval '9 years',
+       'السعودية', 'الرياض', 'متوسط', 'e2000000-0000-4000-8000-00000000000a',
+       'e1000000-0000-4000-8000-000000000002', 100, 'approved', now()
+  FROM generate_series(1, 4) i;
+
 /* التوكيد بالاحتواء لا بالمساواة: بيانات العرض المبذورة تقع في بعض
    هذه الفئات، فمساواةٌ تامّة تكسر الفحص بلا عيبٍ في المفلتِر. وملفّا
    الفحص يفترقان في كل بُعدٍ من الأربعة، فالاحتواء والاستبعاد معاً

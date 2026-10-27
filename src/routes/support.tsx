@@ -25,6 +25,7 @@ import {
 const search = z.object({
   orphan: z.string().uuid().optional(),
   name: z.string().max(120).optional(),
+  kind: z.enum(["qualification", "in_kind"]).optional(),
 });
 
 export const Route = createFileRoute("/support")({
@@ -45,7 +46,7 @@ const STEPS = ["نوع الدعم", "الهدف", "الاختيار", "المب�
 const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {
-  const { orphan, name } = Route.useSearch();
+  const { orphan, name, kind: presetKind } = Route.useSearch();
   const { user } = useAuth();
   const fetchCatalog = useServerFn(getSupportCatalog);
   const submit = useServerFn(createPledge);
@@ -54,7 +55,7 @@ function SupportPage() {
     queryFn: () => fetchCatalog(),
   });
 
-  const [kind, setKind] = useState<SupportKind | null>(null);
+  const [kind, setKind] = useState<SupportKind | null>(presetKind ?? null);
   const [targetType, setTargetType] = useState<TargetType | null>(orphan ? "orphan" : null);
   const [country, setCountry] = useState<string>("");
   const [target, setTarget] = useState<string>(orphan ?? "");

@@ -170,6 +170,13 @@ function DashboardPage() {
                   </div>
 
                   <div className="flex gap-2">
+                    {s.status !== "pending_payment" && (
+                      <Button asChild size="sm">
+                        <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
+                          الجدول والتفاصيل
+                        </Link>
+                      </Button>
+                    )}
                     {orphan && (
                       <Button asChild variant="outline" size="sm">
                         <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>

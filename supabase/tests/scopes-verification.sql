@@ -29,6 +29,9 @@ VALUES ('b3000000-0000-4000-8000-00000000000b', 'SC-1', 'طفل النطاقات
         'السعودية', 'الرياض', 'قصّة الطفل.', 'media/sc-1.jpg', 'face_hidden',
         200, 'approved', now());
 
+INSERT INTO public.orphan_private (orphan_id, full_name)
+VALUES ('b3000000-0000-4000-8000-00000000000b', 'الاسم الحقيقي للطفل');
+
 INSERT INTO public.orphan_profile_sections (orphan_id, section, data, updated_role)
 VALUES ('b3000000-0000-4000-8000-00000000000b', 'education',
         '{"grade":"الخامس"}'::jsonb, 'care_org'),
@@ -197,8 +200,8 @@ BEGIN
   _v := public.orphan_view('b3000000-0000-4000-8000-00000000000b');
   RESET ROLE;
 
-  IF _v->'detail'->>'real_name' IS NULL THEN
-    RAISE EXCEPTION 'FAIL — حُجب الاسم عمّن مُنح نطاقه';
+  IF _v->'detail'->>'real_name' IS DISTINCT FROM 'الاسم الحقيقي للطفل' THEN
+    RAISE EXCEPTION 'FAIL — حُجب الاسم الحقيقي عمّن مُنح نطاقه: %', _v->'detail'->>'real_name';
   END IF;
   IF _v->'detail'->>'photo_url' IS NULL THEN
     RAISE EXCEPTION 'FAIL — حُجبت صورةٌ مأذونٌ بها عمّن مُنح نطاقها';

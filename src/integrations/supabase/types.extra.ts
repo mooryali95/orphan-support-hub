@@ -917,11 +917,15 @@ export type MyAccess = {
 /** الملفّ: بطاقةٌ دائماً، وتفاصيلُ عند الإذن وحده. */
 export type OrphanView = OrphanCardRow & {
   may_view_detail: boolean;
+  /** حشدٌ صغير: تُخفي الواجهة أيضاً مدينة جهة الرعاية. */
+  cohort_small?: boolean;
+  scopes?: string[];
   access: MyAccess;
   detail?: {
     birth_date: string | null;
     city: string | null;
     story: string | null;
+    real_name?: string | null;
     photo_url: string | null;
     needs: Array<{
       id: string;
