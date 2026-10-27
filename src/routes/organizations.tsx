@@ -4,6 +4,7 @@ import { Building2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
+import { BRAND, pageTitle } from "@/config/brand";
 
 const orgsQuery = queryOptions({
   queryKey: ["organizations", "public"],
@@ -13,17 +14,15 @@ const orgsQuery = queryOptions({
 export const Route = createFileRoute("/organizations")({
   head: () => ({
     meta: [
-      { title: "جهات الرعاية المعتمدة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("جهات الرعاية المعتمدة") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "جهات الرعاية المعتمدة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("جهات الرعاية المعتمدة") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
     ],
   }),

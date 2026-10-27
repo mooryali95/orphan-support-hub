@@ -66,6 +66,7 @@ export type MyPledge = {
   currency: string;
   status: "pending" | "active" | "fulfilled" | "cancelled";
   created_at: string;
+  deliveries?: Array<{ stage: "preparing" | "delivered"; at: string; documented: boolean }>;
 };
 
 export const getSupportCatalog = createServerFn({ method: "GET" }).handler(async () => {

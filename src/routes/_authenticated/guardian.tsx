@@ -3,13 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Users } from "lucide-react";
 
+import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/DashboardShell";
+import { GuardianChildCard } from "@/components/guardian/GuardianChildCard";
+import { getGuardianChildren } from "@/lib/guardian.functions";
+import { readLang, saveLang, t, type Lang } from "@/lib/i18n";
 import { OrgInbox } from "@/components/org/OrgInbox";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { getGuardianWorkspace } from "@/lib/impact.functions";
 import { formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/guardian")({
   /* أولياء الأمور وحدهم — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -18,11 +23,10 @@ export const Route = createFileRoute("/_authenticated/guardian")({
   },
   head: () => ({
     meta: [
-      { title: "مساحة ولي الأمر — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("مساحة ولي الأمر") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],
@@ -38,12 +42,47 @@ function GuardianPage() {
   });
 
   const orphans = data?.orphans ?? [];
+  const fetchChildren = useServerFn(getGuardianChildren);
+  const { data: children = [] } = useQuery({
+    queryKey: ["guardian-children"],
+    queryFn: () => fetchChildren(),
+  });
+  const [lang, setLang] = useState<Lang>("ar");
+  useEffect(() => setLang(readLang()), []);
 
   return (
-    <DashboardShell
-      title="مساحة ولي الأمر"
-      description="ملفات من تحت رعايتك وما نُشر عنهم من تقارير."
-    >
+    <DashboardShell title={t("guardianTitle", lang)} description={t("guardianIntro", lang)}>
+      <div className="mb-6 flex justify-end">
+        <div
+          role="group"
+          aria-label="اللغة"
+          className="flex rounded-md border border-input p-1 text-xs"
+        >
+          {(["ar", "sq"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={lang === l}
+              onClick={() => {
+                setLang(l);
+                saveLang(l);
+              }}
+              className={
+                lang === l ? "rounded bg-primary px-3 py-1 text-primary-foreground" : "px-3 py-1"
+              }
+            >
+              {l === "ar" ? "العربية" : "Shqip"}
+            </button>
+          ))}
+        </div>
+      </div>
+      {children.length > 0 && (
+        <div className="mb-8 space-y-4">
+          {children.map((c) => (
+            <GuardianChildCard key={c.id} child={c} lang={lang} />
+          ))}
+        </div>
+      )}
       <OrgInbox />
       {isLoading ? (
         <div className="flex justify-center py-16">

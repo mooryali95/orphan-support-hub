@@ -13,11 +13,15 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
+import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
+import { DecisionInbox } from "@/components/admin/DecisionInbox";
+import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
 import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   /* الإدارة وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -26,11 +30,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("لوحة الإدارة") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],
@@ -39,6 +42,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Tab =
+  | "inbox"
+  | "platform"
   | "overview"
   | "orphans"
   | "sponsors"
@@ -49,12 +54,19 @@ type Tab =
   | "integrations"
   | "monitoring";
 
+const SECTIONS: Array<[string, Tab[]]> = [
+  ["القرارات", ["inbox", "queue", "access"]],
+  ["الناس", ["orphans", "sponsors", "supervisors", "offices"]],
+  ["المنصّة", ["platform", "integrations"]],
+  ["المراقبة", ["overview", "monitoring"]],
+];
+
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
   const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<Tab>("overview");
+  const [tab, setTab] = useState<Tab>("inbox");
   // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
 
@@ -92,6 +104,8 @@ function AdminPage() {
   const queueCount = o.pending_orphans.length + o.pending_orgs.length;
 
   const TABS: Array<[Tab, string, number | null]> = [
+    ["inbox", "صندوق القرارات", null],
+    ["platform", "سجلّات المنصّة", null],
     ["overview", "نظرة عامة", null],
     ["orphans", "الأيتام", o.orphan_rows.length],
     ["sponsors", "الكفلاء", o.sponsor_rows.length],
@@ -108,27 +122,63 @@ function AdminPage() {
       title="لوحة الإدارة"
       description="صورة النظام كاملة: من يُكفل، وبكم، وكم تبقّى."
     >
-      <div className="border-border flex flex-wrap gap-1 border-b">
-        {TABS.map(([key, label, count]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setTab(key)}
-            className={
-              tab === key
-                ? "border-shore-need text-shore-need -mb-px border-b-2 px-4 py-2.5 text-sm font-bold"
-                : "text-muted-foreground hover:text-foreground -mb-px border-b-2 border-transparent px-4 py-2.5 text-sm font-medium"
-            }
-          >
-            {label}
-            {count !== null && count > 0 && (
-              <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-[11px]">
-                {count}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
+          شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
+      <nav aria-label="أقسام الإدارة" className="flex flex-wrap gap-2">
+        {SECTIONS.map(([label, tabs]) => {
+          const active = tabs.includes(tab);
+          return (
+            <button
+              key={label}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setTab(tabs[0]!)}
+              className={
+                active
+                  ? "rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+                  : "rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              }
+            >
+              {label}
+            </button>
+          );
+        })}
+      </nav>
+      <div className="border-border mt-4 flex flex-wrap gap-1 border-b">
+        {TABS.filter(([key]) => SECTIONS.find(([, t]) => t.includes(tab))?.[1].includes(key)).map(
+          ([key, label, count]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setTab(key)}
+              className={
+                tab === key
+                  ? "border-primary text-primary -mb-px border-b-2 px-4 py-2.5 text-sm font-bold"
+                  : "text-muted-foreground hover:text-foreground -mb-px border-b-2 border-transparent px-4 py-2.5 text-sm font-medium"
+              }
+            >
+              {label}
+              {count !== null && count > 0 && (
+                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-[11px]">
+                  {count}
+                </span>
+              )}
+            </button>
+          ),
+        )}
       </div>
+
+      {tab === "inbox" && (
+        <div className="mt-8">
+          <DecisionInbox onOpenQueue={() => setTab("queue")} />
+        </div>
+      )}
+
+      {tab === "platform" && (
+        <div className="mt-8">
+          <PlatformRegistries />
+        </div>
+      )}
 
       {tab === "overview" && (
         <div className="mt-8 space-y-10">
@@ -374,6 +424,7 @@ function AdminPage() {
       {tab === "integrations" && (
         <div className="mt-8">
           <ApiClientsAdmin />
+          <MirrorStatusPanel />
         </div>
       )}
     </DashboardShell>

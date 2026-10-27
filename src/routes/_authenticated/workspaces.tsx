@@ -14,14 +14,15 @@ import {
   OFFICE_ROLE_LABELS,
   registerDonorEntity,
 } from "@/lib/workspaces.functions";
+import { BRAND, pageTitle } from "@/config/brand";
 
-const TITLE = "بواباتي — كهاتين";
+const TITLE = pageTitle("بواباتي", false);
 
 export const Route = createFileRoute("/_authenticated/workspaces")({
   head: () => ({
     meta: [
       { title: TITLE },
-      { name: "description", content: "كل أدوارك في كهاتين في مكانٍ واحد." },
+      { name: "description", content: `كل أدوارك في ${BRAND.name} في مكانٍ واحد.` },
       { name: "robots", content: "noindex" },
     ],
   }),

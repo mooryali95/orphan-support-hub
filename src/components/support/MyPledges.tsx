@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { getMyPledges, KIND_INFO, TARGET_INFO, type MyPledge } from "@/lib/support.functions";
+import { EmptyState } from "@/components/kit/EmptyState";
 
 const STATUS: Record<MyPledge["status"], string> = {
   pending: "بانتظار فتح التحصيل",
@@ -13,6 +14,14 @@ const STATUS: Record<MyPledge["status"], string> = {
   fulfilled: "اكتمل",
   cancelled: "أُلغي",
 };
+
+/** المرحلة الأحدث من مسار التسليم إن بدأ، وإلا حالة التعهّد. */
+function stageLabel(p: MyPledge): string {
+  const last = p.deliveries?.[p.deliveries.length - 1];
+  if (last?.stage === "delivered") return "وصل · موثّق";
+  if (last?.stage === "preparing") return "قيد التجهيز";
+  return STATUS[p.status];
+}
 
 /** تعهّدات الداعم — العيني وبناء الأهلية بأهدافهما. */
 export function MyPledges() {
@@ -29,9 +38,11 @@ export function MyPledges() {
         </Button>
       </div>
       {pledges.length === 0 ? (
-        <p className="mt-3 text-sm text-muted-foreground">
-          لم تسجّل دعماً بعد. اختر يتيماً أو مجموعة أو منطقة أو دولة أو مؤسسة.
-        </p>
+        <EmptyState
+          className="mt-4"
+          title="لم تسجّل دعماً بعد"
+          text="اختر يتيماً أو مجموعة أو منطقة أو دولة أو مؤسسة، تأهيلاً أو عيناً."
+        />
       ) : (
         <ul className="mt-4 divide-y divide-border">
           {pledges.map((p) => (
@@ -47,7 +58,7 @@ export function MyPledges() {
                 <span className="tabular-nums font-semibold">
                   {p.amount} {p.currency === "EUR" ? "€" : p.currency}
                 </span>
-                <Badge variant="secondary">{STATUS[p.status]}</Badge>
+                <Badge variant="secondary">{stageLabel(p)}</Badge>
               </span>
             </li>
           ))}

@@ -15,6 +15,15 @@ import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/typ
  */
 export type PublicOrphan = OrphanCardRow;
 
+/** لونٌ هادئ ثابتٌ لكل منطقة: يميّز البطاقات بالمكان لا بالطفل. */
+const TINTS = ["#0F4D3F", "#B8913A", "#4A5560", "#2E6B4F", "#7A5E1C"];
+export function regionTint(region: string | null | undefined): string {
+  if (!region) return "#E4E1D9";
+  let h = 0;
+  for (const ch of region) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return TINTS[h % TINTS.length]!;
+}
+
 export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const full = orphan.status === "fully_sponsored" || percent >= 100;
@@ -24,7 +33,10 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
   return (
     // البطاقة ليست رابطاً كاملاً: الاسم هو الرابط ويمتدّ غطاؤه على البطاقة.
     // فيبقى الاسم وحده هو الاسم المتاح لقارئ الشاشة بدل فقرة كاملة.
-    <article className="group border-border bg-card relative flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+    <article
+      style={{ borderTopColor: regionTint(orphan.region) }}
+      className="group border-border bg-card relative flex flex-col overflow-hidden rounded-2xl border border-t-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+    >
       {/* لا صورة في الدليل: الصورة تفصيلٌ خلف الإذن، فيبقى النائب
           الهوياتيّ وحده — وهو لا يحمل معلومةً عن الطفل فيُختصر. */}
       <div className="bg-secondary relative aspect-[16/6] overflow-hidden">

@@ -21,6 +21,7 @@ import {
   type SupportKind,
   type TargetType,
 } from "@/lib/support.functions";
+import { pageTitle } from "@/config/brand";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/support")({
   validateSearch: search,
   head: () => ({
     meta: [
-      { title: "ادعم — كهاتين" },
+      { title: pageTitle("ادعم", false) },
       {
         name: "description",
         content: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",

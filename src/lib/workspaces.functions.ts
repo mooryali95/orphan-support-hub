@@ -127,6 +127,7 @@ export const saveOfficeReport = createServerFn({ method: "POST" })
         periodStart: z.string().date().optional(),
         periodEnd: z.string().date().optional(),
         status: z.enum(["draft", "submitted", "published"]),
+        consent: z.boolean().optional(),
       })
       .parse(input),
   )
@@ -141,6 +142,7 @@ export const saveOfficeReport = createServerFn({ method: "POST" })
       _period_end: data.periodEnd ?? null,
       _status: data.status,
       _id: data.reportId ?? null,
+      _consent: data.consent ?? false,
     });
     if (error) return { ok: false as const, error: error.message, id: null };
     return { ok: true as const, error: null, id: id as string };
@@ -298,4 +300,114 @@ export const setDonorEntityStatus = createServerFn({ method: "POST" })
     return error
       ? { ok: false as const, error: error.message }
       : { ok: true as const, error: null };
+  });
+
+export type OpenPledge = {
+  id: string;
+  kind: "qualification" | "in_kind";
+  target_type: string;
+  target: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+  last_stage: "preparing" | "delivered" | null;
+};
+
+export const getOfficeOpenPledges = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ officeId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("office_open_pledges", {
+      _office: data.officeId,
+    });
+    return error ? ([] as OpenPledge[]) : ((rows ?? []) as OpenPledge[]);
+  });
+
+export const recordPledgeDelivery = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        pledgeId: z.string().uuid(),
+        officeId: z.string().uuid(),
+        stage: z.enum(["preparing", "delivered"]),
+        proofPath: z.string().trim().max(300).optional(),
+        note: z.string().trim().max(1000).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("record_pledge_delivery", {
+      _pledge: data.pledgeId,
+      _office: data.officeId,
+      _stage: data.stage,
+      _proof_path: data.proofPath ?? null,
+      _note: data.note || null,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+export type DonorMember = { email: string; role: "owner" | "finance" | "member" };
+export type DonorPledge = {
+  id: string;
+  kind: "qualification" | "in_kind";
+  target_type: string;
+  target: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+  country: string;
+  delivered_at: string | null;
+};
+
+export const DONOR_ROLE_LABELS: Record<DonorMember["role"], string> = {
+  owner: "مالك",
+  finance: "مالي",
+  member: "مطّلع",
+};
+
+export const getDonorMembers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ entityId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("donor_members_list", {
+      _entity: data.entityId,
+    });
+    return error ? ([] as DonorMember[]) : ((rows ?? []) as DonorMember[]);
+  });
+
+export const setDonorMember = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        entityId: z.string().uuid(),
+        email: z.string().trim().email(),
+        role: z.enum(["owner", "finance", "member", "remove"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("donor_set_member", {
+      _entity: data.entityId,
+      _email: data.email,
+      _role: data.role,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+export const getDonorPledges = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ entityId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("donor_entity_pledges", {
+      _entity: data.entityId,
+    });
+    return error ? ([] as DonorPledge[]) : ((rows ?? []) as DonorPledge[]);
   });

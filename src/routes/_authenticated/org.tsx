@@ -17,6 +17,7 @@ import { OrphanIntakeForm } from "@/components/intake/OrphanIntakeForm";
 import { ReportForm } from "@/components/impact/ReportForm";
 import { REJECTION_LABELS } from "@/lib/intake.functions";
 import { formatMoney, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/org")({
   /* جهات الرعاية وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -25,17 +26,15 @@ export const Route = createFileRoute("/_authenticated/org")({
   },
   head: () => ({
     meta: [
-      { title: "مساحة جهة الرعاية — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("مساحة جهة الرعاية") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "مساحة جهة الرعاية — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("مساحة جهة الرعاية") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],

@@ -1,18 +1,13 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
-import { Check, Loader2, ShieldOff, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  listAccessRequests,
-  decideAccessRequest,
-  revokeAccessRequest,
-} from "@/lib/protection.functions";
+import { listAccessRequests } from "@/lib/protection.functions";
+import { AccessDecision } from "@/components/protection/AccessDecision";
 import type { AccessRequestRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
 
@@ -26,56 +21,15 @@ type Tab = "pending" | "approved";
  * تقرأ وتقرّر.
  */
 export function AccessQueue() {
-  const queryClient = useQueryClient();
   const fetchList = useServerFn(listAccessRequests);
-  const decide = useServerFn(decideAccessRequest);
-  const revoke = useServerFn(revokeAccessRequest);
 
   const [tab, setTab] = useState<Tab>("pending");
-  const [busy, setBusy] = useState<string | null>(null);
   const [days, setDays] = useState("180");
 
   const { data, isPending } = useQuery({
     queryKey: ["access-requests", tab],
     queryFn: () => fetchList({ data: { status: tab } }),
   });
-
-  function refresh() {
-    void queryClient.invalidateQueries({ queryKey: ["access-requests"] });
-  }
-
-  async function onDecide(row: AccessRequestRow, decision: "approved" | "rejected") {
-    setBusy(row.id);
-    try {
-      const n = Math.max(1, Math.min(365, Number(days) || 180));
-      const res = await decide({
-        data: { requestId: row.id, decision, days: n },
-      });
-      if (!res.ok) {
-        toast.error(res.error ?? "تعذّر تنفيذ القرار");
-        return;
-      }
-      toast.success(decision === "approved" ? `أُذن لمدّة ${n} يوماً` : "رُفض الطلب");
-      refresh();
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  async function onRevoke(row: AccessRequestRow) {
-    setBusy(row.id);
-    try {
-      const res = await revoke({ data: { requestId: row.id } });
-      if (!res.ok) {
-        toast.error(res.error ?? "تعذّر السحب");
-        return;
-      }
-      toast.success("سُحب الإذن");
-      refresh();
-    } finally {
-      setBusy(null);
-    }
-  }
 
   const rows = data?.requests ?? [];
 
@@ -167,40 +121,11 @@ export function AccessQueue() {
                 {row.reason}
               </p>
 
-              <div className="mt-3 flex flex-wrap gap-2">
-                {tab === "pending" ? (
-                  <>
-                    <Button
-                      size="sm"
-                      disabled={busy === row.id}
-                      onClick={() => void onDecide(row, "approved")}
-                    >
-                      {busy === row.id && <Loader2 className="size-4 animate-spin" />}
-                      <Check className="size-4" aria-hidden="true" />
-                      إذن
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={busy === row.id}
-                      onClick={() => void onDecide(row, "rejected")}
-                    >
-                      <X className="size-4" aria-hidden="true" />
-                      رفض
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={busy === row.id}
-                    onClick={() => void onRevoke(row)}
-                  >
-                    <ShieldOff className="size-4" aria-hidden="true" />
-                    سحب الإذن
-                  </Button>
-                )}
-              </div>
+              <AccessDecision
+                row={row}
+                mode={tab}
+                days={Math.max(1, Math.min(365, Number(days) || 180))}
+              />
             </li>
           ))}
         </ul>

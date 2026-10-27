@@ -280,3 +280,19 @@
     var(--color-shore-thrive) 100%
   );
 }
+
+/* ظهورٌ هادئ عند الدخول: صعودٌ قصير وشفافية، مرّةً واحدة. يُعطَّل مع
+   «تقليل الحركة» بالقاعدة العامّة أعلاه. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility reveal {
+  animation: reveal-up 220ms ease-out both;
+}

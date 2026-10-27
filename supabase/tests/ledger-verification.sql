@@ -200,5 +200,20 @@ BEGIN
   RAISE NOTICE 'PASS — الجدول: مستحَقّ ← مدفوع ← واصل، والكافل يُبلَّغ ولا يرى المستند';
 END $$;
 
+-- الاسم من إعدادٍ واحد: تغييره يغيّر رسالة الترحيب.
+UPDATE public.platform_settings SET brand_name = 'اسمٌ تجريبي' WHERE id;
+INSERT INTO auth.users (id, email, raw_user_meta_data)
+VALUES ('f1000000-0000-4000-8000-000000000009', 'lg-new@example.test', '{}'::jsonb);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.notifications
+                  WHERE user_id = 'f1000000-0000-4000-8000-000000000009'
+                    AND title = 'أهلاً بك في اسمٌ تجريبي') THEN
+    RAISE EXCEPTION 'FAIL — الترحيب لا يتبع اسم المنصّة: %',
+      (SELECT title FROM public.notifications WHERE user_id = 'f1000000-0000-4000-8000-000000000009');
+  END IF;
+  RAISE NOTICE 'PASS — رسالة الترحيب تتبع اسم المنصّة من الإعداد';
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص السجلّ اجتازت ──'; END $$;
 ROLLBACK;

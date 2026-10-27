@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LegalPage, Section } from "@/components/LegalPage";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/legal/privacy")({
   head: () => ({
     meta: [
-      { title: "سياسة الخصوصية — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("سياسة الخصوصية") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
     ],
   }),

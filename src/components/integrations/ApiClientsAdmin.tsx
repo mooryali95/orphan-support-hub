@@ -20,6 +20,7 @@ import { formatDate } from "@/lib/format";
 const SCOPES = [
   ["orphans:read", "قراءة البطاقات"],
   ["orphans:import", "استيراد المستفيدين"],
+  ["mirror:write", "مزامنة منصّة التشغيل (الرواد)"],
 ] as const;
 
 type Scope = (typeof SCOPES)[number][0];
@@ -76,7 +77,13 @@ export function ApiClientsAdmin() {
     setBusy(true);
     try {
       const res = await issue({
-        data: { name: name.trim(), orgId: orgId || null, scopes },
+        data: {
+          name: name.trim(),
+          orgId: orgId || null,
+          scopes,
+          // مفتاح المزامنة يرتبط بمنصّة التشغيل الوحيدة المفعّلة اليوم.
+          ...(scopes.includes("mirror:write") ? { source: "rowad-albania" } : {}),
+        },
       });
       if (!res.ok || !res.credentials) {
         toast.error(res.error ?? "تعذّر الإصدار");
@@ -204,8 +211,8 @@ export function ApiClientsAdmin() {
           <dl className="mt-4 space-y-2 text-xs">
             {(
               [
-                ["المفتاح (X-IOSO-Key)", issued.clientKey],
-                ["السرّ (X-IOSO-Secret)", issued.secret],
+                ["المفتاح (X-Api-Key)", issued.clientKey],
+                ["السرّ (X-Api-Secret)", issued.secret],
               ] as const
             ).map(([label, value]) => (
               <div key={label} className="flex flex-wrap items-center gap-2">

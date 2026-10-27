@@ -10,6 +10,9 @@ import {
   Stamp,
   LineChart,
   ScrollText,
+  HeartHandshake,
+  Sprout,
+  Package,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -19,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
+import { BRAND } from "@/config/brand";
+import { StatTile } from "@/components/kit/StatTile";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -28,7 +33,7 @@ const homeQuery = queryOptions({
   },
 });
 
-const TITLE = "كهاتين — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران";
+const TITLE = `${BRAND.name} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`;
 const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
@@ -94,6 +99,30 @@ const AWARENESS_LADDER = [
 ];
 
 /** الشطّان والمضيق — الاستعارة الحاكمة للهوية، لا صورة بلاغية. */
+const DOORS = [
+  {
+    icon: HeartHandshake,
+    title: "كفالة شهرية",
+    text: "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
+    cta: "اختر من الدليل",
+    to: "/orphans" as const,
+  },
+  {
+    icon: Sprout,
+    title: "بناء الأهلية",
+    text: "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.",
+    cta: "ادعم التأهيل",
+    to: "/support" as const,
+  },
+  {
+    icon: Package,
+    title: "دعم عيني",
+    text: "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
+    cta: "ادعم عيناً",
+    to: "/support" as const,
+  },
+];
+
 const CROSSING = [
   {
     tone: "text-shore-need",
@@ -162,9 +191,11 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title="شعار كهاتين" />
-            <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">كهاتين</p>
-            <p className="mt-1 text-sm font-medium text-bridge-ink">نكفل… ونبني</p>
+            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={`شعار ${BRAND.name}`} />
+            <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">
+              {BRAND.name}
+            </p>
+            <p className="mt-1 text-sm font-medium text-bridge-ink">{BRAND.tagline}</p>
             <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
               لا نقدّم رعايةً مؤقّتة،
               <br />
@@ -176,13 +207,13 @@ function HomePage() {
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg">
-                <Link to="/orphans">
-                  تصفّح ملفات الأيتام
+                <Link to="/support">
+                  ادعم الآن
                   <ArrowLeft className="size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/how-it-works">كيف تعمل الكفالة؟</Link>
+                <Link to="/orphans">تصفّح ملفات الأيتام</Link>
               </Button>
             </div>
 
@@ -198,14 +229,85 @@ function HomePage() {
           </div>
         </section>
 
+        {/* ── الأرقام ── */}
+        <section className="border-t border-border/70 bg-secondary/30">
+          <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="numbers-heading">
+            <h2 id="numbers-heading" className="text-2xl font-extrabold">
+              أرقام المنصّة اليوم
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+              محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4 [&>*]:reveal">
+              <StatTile
+                label="ملف معتمد"
+                value={data.stats ? String(data.stats.totalOrphans) : "—"}
+              />
+              <StatTile
+                label="مكفول بالكامل"
+                value={data.stats ? String(data.stats.fullySponsored) : "—"}
+              />
+              <StatTile
+                label="مبالغ الكفالة الشهرية"
+                value={data.stats ? formatMoney(data.stats.monthlyFunded) : "—"}
+              />
+              <StatTile
+                label="الاحتياج الشهري الكلي"
+                value={data.stats ? formatMoney(data.stats.monthlyNeed) : "—"}
+              />
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <Button asChild size="lg">
+                <Link to="/orphans">
+                  ابدأ من ملفٍّ حقيقي
+                  <ArrowLeft className="size-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/organizations">جهات الرعاية الشريكة</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── ثلاثة أبواب للدعم ── */}
+        <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="doors-heading">
+          <h2 id="doors-heading" className="text-2xl font-extrabold">
+            ثلاثة أبوابٍ متساوية
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+            اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.
+          </p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {DOORS.map((d) => (
+              <Link
+                key={d.title}
+                to={d.to}
+                className="reveal group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
+              >
+                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <d.icon className="size-5" />
+                </span>
+                <h3 className="mt-4 font-bold">{d.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{d.text}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                  {d.cta}
+                  <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* ── الشطّان والمضيق ── */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="crossing-heading">
           <h2 id="crossing-heading" className="text-2xl font-extrabold">
             شطّان ومضيق
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            اسم المنصّة وشعارها ليسا زخرفة: الخيط المتصل هو الرعاية التي لا تنقطع، والطفل يظهر في
-            الفراغ السالب بين الحرفين — لا يُرسم، بل تُكمله العين.
+            الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر —
+            كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.
           </p>
           <ol className="mt-8 grid gap-4 md:grid-cols-3">
             {CROSSING.map((stage) => (
@@ -407,51 +509,9 @@ function HomePage() {
             ))}
           </ol>
         </section>
-
-        {/* ── الأرقام ── */}
-        <section className="border-t border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="numbers-heading">
-            <h2 id="numbers-heading" className="text-2xl font-extrabold">
-              أرقام المنصّة اليوم
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-              محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.
-            </p>
-            <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-              <StatCard label="ملف معتمد" value={String(data.stats.totalOrphans)} />
-              <StatCard label="مكفول بالكامل" value={String(data.stats.fullySponsored)} />
-              <StatCard
-                label="مبالغ الكفالة الشهرية"
-                value={formatMoney(data.stats.monthlyFunded)}
-              />
-              <StatCard label="الاحتياج الشهري الكلي" value={formatMoney(data.stats.monthlyNeed)} />
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link to="/orphans">
-                  ابدأ من ملفٍّ حقيقي
-                  <ArrowLeft className="size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/organizations">جهات الرعاية الشريكة</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
 
       <SiteFooter />
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card/90 p-5">
-      <p className="text-2xl font-extrabold text-primary">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

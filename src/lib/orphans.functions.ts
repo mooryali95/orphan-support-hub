@@ -57,23 +57,27 @@ export const getPublicOrphan = createServerFn({ method: "GET" })
 
 export const getPlatformStats = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = publicClient();
-  const [{ count: total }, { count: sponsored }, { data: sums }] = await Promise.all([
-    supabase
-      .from("orphans")
-      .select("id", { count: "exact", head: true })
-      .in("status", ["approved", "fully_sponsored"]),
-    supabase
-      .from("orphans")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "fully_sponsored"),
-    supabase
-      .from("orphans")
-      .select("monthly_need, funded_monthly")
-      .in("status", ["approved", "fully_sponsored"]),
-  ]);
+  const [{ count: total, error: e1 }, { count: sponsored, error: e2 }, { data: sums, error: e3 }] =
+    await Promise.all([
+      supabase
+        .from("orphans")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["approved", "fully_sponsored"]),
+      supabase
+        .from("orphans")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "fully_sponsored"),
+      supabase
+        .from("orphans")
+        .select("monthly_need, funded_monthly")
+        .in("status", ["approved", "fully_sponsored"]),
+    ]);
 
   const funded = (sums ?? []).reduce((acc, r) => acc + Number(r.funded_monthly ?? 0), 0);
   const need = (sums ?? []).reduce((acc, r) => acc + Number(r.monthly_need ?? 0), 0);
+
+  // القاعدة متوقّفة أو تعذّر الوصول: «غير متاح» لا «صفر» — الصفر ادّعاء.
+  if (e1 || e2 || e3) return null;
 
   return {
     totalOrphans: total ?? 0,

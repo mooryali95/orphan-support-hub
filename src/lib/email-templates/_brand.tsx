@@ -77,7 +77,7 @@ export function BrandEmail({
           <Section style={header}>
             <Link href={siteUrl}>
               <Img
-                src={assetUrl(siteUrl, "/brand/kahatayn-email-logo-white.png")}
+                src={assetUrl(siteUrl, "/brand/email-logo-white.png")}
                 alt={siteName}
                 width="168"
                 style={logo}

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
+import { BRAND } from "@/config/brand";
 
 export function SiteFooter() {
   return (
@@ -78,11 +79,16 @@ export function SiteFooter() {
                 الأسئلة الشائعة
               </Link>
             </li>
+            <li>
+              <Link to="/developers" className="hover:text-foreground">
+                للمطوّرين
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} كهاتين — جميع الحقوق محفوظة
+        © {new Date().getFullYear()} {BRAND.name} — جميع الحقوق محفوظة
       </div>
     </footer>
   );

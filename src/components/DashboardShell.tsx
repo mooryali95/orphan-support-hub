@@ -7,6 +7,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
+import { BRAND } from "@/config/brand";
 
 export function DashboardShell({
   title,
@@ -30,7 +31,7 @@ export function DashboardShell({
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-x-4 px-4">
-          <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
+          <Link to="/" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
             <KahataynLockup compact />
           </Link>
 

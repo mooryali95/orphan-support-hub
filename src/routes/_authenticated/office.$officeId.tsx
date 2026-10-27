@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
 
+import { OfficePledges } from "@/components/offices/OfficePledges";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,10 +19,12 @@ import {
   saveOfficeReport,
   type OfficeReport,
 } from "@/lib/workspaces.functions";
+import { pageTitle } from "@/config/brand";
+import { StatTile } from "@/components/kit/StatTile";
 
 export const Route = createFileRoute("/_authenticated/office/$officeId")({
   head: () => ({
-    meta: [{ title: "لوحة المكتب — كهاتين" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: pageTitle("لوحة المكتب", false) }, { name: "robots", content: "noindex" }],
   }),
   component: OfficePage,
 });
@@ -77,14 +80,11 @@ function OfficePage() {
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-border bg-background p-5">
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="mt-2 text-2xl font-extrabold tabular-nums">
-              {value.toLocaleString("ar")}
-            </p>
-          </div>
+          <StatTile key={label} label={label} value={value.toLocaleString("ar")} />
         ))}
       </div>
+
+      <OfficePledges officeId={officeId} canWrite={d.can_write} />
 
       {d.can_write && <ReportForm officeId={officeId} canPublish={d.can_publish} />}
 
@@ -116,9 +116,7 @@ function OfficePage() {
                     ))}
                   </div>
                 )}
-                {r.attachments.length > 0 && (
-                  <p className="mt-2 text-xs text-muted-foreground">{r.attachments.length} مرفق</p>
-                )}
+                {r.attachments.length > 0 && <Gallery paths={r.attachments} />}
               </li>
             ))}
           </ul>
@@ -135,6 +133,31 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
   const [body, setBody] = useState("");
   const [metrics, setMetrics] = useState<Array<{ key: string; value: string }>>([]);
   const [files, setFiles] = useState<string[]>([]);
+  const [consent, setConsent] = useState(false);
+  const draftKey = `office-draft:${officeId}`;
+
+  // المسودّة تُحفظ في المتصفّح أثناء الكتابة: انقطاع الشبكة في الميدان لا
+  // يُضيع ما كُتب. والصور تُرفع حين يعود الاتصال.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(draftKey);
+      if (!raw) return;
+      const d = JSON.parse(raw) as { title?: string; body?: string; metrics?: typeof metrics };
+      if (d.title) setTitle(d.title);
+      if (d.body) setBody(d.body);
+      if (d.metrics) setMetrics(d.metrics);
+    } catch {
+      /* تخزين المتصفّح غير متاح: لا مسودّة، ولا خطأ */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({ title, body, metrics }));
+    } catch {
+      /* لا شيء */
+    }
+  }, [draftKey, title, body, metrics]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -168,7 +191,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
       m[key.trim()] = value.trim() !== "" && Number.isFinite(n) ? n : value.trim();
     }
     const res = await save({
-      data: { officeId, title, body, metrics: m, attachments: files, status },
+      data: { officeId, title, body, metrics: m, attachments: files, status, consent },
     });
     setBusy(false);
     if (!res.ok) {
@@ -179,6 +202,12 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
     setBody("");
     setMetrics([]);
     setFiles([]);
+    setConsent(false);
+    try {
+      localStorage.removeItem(draftKey);
+    } catch {
+      /* لا شيء */
+    }
     setMsg("حُفظ التقرير.");
     await qc.invalidateQueries({ queryKey: ["office", officeId] });
   }
@@ -253,28 +282,40 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
             type="file"
             multiple
             accept="image/jpeg,image/png,image/webp,application/pdf"
+            capture="environment"
             onChange={(e) => upload(e.target.files)}
           />
-          <p className="mt-1 text-xs text-muted-foreground">
-            لا تُنشر صورٌ تُظهر وجه طفلٍ دون موافقةٍ موثّقة.
-          </p>
+          {files.length > 0 && (
+            <label className="mt-2 flex items-start gap-2 text-xs">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+              />
+              أُقرّ أن هذه الصور لا تُظهر وجه طفلٍ إلا بموافقةٍ موثّقة على النشر.
+            </label>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">
           <Button
-            disabled={busy || title.trim().length < 3}
+            disabled={busy || title.trim().length < 3 || (files.length > 0 && !consent)}
             variant="outline"
             onClick={() => submit("draft")}
           >
             حفظ مسودّة
           </Button>
-          <Button disabled={busy || title.trim().length < 3} onClick={() => submit("submitted")}>
+          <Button
+            disabled={busy || title.trim().length < 3 || (files.length > 0 && !consent)}
+            onClick={() => submit("submitted")}
+          >
             {busy && <Loader2 className="size-4 animate-spin" />}
             رفع للمراجعة
           </Button>
           {canPublish && (
             <Button
-              disabled={busy || title.trim().length < 3}
+              disabled={busy || title.trim().length < 3 || (files.length > 0 && !consent)}
               variant="secondary"
               onClick={() => submit("published")}
             >
@@ -289,5 +330,47 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
         )}
       </div>
     </section>
+  );
+}
+
+/**
+ * معرض صور التقرير — لأعضاء المكتب وحدهم: روابط موقّعة قصيرة العمر من
+ * الخزنة الخاصّة، لا روابط ثابتة تُتداول.
+ */
+function Gallery({ paths }: { paths: string[] }) {
+  const { data: urls = [] } = useQuery({
+    queryKey: ["office-gallery", ...paths],
+    queryFn: async () => {
+      const { data } = await supabase.storage.from("office-media").createSignedUrls(paths, 300);
+      return (data ?? []).flatMap((d) =>
+        d.signedUrl ? [{ path: d.path ?? "", url: d.signedUrl }] : [],
+      );
+    },
+  });
+  return (
+    <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
+      {urls.map((u) =>
+        /\.pdf$/i.test(u.path ?? "") ? (
+          <a
+            key={u.url}
+            href={u.url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex aspect-square items-center justify-center rounded-lg border border-border text-xs"
+          >
+            PDF
+          </a>
+        ) : (
+          <a key={u.url} href={u.url} target="_blank" rel="noreferrer">
+            <img
+              src={u.url}
+              alt="صورة من تقرير المكتب"
+              loading="lazy"
+              className="aspect-square w-full rounded-lg object-cover"
+            />
+          </a>
+        ),
+      )}
+    </div>
   );
 }

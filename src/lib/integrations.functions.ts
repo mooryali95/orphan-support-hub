@@ -38,7 +38,11 @@ export const issueApiClient = createServerFn({ method: "POST" })
       .object({
         name: z.string().trim().min(2).max(120),
         orgId: z.string().uuid().nullable(),
-        scopes: z.array(z.enum(["orphans:read", "orphans:import"])).min(1),
+        scopes: z.array(z.enum(["orphans:read", "orphans:import", "mirror:write"])).min(1),
+        source: z
+          .string()
+          .regex(/^[a-z0-9-]{2,40}$/)
+          .optional(),
       })
       .parse(input),
   )
@@ -52,10 +56,23 @@ export const issueApiClient = createServerFn({ method: "POST" })
       };
     }
 
+    if (data.scopes.includes("mirror:write") && !data.source) {
+      return {
+        ok: false as const,
+        error: "مفتاح المزامنة يحتاج منصّة تشغيلٍ يرتبط بها.",
+        credentials: null,
+      };
+    }
+
     const key = newClientKey();
     const { secret, salt, hash, prefix } = newSecret();
 
-    const db = withIntegration(context.supabase);
+    const db = context.supabase as unknown as {
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => PromiseLike<{ error: { message: string } | null }>;
+    };
     const { error } = await db.rpc("create_api_client", {
       _name: data.name,
       _org: data.orgId,
@@ -64,6 +81,7 @@ export const issueApiClient = createServerFn({ method: "POST" })
       _salt: salt,
       _hash: hash,
       _prefix: prefix,
+      _source: data.source ?? null,
     });
     if (error) return { ok: false as const, error: error.message, credentials: null };
 
@@ -79,4 +97,60 @@ export const revokeApiClientFn = createServerFn({ method: "POST" })
     const { error } = await db.rpc("revoke_api_client", { _client: data.clientId });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
+  });
+
+export type MirrorStatus = {
+  platforms: Array<{
+    key: string;
+    name: string;
+    country: string;
+    active: boolean;
+    org_id: string | null;
+  }>;
+  state: Array<{
+    source: string;
+    entity: string;
+    cursor_at: string | null;
+    last_run_at: string | null;
+    last_error: string | null;
+    drift: null | {
+      checked_at: string;
+      upstream: number;
+      here: number;
+      missing_here: string[];
+      missing_upstream: string[];
+    };
+  }>;
+  counts: Record<string, number>;
+};
+
+export const getMirrorStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const db = context.supabase as unknown as {
+      rpc: (fn: string) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+    };
+    const { data, error } = await db.rpc("admin_mirror_status");
+    return JSON.stringify(error ? null : data);
+  });
+
+export const setPlatformOrg = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({ platform: z.string().regex(/^[a-z0-9-]{2,40}$/), orgId: z.string().uuid() })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const db = context.supabase as unknown as {
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => PromiseLike<{ error: { message: string } | null }>;
+    };
+    const { error } = await db.rpc("admin_set_platform_org", {
+      _platform: data.platform,
+      _org: data.orgId,
+    });
+    return error ? { ok: false as const } : { ok: true as const };
   });

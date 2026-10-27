@@ -2,21 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
+import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "كيف تعمل الكفالة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("كيف تعمل الكفالة") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "كيف تعمل الكفالة — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("كيف تعمل الكفالة") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
     ],
   }),
@@ -56,7 +55,7 @@ function HowItWorks() {
     <div className="min-h-screen">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «كهاتين»</h1>
+        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «{BRAND.name}»</h1>
         <p className="mt-3 leading-8 text-muted-foreground">
           المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل
           قبل التحقق منه واعتماده.

@@ -6,6 +6,7 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { listMySponsorships } from "@/lib/sponsorships.functions";
 import { formatMoney } from "@/lib/format";
+import { BRAND, pageTitle } from "@/config/brand";
 
 /**
  * تعليمات التحويل البنكي.
@@ -16,15 +17,15 @@ import { formatMoney } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/transfer")({
   head: () => ({
     meta: [
-      { title: "تعليمات التحويل — كهاتين" },
+      { title: pageTitle("تعليمات التحويل", false) },
       {
         name: "description",
-        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة كهاتين.",
+        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة ${BRAND.name}.`,
       },
-      { property: "og:title", content: "تعليمات التحويل — كهاتين" },
+      { property: "og:title", content: pageTitle("تعليمات التحويل", false) },
       {
         property: "og:description",
-        content: "تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة كهاتين.",
+        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة ${BRAND.name}.`,
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -25,9 +25,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
 import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
+import { getOrphanViewAuthed } from "@/lib/protection.functions";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
+import { BRAND, pageTitle } from "@/config/brand";
 
 const SUPPORT_MODES: Array<["monthly" | SupportKind, string]> = [
   ["monthly", "كفالة شهرية"],
@@ -50,15 +53,11 @@ export const Route = createFileRoute("/orphans/$orphanId")({
   head: ({ loaderData }) => {
     if (!loaderData?.orphan) {
       return {
-        meta: [
-          { title: "ملف غير متاح — كهاتين — اكفل يتيماً بملف موثّق" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: pageTitle("ملف غير متاح") }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `كفالة ${loaderData.orphan.display_name} — كهاتين — اكفل يتيماً بملف موثّق`;
-    const description =
-      "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.";
+    const title = `كفالة ${loaderData.orphan.display_name} — ${BRAND.name} — ${BRAND.slogan}`;
+    const description = BRAND.description;
     return {
       meta: [
         { title },
@@ -79,7 +78,7 @@ export const Route = createFileRoute("/orphans/$orphanId")({
             serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
             // الاسم من main (IOCO ← كهاتين)، والمنطقة من الحاجب: المدينة
             // صارت تفصيلاً خلف الإذن فلا تُفهرَس ولا تُعرض للزائر.
-            provider: { "@type": "Organization", name: "كهاتين" },
+            provider: { "@type": "Organization", name: `${BRAND.name}` },
             areaServed: loaderData.orphan.country ?? undefined,
             offers: {
               "@type": "Offer",
@@ -103,9 +102,18 @@ function OrphanDetail() {
   const { data } = useSuspenseQuery(orphanQuery(orphanId));
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // الصفحة تُرسَم أولاً بما يراه الزائر، ثم تُعاد قراءتها بجلسة المستخدم:
+  // من مُنح الإذن، ودائرة الطفل، يرون ما يحقّ لهم. بدونها كان الكلّ زائراً.
+  const fetchAuthed = useServerFn(getOrphanViewAuthed);
+  const { data: authed } = useQuery({
+    queryKey: ["orphan-authed", orphanId, user?.id],
+    queryFn: () => fetchAuthed({ data: { orphanId } }),
+    enabled: Boolean(user),
+  });
+  const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
 
-  const orphan = data.orphan!;
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const remaining = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
   const surplus = Math.max(0, Number(orphan.funded_monthly) - Number(orphan.monthly_need));
@@ -249,6 +257,21 @@ function OrphanDetail() {
 
             {/* البروفايل — يُقرأ بحسب الصلة، والقاعدة هي من تقسم. */}
             {user && <OrphanProfilePanel orphanId={orphanId} orphanName={orphan.display_name} />}
+
+            {/* ما تمنحه الإدارة يظهر هنا قسماً قسماً، وما لم يُمنح مقفلٌ يدلّ على طريقه. */}
+            {user && (
+              <ScopedSections
+                orphanId={orphanId}
+                onRequest={
+                  orphan.may_view_detail
+                    ? undefined
+                    : () =>
+                        document
+                          .getElementById("gate-title")
+                          ?.scrollIntoView({ behavior: "smooth", block: "center" })
+                }
+              />
+            )}
 
             {(detail?.needs.length ?? 0) > 0 && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
@@ -467,7 +490,7 @@ function OrphanDetail() {
             </p>
           </div>
           <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">{user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}</a>
+            <a href="#sponsor-form">ادعم {orphan.display_name}</a>
           </Button>
         </div>
       </div>

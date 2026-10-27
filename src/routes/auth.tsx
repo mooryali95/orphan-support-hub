@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
+import { BRAND, pageTitle } from "@/config/brand";
 
 const searchSchema = z.object({ redirect: z.string().optional() });
 
@@ -18,17 +19,15 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — كهاتين — اكفل يتيماً بملف موثّق" },
+      { title: pageTitle("الدخول والتسجيل") },
       {
         name: "description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
-      { property: "og:title", content: "الدخول والتسجيل — كهاتين — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: pageTitle("الدخول والتسجيل") },
       {
         property: "og:description",
-        content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+        content: BRAND.description,
       },
       { name: "robots", content: "noindex" },
     ],
@@ -92,7 +91,7 @@ function AuthPage() {
         id="main"
         className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
-        <Link to="/" className="flex justify-center" aria-label="كهاتين — الصفحة الرئيسية">
+        <Link to="/" className="flex justify-center" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
           <KahataynLockup />
         </Link>
 

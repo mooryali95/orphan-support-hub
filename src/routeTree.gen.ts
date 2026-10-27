@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -29,13 +30,16 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
-import { Route as AuthenticatedDonorEntityIdRouteImport } from './routes/_authenticated/donor.$entityId'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
+import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
+import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
+import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.index'
+import { Route as AuthenticatedSponsorshipsSponsorshipIdReportRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.report'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.transfer'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -53,6 +57,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -140,12 +149,6 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   path: '/orphans/$orphanId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedDonorEntityIdRoute =
-  AuthenticatedDonorEntityIdRouteImport.update({
-    id: '/donor/$entityId',
-    path: '/donor/$entityId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedOfficeOfficeIdRoute =
   AuthenticatedOfficeOfficeIdRouteImport.update({
     id: '/office/$officeId',
@@ -158,6 +161,11 @@ const AuthenticatedSettingsNotificationsRoute =
     path: '/settings/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiIntegrationsMirrorRoute = ApiIntegrationsMirrorRouteImport.update({
+  id: '/api/integrations/mirror',
+  path: '/api/integrations/mirror',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiIntegrationsOrphansRoute = ApiIntegrationsOrphansRouteImport.update({
   id: '/api/integrations/orphans',
   path: '/api/integrations/orphans',
@@ -174,10 +182,28 @@ const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   path: '/api/payments/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDonorEntityIdIndexRoute =
+  AuthenticatedDonorEntityIdIndexRouteImport.update({
+    id: '/donor/$entityId/',
+    path: '/donor/$entityId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDonorEntityIdReportRoute =
+  AuthenticatedDonorEntityIdReportRouteImport.update({
+    id: '/donor/$entityId/report',
+    path: '/donor/$entityId/report',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSponsorshipsSponsorshipIdIndexRoute =
   AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport.update({
     id: '/sponsorships/$sponsorshipId/',
     path: '/sponsorships/$sponsorshipId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSponsorshipsSponsorshipIdReportRoute =
+  AuthenticatedSponsorshipsSponsorshipIdReportRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/report',
+    path: '/sponsorships/$sponsorshipId/report',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSponsorshipsSponsorshipIdTransferRoute =
@@ -206,6 +232,7 @@ const LovableEmailTransactionalPreviewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -223,21 +250,25 @@ export interface FileRoutesByFullPath {
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
-  '/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -255,16 +286,19 @@ export interface FileRoutesByTo {
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans': typeof OrphansIndexRoute
-  '/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/donor/$entityId': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRoutesById {
@@ -272,6 +306,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -289,16 +324,19 @@ export interface FileRoutesById {
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/orphans/': typeof OrphansIndexRoute
-  '/_authenticated/donor/$entityId': typeof AuthenticatedDonorEntityIdRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/_authenticated/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/_authenticated/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -306,6 +344,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/developers'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -323,21 +362,25 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
-    | '/donor/$entityId'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/donor/$entityId/report'
+    | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/donor/$entityId/'
     | '/sponsorships/$sponsorshipId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/developers'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -355,22 +398,26 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans'
-    | '/donor/$entityId'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/donor/$entityId/report'
+    | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/donor/$entityId'
     | '/sponsorships/$sponsorshipId'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/developers'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -388,16 +435,19 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/orphans/$orphanId'
     | '/orphans/'
-    | '/_authenticated/donor/$entityId'
     | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
+    | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/payments/webhook'
+    | '/_authenticated/donor/$entityId/report'
+    | '/_authenticated/sponsorships/$sponsorshipId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
+    | '/_authenticated/donor/$entityId/'
     | '/_authenticated/sponsorships/$sponsorshipId/'
   fileRoutesById: FileRoutesById
 }
@@ -405,6 +455,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DevelopersRoute: typeof DevelopersRoute
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -416,6 +467,7 @@ export interface RootRouteChildren {
   LegalTermsRoute: typeof LegalTermsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
+  ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
@@ -445,6 +497,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -566,13 +625,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/donor/$entityId': {
-      id: '/_authenticated/donor/$entityId'
-      path: '/donor/$entityId'
-      fullPath: '/donor/$entityId'
-      preLoaderRoute: typeof AuthenticatedDonorEntityIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/office/$officeId': {
       id: '/_authenticated/office/$officeId'
       path: '/office/$officeId'
@@ -586,6 +638,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/notifications'
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/integrations/mirror': {
+      id: '/api/integrations/mirror'
+      path: '/api/integrations/mirror'
+      fullPath: '/api/integrations/mirror'
+      preLoaderRoute: typeof ApiIntegrationsMirrorRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/integrations/orphans': {
       id: '/api/integrations/orphans'
@@ -608,11 +667,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/donor/$entityId/': {
+      id: '/_authenticated/donor/$entityId/'
+      path: '/donor/$entityId'
+      fullPath: '/donor/$entityId/'
+      preLoaderRoute: typeof AuthenticatedDonorEntityIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/donor/$entityId/report': {
+      id: '/_authenticated/donor/$entityId/report'
+      path: '/donor/$entityId/report'
+      fullPath: '/donor/$entityId/report'
+      preLoaderRoute: typeof AuthenticatedDonorEntityIdReportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sponsorships/$sponsorshipId/': {
       id: '/_authenticated/sponsorships/$sponsorshipId/'
       path: '/sponsorships/$sponsorshipId'
       fullPath: '/sponsorships/$sponsorshipId/'
       preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sponsorships/$sponsorshipId/report': {
+      id: '/_authenticated/sponsorships/$sponsorshipId/report'
+      path: '/sponsorships/$sponsorshipId/report'
+      fullPath: '/sponsorships/$sponsorshipId/report'
+      preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/sponsorships/$sponsorshipId/transfer': {
@@ -653,10 +733,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
   AuthenticatedSupervisorRoute: typeof AuthenticatedSupervisorRoute
   AuthenticatedWorkspacesRoute: typeof AuthenticatedWorkspacesRoute
-  AuthenticatedDonorEntityIdRoute: typeof AuthenticatedDonorEntityIdRoute
   AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedDonorEntityIdReportRoute: typeof AuthenticatedDonorEntityIdReportRoute
+  AuthenticatedSponsorshipsSponsorshipIdReportRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
+  AuthenticatedDonorEntityIdIndexRoute: typeof AuthenticatedDonorEntityIdIndexRoute
   AuthenticatedSponsorshipsSponsorshipIdIndexRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
 }
 
@@ -667,12 +749,15 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
   AuthenticatedSupervisorRoute: AuthenticatedSupervisorRoute,
   AuthenticatedWorkspacesRoute: AuthenticatedWorkspacesRoute,
-  AuthenticatedDonorEntityIdRoute: AuthenticatedDonorEntityIdRoute,
   AuthenticatedOfficeOfficeIdRoute: AuthenticatedOfficeOfficeIdRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
+  AuthenticatedDonorEntityIdReportRoute: AuthenticatedDonorEntityIdReportRoute,
+  AuthenticatedSponsorshipsSponsorshipIdReportRoute:
+    AuthenticatedSponsorshipsSponsorshipIdReportRoute,
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute:
     AuthenticatedSponsorshipsSponsorshipIdTransferRoute,
+  AuthenticatedDonorEntityIdIndexRoute: AuthenticatedDonorEntityIdIndexRoute,
   AuthenticatedSponsorshipsSponsorshipIdIndexRoute:
     AuthenticatedSponsorshipsSponsorshipIdIndexRoute,
 }
@@ -684,6 +769,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DevelopersRoute: DevelopersRoute,
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -695,6 +781,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalTermsRoute: LegalTermsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   OrphansIndexRoute: OrphansIndexRoute,
+  ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,

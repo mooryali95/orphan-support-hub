@@ -1,4 +1,5 @@
 import type { OutgoingEmail } from "./types";
+import { BRAND } from "@/config/brand";
 
 /**
  * قوالب البريد — عربية، اتجاهها من اليمين.
@@ -33,7 +34,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
          style="max-width:560px;background:#ffffff;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
     <tr><td style="height:4px;background:${BLUE};font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:24px 24px 8px;">
-      <div style="font-size:20px;font-weight:bold;color:${NAVY};">كهاتين</div>
+      <div style="font-size:20px;font-weight:bold;color:${NAVY};">{BRAND.name}</div>
       <div style="font-size:12px;color:${MUTED};margin-top:2px;">منصة كفالة الأيتام</div>
     </td></tr>
     <tr><td style="padding:8px 24px 0;">
@@ -51,7 +52,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
         : ""
     }
     <tr><td style="padding:20px 24px 24px;font-size:11px;line-height:20px;color:${MUTED};border-top:1px solid ${BORDER};margin-top:16px;">
-      وصلتك هذه الرسالة لأن لديك حساباً في كهاتين.
+      وصلتك هذه الرسالة لأن لديك حساباً في {BRAND.name}.
     </td></tr>
   </table>
 </td></tr></table>
@@ -60,7 +61,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
 
 function plain(heading: string, lines: string[], cta?: { label: string; url: string }) {
   return [
-    `كهاتين — ${heading}`,
+    `${BRAND.name} — ${heading}`,
     "",
     ...lines,
     ...(cta ? ["", `${cta.label}: ${cta.url}`] : []),
@@ -96,7 +97,7 @@ export function renderNotificationEmail(input: TemplateInput): OutgoingEmail {
 
   return {
     to: input.to,
-    subject: `${input.title} — كهاتين`,
+    subject: `${input.title} — ${BRAND.name}`,
     text: plain(input.title, [bodyText, stripTags(kindNote(input.kind))].filter(Boolean), cta),
     html: shell(escapeHtml(input.title), paragraphs, cta),
   };
@@ -140,4 +141,57 @@ function escapeHtml(s: string): string {
 
 function stripTags(s: string): string {
   return s.replace(/<[^>]*>/g, "").trim();
+}
+
+export type MonthlyDigest = {
+  paid: number;
+  delivered_months: number;
+  reports: number;
+  units: number;
+  traits: number;
+  pledges_delivered: number;
+};
+
+/**
+ * «رسالة الشهر» — ملخّصٌ واحد بدل إشعاراتٍ متفرّقة.
+ *
+ * تُبنى من `my_monthly_digest` ولا تذكر إلا ما حدث فعلاً؛ والسطر الذي
+ * قيمته صفر لا يُكتب، فلا تصل رسالةٌ ممتلئة بالأصفار.
+ */
+export function renderMonthlyDigest(
+  to: string,
+  d: MonthlyDigest,
+  baseUrl: string,
+  currency = "EUR",
+): OutgoingEmail {
+  const money = new Intl.NumberFormat("ar-u-nu-latn", {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    maximumFractionDigits: 0,
+  })
+    .format(d.paid)
+    .replace("US$", "$");
+  const lines = [
+    d.paid > 0 && `دعمتَ هذا الشهر بـ${money}.`,
+    d.delivered_months > 0 && `وصلت كفالتك ${d.delivered_months} مرّة موثّقةً بمستند.`,
+    d.pledges_delivered > 0 && `سُلّم ${d.pledges_delivered} من تعهّداتك العينية أو التأهيلية.`,
+    d.units > 0 && `اجتاز من تدعمهم ${d.units} جلسة في رحلة التأهيل.`,
+    d.traits > 0 && `سُجّل ${d.traits} قياسٍ جديد لسماتهم.`,
+    d.reports > 0 && `نُشر ${d.reports} تقريرٍ عن أثر دعمك.`,
+  ].filter((l): l is string => Boolean(l));
+  const body = lines.length ? lines : ["لم يُسجَّل جديدٌ هذا الشهر — سنكتب لك حين يحدث."];
+  const url = `${baseUrl.replace(/\/$/, "")}/dashboard`;
+  const cta = { label: "افتح «رحلتي»", url };
+  const heading = "رسالة الشهر";
+  return {
+    to,
+    subject: `${heading} — ${BRAND.name}`,
+    text: plain(heading, body, cta),
+    html: shell(
+      heading,
+      body.map((l) => `<p style="margin:0 0 10px;">${escapeHtml(l)}</p>`).join(""),
+      cta,
+    ),
+  };
 }
