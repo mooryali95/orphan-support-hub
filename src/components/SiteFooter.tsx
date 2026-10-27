@@ -82,7 +82,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} IOSO — جميع الحقوق محفوظة
+        © {new Date().getFullYear()} كهاتين — جميع الحقوق محفوظة
       </div>
     </footer>
   );

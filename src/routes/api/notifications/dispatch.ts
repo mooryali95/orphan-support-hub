@@ -89,7 +89,6 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
           return Response.json({ ok: true, provider: provider.id, sent: 0 });
         }
 
-
         const { data: recipients } = await db.rpc("notification_recipients", {
           _ids: pending.map((n) => n.id),
         });
@@ -107,7 +106,6 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
         let attemptsUsed = 0;
         let lastError: string | null = null;
 
-
         for (const n of pending) {
           const to = emailOf.get(n.id);
           if (!to) {
@@ -119,7 +117,6 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
               .eq("id", n.id);
             continue;
           }
-
 
           const mail = renderNotificationEmail({
             to,
@@ -174,7 +171,6 @@ export const Route = createFileRoute("/api/notifications/dispatch")({
         });
 
         return Response.json({ ok: true, provider: provider.id, sent, failed, skipped });
-
       },
     },
   },

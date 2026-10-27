@@ -9,7 +9,7 @@ import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
 
 // Configuration
-const SITE_NAME = "IOSO";
+const SITE_NAME = "كهاتين";
 const ROOT_DOMAIN = "ioco.sunkvalue.com";
 
 // Sample data for preview mode ONLY (not used in actual email sending).

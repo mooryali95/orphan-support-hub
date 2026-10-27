@@ -19,7 +19,6 @@ async function assertAdmin(supabase: unknown) {
   return data === true;
 }
 
-
 /** الكفالات المعلّقة بانتظار تأكيد تحويل. */
 export const listAwaitingTransfers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

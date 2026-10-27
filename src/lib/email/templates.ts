@@ -33,7 +33,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
          style="max-width:560px;background:#ffffff;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
     <tr><td style="height:4px;background:${BLUE};font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:24px 24px 8px;">
-      <div style="font-size:20px;font-weight:bold;color:${NAVY};letter-spacing:2px;">IOSO</div>
+      <div style="font-size:20px;font-weight:bold;color:${NAVY};">كهاتين</div>
       <div style="font-size:12px;color:${MUTED};margin-top:2px;">منصة كفالة الأيتام</div>
     </td></tr>
     <tr><td style="padding:8px 24px 0;">
@@ -51,7 +51,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
         : ""
     }
     <tr><td style="padding:20px 24px 24px;font-size:11px;line-height:20px;color:${MUTED};border-top:1px solid ${BORDER};margin-top:16px;">
-      وصلتك هذه الرسالة لأن لديك حساباً في IOSO.
+      وصلتك هذه الرسالة لأن لديك حساباً في كهاتين.
     </td></tr>
   </table>
 </td></tr></table>
@@ -59,9 +59,12 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
 }
 
 function plain(heading: string, lines: string[], cta?: { label: string; url: string }) {
-  return [`IOSO — ${heading}`, "", ...lines, ...(cta ? ["", `${cta.label}: ${cta.url}`] : [])].join(
-    "\n",
-  );
+  return [
+    `كهاتين — ${heading}`,
+    "",
+    ...lines,
+    ...(cta ? ["", `${cta.label}: ${cta.url}`] : []),
+  ].join("\n");
 }
 
 export type TemplateInput = {
@@ -93,7 +96,7 @@ export function renderNotificationEmail(input: TemplateInput): OutgoingEmail {
 
   return {
     to: input.to,
-    subject: `${input.title} — IOSO`,
+    subject: `${input.title} — كهاتين`,
     text: plain(input.title, [bodyText, stripTags(kindNote(input.kind))].filter(Boolean), cta),
     html: shell(escapeHtml(input.title), paragraphs, cta),
   };

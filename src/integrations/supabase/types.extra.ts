@@ -335,6 +335,8 @@ export type ProgramRow = {
   duration_months: number | null;
   deliverables: string[];
   status: "active" | "retired";
+  /** خدمةٌ تُشترى، أو برنامج بناء أهلية له مفهومٌ وسمةٌ ورحلة. */
+  kind: "service" | "qualification";
   created_at: Iso;
 };
 
@@ -403,6 +405,702 @@ export function withM5(client: unknown): M5Client {
 
 
 /* =====================================================================
+   امتداد تفضيلات الإشعارات وإلغاء الاشتراك
+   ===================================================================== */
+
+export type NotificationPrefs = {
+  email_enabled: boolean;
+  muted_kinds: NotificationKind[];
+  unsubscribe_token: string;
+};
+
+export type DatabaseWithPrefs = Omit<DatabaseWithM5, "public"> & {
+  public: Omit<DatabaseWithM5["public"], "Functions"> & {
+    Functions: DatabaseWithM5["public"]["Functions"] & {
+      my_notification_prefs: {
+        Args: Record<string, never>;
+        Returns: unknown;
+      };
+      set_notification_prefs: {
+        Args: { _email_enabled: boolean; _muted_kinds: string[] };
+        Returns: unknown;
+      };
+      unsubscribe_by_token: {
+        Args: { _token: string };
+        Returns: boolean;
+      };
+    };
+  };
+};
+
+export type PrefsClient = SupabaseClient<DatabaseWithPrefs, "public">;
+
+export function withPrefs(client: unknown): PrefsClient {
+  return client as PrefsClient;
+}
+
+
+/* =====================================================================
+   امتداد مُصرِّف طابور البريد
+   ===================================================================== */
+
+/** صفٌّ مطالَبٌ به من الطابور، جاهزٌ للإرسال. */
+export type ClaimedEmail = {
+  id: string;
+  recipient: string;
+  kind: NotificationKind;
+  title: string;
+  body: string | null;
+  link: string | null;
+  unsubscribe_token: string;
+  attempts: number;
+};
+
+export type DatabaseWithOutbox = Omit<DatabaseWithPrefs, "public"> & {
+  public: Omit<DatabaseWithPrefs["public"], "Functions"> & {
+    Functions: DatabaseWithPrefs["public"]["Functions"] & {
+      sweep_email_outbox: { Args: Record<string, never>; Returns: number };
+      claim_email_batch: {
+        Args: { _limit?: number; _lease_seconds?: number; _max_attempts?: number };
+        Returns: ClaimedEmail[];
+      };
+      mark_email_sent: { Args: { _ids: string[] }; Returns: number };
+      mark_email_failed: {
+        Args: { _id: string; _error: string; _max_attempts?: number };
+        Returns: EmailState;
+      };
+      mark_email_suppressed: { Args: { _id: string }; Returns: undefined };
+    };
+  };
+};
+
+export type OutboxClient = SupabaseClient<DatabaseWithOutbox, "public">;
+
+export function withOutbox(client: unknown): OutboxClient {
+  return client as OutboxClient;
+}
+
+
+/* =====================================================================
+   امتداد بناء الأهلية — منهجية «الرواد»
+   ===================================================================== */
+
+export type QualificationStage =
+  | "concept"
+  | "trait"
+  | "system"
+  | "actions"
+  | "measurement"
+  | "qualified";
+
+/**
+ * ما يُعرض من الأهلية للكافل والزائر.
+ *
+ * لا درجات ولا سمة جوهرية ولا وسم «تحت العتبة»: تلك حكمٌ على طفل، وقراره
+ * في `enrollment_assessments` خلف سياسة القراءة.
+ */
+export type PublicQualification = {
+  enrollment_id: string;
+  program: string;
+  summary: string;
+  level: "foundational" | "applied" | "advanced" | null;
+  concept: string | null;
+  concept_intent: string | null;
+  target_trait: string | null;
+  target_trait_summary: string | null;
+  inputs: string[];
+  processes: string[];
+  deliverables: string[];
+  stage: QualificationStage;
+  stage_order: number;
+  stage_changed_at: string;
+  monthly_price: number;
+  currency: string;
+  status: string;
+  has_supervisor: boolean;
+  has_consent: boolean;
+  /** شهادة المشرف — مرتبةٌ بلا هوية. تُضاف في هجرة 20260831100000. */
+  supervisor?: SupervisorStanding;
+  /** عدّ الجلسات — كم قُبل من كم. لا مضمون ولا ملاحظات. */
+  units_total?: number;
+  units_accepted?: number;
+  /** وقوعُ القياس لا نتيجته: وعدٌ للكافل يصير قابلاً للتحقّق. */
+  measured_before?: boolean;
+  measured_after?: boolean;
+};
+
+export type DatabaseWithQualification = Omit<DatabaseWithOutbox, "public"> & {
+  public: Omit<DatabaseWithOutbox["public"], "Functions"> & {
+    Functions: DatabaseWithOutbox["public"]["Functions"] & {
+      orphan_qualification: { Args: { _orphan: string }; Returns: unknown };
+      enrollment_assessments: { Args: { _enrollment: string }; Returns: unknown };
+      record_trait_assessment: {
+        Args: { _enrollment: string; _scores: unknown; _phase?: string; _note?: string | null };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type QualificationClient = SupabaseClient<DatabaseWithQualification, "public">;
+
+export function withQualification(client: unknown): QualificationClient {
+  return client as QualificationClient;
+}
+
+
+/* =====================================================================
+   امتداد تشغيل بناء الأهلية
+   ===================================================================== */
+
+export type EnrollmentRoleKind =
+  | "supervisor"
+  | "jurist"
+  | "guardian"
+  | "trustee"
+  | "mentor";
+
+export type EnrollmentRoleRow = {
+  id: string;
+  role: EnrollmentRoleKind;
+  person_name: string | null;
+  person_contact: string | null;
+  has_account: boolean;
+  consent_at: string | null;
+  consent_document: string | null;
+  assigned_at: string;
+};
+
+export type AssessmentRow = {
+  id: string;
+  phase: "baseline" | "progress" | "final";
+  scores: Record<string, number>;
+  core_trait: string | null;
+  relational_trait: string | null;
+  below_threshold: boolean;
+  assessed_at: string;
+};
+
+export type EnrollmentDetail = {
+  enrollment_id: string;
+  orphan_id: string;
+  program: string;
+  kind: "service" | "qualification";
+  stage: QualificationStage;
+  stage_order: number;
+  status: string;
+  is_supervisor: boolean;
+  roles: EnrollmentRoleRow[];
+  assessments: AssessmentRow[];
+};
+
+export type OrphanEnrollmentRow = {
+  enrollment_id: string;
+  program: string;
+  kind: "service" | "qualification";
+  stage: QualificationStage;
+  status: string;
+};
+
+export type DatabaseWithQualificationOps = Omit<DatabaseWithQualification, "public"> & {
+  public: Omit<DatabaseWithQualification["public"], "Functions"> & {
+    Functions: DatabaseWithQualification["public"]["Functions"] & {
+      assign_enrollment_role: {
+        Args: {
+          _enrollment: string;
+          _role: string;
+          _person_name?: string | null;
+          _person_email?: string | null;
+          _person_contact?: string | null;
+          _note?: string | null;
+        };
+        Returns: string;
+      };
+      record_enrollment_consent: {
+        Args: { _role_id: string; _document: string };
+        Returns: undefined;
+      };
+      set_enrollment_stage: { Args: { _enrollment: string; _stage: string }; Returns: string };
+      enrollment_detail: { Args: { _enrollment: string }; Returns: unknown };
+      orphan_enrollments: { Args: { _orphan: string }; Returns: unknown };
+    };
+  };
+};
+
+export type QualificationOpsClient = SupabaseClient<DatabaseWithQualificationOps, "public">;
+
+export function withQualificationOps(client: unknown): QualificationOpsClient {
+  return client as QualificationOpsClient;
+}
+
+
+/* =====================================================================
+   امتداد أهلية المشرف
+   ===================================================================== */
+
+export type ProgramLevel = "foundational" | "applied" | "advanced";
+
+/** شهادة المشرف كما تُعرض: مرتبةٌ بلا هوية ولا رقم. */
+export type SupervisorStanding =
+  | { assigned: false }
+  | {
+      assigned: true;
+      level: ProgramLevel;
+      certified: boolean;
+      independent: boolean;
+      since: string;
+    };
+
+/** وأهليّته كما يراها هو — الرقم فيها، فهي أهليّته لا حكمٌ عليه. */
+export type MySupervisorProfile = {
+  level: ProgramLevel;
+  independence_index: number;
+  independent: boolean;
+  threshold: number;
+  certified_at: string | null;
+  active: boolean;
+} | null;
+
+export type SupervisedEnrollment = {
+  enrollment_id: string;
+  orphan_id: string;
+  orphan_name: string;
+  orphan_code: string;
+  program: string;
+  stage: QualificationStage;
+  stage_order: number;
+  status: string;
+  has_consent: boolean;
+  assessments: number;
+  has_final: boolean;
+  has_baseline: boolean;
+  units_total: number;
+  units_accepted: number;
+  /** ما سُلّم وينتظر تقويماً — عملٌ يُرى من اللوحة لا يُبحث عنه. */
+  units_awaiting: number;
+  since: string;
+};
+
+export type DatabaseWithSupervisor = Omit<DatabaseWithQualificationOps, "public"> & {
+  public: Omit<DatabaseWithQualificationOps["public"], "Functions"> & {
+    Functions: DatabaseWithQualificationOps["public"]["Functions"] & {
+      my_supervised_enrollments: { Args: Record<string, never>; Returns: unknown };
+      my_supervisor_profile: { Args: Record<string, never>; Returns: unknown };
+      certify_supervisor: {
+        Args: { _user: string; _level?: string; _independence?: number; _note?: string | null };
+        Returns: unknown;
+      };
+      enrollment_supervisor_standing: { Args: { _enrollment: string }; Returns: unknown };
+    };
+  };
+};
+
+export type SupervisorClient = SupabaseClient<DatabaseWithSupervisor, "public">;
+
+export function withSupervisor(client: unknown): SupervisorClient {
+  return client as SupervisorClient;
+}
+
+
+/* =====================================================================
+   امتداد إدارة المشرفين
+   ===================================================================== */
+
+export type AdminSupervisorRow = {
+  user_id: string;
+  email: string;
+  level: ProgramLevel;
+  independence_index: number;
+  independent: boolean;
+  certified_at: string | null;
+  active: boolean;
+  note: string | null;
+  /** عدد من يُشرف عليهم — ليُعرَف أثر السحب قبل الضغط لا بعده. */
+  assignments: number;
+};
+
+export type DatabaseWithSupervisorAdmin = Omit<DatabaseWithSupervisor, "public"> & {
+  public: Omit<DatabaseWithSupervisor["public"], "Functions"> & {
+    Functions: DatabaseWithSupervisor["public"]["Functions"] & {
+      admin_supervisors: { Args: Record<string, never>; Returns: unknown };
+      certify_supervisor_by_email: {
+        Args: { _email: string; _level?: string; _independence?: number; _note?: string | null };
+        Returns: unknown;
+      };
+      revoke_supervisor: { Args: { _user: string; _note?: string | null }; Returns: unknown };
+    };
+  };
+};
+
+export type SupervisorAdminClient = SupabaseClient<DatabaseWithSupervisorAdmin, "public">;
+
+export function withSupervisorAdmin(client: unknown): SupervisorAdminClient {
+  return client as SupervisorAdminClient;
+}
+
+
+/* =====================================================================
+   امتداد ورش الجلسات
+   ===================================================================== */
+
+export type UnitStatus = "pending" | "submitted" | "returned" | "accepted";
+
+export type EnrollmentUnit = {
+  unit_id: string;
+  ordinal: number;
+  title: string;
+  focus: string;
+  material: string;
+  task: string;
+  outputs: string[];
+  submission: string;
+  status: UnitStatus;
+  evidence: string | null;
+  note: string | null;
+  submitted_at: string | null;
+  decided_at: string | null;
+};
+
+/** الخطّة المعلَنة — لا ما سلّمه طفلٌ بعينه. */
+export type CurriculumUnit = {
+  ordinal: number;
+  title: string;
+  focus: string;
+  material: string;
+  task: string;
+  outputs: string[];
+};
+
+export type DatabaseWithUnits = Omit<DatabaseWithSupervisorAdmin, "public"> & {
+  public: Omit<DatabaseWithSupervisorAdmin["public"], "Functions"> & {
+    Functions: DatabaseWithSupervisorAdmin["public"]["Functions"] & {
+      enrollment_unit_progress: { Args: { _enrollment: string }; Returns: unknown };
+      program_curriculum: { Args: { _program: string }; Returns: unknown };
+      record_unit_progress: {
+        Args: {
+          _enrollment: string;
+          _unit: string;
+          _status: string;
+          _evidence?: string | null;
+          _note?: string | null;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type UnitsClient = SupabaseClient<DatabaseWithUnits, "public">;
+
+export function withUnits(client: unknown): UnitsClient {
+  return client as UnitsClient;
+}
+
+/* =====================================================================
+   امتداد المطابقة
+   ===================================================================== */
+
+/**
+ * ترشيحٌ يحمل سببه.
+ *
+ * الحقول الخمسة الأخيرة ليست زينة: ترشيحٌ بلا سببٍ نُخزةٌ لا توصية،
+ * والكافل يقرّر على بيّنة أو لا يقرّر.
+ */
+export type SuggestedOrphan = {
+  id: string;
+  code: string;
+  display_name: string;
+  gender: string | null;
+  birth_date: string | null;
+  city: string | null;
+  region: string | null;
+  story: string | null;
+  photo_url: string | null;
+  education_stage: string | null;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  status: string;
+  org_id: string | null;
+  created_at: string;
+  gap: number;
+  /** برنامج أهليةٍ حيّ له مشرفٌ معتمَد وإذنٌ موثَّق. */
+  building: boolean;
+  /** ميزانيتك تسدّ ثغرته كاملةً. */
+  completes: boolean;
+  in_region: boolean;
+  waiting_days: number;
+};
+
+export type SponsorPreferences = {
+  monthly_budget: number | null;
+  preferred_region: string | null;
+  city: string | null;
+  full_name: string | null;
+} | null;
+
+export type DatabaseWithMatching = Omit<DatabaseWithUnits, "public"> & {
+  public: Omit<DatabaseWithUnits["public"], "Functions"> & {
+    Functions: DatabaseWithUnits["public"]["Functions"] & {
+      suggest_orphans_for_sponsor: {
+        Args: { _budget?: number | null; _region?: string | null; _limit?: number };
+        Returns: unknown;
+      };
+      my_sponsor_preferences: { Args: Record<string, never>; Returns: unknown };
+      published_regions: { Args: Record<string, never>; Returns: unknown };
+      save_sponsor_preferences: {
+        Args: { _budget?: number | null; _region?: string | null };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type MatchingClient = SupabaseClient<DatabaseWithMatching, "public">;
+
+export function withMatching(client: unknown): MatchingClient {
+  return client as MatchingClient;
+}
+
+/* =====================================================================
+   امتداد حاجب الأطفال والفلترة
+   ===================================================================== */
+
+export type AgeBand =
+  | "under_6"
+  | "age_6_11"
+  | "age_12_14"
+  | "age_15_17"
+  | "age_18_plus"
+  | "unknown";
+
+export const AGE_BAND_LABELS: Record<AgeBand, string> = {
+  under_6: "دون السادسة",
+  age_6_11: "٦ – ١١",
+  age_12_14: "١٢ – ١٤",
+  age_15_17: "١٥ – ١٧",
+  age_18_plus: "١٨ فأكثر",
+  unknown: "غير محدّدة",
+};
+
+/** البطاقة — ما يكفي ليُقرَّر، ولا يكفي ليُعرَف الطفل. */
+export type OrphanCardRow = {
+  id: string;
+  code: string;
+  display_name: string;
+  gender: string | null;
+  country: string | null;
+  region: string | null;
+  education_stage: string | null;
+  age_band: AgeBand;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  status: string;
+  org_id: string | null;
+  created_at: string;
+  gap: number;
+  building: boolean;
+  waiting_days: number;
+};
+
+export type AccessStatus = "pending" | "approved" | "rejected" | "revoked";
+
+export type MyAccess = {
+  request_id: string;
+  status: AccessStatus;
+  expires_at: string | null;
+  decision_note: string | null;
+  created_at: string;
+} | null;
+
+/** الملفّ: بطاقةٌ دائماً، وتفاصيلُ عند الإذن وحده. */
+export type OrphanView = OrphanCardRow & {
+  may_view_detail: boolean;
+  access: MyAccess;
+  detail?: {
+    birth_date: string | null;
+    city: string | null;
+    story: string | null;
+    photo_url: string | null;
+    needs: Array<{
+      id: string;
+      category: string;
+      title: string;
+      monthly_amount: number;
+    }>;
+  };
+};
+
+export type AccessRequestRow = {
+  id: string;
+  orphan_id: string;
+  orphan_name: string;
+  orphan_code: string;
+  requester_email: string;
+  reason: string;
+  status: AccessStatus;
+  created_at: string;
+  decided_at: string | null;
+  expires_at: string | null;
+  sponsorships: number;
+};
+
+export type OrphanFilterOptions = {
+  countries: string[];
+  regions: string[];
+  stages: string[];
+};
+
+export type DatabaseWithProtection = Omit<DatabaseWithMatching, "public"> & {
+  public: Omit<DatabaseWithMatching["public"], "Functions"> & {
+    Functions: DatabaseWithMatching["public"]["Functions"] & {
+      list_orphan_cards: {
+        Args: {
+          _country?: string | null;
+          _region?: string | null;
+          _age_band?: string | null;
+          _gender?: string | null;
+          _education_stage?: string | null;
+          _funding?: string | null;
+          _building?: boolean | null;
+          _search?: string | null;
+          _sort?: string | null;
+          _limit?: number;
+          _offset?: number;
+        };
+        Returns: unknown;
+      };
+      orphan_filter_options: { Args: Record<string, never>; Returns: unknown };
+      orphan_view: { Args: { _orphan: string }; Returns: unknown };
+      request_orphan_access: { Args: { _orphan: string; _reason: string }; Returns: unknown };
+      decide_orphan_access: {
+        Args: { _request: string; _decision: string; _note?: string | null; _days?: number };
+        Returns: unknown;
+      };
+      revoke_orphan_access: { Args: { _request: string; _note?: string | null }; Returns: unknown };
+      admin_access_requests: { Args: { _status?: string }; Returns: unknown };
+      my_access_requests: { Args: Record<string, never>; Returns: unknown };
+      guardian_orphans: { Args: Record<string, never>; Returns: unknown };
+      org_orphans: { Args: Record<string, never>; Returns: unknown };
+    };
+  };
+};
+
+export type ProtectionClient = SupabaseClient<DatabaseWithProtection, "public">;
+
+export function withProtection(client: unknown): ProtectionClient {
+  return client as ProtectionClient;
+}
+
+/** صفوف لوحات من يملك الملفّ — تمرّ بدالّة لا بمنحٍ عريض. */
+export type GuardianOrphanRow = {
+  id: string;
+  code: string;
+  display_name: string;
+  city: string | null;
+  country: string | null;
+  region: string | null;
+  status: string;
+  monthly_need: number;
+  funded_monthly: number;
+  currency: string;
+  photo_consent: string | null;
+  created_at: string;
+};
+
+export type OrgOrphanRow = GuardianOrphanRow & {
+  rejection_code: string | null;
+  rejection_reason: string | null;
+};
+
+/* =====================================================================
+   امتداد التكامل مع المنصّات الأخرى
+   ===================================================================== */
+
+export type ApiClientSummary = {
+  id: string;
+  name: string;
+  client_key: string;
+  secret_prefix: string | null;
+  scopes: string[];
+  org_id: string | null;
+  org_name: string | null;
+  active: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  last_import_at: string | null;
+  imports: number;
+  orphans: number;
+};
+
+export type ImportJobRow = {
+  client_id: string;
+  source: string | null;
+  idempotency_key: string | null;
+  request_digest: string | null;
+  received_count: number;
+  created_count: number;
+  updated_count: number;
+  failed_count: number;
+  result: Record<string, unknown>;
+};
+
+export type DatabaseWithIntegration = Omit<DatabaseWithProtection, "public"> & {
+  public: Omit<DatabaseWithProtection["public"], "Functions" | "Tables"> & {
+    Tables: DatabaseWithProtection["public"]["Tables"] & {
+      api_import_jobs: {
+        Row: ImportJobRow & { id: string; created_at: string };
+        Insert: Partial<ImportJobRow> & { client_id: string };
+        Update: Partial<ImportJobRow>;
+        Relationships: [];
+      };
+    };
+    Functions: DatabaseWithProtection["public"]["Functions"] & {
+      import_orphan_record: {
+        Args: { _client: string; _payload: Record<string, unknown> };
+        Returns: unknown;
+      };
+      api_orphan_cards: {
+        Args: {
+          _client: string;
+          _country?: string | null;
+          _region?: string | null;
+          _age_band?: string | null;
+          _gender?: string | null;
+          _funding?: string | null;
+          _limit?: number;
+          _offset?: number;
+        };
+        Returns: unknown;
+      };
+      touch_api_client: { Args: { _client: string; _imported?: boolean }; Returns: unknown };
+      admin_api_clients: { Args: Record<string, never>; Returns: unknown };
+      revoke_api_client: { Args: { _client: string }; Returns: unknown };
+      admin_approved_orgs: { Args: Record<string, never>; Returns: unknown };
+      create_api_client: {
+        Args: {
+          _name: string;
+          _org: string | null;
+          _scopes: string[];
+          _key: string;
+          _salt: string;
+          _hash: string;
+          _prefix: string;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type IntegrationClient = SupabaseClient<DatabaseWithIntegration, "public">;
+
+export function withIntegration(client: unknown): IntegrationClient {
+  return client as IntegrationClient;
+}
+
+/* =====================================================================
    امتداد المراقبة — سجلّ تشغيل تصريف الإشعارات
    ===================================================================== */
 
@@ -438,4 +1136,63 @@ export type DispatchClient = SupabaseClient<DatabaseWithDispatch, "public">;
 
 export function withDispatch(client: unknown): DispatchClient {
   return client as DispatchClient;
+}
+
+/* =====================================================================
+   امتداد البروفايل الكامل
+   ===================================================================== */
+
+export type ProfileSection =
+  | "education"
+  | "health"
+  | "family"
+  | "social"
+  | "aspiration"
+  | "supervisor_note";
+
+export type ProfileSectionRow = {
+  section: ProfileSection;
+  data: Record<string, string>;
+  note: string | null;
+  updated_role: string | null;
+  updated_at: string;
+  age_days: number;
+};
+
+export type OrphanProfile = {
+  may_read: boolean;
+  may_write?: boolean;
+  sees_sensitive?: boolean;
+  sections: ProfileSectionRow[];
+  hidden_sections?: number;
+};
+
+export type ProfileCompleteness = {
+  filled: number;
+  total: number;
+  missing: ProfileSection[];
+};
+
+export type DatabaseWithProfile = Omit<DatabaseWithIntegration, "public"> & {
+  public: Omit<DatabaseWithIntegration["public"], "Functions"> & {
+    Functions: DatabaseWithIntegration["public"]["Functions"] & {
+      orphan_profile: { Args: { _orphan: string }; Returns: unknown };
+      orphan_profile_completeness: { Args: { _orphan: string }; Returns: unknown };
+      save_orphan_profile_section: {
+        Args: {
+          _orphan: string;
+          _section: string;
+          _data?: Record<string, string>;
+          _note?: string | null;
+        };
+        Returns: unknown;
+      };
+    };
+  };
+};
+
+export type ProfileClient = SupabaseClient<DatabaseWithProfile, "public">;
+
+export function withProfile(client: unknown): ProfileClient {
+  return client as ProfileClient;
 }

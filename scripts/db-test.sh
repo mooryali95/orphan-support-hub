@@ -32,6 +32,16 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/phase4-verification.sql \
               supabase/tests/phase7-verification.sql \
               supabase/tests/m5-verification.sql \
+              supabase/tests/notification-prefs-verification.sql \
+              supabase/tests/qualification-verification.sql \
+              supabase/tests/email-outbox-verification.sql \
+              supabase/tests/matching-verification.sql \
+              supabase/tests/protection-verification.sql \
+              supabase/tests/integration-verification.sql \
+              supabase/tests/profile-verification.sql \
+              supabase/tests/scopes-verification.sql \
+              supabase/tests/mirror-verification.sql \
+              supabase/tests/offices-verification.sql \
               supabase/tests/audit-path-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.

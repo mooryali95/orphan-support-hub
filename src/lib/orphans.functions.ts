@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+import { withProtection, type OrphanView } from "@/integrations/supabase/types.extra";
 
 function publicClient() {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
@@ -20,74 +21,35 @@ function publicClient() {
   });
 }
 
-const PUBLIC_COLUMNS =
-  "id, code, display_name, gender, birth_date, city, region, story, photo_url, education_stage, monthly_need, funded_monthly, currency, status, org_id, created_at";
-
-// يُدرج مصطلح البحث نصياً في تعبير PostgREST المنطقي، فالفاصلة والقوس
-// والنقطة تغيّر بنية الفلتر. نزيلها إضافةً إلى محارف بدل LIKE.
-export function sanitizeSearch(value: string) {
-  return value
-    .replace(/[%_,().:*"'\\]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-const listSchema = z.object({
-  region: z.string().trim().max(80).optional(),
-  search: z.string().trim().max(80).optional(),
-  onlyOpen: z.boolean().optional(),
-  limit: z.number().int().min(1).max(60).optional(),
-});
-
-export const listPublicOrphans = createServerFn({ method: "GET" })
-  .inputValidator((input: unknown) => listSchema.parse(input ?? {}))
-  .handler(async ({ data }) => {
-    const supabase = publicClient();
-    let query = supabase
-      .from("orphans")
-      .select(PUBLIC_COLUMNS)
-      .in("status", ["approved", "fully_sponsored"])
-      .order("created_at", { ascending: false })
-      .limit(data.limit ?? 24);
-
-    if (data.region) query = query.eq("region", data.region);
-    if (data.onlyOpen) query = query.eq("status", "approved");
-    const search = data.search ? sanitizeSearch(data.search) : "";
-    if (search) query = query.or(`display_name.ilike.%${search}%,city.ilike.%${search}%`);
-
-    const { data: rows, error } = await query;
-    if (error) return { orphans: [], error: error.message };
-    return { orphans: rows ?? [], error: null as string | null };
-  });
-
+/**
+ * الملفّ العامّ — بطاقةٌ دائماً، وتفاصيلُ عند الإذن وحده.
+ *
+ * كان هنا `select(PUBLIC_COLUMNS)` يقرأ القصّة والصورة والمدينة وتاريخ
+ * الميلاد من الجدول مباشرةً. وقد سُحبت هذه الأعمدة من المنح في حاجب
+ * الأطفال، فالقراءة تمرّ الآن بدالّةٍ تفحص صلة القارئ بالطفل.
+ *
+ * وجهةُ الرعاية تُقرأ كما كانت: بياناتها بيانات مؤسّسة معلنة، لا بيانات
+ * طفل.
+ */
 export const getPublicOrphan = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
     const supabase = publicClient();
-    const { data: orphan } = await supabase
-      .from("orphans")
-      .select(PUBLIC_COLUMNS)
-      .eq("id", data.id)
-      .in("status", ["approved", "fully_sponsored"])
-      .maybeSingle();
+    const { data: view } = await withProtection(supabase).rpc("orphan_view", {
+      _orphan: data.id,
+    });
+    const orphan = (view ?? null) as OrphanView | null;
+    if (!orphan) return { orphan: null, org: null };
 
-    if (!orphan) return { orphan: null, needs: [], org: null };
+    const { data: org } = orphan.org_id
+      ? await supabase
+          .from("care_organizations")
+          .select("id, name, city, region, about")
+          .eq("id", orphan.org_id)
+          .maybeSingle()
+      : { data: null };
 
-    const [{ data: needs }, { data: org }] = await Promise.all([
-      supabase
-        .from("orphan_needs")
-        .select("id, category, title, monthly_amount")
-        .eq("orphan_id", data.id),
-      orphan.org_id
-        ? supabase
-            .from("care_organizations")
-            .select("id, name, city, region, about")
-            .eq("id", orphan.org_id)
-            .maybeSingle()
-        : Promise.resolve({ data: null }),
-    ]);
-
-    return { orphan, needs: needs ?? [], org: org ?? null };
+    return { orphan, org: org ?? null };
   });
 
 export const getPlatformStats = createServerFn({ method: "GET" }).handler(async () => {

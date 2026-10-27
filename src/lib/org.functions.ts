@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { withPhase2 } from "@/integrations/supabase/types.extra";
+import { withPhase2, withProtection, type OrgOrphanRow } from "@/integrations/supabase/types.extra";
 
 export const getMyOrgWorkspace = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -16,14 +16,10 @@ export const getMyOrgWorkspace = createServerFn({ method: "GET" })
 
     if (!org) return { org: null, orphans: [] };
 
-    const { data: orphans } = await withPhase2(supabase)
-      .from("orphans")
-      .select(
-        // سبب الرفض المُهيكل يُقرأ هنا: بلا عرضه لا تعرف الجهة ما تُصحّح.
-        "id, code, display_name, city, status, monthly_need, funded_monthly, currency, created_at, rejection_code, rejection_reason, photo_consent",
-      )
-      .eq("org_id", org.id)
-      .order("created_at", { ascending: false });
+    /* المدينة محجوبةٌ بالمنح منذ حاجب الأطفال، فتُقرأ من دالّةٍ تفحص
+       ملكيّة الجهة صفّاً صفّاً — والمنح دورٌ كامل لا صفٌّ بعينه. */
+    const { data: rows } = await withProtection(supabase).rpc("org_orphans");
+    const orphans = (rows ?? []) as OrgOrphanRow[];
 
     return { org, orphans: orphans ?? [] };
   });

@@ -30,11 +30,18 @@ export function DashboardShell({
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-          <Link to="/" aria-label="IOSO — الصفحة الرئيسية">
+          <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
             <IosoLockup compact />
           </Link>
 
           <nav className="hidden items-center gap-1 text-sm md:flex">
+            <Link
+              to="/workspaces"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              بواباتي
+            </Link>
             <Link
               to="/dashboard"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -74,6 +81,24 @@ export function DashboardShell({
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               دليل الأيتام
+            </Link>
+            {/* لوحة المشرف تظهر للجميع عمداً: من ليس مشرفاً تُخبره الصفحة
+                بذلك وتشرح كيف يصير، بدل أن يكون الباب مخفياً فلا يُعرف. */}
+            <Link
+              to="/supervisor"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              الإشراف
+            </Link>
+            {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
+                إلغاء الاشتراك حكراً على من وصلته رسالة. */}
+            <Link
+              to="/settings/notifications"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              الإشعارات
             </Link>
           </nav>
 

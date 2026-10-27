@@ -14,7 +14,7 @@ import {
 } from "./ioso-paths";
 
 /**
- * شعار IOSO.
+ * شعار كهاتين.
  *
  * التشريح: خيطٌ واحد بسماكة ثابتة (I O S) — الرعاية المستمرة — ينتهي إلى
  * قرصٍ مصمت هو الحرف الأخير، وفي جوفه الطفل محفوراً في الفراغ السالب:
@@ -123,7 +123,6 @@ export function IosoMark({
       )}
 
       <circle cx={disc.cx} cy={disc.cy} r={disc.r} fill={gold} mask={`url(#${id}-child)`} />
-
     </svg>
   );
 }
@@ -146,7 +145,7 @@ export function IosoLockup({
       <IosoMark
         variant="wordmark"
         tone={onDark ? "white" : "color"}
-        title="IOSO"
+        title="كهاتين"
         className={cn("w-auto", compact ? "h-8" : "h-10")}
       />
       {!compact && (

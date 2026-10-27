@@ -36,16 +36,19 @@ export type PublicProgram = Pick<
   | "monthly_price"
   | "currency"
   | "duration_months"
-> & { deliverables: string[] };
+> & { deliverables: string[]; kind: "service" | "qualification" };
 
 export const listPrograms = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = withPhase7(publicClient());
   const { data, error } = await supabase
     .from("programs")
     .select(
-      "id, slug, title, summary, category, monthly_price, currency, duration_months, deliverables",
+      "id, slug, title, summary, category, monthly_price, currency, duration_months, deliverables, kind",
     )
     .eq("status", "active")
+    // تعداد `program_kind` مرتّب service ثم qualification، فالتنازلي
+    // يقدّم بناء الأهلية على الخدمة — وهو ترتيب المعنى لا الأبجدية.
+    .order("kind", { ascending: false })
     .order("monthly_price", { ascending: false });
 
   // الكتالوج زينة الصفحة لا شرط عملها: خطأٌ فيه يُخفي القسم ولا يُسقط الصفحة.

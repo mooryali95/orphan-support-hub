@@ -14,7 +14,7 @@ import {
 } from "@react-email/components";
 
 /**
- * الغلاف البريدي الموحّد لهوية IOSO.
+ * الغلاف البريدي الموحّد لهوية كهاتين.
  *
  * البريد هنا امتداد لاستعارة «المضيق»: ترويسة بالأزرق الملوكي (شط الفقد)،
  * يفصلها عن المتن خيطٌ ذهبي واحد لا ينقطع (فعل العبور)، ثم متن فاتح هادئ
@@ -48,6 +48,7 @@ export function BrandEmail({
   heading,
   children,
   footNote,
+  unsubscribeUrl,
 }: {
   siteName: string;
   siteUrl: string;
@@ -58,6 +59,14 @@ export function BrandEmail({
   children: React.ReactNode;
   /** سطر الطمأنة الأخير (مثلاً: تجاهل الرسالة إن لم تطلبها). */
   footNote?: string;
+  /**
+   * رابط إلغاء الاشتراك — **اختياري عمداً**.
+   *
+   * رسائل المعامَلات تحمله وجوباً، ورسائل المصادقة **يجب ألّا تحمله**:
+   * إلغاء الاشتراك من رسالة استعادة كلمة المرور يحبس صاحبه خارج حسابه،
+   * وهي رسالة طلبها هو بنفسه لا رسالةٌ أُرسلت إليه.
+   */
+  unsubscribeUrl?: string;
 }) {
   return (
     <Html lang="ar" dir="rtl">
@@ -98,6 +107,14 @@ export function BrandEmail({
               . لا تُشارك روابطها مع أحد.
             </Text>
             <Text style={footerFine}>كفالة اليتيم استثمار في عمرانٍ قادم، لا إحسان عابر.</Text>
+            {unsubscribeUrl && (
+              <Text style={footerFine}>
+                <Link href={unsubscribeUrl} style={footerLink}>
+                  إيقاف هذه الرسائل
+                </Link>{" "}
+                — وتبقى إشعاراتك ظاهرةً داخل المنصّة.
+              </Text>
+            )}
           </Section>
         </Container>
       </Body>

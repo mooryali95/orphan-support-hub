@@ -28,7 +28,7 @@ export function SiteHeader() {
         تخطّي إلى المحتوى
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label="IOSO — الصفحة الرئيسية">
+        <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
           <IosoLockup />
         </Link>
 

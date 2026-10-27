@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "كيف تعمل الكفالة — IOSO — اكفل يتيماً بملف موثّق" },
+      { title: "كيف تعمل الكفالة — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "كيف تعمل الكفالة — IOSO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "كيف تعمل الكفالة — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
     ],
   }),
@@ -56,7 +56,7 @@ function HowItWorks() {
     <div className="min-h-screen">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «IOSO»</h1>
+        <h1 className="text-3xl font-extrabold">كيف تعمل الكفالة في «كهاتين»</h1>
         <p className="mt-3 leading-8 text-muted-foreground">
           المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل
           قبل التحقق منه واعتماده.

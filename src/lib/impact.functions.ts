@@ -2,7 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { withPhase4 } from "@/integrations/supabase/types.extra";
+import {
+  withPhase4,
+  withProtection,
+  type GuardianOrphanRow,
+} from "@/integrations/supabase/types.extra";
 
 /**
  * حلقة الأثر — التقارير والخط الزمني والإشعارات.
@@ -192,13 +196,10 @@ export const getGuardianWorkspace = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const db = withPhase4(context.supabase);
-    const { data: orphans, error } = await db
-      .from("orphans")
-      .select(
-        "id, code, display_name, city, status, monthly_need, funded_monthly, currency, photo_consent, created_at",
-      )
-      .eq("guardian_id", context.userId)
-      .order("created_at", { ascending: false });
+    /* `guardian_id` محجوبٌ بالمنح — وهو معرّف بالغٍ — فلا يُرشَّح به
+       من العميل. والدالّة تقرأ الصلة من الجلسة. */
+    const { data: rows, error } = await withProtection(context.supabase).rpc("guardian_orphans");
+    const orphans = (rows ?? []) as GuardianOrphanRow[];
 
     if (error) return { ok: false as const, error: error.message, orphans: [] };
     return { ok: true as const, orphans: orphans ?? [] };

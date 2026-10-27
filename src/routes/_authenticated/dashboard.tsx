@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Loader2, HeartHandshake } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
+import { SuggestionsPanel } from "@/components/matching/SuggestionsPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
@@ -17,17 +18,17 @@ import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } fr
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "كفالاتي — IOSO — اكفل يتيماً بملف موثّق" },
+      { title: "كفالاتي — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "كفالاتي — IOSO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "كفالاتي — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -203,6 +204,12 @@ function DashboardPage() {
             );
           })
         )}
+      </div>
+
+      {/* الترشيح بعد الكفالات لا قبلها: اللوحة تُفتح للاطمئنان على من
+          تكفلهم، ثم يُعرض من يليهم. */}
+      <div className="mt-12 border-t border-border pt-8">
+        <SuggestionsPanel />
       </div>
     </DashboardShell>
   );

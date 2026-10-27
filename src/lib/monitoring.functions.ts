@@ -70,9 +70,7 @@ export const getDispatchHealth = createServerFn({ method: "GET" })
 
     const alerts: string[] = [];
     if (!schema.ready) {
-      alerts.push(
-        `المخطط ناقص — التصريف موقوف حتى تُطبَّق الهجرات: ${schema.missing.join("، ")}`,
-      );
+      alerts.push(`المخطط ناقص — التصريف موقوف حتى تُطبَّق الهجرات: ${schema.missing.join("، ")}`);
     }
     if (dbErrorRuns >= 3) {
       alerts.push(`تكرّرت أخطاء قاعدة البيانات في التصريف (${dbErrorRuns} مرة خلال ٢٤ ساعة).`);

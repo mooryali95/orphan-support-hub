@@ -18,17 +18,17 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
+      { title: "الدخول والتسجيل — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
-      { property: "og:title", content: "الدخول والتسجيل — IOSO — اكفل يتيماً بملف موثّق" },
+      { property: "og:title", content: "الدخول والتسجيل — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         property: "og:description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -85,7 +85,6 @@ function AuthPage() {
     }
   }
 
-
   return (
     <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
@@ -93,7 +92,7 @@ function AuthPage() {
         id="main"
         className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
       >
-        <Link to="/" className="flex justify-center" aria-label="IOSO — الصفحة الرئيسية">
+        <Link to="/" className="flex justify-center" aria-label="كهاتين — الصفحة الرئيسية">
           <IosoLockup />
         </Link>
 

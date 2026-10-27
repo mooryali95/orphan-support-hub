@@ -10,6 +10,10 @@ import { ReportQueue } from "@/components/impact/ReportQueue";
 import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
 import { AwaitingTransfers } from "@/components/admin/AwaitingTransfers";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
+import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
+import { AccessQueue } from "@/components/protection/AccessQueue";
+import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
+import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -22,11 +26,11 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — IOSO — اكفل يتيماً بملف موثّق" },
+      { title: "لوحة الإدارة — كهاتين — اكفل يتيماً بملف موثّق" },
       {
         name: "description",
         content:
-          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة IOSO تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
+          "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة كهاتين تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -34,7 +38,16 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "orphans" | "sponsors" | "queue" | "monitoring";
+type Tab =
+  | "overview"
+  | "orphans"
+  | "sponsors"
+  | "queue"
+  | "supervisors"
+  | "access"
+  | "offices"
+  | "integrations"
+  | "monitoring";
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
@@ -83,6 +96,10 @@ function AdminPage() {
     ["orphans", "الأيتام", o.orphan_rows.length],
     ["sponsors", "الكفلاء", o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
+    ["supervisors", "المشرفون", null],
+    ["access", "الإذن بالاطّلاع", null],
+    ["offices", "المكاتب والجهات", null],
+    ["integrations", "التكامل", null],
     ["monitoring", "المراقبة", null],
   ];
 
@@ -333,6 +350,30 @@ function AdminPage() {
               ))}
             </div>
           </section>
+        </div>
+      )}
+
+      {tab === "supervisors" && (
+        <div className="mt-8">
+          <SupervisorAdmin />
+        </div>
+      )}
+
+      {tab === "access" && (
+        <div className="mt-8">
+          <AccessQueue />
+        </div>
+      )}
+
+      {tab === "offices" && (
+        <div className="mt-8">
+          <OfficesAdmin />
+        </div>
+      )}
+
+      {tab === "integrations" && (
+        <div className="mt-8">
+          <ApiClientsAdmin />
         </div>
       )}
     </DashboardShell>
