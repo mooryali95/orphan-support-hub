@@ -375,6 +375,12 @@ function OrphanDetail() {
                   {user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}
                 </Button>
 
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/support" search={{ orphan: orphan.id, name: orphan.display_name }}>
+                    دعمٌ عيني أو لبناء الأهلية
+                  </Link>
+                </Button>
+
                 <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
                   <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
                   الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.

@@ -29,12 +29,17 @@ export function DashboardShell({
     <div className="min-h-screen bg-secondary/30">
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+        <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-x-4 px-4">
           <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
             <IosoLockup compact />
           </Link>
 
-          <nav className="hidden items-center gap-1 text-sm md:flex">
+          {/* على الجوال كان التنقّل مخفياً كلّياً فلا سبيل إلى البوابات؛ صار صفاً
+              يُمرَّر أفقياً تحت الشعار. */}
+          <nav
+            aria-label="التنقّل"
+            className="order-last -mx-4 flex w-[calc(100%+2rem)] items-center gap-1 overflow-x-auto whitespace-nowrap border-t border-border px-4 py-2 text-sm md:order-none md:mx-0 md:w-auto md:border-0 md:p-0"
+          >
             <Link
               to="/workspaces"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"

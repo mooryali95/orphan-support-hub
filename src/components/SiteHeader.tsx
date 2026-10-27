@@ -10,7 +10,9 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "الرئيسية" },
   { to: "/orphans", label: "دليل الأيتام" },
-  { to: "/how-it-works", label: "كيف تعمل الكفالة" },
+  { to: "/support", label: "ادعم" },
+  { to: "/traits", label: "نموذج السمات" },
+  { to: "/how-it-works", label: "كيف تعمل" },
   { to: "/organizations", label: "جهات الرعاية" },
 ] as const;
 
@@ -50,7 +52,7 @@ export function SiteHeader() {
           {user && <NotificationBell />}
           {user ? (
             <Button asChild size="sm">
-              <Link to="/dashboard">لوحتي</Link>
+              <Link to="/workspaces">بواباتي</Link>
             </Button>
           ) : (
             <>

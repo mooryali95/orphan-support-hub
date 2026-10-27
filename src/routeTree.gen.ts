@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as TraitsRouteImport } from './routes/traits'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -65,6 +67,16 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TraitsRoute = TraitsRouteImport.update({
+  id: '/traits',
+  path: '/traits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -190,6 +202,8 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
+  '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -219,6 +233,8 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
+  '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -250,6 +266,8 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
+  '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -281,6 +299,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/support'
+    | '/traits'
     | '/unsubscribe'
     | '/admin'
     | '/dashboard'
@@ -310,6 +330,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/support'
+    | '/traits'
     | '/unsubscribe'
     | '/admin'
     | '/dashboard'
@@ -340,6 +362,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/support'
+    | '/traits'
     | '/unsubscribe'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -371,6 +395,8 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SupportRoute: typeof SupportRoute
+  TraitsRoute: typeof TraitsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   LegalFaqRoute: typeof LegalFaqRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
@@ -427,6 +453,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/traits': {
+      id: '/traits'
+      path: '/traits'
+      fullPath: '/traits'
+      preLoaderRoute: typeof TraitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unsubscribe': {
@@ -624,6 +664,8 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SupportRoute: SupportRoute,
+  TraitsRoute: TraitsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   LegalFaqRoute: LegalFaqRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
