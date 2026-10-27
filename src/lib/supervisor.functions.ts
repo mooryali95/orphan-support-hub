@@ -187,3 +187,31 @@ export const recordUnitProgress = createServerFn({ method: "POST" })
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
   });
+
+export type SupervisorTask = {
+  priority: number;
+  task: "review_unit" | "consent_missing" | "baseline_missing" | "final_missing";
+  enrollment_id: string;
+  orphan: string;
+  detail: string | null;
+  since: string | null;
+};
+
+export const TASK_LABELS: Record<SupervisorTask["task"], string> = {
+  review_unit: "مخرَجٌ مسلَّم ينتظر قرارك",
+  consent_missing: "موافقة الوليّ غير موثّقة",
+  baseline_missing: "القياس الأوّلي لم يُسجَّل",
+  final_missing: "القياس الختامي لم يُسجَّل",
+};
+
+/** «اليوم» — ما ينتظر المشرف، مرتّباً بالأولوية ثم بالأقدم. */
+export const getSupervisorToday = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await (
+      context.supabase as unknown as {
+        rpc: (fn: string) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+      }
+    ).rpc("my_supervisor_today");
+    return error ? ([] as SupervisorTask[]) : ((data ?? []) as SupervisorTask[]);
+  });

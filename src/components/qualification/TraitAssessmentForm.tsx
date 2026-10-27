@@ -54,6 +54,9 @@ export function TraitAssessmentForm({
   const [phase, setPhase] = useState<(typeof PHASES)[number]["value"]>("baseline");
   const [scores, setScores] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  // وضع البطاقات: سمةٌ واحدة في الشاشة بأزرارٍ كبيرة — للجوال في الميدان.
+  const [cards, setCards] = useState(false);
+  const [card, setCard] = useState(0);
 
   const total = TRAITS.reduce((sum, t) => sum + (Number(scores[t.slug]) || 0), 0);
   const balanced = total === 100;
@@ -145,25 +148,43 @@ export function TraitAssessmentForm({
             </div>
           </fieldset>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {TRAITS.map((t) => (
-              <div key={t.slug}>
-                <Label htmlFor={`t-${t.slug}`} className="text-xs">
-                  {t.name}
-                </Label>
-                <Input
-                  id={`t-${t.slug}`}
-                  type="number"
-                  min={0}
-                  max={100}
-                  inputMode="numeric"
-                  value={scores[t.slug] ?? ""}
-                  onChange={(e) => setScores((s) => ({ ...s, [t.slug]: e.target.value }))}
-                  className="mt-1 h-8"
-                />
-              </div>
-            ))}
-          </div>
+          <label className="mt-4 flex items-center gap-2 text-xs">
+            <input type="checkbox" checked={cards} onChange={(e) => setCards(e.target.checked)} />
+            سمةٌ سمة (للجوال)
+          </label>
+
+          {cards ? (
+            <CardStep
+              trait={TRAITS[card]!}
+              index={card}
+              count={TRAITS.length}
+              value={Number(scores[TRAITS[card]!.slug]) || 0}
+              remaining={100 - total}
+              onChange={(v) => setScores((s) => ({ ...s, [TRAITS[card]!.slug]: String(v) }))}
+              onPrev={() => setCard((c) => Math.max(0, c - 1))}
+              onNext={() => setCard((c) => Math.min(TRAITS.length - 1, c + 1))}
+            />
+          ) : (
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {TRAITS.map((t) => (
+                <div key={t.slug}>
+                  <Label htmlFor={`t-${t.slug}`} className="text-xs">
+                    {t.name}
+                  </Label>
+                  <Input
+                    id={`t-${t.slug}`}
+                    type="number"
+                    min={0}
+                    max={100}
+                    inputMode="numeric"
+                    value={scores[t.slug] ?? ""}
+                    onChange={(e) => setScores((s) => ({ ...s, [t.slug]: e.target.value }))}
+                    className="mt-1 h-8"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* المجموع الحيّ: عونٌ لا حارس — القاعدة هي من ترفض. */}
           <p
@@ -186,6 +207,66 @@ export function TraitAssessmentForm({
           </p>
         </form>
       )}
+    </div>
+  );
+}
+
+function CardStep({
+  trait,
+  index,
+  count,
+  value,
+  remaining,
+  onChange,
+  onPrev,
+  onNext,
+}: {
+  trait: { slug: string; name: string };
+  index: number;
+  count: number;
+  value: number;
+  remaining: number;
+  onChange: (v: number) => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const step = (d: number) => onChange(Math.max(0, Math.min(100, value + d)));
+  return (
+    <div className="mt-4 rounded-xl border border-border p-5 text-center">
+      <p className="text-xs text-muted-foreground">
+        {index + 1} من {count}
+      </p>
+      <p className="mt-1 text-lg font-bold">{trait.name}</p>
+      <p className="mt-3 text-4xl font-extrabold tabular-nums text-primary">{value}</p>
+      <p className="text-xs text-muted-foreground">المتبقّي من المئة: {remaining}</p>
+      <div className="mt-4 grid grid-cols-4 gap-2">
+        {[-10, -5, 5, 10].map((d) => (
+          <Button
+            key={d}
+            type="button"
+            variant="outline"
+            className="h-12 text-base"
+            disabled={d > 0 && remaining <= 0}
+            onClick={() => step(d)}
+          >
+            {d > 0 ? `+${d}` : d}
+          </Button>
+        ))}
+      </div>
+      <div className="mt-4 flex justify-between">
+        <Button type="button" variant="ghost" size="sm" disabled={index === 0} onClick={onPrev}>
+          → السابقة
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={index === count - 1}
+          onClick={onNext}
+        >
+          التالية ←
+        </Button>
+      </div>
     </div>
   );
 }

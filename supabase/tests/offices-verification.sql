@@ -35,7 +35,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"d1000000-0000-4000-8000-000000000003","role":"authenticated"}';
   _r := public.save_office_report('d2000000-0000-4000-8000-000000000002', 'زيارة ميدانية', 'وُزّعت الحقائب.',
-          '{"kits": 40}'::jsonb, ARRAY['d2000000-0000-4000-8000-000000000002/visit.jpg'], NULL, NULL, 'submitted');
+          '{"kits": 40}'::jsonb, ARRAY['d2000000-0000-4000-8000-000000000002/visit.jpg'], NULL, NULL, 'submitted', _consent => true);
   RESET ROLE;
   RAISE NOTICE 'PASS — الميداني يرفع تقريراً بمؤشّرات وصور';
 
@@ -55,7 +55,7 @@ BEGIN
     SET LOCAL ROLE authenticated;
     SET LOCAL request.jwt.claims = '{"sub":"d1000000-0000-4000-8000-000000000003","role":"authenticated"}';
     PERFORM public.save_office_report('d2000000-0000-4000-8000-000000000002', 'مرفق مستعار', '', '{}',
-            ARRAY['d2000000-0000-4000-8000-000000000003/x.jpg'], NULL, NULL, 'draft');
+            ARRAY['d2000000-0000-4000-8000-000000000003/x.jpg'], NULL, NULL, 'draft', _consent => true);
   EXCEPTION WHEN raise_exception THEN _ok := SQLERRM = 'attachment_outside_office';
   END;
   RESET ROLE;

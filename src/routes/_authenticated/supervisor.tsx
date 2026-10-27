@@ -13,7 +13,9 @@ import { getEnrollmentDetail } from "@/lib/qualification-ops.functions";
 import {
   getMySupervisedEnrollments,
   getMySupervisorProfile,
+  getSupervisorToday,
   LEVEL_LABELS,
+  TASK_LABELS,
 } from "@/lib/supervisor.functions";
 import type { SupervisedEnrollment } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
@@ -114,6 +116,8 @@ function SupervisorPage() {
           </p>
         )}
       </section>
+
+      <TodayList />
 
       <section className="mt-8" aria-labelledby="beneficiaries">
         <h2 id="beneficiaries" className="text-sm font-bold">
@@ -231,5 +235,55 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
         القياس حكمٌ على طفل: يُكتب من هنا وحده، ولا يُعرض على الكافل.
       </p>
     </li>
+  );
+}
+
+/** «اليوم»: ما ينتظرك قبل أي شيء — بأولويته، والأقدم أولاً. */
+function TodayList() {
+  const fetchToday = useServerFn(getSupervisorToday);
+  const { data: tasks = [] } = useQuery({
+    queryKey: ["supervisor-today"],
+    queryFn: () => fetchToday(),
+  });
+  return (
+    <section className="mt-8" aria-labelledby="today">
+      <h2 id="today" className="text-sm font-bold">
+        اليوم ({tasks.length})
+      </h2>
+      {tasks.length === 0 ? (
+        <p className="mt-3 rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+          لا شيء ينتظرك اليوم.
+        </p>
+      ) : (
+        <ul className="mt-3 divide-y divide-border rounded-2xl border border-border bg-card">
+          {tasks.map((t, i) => (
+            <li
+              key={`${t.task}-${t.enrollment_id}-${i}`}
+              className="flex flex-wrap items-center gap-3 px-4 py-3"
+            >
+              <span
+                className={
+                  t.priority === 1
+                    ? "size-2.5 rounded-full bg-primary"
+                    : "size-2.5 rounded-full bg-bridge"
+                }
+                aria-hidden="true"
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium">
+                  {TASK_LABELS[t.task]} — {t.orphan}
+                </span>
+                {t.detail && (
+                  <span className="block text-xs text-muted-foreground">{t.detail}</span>
+                )}
+              </span>
+              {t.since && (
+                <span className="text-xs text-muted-foreground">{formatDate(t.since)}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

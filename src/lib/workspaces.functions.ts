@@ -127,6 +127,7 @@ export const saveOfficeReport = createServerFn({ method: "POST" })
         periodStart: z.string().date().optional(),
         periodEnd: z.string().date().optional(),
         status: z.enum(["draft", "submitted", "published"]),
+        consent: z.boolean().optional(),
       })
       .parse(input),
   )
@@ -141,6 +142,7 @@ export const saveOfficeReport = createServerFn({ method: "POST" })
       _period_end: data.periodEnd ?? null,
       _status: data.status,
       _id: data.reportId ?? null,
+      _consent: data.consent ?? false,
     });
     if (error) return { ok: false as const, error: error.message, id: null };
     return { ok: true as const, error: null, id: id as string };
