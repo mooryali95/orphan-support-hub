@@ -1,5 +1,5 @@
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { IosoMark } from "@/components/brand/IosoMark";
+import { KahataynMark } from "@/components/brand/KahataynMark";
 import { cn } from "@/lib/utils";
 
 /**
@@ -56,7 +56,7 @@ export function MuralImage({
           tile={72}
         />
         <span className="relative w-[38%] max-w-24 opacity-90">
-          <IosoMark variant="mark" />
+          <KahataynMark compact />
         </span>
       </div>
     );

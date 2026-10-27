@@ -26,14 +26,14 @@ import {
  */
 
 export const BRAND = {
-  navy: "#17538F",
-  navyDeep: "#0E2C4B",
-  gold: "#C9A058",
-  goldSoft: "#DCBB7C",
-  ink: "#1B2430",
-  muted: "#5B6672",
-  line: "#E4E0D6",
-  paper: "#F7F5F0",
+  navy: "#0F4D3F",
+  navyDeep: "#0B3A30",
+  gold: "#B8913A",
+  goldSoft: "#D4B26A",
+  ink: "#1E2B27",
+  muted: "#5F6461",
+  line: "#E4E1D9",
+  paper: "#FAF8F3",
   card: "#FFFFFF",
 } as const;
 
@@ -77,7 +77,7 @@ export function BrandEmail({
           <Section style={header}>
             <Link href={siteUrl}>
               <Img
-                src={assetUrl(siteUrl, "/brand/ioso-email-logo-white.png")}
+                src={assetUrl(siteUrl, "/brand/kahatayn-email-logo-white.png")}
                 alt={siteName}
                 width="168"
                 style={logo}

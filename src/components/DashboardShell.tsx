@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IosoLockup } from "@/components/brand/IosoMark";
+import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,7 +31,7 @@ export function DashboardShell({
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-x-4 px-4">
           <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
-            <IosoLockup compact />
+            <KahataynLockup compact />
           </Link>
 
           {/* على الجوال كان التنقّل مخفياً كلّياً فلا سبيل إلى البوابات؛ صار صفاً

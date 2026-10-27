@@ -77,128 +77,121 @@
   --radius: 0.875rem;
 
   /* ===================================================================
-     ألوان الهوية — المصدر: WEB/design-tokens.json في حقيبة الهوية
-     الرسمية (كهاتين Identity Kit). القيم هنا هي ألوان الحقيبة نفسها
-     محوَّلةً إلى OKLCH، لا ألواناً مقارِبة.
-
-     ولأن لونين من الخمسة لا يصلحان نصّاً، فُصل كل لون إلى دورين:
-     لون الهوية كما هو للأسطح والخطوط، ومشتقّ داكن منه لما يُقرأ.
-     التغميق يحفظ الصبغة والتشبّع ويحرّك السطوع وحده، فتبقى الهوية
-     هي هي وتصير مقروءة.
+     هوية «كهاتين» — أخضرٌ عميق وذهبيّ على محايدٍ دافئ.
+     النسب محسوبة على الخلفية #FAF8F3:
+       الأخضر #0F4D3F ‏9.19 · الحبر #1E2B27 ‏13.8 · الرمادي #5F6461 ‏5.68
+       الذهبي #B8913A ‏2.77 — زخرفةٌ وخطوط فقط، لا نصّ.
+       ذهبيّ النصّ #7A5E1C ‏5.74.
+     المحايدات حجرية دافئة لا خضراء، كي يبقى الأخضر للفعل والمعنى.
+     ولا أحمر فيما يخصّ الطفل: «الحاجة» رماديٌّ أردوازيّ هادئ.
      =================================================================== */
 
-  /* #1D5AA6 — أزرق ملوكي: شاطئ الاحتياج. 6.85:1 على الأبيض فيصلح نصّاً. */
-  --shore-need: oklch(0.472 0.137 256.1);
+  /* #4A5560 — أردوازيّ هادئ: شاطئ الاحتياج. 7.17:1، بلا إنذار. */
+  --shore-need: oklch(0.444 0.023 248.3);
 
-  /* #C6A34D — ذهبي دافئ: الجسر. 2.4:1 فقط، فلا نصّ ولا أيقونة تحمل معنى:
-     خطوط وحدود وباترن وأسطح لا غير. */
-  --bridge: oklch(0.73 0.112 87.2);
+  /* #B8913A — ذهبي الشعار. 2.77:1، فلا نصّ: خطوط وحدود وباترن ونقاط. */
+  --bridge: oklch(0.677 0.114 84.4);
 
-  /* #8F6E05 — الذهبي نفسه صبغةً وتشبّعاً، مغمَّقاً إلى 4.77:1. كل ذهبي
-     يُقرأ يمرّ من هنا. */
-  --bridge-ink: oklch(0.555 0.112 87.2);
+  /* #7A5E1C — الذهبي نفسه مغمَّقاً إلى 5.74:1. كل ذهبيّ يُقرأ يمرّ من هنا. */
+  --bridge-ink: oklch(0.498 0.089 84.8);
 
-  /* برتقالي الدفء — مرتبة «الميقات» في سلّم الوعي وأسطح التدرّج. */
-  --bridge-bright: oklch(0.778 0.159 70.2);
+  /* #D4B26A — ذهبيّ فاتح للأسطح وللأرضيات الداكنة. */
+  --bridge-bright: oklch(0.778 0.099 84.9);
 
-  /* #B9D8C1 — أخضر فاتح: لون سطح لا لون خطّ (1.54:1). */
-  --thrive-tint: oklch(0.853 0.046 153.2);
+  /* #E3EEE8 — أخضر شاحب: سطحٌ لا خطّ. */
+  --thrive-tint: oklch(0.939 0.014 162.5);
 
-  /* #35724A — أخضر العمران للنصّ: صبغة الحقيبة نفسها بتشبّع أعلى وسطوع
-     أدنى، 5.74:1. الأخضر الفاتح كما هو يذوب في الأبيض. */
-  --shore-thrive: oklch(0.5 0.09 153.2);
+  /* #0F4D3F — أخضر الشعار: شاطئ الازدهار ولون الفعل. 9.19:1. */
+  --shore-thrive: oklch(0.378 0.065 173.8);
 
-  /* #142F52 — كحلي عميق: أرضية الأسطح الرسمية. */
-  --navy: oklch(0.304 0.072 255.9);
+  /* #0B3A30 — أخضر داكن: أرضية الأسطح الرسمية. */
+  --navy: oklch(0.314 0.052 175.3);
 
-  /* #6F7780 — رمادي محايد من الحقيبة، 4.54:1. */
-  --graphite: oklch(0.566 0.017 251.3);
+  /* #6B6F6C — رماديّ حجريّ محايد، 4.81:1. */
+  --graphite: oklch(0.537 0.007 153.7);
 
-  --gold-line: oklch(0.73 0.112 87.2); /* خطوط الباترن */
+  --gold-line: oklch(0.677 0.114 84.4); /* خطوط الباترن */
 
-  --background: oklch(0.973 0.004 157.2);
-  --foreground: oklch(0.258 0.061 253.4);
+  --background: oklch(0.979 0.007 88.6);
+  --foreground: oklch(0.276 0.019 173.9);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.258 0.061 253.4);
+  --card-foreground: oklch(0.276 0.019 173.9);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.258 0.061 253.4);
-  --primary: oklch(0.472 0.137 256.1);
-  --primary-foreground: oklch(0.985 0.004 157);
-  --secondary: oklch(0.943 0.009 161.3);
-  --secondary-foreground: oklch(0.3 0.095 257.5);
-  --muted: oklch(0.952 0.007 161);
-  --muted-foreground: oklch(0.48 0.045 248.8);
-  --accent: oklch(0.851 0.109 91.5);
-  --accent-foreground: oklch(0.396 0.071 80.9);
-  --destructive: oklch(0.55 0.196 27);
-  --destructive-foreground: oklch(0.985 0.004 157);
-  --success: oklch(0.473 0.09 152);
-  --success-foreground: oklch(0.985 0.004 157);
-  --border: oklch(0.908 0.012 162);
-  --input: oklch(0.908 0.012 162);
-  --ring: oklch(0.388 0.154 262.2);
-  --chart-1: oklch(0.388 0.154 262.2);
-  --chart-2: oklch(0.654 0.12 78.1);
-  --chart-3: oklch(0.473 0.09 152);
-  --chart-4: oklch(0.758 0.134 76.7);
-  --chart-5: oklch(0.817 0.097 144.6);
-  --sidebar: oklch(0.962 0.006 160);
-  --sidebar-foreground: oklch(0.258 0.061 253.4);
-  --sidebar-primary: oklch(0.388 0.154 262.2);
-  --sidebar-primary-foreground: oklch(0.985 0.004 157);
-  --sidebar-accent: oklch(0.93 0.01 161);
-  --sidebar-accent-foreground: oklch(0.3 0.095 257.5);
-  --sidebar-border: oklch(0.908 0.012 162);
-  --sidebar-ring: oklch(0.388 0.154 262.2);
+  --popover-foreground: oklch(0.276 0.019 173.9);
+  --primary: oklch(0.378 0.065 173.8);
+  --primary-foreground: oklch(0.979 0.007 88.6);
+  --secondary: oklch(0.952 0.008 91.5);
+  --secondary-foreground: oklch(0.314 0.052 175.3);
+  --muted: oklch(0.958 0.007 88.6);
+  --muted-foreground: oklch(0.498 0.008 159.9);
+  --accent: oklch(0.936 0.032 87.3);
+  --accent-foreground: oklch(0.453 0.082 85);
+  --destructive: oklch(0.512 0.141 31.6);
+  --destructive-foreground: oklch(0.979 0.007 88.6);
+  --success: oklch(0.479 0.079 161.4);
+  --success-foreground: oklch(0.979 0.007 88.6);
+  --border: oklch(0.91 0.011 89.7);
+  --input: oklch(0.91 0.011 89.7);
+  --ring: oklch(0.378 0.065 173.8);
+  --chart-1: oklch(0.378 0.065 173.8);
+  --chart-2: oklch(0.677 0.114 84.4);
+  --chart-3: oklch(0.444 0.023 248.3);
+  --chart-4: oklch(0.762 0.084 165.7);
+  --chart-5: oklch(0.778 0.099 84.9);
+  --sidebar: oklch(0.965 0.008 90);
+  --sidebar-foreground: oklch(0.276 0.019 173.9);
+  --sidebar-primary: oklch(0.378 0.065 173.8);
+  --sidebar-primary-foreground: oklch(0.979 0.007 88.6);
+  --sidebar-accent: oklch(0.94 0.01 90);
+  --sidebar-accent-foreground: oklch(0.314 0.052 175.3);
+  --sidebar-border: oklch(0.91 0.011 89.7);
+  --sidebar-ring: oklch(0.378 0.065 173.8);
 }
 
 .dark {
-  /* على الأرضية الكحلية ينقلب الاتجاه: التغميق يُخفي والتفتيح يُظهر.
-     الصبغات صبغات الحقيبة نفسها، والسطوع وحده هو ما ارتفع.
-     النسب على #142F52: الأزرق 4.67، الذهبي 7.19، ذهبي النصّ 8.25،
-     الأخضر 6.97 — كلّها تتجاوز AA. */
-  --shore-need: oklch(0.68 0.13 256.1);
-  --bridge: oklch(0.8 0.1 87.2);
-  --bridge-bright: oklch(0.8 0.16 70);
-  --bridge-ink: oklch(0.84 0.1 87.2);
-  --thrive-tint: oklch(0.853 0.046 153.2);
-  --shore-thrive: oklch(0.78 0.08 153.2);
-  --navy: oklch(0.23 0.068 257.9);
-  --graphite: oklch(0.72 0.015 251.3);
-  --gold-line: oklch(0.8 0.1 87.2);
+  /* الوضع الداكن: أرضية #0E1A17. النسب: النصّ 15.5، الأخضر #7CC3A5 ‏8.7، الذهبي #D4B26A ‏8.8، الرمادي #A9B3AE ‏8.3 — كلّها فوق AA. */
+  --shore-need: oklch(0.757 0.013 164.7);
+  --bridge: oklch(0.778 0.099 84.9);
+  --bridge-bright: oklch(0.843 0.081 87.6);
+  --bridge-ink: oklch(0.843 0.081 87.6);
+  --thrive-tint: oklch(0.314 0.028 173.7);
+  --shore-thrive: oklch(0.806 0.078 165);
+  --navy: oklch(0.205 0.018 177);
+  --graphite: oklch(0.709 0.013 170.1);
+  --gold-line: oklch(0.778 0.099 84.9);
 
-  --background: oklch(0.23 0.068 257.9);
-  --foreground: oklch(0.955 0.008 160);
-  --card: oklch(0.304 0.088 256.3);
-  --card-foreground: oklch(0.955 0.008 160);
-  --popover: oklch(0.304 0.088 256.3);
-  --popover-foreground: oklch(0.955 0.008 160);
-  --primary: oklch(0.643 0.148 262.5);
-  --primary-foreground: oklch(0.23 0.068 257.9);
-  --secondary: oklch(0.34 0.07 257);
-  --secondary-foreground: oklch(0.955 0.008 160);
-  --muted: oklch(0.34 0.07 257);
-  --muted-foreground: oklch(0.76 0.032 250);
-  --accent: oklch(0.758 0.134 76.7);
-  --accent-foreground: oklch(0.23 0.068 257.9);
-  --destructive: oklch(0.65 0.19 25);
-  --destructive-foreground: oklch(0.955 0.008 160);
-  --success: oklch(0.76 0.104 150.2);
-  --success-foreground: oklch(0.23 0.068 257.9);
+  --background: oklch(0.205 0.018 177);
+  --foreground: oklch(0.952 0.006 128.5);
+  --card: oklch(0.245 0.023 171.5);
+  --card-foreground: oklch(0.952 0.006 128.5);
+  --popover: oklch(0.245 0.023 171.5);
+  --popover-foreground: oklch(0.952 0.006 128.5);
+  --primary: oklch(0.762 0.084 165.7);
+  --primary-foreground: oklch(0.205 0.018 177);
+  --secondary: oklch(0.276 0.024 174.1);
+  --secondary-foreground: oklch(0.952 0.006 128.5);
+  --muted: oklch(0.276 0.024 174.1);
+  --muted-foreground: oklch(0.757 0.013 164.7);
+  --accent: oklch(0.778 0.099 84.9);
+  --accent-foreground: oklch(0.205 0.018 177);
+  --destructive: oklch(0.688 0.132 34.3);
+  --destructive-foreground: oklch(0.205 0.018 177);
+  --success: oklch(0.806 0.078 165);
+  --success-foreground: oklch(0.205 0.018 177);
   --border: oklch(1 0 0 / 14%);
   --input: oklch(1 0 0 / 18%);
-  --ring: oklch(0.643 0.148 262.5);
-  --chart-1: oklch(0.643 0.148 262.5);
-  --chart-2: oklch(0.758 0.134 76.7);
-  --chart-3: oklch(0.76 0.104 150.2);
-  --chart-4: oklch(0.851 0.109 91.5);
-  --chart-5: oklch(0.817 0.097 144.6);
-  --sidebar: oklch(0.258 0.072 257);
-  --sidebar-foreground: oklch(0.955 0.008 160);
-  --sidebar-primary: oklch(0.643 0.148 262.5);
-  --sidebar-primary-foreground: oklch(0.23 0.068 257.9);
-  --sidebar-accent: oklch(0.34 0.07 257);
-  --sidebar-accent-foreground: oklch(0.955 0.008 160);
+  --ring: oklch(0.762 0.084 165.7);
+  --chart-1: oklch(0.762 0.084 165.7);
+  --chart-2: oklch(0.778 0.099 84.9);
+  --chart-3: oklch(0.757 0.013 164.7);
+  --chart-4: oklch(0.806 0.078 165);
+  --chart-5: oklch(0.843 0.081 87.6);
+  --sidebar: oklch(0.225 0.02 175);
+  --sidebar-foreground: oklch(0.952 0.006 128.5);
+  --sidebar-primary: oklch(0.762 0.084 165.7);
+  --sidebar-primary-foreground: oklch(0.205 0.018 177);
+  --sidebar-accent: oklch(0.276 0.024 174.1);
+  --sidebar-accent-foreground: oklch(0.952 0.006 128.5);
   --sidebar-border: oklch(1 0 0 / 14%);
   --sidebar-ring: oklch(0.643 0.148 262.5);
 }
@@ -279,11 +272,11 @@
 @utility brand-rule {
   background-image: linear-gradient(
     to left,
-    var(--color-shore-need) 0%,
-    var(--color-shore-need) 33%,
-    var(--color-bridge) 33%,
-    var(--color-bridge) 66%,
-    var(--color-shore-thrive) 66%,
+    var(--color-shore-thrive) 0%,
+    var(--color-shore-thrive) 40%,
+    var(--color-bridge) 40%,
+    var(--color-bridge) 60%,
+    var(--color-shore-thrive) 60%,
     var(--color-shore-thrive) 100%
   );
 }

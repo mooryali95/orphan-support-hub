@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { IosoLockup } from "@/components/brand/IosoMark";
+import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ export function SiteHeader() {
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to="/" aria-label="كهاتين — الصفحة الرئيسية">
-          <IosoLockup />
+          <KahataynLockup />
         </Link>
 
         <nav className="hidden flex-1 items-center gap-1 md:flex">
