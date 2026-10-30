@@ -8,11 +8,20 @@ const { topology } = require("topojson-server");
 const { presimplify, simplify, quantile } = require("topojson-simplify");
 const { feature } = require("topojson-client");
 const OUT = process.argv[2];
-const W = 1000, H = 520;
+const W = 1000,
+  H = 520;
 const adm0 = JSON.parse(fs.readFileSync("adm0.geojson", "utf8"));
 const adm1 = JSON.parse(fs.readFileSync("adm1.geojson", "utf8"));
-const countries = adm0.features.filter((f) => f.properties.ISO_A2_EH !== "AQ" && f.properties.ISO_A2_EH !== "-99");
-const proj = d3.geoNaturalEarth1().fitExtent([[4, 4], [W - 4, H - 4]], { type: "FeatureCollection", features: countries });
+const countries = adm0.features.filter(
+  (f) => f.properties.ISO_A2_EH !== "AQ" && f.properties.ISO_A2_EH !== "-99",
+);
+const proj = d3.geoNaturalEarth1().fitExtent(
+  [
+    [4, 4],
+    [W - 4, H - 4],
+  ],
+  { type: "FeatureCollection", features: countries },
+);
 const r = (n, d) => Math.round(n * 10 ** d) / 10 ** d;
 
 function simplified(features, q) {
@@ -37,11 +46,20 @@ const world = simplified(countries, 0.12).map((f) => {
   const geom = f.geometry;
   let main = f;
   if (geom.type === "MultiPolygon") {
-    const parts = geom.coordinates.map((c) => ({ type: "Feature", geometry: { type: "Polygon", coordinates: c } }));
+    const parts = geom.coordinates.map((c) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: c },
+    }));
     main = parts.sort((a, b) => d3.geoArea(b) - d3.geoArea(a))[0];
   }
   const [cx, cy] = proj(d3.geoCentroid(main));
-  return { c: code, n: f.properties.NAME_AR || f.properties.NAME, d: pathOf(f, 1), b: box(main), p: [r(cx, 2), r(cy, 2)] };
+  return {
+    c: code,
+    n: f.properties.NAME_AR || f.properties.NAME,
+    d: pathOf(f, 1),
+    b: box(main),
+    p: [r(cx, 2), r(cy, 2)],
+  };
 });
 fs.mkdirSync(`${OUT}/admin1`, { recursive: true });
 fs.writeFileSync(`${OUT}/world.json`, JSON.stringify({ w: W, h: H, countries: world }));
@@ -60,7 +78,10 @@ for (const [code, feats] of by) {
     const [cx, cy] = proj(d3.geoCentroid(f));
     return {
       id: p.adm1_code,
-      n: String(p.name_ar || p.name || p.name_en || p.adm1_code).replace(/^(مقاطعة|محافظة|ولاية|منطقة|إقليم|إمارة|مديرية) /, ""),
+      n: String(p.name_ar || p.name || p.name_en || p.adm1_code).replace(
+        /^(مقاطعة|محافظة|ولاية|منطقة|إقليم|إمارة|مديرية) /,
+        "",
+      ),
       en: p.name_en || p.name || p.adm1_code,
       alt: [p.name, p.name_alt, p.name_local, p.gn_name, p.woe_name].filter(Boolean).join("|"),
       d: pathOf(f, 3),
@@ -72,4 +93,13 @@ for (const [code, feats] of by) {
   total += s.length;
   fs.writeFileSync(`${OUT}/admin1/${code}.json`, s);
 }
-console.log("world", fs.statSync(`${OUT}/world.json`).size, "countries", world.length, "admin1 files", by.size, "total", total);
+console.log(
+  "world",
+  fs.statSync(`${OUT}/world.json`).size,
+  "countries",
+  world.length,
+  "admin1 files",
+  by.size,
+  "total",
+  total,
+);

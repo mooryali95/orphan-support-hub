@@ -104,3 +104,28 @@ export const getDispatchHealth = createServerFn({ method: "GET" })
 
     return { allowed: true as const, health };
   });
+
+/**
+ * صحّة التشغيل — الفحوص الثمانية كما تحسبها القاعدة (`ops_health`).
+ * الحساب كلّه هناك: هذه الطبقة تنقل فقط، والإدارة تُفرض في الدالة.
+ */
+export type OpsLevel = "ok" | "warn" | "critical";
+export type OpsCheck = { key: string; level: OpsLevel; count: number; title: string };
+export type OpsHealth = {
+  level: OpsLevel;
+  at: string;
+  checks: OpsCheck[];
+  last_run: { at: string; level: OpsLevel; notified: number } | null;
+};
+
+export const getOpsHealth = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const client = context.supabase as unknown as {
+      rpc: (fn: string) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+    };
+    const { data, error } = await client.rpc("ops_health");
+    // خطأ هنا: لست مديراً، أو الهجرة لم تُطبَّق بعد.
+    if (error) return { allowed: false as const, missing: /ops_health/.test(error.message) };
+    return { allowed: true as const, health: data as OpsHealth };
+  });

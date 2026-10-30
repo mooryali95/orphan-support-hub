@@ -1,13 +1,14 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
 import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
+import { OpsHealthPanel } from "@/components/admin/OpsHealthPanel";
 import { AwaitingTransfers } from "@/components/admin/AwaitingTransfers";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
@@ -71,6 +72,11 @@ function AdminPage() {
   const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("inbox");
+  // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("tab");
+    if (t && SECTIONS.some(([, tabs]) => tabs.includes(t as Tab))) setTab(t as Tab);
+  }, []);
   // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
 
@@ -288,7 +294,12 @@ function AdminPage() {
         />
       )}
 
-      {tab === "monitoring" && <DispatchHealthPanel />}
+      {tab === "monitoring" && (
+        <>
+          <OpsHealthPanel />
+          <DispatchHealthPanel />
+        </>
+      )}
 
       {tab === "sponsors" && (
         <Table
