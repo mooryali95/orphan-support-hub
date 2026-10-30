@@ -95,9 +95,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
 
           {/* رحلة التشغيل */}
           <div className="mt-6">
-            <p className="text-[11px] font-bold text-muted-foreground">
-              رحلة التشغيل
-            </p>
+            <p className="text-[11px] font-bold text-muted-foreground">رحلة التشغيل</p>
             <ol className="mt-3 space-y-0">
               {QUALIFICATION_JOURNEY.map((step, i) => {
                 const done = stageReached(p.stage, step.stage);
@@ -153,9 +151,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
           {typeof p.units_total === "number" && p.units_total > 0 && (
             <div className="mt-6 rounded-xl bg-secondary/50 p-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="text-[11px] font-bold text-muted-foreground">
-                  ورش الجلسات
-                </p>
+                <p className="text-[11px] font-bold text-muted-foreground">ورش الجلسات</p>
                 <p className="text-sm font-bold">
                   <span className="text-shore-thrive">{p.units_accepted ?? 0}</span> من{" "}
                   {p.units_total} مقبولة
@@ -227,9 +223,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
           {/* أهلية المشرف — ثقة الكافل في البرنامج ثقةٌ في مَن يحمله */}
           {p.supervisor?.assigned && (
             <div className="mt-4 rounded-xl bg-secondary/50 p-4">
-              <p className="text-[11px] font-bold text-muted-foreground">
-                أهلية المشرف
-              </p>
+              <p className="text-[11px] font-bold text-muted-foreground">أهلية المشرف</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
                 <span className="font-bold text-shore-need">
                   المستوى {LEVEL_LABELS[p.supervisor.level]}
