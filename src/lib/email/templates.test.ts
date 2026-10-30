@@ -64,6 +64,13 @@ describe("renderNotificationEmail", () => {
     expect(mail.subject).toContain(`${BRAND.name}`);
   });
 
+  // قالبٌ نصّي بلا «$» يطبع اسم المتغيّر حرفياً في كل رسالة.
+  it("يطبع اسم المنصّة لا اسم المتغيّر", () => {
+    const mail = renderNotificationEmail(base);
+    expect(mail.html).toContain(BRAND.name);
+    expect(mail.html).not.toMatch(/\{BRAND\./);
+  });
+
   // نصّ الدفعة الفاشلة يجب ألّا يُفزع: المزوّد يُعيد المحاولة تلقائياً.
   it("يضيف سطر سياق حسب نوع الحدث", () => {
     const failed = renderNotificationEmail({ ...base, kind: "payment_failed" });
@@ -89,12 +96,22 @@ describe("رسالة الشهر", () => {
   };
   it("لا تكتب سطراً قيمته صفر", () => {
     const m = renderMonthlyDigest("a@b.c", { ...zero, reports: 2 }, "https://x.test");
-    expect(m.text).toContain("نُشر 2");
+    expect(m.text).toContain("تقريران");
     expect(m.text).not.toContain("جلسة");
     expect(m.html).toContain("https://x.test/dashboard");
   });
   it("الشهر الهادئ يقول ذلك ولا يُرسل أصفاراً", () => {
     const m = renderMonthlyDigest("a@b.c", zero, "https://x.test");
     expect(m.text).toContain("لم يُسجَّل جديد");
+  });
+  it("تجمع بقواعد العربية ولا تفترض جنس القارئ", () => {
+    const m = renderMonthlyDigest(
+      "a@b.c",
+      { ...zero, paid: 40, units: 3, delivered_months: 1 },
+      "https://x.test",
+    );
+    expect(m.text).toContain("3 جلسات");
+    expect(m.text).toContain("مرّةً واحدة");
+    expect(m.text).not.toMatch(/دعمتَ|تبرّع/);
   });
 });

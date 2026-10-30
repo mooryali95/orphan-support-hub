@@ -1,6 +1,40 @@
 import type { OutgoingEmail } from "./types";
 import { BRAND } from "@/config/brand";
 import { COLORS } from "@/config/brand-colors";
+import { arCount, SESSIONS, type ArForms } from "@/lib/plural";
+
+const TIMES: ArForms = {
+  zero: "",
+  one: "مرّةً واحدة",
+  two: "مرّتين",
+  few: "{n} مرّات",
+  many: "{n} مرّة",
+  other: "{n} مرّة",
+};
+const PLEDGES: ArForms = {
+  zero: "",
+  one: "تعهّدٌ واحد",
+  two: "تعهّدان",
+  few: "{n} تعهّدات",
+  many: "{n} تعهّداً",
+  other: "{n} تعهّد",
+};
+const MEASURES: ArForms = {
+  zero: "",
+  one: "قياسٌ واحد",
+  two: "قياسان",
+  few: "{n} قياسات",
+  many: "{n} قياساً",
+  other: "{n} قياس",
+};
+const REPORTS: ArForms = {
+  zero: "",
+  one: "تقريرٌ واحد",
+  two: "تقريران",
+  few: "{n} تقارير",
+  many: "{n} تقريراً",
+  other: "{n} تقرير",
+};
 
 /**
  * قوالب البريد — عربية، اتجاهها من اليمين.
@@ -37,8 +71,8 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
          style="max-width:560px;background:#ffffff;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
     <tr><td style="height:4px;background:${BLUE};font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:24px 24px 8px;">
-      <div style="font-size:20px;font-weight:bold;color:${NAVY};">{BRAND.name}</div>
-      <div style="font-size:12px;color:${MUTED};margin-top:2px;">منصة كفالة الأيتام</div>
+      <div style="font-size:20px;font-weight:bold;color:${NAVY};">${BRAND.name}</div>
+      <div style="font-size:12px;color:${MUTED};margin-top:2px;">${BRAND.tagline}</div>
     </td></tr>
     <tr><td style="padding:8px 24px 0;">
       <h1 style="margin:0;font-size:18px;color:${NAVY};">${heading}</h1>
@@ -55,7 +89,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
         : ""
     }
     <tr><td style="padding:20px 24px 24px;font-size:11px;line-height:20px;color:${MUTED};border-top:1px solid ${BORDER};margin-top:16px;">
-      وصلتك هذه الرسالة لأن لديك حساباً في {BRAND.name}.
+      وصلتك هذه الرسالة لأن لديك حساباً في ${BRAND.name}.
     </td></tr>
   </table>
 </td></tr></table>
@@ -175,13 +209,16 @@ export function renderMonthlyDigest(
   })
     .format(d.paid)
     .replace("US$", "$");
+  // صياغةٌ لا تفترض جنس القارئ، وجمعٌ بقواعد العربية لا «${n} جلسة» دائماً.
   const lines = [
-    d.paid > 0 && `دعمتَ هذا الشهر بـ${money}.`,
-    d.delivered_months > 0 && `وصلت كفالتك ${d.delivered_months} مرّة موثّقةً بمستند.`,
-    d.pledges_delivered > 0 && `سُلّم ${d.pledges_delivered} من تعهّداتك العينية أو التأهيلية.`,
-    d.units > 0 && `اجتاز من تدعمهم ${d.units} جلسة في رحلة التأهيل.`,
-    d.traits > 0 && `سُجّل ${d.traits} قياسٍ جديد لسماتهم.`,
-    d.reports > 0 && `نُشر ${d.reports} تقريرٍ عن أثر دعمك.`,
+    d.paid > 0 && `وصلت منك هذا الشهر ${money} للكفالة ودعم التأهيل.`,
+    d.delivered_months > 0 &&
+      `وصلت الكفالة إلى الطفل ${arCount(d.delivered_months, TIMES)} موثّقةً بمستند.`,
+    d.pledges_delivered > 0 &&
+      `سُلّم من تعهّداتك العينية أو التأهيلية: ${arCount(d.pledges_delivered, PLEDGES)}.`,
+    d.units > 0 && `اجتاز من تكفلهم ${arCount(d.units, SESSIONS)} في رحلة التأهيل.`,
+    d.traits > 0 && `سُجّل لسماتهم ${arCount(d.traits, MEASURES)} جديد.`,
+    d.reports > 0 && `نُشر عن أثر كفالتك ${arCount(d.reports, REPORTS)}.`,
   ].filter((l): l is string => Boolean(l));
   const body = lines.length ? lines : ["لم يُسجَّل جديدٌ هذا الشهر — سنكتب لك حين يحدث."];
   const url = `${baseUrl.replace(/\/$/, "")}/dashboard`;
