@@ -18,9 +18,35 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_CSS } from "@/config/brand-colors";
 import { BRAND, brandFor } from "@/config/brand";
-import { DIR, LocaleProvider, readLocale, useCopy, useLocale, type Locale } from "@/lib/locale";
+import {
+  defineCopy,
+  dirOf,
+  LocaleProvider,
+  readLocale,
+  setMessages,
+  type Locale,
+  useCopy,
+  useLocale,
+} from "@/lib/locale";
+import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
+import { PreviewBridge } from "@/components/i18n/PreviewBridge";
 
-const NOT_FOUND = {
+// في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
+const uiOnClient = new Map<string, UiState>();
+async function loadUi(wanted: Locale): Promise<UiState> {
+  const hit = typeof window !== "undefined" ? uiOnClient.get(wanted) : undefined;
+  if (hit) return hit;
+  try {
+    const ui = await getUiState({ data: { locale: wanted } });
+    if (typeof window !== "undefined") uiOnClient.set(wanted, ui);
+    return ui;
+  } catch {
+    // تعذّر الخادم: العربية والإنجليزية في الكود تكفيان، وغيرهما يرجع للإنجليزية.
+    return { locale: wanted === "ar" ? "ar" : "en", locales: [], messages: null };
+  }
+}
+
+const NOT_FOUND = defineCopy("routes/__root/not_found", {
   ar: {
     title: "الصفحة غير موجودة",
     text: "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
@@ -31,8 +57,8 @@ const NOT_FOUND = {
     text: "The link you opened is wrong, or the page has moved.",
     home: "Back to home",
   },
-};
-const ERROR = {
+});
+const ERROR = defineCopy("routes/__root/error", {
   ar: {
     title: "تعذّر تحميل الصفحة",
     text: "حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.",
@@ -45,7 +71,7 @@ const ERROR = {
     retry: "Try again",
     home: "Home",
   },
-};
+});
 
 function NotFoundComponent() {
   const c = useCopy(NOT_FOUND);
@@ -54,9 +80,7 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">{c.title}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {c.text}
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
         <div className="mt-6">
           <Link
             to="/"
@@ -82,9 +106,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold text-foreground">{c.title}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {c.text}
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -114,6 +136,11 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
  * المحدَّد في `defaultPendingMs` فلا يومض في التنقّلات السريعة، ويُعلَن نصّياً
  * لقارئ الشاشة لأن الشريط وحده لا يُقرأ.
  */
+const LOADING = defineCopy("routes/__root/loading", {
+  ar: { text: "جارٍ تحميل الصفحة" },
+  en: { text: "Loading page" },
+});
+
 function NavigationProgress() {
   const pending = useRouterState({ select: (s) => s.status === "pending" });
   // الخادم يرسم الجذر وحالة الموجّه «pending» دائماً، فلو أعلنّا التحميل أثناء
@@ -122,7 +149,7 @@ function NavigationProgress() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const isLoading = mounted && pending;
-  const locale = useLocale();
+  const loading = useCopy(LOADING);
 
   return (
     <>
@@ -135,36 +162,40 @@ function NavigationProgress() {
         )}
       />
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {isLoading ? (locale === "en" ? "Loading page" : "جارٍ تحميل الصفحة") : ""}
+        {isLoading ? loading.text : ""}
       </div>
     </>
   );
 }
 
-const TITLE: Record<Locale, string> = {
-  ar: `${BRAND.name} — ${BRAND.slogan}`,
-  en: `${brandFor("en").name} — ${brandFor("en").slogan}`,
-};
+const titleFor = (l: Locale) => `${brandFor(l).name} — ${brandFor(l).slogan}`;
+const ogLocale = (l: Locale) => (l === "ar" ? "ar_SA" : l === "en" ? "en_US" : l);
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   // اللغة قبل أي رسم: الخادم يقرؤها من الكعكة فيخرج <html> باتجاهه الصحيح.
-  beforeLoad: async () => ({ locale: await readLocale() }),
+  // والترجمة المنشورة معها، فلا تُرسم الصفحة بالإنجليزية ثم تتبدّل.
+  beforeLoad: async () => {
+    const ui = await loadUi(await readLocale());
+    // قبل العناوين: دوالّ head تقرأ الترجمة من المخزن قبل أن يُرسم أي مكوّن.
+    if (ui.messages) setMessages(ui.locale, ui.messages);
+    return { locale: ui.locale, ui };
+  },
   head: ({ match }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: TITLE[match.context.locale ?? "ar"] },
+      { title: titleFor(match.context.locale ?? "ar") },
       {
         name: "description",
         content: brandFor(match.context.locale ?? "ar").description,
       },
-      { property: "og:title", content: TITLE[match.context.locale ?? "ar"] },
+      { property: "og:title", content: titleFor(match.context.locale ?? "ar") },
       {
         property: "og:description",
         content: brandFor(match.context.locale ?? "ar").description,
       },
       { property: "og:type", content: "website" },
-      { property: "og:locale", content: match.context.locale === "en" ? "en_US" : "ar_SA" },
+      { property: "og:locale", content: ogLocale(match.context.locale ?? "ar") },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: BRAND.themeColor },
     ],
@@ -191,16 +222,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  const { locale } = Route.useRouteContext();
+  const { locale, ui } = Route.useRouteContext();
   return (
-    <html lang={locale} dir={DIR[locale]}>
+    <html lang={locale} dir={dirOf(locale)}>
       <head>
         <HeadContent />
         {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />
       </head>
       <body>
-        <LocaleProvider locale={locale}>{children}</LocaleProvider>
+        <LocaleProvider locale={locale} messages={ui.messages ?? undefined} available={ui.locales}>
+          {children}
+        </LocaleProvider>
         <Scripts />
       </body>
     </html>
@@ -224,8 +257,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationProgress />
-      <Outlet />
-      <Toaster position="top-center" richColors dir={DIR[locale]} />
+      <PreviewBridge>
+        <Outlet />
+      </PreviewBridge>
+      <Toaster position="top-center" richColors dir={dirOf(locale)} />
     </QueryClientProvider>
   );
 }

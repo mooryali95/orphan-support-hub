@@ -2,10 +2,10 @@ import { type ReactNode, useState } from "react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { KahataynMark } from "@/components/brand/KahataynMark";
-import { useCopy } from "@/lib/locale";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { AuthPanel } from "./AuthPanel";
 
-const COPY = {
+const COPY = defineCopy("components/auth/AuthDialog", {
   ar: {
     title: "ادخل لتكمل",
     hint: "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
@@ -17,7 +17,7 @@ const COPY = {
     consent:
       "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
   },
-};
+});
 
 /**
  * الدخول فوق الصفحة لا بدلها: الخارطة والدولة والمنطقة المفتوحة تبقى

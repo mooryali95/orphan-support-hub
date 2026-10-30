@@ -33,6 +33,7 @@ import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
+import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
 import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
@@ -168,6 +169,12 @@ const AuthenticatedSettingsNotificationsRoute =
     path: '/settings/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTranslateLocaleRoute =
+  AuthenticatedTranslateLocaleRouteImport.update({
+    id: '/translate/$locale',
+    path: '/translate/$locale',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiIntegrationsMirrorRoute = ApiIntegrationsMirrorRouteImport.update({
   id: '/api/integrations/mirror',
   path: '/api/integrations/mirror',
@@ -265,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/orphans/': typeof OrphansIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -303,6 +311,7 @@ export interface FileRoutesByTo {
   '/orphans': typeof OrphansIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -343,6 +352,7 @@ export interface FileRoutesById {
   '/orphans/': typeof OrphansIndexRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -421,6 +432,7 @@ export interface FileRouteTypes {
     | '/orphans'
     | '/office/$officeId'
     | '/settings/notifications'
+    | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -460,6 +472,7 @@ export interface FileRouteTypes {
     | '/orphans/'
     | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
@@ -671,6 +684,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/translate/$locale': {
+      id: '/_authenticated/translate/$locale'
+      path: '/translate/$locale'
+      fullPath: '/translate/$locale'
+      preLoaderRoute: typeof AuthenticatedTranslateLocaleRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/integrations/mirror': {
       id: '/api/integrations/mirror'
       path: '/api/integrations/mirror'
@@ -775,6 +795,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedWorkspacesRoute: typeof AuthenticatedWorkspacesRoute
   AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedTranslateLocaleRoute: typeof AuthenticatedTranslateLocaleRoute
   AuthenticatedDonorEntityIdReportRoute: typeof AuthenticatedDonorEntityIdReportRoute
   AuthenticatedSponsorshipsSponsorshipIdReportRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
@@ -793,6 +814,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOfficeOfficeIdRoute: AuthenticatedOfficeOfficeIdRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
+  AuthenticatedTranslateLocaleRoute: AuthenticatedTranslateLocaleRoute,
   AuthenticatedDonorEntityIdReportRoute: AuthenticatedDonorEntityIdReportRoute,
   AuthenticatedSponsorshipsSponsorshipIdReportRoute:
     AuthenticatedSponsorshipsSponsorshipIdReportRoute,

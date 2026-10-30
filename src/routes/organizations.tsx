@@ -5,9 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { brandFor, pageTitle } from "@/config/brand";
-import { useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 
-const COPY = {
+const COPY = defineCopy("routes/organizations", {
   ar: {
     title: "جهات الرعاية المعتمدة",
     lead: "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
@@ -18,7 +18,7 @@ const COPY = {
     lead: "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
     empty: "No approved organizations yet.",
   },
-};
+});
 
 const orgsQuery = queryOptions({
   queryKey: ["organizations", "public"],
@@ -28,7 +28,7 @@ const orgsQuery = queryOptions({
 export const Route = createFileRoute("/organizations")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
-    const title = pageTitle(COPY[l].title, true, l);
+    const title = pageTitle(copyOf(COPY, l).title, true, l);
     const description = brandFor(l).description;
     return {
       meta: [

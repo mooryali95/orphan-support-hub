@@ -8,7 +8,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Label } from "@/components/ui/label";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
-import { useCopy } from "@/lib/locale";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import {
   addPasskey,
@@ -19,7 +19,7 @@ import {
   signInWithPasskey,
 } from "@/lib/passkey";
 
-const COPY = {
+const COPY = defineCopy("components/auth/AuthPanel", {
   ar: {
     title: "ادخل لتكمل",
     noPasskey: "لم نجد بصمةً لهذا الحساب على هذا الجهاز. ادخل برمزٍ ثم أضفها.",
@@ -99,7 +99,7 @@ const COPY = {
     phoneHint: "Enter the number with its country code (+…).",
     havePassword: "Have a password? Sign in with it",
   },
-};
+});
 
 type Method = "email" | "phone";
 type Stage =

@@ -23,7 +23,7 @@ import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
 import { BRAND, brandFor } from "@/config/brand";
-import { useCopy, useLocale } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
@@ -38,9 +38,9 @@ const homeQuery = queryOptions({
   },
 });
 
-const COPY = {
+const COPY = defineCopy("routes/index", {
   ar: {
-    title: `${BRAND.name} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
+    title: (brand: string) => `${brand} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
     description:
       "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.",
     ladder: [
@@ -115,7 +115,7 @@ const COPY = {
       health: "صحّة",
       essentials: "معيشة",
     } as Record<string, string>,
-    logo: `شعار ${BRAND.name}`,
+    logo: (brand: string) => `شعار ${brand}`,
     h1a: "لا نقدّم رعايةً مؤقّتة،",
     h1b: "بل نبني نظم عمران",
     lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.",
@@ -170,7 +170,8 @@ const COPY = {
       "الثقة لا تُطلب بالكلام. هذه السلسلة مفروضة في قاعدة البيانات نفسها: ما لا يجتازها لا يُنشر.",
   },
   en: {
-    title: `${brandFor("en").name} — Carrying the orphan from the shore of loss to the shore of thriving`,
+    title: (brand: string) =>
+      `${brand} — Carrying the orphan from the shore of loss to the shore of thriving`,
     description:
       "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, named education and qualification programs with defined outcomes, and regular impact reports.",
     ladder: [
@@ -252,7 +253,7 @@ const COPY = {
       health: "Health",
       essentials: "Essentials",
     } as Record<string, string>,
-    logo: `${brandFor("en").name} logo`,
+    logo: (brand: string) => `${brand} logo`,
     h1a: "We don't offer temporary care —",
     h1b: "we build systems for thriving",
     lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on named programs with defined outcomes — and the impact comes back to you as a report.",
@@ -309,7 +310,7 @@ const COPY = {
     custodyP:
       "Trust isn't asked for with words. This chain is enforced in the database itself: whatever doesn't pass it isn't published.",
   },
-};
+});
 
 export const Route = createFileRoute("/")({
   // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
@@ -318,12 +319,13 @@ export const Route = createFileRoute("/")({
     ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
   }),
   head: ({ match }) => {
-    const c = COPY[match.context.locale ?? "ar"];
+    const l = match.context.locale ?? "ar";
+    const c = copyOf(COPY, l);
     return {
       meta: [
-        { title: c.title },
+        { title: c.title(brandFor(l).name) },
         { name: "description", content: c.description },
-        { property: "og:title", content: c.title },
+        { property: "og:title", content: c.title(brandFor(l).name) },
         { property: "og:description", content: c.description },
       ],
     };
@@ -423,7 +425,7 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={c.logo} />
+            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={c.logo(brand.name)} />
             <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">
               {brand.name}
             </p>

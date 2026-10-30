@@ -22,7 +22,7 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
-import { useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, pluralOf, useCopy } from "@/lib/locale";
 import { OfferingNote } from "@/components/kit/OfferingNote";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
@@ -47,15 +47,15 @@ export const Route = createFileRoute("/support")({
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(COPY[l].section, false, l) },
-        { name: "description", content: COPY[l].description },
+        { title: pageTitle(copyOf(COPY, l).section, false, l) },
+        { name: "description", content: copyOf(COPY, l).description },
       ],
     };
   },
   component: SupportPage,
 });
 
-const COPY = {
+const COPY = defineCopy("routes/support", {
   ar: {
     section: "ادعم",
     description: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
@@ -117,7 +117,7 @@ const COPY = {
         text: "A center, office or school… working with the children.",
       },
     } as typeof TARGET_INFO,
-    children: (n: number) => (n === 1 ? "1 child" : `${n} children`),
+    children: pluralOf({ one: "{0} child", other: "{0} children" }),
     pledged:
       "Your support is recorded. We'll let you know when payment collection opens, and you can follow it from “My portals”.",
     failed: "It couldn't be recorded.",
@@ -150,7 +150,7 @@ const COPY = {
     pledgeNote:
       "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
   },
-};
+});
 const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {

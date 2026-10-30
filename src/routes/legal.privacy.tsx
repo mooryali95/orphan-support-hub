@@ -10,7 +10,7 @@ export const Route = createFileRoute("/legal/privacy")({
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(l === "en" ? "Privacy policy" : "سياسة الخصوصية", true, l) },
+        { title: pageTitle(l !== "ar" ? "Privacy policy" : "سياسة الخصوصية", true, l) },
         { name: "description", content: brandFor(l).description },
       ],
     };
@@ -23,7 +23,7 @@ function Privacy() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      {locale === "en" ? <PrivacyEn /> : <PrivacyAr />}
+      {locale !== "ar" ? <PrivacyEn /> : <PrivacyAr />}
       <SiteFooter />
     </div>
   );

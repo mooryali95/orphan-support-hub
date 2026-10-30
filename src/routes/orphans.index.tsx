@@ -17,7 +17,7 @@ import { countryName, resolveCountry } from "@/lib/countries";
 import { findCountry, geoQuery } from "@/lib/geo";
 import { arCount, COUNTRIES, FILES } from "@/lib/plural";
 import { brandFor, pageTitle } from "@/config/brand";
-import { useCopy, useLocale } from "@/lib/locale";
+import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 
 const optionsQuery = queryOptions({
   queryKey: ["orphan-filter-options"],
@@ -32,7 +32,7 @@ const firstPageQuery = queryOptions({
 export const Route = createFileRoute("/orphans/")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
-    const title = pageTitle(COPY[l].title, true, l);
+    const title = pageTitle(copyOf(COPY, l).title, true, l);
     const description = brandFor(l).description;
     return {
       meta: [
@@ -83,7 +83,7 @@ type Sort = "waiting" | "closest" | "newest";
 
 const SORTS: Sort[] = ["waiting", "closest", "newest"];
 
-const COPY = {
+const COPY = defineCopy("routes/orphans.index", {
   ar: {
     title: "دليل الأيتام",
     sorts: { waiting: "الأطول انتظاراً", closest: "الأقرب للاكتمال", newest: "الأحدث" } as Record<
@@ -155,7 +155,7 @@ const COPY = {
     building: "Qualification program",
     buildingOn: "Qualification program under way",
     lead: "Every file shown here was approved by the administration after being documented by a licensed care organization",
-    inCountries: (n: number) => ` — in ${n === 1 ? "1 country" : `${n} countries`}.`,
+    inCountries: pluralOf({ one: " — in {0} country.", other: " — in {0} countries." }),
     cardH: "What you see here is a card, not a file:",
     cardP:
       "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page — because a child's file isn't a page to browse.",
@@ -179,7 +179,7 @@ const COPY = {
     active: "Active filters",
     remove: (l: string) => `Remove: ${l}`,
     clearAll: "Clear all",
-    files: (n: number) => (n === 1 ? "1 file" : `${n} files`),
+    files: pluralOf({ one: "{0} file", other: "{0} files" }),
     empty: "No matching results.",
     tryA: "Try removing one of the filters above, or",
     restart: "start over",
@@ -188,7 +188,7 @@ const COPY = {
     next: "Next",
     pageOf: (p: number, n: number) => `Page ${p} of ${n}`,
   },
-};
+});
 
 const AGE_BANDS: AgeBand[] = ["under_6", "age_6_11", "age_12_14", "age_15_17", "age_18_plus"];
 

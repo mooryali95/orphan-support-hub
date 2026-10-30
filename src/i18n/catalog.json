@@ -1,0 +1,4288 @@
+{
+ "version": 1,
+ "count": 607,
+ "entries": {
+  "components/ExcessSuggestion.confirm": {
+   "en": "Continue for this child",
+   "ar": "أكمل لهذا الطفل",
+   "kind": "text",
+   "hash": "2cf44ed1b246",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/ExcessSuggestion.makeIt": {
+   "en": "Make it {0}",
+   "ar": "اجعله {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "3d3eed0c1dc2",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/ExcessSuggestion.needs": {
+   "en": "Needs {0}",
+   "ar": "يحتاج {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8e5b5acbe626",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/ExcessSuggestion.needsA": {
+   "en": "This file needs only ",
+   "ar": "هذا الملف يحتاج ",
+   "kind": "text",
+   "hash": "3736120bdce3",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/ExcessSuggestion.needsB": {
+   "en": " to complete its monthly need, so your amount is higher by ",
+   "ar": " فقط لإكمال احتياجه الشهري، فيزيد مبلغك عنه بـ",
+   "kind": "text",
+   "hash": "5ff28776ec85",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/ExcessSuggestion.waiting": {
+   "en": "These children are waiting for close to what you have extra:",
+   "ar": "وهؤلاء ينتظرون قريباً ممّا يزيد عندك:",
+   "kind": "text",
+   "hash": "787b40d7f952",
+   "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/LegalPage.binding": {
+   "en": "This version is provided for convenience. If it differs from the Arabic, the Arabic version prevails.",
+   "ar": "",
+   "kind": "text",
+   "hash": "e0904defeb86",
+   "file": "src/components/LegalPage.tsx"
+  },
+  "components/LegalPage.updated": {
+   "en": "Last updated",
+   "ar": "آخر تحديث",
+   "kind": "text",
+   "hash": "0cdb5c58d029",
+   "file": "src/components/LegalPage.tsx"
+  },
+  "components/OrphanCard.ages.age_12_14": {
+   "en": "12–14",
+   "ar": "",
+   "kind": "text",
+   "hash": "9d87aa40f0d7",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ages.age_15_17": {
+   "en": "15–17",
+   "ar": "",
+   "kind": "text",
+   "hash": "97da612aa14c",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ages.age_18_plus": {
+   "en": "18+",
+   "ar": "",
+   "kind": "text",
+   "hash": "85c92a12887a",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ages.age_6_11": {
+   "en": "6–11",
+   "ar": "",
+   "kind": "text",
+   "hash": "7d116e667f9e",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ages.under_6": {
+   "en": "Under 6",
+   "ar": "",
+   "kind": "text",
+   "hash": "5c3f32759a20",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ages.unknown": {
+   "en": "Unknown",
+   "ar": "",
+   "kind": "text",
+   "hash": "516843de659d",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.building": {
+   "en": "Qualification program under way",
+   "ar": "برنامج بناء أهلية قائم",
+   "kind": "text",
+   "hash": "013c3bff24ad",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.complete": {
+   "en": "Monthly need covered",
+   "ar": "اكتمل احتياجه الشهري",
+   "kind": "text",
+   "hash": "4c49e2bb17ea",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.coverage": {
+   "en": "Coverage of {0}'s monthly need",
+   "ar": "تغطية احتياج {0} الشهري",
+   "kind": "template",
+   "params": 1,
+   "hash": "bd44f223a252",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.female": {
+   "en": "Girl",
+   "ar": "أنثى",
+   "kind": "text",
+   "hash": "8f98e6516b90",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.full": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.male": {
+   "en": "Boy",
+   "ar": "ذكر",
+   "kind": "text",
+   "hash": "0c646a3bb4c3",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.needs": {
+   "en": "Needs a sponsor",
+   "ar": "بحاجة لكافل",
+   "kind": "text",
+   "hash": "8ae5bc9f14f5",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.notStarted": {
+   "en": "Program not started yet",
+   "ar": "برنامجه لم يبدأ بعد",
+   "kind": "text",
+   "hash": "9b4fd3fa9460",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.of": {
+   "en": "of",
+   "ar": "من",
+   "kind": "text",
+   "hash": "776e33293642",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.remaining": {
+   "en": "still needed monthly",
+   "ar": "متبقٍّ شهرياً",
+   "kind": "text",
+   "hash": "29c80b4e45c7",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.surplus": {
+   "en": "surplus",
+   "ar": "فائض",
+   "kind": "text",
+   "hash": "07a1077794b3",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.years": {
+   "en": "years",
+   "ar": "سنة",
+   "kind": "text",
+   "hash": "8bfa62105318",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/SiteFooter.about": {
+   "en": "A platform that connects sponsors with orphans through files verified by approved care organizations, with monthly follow-up and transparent impact reports.",
+   "ar": "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
+   "kind": "text",
+   "hash": "434d34f96874",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.account": {
+   "en": "Account",
+   "ar": "الحساب",
+   "kind": "text",
+   "hash": "c849bb7bc9a7",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.dashboard": {
+   "en": "My dashboard",
+   "ar": "لوحتي",
+   "kind": "text",
+   "hash": "192153630320",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.developers": {
+   "en": "Developers",
+   "ar": "للمطوّرين",
+   "kind": "text",
+   "hash": "90bcc7e2ecd9",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.faq": {
+   "en": "FAQ",
+   "ar": "الأسئلة الشائعة",
+   "kind": "text",
+   "hash": "778834522f79",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.hadithNote": {
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+   "ar": "",
+   "kind": "text",
+   "hash": "5e0b39d33e3c",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.how": {
+   "en": "How sponsorship works",
+   "ar": "كيف تعمل الكفالة",
+   "kind": "text",
+   "hash": "8b29dbb7f872",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.orgs": {
+   "en": "Care organizations",
+   "ar": "جهات الرعاية",
+   "kind": "text",
+   "hash": "e26fc985d686",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.orphans": {
+   "en": "Children",
+   "ar": "دليل الأيتام",
+   "kind": "text",
+   "hash": "d765f5139550",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.platform": {
+   "en": "Platform",
+   "ar": "المنصة",
+   "kind": "text",
+   "hash": "b9133877f81d",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.privacy": {
+   "en": "Privacy policy",
+   "ar": "سياسة الخصوصية",
+   "kind": "text",
+   "hash": "20b714e39c50",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.rights": {
+   "en": "All rights reserved",
+   "ar": "جميع الحقوق محفوظة",
+   "kind": "text",
+   "hash": "0bc513387794",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.terms": {
+   "en": "Terms of use",
+   "ar": "شروط الاستخدام",
+   "kind": "text",
+   "hash": "798d3bd74b80",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.transparency": {
+   "en": "Transparency",
+   "ar": "الشفافية",
+   "kind": "text",
+   "hash": "895b92cfad4a",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteHeader.home": {
+   "en": "Home page",
+   "ar": "الصفحة الرئيسية",
+   "kind": "text",
+   "hash": "18f3b398c040",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.menu": {
+   "en": "Menu",
+   "ar": "القائمة",
+   "kind": "text",
+   "hash": "41131c6f1123",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.0": {
+   "en": "Home",
+   "ar": "الرئيسية",
+   "kind": "text",
+   "hash": "349c3dbe2662",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.1": {
+   "en": "Children",
+   "ar": "دليل الأيتام",
+   "kind": "text",
+   "hash": "d765f5139550",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.2": {
+   "en": "Support",
+   "ar": "ادعم",
+   "kind": "text",
+   "hash": "81bb0b6bce39",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.3": {
+   "en": "Trait model",
+   "ar": "نموذج السمات",
+   "kind": "text",
+   "hash": "107dab55b891",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.4": {
+   "en": "How it works",
+   "ar": "كيف تعمل",
+   "kind": "text",
+   "hash": "f41753ab6f70",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.5": {
+   "en": "Care organizations",
+   "ar": "جهات الرعاية",
+   "kind": "text",
+   "hash": "e26fc985d686",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.skip": {
+   "en": "Skip to content",
+   "ar": "تخطّي إلى المحتوى",
+   "kind": "text",
+   "hash": "7760059a09d6",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.sponsor": {
+   "en": "Sponsor a child",
+   "ar": "اكفل يتيماً",
+   "kind": "text",
+   "hash": "62fd7babf158",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/auth/AuthDialog.consent": {
+   "en": "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
+   "ar": "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية — منصّةٌ تعالج بيانات أطفال.",
+   "kind": "text",
+   "hash": "49c93b492b18",
+   "file": "src/components/auth/AuthDialog.tsx"
+  },
+  "components/auth/AuthDialog.hint": {
+   "en": "A code sent to you, or Google — and you stay right where you are.",
+   "ar": "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+   "kind": "text",
+   "hash": "c5413c7199a3",
+   "file": "src/components/auth/AuthDialog.tsx"
+  },
+  "components/auth/AuthDialog.title": {
+   "en": "Sign in to continue",
+   "ar": "ادخل لتكمل",
+   "kind": "text",
+   "hash": "bb05268944f8",
+   "file": "src/components/auth/AuthDialog.tsx"
+  },
+  "components/auth/AuthPanel.addPasskey": {
+   "en": "Add my passkey",
+   "ar": "أضف بصمتي",
+   "kind": "text",
+   "hash": "40fbb1629570",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.badCode": {
+   "en": "The code is wrong or has expired.",
+   "ar": "الرمز غير صحيح أو انتهت مدّته.",
+   "kind": "text",
+   "hash": "93e6990ad29a",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.badPassword": {
+   "en": "The email or password is incorrect.",
+   "ar": "البريد أو كلمة المرور غير صحيحة.",
+   "kind": "text",
+   "hash": "f0932a245d00",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.changeEmail": {
+   "en": "Change email",
+   "ar": "تغيير البريد",
+   "kind": "text",
+   "hash": "9b11bfbf3f87",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.changePhone": {
+   "en": "Change number",
+   "ar": "تغيير الرقم",
+   "kind": "text",
+   "hash": "595cd5f5febe",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.codeLabel": {
+   "en": "Sign-in code",
+   "ar": "رمز الدخول",
+   "kind": "text",
+   "hash": "9fd497e87c51",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.codeMethod": {
+   "en": "Code method",
+   "ar": "طريقة الرمز",
+   "kind": "text",
+   "hash": "0868e0a6882f",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.email": {
+   "en": "Email",
+   "ar": "البريد الإلكتروني",
+   "kind": "text",
+   "hash": "b47b33fa0a51",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.enrolFail": {
+   "en": "The passkey couldn't be added. You can add it later from “My account”.",
+   "ar": "تعذّرت إضافة البصمة. يمكنك إضافتها لاحقاً من «حسابي».",
+   "kind": "text",
+   "hash": "469bb98b5b59",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.enrolOk": {
+   "en": "Passkey added — next time, sign in with a touch.",
+   "ar": "أُضيفت بصمتك — في المرّة القادمة تدخل بلمسة.",
+   "kind": "text",
+   "hash": "ebecde792209",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.google": {
+   "en": "Continue with Google",
+   "ar": "المتابعة بحساب جوجل",
+   "kind": "text",
+   "hash": "a1185bbe6c29",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.googleFail": {
+   "en": "Google sign-in didn't work. Try email instead.",
+   "ar": "تعذّر الدخول بجوجل. جرّب البريد.",
+   "kind": "text",
+   "hash": "c401c8165c83",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.havePassword": {
+   "en": "Have a password? Sign in with it",
+   "ar": "لديك كلمة مرور؟ ادخل بها",
+   "kind": "text",
+   "hash": "713dd51bfc07",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.later": {
+   "en": "Later",
+   "ar": "لاحقاً",
+   "kind": "text",
+   "hash": "8558c430ad77",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.noPasskey": {
+   "en": "We couldn't find a passkey for this account on this device. Sign in with a code, then add one.",
+   "ar": "لم نجد بصمةً لهذا الحساب على هذا الجهاز. ادخل برمزٍ ثم أضفها.",
+   "kind": "text",
+   "hash": "3322a9bf2fc6",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.offerH": {
+   "en": "Next time, sign in with a touch",
+   "ar": "ادخل في المرّة القادمة بلمسة",
+   "kind": "text",
+   "hash": "c971f1aa77c6",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.offerP": {
+   "en": "Add your fingerprint or face on this device. No code to wait for, no password to forget — and your biometrics never leave your device.",
+   "ar": "أضف بصمتك أو وجهك على هذا الجهاز. لا رمز ينتظرك، ولا كلمة مرور تُنسى — وبصمتك لا تغادر جهازك.",
+   "kind": "text",
+   "hash": "83031a4ebab5",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.orCode": {
+   "en": "or with a code sent to you",
+   "ar": "أو برمزٍ يصلك",
+   "kind": "text",
+   "hash": "86ee196727b3",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.passkey": {
+   "en": "Sign in with a passkey",
+   "ar": "الدخول بالبصمة",
+   "kind": "text",
+   "hash": "4fa65b2c05c3",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.password": {
+   "en": "Password",
+   "ar": "كلمة المرور",
+   "kind": "text",
+   "hash": "1b1808441bc2",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.phoneHint": {
+   "en": "Enter the number with its country code (+…).",
+   "ar": "اكتب الرقم مع رمز الدولة (+…).",
+   "kind": "text",
+   "hash": "91c68f84d471",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.phoneLabel": {
+   "en": "Mobile number with country code",
+   "ar": "رقم الجوال مع رمز الدولة",
+   "kind": "text",
+   "hash": "10833d1486e6",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.rate": {
+   "en": "Too many codes requested. Wait a minute, then try again.",
+   "ar": "طلبتَ رموزاً كثيرة. انتظر دقيقة ثم أعد المحاولة.",
+   "kind": "text",
+   "hash": "4cdce7944213",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.resend": {
+   "en": "Resend the code",
+   "ar": "أعد إرسال الرمز",
+   "kind": "text",
+   "hash": "e06a2d218b9f",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.resendIn": {
+   "en": "Resend in",
+   "ar": "إعادة الإرسال بعد",
+   "kind": "text",
+   "hash": "88e632e776b1",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.send": {
+   "en": "Send code",
+   "ar": "أرسل الرمز",
+   "kind": "text",
+   "hash": "b66be0244c2e",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.sendFail": {
+   "en": "The code couldn't be sent. Check what you entered.",
+   "ar": "تعذّر إرسال الرمز. تحقّق ممّا كتبت.",
+   "kind": "text",
+   "hash": "e1772d26562a",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.sentTo": {
+   "en": "We sent a six-digit code to",
+   "ar": "أرسلنا رمزاً من ستّة أرقام إلى",
+   "kind": "text",
+   "hash": "805065b2c212",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.signIn": {
+   "en": "Sign in",
+   "ar": "دخول",
+   "kind": "text",
+   "hash": "1cb0fe6a201d",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.smsOff": {
+   "en": "Phone sign-in isn't enabled yet — use email or Google.",
+   "ar": "الدخول بالجوال لم يُفعَّل بعد — استعمل البريد أو جوجل.",
+   "kind": "text",
+   "hash": "252bae3ce243",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.tabEmail": {
+   "en": "Email",
+   "ar": "البريد",
+   "kind": "text",
+   "hash": "891dcfaaa607",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.tabPhone": {
+   "en": "Phone",
+   "ar": "الجوال",
+   "kind": "text",
+   "hash": "94cfd92dfd96",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.title": {
+   "en": "Sign in to continue",
+   "ar": "ادخل لتكمل",
+   "kind": "text",
+   "hash": "bb05268944f8",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.useCode": {
+   "en": "Sign in with a code instead",
+   "ar": "الدخول برمز بدلاً من ذلك",
+   "kind": "text",
+   "hash": "d01600c2b1b6",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.verifying": {
+   "en": "Checking…",
+   "ar": "نتحقّق…",
+   "kind": "text",
+   "hash": "8665ba5cc96b",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.welcome": {
+   "en": "Welcome",
+   "ar": "أهلاً بك",
+   "kind": "text",
+   "hash": "1f60866db6e8",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/brand/SurplusBadge.perMonth": {
+   "en": "per month",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "f825a06ab5d1",
+   "file": "src/components/brand/SurplusBadge.tsx"
+  },
+  "components/brand/SurplusBadge.routed": {
+   "en": "Their monthly need is covered, and this surplus goes to an additional program chosen by the care organization and approved by the administration.",
+   "ar": "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره جهة الرعاية وتعتمده الإدارة.",
+   "kind": "text",
+   "hash": "37db8fa56931",
+   "file": "src/components/brand/SurplusBadge.tsx"
+  },
+  "components/brand/SurplusBadge.title": {
+   "en": "Giving beyond the need",
+   "ar": "عطاء فوق الاحتياج",
+   "kind": "text",
+   "hash": "b18811032cc4",
+   "file": "src/components/brand/SurplusBadge.tsx"
+  },
+  "components/brand/SurplusBadge.unlocksA": {
+   "en": "Their monthly need is covered, and this surplus opens up",
+   "ar": "اكتمل احتياجه الشهري، وهذا الفائض يفتح له",
+   "kind": "text",
+   "hash": "69ebdc2a6aee",
+   "file": "src/components/brand/SurplusBadge.tsx"
+  },
+  "components/geo/CountryPicker.country": {
+   "en": "Country",
+   "ar": "البلد",
+   "kind": "text",
+   "hash": "ed9ac8a2fff8",
+   "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/geo/CountryPicker.none": {
+   "en": "No country by that name",
+   "ar": "لا دولة بهذا الاسم",
+   "kind": "text",
+   "hash": "774b77921e57",
+   "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/geo/CountryPicker.other": {
+   "en": "Other",
+   "ar": "أخرى",
+   "kind": "text",
+   "hash": "4661c9aed71c",
+   "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/geo/CountryPicker.search": {
+   "en": "Search in any language or by code…",
+   "ar": "ابحث بأي لغة أو بالرمز…",
+   "kind": "text",
+   "hash": "c2f38f84cdb5",
+   "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/map/MapActions.browse": {
+   "en": "Browse who is waiting here",
+   "ar": "تصفّح من ينتظر هنا",
+   "kind": "text",
+   "hash": "e7b29023a797",
+   "file": "src/components/map/MapActions.tsx"
+  },
+  "components/map/MapActions.country": {
+   "en": "this country",
+   "ar": "هذه الدولة",
+   "kind": "text",
+   "hash": "effc1fb0c9da",
+   "file": "src/components/map/MapActions.tsx"
+  },
+  "components/map/MapActions.region": {
+   "en": "this region",
+   "ar": "هذه المنطقة",
+   "kind": "text",
+   "hash": "95c0537e4b6b",
+   "file": "src/components/map/MapActions.tsx"
+  },
+  "components/map/MapActions.signInTo": {
+   "en": "Sign in to support {0}",
+   "ar": "ادخل لتدعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7087d2a9a121",
+   "file": "src/components/map/MapActions.tsx"
+  },
+  "components/map/MapActions.support": {
+   "en": "Support {0}",
+   "ar": "ادعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8520e0afe7c7",
+   "file": "src/components/map/MapActions.tsx"
+  },
+  "components/map/WorldMap.back": {
+   "en": "Back",
+   "ar": "رجوع",
+   "kind": "text",
+   "hash": "af5a3761b8f5",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.breadcrumb": {
+   "en": "Your place on the map",
+   "ar": "موضعك على الخارطة",
+   "kind": "text",
+   "hash": "92c72ddc2358",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.browse": {
+   "en": "Browse who is waiting here",
+   "ar": "تصفّح من ينتظر هنا",
+   "kind": "text",
+   "hash": "e7b29023a797",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.closeList": {
+   "en": "Close list",
+   "ar": "إغلاق القائمة",
+   "kind": "text",
+   "hash": "67c29274cb94",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.cohort": {
+   "en": "We don't show exact numbers when any of them is below {0} — so children can't be identified.",
+   "ar": "لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن {0} — حمايةً للأطفال من أن يُعرَفوا.",
+   "kind": "template",
+   "params": 1,
+   "hash": "de2742f33477",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.countries.one": {
+   "en": "{0} country",
+   "ar": "",
+   "kind": "plural",
+   "hash": "04008d4511d1",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.countries.other": {
+   "en": "{0} countries",
+   "ar": "",
+   "kind": "plural",
+   "hash": "357b4f494742",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.countriesH": {
+   "en": "Countries",
+   "ar": "الدول",
+   "kind": "text",
+   "hash": "7f0e3e766f4f",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.demo": {
+   "en": "Sample data",
+   "ar": "بيانات تجريبية",
+   "kind": "text",
+   "hash": "e80feb93881e",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.fewerThan": {
+   "en": "fewer than {0}",
+   "ar": "أقل من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7793f247c436",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.introA": {
+   "en": "to see who is waiting for a sponsor there —",
+   "ar": "لترى من ينتظر كافلاً هناك —",
+   "kind": "text",
+   "hash": "8131dac0481a",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.introB": {
+   "en": "verified files in",
+   "ar": "ملفاً موثّقاً في",
+   "kind": "text",
+   "hash": "f187b16b81df",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.list": {
+   "en": "List",
+   "ar": "قائمة",
+   "kind": "text",
+   "hash": "47840db3599b",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.listLabel": {
+   "en": "Countries and regions",
+   "ar": "الدول والمناطق",
+   "kind": "text",
+   "hash": "bc2eb925faf2",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.mapOf": {
+   "en": "Map of {0}",
+   "ar": "خارطة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "114518722149",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.none": {
+   "en": "No verified files here yet.",
+   "ar": "لا ملفّات موثّقة هنا بعد.",
+   "kind": "text",
+   "hash": "ebf11b34a0ad",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.pctSponsored": {
+   "en": "{0}% sponsored",
+   "ar": "{0}% مكفولون",
+   "kind": "template",
+   "params": 1,
+   "hash": "4fecae187828",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.pick": {
+   "en": "Choose a country",
+   "ar": "اختر بلداً",
+   "kind": "text",
+   "hash": "14ba2e8f3e65",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.regions": {
+   "en": "Regions",
+   "ar": "المناطق",
+   "kind": "text",
+   "hash": "68f11e249e43",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.regionsOf": {
+   "en": "Regions of {0}",
+   "ar": "مناطق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "75b06e821036",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.section": {
+   "en": "Map of orphans worldwide",
+   "ar": "خارطة الأيتام في العالم",
+   "kind": "text",
+   "hash": "eb9f1adf99e8",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.sponsored": {
+   "en": "Sponsored",
+   "ar": "مكفول",
+   "kind": "text",
+   "hash": "6d23172d24c3",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.verified": {
+   "en": "children with a verified file",
+   "ar": "يتيماً بملفٍّ موثّق",
+   "kind": "text",
+   "hash": "d1b28fab6dbf",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.waiting": {
+   "en": "Waiting for a sponsor",
+   "ar": "ينتظر كافلاً",
+   "kind": "text",
+   "hash": "d881e3628d47",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.world": {
+   "en": "World",
+   "ar": "العالم",
+   "kind": "text",
+   "hash": "2f9babf26280",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.worldMap": {
+   "en": "World map",
+   "ar": "خارطة العالم",
+   "kind": "text",
+   "hash": "d5e36efbecb4",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/orphan/ScopedSections.education": {
+   "en": "Education:",
+   "ar": "التعليم:",
+   "kind": "text",
+   "hash": "32c8a5ed9044",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.evidence": {
+   "en": "Work handed in: ",
+   "ar": "المخرَج: ",
+   "kind": "text",
+   "hash": "f561ef0b89db",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.group": {
+   "en": "Their group",
+   "ar": "مجموعته",
+   "kind": "text",
+   "hash": "950893a7a48d",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.journey": {
+   "en": "Their journey",
+   "ar": "رحلته",
+   "kind": "text",
+   "hash": "93c2207ae4dd",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.living": {
+   "en": "Living conditions:",
+   "ar": "المعيشة:",
+   "kind": "text",
+   "hash": "dc8066ebf51d",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.locked": {
+   "en": "Locked",
+   "ar": "مقفل",
+   "kind": "text",
+   "hash": "6bc093c05bcd",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.noGroup": {
+   "en": "Not assigned to a group yet.",
+   "ar": "لم يُسنَد إلى مجموعة بعد.",
+   "kind": "text",
+   "hash": "76cc5aba3faa",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.noReports": {
+   "en": "No reports published yet.",
+   "ar": "لا تقارير منشورة بعد.",
+   "kind": "text",
+   "hash": "97f7ac1ad03a",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.noTraits": {
+   "en": "No measurements yet.",
+   "ar": "لا قياسات بعد.",
+   "kind": "text",
+   "hash": "9060a54e7b1e",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.notEnrolled": {
+   "en": "Not enrolled in a program yet.",
+   "ar": "لم يلتحق ببرنامج بعد.",
+   "kind": "text",
+   "hash": "3c93a35f4f08",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.note": {
+   "en": "Supervisor's assessment: ",
+   "ar": "تقويم المشرف: ",
+   "kind": "text",
+   "hash": "e90982880e56",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.opensWith": {
+   "en": "Opens with permission from the administration.",
+   "ar": "يُفتح بإذنٍ من الإدارة.",
+   "kind": "text",
+   "hash": "67c329190c29",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.photos.one": {
+   "en": "{0} documented photo",
+   "ar": "",
+   "kind": "plural",
+   "hash": "7f6260f835f6",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.photos.other": {
+   "en": "{0} documented photos",
+   "ar": "",
+   "kind": "plural",
+   "hash": "764ee89f75df",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.progress.one": {
+   "en": "{0} of {1} session accepted",
+   "ar": "",
+   "kind": "plural",
+   "hash": "721f87159cc2",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.progress.other": {
+   "en": "{0} of {1} sessions accepted",
+   "ar": "",
+   "kind": "plural",
+   "hash": "c105883d42a1",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.report": {
+   "en": "Report {0}",
+   "ar": "تقرير {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a49cc308a396",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.reports": {
+   "en": "Reports",
+   "ar": "التقارير",
+   "kind": "text",
+   "hash": "c22ea696174e",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.request": {
+   "en": "Request access",
+   "ar": "اطلب الاطّلاع",
+   "kind": "text",
+   "hash": "c403bc1199b2",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stage": {
+   "en": "Stage:",
+   "ar": "المرحلة:",
+   "kind": "text",
+   "hash": "f7eb985b53c8",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.actions": {
+   "en": "Actions",
+   "ar": "",
+   "kind": "text",
+   "hash": "62964a2c5b47",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.concept": {
+   "en": "Concept",
+   "ar": "",
+   "kind": "text",
+   "hash": "0142f5aa9842",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.measurement": {
+   "en": "Measurement",
+   "ar": "",
+   "kind": "text",
+   "hash": "4d39032eb1d2",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.qualified": {
+   "en": "Capability",
+   "ar": "",
+   "kind": "text",
+   "hash": "3c7e7344452e",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.system": {
+   "en": "System",
+   "ar": "",
+   "kind": "text",
+   "hash": "a910797d9b91",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.stages.trait": {
+   "en": "Trait",
+   "ar": "",
+   "kind": "text",
+   "hash": "0958313fcd4d",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.supervisor": {
+   "en": "Lead supervisor:",
+   "ar": "المشرف الأساسي:",
+   "kind": "text",
+   "hash": "71ce61f1d83a",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.traits": {
+   "en": "Their traits",
+   "ar": "سماته",
+   "kind": "text",
+   "hash": "526b6017b6f7",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.units.accepted": {
+   "en": "Accepted",
+   "ar": "",
+   "kind": "text",
+   "hash": "6e7f156a68ec",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.units.pending": {
+   "en": "Not started",
+   "ar": "",
+   "kind": "text",
+   "hash": "e9d4d9845913",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.units.returned": {
+   "en": "Returned for improvement",
+   "ar": "",
+   "kind": "text",
+   "hash": "a05032f5f0a7",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/ScopedSections.units.submitted": {
+   "en": "Under review",
+   "ar": "",
+   "kind": "text",
+   "hash": "71debc637539",
+   "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/profile/OrphanProfilePanel.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.count": {
+   "en": "{0} of {1} sections",
+   "ar": "{0} من {1} أقسام",
+   "kind": "template",
+   "params": 2,
+   "hash": "763896c9f635",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.edit": {
+   "en": "Edit",
+   "ar": "تعديل",
+   "kind": "text",
+   "hash": "c9b1555b11cb",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.empty": {
+   "en": "An empty section isn't saved — fill in a field or a note",
+   "ar": "القسم الخالي لا يُحفظ — اكتب حقلاً أو ملاحظة",
+   "kind": "text",
+   "hash": "b01012c3b51f",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.caregiver_relation": {
+   "en": "Caregiver's relationship",
+   "ar": "",
+   "kind": "text",
+   "hash": "459bef8ee8fc",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.challenges": {
+   "en": "Challenges",
+   "ar": "",
+   "kind": "text",
+   "hash": "cfe60225e4db",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.chronic_conditions": {
+   "en": "Chronic conditions",
+   "ar": "",
+   "kind": "text",
+   "hash": "cffd6eefa416",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.concerns": {
+   "en": "Worries",
+   "ar": "",
+   "kind": "text",
+   "hash": "3d74e59081a0",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.confidence": {
+   "en": "Self-confidence",
+   "ar": "",
+   "kind": "text",
+   "hash": "ab5431c33f70",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.disability": {
+   "en": "Disability",
+   "ar": "",
+   "kind": "text",
+   "hash": "709d96ffcb6d",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.favourite_subject": {
+   "en": "Favorite subject",
+   "ar": "",
+   "kind": "text",
+   "hash": "58f9afbbe88b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.general_state": {
+   "en": "General condition",
+   "ar": "",
+   "kind": "text",
+   "hash": "8764f2c4e25b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.grade": {
+   "en": "Grade",
+   "ar": "",
+   "kind": "text",
+   "hash": "a150dc14f6c8",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.housing_type": {
+   "en": "Housing type",
+   "ar": "",
+   "kind": "text",
+   "hash": "765169b5a0c1",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.income_source": {
+   "en": "Source of income",
+   "ar": "",
+   "kind": "text",
+   "hash": "3190887c61c7",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.interests": {
+   "en": "Interests",
+   "ar": "",
+   "kind": "text",
+   "hash": "a84b553718f2",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.last_checkup": {
+   "en": "Last checkup",
+   "ar": "",
+   "kind": "text",
+   "hash": "4ad399e383c8",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.lives_with": {
+   "en": "Lives with",
+   "ar": "",
+   "kind": "text",
+   "hash": "3b8c4526744c",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.medications": {
+   "en": "Medications",
+   "ar": "",
+   "kind": "text",
+   "hash": "0ff176749e7d",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.peer_relations": {
+   "en": "Relationships with peers",
+   "ar": "",
+   "kind": "text",
+   "hash": "0b66a0e65180",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.performance": {
+   "en": "Academic level",
+   "ar": "",
+   "kind": "text",
+   "hash": "2a2078b12f04",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.readiness": {
+   "en": "Readiness for the program",
+   "ar": "",
+   "kind": "text",
+   "hash": "744c8717f06b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.recommendation": {
+   "en": "Recommendation",
+   "ar": "",
+   "kind": "text",
+   "hash": "ffa8d820d1c4",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.school_name": {
+   "en": "School",
+   "ar": "",
+   "kind": "text",
+   "hash": "83a21363cedb",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.siblings_count": {
+   "en": "Number of siblings",
+   "ar": "",
+   "kind": "text",
+   "hash": "27d095857f2b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.skills": {
+   "en": "Skills",
+   "ar": "",
+   "kind": "text",
+   "hash": "11bc309c128b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.strengths": {
+   "en": "Strengths",
+   "ar": "",
+   "kind": "text",
+   "hash": "38ddc29b21bf",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.support_needed": {
+   "en": "Support needed",
+   "ar": "",
+   "kind": "text",
+   "hash": "d193218b8c12",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.wants_to_be": {
+   "en": "Wants to be",
+   "ar": "",
+   "kind": "text",
+   "hash": "6b2910a15f7e",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fields.what_would_help": {
+   "en": "What would help",
+   "ar": "",
+   "kind": "text",
+   "hash": "921ef10be402",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.fill": {
+   "en": "Fill in",
+   "ar": "تعبئة",
+   "kind": "text",
+   "hash": "235eba253bfb",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.hidden.one": {
+   "en": "{0} protected section",
+   "ar": "",
+   "kind": "plural",
+   "hash": "104af60a12b3",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.hidden.other": {
+   "en": "{0} protected sections",
+   "ar": "",
+   "kind": "plural",
+   "hash": "b4eb37b13956",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.loading": {
+   "en": "Loading the profile…",
+   "ar": "جارٍ تحميل البروفايل…",
+   "kind": "text",
+   "hash": "f77241504663",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.notFilled": {
+   "en": "Not filled in yet.",
+   "ar": "لم يُعبَّأ بعد.",
+   "kind": "text",
+   "hash": "8f8d0718624b",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.note": {
+   "en": "Note",
+   "ar": "ملاحظة",
+   "kind": "text",
+   "hash": "d9f75af1e0b0",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.care_org": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.guardian": {
+   "en": "Guardian",
+   "ar": "الوليّ",
+   "kind": "text",
+   "hash": "8ca4fad498f1",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.jurist": {
+   "en": "Jurist",
+   "ar": "الفقيه",
+   "kind": "text",
+   "hash": "373d38622675",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.mentor": {
+   "en": "Mentor",
+   "ar": "المرشد",
+   "kind": "text",
+   "hash": "34381ccab0e2",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.supervisor": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.roles.trustee": {
+   "en": "Legal guardian",
+   "ar": "الوصيّ",
+   "kind": "text",
+   "hash": "db5e0943d9dc",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.save": {
+   "en": "Save",
+   "ar": "حفظ",
+   "kind": "text",
+   "hash": "95ac72a0305a",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.saveFailed": {
+   "en": "Could not save",
+   "ar": "تعذّر الحفظ",
+   "kind": "text",
+   "hash": "a0ba11478e8d",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.saved": {
+   "en": "Section saved",
+   "ar": "حُفظ القسم",
+   "kind": "text",
+   "hash": "8c6d2c2fbeae",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.aspiration": {
+   "en": "Aspirations and interests",
+   "ar": "",
+   "kind": "text",
+   "hash": "7c4126e56828",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.education": {
+   "en": "Education",
+   "ar": "",
+   "kind": "text",
+   "hash": "a88986475b46",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.family": {
+   "en": "Family and housing",
+   "ar": "",
+   "kind": "text",
+   "hash": "bd845de8f1b0",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.health": {
+   "en": "Health",
+   "ar": "",
+   "kind": "text",
+   "hash": "ac0ee38f2607",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.social": {
+   "en": "Psychological and social",
+   "ar": "",
+   "kind": "text",
+   "hash": "cde5c7ec3341",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sections.supervisor_note": {
+   "en": "Supervisor's note",
+   "ar": "",
+   "kind": "text",
+   "hash": "883048c64e15",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sensitive": {
+   "en": "Sensitive section",
+   "ar": "قسم حسّاس",
+   "kind": "text",
+   "hash": "79973c6e22b3",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.sensitiveNote": {
+   "en": "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and care organization.",
+   "ar": "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه وجهته.",
+   "kind": "text",
+   "hash": "f6a332948dec",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.stale": {
+   "en": " (needs updating)",
+   "ar": " (يحتاج تحديثاً)",
+   "kind": "text",
+   "hash": "57d2602ca80e",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.title": {
+   "en": "{0}'s profile",
+   "ar": "بروفايل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "00ce08603915",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/profile/OrphanProfilePanel.writerNote": {
+   "en": "Written by the people around the child: their guardian, supervisor or care organization. Your role is recorded with what you write, and the date moves only when something changes.",
+   "ar": "يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته. وصفتُك تُسجَّل مع ما تكتب، والتاريخ يتحرّك بالتغيير لا باللمس.",
+   "kind": "text",
+   "hash": "393ae9575235",
+   "file": "src/components/profile/OrphanProfilePanel.tsx"
+  },
+  "components/protection/AccessGate.granted": {
+   "en": "You now have access to this file",
+   "ar": "لك اطّلاعٌ على هذا الملفّ",
+   "kind": "text",
+   "hash": "c9dc6794e4dc",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.hiddenH": {
+   "en": "File details are protected",
+   "ar": "تفاصيل الملفّ محجوبة",
+   "kind": "text",
+   "hash": "924e10cc5ceb",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.hiddenP": {
+   "en": "{0}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration — because a child's file isn't a page to browse.",
+   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+   "kind": "template",
+   "params": 1,
+   "hash": "04f668a62fb0",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.pendingH": {
+   "en": "Your request is under review",
+   "ar": "طلبك قيد المراجعة",
+   "kind": "text",
+   "hash": "3dccbe1c7790",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.pendingP": {
+   "en": "You sent your request on {0} and the administration is reviewing it. Once approved, the file's details open for you right on this page.",
+   "ar": "أُرسل طلبك في {0} وتنظر فيه الإدارة. وحين يُقبل تُفتح لك تفاصيل الملفّ من هذه الصفحة نفسها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "43424112e86d",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.pickPkg": {
+   "en": "Choose a package; the administration decides what is actually granted, and may adjust it.",
+   "ar": "اختر حزمة؛ والإدارة تقرّر ما يُمنح فعلاً، وقد تعدّله.",
+   "kind": "text",
+   "hash": "03d3bf9ea25f",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.rejectedH": {
+   "en": "Your request was not approved",
+   "ar": "لم يُقبل طلبك",
+   "kind": "text",
+   "hash": "d546bf84a3d9",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.requestA": {
+   "en": "{0}'s story, photo, city and detailed needs sit behind permission from the administration. Tell us why you're asking — it's a question the child deserves to have asked — and the administration will review it. When granted, access is",
+   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه خلف إذنٍ من الإدارة. اكتب سبب طلبك — وهو سؤالٌ من حقّ الطفل أن يُسأل — ثم تنظر فيه الإدارة. والإذن حين يُمنح",
+   "kind": "template",
+   "params": 1,
+   "hash": "eee1d82d6c9c",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.requestB": {
+   "en": ", and can be withdrawn whenever needed.",
+   "ar": "، ويُسحب متى لزم.",
+   "kind": "text",
+   "hash": "e1f2c3833bbe",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.requestH": {
+   "en": "Request access to the file",
+   "ar": "اطلب الاطّلاع على الملفّ",
+   "kind": "text",
+   "hash": "5df972b5b02c",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.revokedH": {
+   "en": "Your access to this file was withdrawn",
+   "ar": "سُحب إذنك على هذا الملفّ",
+   "kind": "text",
+   "hash": "5d6c47429ae6",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.saved": {
+   "en": "Your reason is saved with the request and read by the administration when deciding.",
+   "ar": "يُحفظ سببك مع الطلب، وتقرؤه الإدارة عند البتّ.",
+   "kind": "text",
+   "hash": "a2a24d70bec9",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.sendFailed": {
+   "en": "The request could not be sent",
+   "ar": "تعذّر إرسال الطلب",
+   "kind": "text",
+   "hash": "a603242d577a",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.sent": {
+   "en": "Your request was sent to the administration",
+   "ar": "أُرسل طلبك إلى الإدارة",
+   "kind": "text",
+   "hash": "cdc3c56b24c4",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.signInTo": {
+   "en": "Sign in to request access",
+   "ar": "الدخول لطلب الاطّلاع",
+   "kind": "text",
+   "hash": "22ce2aa12441",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.stillSponsor": {
+   "en": "You can still sponsor from this page without seeing the details: the file is verified by an approved organization and was reviewed by the administration before publishing.",
+   "ar": "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ موثَّقٌ من جهةٍ معتمدة، والإدارة راجعته قبل نشره.",
+   "kind": "text",
+   "hash": "f6d9cc5b0c65",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.submit": {
+   "en": "Send request",
+   "ar": "إرسال الطلب",
+   "kind": "text",
+   "hash": "e19e2fcebbb0",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.temporary": {
+   "en": "temporary",
+   "ar": "مؤقّت",
+   "kind": "text",
+   "hash": "592927c65421",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.tooShort": {
+   "en": "Write at least {0} characters ({1} so far).",
+   "ar": "اكتب {0} حرفاً على الأقلّ ({1} حتى الآن).",
+   "kind": "template",
+   "params": 2,
+   "hash": "096751abae9f",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.whatSee": {
+   "en": "What would you like to see?",
+   "ar": "ماذا تريد أن ترى؟",
+   "kind": "text",
+   "hash": "d2a06d754531",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.why": {
+   "en": "Why would you like access?",
+   "ar": "لماذا تريد الاطّلاع؟",
+   "kind": "text",
+   "hash": "f7eb02c2c68f",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/AccessGate.whyPh": {
+   "en": "For example: I plan to sponsor this child and need to know their detailed needs before deciding.",
+   "ar": "مثال: أنوي كفالة هذا الملفّ وأحتاج معرفة تفصيل احتياجه قبل القرار.",
+   "kind": "text",
+   "hash": "b5878c30d82d",
+   "file": "src/components/protection/AccessGate.tsx"
+  },
+  "components/protection/RequesterThread.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.placeholder": {
+   "en": "Add a clarification or answer the administration's question…",
+   "ar": "أضف توضيحاً أو أجب عن سؤال الإدارة…",
+   "kind": "text",
+   "hash": "a326085c721b",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.send": {
+   "en": "Send",
+   "ar": "إرسال",
+   "kind": "text",
+   "hash": "053eed1c4e4c",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.title": {
+   "en": "Conversation with the administration",
+   "ar": "المحادثة مع الإدارة",
+   "kind": "text",
+   "hash": "be15707a9254",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.you": {
+   "en": "You",
+   "ar": "أنت",
+   "kind": "text",
+   "hash": "6900c6edad0f",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/qualification/QualificationPanel.accepted": {
+   "en": "accepted",
+   "ar": "مقبولة",
+   "kind": "text",
+   "hash": "c14386483e76",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.afterNo": {
+   "en": "Final measurement at the end of the journey",
+   "ar": "القياس الختامي في آخر الرحلة",
+   "kind": "text",
+   "hash": "9c75e18d3e72",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.afterYes": {
+   "en": "Measured after the program",
+   "ar": "قِيسَ بعد البرنامج",
+   "kind": "text",
+   "hash": "0afd9aa6cedf",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.beforeNo": {
+   "en": "Awaiting the baseline measurement",
+   "ar": "بانتظار القياس الأوّلي",
+   "kind": "text",
+   "hash": "42c42cda3b08",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.beforeYes": {
+   "en": "Measured before the program",
+   "ar": "قِيسَ قبل البرنامج",
+   "kind": "text",
+   "hash": "79531ed1b94e",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.concept": {
+   "en": "Concept — what we teach",
+   "ar": "المفهوم — ما نُعلِّمه",
+   "kind": "text",
+   "hash": "e62d4da7a455",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.consentNo": {
+   "en": "Awaiting guardian consent",
+   "ar": "بانتظار توثيق إذن الولي",
+   "kind": "text",
+   "hash": "8b05adca09e7",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.consentYes": {
+   "en": "Guardian consent documented",
+   "ar": "إذن الولي أو الوصي موثَّق",
+   "kind": "text",
+   "hash": "afda3892de83",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.current": {
+   "en": "Current stage",
+   "ar": "المرحلة الحالية",
+   "kind": "text",
+   "hash": "385183a5a1f2",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.eq": {
+   "en": "Capability = the ability to understand what is asked + acquire action.",
+   "ar": "الأهلية = القدرة على تفهّم الخطاب + اكتساب الفعل.",
+   "kind": "text",
+   "hash": "9b5350f1e0d4",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.h": {
+   "en": "Building capability",
+   "ar": "بناء الأهلية",
+   "kind": "text",
+   "hash": "9b8287a2fc35",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.independent": {
+   "en": "Independent supervisor",
+   "ar": "مشرف مستقلّ",
+   "kind": "text",
+   "hash": "7f45fac4b616",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.inputs": {
+   "en": "Inputs",
+   "ar": "المدخلات",
+   "kind": "text",
+   "hash": "b8ce63375dd6",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.actions.label": {
+   "en": "Actions",
+   "ar": "",
+   "kind": "text",
+   "hash": "62964a2c5b47",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.actions.question": {
+   "en": "What actions now come from the child?",
+   "ar": "",
+   "kind": "text",
+   "hash": "e7f1d4dba01e",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.concept.label": {
+   "en": "Concept",
+   "ar": "",
+   "kind": "text",
+   "hash": "0142f5aa9842",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.concept.question": {
+   "en": "What governing meaning do we start from?",
+   "ar": "",
+   "kind": "text",
+   "hash": "85f1043d6581",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.measurement.label": {
+   "en": "Measurement",
+   "ar": "",
+   "kind": "text",
+   "hash": "4d39032eb1d2",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.measurement.question": {
+   "en": "How do we measure the change?",
+   "ar": "",
+   "kind": "text",
+   "hash": "9eae2e112712",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.qualified.label": {
+   "en": "Capability",
+   "ar": "",
+   "kind": "text",
+   "hash": "3c7e7344452e",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.qualified.question": {
+   "en": "What capacity has taken root?",
+   "ar": "",
+   "kind": "text",
+   "hash": "4ff362ab2ac5",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.system.label": {
+   "en": "System",
+   "ar": "",
+   "kind": "text",
+   "hash": "a910797d9b91",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.system.question": {
+   "en": "How do we put the concept to work to build the trait?",
+   "ar": "",
+   "kind": "text",
+   "hash": "d07b728564f9",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.trait.label": {
+   "en": "Trait",
+   "ar": "",
+   "kind": "text",
+   "hash": "0958313fcd4d",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journey.trait.question": {
+   "en": "What inner structure do we want to build?",
+   "ar": "",
+   "kind": "text",
+   "hash": "08786cc94cd4",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.journeyH": {
+   "en": "The program journey",
+   "ar": "رحلة التشغيل",
+   "kind": "text",
+   "hash": "40215fdd201e",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.lead": {
+   "en": "Sponsorship here means taking part in building this child's capability, not just covering a monthly need.",
+   "ar": "الكفالة هنا اشتراكٌ في بناء أهليّة هذا الطفل، لا سدُّ احتياجٍ شهري.",
+   "kind": "text",
+   "hash": "9f115e70ec62",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.levels.advanced": {
+   "en": "Advanced level",
+   "ar": "المستوى المتقدّم",
+   "kind": "text",
+   "hash": "5905396253e7",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.levels.applied": {
+   "en": "Applied level",
+   "ar": "المستوى التطبيقي",
+   "kind": "text",
+   "hash": "5ff87b022279",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.levels.foundational": {
+   "en": "Foundational level",
+   "ar": "المستوى التأسيسي",
+   "kind": "text",
+   "hash": "b77cedde96be",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.measureNote": {
+   "en": "We show that measurement happened, not its result: a child's trait map is a judgment about them, not an impact to show a stranger.",
+   "ar": "وقوعُ القياس يُعرض، ونتيجتُه لا: خريطة سمات طفلٍ حكمٌ عليه لا أثرٌ يُعرض على غريب.",
+   "kind": "text",
+   "hash": "659cc8599de2",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.of": {
+   "en": "of",
+   "ar": "من",
+   "kind": "text",
+   "hash": "776e33293642",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.outputs": {
+   "en": "Outcomes",
+   "ar": "المخرجات",
+   "kind": "text",
+   "hash": "fe5cf9eace66",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.perMonth": {
+   "en": " / month",
+   "ar": " / شهرياً",
+   "kind": "text",
+   "hash": "a118303049d8",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.privacy": {
+   "en": "Trait measurements stay between the child, their supervisor and their care organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
+   "ar": "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
+   "kind": "text",
+   "hash": "325337ed61b1",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.processes": {
+   "en": "Processes",
+   "ar": "العمليات",
+   "kind": "text",
+   "hash": "9928cae77180",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.sessions": {
+   "en": "Session workshops",
+   "ar": "ورش الجلسات",
+   "kind": "text",
+   "hash": "e71e90376d7e",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.sessionsAria": {
+   "en": "{0} of {1} sessions accepted",
+   "ar": "{0} من {1} جلسة مقبولة",
+   "kind": "template",
+   "params": 2,
+   "hash": "36de2e0c6a76",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.sessionsNote": {
+   "en": "A session is accepted only with work assessed by a certified supervisor, and only after the ones before it. What the child handed in isn't shown: what matters to you is that it was built, not what they wrote.",
+   "ar": "لا تُقبل جلسةٌ إلا بمخرَجٍ يُقوّمه مشرفٌ معتمَد، ولا تُقبل قبل قبول ما دونها. وما سلّمه الطفل لا يُعرض: يعنيك أنه بُني، لا ما كتبه.",
+   "kind": "text",
+   "hash": "d6f8b9b2e2d2",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supH": {
+   "en": "Supervisor qualification",
+   "ar": "أهلية المشرف",
+   "kind": "text",
+   "hash": "c50b81df1cfd",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supLevels.advanced": {
+   "en": "Advanced level",
+   "ar": "",
+   "kind": "text",
+   "hash": "ea9b1fc1dc3f",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supLevels.applied": {
+   "en": "Applied level",
+   "ar": "",
+   "kind": "text",
+   "hash": "c003dff8396f",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supLevels.foundational": {
+   "en": "Foundational level",
+   "ar": "",
+   "kind": "text",
+   "hash": "8f0ef47acf34",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supNo": {
+   "en": "Awaiting a supervisor",
+   "ar": "بانتظار إسناد مشرف",
+   "kind": "text",
+   "hash": "512a096aa7ad",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supNote": {
+   "en": "Supervision is assigned only to someone certified by the administration — not by the care organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
+   "ar": "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من جهة الرعاية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
+   "kind": "text",
+   "hash": "c3d856971ca4",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.supYes": {
+   "en": "Certified supervisor assigned",
+   "ar": "مشرف معتمَد مُسنَد",
+   "kind": "text",
+   "hash": "4064fb41aa73",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.training": {
+   "en": "In training — supervision paired with administrative follow-up",
+   "ar": "قيد التأهيل — إشرافه مقرونٌ بمتابعة الإدارة",
+   "kind": "text",
+   "hash": "3c031babcfdc",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/qualification/QualificationPanel.trait": {
+   "en": "Trait — what we want to build",
+   "ar": "السمة — ما نريد أن نبنيه",
+   "kind": "text",
+   "hash": "7c73674ea30f",
+   "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "config/brand.description": {
+   "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
+   "ar": "",
+   "kind": "template",
+   "params": 1,
+   "hash": "a06a1d8b642d",
+   "file": "src/config/brand.ts"
+  },
+  "config/brand.slogan": {
+   "en": "Sponsor an orphan with a verified file",
+   "ar": "",
+   "kind": "text",
+   "hash": "91bbfdf99034",
+   "file": "src/config/brand.ts"
+  },
+  "config/brand.tagline": {
+   "en": "We sponsor… and we build",
+   "ar": "",
+   "kind": "text",
+   "hash": "99cd9a57660a",
+   "file": "src/config/brand.ts"
+  },
+  "config/offering.later": {
+   "en": "General donations will be added later.",
+   "ar": "التبرّعات العامة ستُضاف لاحقاً.",
+   "kind": "text",
+   "hash": "dcbdadd623e7",
+   "file": "src/config/offering.ts"
+  },
+  "config/offering.text": {
+   "en": "What you give here is a monthly sponsorship for a specific child, or support for a named qualification program. Every amount is tied to a child or a program, and you follow what it built, session by session.",
+   "ar": "ما تقدّمه هنا كفالةٌ شهرية لطفلٍ بعينه، أو دعمٌ لبرنامج تأهيلٍ مسمّى. كل مبلغٍ مربوطٌ بطفلٍ أو برنامج، وتتابع ما بُني به جلسةً جلسة.",
+   "kind": "text",
+   "hash": "7ea93d55ba41",
+   "file": "src/config/offering.ts"
+  },
+  "config/offering.title": {
+   "en": "Sponsorship and qualification support — not a general donation",
+   "ar": "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
+   "kind": "text",
+   "hash": "da30c7874668",
+   "file": "src/config/offering.ts"
+  },
+  "routes/__root/error.home": {
+   "en": "Home",
+   "ar": "الرئيسية",
+   "kind": "text",
+   "hash": "349c3dbe2662",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/error.retry": {
+   "en": "Try again",
+   "ar": "إعادة المحاولة",
+   "kind": "text",
+   "hash": "c32d3c94b178",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/error.text": {
+   "en": "Something unexpected went wrong. Try again, or go back home.",
+   "ar": "حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.",
+   "kind": "text",
+   "hash": "ab512b43317a",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/error.title": {
+   "en": "The page could not load",
+   "ar": "تعذّر تحميل الصفحة",
+   "kind": "text",
+   "hash": "349370f7e202",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/loading.text": {
+   "en": "Loading page",
+   "ar": "جارٍ تحميل الصفحة",
+   "kind": "text",
+   "hash": "2639328d7047",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/not_found.home": {
+   "en": "Back to home",
+   "ar": "العودة للرئيسية",
+   "kind": "text",
+   "hash": "8c71a04418aa",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/not_found.text": {
+   "en": "The link you opened is wrong, or the page has moved.",
+   "ar": "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
+   "kind": "text",
+   "hash": "0a6cb81f6cd1",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/not_found.title": {
+   "en": "Page not found",
+   "ar": "الصفحة غير موجودة",
+   "kind": "text",
+   "hash": "969b0941692d",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/auth.agree": {
+   "en": "By continuing you agree to the",
+   "ar": "بالمتابعة أنت توافق على",
+   "kind": "text",
+   "hash": "150c5c3612c7",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.and": {
+   "en": " and ",
+   "ar": " و",
+   "kind": "text",
+   "hash": "900c91d58ea8",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.h1": {
+   "en": "Sign in",
+   "ar": "الدخول",
+   "kind": "text",
+   "hash": "7101a259dc67",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.hint": {
+   "en": "A code sent to your email or phone, or Google. Your account is created the first time you sign in.",
+   "ar": "رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+   "kind": "text",
+   "hash": "1784dd3268c7",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.home": {
+   "en": "Home page",
+   "ar": "الصفحة الرئيسية",
+   "kind": "text",
+   "hash": "18f3b398c040",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.note": {
+   "en": ". This platform handles children's data, so please read them.",
+   "ar": ". وهذه منصة تعالج بيانات أطفال، فاقرأهما.",
+   "kind": "text",
+   "hash": "d8e100a4278c",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.privacy": {
+   "en": "privacy policy",
+   "ar": "سياسة الخصوصية",
+   "kind": "text",
+   "hash": "16de809d201f",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.section": {
+   "en": "Sign in or create an account",
+   "ar": "الدخول والتسجيل",
+   "kind": "text",
+   "hash": "06664c83f8f4",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.terms": {
+   "en": "terms of use",
+   "ar": "شروط الاستخدام",
+   "kind": "text",
+   "hash": "d7c71c0a140c",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/auth.title": {
+   "en": "Welcome",
+   "ar": "أهلاً بك",
+   "kind": "text",
+   "hash": "1f60866db6e8",
+   "file": "src/routes/auth.tsx"
+  },
+  "routes/how-it-works.actors.0.0": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.0.1": {
+   "en": "A licensed charity or care home registers on the platform, is approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
+   "ar": "جمعية أو دار مرخّصة تسجّل في المنصة، تُعتمد من الإدارة، ثم ترفع ملفات الأيتام مع المستندات وتحدّث بياناتهم دورياً.",
+   "kind": "text",
+   "hash": "4f47f2fed951",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.1.0": {
+   "en": "Guardian",
+   "ar": "ولي الأمر",
+   "kind": "text",
+   "hash": "2fd33365d92e",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.1.1": {
+   "en": "Provides the care organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
+   "ar": "يزوّد جهة الرعاية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
+   "kind": "text",
+   "hash": "a8829f26e698",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.2.0": {
+   "en": "Sponsor",
+   "ar": "الكافل",
+   "kind": "text",
+   "hash": "db3b0018879d",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.2.1": {
+   "en": "Browses approved files, chooses a child and a monthly amount, completes payment, then follows the impact.",
+   "ar": "يتصفّح الملفات المعتمدة، يختار اليتيم والمبلغ الشهري، ويكمل الدفع ثم يتابع الأثر.",
+   "kind": "text",
+   "hash": "1c13a74c3c94",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.3.0": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.actors.3.1": {
+   "en": "Reviews organizations and files, approves or rejects them with a reason, and oversees sponsorships, payments and integrations.",
+   "ar": "تراجع الجهات والملفات، تعتمد أو ترفض مع سبب، وتشرف على الكفالات والمدفوعات والتكاملات.",
+   "kind": "text",
+   "hash": "1a16fe960424",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.cta": {
+   "en": "Browse files",
+   "ar": "تصفّح الملفات",
+   "kind": "text",
+   "hash": "d26d70e932c0",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.ctaH": {
+   "en": "Ready to stand by an orphan?",
+   "ar": "جاهز لتكون سنداً ليتيم؟",
+   "kind": "text",
+   "hash": "8ad2992cdcef",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.ctaP": {
+   "en": "Choose an approved file and start your monthly sponsorship today.",
+   "ar": "اختر ملفاً معتمداً وابدأ كفالتك الشهرية اليوم.",
+   "kind": "text",
+   "hash": "7a5fa3bf8a22",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.h1": {
+   "en": "How sponsorship works on {0}",
+   "ar": "كيف تعمل الكفالة في «{0}»",
+   "kind": "template",
+   "params": 1,
+   "hash": "ea010e1a7fb5",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.lead": {
+   "en": "The platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
+   "ar": "المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
+   "kind": "text",
+   "hash": "539844493e6a",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.0.0": {
+   "en": "1",
+   "ar": "١",
+   "kind": "text",
+   "hash": "06e30646ced4",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.0.1": {
+   "en": "Registering and approving the care organization",
+   "ar": "تسجيل جهة الرعاية واعتمادها",
+   "kind": "text",
+   "hash": "1e9f83a5eb52",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.0.2": {
+   "en": "License and contact details are checked before the organization may upload files.",
+   "ar": "تحقق من الترخيص وبيانات التواصل قبل السماح برفع الملفات.",
+   "kind": "text",
+   "hash": "fb54e0a21d5b",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.1.0": {
+   "en": "2",
+   "ar": "٢",
+   "kind": "text",
+   "hash": "fb7237ae9b85",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.1.1": {
+   "en": "Creating the child's file",
+   "ar": "إنشاء ملف اليتيم",
+   "kind": "text",
+   "hash": "fcd2e9de5297",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.1.2": {
+   "en": "Public data shown to visitors; sensitive data kept hidden in a private record.",
+   "ar": "بيانات عامة تُعرض للجمهور، وبيانات حسّاسة تبقى محجوبة في سجل خاص.",
+   "kind": "text",
+   "hash": "325057b0c267",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.2.0": {
+   "en": "3",
+   "ar": "٣",
+   "kind": "text",
+   "hash": "1bde6e9551bd",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.2.1": {
+   "en": "Administrative review",
+   "ar": "مراجعة الإدارة",
+   "kind": "text",
+   "hash": "df09de7c1f67",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.2.2": {
+   "en": "The file is approved or rejected with a clear reason, then published in the public directory.",
+   "ar": "اعتماد الملف أو رفضه مع سبب واضح، ثم نشره في الدليل العام.",
+   "kind": "text",
+   "hash": "f1af88e2aa74",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.3.0": {
+   "en": "4",
+   "ar": "٤",
+   "kind": "text",
+   "hash": "1a9c10a16433",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.3.1": {
+   "en": "The sponsor chooses and pays",
+   "ar": "اختيار الكافل والدفع",
+   "kind": "text",
+   "hash": "27f72575908c",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.3.2": {
+   "en": "A monthly sponsorship or one-time support, with the coverage percentage updated automatically.",
+   "ar": "كفالة شهرية أو دعم لمرة واحدة، مع تحديث نسبة التغطية آلياً.",
+   "kind": "text",
+   "hash": "d7eab978d9f8",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.4.0": {
+   "en": "5",
+   "ar": "٥",
+   "kind": "text",
+   "hash": "1ab48a767a72",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.4.1": {
+   "en": "Follow-up and reports",
+   "ar": "المتابعة والتقارير",
+   "kind": "text",
+   "hash": "701a541e5cd1",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.4.2": {
+   "en": "Regular updates on education and health, and the option to pause or change the sponsorship.",
+   "ar": "تحديثات دورية عن التعليم والصحة، وإمكانية إيقاف أو تعديل الكفالة.",
+   "kind": "text",
+   "hash": "382b529a8076",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.5.0": {
+   "en": "6",
+   "ar": "٦",
+   "kind": "text",
+   "hash": "2541ff347ff1",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.5.1": {
+   "en": "External integration",
+   "ar": "التكامل الخارجي",
+   "kind": "text",
+   "hash": "4fa86192e9e0",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stages.5.2": {
+   "en": "Children's files imported from internal platforms through a signed API.",
+   "ar": "استيراد ملفات الأيتام من منصات داخلية عبر واجهة API موقّعة.",
+   "kind": "text",
+   "hash": "e72584355a08",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.stagesH": {
+   "en": "The path, stage by stage",
+   "ar": "مراحل المسار",
+   "kind": "text",
+   "hash": "41541afb4d35",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.title": {
+   "en": "How sponsorship works",
+   "ar": "كيف تعمل الكفالة",
+   "kind": "text",
+   "hash": "8b29dbb7f872",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/index.browse": {
+   "en": "Browse children's files",
+   "ar": "تصفّح ملفات الأيتام",
+   "kind": "text",
+   "hash": "972c4eb22e0b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.categories.education": {
+   "en": "Education",
+   "ar": "تعليم",
+   "kind": "text",
+   "hash": "74e8bc2fe5f0",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.categories.essentials": {
+   "en": "Essentials",
+   "ar": "معيشة",
+   "kind": "text",
+   "hash": "4143fe0fc8e8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.categories.health": {
+   "en": "Health",
+   "ar": "صحّة",
+   "kind": "text",
+   "hash": "4b62f48edbee",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.categories.psychosocial": {
+   "en": "Psychosocial support",
+   "ar": "دعم نفسي",
+   "kind": "text",
+   "hash": "6856762b72ba",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.categories.rehabilitation": {
+   "en": "Rehabilitation",
+   "ar": "تأهيل",
+   "kind": "text",
+   "hash": "c75d31997504",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.childH": {
+   "en": "Here, an orphan is a person, not a “case”",
+   "ar": "اليتيم عندنا شخصٌ لا «حالة»",
+   "kind": "text",
+   "hash": "839b27b31734",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.childP1": {
+   "en": "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers — because what isn't measured isn't followed, and what isn't followed doesn't change.",
+   "ar": "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
+   "kind": "text",
+   "hash": "738f9092927a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.childP2": {
+   "en": "That's why we state the monthly need plainly, show what has been covered and what remains, and name the program the money is spent on. A sponsor is a partner in a system, not a donor to a fund.",
+   "ar": "ولذلك نكتب الاحتياج الشهري صريحاً، ونعرض ما غُطّي منه وما بقي، ونُسمّي البرنامج الذي يُصرَف عليه المال. الكافل شريكٌ في نظام، لا متبرّعٌ في صندوق.",
+   "kind": "text",
+   "hash": "687893547c12",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.0.0": {
+   "en": "The shore of loss",
+   "ar": "شطّ الفقد",
+   "kind": "text",
+   "hash": "220beb88a841",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.0.1": {
+   "en": "A child who has lost their provider. What they lack isn't compassion but a system to carry them: school fees paid, treatment followed up, a home that isn't under threat.",
+   "ar": "طفلٌ فقد عائله. لا ينقصه العطف بل ينقصه نظامٌ يحمله: مدرسة تُدفع رسومها، وعلاج يُتابَع، وبيت لا يُهدَّد.",
+   "kind": "text",
+   "hash": "5a0c0884a0e3",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.1.0": {
+   "en": "The strait",
+   "ar": "المضيق",
+   "kind": "text",
+   "hash": "48091de847d4",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.1.1": {
+   "en": "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on named programs — not a vague line item.",
+   "ar": "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على برامج مسمّاة لا على بندٍ مبهم.",
+   "kind": "text",
+   "hash": "71da43ac293d",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.2.0": {
+   "en": "The shore of thriving",
+   "ar": "شطّ العمران",
+   "kind": "text",
+   "hash": "8859a8ca6faa",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossing.2.1": {
+   "en": "A young person who reads, learns a trade and works. No longer a recipient but capable — and that alone is how we measure success.",
+   "ar": "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً — وهذا وحده مقياس نجاحنا.",
+   "kind": "text",
+   "hash": "0192f6c1c46c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossingH": {
+   "en": "Two shores and a strait",
+   "ar": "شطّان ومضيق",
+   "kind": "text",
+   "hash": "73ea7d268bb2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.crossingP": {
+   "en": "The logo isn't decoration: two palms holding a child, beneath two neighboring arcs — gold and green — like the two fingers in the hadith. Sponsor and orphan side by side; care that holds without hiding.",
+   "ar": "الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر — كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.",
+   "kind": "text",
+   "hash": "5ef5a47a177a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.0.0": {
+   "en": "A licensed care organization",
+   "ar": "جهة رعاية مرخّصة",
+   "kind": "text",
+   "hash": "ca3d8e2e7222",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.0.1": {
+   "en": "No individual creates a file. The organization is reviewed and approved first, and stays responsible for the data being accurate and up to date.",
+   "ar": "لا يُنشئ الملفَّ فردٌ. تُراجَع الجهة وتُعتمد أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
+   "kind": "text",
+   "hash": "08f1229167c8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.1.0": {
+   "en": "Documents uploaded and checked",
+   "ar": "وثائق تُرفَع وتُدقَّق",
+   "kind": "text",
+   "hash": "13c9fb406cb2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.1.1": {
+   "en": "Death certificate, proof of guardianship, school record and medical report. Each document is marked as checked, with who checked it and when.",
+   "ar": "شهادة الوفاة وإثبات الولاية والسجلّ الدراسي والتقرير الطبّي. كل وثيقة تُوسم مدقَّقةً باسم من دقّقها ووقتِه.",
+   "kind": "text",
+   "hash": "fcbf000ebf44",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.2.0": {
+   "en": "Explicit administrative approval",
+   "ar": "اعتماد إداري صريح",
+   "kind": "text",
+   "hash": "f206fa55f4c1",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.2.1": {
+   "en": "No file is published without an approval decision. A rejection carries a coded reason, so every decision is accountable.",
+   "ar": "لا يُنشر ملف إلا بقرار اعتماد. والرفض يحمل سبباً مُرمَّزاً، فالقرار مُساءَل لا مُبهَم.",
+   "kind": "text",
+   "hash": "4248c84dad1c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.3.0": {
+   "en": "Impact published regularly",
+   "ar": "أثرٌ يُنشر دورياً",
+   "kind": "text",
+   "hash": "18a24cd84100",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custody.3.1": {
+   "en": "Reports on education, health and living conditions are reviewed by the administration before sponsors see them.",
+   "ar": "تقارير عن التعليم والصحة والمعيشة تمرّ بمراجعة الإدارة قبل نشرها للكافل.",
+   "kind": "text",
+   "hash": "296f2d0be908",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custodyH": {
+   "en": "How a file earns trust",
+   "ar": "كيف يصير الملفّ جديراً بالثقة",
+   "kind": "text",
+   "hash": "c9303749e25c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.custodyP": {
+   "en": "Trust isn't asked for with words. This chain is enforced in the database itself: whatever doesn't pass it isn't published.",
+   "ar": "الثقة لا تُطلب بالكلام. هذه السلسلة مفروضة في قاعدة البيانات نفسها: ما لا يجتازها لا يُنشر.",
+   "kind": "text",
+   "hash": "7262c951ba18",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.description": {
+   "en": "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, named education and qualification programs with defined outcomes, and regular impact reports.",
+   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.",
+   "kind": "text",
+   "hash": "3e7e9f395cb9",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.dignity.0": {
+   "en": "No face photo is published for a child in need unless written consent to publish has been documented.",
+   "ar": "لا تُنشر صورة وجهٍ لملفٍّ في حالة الاحتياج ما لم تُوثَّق موافقة مصوّرة على النشر.",
+   "kind": "text",
+   "hash": "60364d536b09",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.dignity.1": {
+   "en": "Painful photos are shown in monochrome without faces; only uplifting photos appear in full color — and that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
+   "ar": "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملف آلياً، لا يختاره من يرفع الصورة.",
+   "kind": "text",
+   "hash": "c99782027ef5",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.dignity.2": {
+   "en": "Sensitive data — documents and addresses — is never visible to visitors.",
+   "ar": "البيانات الحسّاسة — الوثائق والعناوين — لا يراها الزائر أبداً.",
+   "kind": "text",
+   "hash": "a1e379771e13",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.dignityH": {
+   "en": "Dignity is a rule in the code, not a promise on the page",
+   "ar": "الكرامة قيدٌ في الكود لا وعدٌ في الصفحة",
+   "kind": "text",
+   "hash": "cc9e944dc157",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.0.0": {
+   "en": "Monthly sponsorship",
+   "ar": "كفالة شهرية",
+   "kind": "text",
+   "hash": "9630b012db18",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.0.1": {
+   "en": "A fixed amount each month. One table shows when it was paid and when it reached the child, with a document.",
+   "ar": "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
+   "kind": "text",
+   "hash": "3c1c5dbbe235",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.0.2": {
+   "en": "Choose from the directory",
+   "ar": "اختر من الدليل",
+   "kind": "text",
+   "hash": "c5c4ca9220ba",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.0": {
+   "en": "Building capability",
+   "ar": "بناء الأهلية",
+   "kind": "text",
+   "hash": "9b8287a2fc35",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.1": {
+   "en": "Fund a qualification journey session by session, with the child's traits measured before and after.",
+   "ar": "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.",
+   "kind": "text",
+   "hash": "c1362e0a09c6",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.2": {
+   "en": "Support qualification",
+   "ar": "ادعم التأهيل",
+   "kind": "text",
+   "hash": "2748deee0e56",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.0": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.1": {
+   "en": "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
+   "ar": "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
+   "kind": "text",
+   "hash": "1cc0e69a5cf2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.2": {
+   "en": "Give in kind",
+   "ar": "ادعم عيناً",
+   "kind": "text",
+   "hash": "36638df6f41a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doorsH": {
+   "en": "Three equal doors",
+   "ar": "ثلاثة أبوابٍ متساوية",
+   "kind": "text",
+   "hash": "6d563a167b7c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doorsP": {
+   "en": "Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
+   "ar": "اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
+   "kind": "text",
+   "hash": "b5f25391fd9c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.eqA": {
+   "en": "understand what is asked",
+   "ar": "تفهّم الخطاب",
+   "kind": "text",
+   "hash": "10b3b8a7c018",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.eqB": {
+   "en": "acquire action",
+   "ar": "اكتساب الفعل",
+   "kind": "text",
+   "hash": "bdc414f59601",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.eqCaption": {
+   "en": "Understanding what is asked: grasping what is expected and one's responsibility toward it. Acquiring action: becoming able to produce new and growing actions, not performing an action once.",
+   "ar": "تفهّم الخطاب: أن يدرك ما يُطلب منه ومسؤوليته تجاهه. واكتساب الفعل: أن يصير قادراً على إنتاج أفعالٍ جديدة متزايدة، لا أن يؤدّي فعلاً مرّة.",
+   "kind": "text",
+   "hash": "dfe3eebda6a2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.eqLabel": {
+   "en": "Capability = the ability to",
+   "ar": "الأهلية = القدرة على",
+   "kind": "text",
+   "hash": "a933e48dbd19",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.h1a": {
+   "en": "We don't offer temporary care —",
+   "ar": "لا نقدّم رعايةً مؤقّتة،",
+   "kind": "text",
+   "hash": "5cdec3649be1",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.h1b": {
+   "en": "we build systems for thriving",
+   "ar": "بل نبني نظم عمران",
+   "kind": "text",
+   "hash": "56332dae0db6",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hadithMeaning": {
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+   "ar": "",
+   "kind": "text",
+   "hash": "5e0b39d33e3c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hadithSource": {
+   "en": "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
+   "ar": "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+   "kind": "text",
+   "hash": "9948cfa16303",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.0.0": {
+   "en": "Awareness",
+   "ar": "الدراية",
+   "kind": "text",
+   "hash": "4a49e193d762",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.0.1": {
+   "en": "Seeing the picture",
+   "ar": "أن ترى الصورة",
+   "kind": "text",
+   "hash": "1dd633c21e7b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.0.2": {
+   "en": "A verified file from an approved care organization captures a whole crisis in one picture — it moves you and reframes how you see it.",
+   "ar": "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
+   "kind": "text",
+   "hash": "6862f9b1f077",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.1.0": {
+   "en": "The moment",
+   "ar": "الميقات",
+   "kind": "text",
+   "hash": "78cb42df182d",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.1.1": {
+   "en": "The decisive moment",
+   "ar": "اللحظة الفاصلة",
+   "kind": "text",
+   "hash": "dc9917aec94e",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.1.2": {
+   "en": "When time, place and person meet: you choose whom to sponsor, and the idea becomes real.",
+   "ar": "اللحظة التي يجتمع فيها الزمان والمكان والفاعل، فتختار من تكفل وينزل المفهوم إلى الواقع.",
+   "kind": "text",
+   "hash": "c048aaae21cf",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.2.0": {
+   "en": "Reasoned commitment",
+   "ar": "التعقل",
+   "kind": "text",
+   "hash": "2c985f77085c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.2.1": {
+   "en": "Committing to a system",
+   "ar": "الالتزام بالنظام",
+   "kind": "text",
+   "hash": "35876a6cfbb2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.2.2": {
+   "en": "Not a passing donation but a transparent monthly sponsorship: an ongoing commitment you can see in every payment and every report.",
+   "ar": "لا تبرّع عابر بل كفالة شهرية شفافة: تعهّد مستمر تراه في كل دفعة وكل تقرير.",
+   "kind": "text",
+   "hash": "95f81b4ec335",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.3.0": {
+   "en": "Thriving",
+   "ar": "العمران",
+   "kind": "text",
+   "hash": "e777dc4b59f8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.3.1": {
+   "en": "From the margins to the center",
+   "ar": "من الهامش إلى المركز",
+   "kind": "text",
+   "hash": "05c44e6888b6",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladder.3.2": {
+   "en": "Regular impact reports on education, health and living conditions, until the orphan becomes an active force in their community.",
+   "ar": "تقارير أثر دورية عن التعليم والصحة والمعيشة، حتى يصبح اليتيم قوة فاعلة في مجتمعه.",
+   "kind": "text",
+   "hash": "3257a74107b7",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladderH": {
+   "en": "Stages of awareness: from seeing to thriving",
+   "ar": "مراتب الوعي: من الدراية إلى العمران",
+   "kind": "text",
+   "hash": "afba5a9103c6",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ladderP": {
+   "en": "A sponsor's journey isn't a set of procedural steps but shifts in awareness — from seeing the picture to committing to the system.",
+   "ar": "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام بالنظام.",
+   "kind": "text",
+   "hash": "246b96d05d89",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.lead": {
+   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on named programs with defined outcomes — and the impact comes back to you as a report.",
+   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.",
+   "kind": "text",
+   "hash": "335a41c12101",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.logo": {
+   "en": "{0} logo",
+   "ar": "شعار {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "6e62c1d3a4fd",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.months": {
+   "en": "{0} months",
+   "ar": "{0} شهراً",
+   "kind": "template",
+   "params": 1,
+   "hash": "e7a031123783",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.numbersH": {
+   "en": "The platform today",
+   "ar": "أرقام المنصّة اليوم",
+   "kind": "text",
+   "hash": "8a5d74dbdd5b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.numbersP": {
+   "en": "Calculated from approved files the moment you open this page — not numbers written into the design.",
+   "ar": "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
+   "kind": "text",
+   "hash": "c7b02df97916",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ordinals.0": {
+   "en": "1",
+   "ar": "١",
+   "kind": "text",
+   "hash": "06e30646ced4",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ordinals.1": {
+   "en": "2",
+   "ar": "٢",
+   "kind": "text",
+   "hash": "fb7237ae9b85",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ordinals.2": {
+   "en": "3",
+   "ar": "٣",
+   "kind": "text",
+   "hash": "1bde6e9551bd",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.ordinals.3": {
+   "en": "4",
+   "ar": "٤",
+   "kind": "text",
+   "hash": "1a9c10a16433",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.partners": {
+   "en": "Partner care organizations",
+   "ar": "جهات الرعاية الشريكة",
+   "kind": "text",
+   "hash": "639a189026d8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.perMonth": {
+   "en": " / month",
+   "ar": " / شهرياً",
+   "kind": "text",
+   "hash": "a118303049d8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsH": {
+   "en": "Sponsorship builds capability, not just covers needs",
+   "ar": "الكفالة بناء أهلية، لا سدُّ احتياج",
+   "kind": "text",
+   "hash": "e1c126c1f9d1",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP": {
+   "en": "We move from a logic of care to a logic of building: not covering one month's need, but forming a capability that keeps producing action after our intervention ends.",
+   "ar": "ننقل العمل من منطق الرعاية إلى منطق البناء: لا نسدّ حاجة شهر، بل نكوّن قابليةً تُنتج الفعل ذاتياً بعد أن ينتهي تدخّلنا.",
+   "kind": "text",
+   "hash": "bddd50058fa1",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP2.0": {
+   "en": "So every program starts from a ",
+   "ar": "ولذلك يبدأ كل برنامج من ",
+   "kind": "text",
+   "hash": "2191113f3800",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP2.1": {
+   "en": "concept",
+   "ar": "المفهوم",
+   "kind": "text",
+   "hash": "d7a614ea382b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP2.2": {
+   "en": ", not an activity: the concept is taught, it activates a ",
+   "ar": " لا من النشاط: يُعلَّم المفهوم فيُشغّل ",
+   "kind": "text",
+   "hash": "39043dc35ca8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP2.3": {
+   "en": "trait",
+   "ar": "سمةً",
+   "kind": "text",
+   "hash": "fb0db151b17b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.programsP2.4": {
+   "en": ", the trait produces actions, and then the change is measured. The services below are inputs to this system, not ends in themselves.",
+   "ar": "، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.",
+   "kind": "text",
+   "hash": "61c28bdcac24",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.qualification": {
+   "en": "Capability building",
+   "ar": "بناء أهلية",
+   "kind": "text",
+   "hash": "7d7764e5919c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.startReal": {
+   "en": "Start with a real file",
+   "ar": "ابدأ من ملفٍّ حقيقي",
+   "kind": "text",
+   "hash": "baf2fe0c4653",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.stats.0": {
+   "en": "Approved files",
+   "ar": "ملف معتمد",
+   "kind": "text",
+   "hash": "155ad0bba3ae",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.stats.1": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.stats.2": {
+   "en": "Monthly sponsorship",
+   "ar": "مبالغ الكفالة الشهرية",
+   "kind": "text",
+   "hash": "62effb99ae07",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.stats.3": {
+   "en": "Total monthly need",
+   "ar": "الاحتياج الشهري الكلي",
+   "kind": "text",
+   "hash": "d14436947596",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.supportNow": {
+   "en": "Support now",
+   "ar": "ادعم الآن",
+   "kind": "text",
+   "hash": "8d4187df7a2e",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.title": {
+   "en": "{0} — Carrying the orphan from the shore of loss to the shore of thriving",
+   "ar": "{0} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران",
+   "kind": "template",
+   "params": 1,
+   "hash": "2f72217ca79b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/organizations.empty": {
+   "en": "No approved organizations yet.",
+   "ar": "لا توجد جهات معتمدة بعد.",
+   "kind": "text",
+   "hash": "7912015dd21b",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.lead": {
+   "en": "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
+   "ar": "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
+   "kind": "text",
+   "hash": "43660175b7b6",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.title": {
+   "en": "Approved care organizations",
+   "ar": "جهات الرعاية المعتمدة",
+   "kind": "text",
+   "hash": "e84aa0da2fd6",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/orphans.index.active": {
+   "en": "Active filters",
+   "ar": "الفلاتر النشطة",
+   "kind": "text",
+   "hash": "7d029331f03b",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.age": {
+   "en": "Age group",
+   "ar": "الفئة العمرية",
+   "kind": "text",
+   "hash": "4e5d665f99bc",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.age_12_14": {
+   "en": "12–14",
+   "ar": "",
+   "kind": "text",
+   "hash": "9d87aa40f0d7",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.age_15_17": {
+   "en": "15–17",
+   "ar": "",
+   "kind": "text",
+   "hash": "97da612aa14c",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.age_18_plus": {
+   "en": "18+",
+   "ar": "",
+   "kind": "text",
+   "hash": "85c92a12887a",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.age_6_11": {
+   "en": "6–11",
+   "ar": "",
+   "kind": "text",
+   "hash": "7d116e667f9e",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.under_6": {
+   "en": "Under 6",
+   "ar": "",
+   "kind": "text",
+   "hash": "5c3f32759a20",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.ages.unknown": {
+   "en": "Unknown",
+   "ar": "",
+   "kind": "text",
+   "hash": "516843de659d",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.allAges": {
+   "en": "All ages",
+   "ar": "كل الأعمار",
+   "kind": "text",
+   "hash": "1f1bb38dbdc6",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.allCountries": {
+   "en": "All countries",
+   "ar": "كل البلدان",
+   "kind": "text",
+   "hash": "16f6b5f84b22",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.allGroups": {
+   "en": "All groups",
+   "ar": "كل المجموعات",
+   "kind": "text",
+   "hash": "68efe223ff76",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.allRegions": {
+   "en": "All regions",
+   "ar": "كل المناطق",
+   "kind": "text",
+   "hash": "bbb1c9e000ff",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.allStages": {
+   "en": "All stages",
+   "ar": "كل المراحل",
+   "kind": "text",
+   "hash": "85c66799bdb8",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.any": {
+   "en": "All",
+   "ar": "الكل",
+   "kind": "text",
+   "hash": "4d78e47a912e",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.building": {
+   "en": "Qualification program",
+   "ar": "برنامج بناء أهلية",
+   "kind": "text",
+   "hash": "4a1763234f79",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.buildingOn": {
+   "en": "Qualification program under way",
+   "ar": "برنامج بناء أهلية قائم",
+   "kind": "text",
+   "hash": "013c3bff24ad",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.cardH": {
+   "en": "What you see here is a card, not a file:",
+   "ar": "ما يُعرض هنا بطاقةٌ لا ملفّ:",
+   "kind": "text",
+   "hash": "a31cacc5cf6e",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.cardP": {
+   "en": "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page — because a child's file isn't a page to browse.",
+   "ar": "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+   "kind": "text",
+   "hash": "58aaa9383df6",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.clearAll": {
+   "en": "Clear all",
+   "ar": "مسح الكل",
+   "kind": "text",
+   "hash": "663da03742b3",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.empty": {
+   "en": "No matching results.",
+   "ar": "لا توجد نتائج مطابقة.",
+   "kind": "text",
+   "hash": "5e0d8c8ebe4d",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.everyone": {
+   "en": "Everyone",
+   "ar": "الجميع",
+   "kind": "text",
+   "hash": "70fbdc12f50f",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.female": {
+   "en": "Girl",
+   "ar": "أنثى",
+   "kind": "text",
+   "hash": "8f98e6516b90",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.files.one": {
+   "en": "{0} file",
+   "ar": "",
+   "kind": "plural",
+   "hash": "74d6299bc39e",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.files.other": {
+   "en": "{0} files",
+   "ar": "",
+   "kind": "plural",
+   "hash": "b3defd9b9f28",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.full": {
+   "en": "Sponsored",
+   "ar": "مكفول",
+   "kind": "text",
+   "hash": "6d23172d24c3",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.fundingLabel": {
+   "en": "Filter by sponsorship status",
+   "ar": "تصفية حسب حالة الكفالة",
+   "kind": "text",
+   "hash": "870041d964bf",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.gender": {
+   "en": "Gender",
+   "ar": "الجنس",
+   "kind": "text",
+   "hash": "cde9d827f5c5",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.group": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.inCountries.one": {
+   "en": " — in {0} country.",
+   "ar": "",
+   "kind": "plural",
+   "hash": "860a330f8ab3",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.inCountries.other": {
+   "en": " — in {0} countries.",
+   "ar": "",
+   "kind": "plural",
+   "hash": "9264577be806",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.lead": {
+   "en": "Every file shown here was approved by the administration after being documented by a licensed care organization",
+   "ar": "جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة",
+   "kind": "text",
+   "hash": "f8abc09b0b41",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.male": {
+   "en": "Boy",
+   "ar": "ذكر",
+   "kind": "text",
+   "hash": "0c646a3bb4c3",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.more": {
+   "en": "More filters",
+   "ar": "فلترة أدقّ",
+   "kind": "text",
+   "hash": "333b56070eb8",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.next": {
+   "en": "Next",
+   "ar": "التالي",
+   "kind": "text",
+   "hash": "fec227498b7b",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.open": {
+   "en": "Needs a sponsor",
+   "ar": "بحاجة لكافل",
+   "kind": "text",
+   "hash": "8ae5bc9f14f5",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.pageOf": {
+   "en": "Page {0} of {1}",
+   "ar": "صفحة {0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "4727c67d7d4f",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.pagesLabel": {
+   "en": "Directory pages",
+   "ar": "صفحات الدليل",
+   "kind": "text",
+   "hash": "0e14d4b979b4",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.pickCountry": {
+   "en": "Choose a country",
+   "ar": "اختر دولة",
+   "kind": "text",
+   "hash": "d17c8da548c0",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.prev": {
+   "en": "Previous",
+   "ar": "السابق",
+   "kind": "text",
+   "hash": "554dbaac2d20",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.remove": {
+   "en": "Remove: {0}",
+   "ar": "إزالة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "1ff2193e3068",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.restart": {
+   "en": "start over",
+   "ar": "ابدأ من جديد",
+   "kind": "text",
+   "hash": "b12b762bce6a",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.search": {
+   "en": "Search by pseudonym or file number",
+   "ar": "ابحث بالاسم المستعار أو رقم الملف",
+   "kind": "text",
+   "hash": "fd812a0ac50a",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.searchLabel": {
+   "en": "Search",
+   "ar": "بحث",
+   "kind": "text",
+   "hash": "a59f0022a573",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.sortLabel": {
+   "en": "Sort results",
+   "ar": "ترتيب النتائج",
+   "kind": "text",
+   "hash": "bddba05c42a9",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.sorts.closest": {
+   "en": "Closest to fully sponsored",
+   "ar": "الأقرب للاكتمال",
+   "kind": "text",
+   "hash": "dcb6d69eefe9",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.sorts.newest": {
+   "en": "Newest",
+   "ar": "الأحدث",
+   "kind": "text",
+   "hash": "37f97c4ab790",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.sorts.waiting": {
+   "en": "Waiting longest",
+   "ar": "الأطول انتظاراً",
+   "kind": "text",
+   "hash": "5258e1b6e051",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.stage": {
+   "en": "School stage",
+   "ar": "المرحلة الدراسية",
+   "kind": "text",
+   "hash": "4460d379fb71",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.title": {
+   "en": "Children",
+   "ar": "دليل الأيتام",
+   "kind": "text",
+   "hash": "d765f5139550",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.tryA": {
+   "en": "Try removing one of the filters above, or",
+   "ar": "جرّب إزالة أحد الفلاتر أعلاه، أو",
+   "kind": "text",
+   "hash": "2587f86d6e24",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.orphanId.activates": {
+   "en": "The sponsorship starts once payment is complete, and you can pause it anytime from your dashboard.",
+   "ar": "الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.",
+   "kind": "text",
+   "hash": "b0021d06d922",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.age_12_14": {
+   "en": "12–14",
+   "ar": "",
+   "kind": "text",
+   "hash": "9d87aa40f0d7",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.age_15_17": {
+   "en": "15–17",
+   "ar": "",
+   "kind": "text",
+   "hash": "97da612aa14c",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.age_18_plus": {
+   "en": "18+",
+   "ar": "",
+   "kind": "text",
+   "hash": "85c92a12887a",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.age_6_11": {
+   "en": "6–11",
+   "ar": "",
+   "kind": "text",
+   "hash": "7d116e667f9e",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.under_6": {
+   "en": "Under 6",
+   "ar": "",
+   "kind": "text",
+   "hash": "5c3f32759a20",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.ages.unknown": {
+   "en": "Unknown",
+   "ar": "",
+   "kind": "text",
+   "hash": "516843de659d",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.amount": {
+   "en": "Monthly sponsorship amount ({0})",
+   "ar": "مبلغ الكفالة الشهري ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "91049f2153bc",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.anonymous": {
+   "en": "I'd like my sponsorship to stay anonymous",
+   "ar": "أرغب أن تكون كفالتي دون ذكر اسمي",
+   "kind": "text",
+   "hash": "70ba4cff1405",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.back": {
+   "en": "← Back to the directory",
+   "ar": "→ العودة إلى الدليل",
+   "kind": "text",
+   "hash": "91546db7a41d",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.badAmount": {
+   "en": "Please enter a valid amount (5 or more)",
+   "ar": "الرجاء إدخال مبلغ صحيح (5 فأكثر)",
+   "kind": "text",
+   "hash": "86df5d63ad43",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.continueTo": {
+   "en": "Continue — {0} for {1}",
+   "ar": "تابع — {0} لـ{1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "689665114722",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.covered": {
+   "en": "Their need is fully covered",
+   "ar": "تم تغطية احتياجه بالكامل",
+   "kind": "text",
+   "hash": "f52fe14abebf",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.coveredPct": {
+   "en": "{0}% covered — {1} still needed",
+   "ar": "تم تغطية {0}% — المتبقي {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "456c9ea4c0d9",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.createFailed": {
+   "en": "The sponsorship could not be created",
+   "ar": "تعذّر إنشاء الكفالة",
+   "kind": "text",
+   "hash": "2e2eac9335e0",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.created": {
+   "en": "Your sponsorship request is registered — complete the payment from your dashboard",
+   "ar": "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
+   "kind": "text",
+   "hash": "dee6b29a58c1",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.female": {
+   "en": "Girl",
+   "ar": "أنثى",
+   "kind": "text",
+   "hash": "8f98e6516b90",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.fileNo": {
+   "en": "File no. {0}",
+   "ar": "ملف رقم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "332a740230fc",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.follow": {
+   "en": "You follow it from “My portals” through the office's reports and photos.",
+   "ar": "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
+   "kind": "text",
+   "hash": "532bfb21ba1a",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.full": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.fullRest": {
+   "en": "The full remaining amount",
+   "ar": "المتبقّي كاملاً",
+   "kind": "text",
+   "hash": "bda942a503d5",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.hiddenLoc": {
+   "en": "The exact location is hidden to protect the child",
+   "ar": "الموقع التفصيلي محجوب حمايةً للطفل",
+   "kind": "text",
+   "hash": "69db3056f6b0",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.kindLabel": {
+   "en": "Type of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "d7957b6987ce",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.kinds.in_kind.label": {
+   "en": "In-kind support",
+   "ar": "",
+   "kind": "text",
+   "hash": "c8a045f854aa",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.kinds.in_kind.text": {
+   "en": "School bags, clothing, food, devices… delivered and documented with photos and reports.",
+   "ar": "",
+   "kind": "text",
+   "hash": "a6e0667779f8",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.kinds.qualification.label": {
+   "en": "Capability building",
+   "ar": "",
+   "kind": "text",
+   "hash": "f928518256fa",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.kinds.qualification.text": {
+   "en": "Fund the qualification journey: sessions, follow-up, and trait measurement before and after.",
+   "ar": "",
+   "kind": "text",
+   "hash": "d948fdf77670",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.male": {
+   "en": "Boy",
+   "ar": "ذكر",
+   "kind": "text",
+   "hash": "0c646a3bb4c3",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.message": {
+   "en": "A message for the child (optional)",
+   "ar": "رسالة لليتيم (اختياري)",
+   "kind": "text",
+   "hash": "5b1529a465e8",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.messagePh": {
+   "en": "A word of encouragement — the care organization reviews it before it arrives",
+   "ar": "كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل",
+   "kind": "text",
+   "hash": "ae4265290310",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.modes.in_kind": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.modes.monthly": {
+   "en": "Monthly sponsorship",
+   "ar": "كفالة شهرية",
+   "kind": "text",
+   "hash": "9630b012db18",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.modes.qualification": {
+   "en": "Capability building",
+   "ar": "بناء أهلية",
+   "kind": "text",
+   "hash": "7d7764e5919c",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.monthlyNeed": {
+   "en": "Monthly need",
+   "ar": "الاحتياج الشهري",
+   "kind": "text",
+   "hash": "295dbc9a8b5a",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.clothing": {
+   "en": "Clothing",
+   "ar": "",
+   "kind": "text",
+   "hash": "d3be497805d6",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.education": {
+   "en": "Education",
+   "ar": "",
+   "kind": "text",
+   "hash": "a88986475b46",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.food": {
+   "en": "Food",
+   "ar": "",
+   "kind": "text",
+   "hash": "ea90fe9db4c0",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.health": {
+   "en": "Health",
+   "ar": "",
+   "kind": "text",
+   "hash": "ac0ee38f2607",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.housing": {
+   "en": "Housing",
+   "ar": "",
+   "kind": "text",
+   "hash": "d9e96bcd6dc6",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needCats.other": {
+   "en": "Other",
+   "ar": "",
+   "kind": "text",
+   "hash": "6cda376a335e",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.needsH": {
+   "en": "Monthly need in detail",
+   "ar": "تفاصيل الاحتياج الشهري",
+   "kind": "text",
+   "hash": "0449250457f2",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.org": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.remainingMonthly": {
+   "en": "Still needed monthly",
+   "ar": "المتبقّي شهرياً",
+   "kind": "text",
+   "hash": "19e32a69e140",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.serviceType": {
+   "en": "Monthly sponsorship for education and qualification programs",
+   "ar": "كفالة شهرية لبرامج تعليمية وتأهيلية",
+   "kind": "text",
+   "hash": "1e61b0360883",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.signIn": {
+   "en": "Sign in to sponsor",
+   "ar": "سجّل الدخول للكفالة",
+   "kind": "text",
+   "hash": "285dac5c7eb4",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.sponsorOf": {
+   "en": "Sponsor {0}",
+   "ar": "كفالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "5a9ae4607615",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.start": {
+   "en": "Start sponsoring",
+   "ar": "ابدأ الكفالة",
+   "kind": "text",
+   "hash": "dcc47440740d",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.support": {
+   "en": "Support {0}",
+   "ar": "ادعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8520e0afe7c7",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.unavailable": {
+   "en": "File unavailable",
+   "ar": "ملف غير متاح",
+   "kind": "text",
+   "hash": "f3a88eba8621",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.unexpected": {
+   "en": "Something unexpected went wrong",
+   "ar": "حدث خطأ غير متوقع",
+   "kind": "text",
+   "hash": "53e40a898c1b",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.years": {
+   "en": "years",
+   "ar": "سنة",
+   "kind": "text",
+   "hash": "8bfa62105318",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/support.children.one": {
+   "en": "{0} child",
+   "ar": "",
+   "kind": "plural",
+   "hash": "c59ca8318dc4",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.children.other": {
+   "en": "{0} children",
+   "ar": "",
+   "kind": "plural",
+   "hash": "a4f969cae864",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.chosenChild": {
+   "en": "Selected child:",
+   "ar": "الطفل المختار:",
+   "kind": "text",
+   "hash": "88eeb509a528",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.confirm": {
+   "en": "Record my support — {0} €",
+   "ar": "سجّل دعمي — {0} €",
+   "kind": "template",
+   "params": 1,
+   "hash": "5e4aa9e776d9",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.description": {
+   "en": "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
+   "ar": "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
+   "kind": "text",
+   "hash": "4ad91b2be897",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.directory": {
+   "en": "children's directory",
+   "ar": "دليل الأيتام",
+   "kind": "text",
+   "hash": "2507701072d2",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.failed": {
+   "en": "It couldn't be recorded.",
+   "ar": "تعذّر التسجيل.",
+   "kind": "text",
+   "hash": "e530617d83c8",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.fromDirectory": {
+   "en": "from the directory",
+   "ar": "من الدليل",
+   "kind": "text",
+   "hash": "59316b005e67",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.h1": {
+   "en": "Support",
+   "ar": "ادعم",
+   "kind": "text",
+   "hash": "81bb0b6bce39",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.kinds.in_kind.label": {
+   "en": "In-kind support",
+   "ar": "",
+   "kind": "text",
+   "hash": "c8a045f854aa",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.kinds.in_kind.text": {
+   "en": "School bags, clothing, food, devices… delivered and documented with photos and reports.",
+   "ar": "",
+   "kind": "text",
+   "hash": "a6e0667779f8",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.kinds.qualification.label": {
+   "en": "Building capability",
+   "ar": "",
+   "kind": "text",
+   "hash": "c8c919d1fb8b",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.kinds.qualification.text": {
+   "en": "Fund the qualification journey: sessions, follow-up, and trait measurement before and after.",
+   "ar": "",
+   "kind": "text",
+   "hash": "d948fdf77670",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.lead": {
+   "en": "Four short steps. You can go back to any of them by tapping it.",
+   "ar": "أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.",
+   "kind": "text",
+   "hash": "b0f4eac49f6e",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.mapText": {
+   "en": "Choose a country, then a region — or continue with the steps below.",
+   "ar": "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+   "kind": "text",
+   "hash": "e5c7eb6890e7",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.mapTitle": {
+   "en": "Where would you like to support?",
+   "ar": "أين تريد أن تدعم؟",
+   "kind": "text",
+   "hash": "4c63ae1c233e",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.noOptions": {
+   "en": "No options available here yet.",
+   "ar": "لا خيارات متاحة هنا بعد.",
+   "kind": "text",
+   "hash": "4783a2f0da46",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.note": {
+   "en": "Note (optional)",
+   "ar": "ملاحظة (اختياري)",
+   "kind": "text",
+   "hash": "ea4c13d492dc",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.otherAmount": {
+   "en": "Other amount",
+   "ar": "مبلغ آخر",
+   "kind": "text",
+   "hash": "b59a152ed5ff",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.pickChildA": {
+   "en": "Choose the child from the",
+   "ar": "اختر الطفل من",
+   "kind": "text",
+   "hash": "6314811d945a",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.pickChildB": {
+   "en": ", then press “Support” on their page.",
+   "ar": "، ثم اضغط «ادعم» في ملفّه.",
+   "kind": "text",
+   "hash": "320c60283758",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.pledgeNote": {
+   "en": "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
+   "ar": "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
+   "kind": "text",
+   "hash": "c1df71cc007a",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.pledged": {
+   "en": "Your support is recorded. We'll let you know when payment collection opens, and you can follow it from “My portals”.",
+   "ar": "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
+   "kind": "text",
+   "hash": "22e0724d15ac",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.preparingA": {
+   "en": "The support flow is being prepared and will open soon. Meanwhile, you can browse the",
+   "ar": "مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح",
+   "kind": "text",
+   "hash": "32398511e20f",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.s1": {
+   "en": "1. Kind of support",
+   "ar": "١. نوع الدعم",
+   "kind": "text",
+   "hash": "dd9683704413",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.s2": {
+   "en": "2. Who is it for?",
+   "ar": "٢. إلى من يذهب؟",
+   "kind": "text",
+   "hash": "8c1de4647d34",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.s3": {
+   "en": "3. Your choice",
+   "ar": "٣. الاختيار",
+   "kind": "text",
+   "hash": "11fc4817ed94",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.s4": {
+   "en": "4. Amount",
+   "ar": "٤. المبلغ",
+   "kind": "text",
+   "hash": "c5cb8f669dc0",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.section": {
+   "en": "Support",
+   "ar": "ادعم",
+   "kind": "text",
+   "hash": "81bb0b6bce39",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.signIn": {
+   "en": "Sign in to complete your support",
+   "ar": "سجّل الدخول لإتمام الدعم",
+   "kind": "text",
+   "hash": "1575965acff4",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.steps.0": {
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "dfff08619ed0",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.steps.1": {
+   "en": "Recipient",
+   "ar": "الهدف",
+   "kind": "text",
+   "hash": "096fb37f5b4c",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.steps.2": {
+   "en": "Choice",
+   "ar": "الاختيار",
+   "kind": "text",
+   "hash": "a9d2940fca78",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.steps.3": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.stepsLabel": {
+   "en": "Steps",
+   "ar": "الخطوات",
+   "kind": "text",
+   "hash": "643eb1fefd16",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.supportCountry": {
+   "en": "Support this country",
+   "ar": "ادعم هذه الدولة",
+   "kind": "text",
+   "hash": "f2c757df4b34",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.supportRegion": {
+   "en": "Support this region",
+   "ar": "ادعم هذه المنطقة",
+   "kind": "text",
+   "hash": "a7c739d2ecda",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.country.label": {
+   "en": "A country",
+   "ar": "",
+   "kind": "text",
+   "hash": "f86ff4cab093",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.country.text": {
+   "en": "Wherever the need is greatest in the country.",
+   "ar": "",
+   "kind": "text",
+   "hash": "eb4723f83276",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.group.label": {
+   "en": "A group",
+   "ar": "",
+   "kind": "text",
+   "hash": "73e2ea307d83",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.group.text": {
+   "en": "The children of one group, with their supervisor.",
+   "ar": "",
+   "kind": "text",
+   "hash": "49f6c7051e78",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.institution.label": {
+   "en": "An organization",
+   "ar": "",
+   "kind": "text",
+   "hash": "9b91b549864a",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.institution.text": {
+   "en": "A center, office or school… working with the children.",
+   "ar": "",
+   "kind": "text",
+   "hash": "7bc83081ba30",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.orphan.label": {
+   "en": "A child",
+   "ar": "",
+   "kind": "text",
+   "hash": "e95b5cf3c000",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.orphan.text": {
+   "en": "Choose a specific child from the directory.",
+   "ar": "",
+   "kind": "text",
+   "hash": "2f4391ed1204",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.region.label": {
+   "en": "A region",
+   "ar": "",
+   "kind": "text",
+   "hash": "9c50c32bdf7c",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.targets.region.text": {
+   "en": "Everyone in a region within the country.",
+   "ar": "",
+   "kind": "text",
+   "hash": "7f28ba36fa24",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.thanks": {
+   "en": "Thank you",
+   "ar": "شكراً لك",
+   "kind": "text",
+   "hash": "4df92abf4974",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/traits.cta": {
+   "en": "Support capability building",
+   "ar": "ادعم بناء الأهلية",
+   "kind": "text",
+   "hash": "4e94582c4a1c",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.dataNote": {
+   "en": "The model's content comes from the operating platform and is currently shown in its original language.",
+   "ar": "",
+   "kind": "text",
+   "hash": "b7e982fa8c70",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.description": {
+   "en": "The traits built during the qualification journey, grouped by dimension, and what is observed for each trait.",
+   "ar": "السمات التي تُبنى في رحلة التأهيل، مقسّمةً على أبعادها، وما يُلاحَظ في كل سمة.",
+   "kind": "text",
+   "hash": "dfec5abe6c18",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.empty": {
+   "en": "The model is imported from the operating platform and will appear here once it is connected.",
+   "ar": "يُستورد النموذج من منصّة التشغيل، وسيظهر هنا فور ربطها.",
+   "kind": "text",
+   "hash": "48e9007b0d84",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.lead": {
+   "en": "What is built in the child during the qualification journey. Each dimension has its traits, and each trait has elements the supervisor observes and measures before and after the journey. This is the curriculum; an individual child's scores are seen only by those the administration authorizes.",
+   "ar": "ما يُبنى في الطفل خلال رحلة التأهيل. لكل بُعدٍ سماته، ولكل سمةٍ عناصر يلاحظها المشرف ويقيسها قبل الرحلة وبعدها. هذا هو المنهج؛ أمّا درجات طفلٍ بعينه فلا يراها إلا من أذنت له الإدارة.",
+   "kind": "text",
+   "hash": "a8fa63489901",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.title": {
+   "en": "Trait model",
+   "ar": "نموذج السمات",
+   "kind": "text",
+   "hash": "107dab55b891",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.traits.one": {
+   "en": "{0} trait",
+   "ar": "",
+   "kind": "plural",
+   "hash": "7afd266c86a2",
+   "file": "src/routes/traits.tsx"
+  },
+  "routes/traits.traits.other": {
+   "en": "{0} traits",
+   "ar": "",
+   "kind": "plural",
+   "hash": "a6ddce060012",
+   "file": "src/routes/traits.tsx"
+  }
+ },
+ "skipped": []
+}

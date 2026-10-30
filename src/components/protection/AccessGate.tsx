@@ -13,11 +13,11 @@ import { getScopeCatalog } from "@/lib/scopes.functions";
 import { RequesterThread } from "@/components/protection/RequesterThread";
 import type { MyAccess } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const MIN_REASON = 20;
 
-const COPY = {
+const COPY = defineCopy("components/protection/AccessGate", {
   ar: {
     sendFailed: "تعذّر إرسال الطلب",
     granted: "لك اطّلاعٌ على هذا الملفّ",
@@ -76,7 +76,7 @@ const COPY = {
     saved: "Your reason is saved with the request and read by the administration when deciding.",
     submit: "Send request",
   },
-};
+});
 
 /**
  * حاجب الملفّ — الطلب وحالُه.

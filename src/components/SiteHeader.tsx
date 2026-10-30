@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 import { brandFor } from "@/config/brand";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { LanguageSwitch } from "@/components/kit/LanguageSwitch";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const ROUTES = ["/", "/orphans", "/support", "/traits", "/how-it-works", "/organizations"] as const;
-const COPY = {
+const COPY = defineCopy("components/SiteHeader", {
   ar: {
     nav: ["الرئيسية", "دليل الأيتام", "ادعم", "نموذج السمات", "كيف تعمل", "جهات الرعاية"],
     skip: "تخطّي إلى المحتوى",
@@ -31,7 +31,7 @@ const COPY = {
     sponsor: "Sponsor a child",
     menu: "Menu",
   },
-};
+});
 
 export function SiteHeader() {
   const { user } = useAuth();

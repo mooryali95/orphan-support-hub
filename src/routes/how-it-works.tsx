@@ -3,12 +3,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { BRAND, brandFor, pageTitle } from "@/config/brand";
-import { useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 export const Route = createFileRoute("/how-it-works")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
-    const title = pageTitle(COPY[l].title, true, l);
+    const title = pageTitle(copyOf(COPY, l).title, true, l);
     const description = brandFor(l).description;
     return {
       meta: [
@@ -22,10 +22,10 @@ export const Route = createFileRoute("/how-it-works")({
   component: HowItWorks,
 });
 
-const COPY = {
+const COPY = defineCopy("routes/how-it-works", {
   ar: {
     title: "كيف تعمل الكفالة",
-    h1: `كيف تعمل الكفالة في «${BRAND.name}»`,
+    h1: (brand: string) => `كيف تعمل الكفالة في «${brand}»`,
     lead: "المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
     actors: [
       [
@@ -72,7 +72,7 @@ const COPY = {
   },
   en: {
     title: "How sponsorship works",
-    h1: `How sponsorship works on ${brandFor("en").name}`,
+    h1: (brand: string) => `How sponsorship works on ${brand}`,
     lead: "The platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
     actors: [
       [
@@ -129,15 +129,16 @@ const COPY = {
     ctaP: "Choose an approved file and start your monthly sponsorship today.",
     cta: "Browse files",
   },
-};
+});
 
 function HowItWorks() {
   const c = useCopy(COPY);
+  const locale = useLocale();
   return (
     <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">{c.h1}</h1>
+        <h1 className="text-3xl font-extrabold">{c.h1(brandFor(locale).name)}</h1>
         <p className="mt-3 leading-8 text-muted-foreground">{c.lead}</p>
 
         <section className="mt-10 grid gap-4 sm:grid-cols-2">

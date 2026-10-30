@@ -17,10 +17,10 @@ import {
   type ReportsView,
   type TraitsView,
 } from "@/lib/scopes.functions";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, dirOf, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-const COPY = {
+const COPY = defineCopy("components/orphan/ScopedSections", {
   ar: {
     group: "مجموعته",
     supervisor: "المشرف الأساسي:",
@@ -60,7 +60,10 @@ const COPY = {
       measurement: "Measurement",
       qualified: "Capability",
     } as Record<string, string>,
-    progress: (a: number, t: number) => `${a} of ${t} ${t === 1 ? "session" : "sessions"} accepted`,
+    progress: pluralOf(
+      { one: "{0} of {1} session accepted", other: "{0} of {1} sessions accepted" },
+      1,
+    ),
     evidence: "Work handed in: ",
     note: "Supervisor's assessment: ",
     traits: "Their traits",
@@ -70,7 +73,7 @@ const COPY = {
     report: (p: string) => `Report ${p}`,
     education: "Education:",
     living: "Living conditions:",
-    photos: (n: number) => (n === 1 ? "1 documented photo" : `${n} documented photos`),
+    photos: pluralOf({ one: "{0} documented photo", other: "{0} documented photos" }),
     locked: "Locked",
     opensWith: "Opens with permission from the administration.",
     request: "Request access",
@@ -81,7 +84,7 @@ const COPY = {
       accepted: "Accepted",
     } as Record<string, string>,
   },
-};
+});
 
 /**
  * أقسام صفحة الطفل بحسب النطاقات.
@@ -234,7 +237,7 @@ export function ScopedSections({
                       </span>
                     </span>
                     <span className="tabular-nums text-xs text-muted-foreground">
-                      {tr.first_percent ?? "—"}% {locale === "en" ? "→" : "←"}{" "}
+                      {tr.first_percent ?? "—"}% {dirOf(locale) === "rtl" ? "←" : "→"}{" "}
                       {tr.latest_percent ?? "—"}%
                     </span>
                   </div>

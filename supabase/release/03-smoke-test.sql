@@ -44,6 +44,11 @@ WITH checks(name, ok) AS (VALUES
                                            WHERE status = 'paid' AND invoice_no IS NULL)),
   -- صحّة التشغيل
   ('الفحص الدوري للخادم وحده', NOT has_function_privilege('authenticated', 'public.ops_record_run()', 'EXECUTE')),
-  ('سجلّ التشغيلات إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'ops_runs_frozen'))
+  ('سجلّ التشغيلات إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'ops_runs_frozen')),
+  -- لغات الواجهة
+  ('الزائر لا يقرأ جدول الترجمات', NOT has_table_privilege('anon', 'public.ui_translations', 'SELECT')),
+  ('النشر للإدارة وحدها', has_function_privilege('authenticated', 'public.ui_translation_publish(text,text[])', 'EXECUTE')
+                           AND NOT has_function_privilege('anon', 'public.ui_translation_publish(text,text[])', 'EXECUTE')),
+  ('سجلّ مراجعات الترجمة إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'uitr_frozen'))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;

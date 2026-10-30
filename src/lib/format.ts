@@ -7,12 +7,12 @@ const AR_NUM = "ar-u-nu-latn";
 export function formatMoney(
   amount: number | string | null | undefined,
   currency = "USD",
-  locale: "ar" | "en" = "ar",
+  locale = "ar",
 ) {
   const value = Number(amount ?? 0);
   // «US$» حروفٌ لاتينية تقلبها خوارزمية الاتجاه في سطرٍ عربي فتظهر «$US».
   // الرمز وحده لا يُقلب، والعزل (FSI…PDI) يُبقي المبلغ كتلةً واحدة وسط النصّ.
-  const text = new Intl.NumberFormat(locale === "en" ? "en" : AR_NUM, {
+  const text = new Intl.NumberFormat(locale === "ar" ? AR_NUM : locale, {
     style: "currency",
     currency,
     currencyDisplay: "narrowSymbol",
@@ -38,11 +38,13 @@ export function fundingPercent(need: number | string, funded: number | string) {
   return Math.min(100, Math.round((f / n) * 100));
 }
 
-export function formatDate(value: string | null | undefined, locale: "ar" | "en" = "ar") {
+export function formatDate(value: string | null | undefined, locale = "ar") {
   if (!value) return "—";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "—";
-  return new Intl.DateTimeFormat(locale === "en" ? "en" : AR_NUM, { dateStyle: "medium" }).format(d);
+  return new Intl.DateTimeFormat(locale === "ar" ? AR_NUM : locale, { dateStyle: "medium" }).format(
+    d,
+  );
 }
 
 export const ORPHAN_STATUS_LABELS: Record<string, string> = {
