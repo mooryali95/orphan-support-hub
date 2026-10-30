@@ -1259,6 +1259,7 @@ export type Database = {
       orphan_program_plan: { Args: { _orphan: string }; Returns: Json }
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
+      payment_hold_state: { Args: never; Returns: Json }
       protected_admin_override: { Args: never; Returns: boolean }
       prune_rate_limits: { Args: never; Returns: number }
       review_organization: {
