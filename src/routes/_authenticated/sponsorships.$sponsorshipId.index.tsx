@@ -13,6 +13,12 @@ import { getSponsorshipLedger, MESSAGE_STATUS_LABELS } from "@/lib/ledger.functi
 import { pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 import { SponsorshipJourney } from "@/components/sponsorship/SponsorshipJourney";
+import { QualificationJourney } from "@/components/sponsorship/QualificationJourney";
+import {
+  getSponsorQualification,
+  learnedByMonth,
+  type SponsorQualification,
+} from "@/lib/scopes.functions";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/")({
   head: () => ({
@@ -27,6 +33,14 @@ function SponsorshipPage() {
   const { data, isPending } = useQuery({
     queryKey: ["ledger", sponsorshipId],
     queryFn: () => fetchLedger({ data: { sponsorshipId } }),
+  });
+
+  const orphanId = data?.ledger?.orphan.id;
+  const fetchQualification = useServerFn(getSponsorQualification);
+  const { data: qRaw } = useQuery({
+    queryKey: ["sponsor-qualification", orphanId],
+    queryFn: () => fetchQualification({ data: { orphanId: orphanId! } }),
+    enabled: !!orphanId,
   });
 
   if (isPending) {
@@ -52,6 +66,7 @@ function SponsorshipPage() {
     );
   }
   const s = l.sponsorship;
+  const qualification = qRaw ? (JSON.parse(qRaw) as SponsorQualification) : undefined;
 
   return (
     <DashboardShell
@@ -95,8 +110,13 @@ function SponsorshipPage() {
       )}
 
       <section className="mt-8" aria-label="رحلة الكفالة">
-        <SponsorshipJourney ledger={l} />
+        <SponsorshipJourney ledger={l} learned={learnedByMonth(qualification)} />
       </section>
+
+      {/* ما بُني بالكفالة: البرنامج، والمرحلة، والجلسات، والنموّ. */}
+      <div className="mt-10">
+        <QualificationJourney q={qualification} name={l.orphan.display_name} />
+      </div>
 
       <section className="mt-10">
         <ImpactPanel orphanId={l.orphan.id} orphanName={l.orphan.display_name} />

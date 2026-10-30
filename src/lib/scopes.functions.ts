@@ -112,6 +112,30 @@ export const getOrphanJourney = viewFn("orphan_journey");
 export const getOrphanReports = viewFn("orphan_reports");
 export const getOrphanTraits = viewFn("orphan_traits");
 export const getOrphanGroup = viewFn("orphan_group");
+/** رحلة التأهيل كما يراها الكافل والداعم: بلا مخرجاتٍ ولا ملاحظاتٍ ولا درجاتٍ فردية. */
+export const getSponsorQualification = viewFn("sponsor_qualification");
+
+export type SponsorQualification =
+  | Locked
+  | {
+      allowed: true;
+      programs: Array<{
+        program: string;
+        status: string;
+        stage: string;
+        started_at: string | null;
+        accepted: number;
+        total: number;
+        units: Array<{
+          ordinal: number;
+          title: string;
+          focus: string;
+          status: "pending" | "submitted" | "returned" | "accepted";
+          accepted_month: string | null;
+        }>;
+      }>;
+      growth: Array<{ dimension: string; first: number; latest: number; observations: number }>;
+    };
 
 // ---------------------------------------------------------------------
 // قرار الإدارة بالنطاقات، والمحادثة
@@ -247,3 +271,12 @@ export const getMyAccess = createServerFn({ method: "GET" })
     const { data, error } = await rpc(context.supabase).rpc("my_access_requests");
     return error ? ([] as MyAccessRow[]) : ((data ?? []) as MyAccessRow[]);
   });
+
+/** الجلسات المقبولة في كل شهر — لربط «ما دفعتُ» بـ«ما تعلّم». */
+export function learnedByMonth(q: SponsorQualification | undefined): Record<string, string[]> {
+  if (!q || !q.allowed) return {};
+  const out: Record<string, string[]> = {};
+  for (const p of q.programs)
+    for (const u of p.units) if (u.accepted_month) (out[u.accepted_month] ??= []).push(u.title);
+  return out;
+}

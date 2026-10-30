@@ -5,6 +5,7 @@ import {
   Banknote,
   Check,
   ChevronDown,
+  GraduationCap,
   Copy,
   HandHeart,
   Landmark,
@@ -70,7 +71,14 @@ const STATIONS: Array<[Station, string, typeof Banknote]> = [
  * الوصول بمستند — ومعه إيصالٌ يُحسب من حقائقه. ما لم يحدث بعدُ يُقال كما
  * هو: «بانتظار…»، لا يُوهَم بإنجاز.
  */
-export function SponsorshipJourney({ ledger }: { ledger: SponsorshipLedger }) {
+export function SponsorshipJourney({
+  ledger,
+  learned = {},
+}: {
+  ledger: SponsorshipLedger;
+  /** الجلسات التي اجتازها الطفل في كل شهر — من رحلة التأهيل. */
+  learned?: Record<string, string[]>;
+}) {
   const s = ledger.sponsorship;
   const past = ledger.months.filter((m) => !m.upcoming);
   const next = ledger.months.find((m) => m.upcoming);
@@ -143,6 +151,7 @@ export function SponsorshipJourney({ ledger }: { ledger: SponsorshipLedger }) {
                   currency={s.currency}
                   sponsorshipId={s.id}
                   index={i}
+                  learned={learned[m.month] ?? []}
                   defaultOpen={year === byYear[0]?.[0] && i === 0}
                 />
               ))}
@@ -189,12 +198,14 @@ function MonthNode({
   currency,
   sponsorshipId,
   index,
+  learned,
   defaultOpen,
 }: {
   m: LedgerMonth;
   currency: string;
   sponsorshipId: string;
   index: number;
+  learned: string[];
   defaultOpen: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -292,6 +303,22 @@ function MonthNode({
                 </li>
               ))}
             </ol>
+            {learned.length > 0 && (
+              <div className="mt-4 rounded-xl bg-primary/5 p-3">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  <GraduationCap className="size-4" strokeWidth={1.5} aria-hidden="true" />
+                  ما اجتازه في هذا الشهر
+                </p>
+                <ul className="mt-1.5 space-y-1 text-sm">
+                  {learned.map((t) => (
+                    <li key={t} className="flex items-start gap-1.5">
+                      <Check className="mt-1 size-3.5 shrink-0 text-primary" aria-hidden="true" />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {(m.payments?.length ?? 0) > 0 && <Invoices payments={m.payments!} />}
             {m.receipt && (
               <Receipt receipt={m.receipt} month={m.month} sponsorshipId={sponsorshipId} />
