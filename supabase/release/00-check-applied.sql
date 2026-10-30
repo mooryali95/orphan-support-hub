@@ -22,4 +22,5 @@ SELECT to_regclass('public.orphan_access_requests')              AS m0905_protec
        to_regprocedure('public.my_supervisor_today()')           AS m0917_field,
        to_regprocedure('public.donor_entity_pledges(uuid)')      AS m0918_donors,
        to_regprocedure('public.admin_mirror_status()')           AS m0919_mirror_sync,
-       to_regclass('public.guardian_e_consents')                 AS m0920_guardian;
+       to_regclass('public.guardian_e_consents')                 AS m0920_guardian,
+       to_regprocedure('public.geo_stats()')                      AS m0921_geo;

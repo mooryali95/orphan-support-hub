@@ -25,7 +25,9 @@ import { formatMoney } from "@/lib/format";
 import { BRAND } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
-import { DEMO_STATS } from "@/components/map/demo-stats";
+import { MapActions } from "@/components/map/MapActions";
+import { useMapStats } from "@/components/map/useMapStats";
+import { geoQuery } from "@/lib/geo";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -53,7 +55,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: DESCRIPTION },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
+  loader: async ({ context }) => {
+    // الخارطة تُرسم من الخادم بأعدادها، فلا تومض فارغة.
+    void context.queryClient.prefetchQuery(geoQuery);
+    return context.queryClient.ensureQueryData(homeQuery);
+  },
   component: HomePage,
 });
 
@@ -191,6 +197,7 @@ function HomePage() {
   const sp = Route.useSearch();
   const navigate = Route.useNavigate();
   const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
+  const { stats, demo } = useMapStats();
   const onSelect = (s: MapSelection) =>
     void navigate({
       search: { ...(s.country ? { c: s.country } : {}), ...(s.region ? { r: s.region } : {}) },
@@ -202,8 +209,14 @@ function HomePage() {
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
-        {/* المرحلة الأولى: الخارطة ببيانات تجريبية؛ تُربط بالقاعدة في المرحلة الثانية. */}
-        <WorldMap stats={DEMO_STATS} selection={selection} onSelect={onSelect} demo />
+        {/* الخارطة من مصدر الجغرافيا الواحد (geo_stats)؛ وتجريبيةٌ بشارةٍ إن تعذّرت القاعدة. */}
+        <WorldMap
+          stats={stats}
+          selection={selection}
+          onSelect={onSelect}
+          demo={demo}
+          action={(ctx) => <MapActions ctx={ctx} />}
+        />
 
         {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">

@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/config/brand";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
 const NAV = [
   { to: "/", label: "الرئيسية" },
@@ -57,9 +58,18 @@ export function SiteHeader() {
             </Button>
           ) : (
             <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link to="/auth">تسجيل الدخول</Link>
-              </Button>
+              <AuthDialog
+                trigger={(open) => (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hidden sm:inline-flex"
+                    onClick={open}
+                  >
+                    تسجيل الدخول
+                  </Button>
+                )}
+              />
               <Button asChild size="sm">
                 <Link to="/orphans">اكفل يتيماً</Link>
               </Button>
@@ -94,13 +104,20 @@ export function SiteHeader() {
             </Link>
           ))}
           {!user && (
-            <Link
-              to="/auth"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              تسجيل الدخول
-            </Link>
+            <AuthDialog
+              trigger={(openAuth) => (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    openAuth();
+                  }}
+                  className="rounded-lg px-3 py-2 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+                >
+                  تسجيل الدخول
+                </button>
+              )}
+            />
           )}
         </nav>
       </div>

@@ -14,6 +14,7 @@ import { AGE_BAND_LABELS, type AgeBand } from "@/integrations/supabase/types.ext
 import { cn } from "@/lib/utils";
 import { CountryPicker } from "@/components/geo/CountryPicker";
 import { countryName, resolveCountry } from "@/lib/countries";
+import { findCountry, geoQuery } from "@/lib/geo";
 import { arCount, COUNTRIES, FILES } from "@/lib/plural";
 import { BRAND, pageTitle } from "@/config/brand";
 
@@ -100,6 +101,8 @@ const PAGE = 24;
 function OrphansPage() {
   const { data: first } = useSuspenseQuery(firstPageQuery);
   const { data: options } = useQuery(optionsQuery);
+  // البلد والمنطقة من مصدر الجغرافيا الواحد — ما تُظهره الخارطة يجده الدليل.
+  const { data: geo } = useQuery(geoQuery);
   // المجموعات من كتالوج الدعم العامّ: اسمٌ ومنطقة وعدد، بلا مشرف ولا أسماء.
   const { data: catalog } = useQuery({
     queryKey: ["support-catalog"],
@@ -238,7 +241,18 @@ function OrphansPage() {
     void navigate({ search: {}, replace: true, resetScroll: false });
   }
 
-  const countries = options?.countries ?? [];
+  const fromGeo = !!geo?.available;
+  const countries = fromGeo ? geo.countries.map((c) => c.value) : (options?.countries ?? []);
+  const countryCounts = fromGeo
+    ? Object.fromEntries(
+        geo.countries.filter((c) => c.total != null).map((c) => [c.value, c.total!]),
+      )
+    : undefined;
+  // المناطق تتبع الدولة المختارة؛ وبلا دولة: كلّ المناطق.
+  const geoCountry = findCountry(geo, sp.country);
+  const regions = fromGeo
+    ? (geoCountry ? [geoCountry] : geo.countries).flatMap((c) => c.regions.map((r) => r.value))
+    : (options?.regions ?? []);
 
   return (
     <div className="min-h-dvh">
@@ -284,6 +298,7 @@ function OrphansPage() {
                 value={sp.country ?? ""}
                 onChange={(v) => set({ country: v || undefined, region: undefined })}
                 values={countries}
+                {...(countryCounts ? { counts: countryCounts } : {})}
               />
             </div>
 
@@ -368,7 +383,7 @@ function OrphansPage() {
               value={sp.region ?? ""}
               onChange={(v) => set({ region: v || undefined })}
               all="كل المناطق"
-              options={options?.regions ?? []}
+              options={[...new Set(regions)]}
             />
             <div>
               <Label htmlFor="f-age" className="text-xs">

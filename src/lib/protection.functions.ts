@@ -208,3 +208,30 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
   });
+
+/**
+ * مصدر الجغرافيا الواحد — أعداد الدول والمناطق كما تُعيدها `geo_stats`.
+ * الخارطة وقائمتا البلد والمنطقة في الدليل تقرأ منه وحده. وعند تعذّر
+ * القاعدة (متوقّفة أو لم تُطبَّق الهجرة) يعود `available: false`، فتقرّر
+ * الواجهة ما تعرضه بدل أن تنهار.
+ */
+export const getGeoStats = createServerFn({ method: "GET" }).handler(async () => {
+  const db = withProtection(publicClient());
+  const { data, error } = await db.rpc("geo_stats" as never);
+  if (error || !data) return { available: false as const, countries: [] as GeoCountryRow[] };
+  return {
+    available: true as const,
+    countries: (data as { countries?: GeoCountryRow[] }).countries ?? [],
+  };
+});
+
+export type GeoRegionRow = {
+  region: string;
+  small: boolean;
+  total: number | null;
+  sponsored: number | null;
+};
+export type GeoCountryRow = Omit<GeoRegionRow, "region"> & {
+  country: string;
+  regions: GeoRegionRow[];
+};
