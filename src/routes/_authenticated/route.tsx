@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/hooks/useAuth";
+import { LocaleProvider } from "@/lib/locale";
 
 /**
  * حارس المصادقة، ومعه الأدوار (M2).
@@ -26,5 +27,14 @@ export const Route = createFileRoute("/_authenticated")({
     const roles = (roleRows ?? []).map((r) => r.role as AppRole);
     return { user: data.user, roles };
   },
-  component: () => <Outlet />,
+  // البوابات بعد الدخول عربيةٌ في هذه المرحلة: من اختار الإنجليزية يراها
+  // متّسقةً من اليمين بالعربية، لا نصّاً عربياً في تخطيطٍ من اليسار. وحين
+  // تُترجم بوابةٌ يُرفع هذا الغلاف عنها.
+  component: () => (
+    <LocaleProvider locale="ar">
+      <div dir="rtl" lang="ar">
+        <Outlet />
+      </div>
+    </LocaleProvider>
+  ),
 });

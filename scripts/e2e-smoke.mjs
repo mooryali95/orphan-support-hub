@@ -8,6 +8,9 @@
 // عربي، ولا أخطاء JavaScript، ولا تمرير أفقي على عرض الجوال. ثم الرحلة:
 // الخريطة ← قائمة الأيتام بفلتر الدولة في الرابط ← طلب الدعم ← الدخول.
 // المسارات المحمية تُحوَّل إلى الدخول بدل أن تُعرض لزائر.
+// وكل ذلك مرّتين: بالعربية (rtl) وبالإنجليزية (ltr، بكعكة kh_lang=en)، وفي
+// الإنجليزية لا نصّ واجهةٍ عربي في العناوين والأزرار والتنقّل — ما عدا ما
+// وُسم lang="ar" (النصّ النبوي) وبيانات الأطفال نفسها.
 import { createRequire } from "node:module";
 
 // require لا import: Playwright مثبّتٌ عامّاً في بيئة الاختبار لا في package.json.
@@ -35,62 +38,82 @@ const failures = [];
 const fail = (page, msg) => failures.push(`${page}: ${msg}`);
 
 const browser = await chromium.launch();
-for (const [label, viewport] of [
+const VIEWPORTS = [
   ["desktop", { width: 1280, height: 800 }],
   ["mobile", { width: 375, height: 740 }],
-]) {
-  const ctx = await browser.newContext({ viewport, locale: "ar" });
-  for (const path of PAGES) {
-    const page = await ctx.newPage();
-    const errors = [];
-    page.on("pageerror", (e) => errors.push(e.message));
-    page.on("console", (m) => {
-      if (m.type() === "error" && !IGNORE.some((re) => re.test(m.text()))) errors.push(m.text());
-    });
-    const res = await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 30_000 });
-    const where = `${label} ${path}`;
-    if (!res || res.status() >= 500) fail(where, `status ${res?.status()}`);
-    const r = await page.evaluate(() => ({
-      title: document.title,
-      h1: document.querySelectorAll("h1").length,
-      dir: document.documentElement.dir,
-      overflow: document.documentElement.scrollWidth - window.innerWidth,
-    }));
-    if (!r.title) fail(where, "no <title>");
-    if (r.h1 < 1 && path !== "/auth" && path !== "/") fail(where, "no <h1>");
-    if (r.dir !== "rtl") fail(where, `dir=${r.dir}`);
-    if (r.overflow > 1) fail(where, `horizontal overflow ${r.overflow}px`);
-    for (const e of errors) fail(where, `js: ${e.slice(0, 160)}`);
-    await page.close();
-  }
-
-  // المحمي لا يُعرض لزائر
-  for (const path of PROTECTED) {
-    const page = await ctx.newPage();
-    await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 30_000 });
-    const url = new URL(page.url());
-    if (url.pathname === path) {
-      const gated = await page.getByText(/تسجيل الدخول|سجّل الدخول|ادخل/).count();
-      if (gated === 0) fail(`${label} ${path}`, "protected page shown to a visitor");
+];
+const LANGS = [
+  { lang: "ar", dir: "rtl", signIn: /تسجيل الدخول|سجّل الدخول|ادخل/, offering: /لا تبرّعٌ عام/ },
+  { lang: "en", dir: "ltr", signIn: /Sign in/i, offering: /not a general donation/i },
+];
+for (const L of LANGS)
+  for (const [vp, viewport] of VIEWPORTS) {
+    const label = `${L.lang} ${vp}`;
+    const ctx = await browser.newContext({ viewport, locale: L.lang });
+    await ctx.addCookies([{ name: "kh_lang", value: L.lang, url: BASE }]);
+    for (const path of PAGES) {
+      const page = await ctx.newPage();
+      const errors = [];
+      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("console", (m) => {
+        if (m.type() === "error" && !IGNORE.some((re) => re.test(m.text()))) errors.push(m.text());
+      });
+      const res = await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 30_000 });
+      const where = `${label} ${path}`;
+      if (!res || res.status() >= 500) fail(where, `status ${res?.status()}`);
+      const r = await page.evaluate(() => {
+        const AR = /[\u0600-\u06FF]/;
+        // نصّ الواجهة: عناوين وأزرار وروابط تنقّل وحقول — لا بطاقات البيانات.
+        const ui = [...document.querySelectorAll("h1, h2, nav a, button, label, [placeholder]")]
+          .filter((el) => !el.closest('[lang="ar"]') && !el.closest("article"))
+          .map((el) => (el.getAttribute("placeholder") ?? el.textContent ?? "").trim())
+          .filter((t) => AR.test(t));
+        return {
+          title: document.title,
+          h1: document.querySelectorAll("h1").length,
+          dir: document.documentElement.dir,
+          lang: document.documentElement.lang,
+          overflow: document.documentElement.scrollWidth - window.innerWidth,
+          arabicUi: [...new Set(ui)].slice(0, 5),
+        };
+      });
+      if (!r.title) fail(where, "no <title>");
+      if (r.h1 < 1 && path !== "/auth" && path !== "/") fail(where, "no <h1>");
+      if (r.dir !== L.dir || r.lang !== L.lang) fail(where, `lang=${r.lang} dir=${r.dir}`);
+      if (L.lang === "en" && r.arabicUi.length)
+        fail(where, `Arabic UI text: ${r.arabicUi.join(" | ")}`);
+      if (r.overflow > 1) fail(where, `horizontal overflow ${r.overflow}px`);
+      for (const e of errors) fail(where, `js: ${e.slice(0, 160)}`);
+      await page.close();
     }
-    await page.close();
-  }
 
-  // الرحلة: الفلتر يعيش في الرابط، فالرجوع والمشاركة يحفظانه
-  const page = await ctx.newPage();
-  await page.goto(BASE + "/orphans?country=AL", { waitUntil: "networkidle" });
-  if (!new URL(page.url()).searchParams.get("country"))
-    fail(`${label} journey`, "country filter dropped from URL");
-  await page.goto(BASE + "/support", { waitUntil: "networkidle" });
-  if ((await page.getByText(/لا تبرّعٌ عام/).count()) === 0)
-    fail(`${label} journey`, "offering note missing on /support");
-  await page.close();
-  await ctx.close();
-}
+    // المحمي لا يُعرض لزائر
+    for (const path of PROTECTED) {
+      const page = await ctx.newPage();
+      await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 30_000 });
+      const url = new URL(page.url());
+      if (url.pathname === path) {
+        const gated = await page.getByText(L.signIn).count();
+        if (gated === 0) fail(`${label} ${path}`, "protected page shown to a visitor");
+      }
+      await page.close();
+    }
+
+    // الرحلة: الفلتر يعيش في الرابط، فالرجوع والمشاركة يحفظانه
+    const page = await ctx.newPage();
+    await page.goto(BASE + "/orphans?country=AL", { waitUntil: "networkidle" });
+    if (!new URL(page.url()).searchParams.get("country"))
+      fail(`${label} journey`, "country filter dropped from URL");
+    await page.goto(BASE + "/support", { waitUntil: "networkidle" });
+    if ((await page.getByText(L.offering).count()) === 0)
+      fail(`${label} journey`, "offering note missing on /support");
+    await page.close();
+    await ctx.close();
+  }
 await browser.close();
 
 if (failures.length) {
   console.error(`✗ ${failures.length} مشكلة:\n  ` + failures.join("\n  "));
   process.exit(1);
 }
-console.log(`✓ ${PAGES.length} صفحة × عرضان، والمحمي محجوب، والرحلة العامة سليمة`);
+console.log(`✓ ${PAGES.length} صفحة × عرضان × لغتان، والمحمي محجوب، والرحلة العامة سليمة`);

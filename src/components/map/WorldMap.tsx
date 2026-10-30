@@ -13,7 +13,8 @@ import {
 import { ArrowLeft, Globe2, List, MapPin, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { normalize } from "@/lib/countries";
+import { countryName, normalize } from "@/lib/countries";
+import { useLocale, type Locale } from "@/lib/locale";
 import { arCount, COUNTRIES } from "@/lib/plural";
 import { cn } from "@/lib/utils";
 import { easeInOut, easeOut, fit, flight, type View } from "./camera";
@@ -63,9 +64,70 @@ function statFor(region: RegionShape, stat: CountryStat | undefined): RegionStat
 }
 
 /** العدد كما يُعرض: ما دون الحدّ لا يُكشف رقمه — والقاعدة لا تُرسله أصلاً. */
-function shown(n: number | null | undefined) {
-  return n == null || n < COHORT_MIN ? `أقل من ${COHORT_MIN}` : n.toLocaleString("ar-u-nu-latn");
+function shown(n: number | null | undefined, locale: Locale = "ar") {
+  if (n == null || n < COHORT_MIN)
+    return locale === "en" ? `fewer than ${COHORT_MIN}` : `أقل من ${COHORT_MIN}`;
+  return n.toLocaleString(locale === "en" ? "en" : "ar-u-nu-latn");
 }
+
+const COPY = {
+  ar: {
+    section: "خارطة الأيتام في العالم",
+    mapOf: (place: string) => `خارطة ${place}`,
+    worldMap: "خارطة العالم",
+    breadcrumb: "موضعك على الخارطة",
+    world: "العالم",
+    demo: "بيانات تجريبية",
+    list: "قائمة",
+    pick: "اختر بلداً",
+    introA: "لترى من ينتظر كافلاً هناك —",
+    introB: "ملفاً موثّقاً في",
+    countries: (n: number) => arCount(n, COUNTRIES),
+    country: "الدولة",
+    back: "رجوع",
+    none: "لا ملفّات موثّقة هنا بعد.",
+    verified: "يتيماً بملفٍّ موثّق",
+    pctSponsored: (p: number) => `${p}% مكفولون`,
+    sponsored: "مكفول",
+    waiting: "ينتظر كافلاً",
+    cohort: (n: number) =>
+      `لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن ${n} — حمايةً للأطفال من أن يُعرَفوا.`,
+    browse: "تصفّح من ينتظر هنا",
+    regions: "المناطق",
+    listLabel: "الدول والمناطق",
+    regionsOf: (c: string) => `مناطق ${c}`,
+    countriesH: "الدول",
+    closeList: "إغلاق القائمة",
+  },
+  en: {
+    section: "Map of orphans worldwide",
+    mapOf: (place: string) => `Map of ${place}`,
+    worldMap: "World map",
+    breadcrumb: "Your place on the map",
+    world: "World",
+    demo: "Sample data",
+    list: "List",
+    pick: "Choose a country",
+    introA: "to see who is waiting for a sponsor there —",
+    introB: "verified files in",
+    countries: (n: number) => (n === 1 ? "1 country" : `${n} countries`),
+    country: "Country",
+    back: "Back",
+    none: "No verified files here yet.",
+    verified: "children with a verified file",
+    pctSponsored: (p: number) => `${p}% sponsored`,
+    sponsored: "Sponsored",
+    waiting: "Waiting for a sponsor",
+    cohort: (n: number) =>
+      `We don't show exact numbers when any of them is below ${n} — so children can't be identified.`,
+    browse: "Browse who is waiting here",
+    regions: "Regions",
+    listLabel: "Countries and regions",
+    regionsOf: (c: string) => `Regions of ${c}`,
+    countriesH: "Countries",
+    closeList: "Close list",
+  },
+};
 const sizeOf = (s: { total: number | null } | undefined) => s?.total ?? 1;
 
 function usePrefersReducedMotion() {
@@ -100,6 +162,7 @@ const CountriesLayer = memo(function CountriesLayer({
   onPick: (code: string) => void;
   onHover: (code: string) => void;
 }) {
+  const locale = useLocale();
   const within = (b: Box) =>
     !near ||
     !(
@@ -121,7 +184,9 @@ const CountriesLayer = memo(function CountriesLayer({
             vectorEffect="non-scaling-stroke"
             onClick={active ? () => onPick(c.c) : undefined}
             onPointerEnter={active ? () => onHover(c.c) : undefined}
-            data-tip={active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total)}` : undefined}
+            data-tip={
+              active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total, locale)}` : undefined
+            }
             className={cn(
               "stroke-background transition-[fill,opacity] duration-700 ease-[var(--ease-out)]",
               active ? "cursor-pointer fill-primary/75 hover:fill-primary" : "fill-border",
@@ -151,6 +216,7 @@ const RegionsLayer = memo(function RegionsLayer({
   selected: string | null;
   onPick: (id: string) => void;
 }) {
+  const locale = useLocale();
   const max = Math.max(1, ...Object.values(stat?.regions ?? {}).map(sizeOf));
   return (
     <g>
@@ -164,7 +230,7 @@ const RegionsLayer = memo(function RegionsLayer({
             d={r.d}
             vectorEffect="non-scaling-stroke"
             onClick={() => onPick(r.id)}
-            data-tip={s ? `${r.n}|${shown(s.total)}` : r.n}
+            data-tip={s ? `${r.n}|${shown(s.total, locale)}` : r.n}
             style={{
               ["--i" as string]: Math.min(i, 24),
               fillOpacity: selected && selected !== r.id ? (s ? k * 0.45 : 0.5) : s ? k : 1,
@@ -222,7 +288,7 @@ function CountUp({ to, reduce }: { to: number; reduce: boolean }) {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [to, reduce]);
-  return <span className="tabular-nums">{shown(to < COHORT_MIN ? to : n)}</span>;
+  return <span className="tabular-nums">{shown(to < COHORT_MIN ? to : n, useLocale())}</span>;
 }
 
 /* ── الخارطة ───────────────────────────────────────────────────────── */
@@ -265,8 +331,25 @@ export function WorldMap({
   /** خلفيّةٌ فقط (صفحة الدخول): الخارطة بلا مسارٍ ولا بطاقاتٍ ولا قائمة. */
   bare?: boolean;
 }) {
-  const { data: world } = useQuery(worldQuery);
-  const { data: regions = [] } = useRegions(selection.country);
+  const locale = useLocale();
+  const c$ = COPY[locale];
+  const { data: rawWorld } = useQuery(worldQuery);
+  const { data: rawRegions } = useRegions(selection.country);
+  // الأسماء بلغة الواجهة: الدول من المتصفّح، والمناطق من اسمها اللاتيني في الملفّ.
+  const world = useMemo(
+    () =>
+      rawWorld && locale === "en"
+        ? {
+            ...rawWorld,
+            countries: rawWorld.countries.map((x) => ({ ...x, n: countryName(x.c, "en") })),
+          }
+        : rawWorld,
+    [rawWorld, locale],
+  );
+  const regions = useMemo(
+    () => (rawRegions ?? []).map((r) => (locale === "en" && r.en ? { ...r, n: r.en } : r)),
+    [rawRegions, locale],
+  );
   const qc = useQueryClient();
   // الدولة التي ظهرت مناطقها: تبقى مرسومةً أثناء الطيران داخلها (إلى منطقة وعودة).
   const [shownFor, setShownFor] = useState<string | null>(null);
@@ -447,7 +530,7 @@ export function WorldMap({
 
   return (
     <section
-      aria-label="خارطة الأيتام في العالم"
+      aria-label={c$.section}
       className={cn(
         "relative isolate h-[calc(100dvh-4rem)] min-h-[32rem] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,var(--color-thrive-tint),var(--color-background)_70%)]",
         className,
@@ -466,7 +549,7 @@ export function WorldMap({
             preserveAspectRatio="xMidYMid meet"
             role="img"
             aria-label={
-              country ? `خارطة ${country.n}${region ? ` — ${region.n}` : ""}` : "خارطة العالم"
+              country ? c$.mapOf(`${country.n}${region ? ` — ${region.n}` : ""}`) : c$.worldMap
             }
           >
             {/* الهبوط الأوّل: العالم يستقرّ من تكبيرٍ خفيف. */}
@@ -521,7 +604,8 @@ export function WorldMap({
                   style={{ left: x, top: y, ["--i" as string]: i }}
                   className="map-label pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_4px_12px_-4px_rgb(0_0_0/0.2)] backdrop-blur transition-[scale] duration-150 hover:scale-105"
                 >
-                  {r.n} <span className="tabular-nums text-primary">{shown(rs!.total)}</span>
+                  {r.n}{" "}
+                  <span className="tabular-nums text-primary">{shown(rs!.total, locale)}</span>
                 </button>
               );
             })}
@@ -550,7 +634,7 @@ export function WorldMap({
         <>
           {/* ── الطبقة العلوية: المسار، والعنوان، والبطاقات ── */}
           <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-3 p-4 md:p-6">
-            <nav aria-label="موضعك على الخارطة" className="pointer-events-auto">
+            <nav aria-label={c$.breadcrumb} className="pointer-events-auto">
               <ol className="flex flex-wrap items-center gap-1 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur">
                 <li>
                   <button
@@ -562,7 +646,7 @@ export function WorldMap({
                     )}
                   >
                     <Globe2 className="size-4" aria-hidden="true" />
-                    العالم
+                    {c$.world}
                   </button>
                 </li>
                 {country && (
@@ -598,7 +682,7 @@ export function WorldMap({
             <div className="pointer-events-auto flex items-center gap-2">
               {demo && (
                 <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                  بيانات تجريبية
+                  {c$.demo}
                 </span>
               )}
               <Button
@@ -610,7 +694,7 @@ export function WorldMap({
                 onClick={() => setListOpen((o) => !o)}
               >
                 <List aria-hidden="true" />
-                قائمة
+                {c$.list}
               </Button>
             </div>
           </div>
@@ -622,16 +706,18 @@ export function WorldMap({
               className="map-rise pointer-events-none absolute inset-x-0 bottom-0 p-4 text-center md:p-10"
             >
               <p className="font-serif text-3xl font-bold text-primary md:text-5xl">
-                {intro?.title ?? "اختر بلداً"}
+                {intro?.title ?? c$.pick}
               </p>
               <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground md:text-base">
                 {intro?.text ?? (
                   <>
-                    لترى من ينتظر كافلاً هناك —{" "}
-                    <strong className="text-foreground tabular-nums">{shown(totals.total)}</strong>{" "}
-                    ملفاً موثّقاً في{" "}
+                    {c$.introA}{" "}
+                    <strong className="text-foreground tabular-nums">
+                      {shown(totals.total, locale)}
+                    </strong>{" "}
+                    {c$.introB}{" "}
                     <strong className="text-foreground">
-                      {arCount(activeCountries.length, COUNTRIES)}
+                      {c$.countries(activeCountries.length)}
                     </strong>
                     .
                   </>
@@ -651,13 +737,13 @@ export function WorldMap({
                 <div className="min-w-0">
                   <p className="flex items-center gap-1 text-xs text-muted-foreground">
                     <MapPin className="size-3.5" aria-hidden="true" />
-                    {region ? country.n : "الدولة"}
+                    {region ? country.n : c$.country}
                   </p>
                   <h2 className="mt-1 text-2xl font-extrabold">{region ? region.n : country.n}</h2>
                 </div>
                 <button
                   type="button"
-                  aria-label="رجوع"
+                  aria-label={c$.back}
                   onClick={() =>
                     onSelect(
                       region
@@ -674,11 +760,7 @@ export function WorldMap({
               {(() => {
                 const s = region ? rStat : cStat;
                 if (!s)
-                  return (
-                    <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                      لا ملفّات موثّقة هنا بعد.
-                    </p>
-                  );
+                  return <p className="mt-4 text-sm leading-7 text-muted-foreground">{c$.none}</p>;
                 // التقسيم يأتي من القاعدة محجوباً إن صغر أحد شقّيه.
                 const split = s.total != null && s.sponsored != null;
                 const need = split ? s.total! - s.sponsored! : null;
@@ -688,16 +770,16 @@ export function WorldMap({
                   <>
                     <p className="mt-4 flex items-baseline gap-2">
                       <span className="text-5xl font-extrabold text-primary">
-                        {small ? shown(null) : <CountUp to={s.total!} reduce={reduce} />}
+                        {small ? shown(null, locale) : <CountUp to={s.total!} reduce={reduce} />}
                       </span>
-                      <span className="text-sm text-muted-foreground">يتيماً بملفٍّ موثّق</span>
+                      <span className="text-sm text-muted-foreground">{c$.verified}</span>
                     </p>
                     {split && (
                       <>
                         <div
                           className="mt-4 h-2 overflow-hidden rounded-full bg-secondary"
                           role="img"
-                          aria-label={`${pct}% مكفولون`}
+                          aria-label={c$.pctSponsored(pct)}
                         >
                           <div
                             className="map-grow h-full rounded-full bg-primary"
@@ -706,13 +788,15 @@ export function WorldMap({
                         </div>
                         <dl className="mt-2 flex justify-between text-sm">
                           <div className="flex gap-1">
-                            <dt className="text-muted-foreground">مكفول</dt>
-                            <dd className="font-semibold tabular-nums">{shown(s.sponsored)}</dd>
+                            <dt className="text-muted-foreground">{c$.sponsored}</dt>
+                            <dd className="font-semibold tabular-nums">
+                              {shown(s.sponsored, locale)}
+                            </dd>
                           </div>
                           <div className="flex gap-1">
-                            <dt className="text-muted-foreground">ينتظر كافلاً</dt>
+                            <dt className="text-muted-foreground">{c$.waiting}</dt>
                             <dd className="font-semibold tabular-nums text-bridge-ink">
-                              {shown(need)}
+                              {shown(need, locale)}
                             </dd>
                           </div>
                         </dl>
@@ -720,8 +804,7 @@ export function WorldMap({
                     )}
                     {(small || !split) && (
                       <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                        لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن {COHORT_MIN} — حمايةً للأطفال من
-                        أن يُعرَفوا.
+                        {c$.cohort(COHORT_MIN)}
                       </p>
                     )}
                     {action ? (
@@ -744,13 +827,13 @@ export function WorldMap({
                             funding: "open",
                           }}
                         >
-                          تصفّح من ينتظر هنا
+                          {c$.browse}
                           <ArrowLeft className="ltr:-scale-x-100" aria-hidden="true" />
                         </Link>
                       </Button>
                     )}
                     {!region && rankedRegions.length > 0 && (
-                      <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="المناطق">
+                      <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={c$.regions}>
                         {rankedRegions.slice(0, 6).map(({ r, s: rs }) => (
                           <li key={r.id}>
                             <button
@@ -760,7 +843,7 @@ export function WorldMap({
                             >
                               {r.n}
                               <span className="tabular-nums text-muted-foreground">
-                                {shown(rs!.total)}
+                                {shown(rs!.total, locale)}
                               </span>
                             </button>
                           </li>
@@ -777,14 +860,14 @@ export function WorldMap({
           {listOpen && (
             <div
               role="dialog"
-              aria-label="الدول والمناطق"
+              aria-label={c$.listLabel}
               className="map-rise absolute inset-y-3 end-3 w-[min(22rem,calc(100%-1.5rem))] overflow-y-auto rounded-3xl bg-card/95 p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur"
             >
               <div className="flex items-center justify-between">
-                <h2 className="font-bold">{country ? `مناطق ${country.n}` : "الدول"}</h2>
+                <h2 className="font-bold">{country ? c$.regionsOf(country.n) : c$.countriesH}</h2>
                 <button
                   type="button"
-                  aria-label="إغلاق القائمة"
+                  aria-label={c$.closeList}
                   onClick={() => setListOpen(false)}
                   className="grid size-9 place-items-center rounded-full hover:bg-secondary"
                 >
@@ -817,7 +900,7 @@ export function WorldMap({
                     >
                       <span>{x.label}</span>
                       <span className="text-sm tabular-nums text-muted-foreground">
-                        {shown(x.n)}
+                        {shown(x.n, locale)}
                       </span>
                     </button>
                   </li>

@@ -4,11 +4,15 @@
 // الهندية في خط Tajawal فتهتزّ الأعمدة. التثبيت يضمن ثباتاً واصطفافاً.
 const AR_NUM = "ar-u-nu-latn";
 
-export function formatMoney(amount: number | string | null | undefined, currency = "USD") {
+export function formatMoney(
+  amount: number | string | null | undefined,
+  currency = "USD",
+  locale: "ar" | "en" = "ar",
+) {
   const value = Number(amount ?? 0);
   // «US$» حروفٌ لاتينية تقلبها خوارزمية الاتجاه في سطرٍ عربي فتظهر «$US».
   // الرمز وحده لا يُقلب، والعزل (FSI…PDI) يُبقي المبلغ كتلةً واحدة وسط النصّ.
-  const text = new Intl.NumberFormat(AR_NUM, {
+  const text = new Intl.NumberFormat(locale === "en" ? "en" : AR_NUM, {
     style: "currency",
     currency,
     currencyDisplay: "narrowSymbol",
@@ -34,11 +38,11 @@ export function fundingPercent(need: number | string, funded: number | string) {
   return Math.min(100, Math.round((f / n) * 100));
 }
 
-export function formatDate(value: string | null | undefined) {
+export function formatDate(value: string | null | undefined, locale: "ar" | "en" = "ar") {
   if (!value) return "—";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "—";
-  return new Intl.DateTimeFormat(AR_NUM, { dateStyle: "medium" }).format(d);
+  return new Intl.DateTimeFormat(locale === "en" ? "en" : AR_NUM, { dateStyle: "medium" }).format(d);
 }
 
 export const ORPHAN_STATUS_LABELS: Record<string, string> = {

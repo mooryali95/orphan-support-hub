@@ -18,7 +18,20 @@ export const BRAND = {
   description: raw.descriptionTemplate.replace("{name}", raw.name),
 } as const;
 
+/** نصوص الهوية بلغة الواجهة؛ الاسم اللاتيني في الإنجليزية. */
+export function brandFor(locale: "ar" | "en") {
+  if (locale === "ar") return BRAND;
+  return {
+    ...BRAND,
+    name: raw.nameLatin,
+    tagline: raw.en.tagline,
+    slogan: raw.en.slogan,
+    description: raw.en.descriptionTemplate.replace("{name}", raw.nameLatin),
+  };
+}
+
 /** عنوان صفحة: «القسم — الاسم — الشعار». */
-export function pageTitle(section: string, withSlogan = true): string {
-  return withSlogan ? `${section} — ${BRAND.name} — ${BRAND.slogan}` : `${section} — ${BRAND.name}`;
+export function pageTitle(section: string, withSlogan = true, locale: "ar" | "en" = "ar"): string {
+  const b = brandFor(locale);
+  return withSlogan ? `${section} — ${b.name} — ${b.slogan}` : `${section} — ${b.name}`;
 }

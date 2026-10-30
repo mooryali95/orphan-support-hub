@@ -17,23 +17,52 @@ import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND_CSS } from "@/config/brand-colors";
-import { BRAND } from "@/config/brand";
+import { BRAND, brandFor } from "@/config/brand";
+import { DIR, LocaleProvider, readLocale, useCopy, useLocale, type Locale } from "@/lib/locale";
+
+const NOT_FOUND = {
+  ar: {
+    title: "الصفحة غير موجودة",
+    text: "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
+    home: "العودة للرئيسية",
+  },
+  en: {
+    title: "Page not found",
+    text: "The link you opened is wrong, or the page has moved.",
+    home: "Back to home",
+  },
+};
+const ERROR = {
+  ar: {
+    title: "تعذّر تحميل الصفحة",
+    text: "حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.",
+    retry: "إعادة المحاولة",
+    home: "الرئيسية",
+  },
+  en: {
+    title: "The page could not load",
+    text: "Something unexpected went wrong. Try again, or go back home.",
+    retry: "Try again",
+    home: "Home",
+  },
+};
 
 function NotFoundComponent() {
+  const c = useCopy(NOT_FOUND);
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">{c.title}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.
+          {c.text}
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            العودة للرئيسية
+            {c.home}
           </Link>
         </div>
       </div>
@@ -44,6 +73,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
+  const c = useCopy(ERROR);
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
@@ -51,9 +81,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold text-foreground">تعذّر تحميل الصفحة</h1>
+        <h1 className="text-xl font-semibold text-foreground">{c.title}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.
+          {c.text}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -63,13 +93,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            إعادة المحاولة
+            {c.retry}
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            الرئيسية
+            {c.home}
           </a>
         </div>
       </div>
@@ -92,6 +122,7 @@ function NavigationProgress() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const isLoading = mounted && pending;
+  const locale = useLocale();
 
   return (
     <>
@@ -104,29 +135,36 @@ function NavigationProgress() {
         )}
       />
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {isLoading ? "جارٍ تحميل الصفحة" : ""}
+        {isLoading ? (locale === "en" ? "Loading page" : "جارٍ تحميل الصفحة") : ""}
       </div>
     </>
   );
 }
 
+const TITLE: Record<Locale, string> = {
+  ar: `${BRAND.name} — ${BRAND.slogan}`,
+  en: `${brandFor("en").name} — ${brandFor("en").slogan}`,
+};
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  // اللغة قبل أي رسم: الخادم يقرؤها من الكعكة فيخرج <html> باتجاهه الصحيح.
+  beforeLoad: async () => ({ locale: await readLocale() }),
+  head: ({ match }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${BRAND.name} — اكفل يتيماً بملف موثّق` },
+      { title: TITLE[match.context.locale ?? "ar"] },
       {
         name: "description",
-        content: BRAND.description,
+        content: brandFor(match.context.locale ?? "ar").description,
       },
-      { property: "og:title", content: `${BRAND.name} — اكفل يتيماً بملف موثّق` },
+      { property: "og:title", content: TITLE[match.context.locale ?? "ar"] },
       {
         property: "og:description",
-        content: BRAND.description,
+        content: brandFor(match.context.locale ?? "ar").description,
       },
       { property: "og:type", content: "website" },
-      { property: "og:locale", content: "ar_SA" },
+      { property: "og:locale", content: match.context.locale === "en" ? "en_US" : "ar_SA" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: BRAND.themeColor },
     ],
@@ -153,15 +191,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const { locale } = Route.useRouteContext();
   return (
-    <html lang="ar" dir="rtl">
+    <html lang={locale} dir={DIR[locale]}>
       <head>
         <HeadContent />
         {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />
       </head>
       <body>
-        {children}
+        <LocaleProvider locale={locale}>{children}</LocaleProvider>
         <Scripts />
       </body>
     </html>
@@ -170,6 +209,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const locale = useLocale();
   const router = useRouter();
 
   useEffect(() => {
@@ -185,7 +225,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <NavigationProgress />
       <Outlet />
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" richColors dir={DIR[locale]} />
     </QueryClientProvider>
   );
 }

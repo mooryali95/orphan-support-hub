@@ -4,7 +4,25 @@ import { ArrowLeft, HeartHandshake } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useCopy } from "@/lib/locale";
 import type { MapActionContext } from "./WorldMap";
+
+const COPY = {
+  ar: {
+    region: "هذه المنطقة",
+    country: "هذه الدولة",
+    browse: "تصفّح من ينتظر هنا",
+    support: (p: string) => `ادعم ${p}`,
+    signInTo: (p: string) => `ادخل لتدعم ${p}`,
+  },
+  en: {
+    region: "this region",
+    country: "this country",
+    browse: "Browse who is waiting here",
+    support: (p: string) => `Support ${p}`,
+    signInTo: (p: string) => `Sign in to support ${p}`,
+  },
+};
 
 /**
  * ما يفعله الزائر من بطاقة الدولة أو المنطقة: يتصفّح من ينتظر، ويدعم
@@ -12,8 +30,9 @@ import type { MapActionContext } from "./WorldMap";
  */
 export function MapActions({ ctx }: { ctx: MapActionContext }) {
   const { user } = useAuth();
+  const c = useCopy(COPY);
   const country = ctx.countryValue ?? ctx.code;
-  const place = ctx.regionName ? "هذه المنطقة" : "هذه الدولة";
+  const place = ctx.regionName ? c.region : c.country;
   const supportSearch = {
     c: ctx.code,
     ...(ctx.regionValue ? { r: ctx.regionValue } : {}),
@@ -31,7 +50,7 @@ export function MapActions({ ctx }: { ctx: MapActionContext }) {
             funding: "open",
           }}
         >
-          تصفّح من ينتظر هنا
+          {c.browse}
           <ArrowLeft className="ltr:-scale-x-100" aria-hidden="true" />
         </Link>
       </Button>
@@ -39,16 +58,16 @@ export function MapActions({ ctx }: { ctx: MapActionContext }) {
         <Button asChild size="lg" variant="outline" className="w-full">
           <Link to="/support" search={supportSearch}>
             <HeartHandshake aria-hidden="true" />
-            ادعم {place}
+            {c.support(place)}
           </Link>
         </Button>
       ) : (
         <AuthDialog
-          title={`ادخل لتدعم ${place}`}
+          title={c.signInTo(place)}
           trigger={(open) => (
             <Button size="lg" variant="outline" className="w-full" onClick={open}>
               <HeartHandshake aria-hidden="true" />
-              ادعم {place}
+              {c.support(place)}
             </Button>
           )}
         />
