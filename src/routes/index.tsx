@@ -24,6 +24,8 @@ import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
 import { BRAND } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
+import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
+import { DEMO_STATS } from "@/components/map/demo-stats";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -38,6 +40,11 @@ const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
 export const Route = createFileRoute("/")({
+  // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
+  validateSearch: (raw: Record<string, unknown>): { c?: string; r?: string } => ({
+    ...(typeof raw["c"] === "string" && /^[A-Z]{2}$/.test(raw["c"]) ? { c: raw["c"] } : {}),
+    ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
+  }),
   head: () => ({
     meta: [
       { title: TITLE },
@@ -181,12 +188,23 @@ const CATEGORY_LABEL: Record<string, string> = {
 
 function HomePage() {
   const { data } = useSuspenseQuery(homeQuery);
+  const sp = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
+  const onSelect = (s: MapSelection) =>
+    void navigate({
+      search: { ...(s.country ? { c: s.country } : {}), ...(s.region ? { r: s.region } : {}) },
+      resetScroll: false,
+    });
 
   return (
     <div className="min-h-dvh">
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
+        {/* المرحلة الأولى: الخارطة ببيانات تجريبية؛ تُربط بالقاعدة في المرحلة الثانية. */}
+        <WorldMap stats={DEMO_STATS} selection={selection} onSelect={onSelect} demo />
+
         {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
@@ -387,9 +405,7 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>
-                  {step.rank}
-                </p>
+                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{step.rank}</p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
               </div>
@@ -500,9 +516,7 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
                   <step.icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold text-muted-foreground">
-                  {ORDINALS[i]}
-                </p>
+                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{ORDINALS[i]}</p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
               </li>
