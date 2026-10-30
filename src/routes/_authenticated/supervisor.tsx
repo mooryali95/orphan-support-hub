@@ -181,7 +181,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
         <Button asChild size="sm" variant="outline">
           <Link to="/orphans/$orphanId" params={{ orphanId: row.orphan_id }}>
             الملف العام
-            <ArrowLeft className="size-4" aria-hidden="true" />
+            <ArrowLeft className="ltr:-scale-x-100 size-4" aria-hidden="true" />
           </Link>
         </Button>
       </div>

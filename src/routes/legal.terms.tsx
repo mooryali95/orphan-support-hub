@@ -15,7 +15,7 @@ export const Route = createFileRoute("/legal/terms")({
     ],
   }),
   component: () => (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <LegalPage
         title="شروط الاستخدام"

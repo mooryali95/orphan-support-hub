@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Search, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { OrphanCard } from "@/components/OrphanCard";
@@ -12,6 +12,9 @@ import { listOrphanCards, getFilterOptions } from "@/lib/protection.functions";
 import { getSupportCatalog } from "@/lib/support.functions";
 import { AGE_BAND_LABELS, type AgeBand } from "@/integrations/supabase/types.extra";
 import { cn } from "@/lib/utils";
+import { CountryPicker } from "@/components/geo/CountryPicker";
+import { countryName, resolveCountry } from "@/lib/countries";
+import { arCount, COUNTRIES, FILES } from "@/lib/plural";
 import { BRAND, pageTitle } from "@/config/brand";
 
 const optionsQuery = queryOptions({
@@ -39,11 +42,42 @@ export const Route = createFileRoute("/orphans/")({
       },
     ],
   }),
+  // الفلترة في الرابط: تُشارَك، ويعيدها زرّ الرجوع، ولا تضيع بالتحديث.
+  validateSearch: (raw: Record<string, unknown>): DirectorySearch => {
+    const str = (k: string) => (typeof raw[k] === "string" && raw[k] ? String(raw[k]) : undefined);
+    const out: DirectorySearch = {};
+    for (const k of ["q", "country", "region", "age", "gender", "stage", "group"] as const) {
+      const v = str(k);
+      if (v) out[k] = v;
+    }
+    const f = str("funding");
+    if (f === "open" || f === "full") out.funding = f;
+    const so = str("sort");
+    if (so === "closest" || so === "newest") out.sort = so;
+    if (raw["building"] === true || raw["building"] === "1" || raw["building"] === 1)
+      out.building = true;
+    const pg = Number(raw["page"]);
+    if (Number.isInteger(pg) && pg > 0) out.page = pg;
+    return out;
+  },
   loader: ({ context }) => context.queryClient.ensureQueryData(firstPageQuery),
   component: OrphansPage,
 });
 
 type Funding = "any" | "open" | "full";
+type DirectorySearch = {
+  q?: string;
+  country?: string;
+  region?: string;
+  age?: string;
+  gender?: string;
+  stage?: string;
+  group?: string;
+  funding?: "open" | "full";
+  sort?: "closest" | "newest";
+  building?: boolean;
+  page?: number;
+};
 type Sort = "waiting" | "closest" | "newest";
 
 const SORTS: Array<[Sort, string]> = [
@@ -53,15 +87,6 @@ const SORTS: Array<[Sort, string]> = [
 ];
 
 const AGE_BANDS: AgeBand[] = ["under_6", "age_6_11", "age_12_14", "age_15_17", "age_18_plus"];
-
-/** جمع عربي سليم: «ملف» للواحد، «ملفان» للاثنين، «ملفات» لما بينهما. */
-function countLabel(n: number) {
-  if (n === 0) return "لا ملفات";
-  if (n === 1) return "ملف واحد";
-  if (n === 2) return "ملفان";
-  if (n <= 10) return `${n} ملفات`;
-  return `${n} ملفاً`;
-}
 
 const PAGE = 24;
 
@@ -82,47 +107,61 @@ function OrphansPage() {
   });
   const groups = catalog?.catalog?.groups ?? [];
 
-  const [search, setSearch] = useState("");
-  const [country, setCountry] = useState("");
-  const [region, setRegion] = useState("");
-  const [ageBand, setAgeBand] = useState("");
-  const [gender, setGender] = useState("");
-  const [stage, setStage] = useState("");
-  const [group, setGroup] = useState("");
-  const [funding, setFunding] = useState<Funding>("any");
-  const [building, setBuilding] = useState(false);
-  const [sort, setSort] = useState<Sort>("waiting");
-  const [page, setPage] = useState(0);
+  const sp = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const sort: Sort = sp.sort ?? "waiting";
+  const funding: Funding = sp.funding ?? "any";
+  const page = sp.page ?? 0;
+
+  /** كل تغييرٍ في الفلترة يعيدنا إلى الصفحة الأولى، وإلا ظهرت صفحةٌ فارغة. */
+  function set(
+    patch: { [K in keyof DirectorySearch]?: DirectorySearch[K] | undefined },
+    keepPage = false,
+  ) {
+    void navigate({
+      search: (prev) => {
+        const next: Record<string, unknown> = { ...prev, ...patch };
+        if (!keepPage) delete next["page"];
+        for (const k of Object.keys(next)) {
+          if (next[k] === "" || next[k] === undefined || next[k] === false) delete next[k];
+        }
+        return next as DirectorySearch;
+      },
+      replace: true,
+      resetScroll: false,
+    });
+  }
+
+  // البحث النصّي يُكتب محلياً ويصل الرابطَ بعد توقّف الكتابة.
+  const [text, setText] = useState(sp.q ?? "");
+  useEffect(() => setText(sp.q ?? ""), [sp.q]);
+  useEffect(() => {
+    if (text.trim() === (sp.q ?? "")) return;
+    const id = setTimeout(() => set({ q: text.trim() || undefined }), 300);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text]);
+
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const filters = {
-    ...(search.trim() ? { search: search.trim() } : {}),
-    ...(country ? { country } : {}),
-    ...(region ? { region } : {}),
-    ...(ageBand ? { ageBand: ageBand as AgeBand } : {}),
-    ...(gender ? { gender: gender as "male" | "female" } : {}),
-    ...(stage ? { educationStage: stage } : {}),
-    ...(group ? { group } : {}),
+    ...(sp.q ? { search: sp.q } : {}),
+    ...(sp.country ? { country: sp.country } : {}),
+    ...(sp.region ? { region: sp.region } : {}),
+    ...(sp.age ? { ageBand: sp.age as AgeBand } : {}),
+    ...(sp.gender ? { gender: sp.gender as "male" | "female" } : {}),
+    ...(sp.stage ? { educationStage: sp.stage } : {}),
+    ...(sp.group ? { group: sp.group } : {}),
     ...(funding !== "any" ? { funding } : {}),
-    ...(building ? { building: true } : {}),
+    ...(sp.building ? { building: true } : {}),
     sort,
     limit: PAGE,
     offset: page * PAGE,
   };
 
-  const pristine =
-    !search.trim() &&
-    !country &&
-    !region &&
-    !ageBand &&
-    !gender &&
-    !stage &&
-    !group &&
-    funding === "any" &&
-    !building &&
-    sort === "waiting" &&
-    page === 0;
+  const pristine = Object.keys(sp).length === 0;
 
-  const { data: result } = useQuery({
+  const { data: result, isFetching } = useQuery({
     queryKey: ["orphan-cards", filters],
     queryFn: () => listOrphanCards({ data: filters }),
     enabled: !pristine,
@@ -134,35 +173,81 @@ function OrphansPage() {
   const total = shown.total;
   const pages = Math.max(1, Math.ceil(total / PAGE));
 
+  const groupName = (id: string) => groups.find((g) => g.id === id)?.name ?? id;
+  const countryLabel = (v: string) => {
+    const code = resolveCountry(v);
+    return code ? countryName(code) : v;
+  };
+
+  /** الفلاتر النشطة رقاقاتٍ تُزال واحدةً واحدة — يرى الزائر لماذا قلّت النتائج. */
+  const chips: Array<{ key: string; label: string; clear: () => void }> = [
+    ...(sp.q ? [{ key: "q", label: `«${sp.q}»`, clear: () => set({ q: undefined }) }] : []),
+    ...(sp.country
+      ? [
+          {
+            key: "country",
+            label: countryLabel(sp.country),
+            clear: () => set({ country: undefined, region: undefined }),
+          },
+        ]
+      : []),
+    ...(sp.region
+      ? [{ key: "region", label: sp.region, clear: () => set({ region: undefined }) }]
+      : []),
+    ...(sp.age
+      ? [
+          {
+            key: "age",
+            label: AGE_BAND_LABELS[sp.age as AgeBand] ?? sp.age,
+            clear: () => set({ age: undefined }),
+          },
+        ]
+      : []),
+    ...(sp.gender
+      ? [
+          {
+            key: "gender",
+            label: sp.gender === "female" ? "أنثى" : "ذكر",
+            clear: () => set({ gender: undefined }),
+          },
+        ]
+      : []),
+    ...(sp.stage
+      ? [{ key: "stage", label: sp.stage, clear: () => set({ stage: undefined }) }]
+      : []),
+    ...(sp.group
+      ? [{ key: "group", label: groupName(sp.group), clear: () => set({ group: undefined }) }]
+      : []),
+    ...(funding !== "any"
+      ? [
+          {
+            key: "funding",
+            label: funding === "open" ? "بحاجة لكافل" : "مكفول",
+            clear: () => set({ funding: undefined }),
+          },
+        ]
+      : []),
+    ...(sp.building
+      ? [{ key: "building", label: "برنامج بناء أهلية", clear: () => set({ building: undefined }) }]
+      : []),
+  ];
+  const panelCount = chips.filter((c) => !["q", "funding"].includes(c.key)).length;
+
   function reset() {
-    setSearch("");
-    setCountry("");
-    setRegion("");
-    setAgeBand("");
-    setGender("");
-    setStage("");
-    setGroup("");
-    setFunding("any");
-    setBuilding(false);
-    setSort("waiting");
-    setPage(0);
+    setText("");
+    void navigate({ search: {}, replace: true, resetScroll: false });
   }
 
-  /** كل تغييرٍ في الفلترة يعيدنا إلى الصفحة الأولى، وإلا ظهرت صفحةٌ فارغة. */
-  function onFilter<T>(set: (v: T) => void) {
-    return (v: T) => {
-      set(v);
-      setPage(0);
-    };
-  }
+  const countries = options?.countries ?? [];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">دليل الأيتام</h1>
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة.
+          جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة
+          {countries.length > 1 ? ` — في ${arCount(countries.length, COUNTRIES)}.` : "."}
         </p>
 
         {/* القاعدة تُشرَح قبل أن تُصادَف: من يفتح ملفّاً ويجده مقتضباً
@@ -179,21 +264,41 @@ function OrphansPage() {
         <div className="mt-8 space-y-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative min-w-56 flex-1">
-              <Search className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Search
+                className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
               <Input
-                value={search}
-                onChange={(e) => onFilter(setSearch)(e.target.value)}
+                type="search"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
                 placeholder="ابحث بالاسم المستعار أو رقم الملف"
                 aria-label="بحث"
-                className="pe-9"
+                className="pe-9 text-base md:text-sm"
+              />
+            </div>
+
+            {/* الدولة في الواجهة لا في اللوحة: أوّل ما يسأل عنه الكافل. */}
+            <div className="w-full sm:w-56">
+              <CountryPicker
+                value={sp.country ?? ""}
+                onChange={(v) => set({ country: v || undefined, region: undefined })}
+                values={countries}
               />
             </div>
 
             <select
               value={sort}
-              onChange={(e) => onFilter(setSort)(e.target.value as Sort)}
+              onChange={(e) =>
+                set({
+                  sort:
+                    e.target.value === "waiting"
+                      ? undefined
+                      : (e.target.value as "closest" | "newest"),
+                })
+              }
               aria-label="ترتيب النتائج"
-              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+              className="h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
             >
               {SORTS.map(([key, label]) => (
                 <option key={key} value={key}>
@@ -218,9 +323,9 @@ function OrphansPage() {
                   key={key}
                   type="button"
                   aria-pressed={funding === key}
-                  onClick={() => onFilter(setFunding)(key)}
+                  onClick={() => set({ funding: key === "any" ? undefined : key })}
                   className={cn(
-                    "rounded px-3 py-1 text-xs font-medium transition-colors",
+                    "min-h-8 rounded px-3 py-1 text-xs font-medium transition-colors",
                     funding === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -230,22 +335,38 @@ function OrphansPage() {
                 </button>
               ))}
             </div>
+
+            {/* على الجوال تُطوى بقية الفلاتر خلف زرٍّ يذكر عدد النشط منها. */}
+            <Button
+              type="button"
+              variant="outline"
+              className="md:hidden"
+              aria-expanded={panelOpen}
+              aria-controls="directory-filters"
+              onClick={() => setPanelOpen((o) => !o)}
+            >
+              <SlidersHorizontal aria-hidden="true" />
+              فلترة أدقّ
+              {panelCount > 0 && (
+                <span className="rounded-full bg-primary px-1.5 text-xs tabular-nums text-primary-foreground">
+                  {panelCount}
+                </span>
+              )}
+            </Button>
           </div>
 
-          <div className="flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4">
-            <Picker
-              id="f-country"
-              label="البلد"
-              value={country}
-              onChange={onFilter(setCountry)}
-              all="كل البلدان"
-              options={options?.countries ?? []}
-            />
+          <div
+            id="directory-filters"
+            className={cn(
+              "flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4 md:flex",
+              panelOpen ? "flex" : "hidden",
+            )}
+          >
             <Picker
               id="f-region"
               label="المنطقة"
-              value={region}
-              onChange={onFilter(setRegion)}
+              value={sp.region ?? ""}
+              onChange={(v) => set({ region: v || undefined })}
               all="كل المناطق"
               options={options?.regions ?? []}
             />
@@ -255,9 +376,9 @@ function OrphansPage() {
               </Label>
               <select
                 id="f-age"
-                value={ageBand}
-                onChange={(e) => onFilter(setAgeBand)(e.target.value)}
-                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                value={sp.age ?? ""}
+                onChange={(e) => set({ age: e.target.value || undefined })}
+                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
                 <option value="">كل الأعمار</option>
                 {AGE_BANDS.map((b) => (
@@ -273,9 +394,9 @@ function OrphansPage() {
               </Label>
               <select
                 id="f-gender"
-                value={gender}
-                onChange={(e) => onFilter(setGender)(e.target.value)}
-                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                value={sp.gender ?? ""}
+                onChange={(e) => set({ gender: e.target.value || undefined })}
+                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
                 <option value="">الجميع</option>
                 <option value="male">ذكر</option>
@@ -285,8 +406,8 @@ function OrphansPage() {
             <Picker
               id="f-stage"
               label="المرحلة الدراسية"
-              value={stage}
-              onChange={onFilter(setStage)}
+              value={sp.stage ?? ""}
+              onChange={(v) => set({ stage: v || undefined })}
               all="كل المراحل"
               options={options?.stages ?? []}
             />
@@ -297,9 +418,9 @@ function OrphansPage() {
                 </Label>
                 <select
                   id="f-group"
-                  value={group}
-                  onChange={(e) => onFilter(setGroup)(e.target.value)}
-                  className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  value={sp.group ?? ""}
+                  onChange={(e) => set({ group: e.target.value || undefined })}
+                  className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
                 >
                   <option value="">كل المجموعات</option>
                   {groups.map((g) => (
@@ -311,29 +432,68 @@ function OrphansPage() {
                 </select>
               </div>
             )}
-            <label className="flex items-center gap-2 pb-2 text-xs">
+            <label className="flex min-h-9 items-center gap-2 text-xs">
               <input
                 type="checkbox"
-                checked={building}
-                onChange={(e) => onFilter(setBuilding)(e.target.checked)}
+                checked={!!sp.building}
+                onChange={(e) => set({ building: e.target.checked || undefined })}
                 className="size-4"
               />
               برنامج بناء أهلية قائم
             </label>
-            {!pristine && (
-              <Button type="button" size="sm" variant="ghost" onClick={reset}>
-                مسح الفلترة
-              </Button>
-            )}
           </div>
+
+          {chips.length > 0 && (
+            <ul className="flex flex-wrap items-center gap-2" aria-label="الفلاتر النشطة">
+              {chips.map((c) => (
+                <li key={c.key}>
+                  <button
+                    type="button"
+                    onClick={c.clear}
+                    className="inline-flex min-h-8 items-center gap-1 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
+                    aria-label={`إزالة: ${c.label}`}
+                  >
+                    <bdi>{c.label}</bdi>
+                    <X className="size-3" aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
+              <li>
+                <Button type="button" size="sm" variant="ghost" onClick={reset}>
+                  مسح الكل
+                </Button>
+              </li>
+            </ul>
+          )}
         </div>
 
-        <p className="mt-6 text-xs text-muted-foreground">{countLabel(total)}</p>
+        <p
+          className={cn(
+            "mt-6 text-xs text-muted-foreground transition-opacity",
+            isFetching && "opacity-60",
+          )}
+          aria-live="polite"
+        >
+          {arCount(total, FILES)}
+        </p>
 
         {rows.length === 0 ? (
-          <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            لا توجد نتائج مطابقة لبحثك.
-          </p>
+          <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            <p>لا توجد نتائج مطابقة.</p>
+            {chips.length > 0 && (
+              <p className="mt-3">
+                جرّب إزالة أحد الفلاتر أعلاه، أو{" "}
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="font-medium text-primary underline underline-offset-4"
+                >
+                  ابدأ من جديد
+                </button>
+                .
+              </p>
+            )}
+          </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((orphan) => (
@@ -352,11 +512,11 @@ function OrphansPage() {
               size="sm"
               variant="outline"
               disabled={page === 0}
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              onClick={() => set({ page: page - 1 || undefined }, true)}
             >
               السابق
             </Button>
-            <span aria-live="polite" className="text-muted-foreground text-xs">
+            <span aria-live="polite" className="text-muted-foreground text-xs tabular-nums">
               صفحة {page + 1} من {pages}
             </span>
             <Button
@@ -364,7 +524,7 @@ function OrphansPage() {
               size="sm"
               variant="outline"
               disabled={page + 1 >= pages}
-              onClick={() => setPage((p) => p + 1)}
+              onClick={() => set({ page: page + 1 }, true)}
             >
               التالي
             </Button>
@@ -400,7 +560,7 @@ function Picker({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+        className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
       >
         <option value="">{all}</option>
         {options.map((o) => (

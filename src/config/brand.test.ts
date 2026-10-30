@@ -38,3 +38,31 @@ describe("اسم المنصّة — مصدرٌ واحد", () => {
     expect(pageTitle("الدليل", false)).toBe(`الدليل — ${raw.name}`);
   });
 });
+
+describe("ألوان الهوية — مصدرٌ واحد", () => {
+  const brandHex = new Set(
+    [...Object.values(raw.colors.light), ...Object.values(raw.colors.dark)]
+      .filter((v) => v.startsWith("#"))
+      .map((v) => v.toUpperCase())
+      // الأبيض والأسود ليسا هويّة.
+      .filter((v) => v !== "#FFFFFF" && v !== "#000000"),
+  );
+
+  it("لا يُكتب لونٌ من الهوية حرفياً خارج src/config", () => {
+    const offenders = sources("src").filter((file) =>
+      (codeOnly(readFileSync(file, "utf8")).match(/#[0-9a-fA-F]{6}\b/g) ?? []).some((hex) =>
+        brandHex.has(hex.toUpperCase()),
+      ),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("لا لون صريح في styles.css — الألوان تأتي من brand.json", () => {
+    const css = readFileSync("src/styles.css", "utf8");
+    expect(css.match(/#[0-9a-fA-F]{3,8}\b|oklch\(\s*[\d.]/g) ?? []).toEqual([]);
+  });
+
+  it("الوضعان يعرّفان المفاتيح نفسها", () => {
+    expect(Object.keys(raw.colors.dark).sort()).toEqual(Object.keys(raw.colors.light).sort());
+  });
+});

@@ -60,7 +60,7 @@ function UnsubscribePage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-xl px-4 py-20">
         <div className="rounded-2xl border border-border bg-card p-8 text-center">

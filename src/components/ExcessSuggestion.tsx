@@ -61,7 +61,7 @@ export function ExcessSuggestion({
                   <span className="text-bridge-ink text-xs font-bold tabular-nums">
                     يحتاج {formatMoney(s.gap, s.currency)}
                   </span>
-                  <ArrowLeft className="text-muted-foreground size-3.5" aria-hidden="true" />
+                  <ArrowLeft className="ltr:-scale-x-100 text-muted-foreground size-3.5" aria-hidden="true" />
                 </Link>
               </li>
             ))}

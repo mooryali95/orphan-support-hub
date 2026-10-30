@@ -85,7 +85,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+    <div className="surface-crossing relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-12">
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
       <main
         id="main"

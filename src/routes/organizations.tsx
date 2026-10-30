@@ -34,7 +34,7 @@ function OrganizationsPage() {
   const { data } = useSuspenseQuery(orgsQuery);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">جهات الرعاية المعتمدة</h1>

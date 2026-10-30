@@ -183,7 +183,7 @@ function HomePage() {
   const { data } = useSuspenseQuery(homeQuery);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
@@ -209,7 +209,7 @@ function HomePage() {
               <Button asChild size="lg">
                 <Link to="/support">
                   ادعم الآن
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -261,7 +261,7 @@ function HomePage() {
               <Button asChild size="lg">
                 <Link to="/orphans">
                   ابدأ من ملفٍّ حقيقي
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -293,7 +293,7 @@ function HomePage() {
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{d.text}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
                   {d.cta}
-                  <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4 transition-transform group-hover:-translate-x-0.5 ltr:group-hover:translate-x-0.5" />
                 </span>
               </Link>
             ))}
@@ -387,7 +387,7 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold tracking-widest uppercase ${step.label}`}>
+                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>
                   {step.rank}
                 </p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>
@@ -500,7 +500,7 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
                   <step.icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold tracking-widest text-muted-foreground">
+                <p className="mt-4 text-[11px] font-bold text-muted-foreground">
                   {ORDINALS[i]}
                 </p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>

@@ -62,7 +62,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
             <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
               {p.concept && (
                 <div className="rounded-xl bg-secondary/50 p-4">
-                  <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+                  <p className="text-[11px] font-bold text-muted-foreground">
                     المفهوم — ما نُعلِّمه
                   </p>
                   <p className="mt-1 font-bold text-shore-need">{p.concept}</p>
@@ -79,7 +79,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
               />
               {p.target_trait && (
                 <div className="rounded-xl bg-shore-thrive/10 p-4">
-                  <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+                  <p className="text-[11px] font-bold text-muted-foreground">
                     السمة — ما نريد أن نبنيه
                   </p>
                   <p className="mt-1 font-bold text-shore-thrive">{p.target_trait}</p>
@@ -95,7 +95,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
 
           {/* رحلة التشغيل */}
           <div className="mt-6">
-            <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+            <p className="text-[11px] font-bold text-muted-foreground">
               رحلة التشغيل
             </p>
             <ol className="mt-3 space-y-0">
@@ -153,7 +153,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
           {typeof p.units_total === "number" && p.units_total > 0 && (
             <div className="mt-6 rounded-xl bg-secondary/50 p-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+                <p className="text-[11px] font-bold text-muted-foreground">
                   ورش الجلسات
                 </p>
                 <p className="text-sm font-bold">
@@ -227,7 +227,7 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
           {/* أهلية المشرف — ثقة الكافل في البرنامج ثقةٌ في مَن يحمله */}
           {p.supervisor?.assigned && (
             <div className="mt-4 rounded-xl bg-secondary/50 p-4">
-              <p className="text-[11px] font-bold tracking-widest text-muted-foreground">
+              <p className="text-[11px] font-bold text-muted-foreground">
                 أهلية المشرف
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
@@ -265,7 +265,7 @@ function Column({ title, items, tone }: { title: string; items: string[]; tone: 
   if (items.length === 0) return null;
   return (
     <div>
-      <p className={cn("text-[11px] font-bold tracking-widest", tone)}>{title}</p>
+      <p className={cn("text-[11px] font-bold", tone)}>{title}</p>
       <ul className="mt-2 space-y-1.5">
         {items.map((item) => (
           <li key={item} className="flex gap-2 text-xs leading-6 text-muted-foreground">

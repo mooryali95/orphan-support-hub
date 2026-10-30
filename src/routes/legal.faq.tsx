@@ -15,7 +15,7 @@ export const Route = createFileRoute("/legal/faq")({
     ],
   }),
   component: () => (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <LegalPage title="الأسئلة الشائعة" updated="2026-08-26">
         <Section title="ما الذي أدفع مقابله؟">

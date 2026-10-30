@@ -1,5 +1,6 @@
 import type { OutgoingEmail } from "./types";
 import { BRAND } from "@/config/brand";
+import { COLORS } from "@/config/brand-colors";
 
 /**
  * قوالب البريد — عربية، اتجاهها من اليمين.
@@ -17,18 +18,20 @@ import { BRAND } from "@/config/brand";
  * تصل فارغة.
  */
 
-const NAVY = "#0B3A30";
-const BLUE = "#0F4D3F";
-const INK = "#7A5E1C";
-const MUTED = "#5F6461";
-const BORDER = "#E4E1D9";
+const NAVY = COLORS.light.greenDeep;
+const BLUE = COLORS.light.green;
+const INK = COLORS.light.goldInk;
+const MUTED = COLORS.light.muted;
+const BORDER = COLORS.light.line;
+const PAPER = COLORS.light.paper;
+const TEXT = COLORS.light.ink;
 
 function shell(heading: string, bodyHtml: string, cta?: { label: string; url: string }) {
   return `<!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body dir="rtl" style="margin:0;padding:0;background:#FAF8F3;font-family:Tahoma,Arial,sans-serif;">
-<table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F3;padding:24px 12px;">
+<body dir="rtl" style="margin:0;padding:0;background:${PAPER};font-family:Tahoma,Arial,sans-serif;">
+<table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PAPER};padding:24px 12px;">
 <tr><td align="center">
   <table dir="rtl" role="presentation" width="100%" cellpadding="0" cellspacing="0"
          style="max-width:560px;background:#ffffff;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
@@ -40,7 +43,7 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
     <tr><td style="padding:8px 24px 0;">
       <h1 style="margin:0;font-size:18px;color:${NAVY};">${heading}</h1>
     </td></tr>
-    <tr><td style="padding:12px 24px 4px;font-size:14px;line-height:26px;color:#1E2B27;">
+    <tr><td style="padding:12px 24px 4px;font-size:14px;line-height:26px;color:${TEXT};">
       ${bodyHtml}
     </td></tr>
     ${

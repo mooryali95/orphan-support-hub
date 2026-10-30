@@ -194,7 +194,7 @@ function OrphanDetail() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
         <Link to="/orphans" className="text-sm text-primary hover:underline">

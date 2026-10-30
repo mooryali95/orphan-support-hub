@@ -15,8 +15,9 @@ const Progress = React.forwardRef<
     {...props}
   >
     <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      // يمتلئ من بداية السطر في الاتجاهين: التحجيم من الحافة لا الإزاحة.
+      className="h-full w-full flex-1 origin-left bg-primary transition-transform duration-500 ease-[var(--ease-out)] rtl:origin-right"
+      style={{ transform: `scaleX(${(value || 0) / 100})` }}
     />
   </ProgressPrimitive.Root>
 ));
