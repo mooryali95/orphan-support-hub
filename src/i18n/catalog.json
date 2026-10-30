@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 601,
+ "count": 607,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -2091,6 +2091,49 @@
    "kind": "text",
    "hash": "7c73674ea30f",
    "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "config/brand.description": {
+   "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
+   "ar": "",
+   "kind": "template",
+   "params": 1,
+   "hash": "a06a1d8b642d",
+   "file": "src/config/brand.ts"
+  },
+  "config/brand.slogan": {
+   "en": "Sponsor an orphan with a verified file",
+   "ar": "",
+   "kind": "text",
+   "hash": "91bbfdf99034",
+   "file": "src/config/brand.ts"
+  },
+  "config/brand.tagline": {
+   "en": "We sponsor… and we build",
+   "ar": "",
+   "kind": "text",
+   "hash": "99cd9a57660a",
+   "file": "src/config/brand.ts"
+  },
+  "config/offering.later": {
+   "en": "General donations will be added later.",
+   "ar": "التبرّعات العامة ستُضاف لاحقاً.",
+   "kind": "text",
+   "hash": "dcbdadd623e7",
+   "file": "src/config/offering.ts"
+  },
+  "config/offering.text": {
+   "en": "What you give here is a monthly sponsorship for a specific child, or support for a named qualification program. Every amount is tied to a child or a program, and you follow what it built, session by session.",
+   "ar": "ما تقدّمه هنا كفالةٌ شهرية لطفلٍ بعينه، أو دعمٌ لبرنامج تأهيلٍ مسمّى. كل مبلغٍ مربوطٌ بطفلٍ أو برنامج، وتتابع ما بُني به جلسةً جلسة.",
+   "kind": "text",
+   "hash": "7ea93d55ba41",
+   "file": "src/config/offering.ts"
+  },
+  "config/offering.title": {
+   "en": "Sponsorship and qualification support — not a general donation",
+   "ar": "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
+   "kind": "text",
+   "hash": "da30c7874668",
+   "file": "src/config/offering.ts"
   },
   "routes/__root/error.home": {
    "en": "Home",

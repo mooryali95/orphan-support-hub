@@ -8,20 +8,22 @@
  */
 import { defineCopy } from "@/lib/locale";
 
-export const OFFERING = {
-  donations: false,
-  title: "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
-  text: "ما تقدّمه هنا كفالةٌ شهرية لطفلٍ بعينه، أو دعمٌ لبرنامج تأهيلٍ مسمّى. كل مبلغٍ مربوطٌ بطفلٍ أو برنامج، وتتابع ما بُني به جلسةً جلسة.",
-  later: "التبرّعات العامة ستُضاف لاحقاً.",
+/** نصّ العرض للواجهة — في الفهرس فيُترجم لكل لغةٍ مفعّلة. */
+export const OFFERING_COPY = defineCopy("config/offering", {
+  ar: {
+    title: "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
+    text: "ما تقدّمه هنا كفالةٌ شهرية لطفلٍ بعينه، أو دعمٌ لبرنامج تأهيلٍ مسمّى. كل مبلغٍ مربوطٌ بطفلٍ أو برنامج، وتتابع ما بُني به جلسةً جلسة.",
+    later: "التبرّعات العامة ستُضاف لاحقاً.",
+  },
   en: {
     title: "Sponsorship and qualification support — not a general donation",
     text: "What you give here is a monthly sponsorship for a specific child, or support for a named qualification program. Every amount is tied to a child or a program, and you follow what it built, session by session.",
     later: "General donations will be added later.",
   },
-} as const;
-
-/** نصّ العرض للواجهة — في الفهرس فيُترجم لكل لغةٍ مفعّلة. */
-export const OFFERING_COPY = defineCopy("config/offering", {
-  ar: { title: OFFERING.title, text: OFFERING.text, later: OFFERING.later },
-  en: { title: OFFERING.en.title, text: OFFERING.en.text, later: OFFERING.en.later },
 });
+
+export const OFFERING = {
+  donations: false,
+  ...OFFERING_COPY.ar,
+  en: OFFERING_COPY.en,
+} as const;

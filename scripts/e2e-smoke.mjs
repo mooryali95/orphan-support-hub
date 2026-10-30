@@ -45,6 +45,10 @@ const VIEWPORTS = [
 const LANGS = [
   { lang: "ar", dir: "rtl", signIn: /تسجيل الدخول|سجّل الدخول|ادخل/, offering: /لا تبرّعٌ عام/ },
   { lang: "en", dir: "ltr", signIn: /Sign in/i, offering: /not a general donation/i },
+  // لغةٌ مفعّلة من القاعدة (محلياً: KH_DEV_DRAFT_LOCALES=sq). تُفحص إن كانت متاحة.
+  ...(process.env.E2E_EXTRA_LOCALE === "sq"
+    ? [{ lang: "sq", dir: "ltr", signIn: /Hyr/, offering: /jo një dhurim/i }]
+    : []),
 ];
 for (const L of LANGS)
   for (const [vp, viewport] of VIEWPORTS) {
@@ -80,7 +84,7 @@ for (const L of LANGS)
       if (!r.title) fail(where, "no <title>");
       if (r.h1 < 1 && path !== "/auth" && path !== "/") fail(where, "no <h1>");
       if (r.dir !== L.dir || r.lang !== L.lang) fail(where, `lang=${r.lang} dir=${r.dir}`);
-      if (L.lang === "en" && r.arabicUi.length)
+      if (L.lang !== "ar" && r.arabicUi.length)
         fail(where, `Arabic UI text: ${r.arabicUi.join(" | ")}`);
       if (r.overflow > 1) fail(where, `horizontal overflow ${r.overflow}px`);
       for (const e of errors) fail(where, `js: ${e.slice(0, 160)}`);

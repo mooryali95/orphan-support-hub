@@ -20,6 +20,7 @@ import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
 import { SourcesPanel } from "@/components/integrity/SourcesPanel";
+import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -57,12 +58,13 @@ type Tab =
   | "integrations"
   | "integrity"
   | "countries"
+  | "languages"
   | "monitoring";
 
 const SECTIONS: Array<[string, Tab[]]> = [
   ["القرارات", ["inbox", "queue", "access", "integrity"]],
   ["الناس", ["orphans", "sponsors", "supervisors", "offices"]],
-  ["المنصّة", ["countries", "platform", "integrations"]],
+  ["المنصّة", ["countries", "languages", "platform", "integrations"]],
   ["المراقبة", ["overview", "monitoring"]],
 ];
 
@@ -126,6 +128,7 @@ function AdminPage() {
     ["integrations", "التكامل", null],
     ["integrity", "سلامة الحقيقة", null],
     ["countries", "الدول والمصادر", null],
+    ["languages", "اللغات والترجمة", null],
     ["monitoring", "المراقبة", null],
   ];
 
@@ -194,6 +197,8 @@ function AdminPage() {
           <IntegrityPanel />
         </div>
       )}
+
+      {tab === "languages" && <LocalesPanel />}
 
       {tab === "countries" && (
         <div className="mt-8">

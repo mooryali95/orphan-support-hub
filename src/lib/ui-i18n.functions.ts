@@ -74,9 +74,38 @@ async function publishedMessages(locale: string): Promise<Messages> {
   });
 }
 
+/**
+ * للتطوير وحده: `KH_DEV_DRAFT_LOCALES=sq` يعرض المسودّة المرفقة كأنها منشورة،
+ * فيرى المترجم والمطوّر الموقع بلغته محلياً بلا قاعدة. لا أثر له في البناء.
+ */
+async function devDrafts(): Promise<{
+  locales: UiLocale[];
+  messages: Record<string, Messages>;
+} | null> {
+  if (!import.meta.env.DEV) return null;
+  const codes = (process.env["KH_DEV_DRAFT_LOCALES"] ?? "").split(",").filter(Boolean);
+  if (codes.length === 0) return null;
+  const { dirOf, nativeName } = await import("@/lib/locale");
+  const messages: Record<string, Messages> = {};
+  for (const c of codes) {
+    if (c === "sq") messages[c] = (await import("@/i18n/drafts/sq.json")).default as Messages;
+  }
+  return {
+    locales: Object.keys(messages).map((c) => ({ code: c, name: nativeName(c), dir: dirOf(c) })),
+    messages,
+  };
+}
+
 export const getUiState = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ locale: z.string().regex(/^[a-z]{2,3}$/) }).parse(d))
   .handler(async ({ data }): Promise<UiState> => {
+    const dev = await devDrafts();
+    if (dev) {
+      const wanted = data.locale;
+      if (dev.messages[wanted])
+        return { locale: wanted, locales: dev.locales, messages: dev.messages[wanted]! };
+      return { locale: wanted === "ar" ? "ar" : "en", locales: dev.locales, messages: null };
+    }
     const locales = await liveLocales();
     const wanted = data.locale;
     if (wanted === "ar" || wanted === "en") return { locale: wanted, locales, messages: null };

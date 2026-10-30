@@ -98,12 +98,8 @@ function walk(node, key, out, skipped) {
   }
   const l = leaf(node);
   if (l) out.set(key, l);
-  else if (!(
-    node.kind === ts.SyntaxKind.NullKeyword ||
-    ts.isIdentifier(node) ||
-    ts.isPropertyAccessExpression(node)
-  ))
-    skipped.push(key);
+  // كل ما ليس نصّاً ولا فراغاً (null) يُذكر: مرجعٌ لمتغيّر لا يُترجم، فيُكتب نصّه هنا.
+  else if (node.kind !== ts.SyntaxKind.NullKeyword) skipped.push(key);
 }
 
 export function extract() {

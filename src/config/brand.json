@@ -4,11 +4,6 @@
   "tagline": "نكفل… ونبني",
   "slogan": "اكفل يتيماً بملف موثّق",
   "descriptionTemplate": "اكفل يتيماً بملف موثّق من جهة رعاية معتمدة. منصة {name} تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
-  "en": {
-    "tagline": "We sponsor… and we build",
-    "slogan": "Sponsor an orphan with a verified file",
-    "descriptionTemplate": "Sponsor an orphan with a file verified by an approved care organization. {name} connects you with a real child through a transparent monthly sponsorship and regular impact reports."
-  },
   "colors": {
     "_note": "كل ألوان الهوية هنا فقط. غيّر القيمة فتتغيّر الواجهة والبريد والشعار وشريط المتصفّح. الأدوار (primary…) تُربط بهذه المفاتيح في src/config/brand-colors.ts.",
     "light": {

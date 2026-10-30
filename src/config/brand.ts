@@ -1,5 +1,6 @@
 import raw from "./brand.json";
 import { THEME_COLOR } from "./brand-colors";
+import { copyOf, defineCopy } from "@/lib/locale";
 
 /**
  * اسم المنصّة وهويتها النصّية — **المكان الوحيد**.
@@ -18,16 +19,31 @@ export const BRAND = {
   description: raw.descriptionTemplate.replace("{name}", raw.name),
 } as const;
 
-/** نصوص الهوية بلغة الواجهة؛ الاسم اللاتيني في الإنجليزية. */
-/** لغةٌ غير العربية تأخذ الاسم اللاتيني والنصوص الإنجليزية حتى تُترجم. */
+// نصوص الهوية في الفهرس: تُترجم لكل لغةٍ مفعّلة كبقية الواجهة.
+const BRAND_COPY = defineCopy("config/brand", {
+  ar: {
+    tagline: raw.tagline,
+    slogan: raw.slogan,
+    description: (name: string) => raw.descriptionTemplate.replace("{name}", name),
+  },
+  en: {
+    tagline: "We sponsor… and we build",
+    slogan: "Sponsor an orphan with a verified file",
+    description: (name: string) =>
+      `Sponsor an orphan with a file verified by an approved care organization. ${name} connects you with a real child through a transparent monthly sponsorship and regular impact reports.`,
+  },
+});
+
+/** نصوص الهوية بلغة الواجهة؛ الاسم اللاتيني في غير العربية. */
 export function brandFor(locale: string) {
   if (locale === "ar") return BRAND;
+  const c = copyOf(BRAND_COPY, locale);
   return {
     ...BRAND,
     name: raw.nameLatin,
-    tagline: raw.en.tagline,
-    slogan: raw.en.slogan,
-    description: raw.en.descriptionTemplate.replace("{name}", raw.nameLatin),
+    tagline: c.tagline,
+    slogan: c.slogan,
+    description: c.description(raw.nameLatin),
   };
 }
 

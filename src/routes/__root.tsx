@@ -23,11 +23,13 @@ import {
   dirOf,
   LocaleProvider,
   readLocale,
+  setMessages,
   type Locale,
   useCopy,
   useLocale,
 } from "@/lib/locale";
 import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
+import { PreviewBridge } from "@/components/i18n/PreviewBridge";
 
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
@@ -174,6 +176,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   // والترجمة المنشورة معها، فلا تُرسم الصفحة بالإنجليزية ثم تتبدّل.
   beforeLoad: async () => {
     const ui = await loadUi(await readLocale());
+    // قبل العناوين: دوالّ head تقرأ الترجمة من المخزن قبل أن يُرسم أي مكوّن.
+    if (ui.messages) setMessages(ui.locale, ui.messages);
     return { locale: ui.locale, ui };
   },
   head: ({ match }) => ({
@@ -227,7 +231,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />
       </head>
       <body>
-        <LocaleProvider locale={locale} messages={ui.messages ?? undefined}>
+        <LocaleProvider locale={locale} messages={ui.messages ?? undefined} available={ui.locales}>
           {children}
         </LocaleProvider>
         <Scripts />
@@ -253,7 +257,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationProgress />
-      <Outlet />
+      <PreviewBridge>
+        <Outlet />
+      </PreviewBridge>
       <Toaster position="top-center" richColors dir={dirOf(locale)} />
     </QueryClientProvider>
   );

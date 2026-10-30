@@ -155,18 +155,37 @@ export function copyOf<T>(def: CopyDef<T>, locale: Locale): T {
 /* ── السياق ───────────────────────────────────────────────────────── */
 
 const Ctx = createContext<Locale>("ar");
+/** اللغات المتاحة للزائر: العربية والإنجليزية، وما أُطلق بعدهما. */
+export type AvailableLocale = { code: string; name: string; dir: "rtl" | "ltr" };
+const AvailableCtx = createContext<AvailableLocale[]>([]);
 
 export function LocaleProvider({
   locale,
   messages,
+  available,
   children,
 }: {
   locale: Locale;
   messages?: Messages | undefined;
+  available?: AvailableLocale[] | undefined;
   children: ReactNode;
 }) {
   if (messages) setMessages(locale, messages);
-  return <Ctx.Provider value={locale}>{children}</Ctx.Provider>;
+  const inner = <Ctx.Provider value={locale}>{children}</Ctx.Provider>;
+  return available ? (
+    <AvailableCtx.Provider value={available}>{inner}</AvailableCtx.Provider>
+  ) : (
+    inner
+  );
+}
+
+export function useAvailableLocales(): AvailableLocale[] {
+  const extra = useContext(AvailableCtx);
+  return [
+    { code: "ar", name: "العربية", dir: "rtl" },
+    { code: "en", name: "English", dir: "ltr" },
+    ...extra.filter((l) => l.code !== "ar" && l.code !== "en"),
+  ];
 }
 
 export function useLocale(): Locale {
