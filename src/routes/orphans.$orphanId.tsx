@@ -30,13 +30,120 @@ import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
-import { BRAND, pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
+import { placeLabel, useCopy, useLocale } from "@/lib/locale";
 
-const SUPPORT_MODES: Array<["monthly" | SupportKind, string]> = [
-  ["monthly", "كفالة شهرية"],
-  ["qualification", "بناء أهلية"],
-  ["in_kind", "دعم عيني"],
-];
+const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
+
+const COPY = {
+  ar: {
+    modes: { monthly: "كفالة شهرية", qualification: "بناء أهلية", in_kind: "دعم عيني" } as Record<
+      "monthly" | SupportKind,
+      string
+    >,
+    kinds: KIND_INFO as Record<SupportKind, { label: string; text: string }>,
+    unavailable: "ملف غير متاح",
+    sponsorOf: (n: string) => `كفالة ${n}`,
+    serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
+    badAmount: "الرجاء إدخال مبلغ صحيح (5 فأكثر)",
+    createFailed: "تعذّر إنشاء الكفالة",
+    created: "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
+    unexpected: "حدث خطأ غير متوقع",
+    back: "→ العودة إلى الدليل",
+    fileNo: (c: string) => `ملف رقم ${c}`,
+    full: "مكفول بالكامل",
+    female: "أنثى",
+    male: "ذكر",
+    years: "سنة",
+    ages: AGE_BAND_LABELS as Record<string, string>,
+    needsH: "تفاصيل الاحتياج الشهري",
+    needCats: NEED_CATEGORY_LABELS,
+    org: "جهة الرعاية",
+    hiddenLoc: "الموقع التفصيلي محجوب حمايةً للطفل",
+    kindLabel: "نوع الدعم",
+    monthlyNeed: "الاحتياج الشهري",
+    covered: "تم تغطية احتياجه بالكامل",
+    coveredPct: (p: number, rest: string) => `تم تغطية ${p}% — المتبقي ${rest}`,
+    amount: (c: string) => `مبلغ الكفالة الشهري (${c})`,
+    fullRest: "المتبقّي كاملاً",
+    message: "رسالة لليتيم (اختياري)",
+    messagePh: "كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل",
+    anonymous: "أرغب أن تكون كفالتي دون ذكر اسمي",
+    start: "ابدأ الكفالة",
+    signIn: "سجّل الدخول للكفالة",
+    activates: "الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.",
+    continueTo: (k: string, n: string) => `تابع — ${k} لـ${n}`,
+    follow: "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
+    remainingMonthly: "المتبقّي شهرياً",
+    support: (n: string) => `ادعم ${n}`,
+  },
+  en: {
+    modes: {
+      monthly: "Monthly sponsorship",
+      qualification: "Capability building",
+      in_kind: "In-kind support",
+    } as Record<"monthly" | SupportKind, string>,
+    kinds: {
+      qualification: {
+        label: "Capability building",
+        text: "Fund the qualification journey: sessions, follow-up, and trait measurement before and after.",
+      },
+      in_kind: {
+        label: "In-kind support",
+        text: "School bags, clothing, food, devices… delivered and documented with photos and reports.",
+      },
+    } as Record<SupportKind, { label: string; text: string }>,
+    unavailable: "File unavailable",
+    sponsorOf: (n: string) => `Sponsor ${n}`,
+    serviceType: "Monthly sponsorship for education and qualification programs",
+    badAmount: "Please enter a valid amount (5 or more)",
+    createFailed: "The sponsorship could not be created",
+    created: "Your sponsorship request is registered — complete the payment from your dashboard",
+    unexpected: "Something unexpected went wrong",
+    back: "← Back to the directory",
+    fileNo: (c: string) => `File no. ${c}`,
+    full: "Fully sponsored",
+    female: "Girl",
+    male: "Boy",
+    years: "years",
+    ages: {
+      under_6: "Under 6",
+      age_6_11: "6–11",
+      age_12_14: "12–14",
+      age_15_17: "15–17",
+      age_18_plus: "18+",
+      unknown: "Unknown",
+    } as Record<string, string>,
+    needsH: "Monthly need in detail",
+    needCats: {
+      education: "Education",
+      health: "Health",
+      food: "Food",
+      housing: "Housing",
+      clothing: "Clothing",
+      other: "Other",
+    } as Record<string, string>,
+    org: "Care organization",
+    hiddenLoc: "The exact location is hidden to protect the child",
+    kindLabel: "Type of support",
+    monthlyNeed: "Monthly need",
+    covered: "Their need is fully covered",
+    coveredPct: (p: number, rest: string) => `${p}% covered — ${rest} still needed`,
+    amount: (c: string) => `Monthly sponsorship amount (${c})`,
+    fullRest: "The full remaining amount",
+    message: "A message for the child (optional)",
+    messagePh: "A word of encouragement — the care organization reviews it before it arrives",
+    anonymous: "I'd like my sponsorship to stay anonymous",
+    start: "Start sponsoring",
+    signIn: "Sign in to sponsor",
+    activates:
+      "The sponsorship starts once payment is complete, and you can pause it anytime from your dashboard.",
+    continueTo: (k: string, n: string) => `Continue — ${k} for ${n}`,
+    follow: "You follow it from “My portals” through the office's reports and photos.",
+    remainingMonthly: "Still needed monthly",
+    support: (n: string) => `Support ${n}`,
+  },
+};
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -50,14 +157,20 @@ export const Route = createFileRoute("/orphans/$orphanId")({
     if (!data.orphan) throw notFound();
     return data;
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, match }) => {
+    const l = match.context.locale ?? "ar";
+    const c = COPY[l];
+    const brand = brandFor(l);
     if (!loaderData?.orphan) {
       return {
-        meta: [{ title: pageTitle("ملف غير متاح") }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: pageTitle(c.unavailable, true, l) },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
-    const title = `كفالة ${loaderData.orphan.display_name} — ${BRAND.name} — ${BRAND.slogan}`;
-    const description = BRAND.description;
+    const title = `${c.sponsorOf(loaderData.orphan.display_name)} — ${brand.name} — ${brand.slogan}`;
+    const description = brand.description;
     return {
       meta: [
         { title },
@@ -73,12 +186,12 @@ export const Route = createFileRoute("/orphans/$orphanId")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Service",
-            name: `كفالة ${loaderData.orphan.display_name}`,
+            name: c.sponsorOf(loaderData.orphan.display_name),
             description,
-            serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
+            serviceType: c.serviceType,
             // الاسم من main (IOCO ← كهاتين)، والمنطقة من الحاجب: المدينة
             // صارت تفصيلاً خلف الإذن فلا تُفهرَس ولا تُعرض للزائر.
-            provider: { "@type": "Organization", name: `${BRAND.name}` },
+            provider: { "@type": "Organization", name: `${brand.name}` },
             areaServed: loaderData.orphan.country ?? undefined,
             offers: {
               "@type": "Offer",
@@ -102,6 +215,8 @@ function OrphanDetail() {
   const { data } = useSuspenseQuery(orphanQuery(orphanId));
   const { user } = useAuth();
   const navigate = useNavigate();
+  const locale = useLocale();
+  const t = useCopy(COPY);
 
   // الصفحة تُرسَم أولاً بما يراه الزائر، ثم تُعاد قراءتها بجلسة المستخدم:
   // من مُنح الإذن، ودائرة الطفل، يرون ما يحقّ لهم. بدونها كان الكلّ زائراً.
@@ -155,7 +270,7 @@ function OrphanDetail() {
     }
     const value = Number(amount);
     if (!Number.isFinite(value) || value < 5) {
-      toast.error("الرجاء إدخال مبلغ صحيح (5 فأكثر)");
+      toast.error(t.badAmount);
       return;
     }
     setPending(true);
@@ -180,14 +295,14 @@ function OrphanDetail() {
           });
           return;
         }
-        toast.error(res.error ?? "تعذّر إنشاء الكفالة");
+        toast.error(res.error ?? t.createFailed);
         return;
       }
       setExcessOffer(null);
-      toast.success("تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك");
+      toast.success(t.created);
       navigate({ to: "/dashboard" });
     } catch {
-      toast.error("حدث خطأ غير متوقع");
+      toast.error(t.unexpected);
     } finally {
       setPending(false);
     }
@@ -198,7 +313,7 @@ function OrphanDetail() {
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
         <Link to="/orphans" className="text-sm text-primary hover:underline">
-          → العودة إلى الدليل
+          {t.back}
         </Link>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
@@ -217,19 +332,23 @@ function OrphanDetail() {
                   {detail?.real_name && (
                     <span className="text-sm text-muted-foreground">({detail.real_name})</span>
                   )}
-                  <Badge variant="secondary">ملف رقم {orphan.code}</Badge>
-                  {orphan.status === "fully_sponsored" && <Badge>مكفول بالكامل</Badge>}
+                  <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
+                  {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                  <span>{orphan.gender === "female" ? "أنثى" : "ذكر"}</span>
+                  <span>{orphan.gender === "female" ? t.female : t.male}</span>
                   {orphan.age_band !== "unknown" && (
-                    <span>{AGE_BAND_LABELS[orphan.age_band]} سنة</span>
+                    <span>
+                      {t.ages[orphan.age_band]} {t.years}
+                    </span>
                   )}
                   {(orphan.country ?? orphan.region) && (
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="size-4" />{" "}
-                      {[orphan.country, orphan.region, detail?.city].filter(Boolean).join(" — ")}
+                      {[placeLabel(orphan.country, orphan.region, locale), detail?.city]
+                        .filter(Boolean)
+                        .join(" — ")}
                     </span>
                   )}
                   {orphan.education_stage && (
@@ -275,18 +394,18 @@ function OrphanDetail() {
 
             {(detail?.needs.length ?? 0) > 0 && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
-                <h2 className="text-lg font-bold">تفاصيل الاحتياج الشهري</h2>
+                <h2 className="text-lg font-bold">{t.needsH}</h2>
                 <ul className="mt-4 divide-y divide-border">
                   {(detail?.needs ?? []).map((need) => (
                     <li key={need.id} className="flex items-center justify-between py-3">
                       <div>
                         <p className="text-sm font-medium">{need.title}</p>
                         <p className="text-xs text-muted-foreground">
-                          {NEED_CATEGORY_LABELS[need.category] ?? need.category}
+                          {t.needCats[need.category] ?? need.category}
                         </p>
                       </div>
                       <span className="text-sm font-bold text-primary">
-                        {formatMoney(need.monthly_amount, orphan.currency)}
+                        {formatMoney(need.monthly_amount, orphan.currency, locale)}
                       </span>
                     </li>
                   ))}
@@ -297,13 +416,13 @@ function OrphanDetail() {
             {data.org && (
               <div className="mt-6 rounded-3xl border border-border bg-card p-6">
                 <h2 className="flex items-center gap-2 text-lg font-bold">
-                  <Building2 className="size-5 text-shore-need" /> جهة الرعاية
+                  <Building2 className="size-5 text-shore-need" /> {t.org}
                 </h2>
                 <p className="mt-2 font-medium">{data.org.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {/* في حشدٍ صغير تدلّ مدينة الجهة على الطفل، فتُحجب. */}
                   {orphan.cohort_small
-                    ? "الموقع التفصيلي محجوب حمايةً للطفل"
+                    ? t.hiddenLoc
                     : [data.org.city, data.org.region].filter(Boolean).join(" — ")}
                 </p>
                 {data.org.about && (
@@ -317,10 +436,10 @@ function OrphanDetail() {
             {/* ثلاثة أبواب متساوية: الكفالة الشهرية، وبناء الأهلية، والعيني. */}
             <div
               role="tablist"
-              aria-label="نوع الدعم"
+              aria-label={t.kindLabel}
               className="mb-3 grid grid-cols-3 gap-1 rounded-2xl border border-border bg-card p-1"
             >
-              {SUPPORT_MODES.map(([key, label]) => (
+              {SUPPORT_MODES.map((key) => (
                 <button
                   key={key}
                   type="button"
@@ -334,7 +453,7 @@ function OrphanDetail() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {label}
+                  {t.modes[key]}
                 </button>
               ))}
             </div>
@@ -343,15 +462,15 @@ function OrphanDetail() {
                 id="sponsor-form"
                 className="rounded-3xl border border-border bg-card p-6 shadow-sm"
               >
-                <p className="text-sm text-muted-foreground">الاحتياج الشهري</p>
+                <p className="text-sm text-muted-foreground">{t.monthlyNeed}</p>
                 <p className="mt-1 text-3xl font-extrabold text-primary">
-                  {formatMoney(orphan.monthly_need, orphan.currency)}
+                  {formatMoney(orphan.monthly_need, orphan.currency, locale)}
                 </p>
                 <CrossingProgress percent={percent} className="mt-4" />
                 <p className="mt-2 text-xs text-muted-foreground">
                   {surplus > 0
-                    ? `تم تغطية احتياجه بالكامل`
-                    : `تم تغطية ${percent}% — المتبقي ${formatMoney(remaining, orphan.currency)}`}
+                    ? t.covered
+                    : t.coveredPct(percent, formatMoney(remaining, orphan.currency, locale))}
                 </p>
 
                 {surplus > 0 && (
@@ -365,7 +484,7 @@ function OrphanDetail() {
 
                 <div className="mt-6 space-y-4">
                   <div>
-                    <Label htmlFor="amount">مبلغ الكفالة الشهري ({orphan.currency})</Label>
+                    <Label htmlFor="amount">{t.amount(orphan.currency)}</Label>
                     <Input
                       id="amount"
                       inputMode="numeric"
@@ -380,7 +499,7 @@ function OrphanDetail() {
                           onClick={() => setAmount(String(Math.round(remaining)))}
                           className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
                         >
-                          المتبقّي كاملاً
+                          {t.fullRest}
                         </button>
                       )}
                       {[25, 50, 100].map((v) => (
@@ -397,14 +516,14 @@ function OrphanDetail() {
                   </div>
 
                   <div>
-                    <Label htmlFor="message">رسالة لليتيم (اختياري)</Label>
+                    <Label htmlFor="message">{t.message}</Label>
                     <Textarea
                       id="message"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={3}
                       className="mt-2"
-                      placeholder="كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل"
+                      placeholder={t.messagePh}
                     />
                   </div>
 
@@ -413,7 +532,7 @@ function OrphanDetail() {
                       checked={anonymous}
                       onCheckedChange={(v) => setAnonymous(v === true)}
                     />
-                    أرغب أن تكون كفالتي دون ذكر اسمي
+                    {t.anonymous}
                   </label>
 
                   {excessOffer && (
@@ -438,12 +557,12 @@ function OrphanDetail() {
                     disabled={pending}
                   >
                     {pending && <Loader2 className="size-4 animate-spin" />}
-                    {user ? "ابدأ الكفالة" : "سجّل الدخول للكفالة"}
+                    {user ? t.start : t.signIn}
                   </Button>
 
                   <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
                     <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
-                    الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.
+                    {t.activates}
                   </p>
                 </div>
               </div>
@@ -452,21 +571,17 @@ function OrphanDetail() {
                 id="sponsor-form"
                 className="rounded-3xl border border-border bg-card p-6 shadow-sm"
               >
-                <p className="font-semibold">{KIND_INFO[mode].label}</p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {KIND_INFO[mode].text}
-                </p>
+                <p className="font-semibold">{t.kinds[mode].label}</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{t.kinds[mode].text}</p>
                 <Button asChild className="mt-5 w-full" size="lg">
                   <Link
                     to="/support"
                     search={{ orphan: orphan.id, name: orphan.display_name, kind: mode }}
                   >
-                    تابع — {KIND_INFO[mode].label} لـ{orphan.display_name}
+                    {t.continueTo(t.kinds[mode].label, orphan.display_name)}
                   </Link>
                 </Button>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  تتابعه من «بواباتي» بتقارير المكتب وصوره.
-                </p>
+                <p className="mt-3 text-xs text-muted-foreground">{t.follow}</p>
               </div>
             )}
           </aside>
@@ -484,13 +599,13 @@ function OrphanDetail() {
       <div className="border-border bg-background/95 sticky bottom-0 z-40 border-t p-3 backdrop-blur lg:hidden">
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <p className="text-xs text-muted-foreground">المتبقّي شهرياً</p>
+            <p className="text-xs text-muted-foreground">{t.remainingMonthly}</p>
             <p className="text-bridge-ink text-base font-extrabold">
-              {formatMoney(remaining, orphan.currency)}
+              {formatMoney(remaining, orphan.currency, locale)}
             </p>
           </div>
           <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">ادعم {orphan.display_name}</a>
+            <a href="#sponsor-form">{t.support(orphan.display_name)}</a>
           </Button>
         </div>
       </div>

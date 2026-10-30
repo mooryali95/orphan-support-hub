@@ -1,7 +1,25 @@
 import { Sparkles } from "lucide-react";
 
 import { formatMoney } from "@/lib/format";
+import { useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = {
+  ar: {
+    title: "عطاء فوق الاحتياج",
+    unlocksA: "اكتمل احتياجه الشهري، وهذا الفائض يفتح له",
+    perMonth: "شهرياً",
+    routed:
+      "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره جهة الرعاية وتعتمده الإدارة.",
+  },
+  en: {
+    title: "Giving beyond the need",
+    unlocksA: "Their monthly need is covered, and this surplus opens up",
+    perMonth: "per month",
+    routed:
+      "Their monthly need is covered, and this surplus goes to an additional program chosen by the care organization and approved by the administration.",
+  },
+};
 
 /**
  * العطاء فوق الاحتياج.
@@ -24,6 +42,8 @@ export function SurplusBadge({
   unlocks?: { title: string; monthly_price: number } | null;
   className?: string;
 }) {
+  const locale = useLocale();
+  const t = useCopy(COPY);
   if (surplus <= 0) return null;
 
   return (
@@ -36,24 +56,20 @@ export function SurplusBadge({
     >
       <p className="flex items-center gap-2 text-sm font-bold">
         <Sparkles className="text-bridge-ink size-4 shrink-0" aria-hidden="true" />
-        <span className="text-bridge-ink">عطاء فوق الاحتياج</span>
+        <span className="text-bridge-ink">{t.title}</span>
         <span className="text-bridge-ink ms-auto tabular-nums">
-          +{formatMoney(surplus, currency)}
+          +{formatMoney(surplus, currency, locale)}
         </span>
       </p>
 
       <p className="text-muted-foreground mt-1.5 text-xs leading-6">
         {unlocks ? (
           <>
-            اكتمل احتياجه الشهري، وهذا الفائض يفتح له{" "}
-            <strong className="text-foreground font-medium">{unlocks.title}</strong> —{" "}
-            {formatMoney(unlocks.monthly_price, currency)} شهرياً.
+            {t.unlocksA} <strong className="text-foreground font-medium">{unlocks.title}</strong> —{" "}
+            {formatMoney(unlocks.monthly_price, currency, locale)} {t.perMonth}.
           </>
         ) : (
-          <>
-            اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره جهة الرعاية وتعتمده
-            الإدارة.
-          </>
+          <>{t.routed}</>
         )}
       </p>
     </div>
