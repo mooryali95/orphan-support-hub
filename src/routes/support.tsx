@@ -152,6 +152,7 @@ function SupportPage() {
       },
       replace: true,
       resetScroll: false,
+      viewTransition: false,
     });
   };
 

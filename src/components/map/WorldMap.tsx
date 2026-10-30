@@ -103,6 +103,7 @@ const CountriesLayer = memo(function CountriesLayer({
             d={c.d}
             vectorEffect="non-scaling-stroke"
             onClick={active ? () => onPick(c.c) : undefined}
+            data-tip={active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total)}` : undefined}
             className={cn(
               "stroke-background transition-[fill,opacity] duration-700 ease-[var(--ease-out)]",
               active ? "cursor-pointer fill-primary/75 hover:fill-primary" : "fill-border",
@@ -141,6 +142,7 @@ const RegionsLayer = memo(function RegionsLayer({
             d={r.d}
             vectorEffect="non-scaling-stroke"
             onClick={() => onPick(r.id)}
+            data-tip={s ? `${r.n}|${shown(s.total)}` : r.n}
             style={{
               ["--i" as string]: Math.min(i, 24),
               fillOpacity: selected && selected !== r.id ? (s ? k * 0.45 : 0.5) : s ? k : 1,
@@ -157,6 +159,26 @@ const RegionsLayer = memo(function RegionsLayer({
     </g>
   );
 });
+
+/* ── وسوم المناطق: الأكثر أيتاماً أولاً، ويُترك ما يزاحم وسماً سبقه ── */
+
+function placeLabels<T extends { r: RegionShape }>(
+  ranked: T[],
+  v: View,
+  size: { w: number; h: number },
+) {
+  const placed: Array<T & { x: number; y: number }> = [];
+  for (const item of ranked) {
+    if (placed.length >= 8) break;
+    const x = ((item.r.p[0] - v.x) / v.w) * size.w;
+    const y = ((item.r.p[1] - v.y) / v.h) * size.h;
+    if (x < 16 || y < 80 || x > size.w - 16 || y > size.h - 16) continue;
+    // وسمٌ عرضه ~٩٠px وارتفاعه ~٢٤px: ما يتقاطع مع سابقٍ يُترك (يبقى في البطاقة والقائمة).
+    if (placed.some((p) => Math.abs(p.x - x) < 96 && Math.abs(p.y - y) < 30)) continue;
+    placed.push({ ...item, x, y });
+  }
+  return placed;
+}
 
 /* ── عدّادٌ يتصاعد إلى رقمه ─────────────────────────────────────────── */
 
@@ -228,6 +250,21 @@ export function WorldMap({
   const [size, setSize] = useState({ w: 1280, h: 660 });
   const [settled, setSettled] = useState(true);
   const [listOpen, setListOpen] = useState(false);
+  // تلميحٌ يتبع المؤشّر: اسم الدولة أو المنطقة وعددها — للفأرة وحدها.
+  const [tip, setTip] = useState<{ x: number; y: number; name: string; n?: string } | null>(null);
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse" || !settled) return setTip(null);
+    const el = (e.target as Element).closest<SVGElement>("[data-tip]");
+    const box = wrapRef.current?.getBoundingClientRect();
+    if (!el || !box) return setTip(null);
+    const [name, n] = (el.dataset["tip"] ?? "").split("|");
+    setTip({
+      x: e.clientX - box.left,
+      y: e.clientY - box.top,
+      name: name ?? "",
+      ...(n ? { n } : {}),
+    });
+  };
 
   const country = world?.countries.find((c) => c.c === selection.country) ?? null;
   const region = regions.find((r) => r.id === selection.region) ?? null;
@@ -286,8 +323,9 @@ export function WorldMap({
     return { x: v.x, y: v.y - inset.top * unit, w: size.w * unit, h: size.h * unit };
   }, [world, country, region, size, stats]);
 
-  // الطيران إلى الهدف.
+  // الطيران إلى الهدف — والتلميح يُطفأ: ما تحت المؤشّر تغيّر.
   useEffect(() => {
+    setTip(null);
     if (!target) return;
     const from = view.current;
     if (!from || reduce) {
@@ -364,7 +402,12 @@ export function WorldMap({
         className,
       )}
     >
-      <div ref={wrapRef} className="absolute inset-0">
+      <div
+        ref={wrapRef}
+        className="absolute inset-0"
+        onPointerMove={onPointerMove}
+        onPointerLeave={() => setTip(null)}
+      >
         {world && (
           <svg
             ref={svgRef}
@@ -375,12 +418,15 @@ export function WorldMap({
               country ? `خارطة ${country.n}${region ? ` — ${region.n}` : ""}` : "خارطة العالم"
             }
           >
-            <CountriesLayer
-              countries={world.countries}
-              stats={stats}
-              focus={selection.country}
-              onPick={pickCountry}
-            />
+            {/* الهبوط الأوّل: العالم يستقرّ من تكبيرٍ خفيف. */}
+            <g className="map-land">
+              <CountriesLayer
+                countries={world.countries}
+                stats={stats}
+                focus={selection.country}
+                onPick={pickCountry}
+              />
+            </g>
             {country && regions.length > 0 && (
               <RegionsLayer
                 key={country.c}
@@ -395,16 +441,55 @@ export function WorldMap({
               ref={dotsRef}
               className={cn("transition-opacity duration-500", country && "opacity-0")}
             >
-              {activeCountries.map((c) => (
+              {activeCountries.map((c, i) => (
                 <g key={c.c} data-at={`${c.p[0]} ${c.p[1]}`} className="pointer-events-none">
-                  <circle r={14} className="map-pulse fill-bridge/30" />
-                  <circle r={5} className="fill-bridge stroke-background" strokeWidth={2} />
+                  <g className="map-dot" style={{ ["--i" as string]: i }}>
+                    <circle r={14} className="map-pulse fill-bridge/30" />
+                    <circle r={5} className="fill-bridge stroke-background" strokeWidth={2} />
+                  </g>
                 </g>
               ))}
             </g>
           </svg>
         )}
+
+        {/* وسوم المناطق على الخارطة بعد أن تستقرّ: الاسم والعدد، وتُضغط. */}
+        {!bare && country && !region && settled && view.current && (
+          <div className="pointer-events-none absolute inset-0">
+            {placeLabels(rankedRegions, view.current, size).map(({ r, s: rs, x, y }, i) => {
+              return (
+                <button
+                  key={r.id}
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => pickRegion(r.id)}
+                  style={{ left: x, top: y, ["--i" as string]: i }}
+                  className="map-label pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_4px_12px_-4px_rgb(0_0_0/0.2)] backdrop-blur transition-[scale] duration-150 hover:scale-105"
+                >
+                  {r.n} <span className="tabular-nums text-primary">{shown(rs!.total)}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {tip && (
+          <div
+            role="presentation"
+            style={{ left: tip.x, top: tip.y }}
+            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-[calc(100%+14px)] rounded-xl bg-foreground px-3 py-1.5 text-xs whitespace-nowrap text-background shadow-lg"
+          >
+            <span className="font-semibold">{tip.name}</span>
+            {tip.n && <span className="ms-2 tabular-nums opacity-80">{tip.n}</span>}
+          </div>
+        )}
       </div>
+
+      {/* إطارٌ ناعم يجمع العين نحو الوسط. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,color-mix(in_oklch,var(--color-background)_85%,transparent)_100%)]"
+      />
 
       {!bare && (
         <>

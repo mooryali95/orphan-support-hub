@@ -202,6 +202,7 @@ function HomePage() {
     void navigate({
       search: { ...(s.country ? { c: s.country } : {}), ...(s.region ? { r: s.region } : {}) },
       resetScroll: false,
+      viewTransition: false,
     });
 
   return (

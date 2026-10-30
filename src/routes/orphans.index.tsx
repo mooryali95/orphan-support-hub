@@ -132,6 +132,7 @@ function OrphansPage() {
       },
       replace: true,
       resetScroll: false,
+      viewTransition: false,
     });
   }
 
@@ -238,7 +239,7 @@ function OrphansPage() {
 
   function reset() {
     setText("");
-    void navigate({ search: {}, replace: true, resetScroll: false });
+    void navigate({ search: {}, replace: true, resetScroll: false, viewTransition: false });
   }
 
   const fromGeo = !!geo?.available;
@@ -373,7 +374,7 @@ function OrphansPage() {
           <div
             id="directory-filters"
             className={cn(
-              "flex-wrap items-end gap-3 rounded-2xl border border-border bg-card p-4 md:flex",
+              "flex-wrap items-end gap-x-4 gap-y-3 rounded-2xl border border-border bg-card p-4 md:flex [&>div]:flex [&>div]:min-w-36 [&>div]:flex-col [&>div]:gap-1",
               panelOpen ? "flex" : "hidden",
             )}
           >
@@ -511,8 +512,15 @@ function OrphansPage() {
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((orphan) => (
-              <OrphanCard key={orphan.id} orphan={orphan} />
+            {rows.map((orphan, i) => (
+              // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
+              <div
+                key={`${page}-${orphan.id}`}
+                className="stagger-in"
+                style={{ ["--i" as string]: i }}
+              >
+                <OrphanCard orphan={orphan} />
+              </div>
             ))}
           </div>
         )}

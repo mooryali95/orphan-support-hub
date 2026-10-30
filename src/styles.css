@@ -259,3 +259,71 @@
     opacity: 0.4;
   }
 }
+
+/* ── الانتقال بين الصفحات: تتلاشى القديمة سريعاً، وتصعد الجديدة بهدوء ── */
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+::view-transition-old(root) {
+  animation: vt-out 160ms var(--ease-out) both;
+}
+::view-transition-new(root) {
+  animation: vt-in 340ms var(--ease-out) 60ms both;
+}
+/* الرأس ثابتٌ عبر الصفحات: لا يومض مع كل تنقّل. */
+header.sticky {
+  view-transition-name: site-header;
+}
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* ── بطاقاتٌ تصعد بالتتابع حين تُعرض قائمة ── */
+.stagger-in {
+  animation: map-rise 420ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 45ms);
+}
+
+/* ── الخارطة: دخولٌ أوّل، ونقاطٌ تظهر واحدةً واحدة، ووسوم المناطق ── */
+@keyframes map-land {
+  from {
+    opacity: 0;
+    scale: 1.04;
+  }
+}
+@keyframes map-pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+.map-land {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: map-land 1200ms var(--ease-out) both;
+}
+.map-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(700ms + var(--i, 0) * 120ms);
+}
+.map-label {
+  animation: map-rise 380ms var(--ease-out) both;
+  animation-delay: calc(250ms + min(var(--i, 0), 10) * 50ms);
+}
