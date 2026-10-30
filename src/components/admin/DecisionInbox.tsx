@@ -35,7 +35,13 @@ import { setDonorEntityStatus } from "@/lib/workspaces.functions";
  * جانبي يحمل السياق كاملاً. ملفّ الطفل وحده يُحال إلى طابور الاعتماد،
  * لأن قراره قراءةُ وثائق لا سطر.
  */
-export function DecisionInbox({ onOpenQueue }: { onOpenQueue: () => void }) {
+export function DecisionInbox({
+  onOpenQueue,
+  onOpenIntegrity,
+}: {
+  onOpenQueue: () => void;
+  onOpenIntegrity: () => void;
+}) {
   const fetchInbox = useServerFn(getDecisionInbox);
   const { data: items = [], isPending } = useQuery({
     queryKey: ["decision-inbox"],
@@ -70,7 +76,14 @@ export function DecisionInbox({ onOpenQueue }: { onOpenQueue: () => void }) {
             <li key={`${it.kind}-${it.id}`}>
               <button
                 type="button"
-                onClick={() => (it.kind === "orphan" ? onOpenQueue() : setOpen(it))}
+                // طلبات الفكّ والاختلافات لها صفحتها: موافقتان ونافذة، لا «اعتماد» بضغطة.
+                onClick={() =>
+                  it.kind === "orphan"
+                    ? onOpenQueue()
+                    : it.kind === "unlock" || it.kind === "discrepancy"
+                      ? onOpenIntegrity()
+                      : setOpen(it)
+                }
                 className="flex w-full items-center gap-3 px-4 py-3 text-start hover:bg-secondary/40"
               >
                 <Badge variant="secondary" className="shrink-0">
@@ -175,7 +188,10 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
               })
             : item.kind === "office_report"
               ? await office({ data: { id: item.id, publish: approve } })
-              : await pledge({ data: { id: item.id, status: approve ? "active" : "cancelled" } });
+              : item.kind === "pledge"
+                ? await pledge({ data: { id: item.id, status: approve ? "active" : "cancelled" } })
+                : // نوعٌ لا قرار له هنا: لا يُمرَّر إلى إجراءٍ آخر بالخطأ.
+                  { ok: false as const };
     setBusy(false);
     if (!res.ok) {
       toast.error("تعذّر تنفيذ القرار");

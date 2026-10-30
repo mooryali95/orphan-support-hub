@@ -17,6 +17,8 @@ import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
+import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
+import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
@@ -52,12 +54,14 @@ type Tab =
   | "access"
   | "offices"
   | "integrations"
+  | "integrity"
+  | "countries"
   | "monitoring";
 
 const SECTIONS: Array<[string, Tab[]]> = [
-  ["القرارات", ["inbox", "queue", "access"]],
+  ["القرارات", ["inbox", "queue", "access", "integrity"]],
   ["الناس", ["orphans", "sponsors", "supervisors", "offices"]],
-  ["المنصّة", ["platform", "integrations"]],
+  ["المنصّة", ["countries", "platform", "integrations"]],
   ["المراقبة", ["overview", "monitoring"]],
 ];
 
@@ -114,6 +118,8 @@ function AdminPage() {
     ["access", "الإذن بالاطّلاع", null],
     ["offices", "المكاتب والجهات", null],
     ["integrations", "التكامل", null],
+    ["integrity", "سلامة الحقيقة", null],
+    ["countries", "الدول والمصادر", null],
     ["monitoring", "المراقبة", null],
   ];
 
@@ -170,7 +176,22 @@ function AdminPage() {
 
       {tab === "inbox" && (
         <div className="mt-8">
-          <DecisionInbox onOpenQueue={() => setTab("queue")} />
+          <DecisionInbox
+            onOpenQueue={() => setTab("queue")}
+            onOpenIntegrity={() => setTab("integrity")}
+          />
+        </div>
+      )}
+
+      {tab === "integrity" && (
+        <div className="mt-8">
+          <IntegrityPanel />
+        </div>
+      )}
+
+      {tab === "countries" && (
+        <div className="mt-8">
+          <SourcesPanel />
         </div>
       )}
 
