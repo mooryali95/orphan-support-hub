@@ -8,7 +8,7 @@ import { withPhase7 } from "@/integrations/supabase/types.extra";
  * أضعافه فعلياً — وهو أسوأ من غيابه لأنه يوهم بالحماية.
  */
 
-export type Bucket = "auth" | "search" | "checkout" | "intake";
+export type Bucket = "auth" | "search" | "checkout" | "intake" | "api";
 
 /** حدود محافظة: تُوقف الآلة ولا تُزعج الإنسان. */
 const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
@@ -18,6 +18,10 @@ const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
   search: { limit: 60, windowSeconds: 60 },
   checkout: { limit: 10, windowSeconds: 300 },
   intake: { limit: 20, windowSeconds: 3600 },
+  // بوّابات التكامل: كل طلبٍ بمفتاحٍ يكلّف تجزئة scrypt، فبلا حدٍّ يصير
+  // التخمين مجّانياً واستنزاف المعالج ممكناً. مئةٌ وعشرون في الدقيقة لكل
+  // مصدر تكفي مزامنةً بدفعات من خمسمئة.
+  api: { limit: 120, windowSeconds: 60 },
 };
 
 /**

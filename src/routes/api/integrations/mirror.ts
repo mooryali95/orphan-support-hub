@@ -5,7 +5,9 @@ import {
   apiOk,
   authFailureResponse,
   authenticateClient,
+  guardApiRate,
   hasScope,
+  readBodyCapped,
 } from "@/lib/integrations/client";
 
 /**
@@ -40,6 +42,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const limited = await guardApiRate(request);
+        if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
         if (!hasScope(auth.client, "mirror:write")) {
@@ -51,9 +55,18 @@ export const Route = createFileRoute("/api/integrations/mirror")({
           );
         }
 
+        const raw = await readBodyCapped(request);
+        if (!raw.ok) {
+          return apiError(
+            "body_too_large",
+            413,
+            "الحمولة أكبر من ٢ ميغابايت.",
+            "Body exceeds 2 MB.",
+          );
+        }
         let body: Body;
         try {
-          body = (await request.json()) as Body;
+          body = JSON.parse(raw.text) as Body;
         } catch {
           return apiError(
             "invalid_json",
