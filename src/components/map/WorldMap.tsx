@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   memo,
   type ReactNode,
@@ -41,16 +41,17 @@ const worldQuery = {
   gcTime: Infinity,
 };
 
+const regionsQuery = (code: string | null) => ({
+  queryKey: ["geo", "admin1", code],
+  queryFn: async (): Promise<RegionShape[]> => {
+    const res = await fetch(`/geo/admin1/${code}.json`);
+    return res.ok ? ((await res.json()) as { regions: RegionShape[] }).regions : [];
+  },
+  staleTime: Infinity,
+});
+
 function useRegions(code: string | null) {
-  return useQuery({
-    queryKey: ["geo", "admin1", code],
-    queryFn: async (): Promise<RegionShape[]> => {
-      const res = await fetch(`/geo/admin1/${code}.json`);
-      return res.ok ? ((await res.json()) as { regions: RegionShape[] }).regions : [];
-    },
-    enabled: !!code,
-    staleTime: Infinity,
-  });
+  return useQuery({ ...regionsQuery(code), enabled: !!code });
 }
 
 /** مفتاح المنطقة في الإحصاء ← المنطقة على الخارطة، بأي اسمٍ كُتب. */
@@ -85,16 +86,32 @@ const CountriesLayer = memo(function CountriesLayer({
   countries,
   stats,
   focus,
+  revealed,
+  near,
   onPick,
+  onHover,
 }: {
   countries: CountryShape[];
+  /** داخل دولة: لا يُرسم إلا ما يجاورها — العالم كلّه في كل إطار ثقلٌ بلا فائدة. */
+  near: Box | null;
   stats: MapStats;
   focus: string | null;
+  revealed: boolean;
   onPick: (code: string) => void;
+  onHover: (code: string) => void;
 }) {
+  const within = (b: Box) =>
+    !near ||
+    !(
+      b[0] > near[0] + near[2] ||
+      b[0] + b[2] < near[0] ||
+      b[1] > near[1] + near[3] ||
+      b[1] + b[3] < near[1]
+    );
   return (
     <g>
       {countries.map((c, i) => {
+        if (!within(c.b)) return null;
         const active = !!stats[c.c];
         const dim = focus && focus !== c.c;
         return (
@@ -103,12 +120,17 @@ const CountriesLayer = memo(function CountriesLayer({
             d={c.d}
             vectorEffect="non-scaling-stroke"
             onClick={active ? () => onPick(c.c) : undefined}
+            onPointerEnter={active ? () => onHover(c.c) : undefined}
             data-tip={active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total)}` : undefined}
             className={cn(
               "stroke-background transition-[fill,opacity] duration-700 ease-[var(--ease-out)]",
               active ? "cursor-pointer fill-primary/75 hover:fill-primary" : "fill-border",
               dim && "opacity-25",
-              focus === c.c && "fill-transparent hover:fill-transparent",
+              // أثناء الطيران تبقى الدولة ملوّنة، ثم تخلي مكانها لمناطقها.
+              focus === c.c &&
+                (revealed
+                  ? "fill-transparent hover:fill-transparent"
+                  : "fill-primary/35 hover:fill-primary/35"),
             )}
             strokeWidth={0.6}
           />
@@ -171,7 +193,11 @@ function placeLabels<T extends { r: RegionShape }>(
   for (const item of ranked) {
     if (placed.length >= 8) break;
     const x = ((item.r.p[0] - v.x) / v.w) * size.w;
-    const y = ((item.r.p[1] - v.y) / v.h) * size.h;
+    let y = ((item.r.p[1] - v.y) / v.h) * size.h;
+    // منطقةٌ صغيرة على الشاشة يغطّيها وسمها: يُرفع الوسم فوقها فتبقى ظاهرة.
+    const top = ((item.r.b[1] - v.y) / v.h) * size.h;
+    const height = (item.r.b[3] / v.h) * size.h;
+    if (height < 48) y = top - 16;
     if (x < 16 || y < 80 || x > size.w - 16 || y > size.h - 16) continue;
     // وسمٌ عرضه ~٩٠px وارتفاعه ~٢٤px: ما يتقاطع مع سابقٍ يُترك (يبقى في البطاقة والقائمة).
     if (placed.some((p) => Math.abs(p.x - x) < 96 && Math.abs(p.y - y) < 30)) continue;
@@ -241,6 +267,24 @@ export function WorldMap({
 }) {
   const { data: world } = useQuery(worldQuery);
   const { data: regions = [] } = useRegions(selection.country);
+  const qc = useQueryClient();
+  // الدولة التي ظهرت مناطقها: تبقى مرسومةً أثناء الطيران داخلها (إلى منطقة وعودة).
+  const [shownFor, setShownFor] = useState<string | null>(null);
+  // الجوار المرسوم داخل دولة: مربّعٌ حولها بستّة أضعاف أكبر بُعدَيها (لا أقلّ من ٢٠ وحدة).
+  const nearBox = useMemo<Box | null>(() => {
+    const c = world?.countries.find((x) => x.c === shownFor && x.c === selection.country);
+    if (!c) return null;
+    const [x, y, w, h] = c.b;
+    const r = Math.max(w, h, 20) * 3;
+    return [x + w / 2 - r, y + h / 2 - r, r * 2, r * 2];
+  }, [world, shownFor, selection.country]);
+  const selectedCountryRef = useRef(selection.country);
+  selectedCountryRef.current = selection.country;
+  // ملفّ المناطق يُجلب حين يمرّ المؤشّر على الدولة، فيكون جاهزاً قبل الضغط.
+  const prefetchRegions = useCallback(
+    (code: string) => void qc.prefetchQuery(regionsQuery(code)),
+    [qc],
+  );
   const reduce = usePrefersReducedMotion();
 
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -332,19 +376,26 @@ export function WorldMap({
       view.current = target;
       paint(target);
       setSettled(true);
+      setShownFor(selectedCountryRef.current);
       return;
     }
     const f = flight(from, target);
     let raf = 0;
     const t0 = performance.now();
     setSettled(false);
+    // أثناء الطيران: رسمٌ أسرع للأشكال، والنبض متوقّف — الكاميرا وحدها تتحرّك.
+    svgRef.current?.closest("section")?.setAttribute("data-flying", "");
     const tick = (now: number) => {
       const t = Math.min(1, (now - t0) / f.duration);
       const v = f.at(easeInOut(t));
       view.current = v;
       paint(v);
       if (t < 1) raf = requestAnimationFrame(tick);
-      else setSettled(true);
+      else {
+        svgRef.current?.closest("section")?.removeAttribute("data-flying");
+        setSettled(true);
+        setShownFor(selectedCountryRef.current);
+      }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
@@ -424,10 +475,14 @@ export function WorldMap({
                 countries={world.countries}
                 stats={stats}
                 focus={selection.country}
+                revealed={!!country && shownFor === country.c && regions.length > 0}
+                near={nearBox}
                 onPick={pickCountry}
+                onHover={prefetchRegions}
               />
             </g>
-            {country && regions.length > 0 && (
+            {/* المناطق تُرسم بعد الهبوط — لا تُثقل الطيران — ثم تظهر بالتتابع. */}
+            {country && regions.length > 0 && shownFor === country.c && (
               <RegionsLayer
                 key={country.c}
                 regions={regions}
