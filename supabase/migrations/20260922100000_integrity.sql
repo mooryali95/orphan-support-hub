@@ -829,3 +829,17 @@ BEGIN
                     FOR EACH ROW EXECUTE FUNCTION public.guard_locked_money()', _t);
   END LOOP;
 END $$;
+
+
+-- وقت آخر مطابقة للمصدر — شرطٌ في قائمة التفعيل.
+CREATE OR REPLACE FUNCTION public.mirror_mark_reconciled(_client UUID)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+DECLARE _src TEXT;
+BEGIN
+  SELECT c.source INTO _src FROM public.api_clients c
+   WHERE c.id = _client AND c.active AND c.revoked_at IS NULL AND 'mirror:write' = ANY(c.scopes);
+  IF _src IS NULL THEN RAISE EXCEPTION 'client_not_permitted' USING ERRCODE = '42501'; END IF;
+  UPDATE public.operating_platforms SET last_reconcile_at = now() WHERE key = _src;
+END $fn$;
+REVOKE ALL ON FUNCTION public.mirror_mark_reconciled(UUID) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.mirror_mark_reconciled(UUID) TO service_role;

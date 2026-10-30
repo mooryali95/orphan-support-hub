@@ -17,7 +17,15 @@ type RpcClient = {
 const rpc = (client: unknown) => client as RpcClient;
 
 export type InboxKind =
-  "orphan" | "org" | "access" | "donor" | "progress_report" | "office_report" | "pledge";
+  | "orphan"
+  | "org"
+  | "access"
+  | "donor"
+  | "progress_report"
+  | "office_report"
+  | "pledge"
+  | "unlock"
+  | "discrepancy";
 
 export type InboxItem = {
   kind: InboxKind;
@@ -35,6 +43,8 @@ export const INBOX_LABELS: Record<InboxKind, string> = {
   progress_report: "تقرير جهة",
   office_report: "تقرير مكتب",
   pledge: "تعهّد",
+  unlock: "طلب فكّ",
+  discrepancy: "اختلافٌ من المصدر",
 };
 
 export const getDecisionInbox = createServerFn({ method: "GET" })

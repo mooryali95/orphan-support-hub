@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { canonicalJson, sha256Hex } from "@/lib/integrity/canonical";
 
 import {
   apiError,
@@ -105,6 +106,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
           });
           if (error)
             return apiError("reconcile_failed", 500, "تعذّرت المطابقة.", "Reconcile failed.");
+          // وقت آخر مطابقة: شرطٌ لتفعيل المصدر. فشله لا يُفشل المطابقة نفسها.
+          await db.rpc("mirror_mark_reconciled", { _client: auth.client.id });
           return apiOk(data as Record<string, unknown>);
         }
 
@@ -131,7 +134,22 @@ export const Route = createFileRoute("/api/integrations/mirror")({
         if (!res?.ok) {
           return apiError(res?.code ?? "rejected", 422, "رُفضت الدفعة.", "Batch rejected.");
         }
-        return apiOk(res as Record<string, unknown>);
+        // إيصال الدفعة: بصمة محتواها المعياري، مربوطةً ببصمة سابقتها من المصدر.
+        // يحفظها المصدر عنده، فيُقارَن الطرفان لاحقاً حلقةً حلقة.
+        const payloadHash = await sha256Hex(
+          canonicalJson({ entity: body.entity, records, deleted, cursor: body.cursor ?? null }),
+        );
+        const { data: receipt } = await db.rpc("mirror_log_batch", {
+          _client: auth.client.id,
+          _entity: body.entity,
+          _records: records.length,
+          _deleted: deleted.length,
+          _payload_hash: payloadHash,
+        });
+        return apiOk({
+          ...(res as Record<string, unknown>),
+          receipt: { payload_hash: payloadHash, chain_hash: (receipt as string | null) ?? null },
+        });
       },
     },
   },
