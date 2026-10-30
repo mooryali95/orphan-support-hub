@@ -3,7 +3,27 @@ import { ArrowLeft, HeartHandshake, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
+import { useCopy, useLocale } from "@/lib/locale";
 import type { SuggestedOrphan } from "@/lib/sponsorships.functions";
+
+const COPY = {
+  ar: {
+    needsA: "هذا الملف يحتاج ",
+    needsB: " فقط لإكمال احتياجه الشهري، فيزيد مبلغك عنه بـ",
+    waiting: "وهؤلاء ينتظرون قريباً ممّا يزيد عندك:",
+    needs: (m: string) => `يحتاج ${m}`,
+    makeIt: (m: string) => `اجعله ${m}`,
+    confirm: "أكمل لهذا الطفل",
+  },
+  en: {
+    needsA: "This file needs only ",
+    needsB: " to complete its monthly need, so your amount is higher by ",
+    waiting: "These children are waiting for close to what you have extra:",
+    needs: (m: string) => `Needs ${m}`,
+    makeIt: (m: string) => `Make it ${m}`,
+    confirm: "Continue for this child",
+  },
+};
 
 /**
  * حين يتجاوز المبلغ المتبقّي.
@@ -30,21 +50,23 @@ export function ExcessSuggestion({
   onConfirm: () => void;
   pending: boolean;
 }) {
+  const locale = useLocale();
+  const t = useCopy(COPY);
   return (
     <div className="border-bridge/40 bg-bridge/8 mt-3 rounded-xl border p-4">
       <p className="flex items-start gap-2 text-sm leading-7">
         <Sparkles className="text-bridge-ink mt-1 size-4 shrink-0" aria-hidden="true" />
         <span>
-          هذا الملف يحتاج <strong>{formatMoney(gap, currency)}</strong> فقط لإكمال احتياجه الشهري،
-          فيزيد مبلغك عنه بـ<strong>{formatMoney(excess, currency)}</strong>.
+          {t.needsA}
+          <strong>{formatMoney(gap, currency, locale)}</strong>
+          {t.needsB}
+          <strong>{formatMoney(excess, currency, locale)}</strong>.
         </span>
       </p>
 
       {suggestions.length > 0 && (
         <>
-          <p className="text-muted-foreground mt-3 text-xs">
-            وهؤلاء ينتظرون قريباً ممّا يزيد عندك:
-          </p>
+          <p className="text-muted-foreground mt-3 text-xs">{t.waiting}</p>
           <ul className="mt-2 space-y-1.5">
             {suggestions.map((s) => (
               <li key={s.id}>
@@ -59,7 +81,7 @@ export function ExcessSuggestion({
                     {s.city && <span className="text-muted-foreground"> — {s.city}</span>}
                   </span>
                   <span className="text-bridge-ink text-xs font-bold tabular-nums">
-                    يحتاج {formatMoney(s.gap, s.currency)}
+                    {t.needs(formatMoney(s.gap, s.currency, locale))}
                   </span>
                   <ArrowLeft
                     className="ltr:-scale-x-100 text-muted-foreground size-3.5"
@@ -74,11 +96,11 @@ export function ExcessSuggestion({
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Button size="sm" variant="outline" onClick={onUseGapOnly}>
-          اجعله {formatMoney(gap, currency)}
+          {t.makeIt(formatMoney(gap, currency, locale))}
         </Button>
         {/* الإصرار حقّ: قد يكون اختار هذا الطفل لسبب. */}
         <Button size="sm" onClick={onConfirm} disabled={pending}>
-          أكمل لهذا الطفل
+          {t.confirm}
         </Button>
       </div>
     </div>

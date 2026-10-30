@@ -16,7 +16,8 @@ import { CountryPicker } from "@/components/geo/CountryPicker";
 import { countryName, resolveCountry } from "@/lib/countries";
 import { findCountry, geoQuery } from "@/lib/geo";
 import { arCount, COUNTRIES, FILES } from "@/lib/plural";
-import { BRAND, pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
+import { useCopy, useLocale } from "@/lib/locale";
 
 const optionsQuery = queryOptions({
   queryKey: ["orphan-filter-options"],
@@ -29,20 +30,19 @@ const firstPageQuery = queryOptions({
 });
 
 export const Route = createFileRoute("/orphans/")({
-  head: () => ({
-    meta: [
-      { title: pageTitle("دليل الأيتام") },
-      {
-        name: "description",
-        content: BRAND.description,
-      },
-      { property: "og:title", content: pageTitle("دليل الأيتام") },
-      {
-        property: "og:description",
-        content: BRAND.description,
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    const title = pageTitle(COPY[l].title, true, l);
+    const description = brandFor(l).description;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+      ],
+    };
+  },
   // الفلترة في الرابط: تُشارَك، ويعيدها زرّ الرجوع، ولا تضيع بالتحديث.
   validateSearch: (raw: Record<string, unknown>): DirectorySearch => {
     const str = (k: string) => (typeof raw[k] === "string" && raw[k] ? String(raw[k]) : undefined);
@@ -81,11 +81,114 @@ type DirectorySearch = {
 };
 type Sort = "waiting" | "closest" | "newest";
 
-const SORTS: Array<[Sort, string]> = [
-  ["waiting", "الأطول انتظاراً"],
-  ["closest", "الأقرب للاكتمال"],
-  ["newest", "الأحدث"],
-];
+const SORTS: Sort[] = ["waiting", "closest", "newest"];
+
+const COPY = {
+  ar: {
+    title: "دليل الأيتام",
+    sorts: { waiting: "الأطول انتظاراً", closest: "الأقرب للاكتمال", newest: "الأحدث" } as Record<
+      Sort,
+      string
+    >,
+    ages: AGE_BAND_LABELS as Record<string, string>,
+    female: "أنثى",
+    male: "ذكر",
+    open: "بحاجة لكافل",
+    full: "مكفول",
+    any: "الكل",
+    building: "برنامج بناء أهلية",
+    buildingOn: "برنامج بناء أهلية قائم",
+    lead: "جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة",
+    inCountries: (n: number) => ` — في ${arCount(n, COUNTRIES)}.`,
+    cardH: "ما يُعرض هنا بطاقةٌ لا ملفّ:",
+    cardP:
+      "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+    search: "ابحث بالاسم المستعار أو رقم الملف",
+    searchLabel: "بحث",
+    allCountries: "كل البلدان",
+    pickCountry: "اختر دولة",
+    sortLabel: "ترتيب النتائج",
+    fundingLabel: "تصفية حسب حالة الكفالة",
+    more: "فلترة أدقّ",
+    region: "المنطقة",
+    allRegions: "كل المناطق",
+    age: "الفئة العمرية",
+    allAges: "كل الأعمار",
+    gender: "الجنس",
+    everyone: "الجميع",
+    stage: "المرحلة الدراسية",
+    allStages: "كل المراحل",
+    group: "المجموعة",
+    allGroups: "كل المجموعات",
+    active: "الفلاتر النشطة",
+    remove: (l: string) => `إزالة: ${l}`,
+    clearAll: "مسح الكل",
+    files: (n: number) => arCount(n, FILES),
+    empty: "لا توجد نتائج مطابقة.",
+    tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
+    restart: "ابدأ من جديد",
+    pagesLabel: "صفحات الدليل",
+    prev: "السابق",
+    next: "التالي",
+    pageOf: (p: number, n: number) => `صفحة ${p} من ${n}`,
+  },
+  en: {
+    title: "Children",
+    sorts: {
+      waiting: "Waiting longest",
+      closest: "Closest to fully sponsored",
+      newest: "Newest",
+    } as Record<Sort, string>,
+    ages: {
+      under_6: "Under 6",
+      age_6_11: "6–11",
+      age_12_14: "12–14",
+      age_15_17: "15–17",
+      age_18_plus: "18+",
+      unknown: "Unknown",
+    } as Record<string, string>,
+    female: "Girl",
+    male: "Boy",
+    open: "Needs a sponsor",
+    full: "Sponsored",
+    any: "All",
+    building: "Qualification program",
+    buildingOn: "Qualification program under way",
+    lead: "Every file shown here was approved by the administration after being documented by a licensed care organization",
+    inCountries: (n: number) => ` — in ${n === 1 ? "1 country" : `${n} countries`}.`,
+    cardH: "What you see here is a card, not a file:",
+    cardP:
+      "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page — because a child's file isn't a page to browse.",
+    search: "Search by pseudonym or file number",
+    searchLabel: "Search",
+    allCountries: "All countries",
+    pickCountry: "Choose a country",
+    sortLabel: "Sort results",
+    fundingLabel: "Filter by sponsorship status",
+    more: "More filters",
+    region: "Region",
+    allRegions: "All regions",
+    age: "Age group",
+    allAges: "All ages",
+    gender: "Gender",
+    everyone: "Everyone",
+    stage: "School stage",
+    allStages: "All stages",
+    group: "Group",
+    allGroups: "All groups",
+    active: "Active filters",
+    remove: (l: string) => `Remove: ${l}`,
+    clearAll: "Clear all",
+    files: (n: number) => (n === 1 ? "1 file" : `${n} files`),
+    empty: "No matching results.",
+    tryA: "Try removing one of the filters above, or",
+    restart: "start over",
+    pagesLabel: "Directory pages",
+    prev: "Previous",
+    next: "Next",
+    pageOf: (p: number, n: number) => `Page ${p} of ${n}`,
+  },
+};
 
 const AGE_BANDS: AgeBand[] = ["under_6", "age_6_11", "age_12_14", "age_15_17", "age_18_plus"];
 
@@ -99,6 +202,8 @@ const PAGE = 24;
  * تُرقّم: خمسون ملفاً تمرّ، وخمسة آلاف لا.
  */
 function OrphansPage() {
+  const locale = useLocale();
+  const t = useCopy(COPY);
   const { data: first } = useSuspenseQuery(firstPageQuery);
   const { data: options } = useQuery(optionsQuery);
   // البلد والمنطقة من مصدر الجغرافيا الواحد — ما تُظهره الخارطة يجده الدليل.
@@ -180,7 +285,7 @@ function OrphansPage() {
   const groupName = (id: string) => groups.find((g) => g.id === id)?.name ?? id;
   const countryLabel = (v: string) => {
     const code = resolveCountry(v);
-    return code ? countryName(code) : v;
+    return code ? countryName(code, locale) : v;
   };
 
   /** الفلاتر النشطة رقاقاتٍ تُزال واحدةً واحدة — يرى الزائر لماذا قلّت النتائج. */
@@ -202,7 +307,7 @@ function OrphansPage() {
       ? [
           {
             key: "age",
-            label: AGE_BAND_LABELS[sp.age as AgeBand] ?? sp.age,
+            label: t.ages[sp.age] ?? sp.age,
             clear: () => set({ age: undefined }),
           },
         ]
@@ -211,7 +316,7 @@ function OrphansPage() {
       ? [
           {
             key: "gender",
-            label: sp.gender === "female" ? "أنثى" : "ذكر",
+            label: sp.gender === "female" ? t.female : t.male,
             clear: () => set({ gender: undefined }),
           },
         ]
@@ -226,13 +331,13 @@ function OrphansPage() {
       ? [
           {
             key: "funding",
-            label: funding === "open" ? "بحاجة لكافل" : "مكفول",
+            label: funding === "open" ? t.open : t.full,
             clear: () => set({ funding: undefined }),
           },
         ]
       : []),
     ...(sp.building
-      ? [{ key: "building", label: "برنامج بناء أهلية", clear: () => set({ building: undefined }) }]
+      ? [{ key: "building", label: t.building, clear: () => set({ building: undefined }) }]
       : []),
   ];
   const panelCount = chips.filter((c) => !["q", "funding"].includes(c.key)).length;
@@ -259,10 +364,10 @@ function OrphansPage() {
     <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">دليل الأيتام</h1>
+        <h1 className="text-3xl font-extrabold">{t.title}</h1>
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة
-          {countries.length > 1 ? ` — في ${arCount(countries.length, COUNTRIES)}.` : "."}
+          {t.lead}
+          {countries.length > 1 ? t.inCountries(countries.length) : "."}
         </p>
 
         {/* القاعدة تُشرَح قبل أن تُصادَف: من يفتح ملفّاً ويجده مقتضباً
@@ -270,9 +375,7 @@ function OrphansPage() {
         <p className="mt-4 flex max-w-2xl items-start gap-2 rounded-2xl bg-secondary/60 p-4 text-xs leading-6">
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" aria-hidden="true" />
           <span>
-            <strong className="text-foreground">ما يُعرض هنا بطاقةٌ لا ملفّ:</strong> اسمٌ مستعار،
-            وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من
-            الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.
+            <strong className="text-foreground">{t.cardH}</strong> {t.cardP}
           </span>
         </p>
 
@@ -287,8 +390,8 @@ function OrphansPage() {
                 type="search"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="ابحث بالاسم المستعار أو رقم الملف"
-                aria-label="بحث"
+                placeholder={t.search}
+                aria-label={t.searchLabel}
                 className="pe-9 text-base md:text-sm"
               />
             </div>
@@ -299,6 +402,9 @@ function OrphansPage() {
                 value={sp.country ?? ""}
                 onChange={(v) => set({ country: v || undefined, region: undefined })}
                 values={countries}
+                lang={locale}
+                allLabel={t.allCountries}
+                placeholder={t.pickCountry}
                 {...(countryCounts ? { counts: countryCounts } : {})}
               />
             </div>
@@ -313,26 +419,26 @@ function OrphansPage() {
                       : (e.target.value as "closest" | "newest"),
                 })
               }
-              aria-label="ترتيب النتائج"
+              aria-label={t.sortLabel}
               className="h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
             >
-              {SORTS.map(([key, label]) => (
+              {SORTS.map((key) => (
                 <option key={key} value={key}>
-                  {label}
+                  {t.sorts[key]}
                 </option>
               ))}
             </select>
 
             <div
               role="group"
-              aria-label="تصفية حسب حالة الكفالة"
+              aria-label={t.fundingLabel}
               className="flex rounded-md border border-input p-1"
             >
               {(
                 [
-                  ["any", "الكل"],
-                  ["open", "بحاجة لكافل"],
-                  ["full", "مكفول"],
+                  ["any", t.any],
+                  ["open", t.open],
+                  ["full", t.full],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -362,7 +468,7 @@ function OrphansPage() {
               onClick={() => setPanelOpen((o) => !o)}
             >
               <SlidersHorizontal aria-hidden="true" />
-              فلترة أدقّ
+              {t.more}
               {panelCount > 0 && (
                 <span className="rounded-full bg-primary px-1.5 text-xs tabular-nums text-primary-foreground">
                   {panelCount}
@@ -380,15 +486,15 @@ function OrphansPage() {
           >
             <Picker
               id="f-region"
-              label="المنطقة"
+              label={t.region}
               value={sp.region ?? ""}
               onChange={(v) => set({ region: v || undefined })}
-              all="كل المناطق"
+              all={t.allRegions}
               options={[...new Set(regions)]}
             />
             <div>
               <Label htmlFor="f-age" className="text-xs">
-                الفئة العمرية
+                {t.age}
               </Label>
               <select
                 id="f-age"
@@ -396,17 +502,17 @@ function OrphansPage() {
                 onChange={(e) => set({ age: e.target.value || undefined })}
                 className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
-                <option value="">كل الأعمار</option>
+                <option value="">{t.allAges}</option>
                 {AGE_BANDS.map((b) => (
                   <option key={b} value={b}>
-                    {AGE_BAND_LABELS[b]}
+                    {t.ages[b]}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <Label htmlFor="f-gender" className="text-xs">
-                الجنس
+                {t.gender}
               </Label>
               <select
                 id="f-gender"
@@ -414,23 +520,23 @@ function OrphansPage() {
                 onChange={(e) => set({ gender: e.target.value || undefined })}
                 className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
-                <option value="">الجميع</option>
-                <option value="male">ذكر</option>
-                <option value="female">أنثى</option>
+                <option value="">{t.everyone}</option>
+                <option value="male">{t.male}</option>
+                <option value="female">{t.female}</option>
               </select>
             </div>
             <Picker
               id="f-stage"
-              label="المرحلة الدراسية"
+              label={t.stage}
               value={sp.stage ?? ""}
               onChange={(v) => set({ stage: v || undefined })}
-              all="كل المراحل"
+              all={t.allStages}
               options={options?.stages ?? []}
             />
             {groups.length > 0 && (
               <div>
                 <Label htmlFor="f-group" className="text-xs">
-                  المجموعة
+                  {t.group}
                 </Label>
                 <select
                   id="f-group"
@@ -438,7 +544,7 @@ function OrphansPage() {
                   onChange={(e) => set({ group: e.target.value || undefined })}
                   className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
                 >
-                  <option value="">كل المجموعات</option>
+                  <option value="">{t.allGroups}</option>
                   {groups.map((g) => (
                     <option key={g.id} value={g.id}>
                       {g.name}
@@ -455,19 +561,19 @@ function OrphansPage() {
                 onChange={(e) => set({ building: e.target.checked || undefined })}
                 className="size-4"
               />
-              برنامج بناء أهلية قائم
+              {t.buildingOn}
             </label>
           </div>
 
           {chips.length > 0 && (
-            <ul className="flex flex-wrap items-center gap-2" aria-label="الفلاتر النشطة">
+            <ul className="flex flex-wrap items-center gap-2" aria-label={t.active}>
               {chips.map((c) => (
                 <li key={c.key}>
                   <button
                     type="button"
                     onClick={c.clear}
                     className="inline-flex min-h-8 items-center gap-1 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
-                    aria-label={`إزالة: ${c.label}`}
+                    aria-label={t.remove(c.label)}
                   >
                     <bdi>{c.label}</bdi>
                     <X className="size-3" aria-hidden="true" />
@@ -476,7 +582,7 @@ function OrphansPage() {
               ))}
               <li>
                 <Button type="button" size="sm" variant="ghost" onClick={reset}>
-                  مسح الكل
+                  {t.clearAll}
                 </Button>
               </li>
             </ul>
@@ -490,21 +596,21 @@ function OrphansPage() {
           )}
           aria-live="polite"
         >
-          {arCount(total, FILES)}
+          {t.files(total)}
         </p>
 
         {rows.length === 0 ? (
           <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            <p>لا توجد نتائج مطابقة.</p>
+            <p>{t.empty}</p>
             {chips.length > 0 && (
               <p className="mt-3">
-                جرّب إزالة أحد الفلاتر أعلاه، أو{" "}
+                {t.tryA}{" "}
                 <button
                   type="button"
                   onClick={reset}
                   className="font-medium text-primary underline underline-offset-4"
                 >
-                  ابدأ من جديد
+                  {t.restart}
                 </button>
                 .
               </p>
@@ -527,7 +633,7 @@ function OrphansPage() {
 
         {pages > 1 && (
           <nav
-            aria-label="صفحات الدليل"
+            aria-label={t.pagesLabel}
             className="mt-8 flex items-center justify-center gap-3 text-sm"
           >
             <Button
@@ -537,10 +643,10 @@ function OrphansPage() {
               disabled={page === 0}
               onClick={() => set({ page: page - 1 || undefined }, true)}
             >
-              السابق
+              {t.prev}
             </Button>
             <span aria-live="polite" className="text-muted-foreground text-xs tabular-nums">
-              صفحة {page + 1} من {pages}
+              {t.pageOf(page + 1, pages)}
             </span>
             <Button
               type="button"
@@ -549,7 +655,7 @@ function OrphansPage() {
               disabled={page + 1 >= pages}
               onClick={() => set({ page: page + 1 }, true)}
             >
-              التالي
+              {t.next}
             </Button>
           </nav>
         )}

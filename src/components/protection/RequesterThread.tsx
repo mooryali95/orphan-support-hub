@@ -7,7 +7,25 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/format";
 import { getAccessThread, postAccessMessage } from "@/lib/scopes.functions";
+import { useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = {
+  ar: {
+    title: "المحادثة مع الإدارة",
+    admin: "الإدارة",
+    you: "أنت",
+    placeholder: "أضف توضيحاً أو أجب عن سؤال الإدارة…",
+    send: "إرسال",
+  },
+  en: {
+    title: "Conversation with the administration",
+    admin: "Administration",
+    you: "You",
+    placeholder: "Add a clarification or answer the administration's question…",
+    send: "Send",
+  },
+};
 
 /**
  * محادثة صاحب الطلب مع الإدارة — في صفحة الطفل نفسها، فلا يُسأل في
@@ -15,6 +33,8 @@ import { cn } from "@/lib/utils";
  */
 export function RequesterThread({ requestId }: { requestId: string }) {
   const qc = useQueryClient();
+  const locale = useLocale();
+  const c = useCopy(COPY);
   const fetchThread = useServerFn(getAccessThread);
   const post = useServerFn(postAccessMessage);
   const { data: thread = [] } = useQuery({
@@ -26,7 +46,7 @@ export function RequesterThread({ requestId }: { requestId: string }) {
 
   return (
     <div className="mt-5 rounded-2xl bg-secondary/40 p-4">
-      <p className="text-xs font-semibold">المحادثة مع الإدارة</p>
+      <p className="text-xs font-semibold">{c.title}</p>
       {thread.length > 0 && (
         <ul className="mt-2 space-y-2">
           {thread.map((m) => (
@@ -39,7 +59,7 @@ export function RequesterThread({ requestId }: { requestId: string }) {
             >
               <p className="whitespace-pre-line">{m.body}</p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                {m.from_admin ? "الإدارة" : "أنت"} · {formatDate(m.created_at)}
+                {m.from_admin ? c.admin : c.you} · {formatDate(m.created_at, locale)}
               </p>
             </li>
           ))}
@@ -48,13 +68,13 @@ export function RequesterThread({ requestId }: { requestId: string }) {
       <div className="mt-2 flex gap-2">
         <Textarea
           rows={2}
-          placeholder="أضف توضيحاً أو أجب عن سؤال الإدارة…"
+          placeholder={c.placeholder}
           value={body}
           onChange={(e) => setBody(e.target.value)}
         />
         <Button
           size="icon"
-          aria-label="إرسال"
+          aria-label={c.send}
           disabled={busy || body.trim().length < 2}
           onClick={async () => {
             setBusy(true);

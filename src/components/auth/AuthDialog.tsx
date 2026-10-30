@@ -2,7 +2,22 @@ import { type ReactNode, useState } from "react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { KahataynMark } from "@/components/brand/KahataynMark";
+import { useCopy } from "@/lib/locale";
 import { AuthPanel } from "./AuthPanel";
+
+const COPY = {
+  ar: {
+    title: "ادخل لتكمل",
+    hint: "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+    consent: "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية — منصّةٌ تعالج بيانات أطفال.",
+  },
+  en: {
+    title: "Sign in to continue",
+    hint: "A code sent to you, or Google — and you stay right where you are.",
+    consent:
+      "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
+  },
+};
 
 /**
  * الدخول فوق الصفحة لا بدلها: الخارطة والدولة والمنطقة المفتوحة تبقى
@@ -10,8 +25,8 @@ import { AuthPanel } from "./AuthPanel";
  */
 export function AuthDialog({
   trigger,
-  title = "ادخل لتكمل",
-  hint = "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+  title: titleProp,
+  hint: hintProp,
   onDone,
 }: {
   trigger: (open: () => void) => ReactNode;
@@ -19,6 +34,9 @@ export function AuthDialog({
   hint?: string;
   onDone?: () => void;
 }) {
+  const c = useCopy(COPY);
+  const title = titleProp ?? c.title;
+  const hint = hintProp ?? c.hint;
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -36,9 +54,7 @@ export function AuthDialog({
               onDone?.();
             }}
           />
-          <p className="text-center text-[11px] leading-5 text-muted-foreground">
-            بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية — منصّةٌ تعالج بيانات أطفال.
-          </p>
+          <p className="text-center text-[11px] leading-5 text-muted-foreground">{c.consent}</p>
         </DialogContent>
       </Dialog>
     </>

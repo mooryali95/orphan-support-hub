@@ -104,7 +104,7 @@ export function CountryPicker({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label={`البلد: ${selected?.label ?? (value || (allLabel ?? placeholder))}`}
+          aria-label={`${lang === "en" ? "Country" : "البلد"}: ${selected?.label ?? (value || (allLabel ?? placeholder))}`}
           className={cn(
             "h-9 w-full min-w-44 justify-between font-normal active:scale-100",
             className,

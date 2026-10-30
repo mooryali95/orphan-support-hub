@@ -22,7 +22,8 @@ import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
-import { BRAND } from "@/config/brand";
+import { BRAND, brandFor } from "@/config/brand";
+import { useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
@@ -37,9 +38,278 @@ const homeQuery = queryOptions({
   },
 });
 
-const TITLE = `${BRAND.name} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`;
-const DESCRIPTION =
-  "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
+const COPY = {
+  ar: {
+    title: `${BRAND.name} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
+    description:
+      "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.",
+    ladder: [
+      [
+        "الدراية",
+        "أن ترى الصورة",
+        "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
+      ],
+      [
+        "الميقات",
+        "اللحظة الفاصلة",
+        "اللحظة التي يجتمع فيها الزمان والمكان والفاعل، فتختار من تكفل وينزل المفهوم إلى الواقع.",
+      ],
+      [
+        "التعقل",
+        "الالتزام بالنظام",
+        "لا تبرّع عابر بل كفالة شهرية شفافة: تعهّد مستمر تراه في كل دفعة وكل تقرير.",
+      ],
+      [
+        "العمران",
+        "من الهامش إلى المركز",
+        "تقارير أثر دورية عن التعليم والصحة والمعيشة، حتى يصبح اليتيم قوة فاعلة في مجتمعه.",
+      ],
+    ],
+    doors: [
+      [
+        "كفالة شهرية",
+        "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
+        "اختر من الدليل",
+      ],
+      ["بناء الأهلية", "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.", "ادعم التأهيل"],
+      ["دعم عيني", "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.", "ادعم عيناً"],
+    ],
+    crossing: [
+      [
+        "شطّ الفقد",
+        "طفلٌ فقد عائله. لا ينقصه العطف بل ينقصه نظامٌ يحمله: مدرسة تُدفع رسومها، وعلاج يُتابَع، وبيت لا يُهدَّد.",
+      ],
+      [
+        "المضيق",
+        "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على برامج مسمّاة لا على بندٍ مبهم.",
+      ],
+      [
+        "شطّ العمران",
+        "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً — وهذا وحده مقياس نجاحنا.",
+      ],
+    ],
+    custody: [
+      [
+        "جهة رعاية مرخّصة",
+        "لا يُنشئ الملفَّ فردٌ. تُراجَع الجهة وتُعتمد أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
+      ],
+      [
+        "وثائق تُرفَع وتُدقَّق",
+        "شهادة الوفاة وإثبات الولاية والسجلّ الدراسي والتقرير الطبّي. كل وثيقة تُوسم مدقَّقةً باسم من دقّقها ووقتِه.",
+      ],
+      [
+        "اعتماد إداري صريح",
+        "لا يُنشر ملف إلا بقرار اعتماد. والرفض يحمل سبباً مُرمَّزاً، فالقرار مُساءَل لا مُبهَم.",
+      ],
+      [
+        "أثرٌ يُنشر دورياً",
+        "تقارير عن التعليم والصحة والمعيشة تمرّ بمراجعة الإدارة قبل نشرها للكافل.",
+      ],
+    ],
+    // أرقام هندية عربية: خلطُها بالأرقام اللاتينية في نصٍّ عربي شذوذٌ بصري.
+    ordinals: ["١", "٢", "٣", "٤"],
+    categories: {
+      education: "تعليم",
+      rehabilitation: "تأهيل",
+      psychosocial: "دعم نفسي",
+      health: "صحّة",
+      essentials: "معيشة",
+    } as Record<string, string>,
+    logo: `شعار ${BRAND.name}`,
+    h1a: "لا نقدّم رعايةً مؤقّتة،",
+    h1b: "بل نبني نظم عمران",
+    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.",
+    supportNow: "ادعم الآن",
+    browse: "تصفّح ملفات الأيتام",
+    hadithMeaning: null as string | null,
+    hadithSource: "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+    numbersH: "أرقام المنصّة اليوم",
+    numbersP: "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
+    stats: ["ملف معتمد", "مكفول بالكامل", "مبالغ الكفالة الشهرية", "الاحتياج الشهري الكلي"],
+    startReal: "ابدأ من ملفٍّ حقيقي",
+    partners: "جهات الرعاية الشريكة",
+    doorsH: "ثلاثة أبوابٍ متساوية",
+    doorsP: "اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
+    crossingH: "شطّان ومضيق",
+    crossingP:
+      "الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر — كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.",
+    childH: "اليتيم عندنا شخصٌ لا «حالة»",
+    childP1:
+      "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
+    childP2:
+      "ولذلك نكتب الاحتياج الشهري صريحاً، ونعرض ما غُطّي منه وما بقي، ونُسمّي البرنامج الذي يُصرَف عليه المال. الكافل شريكٌ في نظام، لا متبرّعٌ في صندوق.",
+    dignityH: "الكرامة قيدٌ في الكود لا وعدٌ في الصفحة",
+    dignity: [
+      "لا تُنشر صورة وجهٍ لملفٍّ في حالة الاحتياج ما لم تُوثَّق موافقة مصوّرة على النشر.",
+      "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملف آلياً، لا يختاره من يرفع الصورة.",
+      "البيانات الحسّاسة — الوثائق والعناوين — لا يراها الزائر أبداً.",
+    ],
+    ladderH: "مراتب الوعي: من الدراية إلى العمران",
+    ladderP:
+      "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام بالنظام.",
+    programsH: "الكفالة بناء أهلية، لا سدُّ احتياج",
+    programsP:
+      "ننقل العمل من منطق الرعاية إلى منطق البناء: لا نسدّ حاجة شهر، بل نكوّن قابليةً تُنتج الفعل ذاتياً بعد أن ينتهي تدخّلنا.",
+    eqLabel: "الأهلية = القدرة على",
+    eqA: "تفهّم الخطاب",
+    eqB: "اكتساب الفعل",
+    eqCaption:
+      "تفهّم الخطاب: أن يدرك ما يُطلب منه ومسؤوليته تجاهه. واكتساب الفعل: أن يصير قادراً على إنتاج أفعالٍ جديدة متزايدة، لا أن يؤدّي فعلاً مرّة.",
+    programsP2: [
+      "ولذلك يبدأ كل برنامج من ",
+      "المفهوم",
+      " لا من النشاط: يُعلَّم المفهوم فيُشغّل ",
+      "سمةً",
+      "، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.",
+    ],
+    qualification: "بناء أهلية",
+    perMonth: " / شهرياً",
+    months: (n: number) => `${n} شهراً`,
+    custodyH: "كيف يصير الملفّ جديراً بالثقة",
+    custodyP:
+      "الثقة لا تُطلب بالكلام. هذه السلسلة مفروضة في قاعدة البيانات نفسها: ما لا يجتازها لا يُنشر.",
+  },
+  en: {
+    title: `${brandFor("en").name} — Carrying the orphan from the shore of loss to the shore of thriving`,
+    description:
+      "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, named education and qualification programs with defined outcomes, and regular impact reports.",
+    ladder: [
+      [
+        "Awareness",
+        "Seeing the picture",
+        "A verified file from an approved care organization captures a whole crisis in one picture — it moves you and reframes how you see it.",
+      ],
+      [
+        "The moment",
+        "The decisive moment",
+        "When time, place and person meet: you choose whom to sponsor, and the idea becomes real.",
+      ],
+      [
+        "Reasoned commitment",
+        "Committing to a system",
+        "Not a passing donation but a transparent monthly sponsorship: an ongoing commitment you can see in every payment and every report.",
+      ],
+      [
+        "Thriving",
+        "From the margins to the center",
+        "Regular impact reports on education, health and living conditions, until the orphan becomes an active force in their community.",
+      ],
+    ],
+    doors: [
+      [
+        "Monthly sponsorship",
+        "A fixed amount each month. One table shows when it was paid and when it reached the child, with a document.",
+        "Choose from the directory",
+      ],
+      [
+        "Building capability",
+        "Fund a qualification journey session by session, with the child's traits measured before and after.",
+        "Support qualification",
+      ],
+      [
+        "In-kind support",
+        "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
+        "Give in kind",
+      ],
+    ],
+    crossing: [
+      [
+        "The shore of loss",
+        "A child who has lost their provider. What they lack isn't compassion but a system to carry them: school fees paid, treatment followed up, a home that isn't under threat.",
+      ],
+      [
+        "The strait",
+        "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on named programs — not a vague line item.",
+      ],
+      [
+        "The shore of thriving",
+        "A young person who reads, learns a trade and works. No longer a recipient but capable — and that alone is how we measure success.",
+      ],
+    ],
+    custody: [
+      [
+        "A licensed care organization",
+        "No individual creates a file. The organization is reviewed and approved first, and stays responsible for the data being accurate and up to date.",
+      ],
+      [
+        "Documents uploaded and checked",
+        "Death certificate, proof of guardianship, school record and medical report. Each document is marked as checked, with who checked it and when.",
+      ],
+      [
+        "Explicit administrative approval",
+        "No file is published without an approval decision. A rejection carries a coded reason, so every decision is accountable.",
+      ],
+      [
+        "Impact published regularly",
+        "Reports on education, health and living conditions are reviewed by the administration before sponsors see them.",
+      ],
+    ],
+    ordinals: ["1", "2", "3", "4"],
+    categories: {
+      education: "Education",
+      rehabilitation: "Rehabilitation",
+      psychosocial: "Psychosocial support",
+      health: "Health",
+      essentials: "Essentials",
+    } as Record<string, string>,
+    logo: `${brandFor("en").name} logo`,
+    h1a: "We don't offer temporary care —",
+    h1b: "we build systems for thriving",
+    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on named programs with defined outcomes — and the impact comes back to you as a report.",
+    supportNow: "Support now",
+    browse: "Browse children's files",
+    hadithMeaning:
+      "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+    hadithSource: "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
+    numbersH: "The platform today",
+    numbersP:
+      "Calculated from approved files the moment you open this page — not numbers written into the design.",
+    stats: ["Approved files", "Fully sponsored", "Monthly sponsorship", "Total monthly need"],
+    startReal: "Start with a real file",
+    partners: "Partner care organizations",
+    doorsH: "Three equal doors",
+    doorsP:
+      "Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
+    crossingH: "Two shores and a strait",
+    crossingP:
+      "The logo isn't decoration: two palms holding a child, beneath two neighboring arcs — gold and green — like the two fingers in the hadith. Sponsor and orphan side by side; care that holds without hiding.",
+    childH: "Here, an orphan is a person, not a “case”",
+    childP1:
+      "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers — because what isn't measured isn't followed, and what isn't followed doesn't change.",
+    childP2:
+      "That's why we state the monthly need plainly, show what has been covered and what remains, and name the program the money is spent on. A sponsor is a partner in a system, not a donor to a fund.",
+    dignityH: "Dignity is a rule in the code, not a promise on the page",
+    dignity: [
+      "No face photo is published for a child in need unless written consent to publish has been documented.",
+      "Painful photos are shown in monochrome without faces; only uplifting photos appear in full color — and that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
+      "Sensitive data — documents and addresses — is never visible to visitors.",
+    ],
+    ladderH: "Stages of awareness: from seeing to thriving",
+    ladderP:
+      "A sponsor's journey isn't a set of procedural steps but shifts in awareness — from seeing the picture to committing to the system.",
+    programsH: "Sponsorship builds capability, not just covers needs",
+    programsP:
+      "We move from a logic of care to a logic of building: not covering one month's need, but forming a capability that keeps producing action after our intervention ends.",
+    eqLabel: "Capability = the ability to",
+    eqA: "understand what is asked",
+    eqB: "acquire action",
+    eqCaption:
+      "Understanding what is asked: grasping what is expected and one's responsibility toward it. Acquiring action: becoming able to produce new and growing actions, not performing an action once.",
+    programsP2: [
+      "So every program starts from a ",
+      "concept",
+      ", not an activity: the concept is taught, it activates a ",
+      "trait",
+      ", the trait produces actions, and then the change is measured. The services below are inputs to this system, not ends in themselves.",
+    ],
+    qualification: "Capability building",
+    perMonth: " / month",
+    months: (n: number) => `${n} months`,
+    custodyH: "How a file earns trust",
+    custodyP:
+      "Trust isn't asked for with words. This chain is enforced in the database itself: whatever doesn't pass it isn't published.",
+  },
+};
 
 export const Route = createFileRoute("/")({
   // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
@@ -47,14 +317,17 @@ export const Route = createFileRoute("/")({
     ...(typeof raw["c"] === "string" && /^[A-Z]{2}$/.test(raw["c"]) ? { c: raw["c"] } : {}),
     ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
   }),
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-    ],
-  }),
+  head: ({ match }) => {
+    const c = COPY[match.context.locale ?? "ar"];
+    return {
+      meta: [
+        { title: c.title },
+        { name: "description", content: c.description },
+        { property: "og:title", content: c.title },
+        { property: "og:description", content: c.description },
+      ],
+    };
+  },
   loader: async ({ context }) => {
     // الخارطة تُرسم من الخادم بأعدادها، فلا تومض فارغة.
     void context.queryClient.prefetchQuery(geoQuery);
@@ -73,127 +346,54 @@ export const Route = createFileRoute("/")({
 const AWARENESS_LADDER = [
   {
     icon: Eye,
-    rank: "الدراية",
     bar: "bg-shore-need",
     chip: "bg-shore-need/12 text-shore-need",
     label: "text-shore-need",
-    title: "أن ترى الصورة",
-    text: "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
   },
+  // الأرضية تبقى بحرارة البرتقالي، أما الأيقونة فوقها فتُصبّ بالذهبي الداكن:
+  // البرتقالي يبلغ 2.1:1 على الأبيض ولا يستوفي 3:1 المطلوبة للعناصر غير النصّية.
   {
     icon: Aperture,
-    rank: "الميقات",
     bar: "bg-bridge-bright",
-    // الأرضية تبقى بحرارة البرتقالي، أما الأيقونة فوقها فتُصبّ بالذهبي الداكن:
-    // البرتقالي يبلغ 2.1:1 على الأبيض ولا يستوفي 3:1 المطلوبة للعناصر غير النصّية.
     chip: "bg-bridge-bright/12 text-bridge-ink",
     label: "text-bridge-ink",
-    title: "اللحظة الفاصلة",
-    text: "اللحظة التي يجتمع فيها الزمان والمكان والفاعل، فتختار من تكفل وينزل المفهوم إلى الواقع.",
   },
   {
     icon: ShieldCheck,
-    rank: "التعقل",
     bar: "bg-bridge",
     chip: "bg-bridge/12 text-bridge-ink",
     label: "text-bridge-ink",
-    title: "الالتزام بالنظام",
-    text: "لا تبرّع عابر بل كفالة شهرية شفافة: تعهّد مستمر تراه في كل دفعة وكل تقرير.",
   },
   {
     icon: Building2,
-    rank: "العمران",
     bar: "bg-shore-thrive",
     chip: "bg-shore-thrive/12 text-shore-thrive",
     label: "text-shore-thrive",
-    title: "من الهامش إلى المركز",
-    text: "تقارير أثر دورية عن التعليم والصحة والمعيشة، حتى يصبح اليتيم قوة فاعلة في مجتمعه.",
   },
+];
+
+/** ثلاثة أبواب للدعم — الأيقونة والوجهة؛ النصوص في COPY. */
+const DOORS = [
+  { icon: HeartHandshake, to: "/orphans" as const },
+  { icon: Sprout, to: "/support" as const },
+  { icon: Package, to: "/support" as const },
 ];
 
 /** الشطّان والمضيق — الاستعارة الحاكمة للهوية، لا صورة بلاغية. */
-const DOORS = [
-  {
-    icon: HeartHandshake,
-    title: "كفالة شهرية",
-    text: "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
-    cta: "اختر من الدليل",
-    to: "/orphans" as const,
-  },
-  {
-    icon: Sprout,
-    title: "بناء الأهلية",
-    text: "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.",
-    cta: "ادعم التأهيل",
-    to: "/support" as const,
-  },
-  {
-    icon: Package,
-    title: "دعم عيني",
-    text: "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
-    cta: "ادعم عيناً",
-    to: "/support" as const,
-  },
-];
-
 const CROSSING = [
-  {
-    tone: "text-shore-need",
-    dot: "bg-shore-need",
-    label: "شطّ الفقد",
-    text: "طفلٌ فقد عائله. لا ينقصه العطف بل ينقصه نظامٌ يحمله: مدرسة تُدفع رسومها، وعلاج يُتابَع، وبيت لا يُهدَّد.",
-  },
-  {
-    tone: "text-bridge-ink",
-    dot: "bg-bridge",
-    label: "المضيق",
-    text: "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على برامج مسمّاة لا على بندٍ مبهم.",
-  },
-  {
-    tone: "text-shore-thrive",
-    dot: "bg-shore-thrive",
-    label: "شطّ العمران",
-    text: "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً — وهذا وحده مقياس نجاحنا.",
-  },
+  { tone: "text-shore-need", dot: "bg-shore-need" },
+  { tone: "text-bridge-ink", dot: "bg-bridge" },
+  { tone: "text-shore-thrive", dot: "bg-shore-thrive" },
 ];
 
 /** كيف يصير الملفّ منشوراً — سلسلة التوثيق كما تفرضها القاعدة لا كما تُوصف. */
-const CUSTODY = [
-  {
-    icon: Building2,
-    title: "جهة رعاية مرخّصة",
-    text: "لا يُنشئ الملفَّ فردٌ. تُراجَع الجهة وتُعتمد أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
-  },
-  {
-    icon: FileCheck2,
-    title: "وثائق تُرفَع وتُدقَّق",
-    text: "شهادة الوفاة وإثبات الولاية والسجلّ الدراسي والتقرير الطبّي. كل وثيقة تُوسم مدقَّقةً باسم من دقّقها ووقتِه.",
-  },
-  {
-    icon: Stamp,
-    title: "اعتماد إداري صريح",
-    text: "لا يُنشر ملف إلا بقرار اعتماد. والرفض يحمل سبباً مُرمَّزاً، فالقرار مُساءَل لا مُبهَم.",
-  },
-  {
-    icon: LineChart,
-    title: "أثرٌ يُنشر دورياً",
-    text: "تقارير عن التعليم والصحة والمعيشة تمرّ بمراجعة الإدارة قبل نشرها للكافل.",
-  },
-];
-
-/** أرقام هندية عربية: خلطُها بالأرقام اللاتينية في نصٍّ عربي شذوذٌ بصري. */
-const ORDINALS = ["١", "٢", "٣", "٤"];
-
-const CATEGORY_LABEL: Record<string, string> = {
-  education: "تعليم",
-  rehabilitation: "تأهيل",
-  psychosocial: "دعم نفسي",
-  health: "صحّة",
-  essentials: "معيشة",
-};
+const CUSTODY = [Building2, FileCheck2, Stamp, LineChart];
 
 function HomePage() {
   const { data } = useSuspenseQuery(homeQuery);
+  const locale = useLocale();
+  const c = useCopy(COPY);
+  const brand = brandFor(locale);
   const sp = Route.useSearch();
   const navigate = Route.useNavigate();
   const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
@@ -223,39 +423,42 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
           <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={`شعار ${BRAND.name}`} />
+            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={c.logo} />
             <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">
-              {BRAND.name}
+              {brand.name}
             </p>
-            <p className="mt-1 text-sm font-medium text-bridge-ink">{BRAND.tagline}</p>
+            <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
             <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
-              لا نقدّم رعايةً مؤقّتة،
+              {c.h1a}
               <br />
-              بل نبني نظم عمران
+              {c.h1b}
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-muted-foreground">
-              نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده
-              الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.
+              {c.lead}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg">
                 <Link to="/support">
-                  ادعم الآن
+                  {c.supportNow}
                   <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/orphans">تصفّح ملفات الأيتام</Link>
+                <Link to="/orphans">{c.browse}</Link>
               </Button>
             </div>
 
             {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
             <blockquote className="mx-auto mt-14 max-w-lg">
-              <p className="font-quran text-lg leading-9 text-shore-need">
+              {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
+              <p className="font-quran text-lg leading-9 text-shore-need" lang="ar" dir="rtl">
                 «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
               </p>
+              {c.hadithMeaning && (
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.hadithMeaning}</p>
+              )}
               <cite className="mt-2 block text-xs not-italic text-muted-foreground">
-                رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه
+                {c.hadithSource}
               </cite>
             </blockquote>
           </div>
@@ -265,39 +468,37 @@ function HomePage() {
         <section className="border-t border-border/70 bg-secondary/30">
           <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="numbers-heading">
             <h2 id="numbers-heading" className="text-2xl font-extrabold">
-              أرقام المنصّة اليوم
+              {c.numbersH}
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-              محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.
-            </p>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.numbersP}</p>
             <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4 [&>*]:reveal">
               <StatTile
-                label="ملف معتمد"
+                label={c.stats[0]!}
                 value={data.stats ? String(data.stats.totalOrphans) : "—"}
               />
               <StatTile
-                label="مكفول بالكامل"
+                label={c.stats[1]!}
                 value={data.stats ? String(data.stats.fullySponsored) : "—"}
               />
               <StatTile
-                label="مبالغ الكفالة الشهرية"
-                value={data.stats ? formatMoney(data.stats.monthlyFunded) : "—"}
+                label={c.stats[2]!}
+                value={data.stats ? formatMoney(data.stats.monthlyFunded, undefined, locale) : "—"}
               />
               <StatTile
-                label="الاحتياج الشهري الكلي"
-                value={data.stats ? formatMoney(data.stats.monthlyNeed) : "—"}
+                label={c.stats[3]!}
+                value={data.stats ? formatMoney(data.stats.monthlyNeed, undefined, locale) : "—"}
               />
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link to="/orphans">
-                  ابدأ من ملفٍّ حقيقي
+                  {c.startReal}
                   <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/organizations">جهات الرعاية الشريكة</Link>
+                <Link to="/organizations">{c.partners}</Link>
               </Button>
             </div>
           </div>
@@ -306,25 +507,23 @@ function HomePage() {
         {/* ── ثلاثة أبواب للدعم ── */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="doors-heading">
           <h2 id="doors-heading" className="text-2xl font-extrabold">
-            ثلاثة أبوابٍ متساوية
+            {c.doorsH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.
-          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.doorsP}</p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {DOORS.map((d) => (
+            {DOORS.map((d, i) => (
               <Link
-                key={d.title}
+                key={i}
                 to={d.to}
                 className="reveal group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
               >
                 <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <d.icon className="size-5" />
                 </span>
-                <h3 className="mt-4 font-bold">{d.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{d.text}</p>
+                <h3 className="mt-4 font-bold">{c.doors[i]![0]}</h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.doors[i]![1]}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  {d.cta}
+                  {c.doors[i]![2]}
                   <ArrowLeft className="ltr:-scale-x-100 size-4 transition-transform group-hover:-translate-x-0.5 ltr:group-hover:translate-x-0.5" />
                 </span>
               </Link>
@@ -335,20 +534,17 @@ function HomePage() {
         {/* ── الشطّان والمضيق ── */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="crossing-heading">
           <h2 id="crossing-heading" className="text-2xl font-extrabold">
-            شطّان ومضيق
+            {c.crossingH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر —
-            كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.
-          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.crossingP}</p>
           <ol className="mt-8 grid gap-4 md:grid-cols-3">
-            {CROSSING.map((stage) => (
-              <li key={stage.label} className="rounded-2xl border border-border bg-card p-6 md:p-7">
+            {CROSSING.map((stage, i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-6 md:p-7">
                 <span className="flex items-center gap-2">
                   <span className={`size-2.5 rounded-full ${stage.dot}`} aria-hidden="true" />
-                  <span className={`text-sm font-bold ${stage.tone}`}>{stage.label}</span>
+                  <span className={`text-sm font-bold ${stage.tone}`}>{c.crossing[i]![0]}</span>
                 </span>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{stage.text}</p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{c.crossing[i]![1]}</p>
               </li>
             ))}
           </ol>
@@ -360,17 +556,11 @@ function HomePage() {
             <div className="grid gap-10 md:grid-cols-[1fr_0.85fr]">
               <div>
                 <h2 id="child-heading" className="text-2xl font-extrabold">
-                  اليتيم عندنا شخصٌ لا «حالة»
+                  {c.childH}
                 </h2>
                 <div className="mt-4 space-y-4 text-sm leading-8 text-muted-foreground">
-                  <p>
-                    الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة
-                    واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.
-                  </p>
-                  <p>
-                    ولذلك نكتب الاحتياج الشهري صريحاً، ونعرض ما غُطّي منه وما بقي، ونُسمّي البرنامج
-                    الذي يُصرَف عليه المال. الكافل شريكٌ في نظام، لا متبرّعٌ في صندوق.
-                  </p>
+                  <p>{c.childP1}</p>
+                  <p>{c.childP2}</p>
                 </div>
               </div>
 
@@ -378,17 +568,11 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-need/12 text-shore-need">
                   <ScrollText className="size-5" />
                 </span>
-                <h3 className="mt-4 font-bold">الكرامة قيدٌ في الكود لا وعدٌ في الصفحة</h3>
+                <h3 className="mt-4 font-bold">{c.dignityH}</h3>
                 <ul className="mt-3 space-y-3 text-sm leading-7 text-muted-foreground">
-                  <li>
-                    لا تُنشر صورة وجهٍ لملفٍّ في حالة الاحتياج ما لم تُوثَّق موافقة مصوّرة على
-                    النشر.
-                  </li>
-                  <li>
-                    الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها
-                    الكامل — والسجلّ يُشتقّ من حالة الملف آلياً، لا يختاره من يرفع الصورة.
-                  </li>
-                  <li>البيانات الحسّاسة — الوثائق والعناوين — لا يراها الزائر أبداً.</li>
+                  {c.dignity.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
                 </ul>
               </aside>
             </div>
@@ -398,16 +582,13 @@ function HomePage() {
         {/* ── مراتب الوعي ── */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="ladder-heading">
           <h2 id="ladder-heading" className="text-2xl font-extrabold">
-            مراتب الوعي: من الدراية إلى العمران
+            {c.ladderH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام
-            بالنظام.
-          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.ladderP}</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {AWARENESS_LADDER.map((step) => (
+            {AWARENESS_LADDER.map((step, i) => (
               <div
-                key={step.rank}
+                key={i}
                 className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
               >
                 <span
@@ -419,9 +600,9 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{step.rank}</p>
-                <h3 className="mt-1 font-bold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
+                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
+                <h3 className="mt-1 font-bold">{c.ladder[i]![1]}</h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
               </div>
             ))}
           </div>
@@ -432,29 +613,29 @@ function HomePage() {
           <section className="border-y border-border/70 bg-secondary/30">
             <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="programs-heading">
               <h2 id="programs-heading" className="text-2xl font-extrabold">
-                الكفالة بناء أهلية، لا سدُّ احتياج
+                {c.programsH}
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                ننقل العمل من منطق الرعاية إلى منطق البناء: لا نسدّ حاجة شهر، بل نكوّن قابليةً تُنتج
-                الفعل ذاتياً بعد أن ينتهي تدخّلنا.
+                {c.programsP}
               </p>
 
               {/* المعادلة الحاكمة — تُذكر لأنها تحكم التصميم لا لأنها شعار. */}
               <figure className="mt-6 max-w-2xl rounded-2xl border border-bridge/30 bg-background p-5">
                 <blockquote className="text-center text-base leading-9 font-bold md:text-lg">
-                  الأهلية = القدرة على <span className="text-shore-need">تفهّم الخطاب</span> +{" "}
-                  <span className="text-shore-thrive">اكتساب الفعل</span>
+                  {c.eqLabel} <span className="text-shore-need">{c.eqA}</span> +{" "}
+                  <span className="text-shore-thrive">{c.eqB}</span>
                 </blockquote>
                 <figcaption className="mt-3 text-center text-xs leading-6 text-muted-foreground">
-                  تفهّم الخطاب: أن يدرك ما يُطلب منه ومسؤوليته تجاهه. واكتساب الفعل: أن يصير قادراً
-                  على إنتاج أفعالٍ جديدة متزايدة، لا أن يؤدّي فعلاً مرّة.
+                  {c.eqCaption}
                 </figcaption>
               </figure>
 
               <p className="mt-6 max-w-2xl text-sm leading-7 text-muted-foreground">
-                ولذلك يبدأ كل برنامج من <strong>المفهوم</strong> لا من النشاط: يُعلَّم المفهوم
-                فيُشغّل <strong>سمةً</strong>، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات
-                أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.
+                {c.programsP2[0]}
+                <strong>{c.programsP2[1]}</strong>
+                {c.programsP2[2]}
+                <strong>{c.programsP2[3]}</strong>
+                {c.programsP2[4]}
               </p>
               <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {data.programs.map((program) => (
@@ -478,8 +659,8 @@ function HomePage() {
                         }
                       >
                         {program.kind === "qualification"
-                          ? "بناء أهلية"
-                          : (CATEGORY_LABEL[program.category] ?? program.category)}
+                          ? c.qualification
+                          : (c.categories[program.category] ?? program.category)}
                       </span>
                     </div>
                     {program.summary && (
@@ -499,12 +680,12 @@ function HomePage() {
                       ))}
                     </ul>
                     <p className="mt-4 border-t border-border/70 pt-3 text-sm font-bold text-primary">
-                      {formatMoney(program.monthly_price, program.currency)}
-                      <span className="font-normal text-muted-foreground"> / شهرياً</span>
+                      {formatMoney(program.monthly_price, program.currency, locale)}
+                      <span className="font-normal text-muted-foreground">{c.perMonth}</span>
                       {program.duration_months && (
                         <span className="font-normal text-muted-foreground">
                           {" "}
-                          · {program.duration_months} شهراً
+                          · {c.months(program.duration_months)}
                         </span>
                       )}
                     </p>
@@ -518,21 +699,18 @@ function HomePage() {
         {/* ── سلسلة التوثيق ── */}
         <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="custody-heading">
           <h2 id="custody-heading" className="text-2xl font-extrabold">
-            كيف يصير الملفّ جديراً بالثقة
+            {c.custodyH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            الثقة لا تُطلب بالكلام. هذه السلسلة مفروضة في قاعدة البيانات نفسها: ما لا يجتازها لا
-            يُنشر.
-          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.custodyP}</p>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {CUSTODY.map((step, i) => (
-              <li key={step.title} className="rounded-2xl border border-border bg-card p-5">
+            {CUSTODY.map((Icon, i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-5">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
-                  <step.icon className="size-5" />
+                  <Icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{ORDINALS[i]}</p>
-                <h3 className="mt-1 font-bold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
+                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{c.ordinals[i]}</p>
+                <h3 className="mt-1 font-bold">{c.custody[i]![0]}</h3>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
               </li>
             ))}
           </ol>

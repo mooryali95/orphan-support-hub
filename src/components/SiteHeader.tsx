@@ -6,21 +6,39 @@ import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
-import { BRAND } from "@/config/brand";
+import { brandFor } from "@/config/brand";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { LanguageSwitch } from "@/components/kit/LanguageSwitch";
+import { useCopy, useLocale } from "@/lib/locale";
 
-const NAV = [
-  { to: "/", label: "الرئيسية" },
-  { to: "/orphans", label: "دليل الأيتام" },
-  { to: "/support", label: "ادعم" },
-  { to: "/traits", label: "نموذج السمات" },
-  { to: "/how-it-works", label: "كيف تعمل" },
-  { to: "/organizations", label: "جهات الرعاية" },
-] as const;
+const ROUTES = ["/", "/orphans", "/support", "/traits", "/how-it-works", "/organizations"] as const;
+const COPY = {
+  ar: {
+    nav: ["الرئيسية", "دليل الأيتام", "ادعم", "نموذج السمات", "كيف تعمل", "جهات الرعاية"],
+    skip: "تخطّي إلى المحتوى",
+    home: "الصفحة الرئيسية",
+    portals: "بواباتي",
+    signIn: "تسجيل الدخول",
+    sponsor: "اكفل يتيماً",
+    menu: "القائمة",
+  },
+  en: {
+    nav: ["Home", "Children", "Support", "Trait model", "How it works", "Care organizations"],
+    skip: "Skip to content",
+    home: "Home page",
+    portals: "My portals",
+    signIn: "Sign in",
+    sponsor: "Sponsor a child",
+    menu: "Menu",
+  },
+};
 
 export function SiteHeader() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const c = useCopy(COPY);
+  const brand = brandFor(useLocale());
+  const NAV = ROUTES.map((to, i) => ({ to, label: c.nav[i] }));
 
   return (
     <header className="sticky top-0 z-50 bg-background/85 backdrop-blur">
@@ -29,10 +47,10 @@ export function SiteHeader() {
         href="#main"
         className="bg-primary text-primary-foreground sr-only z-50 rounded-b-lg px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:inset-x-0 focus:mx-auto focus:w-fit"
       >
-        تخطّي إلى المحتوى
+        {c.skip}
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
+        <Link to="/" aria-label={`${brand.name} — ${c.home}`}>
           <KahataynLockup />
         </Link>
 
@@ -51,10 +69,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="ms-auto flex items-center gap-2">
+          <LanguageSwitch className="hidden sm:inline-flex" />
           {user && <NotificationBell />}
           {user ? (
             <Button asChild size="sm">
-              <Link to="/workspaces">بواباتي</Link>
+              <Link to="/workspaces">{c.portals}</Link>
             </Button>
           ) : (
             <>
@@ -66,19 +85,19 @@ export function SiteHeader() {
                     className="hidden sm:inline-flex"
                     onClick={open}
                   >
-                    تسجيل الدخول
+                    {c.signIn}
                   </Button>
                 )}
               />
               <Button asChild size="sm">
-                <Link to="/orphans">اكفل يتيماً</Link>
+                <Link to="/orphans">{c.sponsor}</Link>
               </Button>
             </>
           )}
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            aria-label="القائمة"
+            aria-label={c.menu}
             aria-expanded={open}
             aria-controls="site-mobile-nav"
             className="inline-flex size-9 items-center justify-center rounded-lg border border-border md:hidden"
@@ -103,6 +122,7 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <LanguageSwitch className="justify-start sm:hidden" />
           {!user && (
             <AuthDialog
               trigger={(openAuth) => (
@@ -114,7 +134,7 @@ export function SiteHeader() {
                   }}
                   className="rounded-lg px-3 py-2 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
-                  تسجيل الدخول
+                  {c.signIn}
                 </button>
               )}
             />

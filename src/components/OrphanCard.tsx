@@ -6,6 +6,47 @@ import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { formatMoney, fundingPercent } from "@/lib/format";
 import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/types.extra";
 import { COLORS } from "@/config/brand-colors";
+import { placeLabel, useCopy, useLocale } from "@/lib/locale";
+
+const COPY = {
+  ar: {
+    full: "مكفول بالكامل",
+    needs: "بحاجة لكافل",
+    female: "أنثى",
+    male: "ذكر",
+    years: "سنة",
+    ages: AGE_BAND_LABELS as Record<string, string>,
+    building: "برنامج بناء أهلية قائم",
+    notStarted: "برنامجه لم يبدأ بعد",
+    complete: "اكتمل احتياجه الشهري",
+    surplus: "فائض",
+    remaining: "متبقٍّ شهرياً",
+    coverage: (name: string) => `تغطية احتياج ${name} الشهري`,
+    of: "من",
+  },
+  en: {
+    full: "Fully sponsored",
+    needs: "Needs a sponsor",
+    female: "Girl",
+    male: "Boy",
+    years: "years",
+    ages: {
+      under_6: "Under 6",
+      age_6_11: "6–11",
+      age_12_14: "12–14",
+      age_15_17: "15–17",
+      age_18_plus: "18+",
+      unknown: "Unknown",
+    } as Record<string, string>,
+    building: "Qualification program under way",
+    notStarted: "Program not started yet",
+    complete: "Monthly need covered",
+    surplus: "surplus",
+    remaining: "still needed monthly",
+    coverage: (name: string) => `Coverage of ${name}'s monthly need`,
+    of: "of",
+  },
+};
 
 const C = COLORS.light;
 
@@ -28,6 +69,8 @@ export function regionTint(region: string | null | undefined): string {
 }
 
 export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
+  const locale = useLocale();
+  const c = useCopy(COPY);
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const full = orphan.status === "fully_sponsored" || percent >= 100;
   const gap = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
@@ -57,7 +100,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
               : "bg-shore-need absolute end-3 top-3 text-white"
           }
         >
-          {full ? "مكفول بالكامل" : "بحاجة لكافل"}
+          {full ? c.full : c.needs}
         </Badge>
       </div>
 
@@ -73,12 +116,16 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
             </Link>
           </h2>
           <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-            <span>{orphan.gender === "female" ? "أنثى" : "ذكر"}</span>
-            {orphan.age_band !== "unknown" && <span>{AGE_BAND_LABELS[orphan.age_band]} سنة</span>}
+            <span>{orphan.gender === "female" ? c.female : c.male}</span>
+            {orphan.age_band !== "unknown" && (
+              <span>
+                {c.ages[orphan.age_band]} {c.years}
+              </span>
+            )}
             {(orphan.country ?? orphan.region) && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="size-3" aria-hidden="true" />{" "}
-                {[orphan.country, orphan.region].filter(Boolean).join(" — ")}
+                {placeLabel(orphan.country, orphan.region, locale)}
               </span>
             )}
             {orphan.education_stage && (
@@ -94,10 +141,10 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
         {orphan.building ? (
           <p className="text-shore-thrive inline-flex items-center gap-1.5 text-xs font-medium">
             <Hammer className="size-3.5" aria-hidden="true" />
-            برنامج بناء أهلية قائم
+            {c.building}
           </p>
         ) : (
-          <p className="text-muted-foreground text-xs">برنامجه لم يبدأ بعد</p>
+          <p className="text-muted-foreground text-xs">{c.notStarted}</p>
         )}
 
         <div className="mt-auto space-y-2">
@@ -105,30 +152,27 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
           <div className="flex items-baseline justify-between gap-2">
             {full ? (
               <span className="text-sm font-bold">
-                <span className="text-shore-thrive">اكتمل احتياجه الشهري</span>
+                <span className="text-shore-thrive">{c.complete}</span>
                 {/* الفائض يُذكر في البطاقة أيضاً: هو تمييز للملف لا خلل فيه. */}
                 {surplus > 0 && (
                   <span className="text-bridge-ink font-normal">
                     {" "}
-                    + {formatMoney(surplus, orphan.currency)} فائض
+                    + {formatMoney(surplus, orphan.currency, locale)} {c.surplus}
                   </span>
                 )}
               </span>
             ) : (
               <span className="text-sm font-bold">
-                <span className="text-bridge-ink">{formatMoney(gap, orphan.currency)}</span>
-                <span className="text-muted-foreground font-normal"> متبقٍّ شهرياً</span>
+                <span className="text-bridge-ink">{formatMoney(gap, orphan.currency, locale)}</span>
+                <span className="text-muted-foreground font-normal"> {c.remaining}</span>
               </span>
             )}
             <span className="text-muted-foreground text-xs tabular-nums">{percent}%</span>
           </div>
-          <CrossingProgress
-            percent={percent}
-            label={`تغطية احتياج ${orphan.display_name} الشهري`}
-          />
+          <CrossingProgress percent={percent} label={c.coverage(orphan.display_name)} />
           <p className="text-muted-foreground text-xs tabular-nums">
-            {formatMoney(orphan.funded_monthly, orphan.currency)} من{" "}
-            {formatMoney(orphan.monthly_need, orphan.currency)}
+            {formatMoney(orphan.funded_monthly, orphan.currency, locale)} {c.of}{" "}
+            {formatMoney(orphan.monthly_need, orphan.currency, locale)}
           </p>
         </div>
       </div>

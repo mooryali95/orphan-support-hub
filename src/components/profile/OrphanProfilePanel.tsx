@@ -18,6 +18,7 @@ import {
 } from "@/lib/profile.functions";
 import type { ProfileSection, ProfileSectionRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
+import { useCopy, useLocale } from "@/lib/locale";
 
 const ALL_SECTIONS: ProfileSection[] = [
   "education",
@@ -28,14 +29,105 @@ const ALL_SECTIONS: ProfileSection[] = [
   "supervisor_note",
 ];
 
-const ROLE_LABELS: Record<string, string> = {
-  supervisor: "المشرف",
-  guardian: "الوليّ",
-  trustee: "الوصيّ",
-  jurist: "الفقيه",
-  mentor: "المرشد",
-  care_org: "جهة الرعاية",
-  admin: "الإدارة",
+const COPY = {
+  ar: {
+    roles: {
+      supervisor: "المشرف",
+      guardian: "الوليّ",
+      trustee: "الوصيّ",
+      jurist: "الفقيه",
+      mentor: "المرشد",
+      care_org: "جهة الرعاية",
+      admin: "الإدارة",
+    } as Record<string, string>,
+    sections: SECTION_LABELS as Record<string, string>,
+    fields: {} as Record<string, string>,
+    hidden: (n: number) => hiddenLabel(n),
+    loading: "جارٍ تحميل البروفايل…",
+    empty: "القسم الخالي لا يُحفظ — اكتب حقلاً أو ملاحظة",
+    saveFailed: "تعذّر الحفظ",
+    saved: "حُفظ القسم",
+    title: (n: string) => `بروفايل ${n}`,
+    count: (a: number, t: number) => `${a} من ${t} أقسام`,
+    sensitiveNote:
+      "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه وجهته.",
+    writerNote:
+      "يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته. وصفتُك تُسجَّل مع ما تكتب، والتاريخ يتحرّك بالتغيير لا باللمس.",
+    sensitive: "قسم حسّاس",
+    stale: " (يحتاج تحديثاً)",
+    edit: "تعديل",
+    fill: "تعبئة",
+    notFilled: "لم يُعبَّأ بعد.",
+    note: "ملاحظة",
+    save: "حفظ",
+    cancel: "إلغاء",
+  },
+  en: {
+    roles: {
+      supervisor: "Supervisor",
+      guardian: "Guardian",
+      trustee: "Legal guardian",
+      jurist: "Jurist",
+      mentor: "Mentor",
+      care_org: "Care organization",
+      admin: "Administration",
+    } as Record<string, string>,
+    sections: {
+      education: "Education",
+      health: "Health",
+      family: "Family and housing",
+      social: "Psychological and social",
+      aspiration: "Aspirations and interests",
+      supervisor_note: "Supervisor's note",
+    } as Record<string, string>,
+    fields: {
+      school_name: "School",
+      grade: "Grade",
+      performance: "Academic level",
+      favourite_subject: "Favorite subject",
+      challenges: "Challenges",
+      support_needed: "Support needed",
+      general_state: "General condition",
+      chronic_conditions: "Chronic conditions",
+      medications: "Medications",
+      disability: "Disability",
+      last_checkup: "Last checkup",
+      lives_with: "Lives with",
+      siblings_count: "Number of siblings",
+      housing_type: "Housing type",
+      income_source: "Source of income",
+      caregiver_relation: "Caregiver's relationship",
+      peer_relations: "Relationships with peers",
+      confidence: "Self-confidence",
+      interests: "Interests",
+      concerns: "Worries",
+      wants_to_be: "Wants to be",
+      skills: "Skills",
+      strengths: "Strengths",
+      what_would_help: "What would help",
+      readiness: "Readiness for the program",
+      recommendation: "Recommendation",
+    } as Record<string, string>,
+    hidden: (n: number) => (n === 1 ? "1 protected section" : `${n} protected sections`),
+    loading: "Loading the profile…",
+    empty: "An empty section isn't saved — fill in a field or a note",
+    saveFailed: "Could not save",
+    saved: "Section saved",
+    title: (n: string) => `${n}'s profile`,
+    count: (a: number, t: number) => `${a} of ${t} sections`,
+    sensitiveNote:
+      "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and care organization.",
+    writerNote:
+      "Written by the people around the child: their guardian, supervisor or care organization. Your role is recorded with what you write, and the date moves only when something changes.",
+    sensitive: "Sensitive section",
+    stale: " (needs updating)",
+    edit: "Edit",
+    fill: "Fill in",
+    notFilled: "Not filled in yet.",
+    note: "Note",
+    save: "Save",
+    cancel: "Cancel",
+  },
 };
 
 /** قسمٌ لم يُحدَّث منذ سنة يُعرض بوصفه واقعاً وهو مسؤولية. */
@@ -68,6 +160,9 @@ export function OrphanProfilePanel({
   orphanName: string;
 }) {
   const queryClient = useQueryClient();
+  const locale = useLocale();
+  const t = useCopy(COPY);
+  const fieldLabel = (key: string, label: string) => t.fields[key] ?? label;
   const fetchProfile = useServerFn(getOrphanProfile);
   const save = useServerFn(saveProfileSection);
 
@@ -87,7 +182,7 @@ export function OrphanProfilePanel({
     return (
       <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
         <Loader2 className="size-4 animate-spin" />
-        جارٍ تحميل البروفايل…
+        {t.loading}
       </div>
     );
   }
@@ -120,7 +215,7 @@ export function OrphanProfilePanel({
         if (v) clean[key] = v;
       }
       if (Object.keys(clean).length === 0 && !note.trim()) {
-        toast.error("القسم الخالي لا يُحفظ — اكتب حقلاً أو ملاحظة");
+        toast.error(t.empty);
         return;
       }
       const res = await save({
@@ -132,10 +227,10 @@ export function OrphanProfilePanel({
         },
       });
       if (!res.ok) {
-        toast.error(res.error ?? "تعذّر الحفظ");
+        toast.error(res.error ?? t.saveFailed);
         return;
       }
-      toast.success("حُفظ القسم");
+      toast.success(t.saved);
       setEditing(null);
       void queryClient.invalidateQueries({ queryKey: ["orphan-profile", orphanId] });
       void queryClient.invalidateQueries({ queryKey: ["profile-completeness", orphanId] });
@@ -152,17 +247,15 @@ export function OrphanProfilePanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="profile-heading" className="flex items-center gap-2 text-lg font-bold">
           <UserRound className="size-5 text-shore-need" aria-hidden="true" />
-          بروفايل {orphanName}
+          {t.title(orphanName)}
         </h2>
         {mayWrite ? (
-          <Badge variant="secondary">
-            {profile.sections.length} من {ALL_SECTIONS.length} أقسام
-          </Badge>
+          <Badge variant="secondary">{t.count(profile.sections.length, ALL_SECTIONS.length)}</Badge>
         ) : (
           (profile.hidden_sections ?? 0) > 0 && (
             <Badge variant="outline" className="gap-1">
               <Lock className="size-3" aria-hidden="true" />
-              {hiddenLabel(profile.hidden_sections ?? 0)}
+              {t.hidden(profile.hidden_sections ?? 0)}
             </Badge>
           )
         )}
@@ -170,18 +263,11 @@ export function OrphanProfilePanel({
 
       {!mayWrite && (profile.hidden_sections ?? 0) > 0 && (
         <p className="mt-3 rounded-xl bg-secondary/60 p-3 text-xs leading-6 text-muted-foreground">
-          أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو
-          نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه
-          وجهته.
+          {t.sensitiveNote}
         </p>
       )}
 
-      {mayWrite && (
-        <p className="mt-3 text-xs leading-6 text-muted-foreground">
-          يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته. وصفتُك تُسجَّل مع ما تكتب، والتاريخ
-          يتحرّك بالتغيير لا باللمس.
-        </p>
-      )}
+      {mayWrite && <p className="mt-3 text-xs leading-6 text-muted-foreground">{t.writerNote}</p>}
 
       <ul className="mt-5 space-y-3">
         {visible.map((section) => {
@@ -191,9 +277,9 @@ export function OrphanProfilePanel({
             <li key={section} className="rounded-2xl border border-border p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="flex items-center gap-2 text-sm font-bold">
-                  {SECTION_LABELS[section]}
+                  {t.sections[section] ?? SECTION_LABELS[section]}
                   {SENSITIVE_SECTIONS.includes(section) && (
-                    <Lock className="size-3 text-muted-foreground" aria-label="قسم حسّاس" />
+                    <Lock className="size-3 text-muted-foreground" aria-label={t.sensitive} />
                   )}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2">
@@ -202,9 +288,9 @@ export function OrphanProfilePanel({
                       className={`text-[11px] ${stale ? "text-bridge-ink" : "text-muted-foreground"}`}
                     >
                       {stale && <Clock className="me-1 inline size-3" aria-hidden="true" />}
-                      {ROLE_LABELS[row.updated_role ?? ""] ?? row.updated_role} —{" "}
-                      {formatDate(row.updated_at)}
-                      {stale && " (يحتاج تحديثاً)"}
+                      {t.roles[row.updated_role ?? ""] ?? row.updated_role} —{" "}
+                      {formatDate(row.updated_at, locale)}
+                      {stale && t.stale}
                     </span>
                   )}
                   {mayWrite && (
@@ -215,14 +301,14 @@ export function OrphanProfilePanel({
                       onClick={() => (editing === section ? setEditing(null) : openEditor(section))}
                     >
                       <Pencil className="size-3.5" aria-hidden="true" />
-                      {row ? "تعديل" : "تعبئة"}
+                      {row ? t.edit : t.fill}
                     </Button>
                   )}
                 </div>
               </div>
 
               {!row && editing !== section && (
-                <p className="mt-2 text-xs text-muted-foreground">لم يُعبَّأ بعد.</p>
+                <p className="mt-2 text-xs text-muted-foreground">{t.notFilled}</p>
               )}
 
               {row && editing !== section && (
@@ -232,7 +318,7 @@ export function OrphanProfilePanel({
                       .filter(([key]) => row.data[key])
                       .map(([key, label]) => (
                         <div key={key}>
-                          <dt className="inline font-medium">{label}: </dt>
+                          <dt className="inline font-medium">{fieldLabel(key, label)}: </dt>
                           <dd className="inline text-muted-foreground">{row.data[key]}</dd>
                         </div>
                       ))}
@@ -251,7 +337,7 @@ export function OrphanProfilePanel({
                     {SECTION_FIELDS[section].map(([key, label]) => (
                       <div key={key}>
                         <Label htmlFor={`pf-${key}`} className="text-xs">
-                          {label}
+                          {fieldLabel(key, label)}
                         </Label>
                         <Input
                           id={`pf-${key}`}
@@ -265,7 +351,7 @@ export function OrphanProfilePanel({
                   </div>
                   <div className="mt-3">
                     <Label htmlFor={`pf-note-${section}`} className="text-xs">
-                      ملاحظة
+                      {t.note}
                     </Label>
                     <Textarea
                       id={`pf-note-${section}`}
@@ -279,7 +365,7 @@ export function OrphanProfilePanel({
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button type="submit" size="sm" disabled={busy}>
                       {busy && <Loader2 className="size-4 animate-spin" />}
-                      حفظ
+                      {t.save}
                     </Button>
                     <Button
                       type="button"
@@ -287,7 +373,7 @@ export function OrphanProfilePanel({
                       variant="ghost"
                       onClick={() => setEditing(null)}
                     >
-                      إلغاء
+                      {t.cancel}
                     </Button>
                   </div>
                 </form>

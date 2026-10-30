@@ -1,9 +1,52 @@
 import { Link } from "@tanstack/react-router";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { BRAND } from "@/config/brand";
+import { brandFor } from "@/config/brand";
+import { useCopy, useLocale } from "@/lib/locale";
+
+const COPY = {
+  ar: {
+    about:
+      "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
+    platform: "المنصة",
+    orphans: "دليل الأيتام",
+    how: "كيف تعمل الكفالة",
+    orgs: "جهات الرعاية",
+    account: "الحساب",
+    signIn: "تسجيل الدخول",
+    dashboard: "لوحتي",
+    transparency: "الشفافية",
+    privacy: "سياسة الخصوصية",
+    terms: "شروط الاستخدام",
+    faq: "الأسئلة الشائعة",
+    developers: "للمطوّرين",
+    rights: "جميع الحقوق محفوظة",
+    hadithNote: null as string | null,
+  },
+  en: {
+    about:
+      "A platform that connects sponsors with orphans through files verified by approved care organizations, with monthly follow-up and transparent impact reports.",
+    platform: "Platform",
+    orphans: "Children",
+    how: "How sponsorship works",
+    orgs: "Care organizations",
+    account: "Account",
+    signIn: "Sign in",
+    dashboard: "My dashboard",
+    transparency: "Transparency",
+    privacy: "Privacy policy",
+    terms: "Terms of use",
+    faq: "FAQ",
+    developers: "Developers",
+    rights: "All rights reserved",
+    hadithNote:
+      "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+  },
+};
 
 export function SiteFooter() {
+  const c = useCopy(COPY);
+  const brand = brandFor(useLocale());
   return (
     <footer className="relative mt-20 overflow-hidden bg-secondary/40">
       <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
@@ -11,84 +54,87 @@ export function SiteFooter() {
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
         <div className="md:col-span-2">
           <KahataynLockup />
-          <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">
-            منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير
-            أثر شفافة.
-          </p>
+          <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{c.about}</p>
           {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
           <blockquote className="mt-4 text-sm text-shore-need">
-            <p className="font-quran leading-8">
+            {/* النصّ النبوي يبقى بلفظه العربي، والإنجليزية ترجمةٌ لمعناه تحته. */}
+            <p className="font-quran leading-8" lang="ar" dir="rtl">
               «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
             </p>
+            {c.hadithNote && (
+              <p className="mt-1 text-xs leading-6 text-muted-foreground">{c.hadithNote}</p>
+            )}
             <cite className="mt-1 block text-xs not-italic text-muted-foreground">
-              رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه
+              {c.hadithNote
+                ? "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d"
+                : "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه"}
             </cite>
           </blockquote>
         </div>
         <div>
-          <h2 className="text-sm font-bold">المنصة</h2>
+          <h2 className="text-sm font-bold">{c.platform}</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/orphans" className="hover:text-foreground">
-                دليل الأيتام
+                {c.orphans}
               </Link>
             </li>
             <li>
               <Link to="/how-it-works" className="hover:text-foreground">
-                كيف تعمل الكفالة
+                {c.how}
               </Link>
             </li>
             <li>
               <Link to="/organizations" className="hover:text-foreground">
-                جهات الرعاية
+                {c.orgs}
               </Link>
             </li>
           </ul>
         </div>
         <div>
-          <h2 className="text-sm font-bold">الحساب</h2>
+          <h2 className="text-sm font-bold">{c.account}</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/auth" className="hover:text-foreground">
-                تسجيل الدخول
+                {c.signIn}
               </Link>
             </li>
             <li>
               <Link to="/dashboard" className="hover:text-foreground">
-                لوحتي
+                {c.dashboard}
               </Link>
             </li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-sm font-bold">الشفافية</h2>
+          <h2 className="text-sm font-bold">{c.transparency}</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/legal/privacy" className="hover:text-foreground">
-                سياسة الخصوصية
+                {c.privacy}
               </Link>
             </li>
             <li>
               <Link to="/legal/terms" className="hover:text-foreground">
-                شروط الاستخدام
+                {c.terms}
               </Link>
             </li>
             <li>
               <Link to="/legal/faq" className="hover:text-foreground">
-                الأسئلة الشائعة
+                {c.faq}
               </Link>
             </li>
             <li>
               <Link to="/developers" className="hover:text-foreground">
-                للمطوّرين
+                {c.developers}
               </Link>
             </li>
           </ul>
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {BRAND.name} — جميع الحقوق محفوظة
+        © {new Date().getFullYear()} {brand.name} — {c.rights}
       </div>
     </footer>
   );

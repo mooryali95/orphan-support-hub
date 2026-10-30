@@ -17,7 +17,71 @@ import {
   type ReportsView,
   type TraitsView,
 } from "@/lib/scopes.functions";
+import { useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = {
+  ar: {
+    group: "مجموعته",
+    supervisor: "المشرف الأساسي:",
+    noGroup: "لم يُسنَد إلى مجموعة بعد.",
+    journey: "رحلته",
+    notEnrolled: "لم يلتحق ببرنامج بعد.",
+    stage: "المرحلة:",
+    stages: STAGE_LABELS,
+    progress: (a: number, t: number) => `${a} من ${t} ${arNoun(t, SESSIONS)} مقبولة`,
+    evidence: "المخرَج: ",
+    note: "تقويم المشرف: ",
+    traits: "سماته",
+    noTraits: "لا قياسات بعد.",
+    reports: "التقارير",
+    noReports: "لا تقارير منشورة بعد.",
+    report: (p: string) => `تقرير ${p}`,
+    education: "التعليم:",
+    living: "المعيشة:",
+    photos: (n: number) => `${n} صورة موثّقة`,
+    locked: "مقفل",
+    opensWith: "يُفتح بإذنٍ من الإدارة.",
+    request: "اطلب الاطّلاع",
+    units: UNIT_STATUS_LABELS,
+  },
+  en: {
+    group: "Their group",
+    supervisor: "Lead supervisor:",
+    noGroup: "Not assigned to a group yet.",
+    journey: "Their journey",
+    notEnrolled: "Not enrolled in a program yet.",
+    stage: "Stage:",
+    stages: {
+      concept: "Concept",
+      trait: "Trait",
+      system: "System",
+      actions: "Actions",
+      measurement: "Measurement",
+      qualified: "Capability",
+    } as Record<string, string>,
+    progress: (a: number, t: number) => `${a} of ${t} ${t === 1 ? "session" : "sessions"} accepted`,
+    evidence: "Work handed in: ",
+    note: "Supervisor's assessment: ",
+    traits: "Their traits",
+    noTraits: "No measurements yet.",
+    reports: "Reports",
+    noReports: "No reports published yet.",
+    report: (p: string) => `Report ${p}`,
+    education: "Education:",
+    living: "Living conditions:",
+    photos: (n: number) => (n === 1 ? "1 documented photo" : `${n} documented photos`),
+    locked: "Locked",
+    opensWith: "Opens with permission from the administration.",
+    request: "Request access",
+    units: {
+      pending: "Not started",
+      submitted: "Under review",
+      returned: "Returned for improvement",
+      accepted: "Accepted",
+    } as Record<string, string>,
+  },
+};
 
 /**
  * أقسام صفحة الطفل بحسب النطاقات.
@@ -32,6 +96,8 @@ export function ScopedSections({
   orphanId: string;
   onRequest?: (() => void) | undefined;
 }) {
+  const locale = useLocale();
+  const t = useCopy(COPY);
   const q = { orphanId };
   const journeyQ = useQuery({
     queryKey: ["scoped-journey", orphanId],
@@ -58,7 +124,7 @@ export function ScopedSections({
 
   return (
     <div className="mt-6 space-y-6">
-      <Section title="مجموعته" locked={group.data && !group.data.allowed} onRequest={onRequest}>
+      <Section title={t.group} locked={group.data && !group.data.allowed} onRequest={onRequest}>
         {group.data?.allowed &&
           (group.data.group ? (
             <div className="text-sm">
@@ -70,7 +136,7 @@ export function ScopedSections({
               </p>
               {group.data.group.supervisor && (
                 <p className="mt-2">
-                  المشرف الأساسي: <span className="font-medium">{group.data.group.supervisor}</span>
+                  {t.supervisor} <span className="font-medium">{group.data.group.supervisor}</span>
                 </p>
               )}
               {group.data.group.members.length > 0 && (
@@ -84,14 +150,18 @@ export function ScopedSections({
               )}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">لم يُسنَد إلى مجموعة بعد.</p>
+            <p className="text-sm text-muted-foreground">{t.noGroup}</p>
           ))}
       </Section>
 
-      <Section title="رحلته" locked={journey.data && !journey.data.allowed} onRequest={onRequest}>
+      <Section
+        title={t.journey}
+        locked={journey.data && !journey.data.allowed}
+        onRequest={onRequest}
+      >
         {journey.data?.allowed &&
           (journey.data.enrollments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">لم يلتحق ببرنامج بعد.</p>
+            <p className="text-sm text-muted-foreground">{t.notEnrolled}</p>
           ) : (
             journey.data.enrollments.map((e, i) => (
               <div key={i} className="space-y-3">
@@ -99,7 +169,7 @@ export function ScopedSections({
                   <p className="font-semibold">{e.program}</p>
                   {e.stage && (
                     <span className="text-xs text-muted-foreground">
-                      المرحلة: {STAGE_LABELS[e.stage] ?? e.stage}
+                      {t.stage} {t.stages[e.stage] ?? e.stage}
                     </span>
                   )}
                 </div>
@@ -112,7 +182,7 @@ export function ScopedSections({
                       />
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {e.accepted} من {e.total} {arNoun(e.total, SESSIONS)} مقبولة
+                      {t.progress(e.accepted ?? 0, e.total)}
                     </p>
                   </div>
                 )}
@@ -129,13 +199,13 @@ export function ScopedSections({
                         <p className="mt-1 text-xs text-muted-foreground">{u.focus}</p>
                         {u.evidence && (
                           <p className="mt-2 text-sm">
-                            <span className="text-muted-foreground">المخرَج: </span>
+                            <span className="text-muted-foreground">{t.evidence}</span>
                             {u.evidence}
                           </p>
                         )}
                         {u.note && (
                           <p className="mt-1 text-sm">
-                            <span className="text-muted-foreground">تقويم المشرف: </span>
+                            <span className="text-muted-foreground">{t.note}</span>
                             {u.note}
                           </p>
                         )}
@@ -148,34 +218,35 @@ export function ScopedSections({
           ))}
       </Section>
 
-      <Section title="سماته" locked={traits.data && !traits.data.allowed} onRequest={onRequest}>
+      <Section title={t.traits} locked={traits.data && !traits.data.allowed} onRequest={onRequest}>
         {traits.data?.allowed &&
           (traits.data.traits.length === 0 ? (
-            <p className="text-sm text-muted-foreground">لا قياسات بعد.</p>
+            <p className="text-sm text-muted-foreground">{t.noTraits}</p>
           ) : (
             <ul className="space-y-3">
-              {traits.data.traits.map((t) => (
-                <li key={t.trait_id}>
+              {traits.data.traits.map((tr) => (
+                <li key={tr.trait_id}>
                   <div className="flex items-baseline justify-between gap-2 text-sm">
                     <span>
-                      <span className="font-medium">{t.name}</span>
+                      <span className="font-medium">{tr.name}</span>
                       <span className="ms-2 text-xs text-muted-foreground">
-                        {t.dimension_label}
+                        {tr.dimension_label}
                       </span>
                     </span>
                     <span className="tabular-nums text-xs text-muted-foreground">
-                      {t.first_percent ?? "—"}% ← {t.latest_percent ?? "—"}%
+                      {tr.first_percent ?? "—"}% {locale === "en" ? "→" : "←"}{" "}
+                      {tr.latest_percent ?? "—"}%
                     </span>
                   </div>
                   {/* الأول خطٌّ رمادي، والأخير أخضر فوقه: يُقرأ التطوّر لا الحكم. */}
                   <div className="relative mt-1.5 h-2 rounded-full bg-secondary">
                     <div
                       className="absolute inset-y-0 start-0 rounded-full bg-muted-foreground/30"
-                      style={{ width: `${t.first_percent ?? 0}%` }}
+                      style={{ width: `${tr.first_percent ?? 0}%` }}
                     />
                     <div
                       className="absolute inset-y-0 start-0 rounded-full bg-primary/80"
-                      style={{ width: `${t.latest_percent ?? 0}%`, height: "50%", top: "25%" }}
+                      style={{ width: `${tr.latest_percent ?? 0}%`, height: "50%", top: "25%" }}
                     />
                   </div>
                 </li>
@@ -185,23 +256,29 @@ export function ScopedSections({
       </Section>
 
       <Section
-        title="التقارير"
+        title={t.reports}
         locked={reports.data && !reports.data.allowed}
         onRequest={onRequest}
       >
         {reports.data?.allowed &&
           (reports.data.progress.length + reports.data.field.length === 0 ? (
-            <p className="text-sm text-muted-foreground">لا تقارير منشورة بعد.</p>
+            <p className="text-sm text-muted-foreground">{t.noReports}</p>
           ) : (
             <ul className="space-y-3">
               {reports.data.progress.map((r) => (
                 <li key={`p-${r.period}`} className="rounded-lg border border-border p-3 text-sm">
-                  <p className="font-medium">تقرير {r.period}</p>
+                  <p className="font-medium">{t.report(r.period)}</p>
                   {r.summary && <p className="mt-1">{r.summary}</p>}
                   {r.education && (
-                    <p className="mt-1 text-muted-foreground">التعليم: {r.education}</p>
+                    <p className="mt-1 text-muted-foreground">
+                      {t.education} {r.education}
+                    </p>
                   )}
-                  {r.living && <p className="mt-1 text-muted-foreground">المعيشة: {r.living}</p>}
+                  {r.living && (
+                    <p className="mt-1 text-muted-foreground">
+                      {t.living} {r.living}
+                    </p>
+                  )}
                 </li>
               ))}
               {reports.data.field.map((r, i) => (
@@ -209,8 +286,8 @@ export function ScopedSections({
                   <p className="font-medium">{r.title}</p>
                   <p className="text-xs text-muted-foreground">
                     {r.office}
-                    {r.published_at && ` · ${formatDate(r.published_at)}`}
-                    {r.attachments > 0 && ` · ${r.attachments} صورة موثّقة`}
+                    {r.published_at && ` · ${formatDate(r.published_at, locale)}`}
+                    {r.attachments > 0 && ` · ${t.photos(r.attachments)}`}
                   </p>
                   {r.body && <p className="mt-1 whitespace-pre-line">{r.body}</p>}
                 </li>
@@ -237,23 +314,24 @@ function Section({
   onRequest?: (() => void) | undefined;
   children: ReactNode;
 }) {
+  const t = useCopy(COPY);
   return (
     <section className="rounded-3xl border border-border bg-card p-6">
       <h2 className="flex items-center gap-2 text-lg font-bold">
         {title}
-        {locked && <Lock className="size-4 text-muted-foreground" aria-label="مقفل" />}
+        {locked && <Lock className="size-4 text-muted-foreground" aria-label={t.locked} />}
       </h2>
       <div className="mt-4">
         {locked ? (
           <p className="text-sm text-muted-foreground">
-            يُفتح بإذنٍ من الإدارة.{" "}
+            {t.opensWith}{" "}
             {onRequest && (
               <button
                 type="button"
                 onClick={onRequest}
                 className="font-medium text-primary underline"
               >
-                اطلب الاطّلاع
+                {t.request}
               </button>
             )}
           </p>
@@ -274,10 +352,11 @@ const UNIT_ICON = {
 
 function UnitBadge({ status }: { status: keyof typeof UNIT_ICON }) {
   const { icon: Icon, cls } = UNIT_ICON[status];
+  const t = useCopy(COPY);
   return (
     <span className={cn("inline-flex shrink-0 items-center gap-1 text-xs", cls)}>
       <Icon className="size-3.5" aria-hidden="true" />
-      {UNIT_STATUS_LABELS[status]}
+      {t.units[status]}
     </span>
   );
 }
