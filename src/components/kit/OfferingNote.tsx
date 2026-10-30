@@ -1,14 +1,13 @@
 import { HandHeart } from "lucide-react";
 
-import { OFFERING } from "@/config/offering";
-import { useLocale } from "@/lib/locale";
+import { OFFERING, OFFERING_COPY } from "@/config/offering";
+import { useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 /** ما تقدّمه المنصّة الآن — كفالةٌ ودعمٌ للتأهيل، لا تبرّعٌ عام. */
 export function OfferingNote({ className }: { className?: string }) {
-  const locale = useLocale();
+  const o = useCopy(OFFERING_COPY);
   if (OFFERING.donations) return null;
-  const o = locale === "en" ? OFFERING.en : OFFERING;
   return (
     <aside
       className={cn(

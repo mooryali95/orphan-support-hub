@@ -10,7 +10,7 @@ export const Route = createFileRoute("/legal/faq")({
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(l === "en" ? "FAQ" : "الأسئلة الشائعة", true, l) },
+        { title: pageTitle(l !== "ar" ? "FAQ" : "الأسئلة الشائعة", true, l) },
         { name: "description", content: brandFor(l).description },
       ],
     };
@@ -23,7 +23,7 @@ function Faq() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      {locale === "en" ? <FaqEn /> : <FaqAr />}
+      {locale !== "ar" ? <FaqEn /> : <FaqAr />}
       <SiteFooter />
     </div>
   );

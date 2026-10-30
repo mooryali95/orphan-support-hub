@@ -7,9 +7,9 @@ import { AuthPanel } from "@/components/auth/AuthPanel";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
 import { brandFor, pageTitle } from "@/config/brand";
-import { useCopy, useLocale } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 
-const COPY = {
+const COPY = defineCopy("routes/auth", {
   ar: {
     section: "الدخول والتسجيل",
     home: "الصفحة الرئيسية",
@@ -34,7 +34,7 @@ const COPY = {
     privacy: "privacy policy",
     note: ". This platform handles children's data, so please read them.",
   },
-};
+});
 
 const searchSchema = z.object({ redirect: z.string().optional() });
 
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
-    const title = pageTitle(COPY[l].section, true, l);
+    const title = pageTitle(copyOf(COPY, l).section, true, l);
     const description = brandFor(l).description;
     return {
       meta: [

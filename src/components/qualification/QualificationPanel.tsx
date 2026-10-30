@@ -4,17 +4,19 @@ import { QUALIFICATION_JOURNEY, stageReached } from "@/lib/qualification.functio
 import type { PublicQualification } from "@/integrations/supabase/types.extra";
 import { formatMoney } from "@/lib/format";
 import { LEVEL_LABELS } from "@/lib/supervisor.functions";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-const COPY = {
+const COPY = defineCopy("components/qualification/QualificationPanel", {
   ar: {
     levels: {
       foundational: "المستوى التأسيسي",
       applied: "المستوى التطبيقي",
       advanced: "المستوى المتقدّم",
     } as Record<string, string>,
-    supLevel: (l: string) => `المستوى ${LEVEL_LABELS[l as keyof typeof LEVEL_LABELS] ?? l}`,
+    supLevels: Object.fromEntries(
+      Object.entries(LEVEL_LABELS).map(([k, v]) => [k, `المستوى ${v}`]),
+    ) as Record<string, string>,
     journey: Object.fromEntries(
       QUALIFICATION_JOURNEY.map((s) => [s.stage, { label: s.label, question: s.question }]),
     ) as Record<string, { label: string; question: string }>,
@@ -59,8 +61,11 @@ const COPY = {
       applied: "Applied level",
       advanced: "Advanced level",
     } as Record<string, string>,
-    supLevel: (l: string) =>
-      `${({ foundational: "Foundational", applied: "Applied", advanced: "Advanced" } as Record<string, string>)[l] ?? l} level`,
+    supLevels: {
+      foundational: "Foundational level",
+      applied: "Applied level",
+      advanced: "Advanced level",
+    } as Record<string, string>,
     journey: {
       concept: { label: "Concept", question: "What governing meaning do we start from?" },
       trait: { label: "Trait", question: "What inner structure do we want to build?" },
@@ -107,7 +112,7 @@ const COPY = {
     privacy:
       "Trait measurements stay between the child, their supervisor and their care organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
   },
-};
+});
 
 /**
  * لوحة بناء الأهلية في ملفّ اليتيم.
@@ -301,7 +306,9 @@ export function QualificationPanel({ programs }: { programs: PublicQualification
             <div className="mt-4 rounded-xl bg-secondary/50 p-4">
               <p className="text-[11px] font-bold text-muted-foreground">{t.supH}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-                <span className="font-bold text-shore-need">{t.supLevel(p.supervisor.level)}</span>
+                <span className="font-bold text-shore-need">
+                  {t.supLevels[p.supervisor.level] ?? p.supervisor.level}
+                </span>
                 {p.supervisor.independent ? (
                   <span className="rounded-full bg-shore-thrive/12 px-2.5 py-1 text-xs font-medium text-shore-thrive">
                     {t.independent}

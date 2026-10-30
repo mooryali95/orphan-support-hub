@@ -22,7 +22,43 @@ import {
   resolveCountry,
   type Continent,
 } from "@/lib/countries";
+import { copyOf, defineCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/geo/CountryPicker", {
+  ar: {
+    country: "البلد",
+    other: "أخرى",
+    search: "ابحث بأي لغة أو بالرمز…",
+    none: "لا دولة بهذا الاسم",
+  },
+  en: {
+    country: "Country",
+    other: "Other",
+    search: "Search in any language or by code…",
+    none: "No country by that name",
+  },
+});
+
+// رموز الأمم المتحدة للقارّات: أسماؤها من المتصفّح بأي لغة.
+const M49: Record<Continent, string> = {
+  AF: "002",
+  AS: "142",
+  EU: "150",
+  NA: "021",
+  SA: "005",
+  OC: "009",
+  AN: "AQ",
+};
+function continentLabel(k: Continent, lang: string): string {
+  const own = (CONTINENT_LABEL[k] as Record<string, string>)[lang];
+  if (own) return own;
+  try {
+    return new Intl.DisplayNames([lang], { type: "region" }).of(M49[k]) ?? CONTINENT_LABEL[k].en;
+  } catch {
+    return CONTINENT_LABEL[k].en;
+  }
+}
 
 type Option = { value: string; code: string | null; label: string; count?: number | undefined };
 
@@ -52,10 +88,11 @@ export function CountryPicker({
   counts?: Record<string, number>;
   allLabel?: string | null;
   placeholder?: string;
-  lang?: "ar" | "sq" | "en";
+  lang?: string;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const c = copyOf(COPY, lang);
 
   const options = useMemo<Option[]>(() => {
     const source = values ?? COUNTRY_CODES;
@@ -81,10 +118,10 @@ export function CountryPicker({
       .filter((k) => by.has(k))
       .map((k) => ({
         key: k,
-        label: k === "other" ? (lang === "ar" ? "أخرى" : "Other") : CONTINENT_LABEL[k][lang],
+        label: k === "other" ? c.other : continentLabel(k, lang),
         items: by.get(k)!,
       }));
-  }, [options, lang]);
+  }, [options, lang, c.other]);
 
   // القيمة قد لا تكون بين المتاح (رابطٌ قديم مثلاً): تُعرض باسمها لا برمزها.
   const selected =
@@ -104,7 +141,7 @@ export function CountryPicker({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label={`${lang === "en" ? "Country" : "البلد"}: ${selected?.label ?? (value || (allLabel ?? placeholder))}`}
+          aria-label={`${c.country}: ${selected?.label ?? (value || (allLabel ?? placeholder))}`}
           className={cn(
             "h-9 w-full min-w-44 justify-between font-normal active:scale-100",
             className,
@@ -128,9 +165,9 @@ export function CountryPicker({
         className="w-[min(20rem,calc(100vw-2rem))] origin-[var(--radix-popover-content-transform-origin)] p-0"
       >
         <Command>
-          <CommandInput placeholder={lang === "ar" ? "ابحث بأي لغة أو بالرمز…" : "Search…"} />
+          <CommandInput placeholder={c.search} />
           <CommandList className="max-h-72">
-            <CommandEmpty>{lang === "ar" ? "لا دولة بهذا الاسم" : "No match"}</CommandEmpty>
+            <CommandEmpty>{c.none}</CommandEmpty>
             {allLabel !== null && (
               <CommandGroup>
                 <CommandItem

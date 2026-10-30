@@ -10,7 +10,7 @@ export const Route = createFileRoute("/legal/terms")({
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(l === "en" ? "Terms of use" : "شروط الاستخدام", true, l) },
+        { title: pageTitle(l !== "ar" ? "Terms of use" : "شروط الاستخدام", true, l) },
         { name: "description", content: brandFor(l).description },
       ],
     };
@@ -23,7 +23,7 @@ function Terms() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      {locale === "en" ? <TermsEn /> : <TermsAr />}
+      {locale !== "ar" ? <TermsEn /> : <TermsAr />}
       <SiteFooter />
     </div>
   );

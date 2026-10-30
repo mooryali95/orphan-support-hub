@@ -3,10 +3,10 @@ import { ArrowLeft, HeartHandshake, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import type { SuggestedOrphan } from "@/lib/sponsorships.functions";
 
-const COPY = {
+const COPY = defineCopy("components/ExcessSuggestion", {
   ar: {
     needsA: "هذا الملف يحتاج ",
     needsB: " فقط لإكمال احتياجه الشهري، فيزيد مبلغك عنه بـ",
@@ -23,7 +23,7 @@ const COPY = {
     makeIt: (m: string) => `Make it ${m}`,
     confirm: "Continue for this child",
   },
-};
+});
 
 /**
  * حين يتجاوز المبلغ المتبقّي.

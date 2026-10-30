@@ -14,7 +14,7 @@ import { ArrowLeft, Globe2, List, MapPin, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { countryName, normalize } from "@/lib/countries";
-import { useLocale, type Locale } from "@/lib/locale";
+import { copyOf, defineCopy, intlOf, pluralOf, type Locale, useLocale } from "@/lib/locale";
 import { arCount, COUNTRIES } from "@/lib/plural";
 import { cn } from "@/lib/utils";
 import { easeInOut, easeOut, fit, flight, type View } from "./camera";
@@ -65,13 +65,13 @@ function statFor(region: RegionShape, stat: CountryStat | undefined): RegionStat
 
 /** العدد كما يُعرض: ما دون الحدّ لا يُكشف رقمه — والقاعدة لا تُرسله أصلاً. */
 function shown(n: number | null | undefined, locale: Locale = "ar") {
-  if (n == null || n < COHORT_MIN)
-    return locale === "en" ? `fewer than ${COHORT_MIN}` : `أقل من ${COHORT_MIN}`;
-  return n.toLocaleString(locale === "en" ? "en" : "ar-u-nu-latn");
+  if (n == null || n < COHORT_MIN) return copyOf(COPY, locale).fewerThan(COHORT_MIN);
+  return n.toLocaleString(intlOf(locale));
 }
 
-const COPY = {
+const COPY = defineCopy("components/map/WorldMap", {
   ar: {
+    fewerThan: (n: number) => `أقل من ${n}`,
     section: "خارطة الأيتام في العالم",
     mapOf: (place: string) => `خارطة ${place}`,
     worldMap: "خارطة العالم",
@@ -100,6 +100,7 @@ const COPY = {
     closeList: "إغلاق القائمة",
   },
   en: {
+    fewerThan: (n: number) => `fewer than ${n}`,
     section: "Map of orphans worldwide",
     mapOf: (place: string) => `Map of ${place}`,
     worldMap: "World map",
@@ -110,7 +111,7 @@ const COPY = {
     pick: "Choose a country",
     introA: "to see who is waiting for a sponsor there —",
     introB: "verified files in",
-    countries: (n: number) => (n === 1 ? "1 country" : `${n} countries`),
+    countries: pluralOf({ one: "{0} country", other: "{0} countries" }),
     country: "Country",
     back: "Back",
     none: "No verified files here yet.",
@@ -127,7 +128,7 @@ const COPY = {
     countriesH: "Countries",
     closeList: "Close list",
   },
-};
+});
 const sizeOf = (s: { total: number | null } | undefined) => s?.total ?? 1;
 
 function usePrefersReducedMotion() {
@@ -332,22 +333,22 @@ export function WorldMap({
   bare?: boolean;
 }) {
   const locale = useLocale();
-  const c$ = COPY[locale];
+  const c$ = copyOf(COPY, locale);
   const { data: rawWorld } = useQuery(worldQuery);
   const { data: rawRegions } = useRegions(selection.country);
   // الأسماء بلغة الواجهة: الدول من المتصفّح، والمناطق من اسمها اللاتيني في الملفّ.
   const world = useMemo(
     () =>
-      rawWorld && locale === "en"
+      rawWorld && locale !== "ar"
         ? {
             ...rawWorld,
-            countries: rawWorld.countries.map((x) => ({ ...x, n: countryName(x.c, "en") })),
+            countries: rawWorld.countries.map((x) => ({ ...x, n: countryName(x.c, locale) })),
           }
         : rawWorld,
     [rawWorld, locale],
   );
   const regions = useMemo(
-    () => (rawRegions ?? []).map((r) => (locale === "en" && r.en ? { ...r, n: r.en } : r)),
+    () => (rawRegions ?? []).map((r) => (locale !== "ar" && r.en ? { ...r, n: r.en } : r)),
     [rawRegions, locale],
   );
   const qc = useQueryClient();

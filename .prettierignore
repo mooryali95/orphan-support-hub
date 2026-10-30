@@ -16,3 +16,4 @@ src/routes/README.md
 # ملفات يملكها Lovable ويعيد توليدها؛ تنسيقها يُحدث ضجيجاً ويضيع.
 .lovable/
 AGENTS.md
+src/i18n/catalog.json

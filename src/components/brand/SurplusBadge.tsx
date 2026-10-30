@@ -1,10 +1,10 @@
 import { Sparkles } from "lucide-react";
 
 import { formatMoney } from "@/lib/format";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-const COPY = {
+const COPY = defineCopy("components/brand/SurplusBadge", {
   ar: {
     title: "عطاء فوق الاحتياج",
     unlocksA: "اكتمل احتياجه الشهري، وهذا الفائض يفتح له",
@@ -19,7 +19,7 @@ const COPY = {
     routed:
       "Their monthly need is covered, and this surplus goes to an additional program chosen by the care organization and approved by the administration.",
   },
-};
+});
 
 /**
  * العطاء فوق الاحتياج.

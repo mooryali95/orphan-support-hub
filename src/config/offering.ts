@@ -6,6 +6,8 @@
  * مسمّى، ويعود أثره تقريراً. والتبرّعات العامة تُضاف لاحقاً — حين تُفعَّل
  * يُغيَّر `donations` هنا فتتغيّر النصوص معها.
  */
+import { defineCopy } from "@/lib/locale";
+
 export const OFFERING = {
   donations: false,
   title: "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
@@ -17,3 +19,9 @@ export const OFFERING = {
     later: "General donations will be added later.",
   },
 } as const;
+
+/** نصّ العرض للواجهة — في الفهرس فيُترجم لكل لغةٍ مفعّلة. */
+export const OFFERING_COPY = defineCopy("config/offering", {
+  ar: { title: OFFERING.title, text: OFFERING.text, later: OFFERING.later },
+  en: { title: OFFERING.en.title, text: OFFERING.en.text, later: OFFERING.en.later },
+});

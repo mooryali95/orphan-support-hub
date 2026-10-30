@@ -31,11 +31,11 @@ import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
-import { placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
-const COPY = {
+const COPY = defineCopy("routes/orphans.orphanId", {
   ar: {
     modes: { monthly: "كفالة شهرية", qualification: "بناء أهلية", in_kind: "دعم عيني" } as Record<
       "monthly" | SupportKind,
@@ -143,7 +143,7 @@ const COPY = {
     remainingMonthly: "Still needed monthly",
     support: (n: string) => `Support ${n}`,
   },
-};
+});
 
 const orphanQuery = (orphanId: string) =>
   queryOptions({
@@ -159,7 +159,7 @@ export const Route = createFileRoute("/orphans/$orphanId")({
   },
   head: ({ loaderData, match }) => {
     const l = match.context.locale ?? "ar";
-    const c = COPY[l];
+    const c = copyOf(COPY, l);
     const brand = brandFor(l);
     if (!loaderData?.orphan) {
       return {

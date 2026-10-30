@@ -2,9 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { brandFor } from "@/config/brand";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
-const COPY = {
+const COPY = defineCopy("components/SiteFooter", {
   ar: {
     about:
       "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
@@ -42,7 +42,7 @@ const COPY = {
     hadithNote:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
   },
-};
+});
 
 export function SiteFooter() {
   const c = useCopy(COPY);

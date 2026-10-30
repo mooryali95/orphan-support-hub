@@ -8,9 +8,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { getTraitModel } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
-import { useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, pluralOf, useCopy } from "@/lib/locale";
 
-const COPY = {
+const COPY = defineCopy("routes/traits", {
   ar: {
     title: "نموذج السمات",
     description: "السمات التي تُبنى في رحلة التأهيل، مقسّمةً على أبعادها، وما يُلاحَظ في كل سمة.",
@@ -29,18 +29,18 @@ const COPY = {
       "The model's content comes from the operating platform and is currently shown in its original language.",
     empty:
       "The model is imported from the operating platform and will appear here once it is connected.",
-    traits: (n: number) => (n === 1 ? "1 trait" : `${n} traits`),
+    traits: pluralOf({ one: "{0} trait", other: "{0} traits" }),
     cta: "Support capability building",
   },
-};
+});
 
 export const Route = createFileRoute("/traits")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(COPY[l].title, false, l) },
-        { name: "description", content: COPY[l].description },
+        { title: pageTitle(copyOf(COPY, l).title, false, l) },
+        { name: "description", content: copyOf(COPY, l).description },
       ],
     };
   },

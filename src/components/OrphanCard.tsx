@@ -6,9 +6,9 @@ import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { formatMoney, fundingPercent } from "@/lib/format";
 import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/types.extra";
 import { COLORS } from "@/config/brand-colors";
-import { placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 
-const COPY = {
+const COPY = defineCopy("components/OrphanCard", {
   ar: {
     full: "مكفول بالكامل",
     needs: "بحاجة لكافل",
@@ -46,7 +46,7 @@ const COPY = {
     coverage: (name: string) => `Coverage of ${name}'s monthly need`,
     of: "of",
   },
-};
+});
 
 const C = COLORS.light;
 

@@ -4,10 +4,10 @@ import { ArrowLeft, HeartHandshake } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useCopy } from "@/lib/locale";
+import { defineCopy, useCopy } from "@/lib/locale";
 import type { MapActionContext } from "./WorldMap";
 
-const COPY = {
+const COPY = defineCopy("components/map/MapActions", {
   ar: {
     region: "هذه المنطقة",
     country: "هذه الدولة",
@@ -22,7 +22,7 @@ const COPY = {
     support: (p: string) => `Support ${p}`,
     signInTo: (p: string) => `Sign in to support ${p}`,
   },
-};
+});
 
 /**
  * ما يفعله الزائر من بطاقة الدولة أو المنطقة: يتصفّح من ينتظر، ويدعم

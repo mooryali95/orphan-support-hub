@@ -18,7 +18,7 @@ import {
 } from "@/lib/profile.functions";
 import type { ProfileSection, ProfileSectionRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 
 const ALL_SECTIONS: ProfileSection[] = [
   "education",
@@ -29,7 +29,7 @@ const ALL_SECTIONS: ProfileSection[] = [
   "supervisor_note",
 ];
 
-const COPY = {
+const COPY = defineCopy("components/profile/OrphanProfilePanel", {
   ar: {
     roles: {
       supervisor: "المشرف",
@@ -108,7 +108,7 @@ const COPY = {
       readiness: "Readiness for the program",
       recommendation: "Recommendation",
     } as Record<string, string>,
-    hidden: (n: number) => (n === 1 ? "1 protected section" : `${n} protected sections`),
+    hidden: pluralOf({ one: "{0} protected section", other: "{0} protected sections" }),
     loading: "Loading the profile…",
     empty: "An empty section isn't saved — fill in a field or a note",
     saveFailed: "Could not save",
@@ -128,7 +128,7 @@ const COPY = {
     save: "Save",
     cancel: "Cancel",
   },
-};
+});
 
 /** قسمٌ لم يُحدَّث منذ سنة يُعرض بوصفه واقعاً وهو مسؤولية. */
 const STALE_DAYS = 365;

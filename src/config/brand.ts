@@ -19,7 +19,8 @@ export const BRAND = {
 } as const;
 
 /** نصوص الهوية بلغة الواجهة؛ الاسم اللاتيني في الإنجليزية. */
-export function brandFor(locale: "ar" | "en") {
+/** لغةٌ غير العربية تأخذ الاسم اللاتيني والنصوص الإنجليزية حتى تُترجم. */
+export function brandFor(locale: string) {
   if (locale === "ar") return BRAND;
   return {
     ...BRAND,
@@ -31,7 +32,7 @@ export function brandFor(locale: "ar" | "en") {
 }
 
 /** عنوان صفحة: «القسم — الاسم — الشعار». */
-export function pageTitle(section: string, withSlogan = true, locale: "ar" | "en" = "ar"): string {
+export function pageTitle(section: string, withSlogan = true, locale = "ar"): string {
   const b = brandFor(locale);
   return withSlogan ? `${section} — ${b.name} — ${b.slogan}` : `${section} — ${b.name}`;
 }

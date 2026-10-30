@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/format";
 import { getAccessThread, postAccessMessage } from "@/lib/scopes.functions";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-const COPY = {
+const COPY = defineCopy("components/protection/RequesterThread", {
   ar: {
     title: "المحادثة مع الإدارة",
     admin: "الإدارة",
@@ -25,7 +25,7 @@ const COPY = {
     placeholder: "Add a clarification or answer the administration's question…",
     send: "Send",
   },
-};
+});
 
 /**
  * محادثة صاحب الطلب مع الإدارة — في صفحة الطفل نفسها، فلا يُسأل في
