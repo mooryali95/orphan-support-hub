@@ -78,3 +78,27 @@ describe("بصمة الحمولة", () => {
     expect(digest('{"records":[]}')).not.toBe(digest('{"records":[ ]}'));
   });
 });
+
+describe("حدّ حجم الجسم", () => {
+  it("يرفض بترويسة الطول قبل القراءة", async () => {
+    const { readBodyCapped } = await import("./client");
+    const req = new Request("https://x.test", {
+      method: "POST",
+      body: "{}",
+      headers: { "content-length": String(3 * 1024 * 1024) },
+    });
+    expect((await readBodyCapped(req)).ok).toBe(false);
+  });
+  it("يرفض بالطول الفعلي حين تغيب الترويسة أو تكذب", async () => {
+    const { readBodyCapped } = await import("./client");
+    const big = "x".repeat(2048);
+    const req = new Request("https://x.test", { method: "POST", body: big });
+    expect((await readBodyCapped(req, 1024)).ok).toBe(false);
+  });
+  it("يقبل ما تحت الحدّ ويعيده كما هو", async () => {
+    const { readBodyCapped } = await import("./client");
+    const req = new Request("https://x.test", { method: "POST", body: '{"a":1}' });
+    const res = await readBodyCapped(req);
+    expect(res.ok && res.text).toBe('{"a":1}');
+  });
+});

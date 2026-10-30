@@ -96,3 +96,31 @@ const EN: Record<string, string> = {
 export function authFailureResponse(failure: AuthFailure): Response {
   return apiError(failure.code, failure.status, failure.message, EN[failure.code] ?? failure.code);
 }
+
+/** أقصى حجمٍ لجسم الطلب في بوّابات التكامل: ٢ ميغابايت. */
+export const MAX_BODY_BYTES = 2 * 1024 * 1024;
+
+/**
+ * يقرأ الجسم نصّاً بحدٍّ أعلى. يرفض مبكراً بترويسة الطول إن وُجدت، ثم
+ * يتحقّق من الطول الفعلي — الترويسة قد تكذب أو تغيب.
+ */
+export async function readBodyCapped(
+  request: Request,
+  max = MAX_BODY_BYTES,
+): Promise<{ ok: true; text: string } | { ok: false }> {
+  const declared = Number(request.headers.get("content-length") ?? NaN);
+  if (Number.isFinite(declared) && declared > max) return { ok: false };
+  const text = await request.text();
+  if (new TextEncoder().encode(text).byteLength > max) return { ok: false };
+  return { ok: true, text };
+}
+
+/**
+ * حاجز المعدّل قبل المصادقة: يُعدّ بالمصدر لا بالمفتاح، كي لا يُخمَّن
+ * المفتاح بعناوين كثيرة دون أن يُحسب.
+ */
+export async function guardApiRate(request: Request): Promise<Response | null> {
+  const { hitRateLimit, identityOf, tooManyRequests } = await import("@/lib/rate-limit");
+  const verdict = await hitRateLimit("api", await identityOf(request));
+  return verdict.allowed ? null : tooManyRequests(verdict);
+}

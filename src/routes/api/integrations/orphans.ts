@@ -6,7 +6,9 @@ import {
   apiOk,
   authFailureResponse,
   authenticateClient,
+  guardApiRate,
   hasScope,
+  readBodyCapped,
 } from "@/lib/integrations/client";
 
 /**
@@ -32,6 +34,8 @@ export const Route = createFileRoute("/api/integrations/orphans")({
   server: {
     handlers: {
       GET: async ({ request }) => {
+        const limited = await guardApiRate(request);
+        if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
         if (!hasScope(auth.client, "orphans:read")) {
@@ -83,6 +87,8 @@ export const Route = createFileRoute("/api/integrations/orphans")({
       },
 
       POST: async ({ request }) => {
+        const limited = await guardApiRate(request);
+        if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
         if (!hasScope(auth.client, "orphans:import")) {
@@ -94,7 +100,16 @@ export const Route = createFileRoute("/api/integrations/orphans")({
           );
         }
 
-        const raw = await request.text();
+        const capped = await readBodyCapped(request);
+        if (!capped.ok) {
+          return apiError(
+            "body_too_large",
+            413,
+            "الحمولة أكبر من ٢ ميغابايت.",
+            "Body exceeds 2 MB.",
+          );
+        }
+        const raw = capped.text;
         let body: { records?: unknown };
         try {
           body = JSON.parse(raw) as { records?: unknown };
