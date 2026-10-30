@@ -1,3 +1,4 @@
+import { arNoun, SESSIONS } from "@/lib/plural";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import type { ReactNode } from "react";
@@ -111,7 +112,7 @@ export function ScopedSections({
                       />
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {e.accepted} من {e.total} جلسات مقبولة
+                      {e.accepted} من {e.total} {arNoun(e.total, SESSIONS)} مقبولة
                     </p>
                   </div>
                 )}

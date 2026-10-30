@@ -1,4 +1,5 @@
 import raw from "./brand.json";
+import { THEME_COLOR } from "./brand-colors";
 
 /**
  * اسم المنصّة وهويتها النصّية — **المكان الوحيد**.
@@ -13,7 +14,7 @@ export const BRAND = {
   nameLatin: raw.nameLatin,
   tagline: raw.tagline,
   slogan: raw.slogan,
-  themeColor: raw.themeColor,
+  themeColor: THEME_COLOR,
   description: raw.descriptionTemplate.replace("{name}", raw.name),
 } as const;
 

@@ -16,11 +16,12 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { BRAND_CSS } from "@/config/brand-colors";
 import { BRAND } from "@/config/brand";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
@@ -48,9 +49,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">تعذّر تحميل الصفحة</h1>
+        <h1 className="text-xl font-semibold text-foreground">تعذّر تحميل الصفحة</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.
         </p>
@@ -156,6 +157,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
+        {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
+        <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />
       </head>
       <body>
         {children}

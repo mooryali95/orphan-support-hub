@@ -160,7 +160,7 @@ function EnrollmentBoard({
               )
             }
           >
-            <ArrowLeft className="size-4" aria-hidden="true" />
+            <ArrowLeft className="ltr:-scale-x-100 size-4" aria-hidden="true" />
             تقدّم إلى «{next.label}»
           </Button>
         )}
@@ -181,7 +181,7 @@ function EnrollmentBoard({
 
       {/* الأدوار */}
       <div className="mt-4">
-        <p className="text-[11px] font-bold tracking-widest text-muted-foreground">الأدوار</p>
+        <p className="text-[11px] font-bold text-muted-foreground">الأدوار</p>
         <ul className="mt-2 space-y-2">
           {ROLES.map((role) => {
             const held = detail.roles.find((r) => r.role === role);

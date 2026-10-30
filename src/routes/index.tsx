@@ -24,6 +24,10 @@ import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney } from "@/lib/format";
 import { BRAND } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
+import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
+import { MapActions } from "@/components/map/MapActions";
+import { useMapStats } from "@/components/map/useMapStats";
+import { geoQuery } from "@/lib/geo";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -38,6 +42,11 @@ const DESCRIPTION =
   "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.";
 
 export const Route = createFileRoute("/")({
+  // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
+  validateSearch: (raw: Record<string, unknown>): { c?: string; r?: string } => ({
+    ...(typeof raw["c"] === "string" && /^[A-Z]{2}$/.test(raw["c"]) ? { c: raw["c"] } : {}),
+    ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
+  }),
   head: () => ({
     meta: [
       { title: TITLE },
@@ -46,7 +55,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: DESCRIPTION },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
+  loader: async ({ context }) => {
+    // الخارطة تُرسم من الخادم بأعدادها، فلا تومض فارغة.
+    void context.queryClient.prefetchQuery(geoQuery);
+    return context.queryClient.ensureQueryData(homeQuery);
+  },
   component: HomePage,
 });
 
@@ -181,12 +194,31 @@ const CATEGORY_LABEL: Record<string, string> = {
 
 function HomePage() {
   const { data } = useSuspenseQuery(homeQuery);
+  const sp = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
+  const { stats, demo } = useMapStats();
+  const onSelect = (s: MapSelection) =>
+    void navigate({
+      search: { ...(s.country ? { c: s.country } : {}), ...(s.region ? { r: s.region } : {}) },
+      resetScroll: false,
+      viewTransition: false,
+    });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
+        {/* الخارطة من مصدر الجغرافيا الواحد (geo_stats)؛ وتجريبيةٌ بشارةٍ إن تعذّرت القاعدة. */}
+        <WorldMap
+          stats={stats}
+          selection={selection}
+          onSelect={onSelect}
+          demo={demo}
+          action={(ctx) => <MapActions ctx={ctx} />}
+        />
+
         {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
@@ -209,7 +241,7 @@ function HomePage() {
               <Button asChild size="lg">
                 <Link to="/support">
                   ادعم الآن
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -261,7 +293,7 @@ function HomePage() {
               <Button asChild size="lg">
                 <Link to="/orphans">
                   ابدأ من ملفٍّ حقيقي
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -293,7 +325,7 @@ function HomePage() {
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{d.text}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
                   {d.cta}
-                  <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+                  <ArrowLeft className="ltr:-scale-x-100 size-4 transition-transform group-hover:-translate-x-0.5 ltr:group-hover:translate-x-0.5" />
                 </span>
               </Link>
             ))}
@@ -387,9 +419,7 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold tracking-widest uppercase ${step.label}`}>
-                  {step.rank}
-                </p>
+                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{step.rank}</p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
               </div>
@@ -500,9 +530,7 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
                   <step.icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold tracking-widest text-muted-foreground">
-                  {ORDINALS[i]}
-                </p>
+                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{ORDINALS[i]}</p>
                 <h3 className="mt-1 font-bold">{step.title}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{step.text}</p>
               </li>

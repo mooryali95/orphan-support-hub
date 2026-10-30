@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { BRAND as BRAND_TEXT } from "@/config/brand";
+import { COLORS } from "@/config/brand-colors";
 
 /**
  * شعار «كهاتين» — «أنا وكافل اليتيم في الجنة كهاتين».
@@ -13,11 +14,11 @@ import { BRAND as BRAND_TEXT } from "@/config/brand";
  */
 
 export const BRAND = {
-  green: "#0F4D3F",
-  greenDeep: "#0B3A30",
-  gold: "#B8913A",
-  goldLight: "#D4B26A",
-  cream: "#FAF8F3",
+  green: COLORS.light.green,
+  greenDeep: COLORS.light.greenDeep,
+  gold: COLORS.light.gold,
+  goldLight: COLORS.light.goldBright,
+  cream: COLORS.light.paper,
 } as const;
 
 // نصف الشعار الأيسر؛ الأيمن انعكاسه حول x=100.
@@ -92,7 +93,7 @@ export function KahataynLockup({
           className={cn(
             "font-serif font-bold",
             compact ? "text-xl" : "text-2xl",
-            onDark ? "text-white" : "text-[#0F4D3F] dark:text-primary",
+            onDark ? "text-white" : "text-primary",
           )}
         >
           {BRAND_TEXT.name}

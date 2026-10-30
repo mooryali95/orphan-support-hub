@@ -19,6 +19,7 @@ const DICT = {
   notEnrolled: { ar: "لم يلتحق ببرنامج بعد.", sq: "Ende nuk është regjistruar në program." },
   needsYou: { ar: "ينتظر موافقتك", sq: "Pret miratimin tuaj" },
   agree: { ar: "أوافق", sq: "Pajtohem" },
+  notNow: { ar: "ليس الآن", sq: "Jo tani" },
   photos: { ar: "صور الطفل", sq: "Fotot e fëmijës" },
   photoNone: { ar: "لا صور", sq: "Pa foto" },
   photoHidden: { ar: "صور بلا وجه", sq: "Foto pa fytyrë" },

@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CountryPicker } from "@/components/geo/CountryPicker";
+import { countryName } from "@/lib/countries";
 import { listRegistry, upsertRegistry, type RegistryName } from "@/lib/inbox.functions";
 
 type Field = { key: string; label: string; type: "text" | "number" | "bool" | "status" };
@@ -91,6 +93,25 @@ function Registry({ table }: { table: RegistryName }) {
     <section>
       <h2 className="text-lg font-bold">{def.title}</h2>
       <p className="mt-1 text-xs text-muted-foreground">{def.hint}</p>
+      {table === "countries" && (
+        // أي دولة في العالم بضغطة: الرمز والاسمان يُملآن، ويبقى التعديل ممكناً.
+        <div className="mt-3 max-w-xs">
+          <CountryPicker
+            value={String(draft["code"] ?? "")}
+            allLabel={null}
+            placeholder="أضف دولة من العالم…"
+            onChange={(code) =>
+              setDraft((d) => ({
+                ...d,
+                code,
+                name_ar: countryName(code, "ar"),
+                name_local: countryName(code, "en"),
+                status: d["status"] ?? "planned",
+              }))
+            }
+          />
+        </div>
+      )}
       <div className="mt-3 overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full min-w-[36rem] text-sm">
           <thead className="bg-secondary/60 text-xs text-muted-foreground">

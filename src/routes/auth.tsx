@@ -1,16 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
-import { BrandPattern } from "@/components/brand/BrandPattern";
-import { cn } from "@/lib/utils";
+import { AuthPanel } from "@/components/auth/AuthPanel";
+import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
+import { useMapStats } from "@/components/map/useMapStats";
 import { BRAND, pageTitle } from "@/config/brand";
 
 const searchSchema = z.object({ redirect: z.string().optional() });
@@ -43,140 +38,55 @@ function safePath(value: string | undefined) {
 function AuthPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [pending, setPending] = useState(false);
-
   const redirectTo = safePath(search.redirect);
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setPending(true);
-    try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-        toast.success("أهلاً بك مجدداً");
-        navigate({ to: redirectTo });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name: fullName },
-            emailRedirectTo: `${window.location.origin}${redirectTo}`,
-          },
-        });
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-        toast.success("تم إنشاء الحساب");
-        navigate({ to: redirectTo });
-      }
-    } finally {
-      setPending(false);
-    }
-  }
+  const { stats, demo } = useMapStats();
+  // الخارطة خلف النافذة تفتح على الدولة التي كان فيها الزائر، إن عُرفت.
+  const fromMap = /[?&]c=([A-Z]{2})/.exec(redirectTo)?.[1] ?? null;
+  const [selection, setSelection] = useState<MapSelection>({ country: fromMap, region: null });
 
   return (
-    <div className="surface-crossing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
-      <BrandPattern density="watermark" className="text-gold-line" opacity={0.16} tile={96} />
+    <div className="relative min-h-dvh overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
+        <WorldMap
+          stats={stats}
+          demo={demo}
+          selection={selection}
+          onSelect={setSelection}
+          className="h-dvh min-h-dvh"
+          bare
+        />
+      </div>
       <main
         id="main"
-        className="relative w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm"
+        className="map-rise relative mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-12"
       >
-        <Link to="/" className="flex justify-center" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
-          <KahataynLockup />
-        </Link>
-
-        <h1 className="mt-6 text-center text-lg font-extrabold">
-          {mode === "signin" ? "تسجيل الدخول" : "إنشاء حساب جديد"}
-        </h1>
-
-        <div className="mt-5 flex rounded-lg border border-input p-1">
-          {(
-            [
-              ["signin", "تسجيل الدخول"],
-              ["signup", "حساب جديد"],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setMode(key)}
-              className={cn(
-                "flex-1 rounded-md py-2 text-sm font-medium transition-colors",
-                mode === key
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={onSubmit} className="mt-6 space-y-4">
-          {mode === "signup" && (
-            <div>
-              <Label htmlFor="fullName">الاسم الكامل</Label>
-              <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="mt-2"
-                required
-              />
-            </div>
-          )}
-          <div>
-            <Label htmlFor="email">البريد الإلكتروني</Label>
-            <Input
-              id="email"
-              type="email"
-              dir="ltr"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-2"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="password">كلمة المرور</Label>
-            <Input
-              id="password"
-              type="password"
-              dir="ltr"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-2"
-              minLength={6}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending && <Loader2 className="size-4 animate-spin" />}
-            {mode === "signin" ? "دخول" : "إنشاء الحساب"}
-          </Button>
-        </form>
-
-        <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
-          بالمتابعة أنت توافق على{" "}
-          <Link to="/legal/terms" className="text-primary hover:underline">
-            شروط الاستخدام
-          </Link>{" "}
-          و
-          <Link to="/legal/privacy" className="text-primary hover:underline">
-            سياسة الخصوصية
+        <div className="rounded-3xl bg-card/95 p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_24px_48px_-12px_rgb(0_0_0/0.25)] backdrop-blur sm:p-8">
+          <Link
+            to="/"
+            className="flex justify-center"
+            aria-label={`${BRAND.name} — الصفحة الرئيسية`}
+          >
+            <KahataynLockup />
           </Link>
-          . وهذه منصة تعالج بيانات أطفال، فاقرأهما.
-        </p>
+          <h1 className="sr-only">الدخول</h1>
+          <AuthPanel
+            className="mt-6"
+            title="أهلاً بك"
+            hint="رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول."
+            onDone={() => navigate({ to: redirectTo })}
+          />
+          <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
+            بالمتابعة أنت توافق على{" "}
+            <Link to="/legal/terms" className="text-primary hover:underline">
+              شروط الاستخدام
+            </Link>{" "}
+            و
+            <Link to="/legal/privacy" className="text-primary hover:underline">
+              سياسة الخصوصية
+            </Link>
+            . وهذه منصة تعالج بيانات أطفال، فاقرأهما.
+          </p>
+        </div>
       </main>
     </div>
   );

@@ -76,124 +76,13 @@
 :root {
   --radius: 0.875rem;
 
-  /* ===================================================================
-     هوية «كهاتين» — أخضرٌ عميق وذهبيّ على محايدٍ دافئ.
-     النسب محسوبة على الخلفية #FAF8F3:
-       الأخضر #0F4D3F ‏9.19 · الحبر #1E2B27 ‏13.8 · الرمادي #5F6461 ‏5.68
-       الذهبي #B8913A ‏2.77 — زخرفةٌ وخطوط فقط، لا نصّ.
-       ذهبيّ النصّ #7A5E1C ‏5.74.
-     المحايدات حجرية دافئة لا خضراء، كي يبقى الأخضر للفعل والمعنى.
-     ولا أحمر فيما يخصّ الطفل: «الحاجة» رماديٌّ أردوازيّ هادئ.
-     =================================================================== */
+  /* الألوان كلّها في src/config/brand.json — تُحقن من src/config/brand-colors.ts.
+     هنا ما ليس لوناً فقط. */
 
-  /* #4A5560 — أردوازيّ هادئ: شاطئ الاحتياج. 7.17:1، بلا إنذار. */
-  --shore-need: oklch(0.444 0.023 248.3);
-
-  /* #B8913A — ذهبي الشعار. 2.77:1، فلا نصّ: خطوط وحدود وباترن ونقاط. */
-  --bridge: oklch(0.677 0.114 84.4);
-
-  /* #7A5E1C — الذهبي نفسه مغمَّقاً إلى 5.74:1. كل ذهبيّ يُقرأ يمرّ من هنا. */
-  --bridge-ink: oklch(0.498 0.089 84.8);
-
-  /* #D4B26A — ذهبيّ فاتح للأسطح وللأرضيات الداكنة. */
-  --bridge-bright: oklch(0.778 0.099 84.9);
-
-  /* #E3EEE8 — أخضر شاحب: سطحٌ لا خطّ. */
-  --thrive-tint: oklch(0.939 0.014 162.5);
-
-  /* #0F4D3F — أخضر الشعار: شاطئ الازدهار ولون الفعل. 9.19:1. */
-  --shore-thrive: oklch(0.378 0.065 173.8);
-
-  /* #0B3A30 — أخضر داكن: أرضية الأسطح الرسمية. */
-  --navy: oklch(0.314 0.052 175.3);
-
-  /* #6B6F6C — رماديّ حجريّ محايد، 4.81:1. */
-  --graphite: oklch(0.537 0.007 153.7);
-
-  --gold-line: oklch(0.677 0.114 84.4); /* خطوط الباترن */
-
-  --background: oklch(0.979 0.007 88.6);
-  --foreground: oklch(0.276 0.019 173.9);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.276 0.019 173.9);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.276 0.019 173.9);
-  --primary: oklch(0.378 0.065 173.8);
-  --primary-foreground: oklch(0.979 0.007 88.6);
-  --secondary: oklch(0.952 0.008 91.5);
-  --secondary-foreground: oklch(0.314 0.052 175.3);
-  --muted: oklch(0.958 0.007 88.6);
-  --muted-foreground: oklch(0.498 0.008 159.9);
-  --accent: oklch(0.936 0.032 87.3);
-  --accent-foreground: oklch(0.453 0.082 85);
-  --destructive: oklch(0.512 0.141 31.6);
-  --destructive-foreground: oklch(0.979 0.007 88.6);
-  --success: oklch(0.479 0.079 161.4);
-  --success-foreground: oklch(0.979 0.007 88.6);
-  --border: oklch(0.91 0.011 89.7);
-  --input: oklch(0.91 0.011 89.7);
-  --ring: oklch(0.378 0.065 173.8);
-  --chart-1: oklch(0.378 0.065 173.8);
-  --chart-2: oklch(0.677 0.114 84.4);
-  --chart-3: oklch(0.444 0.023 248.3);
-  --chart-4: oklch(0.762 0.084 165.7);
-  --chart-5: oklch(0.778 0.099 84.9);
-  --sidebar: oklch(0.965 0.008 90);
-  --sidebar-foreground: oklch(0.276 0.019 173.9);
-  --sidebar-primary: oklch(0.378 0.065 173.8);
-  --sidebar-primary-foreground: oklch(0.979 0.007 88.6);
-  --sidebar-accent: oklch(0.94 0.01 90);
-  --sidebar-accent-foreground: oklch(0.314 0.052 175.3);
-  --sidebar-border: oklch(0.91 0.011 89.7);
-  --sidebar-ring: oklch(0.378 0.065 173.8);
-}
-
-.dark {
-  /* الوضع الداكن: أرضية #0E1A17. النسب: النصّ 15.5، الأخضر #7CC3A5 ‏8.7، الذهبي #D4B26A ‏8.8، الرمادي #A9B3AE ‏8.3 — كلّها فوق AA. */
-  --shore-need: oklch(0.757 0.013 164.7);
-  --bridge: oklch(0.778 0.099 84.9);
-  --bridge-bright: oklch(0.843 0.081 87.6);
-  --bridge-ink: oklch(0.843 0.081 87.6);
-  --thrive-tint: oklch(0.314 0.028 173.7);
-  --shore-thrive: oklch(0.806 0.078 165);
-  --navy: oklch(0.205 0.018 177);
-  --graphite: oklch(0.709 0.013 170.1);
-  --gold-line: oklch(0.778 0.099 84.9);
-
-  --background: oklch(0.205 0.018 177);
-  --foreground: oklch(0.952 0.006 128.5);
-  --card: oklch(0.245 0.023 171.5);
-  --card-foreground: oklch(0.952 0.006 128.5);
-  --popover: oklch(0.245 0.023 171.5);
-  --popover-foreground: oklch(0.952 0.006 128.5);
-  --primary: oklch(0.762 0.084 165.7);
-  --primary-foreground: oklch(0.205 0.018 177);
-  --secondary: oklch(0.276 0.024 174.1);
-  --secondary-foreground: oklch(0.952 0.006 128.5);
-  --muted: oklch(0.276 0.024 174.1);
-  --muted-foreground: oklch(0.757 0.013 164.7);
-  --accent: oklch(0.778 0.099 84.9);
-  --accent-foreground: oklch(0.205 0.018 177);
-  --destructive: oklch(0.688 0.132 34.3);
-  --destructive-foreground: oklch(0.205 0.018 177);
-  --success: oklch(0.806 0.078 165);
-  --success-foreground: oklch(0.205 0.018 177);
-  --border: oklch(1 0 0 / 14%);
-  --input: oklch(1 0 0 / 18%);
-  --ring: oklch(0.762 0.084 165.7);
-  --chart-1: oklch(0.762 0.084 165.7);
-  --chart-2: oklch(0.778 0.099 84.9);
-  --chart-3: oklch(0.757 0.013 164.7);
-  --chart-4: oklch(0.806 0.078 165);
-  --chart-5: oklch(0.843 0.081 87.6);
-  --sidebar: oklch(0.225 0.02 175);
-  --sidebar-foreground: oklch(0.952 0.006 128.5);
-  --sidebar-primary: oklch(0.762 0.084 165.7);
-  --sidebar-primary-foreground: oklch(0.205 0.018 177);
-  --sidebar-accent: oklch(0.276 0.024 174.1);
-  --sidebar-accent-foreground: oklch(0.952 0.006 128.5);
-  --sidebar-border: oklch(1 0 0 / 14%);
-  --sidebar-ring: oklch(0.643 0.148 262.5);
+  /* منحنيات الحركة (مهارة ui-web): دخول وخروج، وحركة على الشاشة، وأدراج. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @layer base {
@@ -207,10 +96,30 @@
     font-family: var(--font-sans);
   }
 
+  /* لا مسافة بين الحروف: تقطّع وصل العربية. والعناوين متوازنة الأسطر،
+     والفقرات بلا كلمةٍ يتيمة في آخرها. */
   h1,
   h2,
-  h3 {
-    letter-spacing: -0.01em;
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* إطار الصور: يحدّد حافتها على الأسطح الفاتحة والداكنة دون لونٍ مضاف. */
+  img {
+    outline: 1px solid rgb(0 0 0 / 0.1);
+    outline-offset: -1px;
+  }
+  .dark img {
+    outline-color: rgb(255 255 255 / 0.1);
+  }
+  img[alt=""],
+  svg img {
+    outline: none;
   }
 
   /* من أعلن في نظامه تقليل الحركة قد يكون حسّاساً للدوار أو الصرع الضوئي.
@@ -295,4 +204,195 @@
 }
 @utility reveal {
   animation: reveal-up 220ms ease-out both;
+}
+
+/* ── الخارطة: نبض الدول، ظهور المناطق بالتتابع، صعود البطاقات ── */
+@keyframes map-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+@keyframes map-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes map-rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+@keyframes map-grow {
+  from {
+    scale: 0 1;
+  }
+}
+.map-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pulse 2.4s var(--ease-out) infinite;
+}
+.map-region {
+  animation: map-in 600ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 35ms);
+}
+.map-rise {
+  animation: map-rise 450ms var(--ease-out) both;
+}
+.map-grow {
+  transform-origin: inline-start;
+  animation: map-grow 900ms var(--ease-out) 200ms both;
+}
+:dir(rtl) .map-grow,
+[dir="rtl"] .map-grow {
+  transform-origin: right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-pulse {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+/* ── الانتقال بين الصفحات: تتلاشى القديمة سريعاً، وتصعد الجديدة بهدوء ── */
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+::view-transition-old(root) {
+  animation: vt-out 160ms var(--ease-out) both;
+}
+::view-transition-new(root) {
+  animation: vt-in 340ms var(--ease-out) 60ms both;
+}
+/* الرأس ثابتٌ عبر الصفحات: لا يومض مع كل تنقّل. */
+header.sticky {
+  view-transition-name: site-header;
+}
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* ── بطاقاتٌ تصعد بالتتابع حين تُعرض قائمة ── */
+.stagger-in {
+  animation: map-rise 420ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 45ms);
+}
+
+/* ── الخارطة: دخولٌ أوّل، ونقاطٌ تظهر واحدةً واحدة، ووسوم المناطق ── */
+@keyframes map-land {
+  from {
+    opacity: 0;
+    scale: 1.04;
+  }
+}
+@keyframes map-pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+.map-land {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: map-land 1200ms var(--ease-out) both;
+}
+.map-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(700ms + var(--i, 0) * 120ms);
+}
+.map-label {
+  animation: map-rise 380ms var(--ease-out) both;
+  animation-delay: calc(250ms + min(var(--i, 0), 10) * 50ms);
+}
+/* أثناء الطيران: رسمٌ أسرع، ونبضٌ متوقّف، وزجاجٌ بلا ضبابية — فالضبابية
+   فوق خارطةٍ تتحرّك تُعاد حسابها في كل إطار. */
+[data-flying] svg path {
+  shape-rendering: optimizeSpeed;
+}
+[data-flying] .map-pulse {
+  animation-play-state: paused;
+}
+[data-flying] .backdrop-blur,
+[data-flying] .backdrop-blur-sm {
+  backdrop-filter: none;
+}
+
+/* ── لحظة الإتمام ── */
+@keyframes celebrate-ring {
+  from {
+    scale: 0.6;
+    opacity: 0;
+  }
+  60% {
+    scale: 1.06;
+    opacity: 1;
+  }
+}
+@keyframes celebrate-check {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes celebrate-leaf {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-40px) scale(0.4);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-92px) scale(1.1);
+  }
+}
+.celebrate-ring {
+  animation: celebrate-ring 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.celebrate-check {
+  stroke-dasharray: 1;
+  animation: celebrate-check 450ms var(--ease-out) 380ms both;
+}
+.celebrate-leaf {
+  transform: translate(-50%, -50%);
+  animation: celebrate-leaf 1100ms var(--ease-out) calc(300ms + var(--d, 0ms)) both;
+}
+.celebrate-text {
+  animation: map-rise 450ms var(--ease-out) 550ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .celebrate-ring,
+  .celebrate-check,
+  .celebrate-text {
+    animation: none;
+  }
+  .celebrate-leaf {
+    display: none;
+  }
 }

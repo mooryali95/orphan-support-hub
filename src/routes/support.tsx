@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
 
@@ -22,11 +22,21 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
+import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
+import { useMapStats } from "@/components/map/useMapStats";
+import { normalize, resolveCountry } from "@/lib/countries";
+import { CelebrateMark } from "@/components/kit/Celebrate";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
   name: z.string().max(120).optional(),
   kind: z.enum(["qualification", "in_kind"]).optional(),
+  // موضع الخارطة: الدولة (رمز) والمنطقة (كما في القاعدة).
+  c: z
+    .string()
+    .regex(/^[A-Z]{2}$/)
+    .optional(),
+  r: z.string().max(120).optional(),
 });
 
 export const Route = createFileRoute("/support")({
@@ -47,7 +57,10 @@ const STEPS = ["نوع الدعم", "الهدف", "الاختيار", "المب�
 const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {
-  const { orphan, name, kind: presetKind } = Route.useSearch();
+  const { orphan, name, kind: presetKind, c: mapCountry, r: mapRegion } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { stats, demo } = useMapStats();
+  const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const fetchCatalog = useServerFn(getSupportCatalog);
   const submit = useServerFn(createPledge);
@@ -100,6 +113,50 @@ function SupportPage() {
 
   const step = !kind ? 0 : !targetType ? 1 : !target ? 2 : 3;
 
+  /** ما اختير على الخارطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
+  function applyPlace(code: string | null, region: string | null) {
+    if (!catalog || !code) return;
+    const c = catalog.countries.find((x) => x.code === code || resolveCountry(x.name) === code);
+    if (!c) return;
+    setCountry(c.code);
+    const match = region
+      ? catalog.regions.find((x) => x.country === c.code && normalize(x.name) === normalize(region))
+      : undefined;
+    if (match) {
+      setTargetType("region");
+      setTarget(match.name);
+    } else {
+      setTargetType("country");
+      setTarget(c.code);
+    }
+  }
+
+  // القادم من بطاقة الخارطة في الصفحة الأولى يجد المكان مختاراً.
+  useEffect(() => {
+    if (!targetType && !orphan) applyPlace(mapCountry ?? null, mapRegion ?? null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalog]);
+
+  // الدولة في الرابط؛ والمنطقة على الخارطة محلّية (معرّفها جغرافيّ، لا قيمة القاعدة).
+  const [regionId, setRegionId] = useState<string | null>(null);
+  const selection: MapSelection = { country: mapCountry ?? null, region: regionId };
+  const onSelect = (sel: MapSelection) => {
+    setRegionId(sel.region);
+    if ((sel.country ?? undefined) === mapCountry) return;
+    void navigate({
+      search: (prev) => {
+        const next: Record<string, unknown> = { ...prev };
+        delete next["c"];
+        delete next["r"];
+        if (sel.country) next["c"] = sel.country;
+        return next as typeof prev;
+      },
+      replace: true,
+      resetScroll: false,
+      viewTransition: false,
+    });
+  };
+
   async function confirm() {
     if (!kind || !targetType || !target) return;
     setBusy(true);
@@ -125,9 +182,40 @@ function SupportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-3xl px-4 py-10">
+      {!orphan && (
+        <WorldMap
+          stats={stats}
+          demo={demo}
+          selection={selection}
+          onSelect={onSelect}
+          className="h-[60dvh] min-h-[26rem]"
+          intro={{
+            title: "أين تريد أن تدعم؟",
+            text: "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+          }}
+          action={(ctx) => (
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => {
+                if (!kind) setKind("qualification");
+                applyPlace(ctx.code, ctx.regionValue ?? ctx.regionName);
+                formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            >
+              ادعم {ctx.regionName ? "هذه المنطقة" : "هذه الدولة"}
+            </Button>
+          )}
+        />
+      )}
+      <main
+        id="main"
+        tabIndex={-1}
+        className="mx-auto max-w-3xl scroll-mt-20 px-4 py-10"
+        ref={formRef}
+      >
         <h1 className="text-3xl font-extrabold">ادعم</h1>
         <p className="mt-2 text-muted-foreground">
           أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.
@@ -163,11 +251,18 @@ function SupportPage() {
             .
           </p>
         ) : result?.ok ? (
-          <div className="mt-8 rounded-xl border border-primary/40 bg-primary/5 p-6">
-            <p className="flex items-center gap-2 font-semibold">
-              <Check className="size-5 text-primary" /> {result.text}
+          <div className="mt-8 rounded-3xl bg-card p-8 text-center shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-12px_rgb(0_0_0/0.15)]">
+            <CelebrateMark />
+            <p
+              role="status"
+              className="celebrate-text mt-6 font-serif text-2xl font-bold text-primary"
+            >
+              شكراً لك
             </p>
-            <Button asChild className="mt-4">
+            <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
+              {result.text}
+            </p>
+            <Button asChild size="lg" className="celebrate-text mt-6">
               <Link to="/workspaces">بواباتي</Link>
             </Button>
           </div>

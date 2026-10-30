@@ -20,8 +20,12 @@ import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } fr
 import { BRAND, pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
+import { CelebrateOverlay } from "@/components/kit/Celebrate";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
+  validateSearch: (raw: Record<string, unknown>): { payment?: "done" } =>
+    raw["payment"] === "done" ? { payment: "done" } : {},
   head: () => ({
     meta: [
       { title: pageTitle("كفالاتي") },
@@ -41,6 +45,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
+  const { payment } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const fetchList = useServerFn(listMySponsorships);
   const cancel = useServerFn(cancelSponsorship);
   const pay = useServerFn(startCheckout);
@@ -89,6 +95,14 @@ function DashboardPage() {
 
   return (
     <DashboardShell title="كفالاتي" description="متابعة كفالاتك الشهرية وحالة كل ملف.">
+      {payment === "done" && (
+        <CelebrateOverlay
+          title="بدأت كفالتك"
+          text="وصل دفعك، ويتأكّد خلال دقائق. ثم ترى كل شهرٍ في «كفالاتي»: متى حُوِّل المبلغ للجهة، ومتى وصل الطفلَ بمستند، وما تغيّر في رحلته."
+          action="إلى كفالاتي"
+          onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
+        />
+      )}
       <MyJourney />
       <FollowedChildren />
       <MyPledges />

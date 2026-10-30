@@ -27,7 +27,7 @@ export function DashboardShell({
   }
 
   return (
-    <div className="min-h-screen bg-secondary/30">
+    <div className="min-h-dvh bg-secondary/30">
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-x-4 px-4">
@@ -105,6 +105,13 @@ export function DashboardShell({
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
               الإشعارات
+            </Link>
+            <Link
+              to="/account"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              حسابي
             </Link>
           </nav>
 

@@ -36,6 +36,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                   siteUrl: SITE_URL,
                   recipient: data.email,
                   confirmationUrl: data.url,
+                  token: data.token ?? "",
                 }),
             },
             invite: {
@@ -48,12 +49,13 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             magiclink: {
-              subject: `رابط دخولك إلى ${BRAND.name}`,
+              subject: `رمز دخولك إلى ${BRAND.name}`,
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
                   confirmationUrl: data.url,
+                  token: data.token ?? "",
                 }),
             },
             recovery: {

@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { COLORS } from "@/config/brand-colors";
 import {
   Body,
   Container,
@@ -26,15 +27,15 @@ import {
  */
 
 export const BRAND = {
-  navy: "#0F4D3F",
-  navyDeep: "#0B3A30",
-  gold: "#B8913A",
-  goldSoft: "#D4B26A",
-  ink: "#1E2B27",
-  muted: "#5F6461",
-  line: "#E4E1D9",
-  paper: "#FAF8F3",
-  card: "#FFFFFF",
+  navy: COLORS.light.green,
+  navyDeep: COLORS.light.greenDeep,
+  gold: COLORS.light.gold,
+  goldSoft: COLORS.light.goldBright,
+  ink: COLORS.light.ink,
+  muted: COLORS.light.muted,
+  line: COLORS.light.line,
+  paper: COLORS.light.paper,
+  card: COLORS.light.surface,
 } as const;
 
 /** أصول مطلقة: عملاء البريد لا يحلّون المسارات النسبية. */
