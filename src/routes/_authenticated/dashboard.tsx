@@ -21,6 +21,7 @@ import { BRAND, pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
+import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
@@ -104,6 +105,9 @@ function DashboardPage() {
         />
       )}
       <MyJourney />
+      <div className="mt-8">
+        <PaymentLookup />
+      </div>
       <FollowedChildren />
       <MyPledges />
       <div className="grid gap-4 sm:grid-cols-3">

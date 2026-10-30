@@ -20,6 +20,7 @@ import { formatDate, formatMoney } from "@/lib/format";
 import {
   verifyLedgerReceipt,
   type LedgerMonth,
+  type LedgerPayment,
   type SponsorshipLedger,
 } from "@/lib/ledger.functions";
 import { arCount, type ArForms } from "@/lib/plural";
@@ -291,6 +292,7 @@ function MonthNode({
                 </li>
               ))}
             </ol>
+            {(m.payments?.length ?? 0) > 0 && <Invoices payments={m.payments!} />}
             {m.receipt && (
               <Receipt receipt={m.receipt} month={m.month} sponsorshipId={sponsorshipId} />
             )}
@@ -298,6 +300,66 @@ function MonthNode({
         )}
       </div>
     </li>
+  );
+}
+
+const PAY_STATUS: Record<string, [string, string]> = {
+  paid: ["مدفوعة", "text-primary"],
+  refunded: ["مُردّة", "text-muted-foreground"],
+  disputed: ["قيد منازعة", "text-destructive"],
+};
+
+/** فواتير الشهر: رقمنا، ورقم المعاملة لدى المزوّد كما في كشف البطاقة. */
+function Invoices({ payments }: { payments: LedgerPayment[] }) {
+  return (
+    <ul className="mt-4 space-y-2" aria-label="فواتير الشهر">
+      {payments.map((p) => (
+        <li key={p.invoice_no} className="rounded-xl bg-secondary/40 p-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="text-xs text-muted-foreground">الفاتورة</span>
+            <bdi dir="ltr" className="font-mono font-semibold">
+              {p.invoice_no}
+            </bdi>
+            <span className="tabular-nums">{formatMoney(p.amount, p.currency)}</span>
+            <span className={cn("text-xs font-medium", PAY_STATUS[p.status]?.[1])}>
+              {PAY_STATUS[p.status]?.[0] ?? p.status}
+            </span>
+            {p.receipt_url && (
+              <a
+                href={p.receipt_url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="ms-auto text-xs font-medium text-primary underline-offset-4 hover:underline"
+              >
+                إيصال المزوّد
+              </a>
+            )}
+          </div>
+          {p.provider_payment_id && (
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span>
+                المعاملة لدى {p.provider === "creem" ? "Creem" : (p.provider ?? "المزوّد")}
+              </span>
+              <bdi dir="ltr" className="max-w-[16rem] truncate font-mono text-foreground">
+                {p.provider_payment_id}
+              </bdi>
+              <button
+                type="button"
+                aria-label="نسخ رقم المعاملة"
+                className="grid size-7 place-items-center rounded-full hover:bg-secondary"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(p.provider_payment_id!);
+                  toast.success("نُسخ رقم المعاملة");
+                }}
+              >
+                <Copy className="size-3.5" aria-hidden="true" />
+              </button>
+              {p.paid_at && <span>· {formatDate(p.paid_at)}</span>}
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -345,8 +407,8 @@ function Receipt({
         </button>
       </div>
       <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
-        يُحسب من حقائق الشهر: المدفوع، والتحويل، والوصول وتاريخه. إن تغيّر شيءٌ منها لاحقاً تغيّر
-        الإيصال.
+        يُحسب من حقائق الشهر: الفواتير ومعاملاتها لدى المزوّد، والمدفوع، والتحويل، والوصول وتاريخه.
+        إن تغيّر شيءٌ منها لاحقاً تغيّر الإيصال.
       </p>
       {checking && (
         <form

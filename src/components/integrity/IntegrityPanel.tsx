@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { EmptyState } from "@/components/kit/EmptyState";
+import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -103,6 +104,7 @@ export function IntegrityPanel() {
 
   return (
     <div className="space-y-10">
+      <PaymentLookup admin />
       <NewRequest />
 
       <section aria-labelledby="req-h">

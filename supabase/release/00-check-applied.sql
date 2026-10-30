@@ -25,4 +25,5 @@ SELECT to_regclass('public.orphan_access_requests')              AS m0905_protec
        to_regclass('public.guardian_e_consents')                 AS m0920_guardian,
        to_regprocedure('public.geo_stats()')                      AS m0921_geo,
        to_regclass('public.integrity_log')                        AS m0922_integrity,
-       to_regprocedure('public.verify_ledger_receipt(uuid,text,text)') AS m0923_receipts;
+       to_regprocedure('public.verify_ledger_receipt(uuid,text,text)') AS m0923_receipts,
+       to_regprocedure('public.lookup_payment(text)')             AS m0924_invoices;

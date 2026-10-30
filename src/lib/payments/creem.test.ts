@@ -82,6 +82,9 @@ describe("parseEvent", () => {
     expect(event.kind).toBe("payment.succeeded");
     expect(event.sponsorshipId).toBe("sp-uuid-1");
     expect(event.providerSubscriptionId).toBe("sub_1");
+    // رقم المعاملة الحقيقي (الطلب) لا رقم جلسة الدفع.
+    expect(event.providerPaymentId).toBe("ord_1");
+    expect(event.providerCheckoutId).toBe("ch_1");
     // السنتات تتحوّل إلى الوحدة الكبرى كما تخزّنها القاعدة.
     expect(event.amount).toBe(80);
     expect(event.currency).toBe("USD");
@@ -103,6 +106,7 @@ describe("parseEvent", () => {
 
     expect(event.kind).toBe("subscription.charged");
     expect(event.providerSubscriptionId).toBe("sub_1");
+    expect(event.providerPaymentId).toBe("ord_2");
     expect(event.amount).toBe(80);
   });
 
@@ -125,6 +129,25 @@ describe("parseEvent", () => {
     );
     expect(dispute.kind).toBe("payment.disputed");
     expect(refund.kind).toBe("payment.refunded");
+  });
+
+  it("الردّ والمنازعة يحملان رقم المعاملة الأصلية", () => {
+    const refund = creemProvider.parseEvent(
+      JSON.stringify({
+        id: "e3",
+        eventType: "refund.created",
+        object: { id: "ref_1", transaction: { id: "ord_9" } },
+      }),
+    );
+    const dispute = creemProvider.parseEvent(
+      JSON.stringify({
+        id: "e4",
+        eventType: "dispute.created",
+        object: { id: "dsp_1", transaction: "ord_8" },
+      }),
+    );
+    expect(refund.providerPaymentId).toBe("ord_9");
+    expect(dispute.providerPaymentId).toBe("ord_8");
   });
 });
 

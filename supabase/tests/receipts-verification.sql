@@ -47,7 +47,10 @@ BEGIN
   IF NOT (_v->>'match')::boolean THEN RAISE EXCEPTION 'FAIL — الإيصال لا يطابق نفسه'; END IF;
 
   -- تغيّر حقيقةٌ من حقائق الشهر (المبلغ المدفوع) ← يتغيّر الإيصال
+  -- الدفعة المفوترة مجمّدة؛ نحاكي عبثاً يتجاوز الحارس، والإيصال يكشفه.
+  ALTER TABLE public.sponsorship_payments DISABLE TRIGGER freeze_invoiced_payment;
   UPDATE public.sponsorship_payments SET amount = 35 WHERE id = 'b8500000-0000-4000-8000-000000000001';
+  ALTER TABLE public.sponsorship_payments ENABLE TRIGGER freeze_invoiced_payment;
   SET LOCAL ROLE authenticated;
   _v := public.verify_ledger_receipt('b8400000-0000-4000-8000-000000000001', _month, _rc);
   RESET ROLE;

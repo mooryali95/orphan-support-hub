@@ -29,7 +29,40 @@ export type LedgerMonth = {
   delivered_at: string | null;
   /** إيصال الشهر: بصمةٌ قصيرة لحقائقه (null للقادم أو ما لم يحدث فيه شيء). */
   receipt?: string | null;
+  /** فواتير الشهر، كلٌّ مربوطةٌ بمعاملتها لدى المزوّد. */
+  payments?: LedgerPayment[];
 };
+
+export type LedgerPayment = {
+  invoice_no: string;
+  provider: string | null;
+  provider_payment_id: string | null;
+  amount: number;
+  currency: string;
+  status: "paid" | "refunded" | "disputed" | "pending" | "failed";
+  paid_at: string | null;
+  receipt_url: string | null;
+};
+
+export type PaymentLookup =
+  | { found: false }
+  | {
+      found: true;
+      invoice_no: string;
+      provider: string | null;
+      provider_payment_id: string | null;
+      amount: number;
+      currency: string;
+      status: LedgerPayment["status"];
+      paid_at: string | null;
+      sponsorship_id: string;
+      month: string;
+      orphan: string;
+      orphan_code: string;
+      month_receipt: string | null;
+      delivery_status: LedgerMonth["delivery_status"];
+      anchor: string | null;
+    };
 
 export type SponsorshipLedger = {
   sponsorship: {
@@ -190,4 +223,17 @@ export const verifyLedgerReceipt = createServerFn({ method: "POST" })
     });
     if (error) return { ok: false as const };
     return { ok: true as const, ...(r as { match: boolean; current: string | null }) };
+  });
+
+/** البحث برقم الفاتورة أو برقم المعاملة لدى المزوّد — الكافل في دفعاته، والإدارة في الكل. */
+export const lookupPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ ref: z.string().trim().min(6).max(120) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: r, error } = await rpc(context.supabase).rpc("lookup_payment", {
+      _ref: data.ref,
+    });
+    return error ? ({ found: false } as PaymentLookup) : (r as PaymentLookup);
   });

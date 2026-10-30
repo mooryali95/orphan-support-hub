@@ -56,6 +56,10 @@ type PaymentExtras = {
   failure_reason: string | null;
   fee_amount: number;
   net_amount: number | null;
+  /** المعاملة لدى المزوّد، ورقم الفاتورة (تُصدره القاعدة عند «مدفوع»)، وحدث المزوّد. */
+  provider_payment_id: string | null;
+  invoice_no: string | null;
+  provider_event_id: string | null;
 };
 
 type GeneratedPublic = Generated["public"];
