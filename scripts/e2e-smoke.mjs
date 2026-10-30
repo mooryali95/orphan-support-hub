@@ -139,4 +139,6 @@ if (failures.length) {
   console.error(`✗ ${failures.length} مشكلة:\n  ` + failures.join("\n  "));
   process.exit(1);
 }
-console.log(`✓ ${PAGES.length} صفحة × عرضان × لغتان، والمحمي محجوب، والرحلة العامة سليمة`);
+console.log(
+  `✓ ${PAGES.length} صفحة × عرضان × ${LANGS.length} لغات (${LANGS.map((l) => l.lang).join("، ")})، والمحمي محجوب، والرحلة العامة سليمة`,
+);
