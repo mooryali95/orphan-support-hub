@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Loader2, Mail, Smartphone } from "lucide-react";
+import { ArrowRight, Fingerprint, Loader2, Mail, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,18 @@ import { Label } from "@/components/ui/label";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import {
+  addPasskey,
+  dismissOffer,
+  listPasskeys,
+  offerDismissed,
+  passkeySupported,
+  signInWithPasskey,
+} from "@/lib/passkey";
 
 type Method = "email" | "phone";
-type Stage = { step: "ask" } | { step: "code"; to: string } | { step: "password" };
+type Stage =
+  { step: "ask" } | { step: "code"; to: string } | { step: "password" } | { step: "offer" };
 
 /** شعار جوجل بألوانه — العلامة الوحيدة المسموح فيها بلونٍ خارج الهوية. */
 function GoogleMark() {
@@ -67,6 +76,46 @@ export function AuthPanel({
     return () => clearTimeout(id);
   }, [wait]);
 
+  const [canPasskey, setCanPasskey] = useState(false);
+  useEffect(() => setCanPasskey(passkeySupported()), []);
+
+  /** بعد الدخول برمزٍ أو كلمة مرور: عرضٌ واحد لإضافة البصمة، إن لم تكن له. */
+  async function finish() {
+    if (passkeySupported() && !offerDismissed() && (await listPasskeys()).length === 0) {
+      setStage({ step: "offer" });
+      return;
+    }
+    onDone?.();
+  }
+
+  async function passkey() {
+    setBusy(true);
+    const { error } = await signInWithPasskey();
+    setBusy(false);
+    if (error) {
+      // إلغاء المستخدم للنافذة ليس خطأً يُعلَن.
+      if (!/abort|cancel|NotAllowed/i.test(String(error.message))) {
+        toast.error("لم نجد بصمةً لهذا الحساب على هذا الجهاز. ادخل برمزٍ ثم أضفها.");
+      }
+      return;
+    }
+    onDone?.();
+  }
+
+  async function enrol() {
+    setBusy(true);
+    const { error } = await addPasskey();
+    setBusy(false);
+    if (error) {
+      if (!/abort|cancel|NotAllowed/i.test(String(error.message))) {
+        toast.error("تعذّرت إضافة البصمة. يمكنك إضافتها لاحقاً من «حسابي».");
+      }
+      return;
+    }
+    toast.success("أُضيفت بصمتك — في المرّة القادمة تدخل بلمسة.");
+    onDone?.();
+  }
+
   const here = () => (typeof window === "undefined" ? "/" : window.location.href);
 
   async function google() {
@@ -119,7 +168,7 @@ export function AuthPanel({
       return;
     }
     toast.success("أهلاً بك");
-    onDone?.();
+    await finish();
   }
 
   async function withPassword(e: React.FormEvent) {
@@ -131,7 +180,7 @@ export function AuthPanel({
       toast.error("البريد أو كلمة المرور غير صحيحة.");
       return;
     }
-    onDone?.();
+    await finish();
   }
 
   return (
@@ -139,7 +188,37 @@ export function AuthPanel({
       <h2 className="text-xl font-extrabold">{title}</h2>
       {hint && <p className="mt-1 text-sm leading-7 text-muted-foreground">{hint}</p>}
 
-      {stage.step === "code" ? (
+      {stage.step === "offer" ? (
+        <div key="offer" className="map-rise mt-5 text-center">
+          <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary/10 text-primary">
+            <Fingerprint className="size-8" strokeWidth={1.5} aria-hidden="true" />
+          </span>
+          <p className="mt-4 font-bold">ادخل في المرّة القادمة بلمسة</p>
+          <p className="mt-1 text-sm leading-7 text-muted-foreground">
+            أضف بصمتك أو وجهك على هذا الجهاز. لا رمز ينتظرك، ولا كلمة مرور تُنسى — وبصمتك لا تغادر
+            جهازك.
+          </p>
+          <Button
+            size="lg"
+            className="mt-5 h-11 w-full"
+            disabled={busy}
+            onClick={() => void enrol()}
+          >
+            {busy ? <Loader2 className="animate-spin" /> : <Fingerprint aria-hidden="true" />}
+            أضف بصمتي
+          </Button>
+          <button
+            type="button"
+            onClick={() => {
+              dismissOffer();
+              onDone?.();
+            }}
+            className="mt-3 min-h-9 w-full text-sm text-muted-foreground hover:text-foreground"
+          >
+            لاحقاً
+          </button>
+        </div>
+      ) : stage.step === "code" ? (
         <div key="code" className="map-rise mt-5">
           <p className="text-sm leading-7">
             أرسلنا رمزاً من ستّة أرقام إلى{" "}
@@ -241,6 +320,18 @@ export function AuthPanel({
         </form>
       ) : (
         <div key="ask" className="mt-5">
+          {canPasskey && (
+            <Button
+              type="button"
+              size="lg"
+              className="mb-2 h-11 w-full gap-3 text-base"
+              disabled={busy}
+              onClick={() => void passkey()}
+            >
+              <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
+              الدخول بالبصمة
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"

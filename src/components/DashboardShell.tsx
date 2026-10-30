@@ -106,6 +106,13 @@ export function DashboardShell({
             >
               الإشعارات
             </Link>
+            <Link
+              to="/account"
+              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              حسابي
+            </Link>
           </nav>
 
           <div className="ms-auto flex items-center gap-3">

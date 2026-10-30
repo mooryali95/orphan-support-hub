@@ -19,6 +19,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TraitsRouteImport } from './routes/traits'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
@@ -93,6 +94,11 @@ const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
@@ -239,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
@@ -313,6 +321,7 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/traits'
     | '/unsubscribe'
+    | '/account'
     | '/admin'
     | '/dashboard'
     | '/guardian'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/traits'
     | '/unsubscribe'
+    | '/account'
     | '/admin'
     | '/dashboard'
     | '/guardian'
@@ -424,6 +435,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/traits'
     | '/unsubscribe'
+    | '/_authenticated/account'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/guardian'
@@ -547,6 +559,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/unsubscribe'
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -727,6 +746,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
@@ -743,6 +763,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
