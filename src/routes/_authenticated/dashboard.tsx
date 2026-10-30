@@ -98,7 +98,7 @@ function DashboardPage() {
       {payment === "done" && (
         <CelebrateOverlay
           title="بدأت كفالتك"
-          text="وصلنا دفعك. يتأكّد خلال دقائق، ثم يصلك أوّل تقريرٍ عن أثره."
+          text="وصل دفعك، ويتأكّد خلال دقائق. ثم ترى كل شهرٍ في «كفالاتي»: متى حُوِّل المبلغ للجهة، ومتى وصل الطفلَ بمستند، وما تغيّر في رحلته."
           action="إلى كفالاتي"
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
