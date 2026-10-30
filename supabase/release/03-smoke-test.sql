@@ -32,6 +32,11 @@ WITH checks(name, ok) AS (VALUES
   ('خزنة المكاتب خاصّة',
      (SELECT NOT public FROM storage.buckets WHERE id = 'office-media')),
   ('حماية الحشد مفعّلة (الحدّ ≥ 5)', public.cohort_min() >= 5),
-  ('الدولة المفعّلة موجودة', EXISTS (SELECT 1 FROM public.countries WHERE status = 'active'))
+  ('الدولة المفعّلة موجودة', EXISTS (SELECT 1 FROM public.countries WHERE status = 'active')),
+  -- سلامة الحقيقة
+  ('anon لا يقرأ سجلّ السلامة', NOT has_table_privilege('anon', 'public.integrity_log', 'SELECT')),
+  ('سجلّ السلامة إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'integrity_log_frozen')),
+  ('المكفول لا يُحذف ولا تتغيّر هويته', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'guard_locked_orphan')),
+  ('الفكّ يحتاج موافقتين على الأقل', public.unlock_quorum() >= 2)
 )
 SELECT name, ok FROM checks ORDER BY ok, name;
