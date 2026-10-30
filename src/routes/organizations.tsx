@@ -4,7 +4,21 @@ import { Building2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
-import { BRAND, pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
+import { useCopy } from "@/lib/locale";
+
+const COPY = {
+  ar: {
+    title: "جهات الرعاية المعتمدة",
+    lead: "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
+    empty: "لا توجد جهات معتمدة بعد.",
+  },
+  en: {
+    title: "Approved care organizations",
+    lead: "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
+    empty: "No approved organizations yet.",
+  },
+};
 
 const orgsQuery = queryOptions({
   queryKey: ["organizations", "public"],
@@ -12,39 +26,37 @@ const orgsQuery = queryOptions({
 });
 
 export const Route = createFileRoute("/organizations")({
-  head: () => ({
-    meta: [
-      { title: pageTitle("جهات الرعاية المعتمدة") },
-      {
-        name: "description",
-        content: BRAND.description,
-      },
-      { property: "og:title", content: pageTitle("جهات الرعاية المعتمدة") },
-      {
-        property: "og:description",
-        content: BRAND.description,
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    const title = pageTitle(COPY[l].title, true, l);
+    const description = brandFor(l).description;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+      ],
+    };
+  },
   loader: ({ context }) => context.queryClient.ensureQueryData(orgsQuery),
   component: OrganizationsPage,
 });
 
 function OrganizationsPage() {
   const { data } = useSuspenseQuery(orgsQuery);
+  const c = useCopy(COPY);
 
   return (
     <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">جهات الرعاية المعتمدة</h1>
-        <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">
-          كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.
-        </p>
+        <h1 className="text-3xl font-extrabold">{c.title}</h1>
+        <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
 
         {data.organizations.length === 0 ? (
           <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            لا توجد جهات معتمدة بعد.
+            {c.empty}
           </p>
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2">

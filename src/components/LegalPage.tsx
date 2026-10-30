@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { formatDate } from "@/lib/format";
+import { useLocale } from "@/lib/locale";
 
 /**
  * قالب الصفحات القانونية.
@@ -12,17 +13,29 @@ export function LegalPage({
   title,
   updated,
   intro,
+  binding = false,
   children,
 }: {
   title: string;
   updated: string;
   intro?: string;
+  /** نصٌّ ملزِم (الخصوصية والشروط): الترجمة تُنبّه أن العربية هي المرجع. */
+  binding?: boolean;
   children: ReactNode;
 }) {
+  const locale = useLocale();
   return (
     <main id="main" tabIndex={-1} className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-extrabold">{title}</h1>
-      <p className="text-muted-foreground mt-2 text-xs">آخر تحديث: {formatDate(updated)}</p>
+      <p className="text-muted-foreground mt-2 text-xs">
+        {locale === "en" ? "Last updated" : "آخر تحديث"}: {formatDate(updated, locale)}
+      </p>
+      {locale === "en" && binding && (
+        <p className="mt-4 rounded-xl bg-secondary/60 p-3 text-xs leading-6">
+          This English version is provided for convenience. If it differs from the Arabic, the
+          Arabic version prevails.
+        </p>
+      )}
       {intro && <p className="mt-5 text-sm leading-8">{intro}</p>}
       <div className="mt-8 space-y-8">{children}</div>
     </main>

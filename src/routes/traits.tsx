@@ -8,17 +8,42 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { getTraitModel } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
+import { useCopy } from "@/lib/locale";
+
+const COPY = {
+  ar: {
+    title: "نموذج السمات",
+    description: "السمات التي تُبنى في رحلة التأهيل، مقسّمةً على أبعادها، وما يُلاحَظ في كل سمة.",
+    lead: "ما يُبنى في الطفل خلال رحلة التأهيل. لكل بُعدٍ سماته، ولكل سمةٍ عناصر يلاحظها المشرف ويقيسها قبل الرحلة وبعدها. هذا هو المنهج؛ أمّا درجات طفلٍ بعينه فلا يراها إلا من أذنت له الإدارة.",
+    dataNote: null as string | null,
+    empty: "يُستورد النموذج من منصّة التشغيل، وسيظهر هنا فور ربطها.",
+    traits: (n: number) => `${n} سمة`,
+    cta: "ادعم بناء الأهلية",
+  },
+  en: {
+    title: "Trait model",
+    description:
+      "The traits built during the qualification journey, grouped by dimension, and what is observed for each trait.",
+    lead: "What is built in the child during the qualification journey. Each dimension has its traits, and each trait has elements the supervisor observes and measures before and after the journey. This is the curriculum; an individual child's scores are seen only by those the administration authorizes.",
+    dataNote:
+      "The model's content comes from the operating platform and is currently shown in its original language.",
+    empty:
+      "The model is imported from the operating platform and will appear here once it is connected.",
+    traits: (n: number) => (n === 1 ? "1 trait" : `${n} traits`),
+    cta: "Support capability building",
+  },
+};
 
 export const Route = createFileRoute("/traits")({
-  head: () => ({
-    meta: [
-      { title: pageTitle("نموذج السمات", false) },
-      {
-        name: "description",
-        content: "السمات التي تُبنى في رحلة التأهيل، مقسّمةً على أبعادها، وما يُلاحَظ في كل سمة.",
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return {
+      meta: [
+        { title: pageTitle(COPY[l].title, false, l) },
+        { name: "description", content: COPY[l].description },
+      ],
+    };
+  },
   component: TraitsPage,
 });
 
@@ -26,17 +51,17 @@ function TraitsPage() {
   const fetchModel = useServerFn(getTraitModel);
   const { data, isPending } = useQuery({ queryKey: ["trait-model"], queryFn: () => fetchModel() });
   const model = data?.model ?? [];
+  const c = useCopy(COPY);
 
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="text-3xl font-extrabold">نموذج السمات</h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          ما يُبنى في الطفل خلال رحلة التأهيل. لكل بُعدٍ سماته، ولكل سمةٍ عناصر يلاحظها المشرف
-          ويقيسها قبل الرحلة وبعدها. هذا هو المنهج؛ أمّا درجات طفلٍ بعينه فلا يراها إلا من أذنت له
-          الإدارة.
-        </p>
+        <h1 className="text-3xl font-extrabold">{c.title}</h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">{c.lead}</p>
+        {c.dataNote && model.length > 0 && (
+          <p className="mt-2 max-w-2xl text-xs text-muted-foreground">{c.dataNote}</p>
+        )}
 
         {isPending ? (
           <div className="flex justify-center py-16">
@@ -44,7 +69,7 @@ function TraitsPage() {
           </div>
         ) : model.length === 0 ? (
           <p className="mt-10 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
-            يُستورد النموذج من منصّة التشغيل، وسيظهر هنا فور ربطها.
+            {c.empty}
           </p>
         ) : (
           <div className="mt-10 space-y-10">
@@ -60,7 +85,7 @@ function TraitsPage() {
                     </span>
                   )}
                   <span className="ms-auto text-xs text-muted-foreground">
-                    {dim.traits.length} سمة
+                    {c.traits(dim.traits.length)}
                   </span>
                 </div>
                 {dim.description && (
@@ -92,7 +117,7 @@ function TraitsPage() {
 
         <div className="mt-12">
           <Button asChild size="lg">
-            <Link to="/support">ادعم بناء الأهلية</Link>
+            <Link to="/support">{c.cta}</Link>
           </Button>
         </div>
       </main>
