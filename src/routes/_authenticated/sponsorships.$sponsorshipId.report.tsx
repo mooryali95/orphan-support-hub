@@ -119,12 +119,13 @@ function ReportPage() {
             <th className="py-2 text-start font-medium">الشهر</th>
             <th className="py-2 text-start font-medium">المدفوع</th>
             <th className="py-2 text-start font-medium">الحالة</th>
+            <th className="py-2 text-start font-medium">الإيصال</th>
           </tr>
         </thead>
         <tbody>
           {months.length === 0 ? (
             <tr>
-              <td colSpan={3} className="py-6 text-center text-muted-foreground">
+              <td colSpan={4} className="py-6 text-center text-muted-foreground">
                 لا أشهر في هذه السنة.
               </td>
             </tr>
@@ -136,6 +137,11 @@ function ReportPage() {
                   {Number(m.paid) > 0 ? formatMoney(m.paid, cur) : "—"}
                 </td>
                 <td className="py-2">{monthState(m).label}</td>
+                <td className="py-2">
+                  <bdi dir="ltr" className="font-mono text-xs">
+                    {m.receipt ?? "—"}
+                  </bdi>
+                </td>
               </tr>
             ))
           )}
@@ -144,7 +150,8 @@ function ReportPage() {
 
       <footer className="mt-10 border-t border-border pt-4 text-xs text-muted-foreground">
         صدر في {formatDate(new Date().toISOString())}. الوصول الموثّق يعني أن جهة الرعاية رفعت مستند
-        استلامٍ راجعته المنصّة. «{BRAND.tagline}».
+        استلامٍ راجعته المنصّة. ولكل شهرٍ إيصالٌ يُحسب من حقائقه: احفظ هذا التقرير، وتحقّق من أيّ
+        إيصالٍ فيه لاحقاً من صفحة الكفالة — إن تغيّرت حقيقةٌ تغيّر رقمها. «{BRAND.tagline}».
       </footer>
     </main>
   );

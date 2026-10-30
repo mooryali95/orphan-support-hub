@@ -22,6 +22,7 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
+import { OfferingNote } from "@/components/kit/OfferingNote";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
 import { normalize, resolveCountry } from "@/lib/countries";
@@ -220,6 +221,7 @@ function SupportPage() {
         <p className="mt-2 text-muted-foreground">
           أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.
         </p>
+        <OfferingNote className="mt-4" />
 
         <ol className="mt-8 grid grid-cols-4 gap-2" aria-label="الخطوات">
           {STEPS.map((s, i) => (

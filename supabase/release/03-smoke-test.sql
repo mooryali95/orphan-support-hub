@@ -32,6 +32,15 @@ WITH checks(name, ok) AS (VALUES
   ('خزنة المكاتب خاصّة',
      (SELECT NOT public FROM storage.buckets WHERE id = 'office-media')),
   ('حماية الحشد مفعّلة (الحدّ ≥ 5)', public.cohort_min() >= 5),
-  ('الدولة المفعّلة موجودة', EXISTS (SELECT 1 FROM public.countries WHERE status = 'active'))
+  ('الدولة المفعّلة موجودة', EXISTS (SELECT 1 FROM public.countries WHERE status = 'active')),
+  -- سلامة الحقيقة
+  ('anon لا يقرأ سجلّ السلامة', NOT has_table_privilege('anon', 'public.integrity_log', 'SELECT')),
+  ('سجلّ السلامة إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'integrity_log_frozen')),
+  ('المكفول لا يُحذف ولا تتغيّر هويته', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'guard_locked_orphan')),
+  ('الفكّ يحتاج موافقتين على الأقل', public.unlock_quorum() >= 2),
+  ('الفاتورة المدفوعة مجمّدة', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'freeze_invoiced_payment')),
+  ('معاملةٌ واحدة = فاتورةٌ واحدة', EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'ux_payments_provider_payment')),
+  ('كل دفعةٍ مدفوعة لها فاتورة', NOT EXISTS (SELECT 1 FROM public.sponsorship_payments
+                                           WHERE status = 'paid' AND invoice_no IS NULL))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;

@@ -204,7 +204,10 @@ export const creemProvider: PaymentProvider = {
 
     const payload = obj(root["object"]) ?? {};
     const subscription = obj(payload["subscription"]);
-    const order = obj(payload["order"]) ?? obj(payload["last_transaction"]);
+    // المعاملة: «order» في إتمام الدفع، و«last_transaction» في التجديد،
+    // و«transaction» في الردّ والمنازعة.
+    const order =
+      obj(payload["order"]) ?? obj(payload["last_transaction"]) ?? obj(payload["transaction"]);
 
     // `metadata` تكون على الحمولة نفسها في أحداث الاشتراك، وعلى جلسة
     // الدفع في checkout.completed.
@@ -229,6 +232,8 @@ export const creemProvider: PaymentProvider = {
       kind,
       sponsorshipId,
       providerCheckoutId: type === "checkout.completed" ? idOf(payload["id"]) : idOf(order?.["id"]),
+      providerPaymentId:
+        idOf(order?.["id"]) ?? idOf(payload["transaction"]) ?? idOf(payload["order"]),
       providerSubscriptionId,
       amount: fromCents(order?.["amount"]),
       currency: typeof order?.["currency"] === "string" ? (order["currency"] as string) : null,

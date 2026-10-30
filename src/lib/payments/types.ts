@@ -51,6 +51,11 @@ export type PaymentEvent = {
   kind: PaymentEventKind;
   sponsorshipId: string | null;
   providerCheckoutId: string | null;
+  /**
+   * معرّف المعاملة التي حرّكت المال فعلاً لدى المزوّد (الطلب/الحركة).
+   * يُربط به رقم الفاتورة عندنا، ويُطابَق به الردّ والمنازعة.
+   */
+  providerPaymentId: string | null;
   providerSubscriptionId: string | null;
   amount: number | null;
   currency: string | null;

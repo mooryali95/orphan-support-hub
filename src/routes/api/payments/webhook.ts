@@ -113,6 +113,33 @@ async function announce(
   if (error) console.error("[payments] تعذّر إشعار الكافل", error.message);
 }
 
+/**
+ * الردّ والمنازعة يُطابَقان بمعاملة المزوّد أولاً (الدقيق)، ثم بالمرجع
+ * القديم لما سُجّل قبل حفظ المعاملة. الحالة وحدها تتغيّر؛ حقائق الفاتورة
+ * مجمّدة في القاعدة.
+ */
+async function markPayment(
+  supabase: PaymentsClient,
+  sponsorshipId: string,
+  event: PaymentEvent,
+  status: "refunded" | "disputed",
+) {
+  if (event.providerPaymentId) {
+    const { data } = await supabase
+      .from("sponsorship_payments")
+      .update({ status })
+      .eq("sponsorship_id", sponsorshipId)
+      .eq("provider_payment_id", event.providerPaymentId)
+      .select("id");
+    if (data && data.length > 0) return;
+  }
+  await supabase
+    .from("sponsorship_payments")
+    .update({ status })
+    .eq("sponsorship_id", sponsorshipId)
+    .eq("provider_ref", event.providerCheckoutId ?? "");
+}
+
 async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, providerId: string) {
   // حدث معروف للمزوّد لا فعل له عندنا: سُجّل خاماً قبل الوصول إلى هنا،
   // وهذا كل المطلوب. رفضه كان يعني إعادة إرسال لا تنتهي — والمزوّد
@@ -155,6 +182,10 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
         provider: providerId,
         provider_ref: event.providerCheckoutId,
         provider_checkout_id: event.providerCheckoutId,
+        // المعاملة الحقيقية لدى المزوّد: تُربط بها الفاتورة (تُصدرها القاعدة
+        // عند «مدفوع»)، وفهرسٌ فريد يمنع معاملةً واحدة من فاتورتين.
+        provider_payment_id: event.providerPaymentId ?? event.providerCheckoutId,
+        provider_event_id: event.providerEventId,
         fee_amount: fee,
         net_amount: amount - fee,
         paid_at: paidAt,
@@ -193,6 +224,8 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
         status: "failed",
         provider: providerId,
         provider_ref: event.providerCheckoutId,
+        provider_payment_id: event.providerPaymentId,
+        provider_event_id: event.providerEventId,
         failure_reason: event.failureReason,
       });
       // الكفالة لا تُلغى عند فشل دفعة واحدة؛ المزوّد يعيد المحاولة.
@@ -207,11 +240,7 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
     }
 
     case "payment.refunded": {
-      await supabase
-        .from("sponsorship_payments")
-        .update({ status: "refunded" })
-        .eq("sponsorship_id", sponsorship.id)
-        .eq("provider_ref", event.providerCheckoutId ?? "");
+      await markPayment(supabase, sponsorship.id, event, "refunded");
       return;
     }
 
@@ -223,11 +252,7 @@ async function applyEvent(supabase: PaymentsClient, event: PaymentEvent, provide
     // المنازعة مال مسحوب فعلاً وبلاغ احتيال محتمل. لا تُلغى الكفالة
     // تلقائياً — القرار إداري — لكن الدفعة تُوسم فتظهر في لوحة الإدارة.
     case "payment.disputed": {
-      await supabase
-        .from("sponsorship_payments")
-        .update({ status: "disputed" })
-        .eq("sponsorship_id", sponsorship.id)
-        .eq("provider_ref", event.providerCheckoutId ?? "");
+      await markPayment(supabase, sponsorship.id, event, "disputed");
       return;
     }
 

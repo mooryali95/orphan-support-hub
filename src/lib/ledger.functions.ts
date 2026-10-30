@@ -27,7 +27,42 @@ export type LedgerMonth = {
   payment_status: "pending" | "paid" | "failed" | "refunded" | "disputed" | null;
   delivery_status: "scheduled" | "transferred" | "delivered" | null;
   delivered_at: string | null;
+  /** إيصال الشهر: بصمةٌ قصيرة لحقائقه (null للقادم أو ما لم يحدث فيه شيء). */
+  receipt?: string | null;
+  /** فواتير الشهر، كلٌّ مربوطةٌ بمعاملتها لدى المزوّد. */
+  payments?: LedgerPayment[];
 };
+
+export type LedgerPayment = {
+  invoice_no: string;
+  provider: string | null;
+  provider_payment_id: string | null;
+  amount: number;
+  currency: string;
+  status: "paid" | "refunded" | "disputed" | "pending" | "failed";
+  paid_at: string | null;
+  receipt_url: string | null;
+};
+
+export type PaymentLookup =
+  | { found: false }
+  | {
+      found: true;
+      invoice_no: string;
+      provider: string | null;
+      provider_payment_id: string | null;
+      amount: number;
+      currency: string;
+      status: LedgerPayment["status"];
+      paid_at: string | null;
+      sponsorship_id: string;
+      month: string;
+      orphan: string;
+      orphan_code: string;
+      month_receipt: string | null;
+      delivery_status: LedgerMonth["delivery_status"];
+      anchor: string | null;
+    };
 
 export type SponsorshipLedger = {
   sponsorship: {
@@ -48,7 +83,10 @@ export type SponsorshipLedger = {
     code: string;
     display_name: string;
     country: string | null;
+    region?: string | null;
     age_band: string;
+    /** ملفٌّ مثبّت: لا يُحذف ولا تتغيّر هويته إلا بطلبٍ رسمي بموافقتين. */
+    locked?: boolean;
   };
   months: LedgerMonth[];
   totals: { paid: number; months_paid: number; months_delivered: number };
@@ -157,3 +195,45 @@ export function monthState(m: LedgerMonth): {
   if (m.payment_status === "failed") return { label: "تعذّر الدفع", tone: "issue" };
   return { label: "بانتظار الدفع", tone: "wait" };
 }
+
+/** يتحقّق الكافل أن إيصالاً حفظه ما زال يطابق حقائق شهره اليوم. */
+export const verifyLedgerReceipt = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        sponsorshipId: z.string().uuid(),
+        month: z.string().regex(/^\d{4}-\d{2}$/),
+        receipt: z
+          .string()
+          .trim()
+          .regex(/^[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}$/),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const code = data.receipt
+      .replace(/-/g, "")
+      .toUpperCase()
+      .replace(/(.{4})(.{4})(.{4})/, "$1-$2-$3");
+    const { data: r, error } = await rpc(context.supabase).rpc("verify_ledger_receipt", {
+      _sponsorship: data.sponsorshipId,
+      _month: data.month,
+      _receipt: code,
+    });
+    if (error) return { ok: false as const };
+    return { ok: true as const, ...(r as { match: boolean; current: string | null }) };
+  });
+
+/** البحث برقم الفاتورة أو برقم المعاملة لدى المزوّد — الكافل في دفعاته، والإدارة في الكل. */
+export const lookupPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ ref: z.string().trim().min(6).max(120) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: r, error } = await rpc(context.supabase).rpc("lookup_payment", {
+      _ref: data.ref,
+    });
+    return error ? ({ found: false } as PaymentLookup) : (r as PaymentLookup);
+  });
