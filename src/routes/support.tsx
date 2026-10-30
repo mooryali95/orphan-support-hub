@@ -25,6 +25,7 @@ import { pageTitle } from "@/config/brand";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
 import { normalize, resolveCountry } from "@/lib/countries";
+import { CelebrateMark } from "@/components/kit/Celebrate";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
@@ -250,11 +251,18 @@ function SupportPage() {
             .
           </p>
         ) : result?.ok ? (
-          <div className="mt-8 rounded-xl border border-primary/40 bg-primary/5 p-6">
-            <p className="flex items-center gap-2 font-semibold">
-              <Check className="size-5 text-primary" /> {result.text}
+          <div className="mt-8 rounded-3xl bg-card p-8 text-center shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-12px_rgb(0_0_0/0.15)]">
+            <CelebrateMark />
+            <p
+              role="status"
+              className="celebrate-text mt-6 font-serif text-2xl font-bold text-primary"
+            >
+              شكراً لك
             </p>
-            <Button asChild className="mt-4">
+            <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
+              {result.text}
+            </p>
+            <Button asChild size="lg" className="celebrate-text mt-6">
               <Link to="/workspaces">بواباتي</Link>
             </Button>
           </div>
