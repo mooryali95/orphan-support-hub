@@ -35,6 +35,8 @@ const PROTECTED = ["/dashboard", "/admin", "/account"];
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i, /hydrat/i];
 
 const failures = [];
+const warnings = [];
+let icuHas = true;
 const fail = (page, msg) => failures.push(`${page}: ${msg}`);
 
 const browser = await chromium.launch();
@@ -54,6 +56,14 @@ for (const L of LANGS)
   for (const [vp, viewport] of VIEWPORTS) {
     const label = `${L.lang} ${vp}`;
     const ctx = await browser.newContext({ viewport, locale: L.lang });
+    {
+      const probe = await ctx.newPage();
+      icuHas = await probe.evaluate(
+        (l) => Intl.DateTimeFormat.supportedLocalesOf([l]).length > 0,
+        L.lang,
+      );
+      await probe.close();
+    }
     await ctx.addCookies([{ name: "kh_lang", value: L.lang, url: BASE }]);
     for (const path of PAGES) {
       const page = await ctx.newPage();
@@ -87,7 +97,15 @@ for (const L of LANGS)
       if (L.lang !== "ar" && r.arabicUi.length)
         fail(where, `Arabic UI text: ${r.arabicUi.join(" | ")}`);
       if (r.overflow > 1) fail(where, `horizontal overflow ${r.overflow}px`);
-      for (const e of errors) fail(where, `js: ${e.slice(0, 160)}`);
+      for (const e of errors) {
+        // متصفّحٌ بلا بيانات اللغة (ICU مقلّصة) يكتب التواريخ وأسماء الدول بالإنجليزية
+        // فيختلف عن الخادم في تلك الكلمات وحدها، ويعيد React رسمها. يُذكر ولا يُفشل.
+        if (L.lang !== "ar" && L.lang !== "en" && !icuHas && /Hydration failed/.test(e)) {
+          warnings.push(`${where}: hydration (browser lacks ${L.lang} locale data)`);
+          continue;
+        }
+        fail(where, `js: ${e.slice(0, 160)}`);
+      }
       await page.close();
     }
 
@@ -116,6 +134,7 @@ for (const L of LANGS)
   }
 await browser.close();
 
+if (warnings.length) console.warn(`⚠ ${warnings.length} تنبيه:\n  ` + warnings.join("\n  "));
 if (failures.length) {
   console.error(`✗ ${failures.length} مشكلة:\n  ` + failures.join("\n  "));
   process.exit(1);
