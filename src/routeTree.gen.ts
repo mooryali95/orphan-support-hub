@@ -36,6 +36,7 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
+import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
@@ -183,6 +184,11 @@ const ApiNotificationsDispatchRoute =
     path: '/api/notifications/dispatch',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiOpsHealthRoute = ApiOpsHealthRouteImport.update({
+  id: '/api/ops/health',
+  path: '/api/ops/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   id: '/api/payments/webhook',
   path: '/api/payments/webhook',
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
+  '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -299,6 +306,7 @@ export interface FileRoutesByTo {
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
+  '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
+  '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -377,6 +386,7 @@ export interface FileRouteTypes {
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
+    | '/api/ops/health'
     | '/api/payments/webhook'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -414,6 +424,7 @@ export interface FileRouteTypes {
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
+    | '/api/ops/health'
     | '/api/payments/webhook'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -452,6 +463,7 @@ export interface FileRouteTypes {
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
+    | '/api/ops/health'
     | '/api/payments/webhook'
     | '/_authenticated/donor/$entityId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
@@ -482,6 +494,7 @@ export interface RootRouteChildren {
   ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
+  ApiOpsHealthRoute: typeof ApiOpsHealthRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -679,6 +692,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiNotificationsDispatchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ops/health': {
+      id: '/api/ops/health'
+      path: '/api/ops/health'
+      fullPath: '/api/ops/health'
+      preLoaderRoute: typeof ApiOpsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/payments/webhook': {
       id: '/api/payments/webhook'
       path: '/api/payments/webhook'
@@ -805,6 +825,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
+  ApiOpsHealthRoute: ApiOpsHealthRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

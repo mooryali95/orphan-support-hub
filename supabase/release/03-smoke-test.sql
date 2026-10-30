@@ -41,6 +41,9 @@ WITH checks(name, ok) AS (VALUES
   ('الفاتورة المدفوعة مجمّدة', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'freeze_invoiced_payment')),
   ('معاملةٌ واحدة = فاتورةٌ واحدة', EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'ux_payments_provider_payment')),
   ('كل دفعةٍ مدفوعة لها فاتورة', NOT EXISTS (SELECT 1 FROM public.sponsorship_payments
-                                           WHERE status = 'paid' AND invoice_no IS NULL))
+                                           WHERE status = 'paid' AND invoice_no IS NULL)),
+  -- صحّة التشغيل
+  ('الفحص الدوري للخادم وحده', NOT has_function_privilege('authenticated', 'public.ops_record_run()', 'EXECUTE')),
+  ('سجلّ التشغيلات إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'ops_runs_frozen'))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;
