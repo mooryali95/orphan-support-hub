@@ -18,11 +18,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * فبيئة جديدة تبدأ معلَّقة لا مفتوحة.
  */
 async function readHold(supabase: unknown) {
-  const { withPayments } = await import("@/integrations/supabase/types.extra");
-  const { data } = await withPayments(supabase)
-    .from("platform_settings")
-    .select("payments_on_hold, payments_hold_reason")
-    .maybeSingle();
+  const { data: raw } = await (
+    supabase as { rpc: (fn: string) => Promise<{ data: unknown }> }
+  ).rpc("payment_hold_state");
+  const data = raw as { payments_on_hold?: boolean; payments_hold_reason?: string | null } | null;
 
   // تعذّرت القراءة: يُفترض التعليق. الفشل إلى الجانب الآمن.
   return {
