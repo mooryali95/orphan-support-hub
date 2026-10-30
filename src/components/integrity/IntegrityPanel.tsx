@@ -35,9 +35,10 @@ import {
   type UnlockRequest,
 } from "@/lib/integrity.functions";
 import { cn } from "@/lib/utils";
+import { BRAND } from "@/config/brand";
 
 const OP_LABEL: Record<UnlockOp, string> = {
-  edit: "تصحيح بيانات في كهاتين",
+  edit: `تصحيح بيانات في ${BRAND.name}`,
   archive: "أرشفة الملفّ",
   unlock: "رفع القفل",
   rowad_update: "تعديلٌ في منصّة التشغيل",
