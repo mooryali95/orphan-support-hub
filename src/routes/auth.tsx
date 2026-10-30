@@ -6,27 +6,54 @@ import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
-import { BRAND, pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
+import { useCopy, useLocale } from "@/lib/locale";
+
+const COPY = {
+  ar: {
+    section: "الدخول والتسجيل",
+    home: "الصفحة الرئيسية",
+    h1: "الدخول",
+    title: "أهلاً بك",
+    hint: "رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+    agree: "بالمتابعة أنت توافق على",
+    terms: "شروط الاستخدام",
+    and: " و",
+    privacy: "سياسة الخصوصية",
+    note: ". وهذه منصة تعالج بيانات أطفال، فاقرأهما.",
+  },
+  en: {
+    section: "Sign in or create an account",
+    home: "Home page",
+    h1: "Sign in",
+    title: "Welcome",
+    hint: "A code sent to your email or phone, or Google. Your account is created the first time you sign in.",
+    agree: "By continuing you agree to the",
+    terms: "terms of use",
+    and: " and ",
+    privacy: "privacy policy",
+    note: ". This platform handles children's data, so please read them.",
+  },
+};
 
 const searchSchema = z.object({ redirect: z.string().optional() });
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
-  head: () => ({
-    meta: [
-      { title: pageTitle("الدخول والتسجيل") },
-      {
-        name: "description",
-        content: BRAND.description,
-      },
-      { property: "og:title", content: pageTitle("الدخول والتسجيل") },
-      {
-        property: "og:description",
-        content: BRAND.description,
-      },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    const title = pageTitle(COPY[l].section, true, l);
+    const description = brandFor(l).description;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: AuthPage,
 });
 
@@ -36,6 +63,8 @@ function safePath(value: string | undefined) {
 }
 
 function AuthPage() {
+  const c = useCopy(COPY);
+  const brand = brandFor(useLocale());
   const search = Route.useSearch();
   const navigate = useNavigate();
   const redirectTo = safePath(search.redirect);
@@ -61,30 +90,26 @@ function AuthPage() {
         className="map-rise relative mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-12"
       >
         <div className="rounded-3xl bg-card/95 p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_24px_48px_-12px_rgb(0_0_0/0.25)] backdrop-blur sm:p-8">
-          <Link
-            to="/"
-            className="flex justify-center"
-            aria-label={`${BRAND.name} — الصفحة الرئيسية`}
-          >
+          <Link to="/" className="flex justify-center" aria-label={`${brand.name} — ${c.home}`}>
             <KahataynLockup />
           </Link>
-          <h1 className="sr-only">الدخول</h1>
+          <h1 className="sr-only">{c.h1}</h1>
           <AuthPanel
             className="mt-6"
-            title="أهلاً بك"
-            hint="رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول."
+            title={c.title}
+            hint={c.hint}
             onDone={() => navigate({ to: redirectTo })}
           />
           <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
-            بالمتابعة أنت توافق على{" "}
+            {c.agree}{" "}
             <Link to="/legal/terms" className="text-primary hover:underline">
-              شروط الاستخدام
-            </Link>{" "}
-            و
-            <Link to="/legal/privacy" className="text-primary hover:underline">
-              سياسة الخصوصية
+              {c.terms}
             </Link>
-            . وهذه منصة تعالج بيانات أطفال، فاقرأهما.
+            {c.and}
+            <Link to="/legal/privacy" className="text-primary hover:underline">
+              {c.privacy}
+            </Link>
+            {c.note}
           </p>
         </div>
       </main>

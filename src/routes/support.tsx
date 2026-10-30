@@ -22,6 +22,7 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
+import { useCopy } from "@/lib/locale";
 import { OfferingNote } from "@/components/kit/OfferingNote";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
@@ -42,24 +43,120 @@ const search = z.object({
 
 export const Route = createFileRoute("/support")({
   validateSearch: search,
-  head: () => ({
-    meta: [
-      { title: pageTitle("ادعم", false) },
-      {
-        name: "description",
-        content: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return {
+      meta: [
+        { title: pageTitle(COPY[l].section, false, l) },
+        { name: "description", content: COPY[l].description },
+      ],
+    };
+  },
   component: SupportPage,
 });
 
-const STEPS = ["نوع الدعم", "الهدف", "الاختيار", "المبلغ"] as const;
+const COPY = {
+  ar: {
+    section: "ادعم",
+    description: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
+    steps: ["نوع الدعم", "الهدف", "الاختيار", "المبلغ"],
+    kinds: KIND_INFO,
+    targets: TARGET_INFO,
+    children: (n: number) => `${n} طفل`,
+    pledged: "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
+    failed: "تعذّر التسجيل.",
+    mapTitle: "أين تريد أن تدعم؟",
+    mapText: "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+    supportRegion: "ادعم هذه المنطقة",
+    supportCountry: "ادعم هذه الدولة",
+    h1: "ادعم",
+    lead: "أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.",
+    stepsLabel: "الخطوات",
+    preparingA: "مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح",
+    directory: "دليل الأيتام",
+    thanks: "شكراً لك",
+    portals: "بواباتي",
+    s1: "١. نوع الدعم",
+    s2: "٢. إلى من يذهب؟",
+    s3: "٣. الاختيار",
+    s4: "٤. المبلغ",
+    country: "الدولة",
+    chosenChild: "الطفل المختار:",
+    fromDirectory: "من الدليل",
+    pickChildA: "اختر الطفل من",
+    pickChildB: "، ثم اضغط «ادعم» في ملفّه.",
+    noOptions: "لا خيارات متاحة هنا بعد.",
+    otherAmount: "مبلغ آخر",
+    note: "ملاحظة (اختياري)",
+    confirm: (a: number) => `سجّل دعمي — ${a} €`,
+    signIn: "سجّل الدخول لإتمام الدعم",
+    pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
+  },
+  en: {
+    section: "Support",
+    description:
+      "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
+    steps: ["Kind of support", "Recipient", "Choice", "Amount"],
+    kinds: {
+      qualification: {
+        label: "Building capability",
+        text: "Fund the qualification journey: sessions, follow-up, and trait measurement before and after.",
+      },
+      in_kind: {
+        label: "In-kind support",
+        text: "School bags, clothing, food, devices… delivered and documented with photos and reports.",
+      },
+    } as typeof KIND_INFO,
+    targets: {
+      orphan: { label: "A child", text: "Choose a specific child from the directory." },
+      group: { label: "A group", text: "The children of one group, with their supervisor." },
+      region: { label: "A region", text: "Everyone in a region within the country." },
+      country: { label: "A country", text: "Wherever the need is greatest in the country." },
+      institution: {
+        label: "An organization",
+        text: "A center, office or school… working with the children.",
+      },
+    } as typeof TARGET_INFO,
+    children: (n: number) => (n === 1 ? "1 child" : `${n} children`),
+    pledged:
+      "Your support is recorded. We'll let you know when payment collection opens, and you can follow it from “My portals”.",
+    failed: "It couldn't be recorded.",
+    mapTitle: "Where would you like to support?",
+    mapText: "Choose a country, then a region — or continue with the steps below.",
+    supportRegion: "Support this region",
+    supportCountry: "Support this country",
+    h1: "Support",
+    lead: "Four short steps. You can go back to any of them by tapping it.",
+    stepsLabel: "Steps",
+    preparingA:
+      "The support flow is being prepared and will open soon. Meanwhile, you can browse the",
+    directory: "children's directory",
+    thanks: "Thank you",
+    portals: "My portals",
+    s1: "1. Kind of support",
+    s2: "2. Who is it for?",
+    s3: "3. Your choice",
+    s4: "4. Amount",
+    country: "Country",
+    chosenChild: "Selected child:",
+    fromDirectory: "from the directory",
+    pickChildA: "Choose the child from the",
+    pickChildB: ", then press “Support” on their page.",
+    noOptions: "No options available here yet.",
+    otherAmount: "Other amount",
+    note: "Note (optional)",
+    confirm: (a: number) => `Record my support — ${a} €`,
+    signIn: "Sign in to complete your support",
+    pledgeNote:
+      "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
+  },
+};
 const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {
   const { orphan, name, kind: presetKind, c: mapCountry, r: mapRegion } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const t = useCopy(COPY);
   const { stats, demo } = useMapStats();
   const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -91,7 +188,7 @@ function SupportPage() {
           .map((g) => ({
             value: g.id,
             label: g.name,
-            hint: `${g.region ?? ""} · ${g.children} طفل`,
+            hint: `${g.region ?? ""} · ${t.children(g.children)}`,
           }));
       case "region":
         return catalog.regions
@@ -110,7 +207,7 @@ function SupportPage() {
       default:
         return [];
     }
-  }, [catalog, targetType, activeCountry]);
+  }, [catalog, targetType, activeCountry, t]);
 
   const step = !kind ? 0 : !targetType ? 1 : !target ? 2 : 3;
 
@@ -176,9 +273,9 @@ function SupportPage() {
       res.ok
         ? {
             ok: true,
-            text: "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
+            text: t.pledged,
           }
-        : { ok: false, text: res.error ?? "تعذّر التسجيل." },
+        : { ok: false, text: res.error ?? t.failed },
     );
   }
 
@@ -193,8 +290,8 @@ function SupportPage() {
           onSelect={onSelect}
           className="h-[60dvh] min-h-[26rem]"
           intro={{
-            title: "أين تريد أن تدعم؟",
-            text: "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+            title: t.mapTitle,
+            text: t.mapText,
           }}
           action={(ctx) => (
             <Button
@@ -206,7 +303,7 @@ function SupportPage() {
                 formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
             >
-              ادعم {ctx.regionName ? "هذه المنطقة" : "هذه الدولة"}
+              {ctx.regionName ? t.supportRegion : t.supportCountry}
             </Button>
           )}
         />
@@ -217,14 +314,12 @@ function SupportPage() {
         className="mx-auto max-w-3xl scroll-mt-20 px-4 py-10"
         ref={formRef}
       >
-        <h1 className="text-3xl font-extrabold">ادعم</h1>
-        <p className="mt-2 text-muted-foreground">
-          أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.
-        </p>
+        <h1 className="text-3xl font-extrabold">{t.h1}</h1>
+        <p className="mt-2 text-muted-foreground">{t.lead}</p>
         <OfferingNote className="mt-4" />
 
-        <ol className="mt-8 grid grid-cols-4 gap-2" aria-label="الخطوات">
-          {STEPS.map((s, i) => (
+        <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
+          {t.steps.map((s, i) => (
             <li
               key={s}
               aria-current={i === step ? "step" : undefined}
@@ -246,9 +341,9 @@ function SupportPage() {
           </div>
         ) : !catalog ? (
           <p className="mt-8 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
-            مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح{" "}
+            {t.preparingA}{" "}
             <Link to="/orphans" className="underline">
-              دليل الأيتام
+              {t.directory}
             </Link>
             .
           </p>
@@ -259,44 +354,44 @@ function SupportPage() {
               role="status"
               className="celebrate-text mt-6 font-serif text-2xl font-bold text-primary"
             >
-              شكراً لك
+              {t.thanks}
             </p>
             <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
               {result.text}
             </p>
             <Button asChild size="lg" className="celebrate-text mt-6">
-              <Link to="/workspaces">بواباتي</Link>
+              <Link to="/workspaces">{t.portals}</Link>
             </Button>
           </div>
         ) : (
           <div className="mt-8 space-y-8">
-            <Section title="١. نوع الدعم">
+            <Section title={t.s1}>
               <div className="grid gap-3 sm:grid-cols-2">
                 {(Object.keys(KIND_INFO) as SupportKind[]).map((k) => (
                   <Choice
                     key={k}
                     selected={kind === k}
                     onClick={() => setKind(k)}
-                    title={KIND_INFO[k].label}
-                    text={KIND_INFO[k].text}
+                    title={t.kinds[k].label}
+                    text={t.kinds[k].text}
                   />
                 ))}
               </div>
             </Section>
 
             {kind && (
-              <Section title="٢. إلى من يذهب؟">
+              <Section title={t.s2}>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {(Object.keys(TARGET_INFO) as TargetType[]).map((t) => (
+                  {(Object.keys(TARGET_INFO) as TargetType[]).map((tt) => (
                     <Choice
-                      key={t}
-                      selected={targetType === t}
+                      key={tt}
+                      selected={targetType === tt}
                       onClick={() => {
-                        setTargetType(t);
-                        setTarget(t === "orphan" ? (orphan ?? "") : "");
+                        setTargetType(tt);
+                        setTarget(tt === "orphan" ? (orphan ?? "") : "");
                       }}
-                      title={TARGET_INFO[t].label}
-                      text={TARGET_INFO[t].text}
+                      title={t.targets[tt].label}
+                      text={t.targets[tt].text}
                     />
                   ))}
                 </div>
@@ -304,10 +399,10 @@ function SupportPage() {
             )}
 
             {kind && targetType && (
-              <Section title="٣. الاختيار">
+              <Section title={t.s3}>
                 {targetType !== "country" && catalog.countries.length > 1 && (
                   <div className="mb-4 max-w-xs">
-                    <Label htmlFor="sp-country">الدولة</Label>
+                    <Label htmlFor="sp-country">{t.country}</Label>
                     <select
                       id="sp-country"
                       className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
@@ -329,19 +424,19 @@ function SupportPage() {
                 {targetType === "orphan" ? (
                   orphan ? (
                     <p className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
-                      الطفل المختار: <strong>{name ?? "من الدليل"}</strong>
+                      {t.chosenChild} <strong>{name ?? t.fromDirectory}</strong>
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      اختر الطفل من{" "}
+                      {t.pickChildA}{" "}
                       <Link to="/orphans" className="font-medium text-primary underline">
-                        دليل الأيتام
+                        {t.directory}
                       </Link>
-                      ، ثم اضغط «ادعم» في ملفّه.
+                      {t.pickChildB}
                     </p>
                   )
                 ) : options.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">لا خيارات متاحة هنا بعد.</p>
+                  <p className="text-sm text-muted-foreground">{t.noOptions}</p>
                 ) : (
                   <div className="grid gap-2 sm:grid-cols-2">
                     {options.map((o) => (
@@ -359,7 +454,7 @@ function SupportPage() {
             )}
 
             {kind && targetType && target && (
-              <Section title="٤. المبلغ">
+              <Section title={t.s4}>
                 <div className="flex flex-wrap gap-2">
                   {AMOUNTS.map((a) => (
                     <Button
@@ -372,7 +467,7 @@ function SupportPage() {
                     </Button>
                   ))}
                   <Input
-                    aria-label="مبلغ آخر"
+                    aria-label={t.otherAmount}
                     type="number"
                     min={1}
                     className="w-28"
@@ -381,7 +476,7 @@ function SupportPage() {
                   />
                 </div>
                 <div className="mt-4">
-                  <Label htmlFor="sp-note">ملاحظة (اختياري)</Label>
+                  <Label htmlFor="sp-note">{t.note}</Label>
                   <Textarea
                     id="sp-note"
                     rows={2}
@@ -393,16 +488,14 @@ function SupportPage() {
                   {user ? (
                     <Button size="lg" disabled={busy} onClick={confirm}>
                       {busy && <Loader2 className="size-4 animate-spin" />}
-                      سجّل دعمي — {amount} €
+                      {t.confirm(amount)}
                     </Button>
                   ) : (
                     <Button asChild size="lg">
-                      <Link to="/auth">سجّل الدخول لإتمام الدعم</Link>
+                      <Link to="/auth">{t.signIn}</Link>
                     </Button>
                   )}
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.
-                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
                   {result && !result.ok && (
                     <p role="alert" className="mt-3 text-sm text-destructive">
                       {result.text}
