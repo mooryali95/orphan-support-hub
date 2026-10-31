@@ -35,6 +35,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
         content: BRAND.description,
       },
       { property: "og:title", content: pageTitle("كفالاتي") },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content: BRAND.description,
