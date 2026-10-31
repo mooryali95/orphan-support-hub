@@ -18,3 +18,7 @@ src/routes/README.md
 AGENTS.md
 src/i18n/catalog.json
 src/i18n/drafts/
+
+# بيانات جغرافية مولَّدة (GeoJSON لخارطة الصفحة الأولى)، ٢٤١ ملفاً و٨ ميغابايت؛
+# إعادة تنسيقها لا تضيف شيئاً وتُسقط فحص التنسيق كلّه.
+public/geo/

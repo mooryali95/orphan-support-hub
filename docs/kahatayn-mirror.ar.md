@@ -3,35 +3,40 @@
 > «أنا وكافل اليتيم في الجنة كهاتين».
 
 ## الدول
+
 - جدول `countries`: الدولة صفّ (`planned | active | paused`). المفعّلة الآن **ألبانيا (AL)** وحدها.
 - إضافة أي دولة = صفٌّ `planned`، ثم تفعيلها حين توجد لها منصّة تشغيل. الدولة المخطّطة لا تستقبل دعماً.
 - `operating_platforms`: منصّات التشغيل (الآن `rowad-albania`).
 
 ## المرآة (باتجاه واحد)
-| في الرواد | في كهاتين |
-|---|---|
-| `classes` + `teacher_id` | `mirror_groups` (المجموعة + المشرف الأساسي) و`orphans.group_id` |
-| `schools` | `institution_ref/name` داخل المجموعة |
-| `Maqsad` (DEEN…MAL) | `trait_dimensions` — سجلّ لا تعداد |
-| `stage_traits` + `trait_elements` | `trait_definitions` (العناصر في `elements`) |
-| `trait_evaluations` / snapshots | `orphan_trait_scores` (الدرجة مع سقفها) |
+
+| في الرواد                         | في كهاتين                                                       |
+| --------------------------------- | --------------------------------------------------------------- |
+| `classes` + `teacher_id`          | `mirror_groups` (المجموعة + المشرف الأساسي) و`orphans.group_id` |
+| `schools`                         | `institution_ref/name` داخل المجموعة                            |
+| `Maqsad` (DEEN…MAL)               | `trait_dimensions` — سجلّ لا تعداد                              |
+| `stage_traits` + `trait_elements` | `trait_definitions` (العناصر في `elements`)                     |
+| `trait_evaluations` / snapshots   | `orphan_trait_scores` (الدرجة مع سقفها)                         |
 
 - مفتاح كل صفّ `(source, external_ref)`، والحذف `deleted_at`.
 - `mirror_sync_state` يحفظ مؤشّر السحب لكل كيان والانحراف المكتشف.
 - **ثغرة في الرواد**: `students` و`profiles` و`classes` بلا `updated_at`، فالتحديث التلقائي يحتاج من الرواد عموداً `updated_at` بمُشغِّل، أو جدول صادر (outbox). بدونه نلجأ للمطابقة الكاملة الدورية.
 
 ## نموذج السمات
+
 - `trait_model()` عامّ: الأبعاد ← السمات ← العناصر (منهج لا بيانات طفل).
 - `orphan_traits(id)` بنطاق **traits**: أول قياس وآخره نسبةً مئوية لكل سمة، دون ملاحظة المشرف.
 - `orphan_group(id)` بنطاق **group**: اسم المجموعة، المشرف، المؤسسة، والأسماء المستعارة للزملاء.
 
 ## أهداف الدعم — `create_support_pledge`
-| النوع | الأهداف |
-|---|---|
+
+| النوع | الأهداف                              |
+| ----- | ------------------------------------ |
 | تأهيل | يتيم · مجموعة · منطقة · دولة · مؤسسة |
-| عيني | الأهداف نفسها |
+| عيني  | الأهداف نفسها                        |
 
 التعهّد نيّةٌ بحالة `pending`؛ التحصيل الإلكتروني ما زال معلّقاً حتى موافقة Creem.
 
 ## اسم المنصّة
+
 النصوص الظاهرة صارت «كهاتين». رؤوس الـ API (`X-IOSO-*`) وبادئات المفاتيح (`ioso_ck_` / `ioso_sk_`) بقيت كما هي كي لا ينقطع شريكٌ متّصل؛ تغييرها قرارٌ منفصل. والشعار المرسوم (`IosoMark`) لم يُمسّ.

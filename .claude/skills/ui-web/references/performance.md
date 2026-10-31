@@ -1,4 +1,5 @@
 # الأداء
+
 - لا `transition: all` / `transition-all`. سمِّ: `transition-[transform,opacity]`.
 - حرّك `transform` و`opacity` فقط؛ لا `width/height/top/left`.
 - `will-change` عند تقطّع أول إطار فقط، وأزله بعدها.
@@ -7,6 +8,7 @@
 - الخطوط: `font-display: swap` وتحميل مسبق لخطّ العناوين فقط.
 
 ## الحركة تحت الحِمل
+
 - حركات CSS/WAAPI تعمل خارج الخيط الرئيسي وتبقى سلسة أثناء تحميل الصفحة؛ حركات JS بـ `requestAnimationFrame` تُسقط إطارات.
   استعمل CSS للحركات المحدّدة سلفاً، وJS للديناميكية القابلة للقطع فقط.
 - في Motion: الخصائص المختصرة (`x`, `y`, `scale`) تُحسب على الخيط الرئيسي؛ سلسلة `transform` الكاملة قد تُسرَّع.
