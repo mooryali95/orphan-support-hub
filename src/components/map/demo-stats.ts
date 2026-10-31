@@ -22,17 +22,31 @@ export function toMapStats(geo: Geo): MapStats {
       total: c.total,
       sponsored: c.sponsored,
       small: c.small,
+      gap: c.gap,
+      currency: c.currency,
+      delivered: c.delivered,
       regions: Object.fromEntries(c.regions.map((r) => [r.value, r])),
     };
   }
   return out;
 }
 
-const n = (total: number, sponsored: number | null = null): GeoCount => ({
-  total: total < COHORT_MIN ? null : total,
-  sponsored,
-  small: total < COHORT_MIN,
-});
+const n = (
+  total: number,
+  sponsored: number | null = null,
+  delivered: number | null = null,
+): GeoCount => {
+  const small = total < COHORT_MIN;
+  return {
+    total: small ? null : total,
+    sponsored,
+    small,
+    // فجوةٌ تقريبية: من لم يُكفل بعد × ٤٠ دولاراً.
+    gap: small ? null : (total - (sponsored ?? 0)) * 40,
+    currency: small ? null : "USD",
+    delivered,
+  };
+};
 
 export const DEMO_GEO: Geo = {
   available: false,
@@ -40,10 +54,10 @@ export const DEMO_GEO: Geo = {
     {
       value: "ألبانيا",
       code: "AL",
-      ...n(96, 61),
+      ...n(96, 61, 44),
       regions: [
-        { value: "Tirana", ...n(38, 27) },
-        { value: "Durrës", ...n(17, 12) },
+        { value: "Tirana", ...n(38, 27, 22) },
+        { value: "Durrës", ...n(17, 12, 7) },
         { value: "Shkodër", ...n(12, 6) },
         { value: "Elbasan", ...n(11, 7) },
         { value: "Korçë", ...n(8, 5) },
@@ -63,7 +77,7 @@ export const DEMO_GEO: Geo = {
     {
       value: "اليمن",
       code: "YE",
-      ...n(57, 20),
+      ...n(57, 20, 9),
       regions: [
         { value: "Ta'izz", ...n(31, 9) },
         { value: "Al Hudaydah", ...n(26, 11) },

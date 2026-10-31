@@ -230,6 +230,10 @@ export type GeoRegionRow = {
   small: boolean;
   total: number | null;
   sponsored: number | null;
+  /** طبقات الخارطة (هجرة 0929): الفجوة بالعملة الغالبة، والتسليمات الموثّقة خلال ٩٠ يوماً. */
+  gap?: number | string | null;
+  currency?: string | null;
+  delivered?: number | null;
 };
 export type GeoCountryRow = Omit<GeoRegionRow, "region"> & {
   country: string;

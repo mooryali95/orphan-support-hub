@@ -9,7 +9,35 @@ import { resolveCountry } from "@/lib/countries";
  * تقرأ منها الخارطة (أيّ الدول تُفتح وأيّ المناطق تُلوَّن) والدليل
  * (قائمتا البلد والمنطقة وأعدادهما). فما تُظهره الخارطة يجده الدليل.
  */
-export type GeoCount = { total: number | null; sponsored: number | null; small: boolean };
+export type GeoCount = {
+  total: number | null;
+  sponsored: number | null;
+  small: boolean;
+  /** الحاجة الشهرية غير المغطّاة بالعملة الغالبة — تُحجب كالعدد إن صغر الحشد. */
+  gap: number | null;
+  currency: string | null;
+  /** أطفالٌ وصلهم تسليمٌ موثّق خلال ٩٠ يوماً — بحماية تقسيم «مكفول/ينتظر» نفسها. */
+  delivered: number | null;
+};
+
+/** صفٌّ من القاعدة ← العدّ الموحّد (الحقول الجديدة قد تغيب قبل تطبيق الهجرة). */
+function countOf(r: {
+  total: number | null;
+  sponsored: number | null;
+  small: boolean;
+  gap?: number | string | null;
+  currency?: string | null;
+  delivered?: number | null;
+}): GeoCount {
+  return {
+    total: r.total,
+    sponsored: r.sponsored,
+    small: r.small,
+    gap: r.gap == null ? null : Number(r.gap),
+    currency: r.currency ?? null,
+    delivered: r.delivered ?? null,
+  };
+}
 export type GeoCountry = GeoCount & {
   /** النصّ كما في القاعدة — به يُفلتَر الدليل. */
   value: string;
@@ -25,15 +53,8 @@ export function shapeGeo(rows: GeoCountryRow[], available: boolean): Geo {
     countries: rows.map((r) => ({
       value: r.country,
       code: resolveCountry(r.country),
-      total: r.total,
-      sponsored: r.sponsored,
-      small: r.small,
-      regions: r.regions.map((g) => ({
-        value: g.region,
-        total: g.total,
-        sponsored: g.sponsored,
-        small: g.small,
-      })),
+      ...countOf(r),
+      regions: r.regions.map((g) => ({ value: g.region, ...countOf(g) })),
     })),
   };
 }

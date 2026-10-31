@@ -25,6 +25,7 @@ import { formatMoney } from "@/lib/format";
 import { BRAND, brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
+import { DEFAULT_LAYER, type MapLayer, parseLayer } from "@/components/map/layers";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
 import { useMapStats } from "@/components/map/useMapStats";
@@ -312,11 +313,17 @@ const COPY = defineCopy("routes/index", {
   },
 });
 
+const layerSearchOf = (raw: unknown): { layer?: MapLayer } => {
+  const layer = parseLayer(raw);
+  return layer ? { layer } : {};
+};
+
 export const Route = createFileRoute("/")({
   // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
-  validateSearch: (raw: Record<string, unknown>): { c?: string; r?: string } => ({
+  validateSearch: (raw: Record<string, unknown>): { c?: string; r?: string; layer?: MapLayer } => ({
     ...(typeof raw["c"] === "string" && /^[A-Z]{2}$/.test(raw["c"]) ? { c: raw["c"] } : {}),
     ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
+    ...layerSearchOf(raw["layer"]),
   }),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
@@ -400,9 +407,25 @@ function HomePage() {
   const navigate = Route.useNavigate();
   const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
   const { stats, demo } = useMapStats();
+  // الطبقة تبقى في الرابط عبر التنقّل، والافتراضية لا تُكتب فيه.
+  const layerSearch = sp.layer && sp.layer !== DEFAULT_LAYER ? { layer: sp.layer } : {};
   const onSelect = (s: MapSelection) =>
     void navigate({
-      search: { ...(s.country ? { c: s.country } : {}), ...(s.region ? { r: s.region } : {}) },
+      search: {
+        ...(s.country ? { c: s.country } : {}),
+        ...(s.region ? { r: s.region } : {}),
+        ...layerSearch,
+      },
+      resetScroll: false,
+      viewTransition: false,
+    });
+  const onLayer = (layer: MapLayer) =>
+    void navigate({
+      search: (prev) => {
+        const { layer: _old, ...rest } = prev;
+        return layer === DEFAULT_LAYER ? rest : { ...rest, layer };
+      },
+      replace: true,
       resetScroll: false,
       viewTransition: false,
     });
@@ -417,6 +440,8 @@ function HomePage() {
           stats={stats}
           selection={selection}
           onSelect={onSelect}
+          layer={sp.layer ?? DEFAULT_LAYER}
+          onLayer={onLayer}
           demo={demo}
           action={(ctx) => <MapActions ctx={ctx} />}
         />

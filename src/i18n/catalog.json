@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 634,
+ "count": 643,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -878,6 +878,13 @@
    "hash": "9c822e2462c1",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.delivered": {
+   "en": "Received a documented delivery in the last 90 days",
+   "ar": "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "kind": "text",
+   "hash": "d205fd1663f1",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.demo": {
    "en": "Sample data",
    "ar": "بيانات تجريبية",
@@ -891,6 +898,13 @@
    "kind": "template",
    "params": 1,
    "hash": "7793f247c436",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.gap": {
+   "en": "Monthly gap",
+   "ar": "الفجوة الشهرية",
+   "kind": "text",
+   "hash": "4e5541be2440",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.hint": {
@@ -912,6 +926,55 @@
    "ar": "ملفاً موثّقاً في",
    "kind": "text",
    "hash": "f187b16b81df",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerGap": {
+   "en": "Gap",
+   "ar": "الفجوة",
+   "kind": "text",
+   "hash": "f112e548cedf",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerGapHint": {
+   "en": "Monthly need not yet covered, in currency",
+   "ar": "الحاجة الشهرية غير المغطّاة بالعملة",
+   "kind": "text",
+   "hash": "a1edccb87e61",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerImpact": {
+   "en": "Impact",
+   "ar": "الأثر",
+   "kind": "text",
+   "hash": "820b53e7f292",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerImpactHint": {
+   "en": "Share sponsored, and children with a documented delivery in the last 90 days",
+   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "kind": "text",
+   "hash": "e34083026666",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerWaiting": {
+   "en": "Waiting",
+   "ar": "ينتظرون",
+   "kind": "text",
+   "hash": "52aaf29e1083",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layerWaitingHint": {
+   "en": "Approved children still waiting for a sponsor",
+   "ar": "عدد الأطفال المعتمدين الذين ينتظرون كافلاً",
+   "kind": "text",
+   "hash": "9b930ec77ae0",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.layers": {
+   "en": "Map layer",
+   "ar": "طبقة الخارطة",
+   "kind": "text",
+   "hash": "060ac768519d",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.list": {

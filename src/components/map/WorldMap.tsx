@@ -10,10 +10,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { ArrowLeft, Globe2, List, LocateFixed, MapPin, X } from "lucide-react";
+import { ArrowLeft, Globe2, Layers, List, LocateFixed, MapPin, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { countryName, normalize } from "@/lib/countries";
+import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, intlOf, pluralOf, type Locale, useLocale } from "@/lib/locale";
 import { arCount, COUNTRIES } from "@/lib/plural";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ import {
   type Point,
 } from "./gesture";
 import { COHORT_MIN, type CountryStat, type MapStats, type RegionStat } from "./demo-stats";
+import { DEFAULT_LAYER, intensityOf, type MapLayer, metricOf, metricText, rankOf } from "./layers";
 
 /* ── البيانات ──────────────────────────────────────────────────────────── */
 
@@ -110,6 +112,15 @@ const COPY = defineCopy("components/map/WorldMap", {
     countriesH: "الدول",
     closeList: "إغلاق القائمة",
     reset: "إعادة الضبط",
+    layers: "طبقة الخارطة",
+    layerWaiting: "ينتظرون",
+    layerImpact: "الأثر",
+    layerGap: "الفجوة",
+    layerWaitingHint: "عدد الأطفال المعتمدين الذين ينتظرون كافلاً",
+    layerImpactHint: "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+    layerGapHint: "الحاجة الشهرية غير المغطّاة بالعملة",
+    delivered: "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+    gap: "الفجوة الشهرية",
     hint: "اقرص للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول وEnter للدخول.",
     countryButton: (name: string, n: string) => `${name}: ${n} — اضغط Enter للدخول`,
     regionButton: (name: string, n: string) => `${name}: ${n}`,
@@ -143,12 +154,27 @@ const COPY = defineCopy("components/map/WorldMap", {
     countriesH: "Countries",
     closeList: "Close list",
     reset: "Reset view",
+    layers: "Map layer",
+    layerWaiting: "Waiting",
+    layerImpact: "Impact",
+    layerGap: "Gap",
+    layerWaitingHint: "Approved children still waiting for a sponsor",
+    layerImpactHint: "Share sponsored, and children with a documented delivery in the last 90 days",
+    layerGapHint: "Monthly need not yet covered, in currency",
+    delivered: "Received a documented delivery in the last 90 days",
+    gap: "Monthly gap",
     hint: "Pinch to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one.",
     countryButton: (name: string, n: string) => `${name}: ${n} — press Enter to open`,
     regionButton: (name: string, n: string) => `${name}: ${n}`,
   },
 });
 const sizeOf = (s: { total: number | null } | undefined) => s?.total ?? 1;
+/** لون الطبقة: «ينتظرون» بالأخضر الأساسي، «الأثر» بالازدهار، «الفجوة» بالحاجة. */
+const LAYER_FILL: Record<MapLayer, string> = {
+  waiting: "fill-primary",
+  impact: "fill-shore-thrive",
+  gap: "fill-shore-need",
+};
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(false);
@@ -174,8 +200,10 @@ const CountriesLayer = memo(function CountriesLayer({
   onHover,
   onKey,
   label,
+  layer,
 }: {
   countries: CountryShape[];
+  layer: MapLayer;
   /** داخل دولة: لا يُرسم إلا ما يجاورها — العالم كلّه في كل إطار ثقلٌ بلا فائدة. */
   near: Box | null;
   stats: MapStats;
@@ -188,6 +216,8 @@ const CountriesLayer = memo(function CountriesLayer({
   label: (name: string, n: string) => string;
 }) {
   const locale = useLocale();
+  const hidden = copyOf(COPY, locale).fewerThan(COHORT_MIN);
+  const maxMetric = Math.max(1, ...countries.map((c) => metricOf(layer, stats[c.c]) ?? 0));
   const within = (b: Box) =>
     !near ||
     !(
@@ -204,25 +234,29 @@ const CountriesLayer = memo(function CountriesLayer({
         const dim = focus && focus !== c.c;
         // الدولة التي فيها ملفّات زرٌّ على الخارطة نفسها: تُركَّز وتُفتح بـEnter.
         const focusable = active && focus !== c.c;
+        const text = active ? metricText(layer, stats[c.c], locale, hidden) : "";
         return (
           <path
             key={`${c.c}-${i}`}
+            style={
+              active && focus !== c.c
+                ? { fillOpacity: intensityOf(metricOf(layer, stats[c.c]), maxMetric) }
+                : undefined
+            }
             d={c.d}
             vectorEffect="non-scaling-stroke"
             onClick={active ? () => onPick(c.c) : undefined}
             onPointerEnter={active ? () => onHover(c.c) : undefined}
             onFocus={active ? () => onHover(c.c) : undefined}
             onKeyDown={focusable ? (e) => onKey(e, c.c) : undefined}
-            data-tip={
-              active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total, locale)}` : undefined
-            }
+            data-tip={active && focus !== c.c ? `${c.n}|${text}` : undefined}
             data-country={focusable ? c.c : undefined}
             tabIndex={focusable ? 0 : -1}
             role={focusable ? "button" : undefined}
-            aria-label={focusable ? label(c.n, shown(stats[c.c]!.total, locale)) : undefined}
+            aria-label={focusable ? label(c.n, text) : undefined}
             className={cn(
-              "stroke-background transition-[fill,opacity] duration-700 ease-[var(--ease-out)] outline-none",
-              active ? "cursor-pointer fill-primary/75 hover:fill-primary" : "fill-border",
+              "stroke-background transition-[fill,fill-opacity,opacity] duration-700 ease-[var(--ease-out)] outline-none",
+              active ? cn("cursor-pointer hover:brightness-110", LAYER_FILL[layer]) : "fill-border",
               focusable && "focus-visible:fill-primary focus-visible:stroke-bridge",
               dim && "opacity-25",
               // أثناء الطيران تبقى الدولة ملوّنة، ثم تخلي مكانها لمناطقها.
@@ -246,22 +280,29 @@ const RegionsLayer = memo(function RegionsLayer({
   onPick,
   onKey,
   label,
+  layer,
 }: {
   regions: RegionShape[];
   stat: CountryStat | undefined;
+  layer: MapLayer;
   selected: string | null;
   onPick: (id: string) => void;
   onKey: (e: React.KeyboardEvent<SVGPathElement>, id: string) => void;
   label: (name: string, n: string) => string;
 }) {
   const locale = useLocale();
-  const max = Math.max(1, ...Object.values(stat?.regions ?? {}).map(sizeOf));
+  const hidden = copyOf(COPY, locale).fewerThan(COHORT_MIN);
+  const max = Math.max(
+    1,
+    ...Object.values(stat?.regions ?? {}).map((x) => metricOf(layer, x) ?? 0),
+  );
   return (
     <g>
       {regions.map((r, i) => {
         const s = statFor(r, stat);
-        // كثافة اللون بعدد الأيتام: الأكثف أعمق خضرة.
-        const k = s ? 0.35 + 0.6 * (sizeOf(s) / max) : 0;
+        // كثافة اللون بقيمة الطبقة: الأكثر أعمق لوناً، والمحجوب أخفّ.
+        const k = s ? intensityOf(metricOf(layer, s), max) : 0;
+        const text = s ? metricText(layer, s, locale, hidden) : r.n;
         // المنطقة التي فيها ملفّات تُركَّز؛ الخالية تُضغط فقط (لا تستحقّ موضعاً في الترتيب).
         const focusable = !!s && selected !== r.id;
         return (
@@ -271,18 +312,20 @@ const RegionsLayer = memo(function RegionsLayer({
             vectorEffect="non-scaling-stroke"
             onClick={() => onPick(r.id)}
             onKeyDown={focusable ? (e) => onKey(e, r.id) : undefined}
-            data-tip={s ? `${r.n}|${shown(s.total, locale)}` : r.n}
+            data-tip={s ? `${r.n}|${text}` : r.n}
             data-region={focusable ? r.id : undefined}
             tabIndex={focusable ? 0 : -1}
             role={focusable ? "button" : undefined}
-            aria-label={focusable ? label(r.n, shown(s!.total, locale)) : undefined}
+            aria-label={focusable ? label(r.n, text) : undefined}
             style={{
               ["--i" as string]: Math.min(i, 24),
               fillOpacity: selected && selected !== r.id ? (s ? k * 0.45 : 0.5) : s ? k : 1,
             }}
             className={cn(
               "map-region cursor-pointer stroke-background transition-[fill,fill-opacity] duration-500 outline-none",
-              s ? "fill-primary hover:brightness-110" : "fill-secondary hover:fill-accent",
+              s
+                ? cn("hover:brightness-110", LAYER_FILL[layer])
+                : "fill-secondary hover:fill-accent",
               focusable && "focus-visible:stroke-bridge focus-visible:brightness-110",
               selected === r.id && "fill-bridge",
             )}
@@ -364,8 +407,13 @@ export function WorldMap({
   className,
   intro,
   bare = false,
+  layer = DEFAULT_LAYER,
+  onLayer,
 }: {
   stats: MapStats;
+  /** الطبقة المعروضة؛ تُحفظ في الرابط عند الأب. بلا `onLayer` لا يظهر المفتاح. */
+  layer?: MapLayer;
+  onLayer?: (layer: MapLayer) => void;
   selection: MapSelection;
   onSelect: (s: MapSelection) => void;
   demo?: boolean;
@@ -737,16 +785,16 @@ export function WorldMap({
     () =>
       (world?.countries ?? [])
         .filter((c) => stats[c.c])
-        .sort((a, b) => sizeOf(stats[b.c]) - sizeOf(stats[a.c])),
-    [world, stats],
+        .sort((a, b) => rankOf(layer, stats[b.c]) - rankOf(layer, stats[a.c])),
+    [world, stats, layer],
   );
   const rankedRegions = useMemo(
     () =>
       regions
         .map((r) => ({ r, s: statFor(r, cStat) }))
         .filter((x) => x.s)
-        .sort((a, b) => sizeOf(b.s) - sizeOf(a.s)),
-    [regions, cStat],
+        .sort((a, b) => rankOf(layer, b.s) - rankOf(layer, a.s)),
+    [regions, cStat, layer],
   );
 
   // المجموع من الدول التي يُكشف عددها؛ الصغيرة تُذكر دون رقمها.
@@ -807,6 +855,7 @@ export function WorldMap({
                 onHover={prefetchRegions}
                 onKey={onCountryKey}
                 label={c$.countryButton}
+                layer={layer}
               />
             </g>
             {/* المناطق تُرسم بعد الهبوط — لا تُثقل الطيران — ثم تظهر بالتتابع. */}
@@ -819,6 +868,7 @@ export function WorldMap({
                 onPick={pickRegion}
                 onKey={onRegionKey}
                 label={c$.regionButton}
+                layer={layer}
               />
             )}
             {/* نقاط ذهبية تنبض فوق الدول التي فيها ملفّات — في العالم فقط. */}
@@ -852,7 +902,9 @@ export function WorldMap({
                   className="map-label pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_4px_12px_-4px_rgb(0_0_0/0.2)] backdrop-blur transition-[scale] duration-150 hover:scale-105"
                 >
                   {r.n}{" "}
-                  <span className="tabular-nums text-primary">{shown(rs!.total, locale)}</span>
+                  <span className="tabular-nums text-primary">
+                    {metricText(layer, rs, locale, shown(null, locale))}
+                  </span>
                 </button>
               );
             })}
@@ -927,6 +979,36 @@ export function WorldMap({
             </nav>
 
             <div className="pointer-events-auto flex items-center gap-2">
+              {onLayer && (
+                <div
+                  role="group"
+                  aria-label={c$.layers}
+                  className="flex items-center gap-0.5 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur"
+                >
+                  <Layers className="ms-2 size-4 text-muted-foreground" aria-hidden="true" />
+                  {(
+                    [
+                      ["waiting", c$.layerWaiting, c$.layerWaitingHint],
+                      ["impact", c$.layerImpact, c$.layerImpactHint],
+                      ["gap", c$.layerGap, c$.layerGapHint],
+                    ] as const
+                  ).map(([key, name, hint]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={layer === key}
+                      title={hint}
+                      onClick={() => onLayer(key)}
+                      className={cn(
+                        "min-h-8 rounded-full px-3 transition-colors",
+                        layer === key ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
+                      )}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              )}
               {demo && (
                 <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
                   {c$.demo}
@@ -1061,6 +1143,22 @@ export function WorldMap({
                         </dl>
                       </>
                     )}
+                    {layer === "gap" && s.gap != null && (
+                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                        <span className="text-muted-foreground">{c$.gap}</span>
+                        <span className="font-semibold tabular-nums text-shore-need">
+                          {formatMoney(s.gap, s.currency ?? "USD", locale)}
+                        </span>
+                      </p>
+                    )}
+                    {layer === "impact" && s.delivered != null && (
+                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                        <span className="text-muted-foreground">{c$.delivered}</span>
+                        <span className="font-semibold tabular-nums">
+                          {shown(s.delivered, locale)}
+                        </span>
+                      </p>
+                    )}
                     {(small || !split) && (
                       <p className="mt-2 text-xs leading-6 text-muted-foreground">
                         {c$.cohort(COHORT_MIN)}
@@ -1102,7 +1200,7 @@ export function WorldMap({
                             >
                               {r.n}
                               <span className="tabular-nums text-muted-foreground">
-                                {shown(rs!.total, locale)}
+                                {metricText(layer, rs, locale, shown(null, locale))}
                               </span>
                             </button>
                           </li>
