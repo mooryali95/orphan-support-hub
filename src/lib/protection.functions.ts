@@ -58,18 +58,18 @@ export const listOrphanCards = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const db = withProtection(publicClient());
     const { data: res, error } = await db.rpc("list_orphan_cards", {
-      _country: data.country || undefined,
-      _region: data.region || undefined,
-      _age_band: data.ageBand || undefined,
-      _gender: data.gender || undefined,
-      _education_stage: data.educationStage || undefined,
-      _funding: data.funding || undefined,
-      _building: data.building || undefined,
-      _search: data.search || undefined,
+      _country: (data.country ?? null) as never,
+      _region: (data.region ?? null) as never,
+      _age_band: (data.ageBand ?? null) as never,
+      _gender: (data.gender ?? null) as never,
+      _education_stage: (data.educationStage ?? null) as never,
+      _funding: (data.funding ?? null) as never,
+      _building: (data.building ?? null) as never,
+      _search: (data.search ?? null) as never,
       _sort: data.sort ?? "waiting",
       _limit: data.limit ?? 24,
       _offset: data.offset ?? 0,
-      _group: data.group || undefined,
+      _group: (data.group ?? null) as never,
     });
     if (error) return { rows: [] as OrphanCardRow[], total: 0, error: error.message };
     const payload = (res ?? {}) as { rows?: OrphanCardRow[]; total?: number };
@@ -185,7 +185,7 @@ export const decideAccessRequest = createServerFn({ method: "POST" })
     const { error } = await db.rpc("decide_orphan_access", {
       _request: data.requestId,
       _decision: data.decision,
-      _note: data.note || undefined,
+      _note: (data.note ?? null) as never,
       _days: data.days ?? 180,
     });
     if (error) return { ok: false as const, error: error.message };
@@ -203,7 +203,7 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
     const db = withProtection(context.supabase);
     const { error } = await db.rpc("revoke_orphan_access", {
       _request: data.requestId,
-      _note: data.note || undefined,
+      _note: (data.note ?? null) as never,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };

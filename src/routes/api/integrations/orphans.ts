@@ -59,11 +59,11 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         const db = withIntegration(supabaseAdmin);
         const { data, error } = await db.rpc("api_orphan_cards", {
           _client: auth.client.id,
-          _country: url.searchParams.get("country") ?? undefined,
-          _region: url.searchParams.get("region") ?? undefined,
-          _age_band: url.searchParams.get("age_band") ?? undefined,
-          _gender: url.searchParams.get("gender") ?? undefined,
-          _funding: url.searchParams.get("funding") ?? undefined,
+          _country: url.searchParams.get("country") as never,
+          _region: url.searchParams.get("region") as never,
+          _age_band: url.searchParams.get("age_band") as never,
+          _gender: url.searchParams.get("gender") as never,
+          _funding: url.searchParams.get("funding") as never,
           _limit: num("limit", 50),
           _offset: num("offset", 0),
         });
