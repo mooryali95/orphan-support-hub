@@ -9,7 +9,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * الأخيرة هي التي تستحقّ تنبيهاً لأنها تعني قاعدة متأخّرة عن الهجرات
  * لا مزوّد بريد متعثّراً.
  *
- * القراءة بعميل المستخدم فتحرسها سياسة «الإدارة فقط» على `dispatch_runs`.
+ * السجلّ بعميل المستخدم، وعدّ الطابور الشامل بعميل خادمي بعد التحقق من الإدارة.
  */
 
 export type DispatchHealth = {
@@ -36,6 +36,10 @@ export type DispatchHealth = {
 export const getDispatchHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("is_admin");
+    if (roleError || isAdmin !== true) return { allowed: false as const };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { withDispatch, withPhase4 } = await import("@/integrations/supabase/types.extra");
     const { checkDispatchSchema } = await import("@/lib/schema-preflight.server");
 
@@ -52,17 +56,22 @@ export const getDispatchHealth = createServerFn({ method: "GET" })
     // خطأ القراءة هنا يعني «لست مديراً» غالباً؛ لا تفاصيل تُكشف.
     if (error) return { allowed: false as const };
 
-    const schema = await checkDispatchSchema(context.supabase);
+    const schema = await checkDispatchSchema(supabaseAdmin);
 
-    const notes = withPhase4(context.supabase);
-    const { count: pending } = await notes
+    const notes = withPhase4(supabaseAdmin);
+    const { count: pending, error: pendingError } = await notes
       .from("notifications")
       .select("id", { count: "exact", head: true })
       .eq("email_state", "pending");
-    const { count: failedQueue } = await notes
+    const { count: failedQueue, error: failedError } = await notes
       .from("notifications")
       .select("id", { count: "exact", head: true })
       .eq("email_state", "failed");
+
+    // لا تُعرض أخطاء العدّ كأصفار توحي بأن الطابور سليم.
+    if (pendingError || failedError || pending === null || failedQueue === null) {
+      throw new Error("تعذّر قراءة أعداد طابور الإشعارات");
+    }
 
     const rows = runs ?? [];
     const dbErrorRuns = rows.filter((r) => r.error_kind === "database" || !r.schema_ready).length;
