@@ -1,4 +1,5 @@
 # اللغة والاتجاه
+
 - `dir` و`lang` على الجذر، ويُعاد ضبطهما على كل كتلة بلغة أخرى (`<p dir="ltr" lang="sq">`).
 - خصائص منطقية فقط: `ms/me/ps/pe/start/end/text-start/rounded-s`. ابحث: `grep -nE '\b(ml|mr|pl|pr|left|right)-' src`.
 - عزل ثنائي الاتجاه: بريد، رابط، رمز (KH-0042)، رقم هاتف ← `<bdi>` أو `dir="ltr"`؛ حقول الإدخال اللاتينية `dir="ltr"` مع `text-end` في RTL.

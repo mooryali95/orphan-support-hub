@@ -1,4 +1,5 @@
 # الإيماءات والسحب
+
 - **الإغلاق بالزخم:** لا تشترط تجاوز مسافة؛ السرعة تكفي.
   ```js
   const v = Math.abs(dx) / (performance.now() - startedAt); // px/ms

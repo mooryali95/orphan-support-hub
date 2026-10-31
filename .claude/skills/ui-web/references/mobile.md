@@ -1,4 +1,5 @@
 # الجوال — يُحَسّ تطبيقاً
+
 - hover عالق: `@media (hover:hover)` لكل تأثير تمرير.
 - وميض النقر: `-webkit-tap-highlight-color: transparent` مع حالة `:active` بديلة.
 - `100vh` ← `100dvh`.

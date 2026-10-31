@@ -11,6 +11,7 @@ notice and this permission notice in all copies or substantial portions of the S
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 ## ما ضُبط عند الدمج
+
 - حُذفت «الرسالة الافتتاحية» الثابتة: المهارة تعمل مباشرة.
 - تعارض «كل حركة < 300ms» مع «النوافذ 200–500ms» حُسم بجدولٍ واحد واستثناءٍ صريح.
 - مثال «الخروج أسرع من الدخول (دخول 2s)» كان خلطاً بالضغط المطوّل؛ فُصل المفهومان.
