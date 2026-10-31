@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 733,
+ "count": 735,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -919,6 +919,13 @@
    "hash": "de2742f33477",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.collapse": {
+   "en": "Collapse the card to see the map",
+   "ar": "طيّ البطاقة لرؤية الخارطة",
+   "kind": "text",
+   "hash": "163ec913d849",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.countries.one": {
    "en": "{0} country",
    "ar": "",
@@ -967,6 +974,13 @@
    "ar": "بيانات تجريبية",
    "kind": "text",
    "hash": "e80feb93881e",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.expand": {
+   "en": "Expand the card",
+   "ar": "توسيع البطاقة",
+   "kind": "text",
+   "hash": "28c7c6699e3c",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.fewerThan": {

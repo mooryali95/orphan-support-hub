@@ -259,11 +259,35 @@
   filter: drop-shadow(0 0 9px color-mix(in oklch, var(--color-primary) 70%, transparent));
 }
 [data-flying] .map-regions,
-[data-flying] .map-active {
+[data-flying] .map-active,
+[data-gesturing] .map-regions,
+[data-gesturing] .map-active {
   filter: none;
 }
 .map-rise {
   animation: map-rise 520ms var(--ease-out) 80ms both;
+}
+/* الورقة السفلية تُطوى وتُفتح بانتقال الارتفاع، والتموّج حلقةٌ تتّسع وتتلاشى. */
+.map-sheet {
+  transition: max-height 320ms var(--ease-out);
+}
+@keyframes map-ripple {
+  from {
+    opacity: 0.9;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 7;
+  }
+}
+.map-ripple {
+  animation: map-ripple 650ms var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-ripple {
+    animation-duration: 1ms;
+  }
 }
 .map-grow {
   transform-origin: inline-start;
@@ -349,14 +373,18 @@ header.sticky {
 }
 /* أثناء الطيران: رسمٌ أسرع، ونبضٌ متوقّف، وزجاجٌ بلا ضبابية — فالضبابية
    فوق خارطةٍ تتحرّك تُعاد حسابها في كل إطار. */
-[data-flying] svg path {
+[data-flying] svg path,
+[data-gesturing] svg path {
   shape-rendering: optimizeSpeed;
 }
-[data-flying] .map-pulse {
+[data-flying] .map-pulse,
+[data-gesturing] .map-pulse {
   animation-play-state: paused;
 }
 [data-flying] .backdrop-blur,
-[data-flying] .backdrop-blur-sm {
+[data-flying] .backdrop-blur-sm,
+[data-gesturing] .backdrop-blur,
+[data-gesturing] .backdrop-blur-sm {
   backdrop-filter: none;
 }
 
