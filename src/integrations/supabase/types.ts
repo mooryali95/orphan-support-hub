@@ -3317,6 +3317,8 @@ export type Database = {
         Args: {
           _amount: number
           _country?: string
+          _currency?: string
+          _elapsed?: number
           _kind: string
           _note?: string
           _target: string
