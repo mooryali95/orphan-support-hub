@@ -24,8 +24,11 @@ vi.mock("@/lib/schema-preflight.server", () => ({ checkDispatchSchema: mocks.sch
 import { listMySponsorships } from "./sponsorships.functions";
 import { getDispatchHealth } from "./monitoring.functions";
 
-function invoke(fn: unknown, context: unknown): Promise<unknown> {
-  return (fn as (args: { context: unknown }) => Promise<unknown>)({ context });
+// نتيجة الدالة تُفحص بالشكل لا بالنوع؛ النوع هنا يخدم الاختبار وحده.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Loose = any;
+function invoke(fn: unknown, context: unknown): Promise<Loose> {
+  return (fn as (args: { context: unknown }) => Promise<Loose>)({ context });
 }
 
 beforeEach(() => {
