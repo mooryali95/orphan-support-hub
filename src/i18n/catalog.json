@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 630,
+ "count": 634,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -870,6 +870,14 @@
    "hash": "6660428bf8fb",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.countryButton": {
+   "en": "{0}: {1} — press Enter to open",
+   "ar": "{0}: {1} — اضغط Enter للدخول",
+   "kind": "template",
+   "params": 2,
+   "hash": "9c822e2462c1",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.demo": {
    "en": "Sample data",
    "ar": "بيانات تجريبية",
@@ -883,6 +891,13 @@
    "kind": "template",
    "params": 1,
    "hash": "7793f247c436",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.hint": {
+   "en": "Pinch to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one.",
+   "ar": "اقرص للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول وEnter للدخول.",
+   "kind": "text",
+   "hash": "3ef7a080f99b",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.introA": {
@@ -943,6 +958,14 @@
    "hash": "14ba2e8f3e65",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.regionButton": {
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "869f6c298bef",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.regions": {
    "en": "Regions",
    "ar": "المناطق",
@@ -956,6 +979,13 @@
    "kind": "template",
    "params": 1,
    "hash": "75b06e821036",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.reset": {
+   "en": "Reset view",
+   "ar": "إعادة الضبط",
+   "kind": "text",
+   "hash": "1dab42f126ae",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.section": {
