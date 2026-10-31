@@ -906,6 +906,10 @@ export type OrphanCardRow = {
   gap: number;
   building: boolean;
   waiting_days: number;
+  /** إشارات الثقة — مجاميع لا محتوى (انظر 20260928100000_profile_trust). */
+  profile_sections?: number;
+  consent_documented?: boolean;
+  recent_report?: boolean;
 };
 
 export type AccessStatus = "pending" | "approved" | "rejected" | "revoked";
