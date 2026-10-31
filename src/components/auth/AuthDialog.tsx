@@ -8,12 +8,12 @@ import { AuthPanel } from "./AuthPanel";
 const COPY = defineCopy("components/auth/AuthDialog", {
   ar: {
     title: "ادخل لتكمل",
-    hint: "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+    hint: "بصمتك، أو رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
     consent: "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية — منصّةٌ تعالج بيانات أطفال.",
   },
   en: {
     title: "Sign in to continue",
-    hint: "A code sent to you, or Google — and you stay right where you are.",
+    hint: "Your passkey, a code sent to you, or Google — and you stay right where you are.",
     consent:
       "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
   },

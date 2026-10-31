@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Fingerprint, Loader2, Mail, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
@@ -8,22 +8,35 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Label } from "@/components/ui/label";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
-import { defineCopy, useCopy } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import {
   addPasskey,
+  deviceHasPasskey,
+  deviceName,
   dismissOffer,
   listPasskeys,
   offerDismissed,
-  passkeySupported,
+  passkeyCapabilities,
+  passkeyServerDisabled,
   signInWithPasskey,
+  type PasskeyCapabilities,
+  type PasskeyFailure,
 } from "@/lib/passkey";
 
 const COPY = defineCopy("components/auth/AuthPanel", {
   ar: {
     title: "ادخل لتكمل",
     noPasskey: "لم نجد بصمةً لهذا الحساب على هذا الجهاز. ادخل برمزٍ ثم أضفها.",
+    passkeyFail: "تعذّر الدخول بالبصمة. جرّب رمزاً إلى بريدك.",
+    passkeyUnconfirmed: "أكّد بريدك أو جوالك أوّلاً — ادخل برمزٍ يصلك، ثم تعمل البصمة.",
+    passkeyWait: "أكّد هويتك على جهازك…",
+    welcomeBackH: "أهلاً بعودتك",
+    welcomeBackP: "ادخل بلمسةٍ كما في المرّة الماضية.",
+    passkeyAutofill: "أو اختر بصمتك من اقتراحات حقل البريد.",
+    otherWays: "طرقٌ أخرى للدخول",
     enrolFail: "تعذّرت إضافة البصمة. يمكنك إضافتها لاحقاً من «حسابي».",
+    enrolDuplicate: "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
     enrolOk: "أُضيفت بصمتك — في المرّة القادمة تدخل بلمسة.",
     googleFail: "تعذّر الدخول بجوجل. جرّب البريد.",
     smsOff: "الدخول بالجوال لم يُفعَّل بعد — استعمل البريد أو جوجل.",
@@ -35,6 +48,7 @@ const COPY = defineCopy("components/auth/AuthPanel", {
     offerH: "ادخل في المرّة القادمة بلمسة",
     offerP:
       "أضف بصمتك أو وجهك على هذا الجهاز. لا رمز ينتظرك، ولا كلمة مرور تُنسى — وبصمتك لا تغادر جهازك.",
+    offerDevice: (device: string) => `سيُحفظ باسم «${device}» ويمكنك حذفه من «حسابي» متى شئت.`,
     addPasskey: "أضف بصمتي",
     later: "لاحقاً",
     sentTo: "أرسلنا رمزاً من ستّة أرقام إلى",
@@ -63,7 +77,16 @@ const COPY = defineCopy("components/auth/AuthPanel", {
     title: "Sign in to continue",
     noPasskey:
       "We couldn't find a passkey for this account on this device. Sign in with a code, then add one.",
+    passkeyFail: "Passkey sign-in didn't work. Try a code to your email.",
+    passkeyUnconfirmed:
+      "Confirm your email or phone first — sign in with a code, then your passkey will work.",
+    passkeyWait: "Confirm it's you on your device…",
+    welcomeBackH: "Welcome back",
+    welcomeBackP: "Sign in with a touch, like last time.",
+    passkeyAutofill: "Or pick your passkey from the email field's suggestions.",
+    otherWays: "Other ways to sign in",
     enrolFail: "The passkey couldn't be added. You can add it later from “My account”.",
+    enrolDuplicate: "This device already holds a passkey for your account.",
     enrolOk: "Passkey added — next time, sign in with a touch.",
     googleFail: "Google sign-in didn't work. Try email instead.",
     smsOff: "Phone sign-in isn't enabled yet — use email or Google.",
@@ -75,6 +98,8 @@ const COPY = defineCopy("components/auth/AuthPanel", {
     offerH: "Next time, sign in with a touch",
     offerP:
       "Add your fingerprint or face on this device. No code to wait for, no password to forget — and your biometrics never leave your device.",
+    offerDevice: (device: string) =>
+      `It will be saved as “${device}”; you can remove it from “My account” at any time.`,
     addPasskey: "Add my passkey",
     later: "Later",
     sentTo: "We sent a six-digit code to",
@@ -127,11 +152,15 @@ function GoogleMark() {
 }
 
 /**
- * الدخول دون مغادرة ما كنت فيه — رمزٌ إلى البريد أو الجوال، أو جوجل.
+ * الدخول دون مغادرة ما كنت فيه — بصمة، أو رمزٌ إلى البريد أو الجوال، أو جوجل.
  *
  * لا كلمة مرور أولاً: الرمز يصل، يُكتب في المكان نفسه، ويبقى الزائر على
  * الدولة أو المنطقة التي فتحها. وكلمة المرور باقيةٌ لمن اعتادها.
  * الحساب يُنشأ عند أوّل رمز — لا شاشة «تسجيل» منفصلة.
+ *
+ * البصمة بثلاث درجاتٍ من السهولة: جهازٌ معروف يفتح عليها مباشرةً؛ وحقل
+ * البريد يقترحها فوق لوحة المفاتيح حيث يدعم المتصفّح ذلك؛ وبعد أوّل دخولٍ
+ * برمزٍ عرضٌ واحد لإضافتها. وإن لم يفعّلها الخادم بعد اختفت بلا ضجيج.
  */
 export function AuthPanel({
   onDone,
@@ -145,6 +174,7 @@ export function AuthPanel({
   className?: string;
 }) {
   const t = useCopy(COPY);
+  const locale = useLocale();
   const [method, setMethod] = useState<Method>("email");
   const [stage, setStage] = useState<Stage>({ step: "ask" });
   const [value, setValue] = useState("");
@@ -160,38 +190,107 @@ export function AuthPanel({
     return () => clearTimeout(id);
   }, [wait]);
 
-  const [canPasskey, setCanPasskey] = useState(false);
-  useEffect(() => setCanPasskey(passkeySupported()), []);
+  /* ── البصمة: الملاءمة والذاكرة ──
+   * على الخادم لا شيء؛ في العميل تُحسب مرّة. `known` يعني أنّ هذا الجهاز
+   * سجّل بصمةً أو دخل بها من قبل، فتُقدَّم البصمة أوّل الطرق. */
+  const [caps, setCaps] = useState<PasskeyCapabilities>({
+    supported: false,
+    platform: false,
+    conditional: false,
+  });
+  const [known, setKnown] = useState(false);
+  const [serverOff, setServerOff] = useState(false);
+  const [ceremony, setCeremony] = useState(false);
+  useEffect(() => {
+    let live = true;
+    void passkeyCapabilities().then((c) => live && setCaps(c));
+    setKnown(deviceHasPasskey());
+    setServerOff(passkeyServerDisabled());
+    return () => {
+      live = false;
+    };
+  }, []);
+  const canPasskey = caps.supported && !serverOff;
+
+  /* ── الإكمال التلقائي (Conditional UI) ──
+   * حين يلمس الزائر حقل البريد يعرض المتصفّح بصماته فوق لوحة المفاتيح،
+   * فيدخل دون أن يكتب شيئاً. يُلغى عند مغادرة الخطوة أو فتح النافذة الصريحة. */
+  const autofill = useRef<AbortController | null>(null);
+  const stopAutofill = () => {
+    autofill.current?.abort();
+    autofill.current = null;
+  };
+  useEffect(() => {
+    if (!canPasskey || !caps.conditional || stage.step !== "ask") return;
+    const ctl = new AbortController();
+    autofill.current = ctl;
+    void signInWithPasskey({ mediation: "conditional", signal: ctl.signal }).then((r) => {
+      if (ctl.signal.aborted || autofill.current !== ctl) return;
+      autofill.current = null;
+      if (r.ok) {
+        toast.success(t.welcome);
+        onDone?.();
+      } else if (r.why === "disabled") {
+        setServerOff(true);
+      }
+      // ما عدا ذلك صمت: الإكمال التلقائي عرضٌ لا طلب.
+    });
+    return stopAutofill;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canPasskey, caps.conditional, stage.step]);
 
   /** بعد الدخول برمزٍ أو كلمة مرور: عرضٌ واحد لإضافة البصمة، إن لم تكن له. */
   async function finish() {
-    if (passkeySupported() && !offerDismissed() && (await listPasskeys()).length === 0) {
+    if (canPasskey && caps.platform && !offerDismissed() && (await listPasskeys()).length === 0) {
       setStage({ step: "offer" });
       return;
     }
     onDone?.();
   }
 
-  async function passkey() {
-    setBusy(true);
-    const { error } = await signInWithPasskey();
-    setBusy(false);
-    if (error) {
-      // إلغاء المستخدم للنافذة ليس خطأً يُعلَن.
-      if (!/abort|cancel|NotAllowed/i.test(String(error.message))) {
+  function explain(why: PasskeyFailure) {
+    switch (why) {
+      case "cancelled":
+      case "expired":
+        return; // ليس خطأً يُعلَن
+      case "disabled":
+        setServerOff(true);
+        return;
+      case "none":
+        setKnown(false);
         toast.error(t.noPasskey);
-      }
-      return;
+        return;
+      case "unconfirmed":
+        toast.error(t.passkeyUnconfirmed);
+        return;
+      default:
+        toast.error(t.passkeyFail);
     }
+  }
+
+  async function passkey() {
+    stopAutofill();
+    setBusy(true);
+    setCeremony(true);
+    const r = await signInWithPasskey();
+    setCeremony(false);
+    setBusy(false);
+    if (!r.ok) return explain(r.why);
+    toast.success(t.welcome);
     onDone?.();
   }
 
   async function enrol() {
     setBusy(true);
-    const { error } = await addPasskey();
+    setCeremony(true);
+    const r = await addPasskey(locale);
+    setCeremony(false);
     setBusy(false);
-    if (error) {
-      if (!/abort|cancel|NotAllowed/i.test(String(error.message))) {
+    if (!r.ok) {
+      if (r.why === "duplicate") {
+        toast.success(t.enrolDuplicate);
+        onDone?.();
+      } else if (r.why !== "cancelled") {
         toast.error(t.enrolFail);
       }
       return;
@@ -203,6 +302,7 @@ export function AuthPanel({
   const here = () => (typeof window === "undefined" ? "/" : window.location.href);
 
   async function google() {
+    stopAutofill();
     setBusy(true);
     // يعود إلى الرابط نفسه — بالدولة والمنطقة المفتوحتين.
     const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: here() });
@@ -214,6 +314,7 @@ export function AuthPanel({
   async function send() {
     const to = value.trim();
     if (!to) return;
+    stopAutofill();
     setBusy(true);
     const { error } =
       method === "email"
@@ -279,6 +380,7 @@ export function AuthPanel({
           </span>
           <p className="mt-4 font-bold">{t.offerH}</p>
           <p className="mt-1 text-sm leading-7 text-muted-foreground">{t.offerP}</p>
+          <p className="mt-2 text-xs text-muted-foreground">{t.offerDevice(deviceName(locale))}</p>
           <Button
             size="lg"
             className="mt-5 h-11 w-full"
@@ -286,7 +388,7 @@ export function AuthPanel({
             onClick={() => void enrol()}
           >
             {busy ? <Loader2 className="animate-spin" /> : <Fingerprint aria-hidden="true" />}
-            {t.addPasskey}
+            {ceremony ? t.passkeyWait : t.addPasskey}
           </Button>
           <button
             type="button"
@@ -401,16 +503,32 @@ export function AuthPanel({
         </form>
       ) : (
         <div key="ask" className="mt-5">
-          {canPasskey && (
+          {/* جهازٌ معروف: البصمة بطلةُ الشاشة، والباقي تحتها.
+              جهازٌ جديد: جوجل أوّلاً والبصمة تليه مخطّطةً — لمن يحملها على جهازٍ آخر. */}
+          {canPasskey && known && (
+            <div className="map-rise mb-5 text-center">
+              <span className="mx-auto grid size-14 place-items-center rounded-full bg-primary/10 text-primary">
+                <Fingerprint className="size-7" strokeWidth={1.5} aria-hidden="true" />
+              </span>
+              <p className="mt-3 font-bold">{t.welcomeBackH}</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">{t.welcomeBackP}</p>
+            </div>
+          )}
+          {canPasskey && known && (
             <Button
               type="button"
               size="lg"
-              className="mb-2 h-11 w-full gap-3 text-base"
+              className="mb-2 h-12 w-full gap-3 text-base"
               disabled={busy}
               onClick={() => void passkey()}
+              autoFocus
             >
-              <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
-              {t.passkey}
+              {ceremony ? (
+                <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+              ) : (
+                <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
+              )}
+              {ceremony ? t.passkeyWait : t.passkey}
             </Button>
           )}
           <Button
@@ -424,10 +542,30 @@ export function AuthPanel({
             <GoogleMark />
             {t.google}
           </Button>
+          {canPasskey && !known && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="mt-2 h-11 w-full gap-3 bg-card text-base"
+              disabled={busy}
+              onClick={() => void passkey()}
+            >
+              {ceremony ? (
+                <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+              ) : (
+                <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
+              )}
+              {ceremony ? t.passkeyWait : t.passkey}
+            </Button>
+          )}
+          {canPasskey && caps.conditional && (
+            <p className="mt-2 text-center text-xs text-muted-foreground">{t.passkeyAutofill}</p>
+          )}
 
           <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
-            {t.orCode}
+            {known ? t.otherWays : t.orCode}
             <span className="h-px flex-1 bg-border" />
           </div>
 
@@ -476,7 +614,14 @@ export function AuthPanel({
               type={method === "email" ? "email" : "tel"}
               dir="ltr"
               inputMode={method === "email" ? "email" : "tel"}
-              autoComplete={method === "email" ? "email" : "tel"}
+              // «webauthn» يفتح اقتراحات البصمة فوق لوحة المفاتيح حين يُدعم الإكمال التلقائي.
+              autoComplete={
+                method === "email"
+                  ? canPasskey && caps.conditional
+                    ? "username webauthn"
+                    : "email"
+                  : "tel"
+              }
               placeholder={method === "email" ? "name@example.com" : "+355 69 123 4567"}
               aria-label={method === "email" ? t.email : t.phoneLabel}
               value={value}

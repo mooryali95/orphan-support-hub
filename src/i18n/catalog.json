@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 607,
+ "count": 616,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -384,10 +384,10 @@
    "file": "src/components/auth/AuthDialog.tsx"
   },
   "components/auth/AuthDialog.hint": {
-   "en": "A code sent to you, or Google — and you stay right where you are.",
-   "ar": "رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+   "en": "Your passkey, a code sent to you, or Google — and you stay right where you are.",
+   "ar": "بصمتك، أو رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
    "kind": "text",
-   "hash": "c5413c7199a3",
+   "hash": "8dde2259e502",
    "file": "src/components/auth/AuthDialog.tsx"
   },
   "components/auth/AuthDialog.title": {
@@ -453,6 +453,13 @@
    "hash": "b47b33fa0a51",
    "file": "src/components/auth/AuthPanel.tsx"
   },
+  "components/auth/AuthPanel.enrolDuplicate": {
+   "en": "This device already holds a passkey for your account.",
+   "ar": "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
+   "kind": "text",
+   "hash": "883ae3ecac3d",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
   "components/auth/AuthPanel.enrolFail": {
    "en": "The passkey couldn't be added. You can add it later from “My account”.",
    "ar": "تعذّرت إضافة البصمة. يمكنك إضافتها لاحقاً من «حسابي».",
@@ -502,6 +509,14 @@
    "hash": "3322a9bf2fc6",
    "file": "src/components/auth/AuthPanel.tsx"
   },
+  "components/auth/AuthPanel.offerDevice": {
+   "en": "It will be saved as “{0}”; you can remove it from “My account” at any time.",
+   "ar": "سيُحفظ باسم «{0}» ويمكنك حذفه من «حسابي» متى شئت.",
+   "kind": "template",
+   "params": 1,
+   "hash": "94edf1d3cc50",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
   "components/auth/AuthPanel.offerH": {
    "en": "Next time, sign in with a touch",
    "ar": "ادخل في المرّة القادمة بلمسة",
@@ -523,11 +538,46 @@
    "hash": "86ee196727b3",
    "file": "src/components/auth/AuthPanel.tsx"
   },
+  "components/auth/AuthPanel.otherWays": {
+   "en": "Other ways to sign in",
+   "ar": "طرقٌ أخرى للدخول",
+   "kind": "text",
+   "hash": "a701392fe3ea",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
   "components/auth/AuthPanel.passkey": {
    "en": "Sign in with a passkey",
    "ar": "الدخول بالبصمة",
    "kind": "text",
    "hash": "4fa65b2c05c3",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.passkeyAutofill": {
+   "en": "Or pick your passkey from the email field's suggestions.",
+   "ar": "أو اختر بصمتك من اقتراحات حقل البريد.",
+   "kind": "text",
+   "hash": "923ad06d7885",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.passkeyFail": {
+   "en": "Passkey sign-in didn't work. Try a code to your email.",
+   "ar": "تعذّر الدخول بالبصمة. جرّب رمزاً إلى بريدك.",
+   "kind": "text",
+   "hash": "24d91943a798",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.passkeyUnconfirmed": {
+   "en": "Confirm your email or phone first — sign in with a code, then your passkey will work.",
+   "ar": "أكّد بريدك أو جوالك أوّلاً — ادخل برمزٍ يصلك، ثم تعمل البصمة.",
+   "kind": "text",
+   "hash": "37c0343cb9c3",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.passkeyWait": {
+   "en": "Confirm it's you on your device…",
+   "ar": "أكّد هويتك على جهازك…",
+   "kind": "text",
+   "hash": "96d15f1886a6",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.password": {
@@ -647,6 +697,20 @@
    "ar": "أهلاً بك",
    "kind": "text",
    "hash": "1f60866db6e8",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.welcomeBackH": {
+   "en": "Welcome back",
+   "ar": "أهلاً بعودتك",
+   "kind": "text",
+   "hash": "6f79be1c3d81",
+   "file": "src/components/auth/AuthPanel.tsx"
+  },
+  "components/auth/AuthPanel.welcomeBackP": {
+   "en": "Sign in with a touch, like last time.",
+   "ar": "ادخل بلمسةٍ كما في المرّة الماضية.",
+   "kind": "text",
+   "hash": "03d4da7b28c4",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/brand/SurplusBadge.perMonth": {
@@ -2213,10 +2277,10 @@
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.hint": {
-   "en": "A code sent to your email or phone, or Google. Your account is created the first time you sign in.",
-   "ar": "رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+   "en": "Your passkey if it's on this device, a code sent to your email or phone, or Google. Your account is created the first time you sign in.",
+   "ar": "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
    "kind": "text",
-   "hash": "1784dd3268c7",
+   "hash": "6d27c3e9523f",
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.home": {
