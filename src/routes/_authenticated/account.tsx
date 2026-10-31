@@ -22,7 +22,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { addPasskey, listPasskeys, passkeySupported, removePasskey } from "@/lib/passkey";
+import {
+  addPasskey,
+  listPasskeys,
+  passkeySupported,
+  removePasskey,
+  renamePasskey,
+} from "@/lib/passkey";
 import { pageTitle } from "@/config/brand";
 import { cn } from "@/lib/utils";
 
@@ -86,14 +92,34 @@ function AccountPage() {
     toast.success("حُفظ اسمك");
   }
 
+  const [adding, setAdding] = useState(false);
+  const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null);
+
   async function add() {
-    const { error } = await addPasskey();
-    if (error) {
-      if (!/abort|cancel|NotAllowed/i.test(String(error.message)))
-        toast.error("تعذّرت إضافة البصمة.");
+    setAdding(true);
+    const r = await addPasskey("ar");
+    setAdding(false);
+    if (!r.ok) {
+      if (r.why === "duplicate") toast.success("هذا الجهاز يحمل بصمةً لحسابك من قبل.");
+      else if (r.why === "disabled") toast.error("البصمة لم تُفعَّل على الخادم بعد.");
+      else if (r.why !== "cancelled") toast.error("تعذّرت إضافة البصمة.");
       return;
     }
     toast.success("أُضيفت البصمة");
+    await qc.invalidateQueries({ queryKey: ["passkeys"] });
+  }
+
+  async function rename() {
+    if (!renaming) return;
+    const name = renaming.name.trim();
+    const current = passkeys.find((k) => k.id === renaming.id)?.friendly_name ?? "";
+    setRenaming(null);
+    if (!name || name === current) return;
+    const { error } = await renamePasskey(renaming.id, name);
+    if (error) {
+      toast.error("تعذّرت إعادة التسمية");
+      return;
+    }
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
   }
 
@@ -213,8 +239,45 @@ function AccountPage() {
                     key={k.id}
                     className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{k.friendly_name || "بصمة"}</p>
+                    <div className="min-w-0 flex-1">
+                      {renaming?.id === k.id ? (
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            void rename();
+                          }}
+                          className="flex gap-2"
+                        >
+                          <Input
+                            autoFocus
+                            aria-label="اسم البصمة"
+                            maxLength={120}
+                            value={renaming.name}
+                            onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
+                            onKeyDown={(e) => e.key === "Escape" && setRenaming(null)}
+                            onBlur={() => void rename()}
+                            className="h-9 text-sm"
+                          />
+                          <Button type="submit" size="icon" className="size-9" aria-label="حفظ">
+                            <Check />
+                          </Button>
+                        </form>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
+                          className="group flex max-w-full items-center gap-2 text-start"
+                          aria-label={`إعادة تسمية ${k.friendly_name || "البصمة"}`}
+                        >
+                          <span className="truncate text-sm font-medium">
+                            {k.friendly_name || "بصمة"}
+                          </span>
+                          <Pencil
+                            className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      )}
                       <p className="text-xs text-muted-foreground">
                         أُضيفت {fmtDate(k.created_at)}
                         {k.last_used_at ? ` · آخر استعمال ${fmtDate(k.last_used_at)}` : ""}
@@ -234,9 +297,13 @@ function AccountPage() {
               </ul>
             ) : null}
             {canPasskey ? (
-              <Button className="mt-3" onClick={() => void add()}>
-                <Fingerprint aria-hidden="true" />
-                {passkeys.length ? "أضف بصمة هذا الجهاز" : "أضف بصمتي"}
+              <Button className="mt-3" disabled={adding} onClick={() => void add()}>
+                {adding ? <Loader2 className="animate-spin" /> : <Fingerprint aria-hidden="true" />}
+                {adding
+                  ? "أكّد هويتك على جهازك…"
+                  : passkeys.length
+                    ? "أضف بصمة هذا الجهاز"
+                    : "أضف بصمتي"}
               </Button>
             ) : (
               <p className="mt-3 text-xs text-muted-foreground">هذا المتصفّح لا يدعم البصمة.</p>
