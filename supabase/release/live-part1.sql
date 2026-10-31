@@ -1,0 +1,28 @@
+BEGIN;
+-- >>> migration 20260823180000 creem_provider_alignment
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260823180000') THEN
+    RAISE EXCEPTION 'الهجرة 20260823180000 مطبّقة سلفاً';
+  END IF;
+END $guard$;
+-- مواءمة النظام مع مزوّد الدفع Creem.
+--
+-- سبب هذه الهجرة أن المزوّد تبيّن أنه Creem (creem.io) لا Careem، وهما
+-- شركتان مختلفتان. ومن أحداث Creek الثلاثة عشر حدثان لا تقابلهما حالة في
+-- المخطّط الحالي:
+--
+--   dispute.created      → منازعة: المال سُحب من الحساب وفُتح بلاغ.
+--   subscription.paused  → إيقاف مؤقّت (حالة `paused` موجودة أصلاً في
+--                          sponsorship_status، فلا تحتاج شيئاً).
+--
+-- المنازعة ليست ردّ مبلغ: الردّ قرار من التاجر، والمنازعة نزاع يفتحه حامل
+-- البطاقة وقد يُحسم لصالح أيّ طرف. خلطهما تحت `refunded` يُخفي مالاً
+-- معلّقاً عن لوحة الإدارة ويُفسد أرقام التحصيل.
+
+-- ALTER TYPE ... ADD VALUE لا يمكن استعماله في نفس المعاملة التي تُنشئه،
+-- ولذلك يقف وحده في هجرة مستقلّة عن أي استعمال له.
+ALTER TYPE public.payment_status ADD VALUE IF NOT EXISTS 'disputed';
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20260823180000', 'creem_provider_alignment');
+
+COMMIT;
