@@ -54,7 +54,7 @@ export const Route = createFileRoute("/orphans/")({
     const f = str("funding");
     if (f === "open" || f === "full") out.funding = f;
     const so = str("sort");
-    if (so === "closest" || so === "newest") out.sort = so;
+    if (so === "closest" || so === "newest" || so === "documented") out.sort = so;
     if (raw["building"] === true || raw["building"] === "1" || raw["building"] === 1)
       out.building = true;
     const pg = Number(raw["page"]);
@@ -75,21 +75,23 @@ type DirectorySearch = {
   stage?: string;
   group?: string;
   funding?: "open" | "full";
-  sort?: "closest" | "newest";
+  sort?: "closest" | "newest" | "documented";
   building?: boolean;
   page?: number;
 };
-type Sort = "waiting" | "closest" | "newest";
+type Sort = "waiting" | "closest" | "newest" | "documented";
 
-const SORTS: Sort[] = ["waiting", "closest", "newest"];
+const SORTS: Sort[] = ["waiting", "closest", "newest", "documented"];
 
 const COPY = defineCopy("routes/orphans.index", {
   ar: {
     title: "دليل الأيتام",
-    sorts: { waiting: "الأطول انتظاراً", closest: "الأقرب للاكتمال", newest: "الأحدث" } as Record<
-      Sort,
-      string
-    >,
+    sorts: {
+      waiting: "الأطول انتظاراً",
+      closest: "الأقرب للاكتمال",
+      newest: "الأحدث",
+      documented: "الأكثر توثيقاً",
+    } as Record<Sort, string>,
     ages: AGE_BAND_LABELS as Record<string, string>,
     female: "أنثى",
     male: "ذكر",
@@ -138,6 +140,7 @@ const COPY = defineCopy("routes/orphans.index", {
       waiting: "Waiting longest",
       closest: "Closest to fully sponsored",
       newest: "Newest",
+      documented: "Most documented",
     } as Record<Sort, string>,
     ages: {
       under_6: "Under 6",
@@ -416,7 +419,7 @@ function OrphansPage() {
                   sort:
                     e.target.value === "waiting"
                       ? undefined
-                      : (e.target.value as "closest" | "newest"),
+                      : (e.target.value as "closest" | "newest" | "documented"),
                 })
               }
               aria-label={t.sortLabel}

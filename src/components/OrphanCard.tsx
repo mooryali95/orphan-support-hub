@@ -3,6 +3,7 @@ import { MapPin, GraduationCap, Hammer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
+import { TrustSignals } from "@/components/orphan/TrustSignals";
 import { formatMoney, fundingPercent } from "@/lib/format";
 import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/types.extra";
 import { COLORS } from "@/config/brand-colors";
@@ -146,6 +147,15 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
         ) : (
           <p className="text-muted-foreground text-xs">{c.notStarted}</p>
         )}
+
+        {/* كم نعرف عنه — أعدادٌ ونعم/لا من القاعدة، لا محتوى. */}
+        <TrustSignals
+          compact
+          profileSections={orphan.profile_sections}
+          consentDocumented={orphan.consent_documented}
+          building={orphan.building}
+          recentReport={orphan.recent_report}
+        />
 
         <div className="mt-auto space-y-2">
           {/* المتبقّي هو الرقم الذي يُتّخذ القرار عليه، فيسبق النسبة لا يتبعها. */}

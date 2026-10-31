@@ -11,11 +11,13 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import {
   getOrphanProfile,
+  getProfileCompleteness,
   saveProfileSection,
   SECTION_FIELDS,
   SECTION_LABELS,
   SENSITIVE_SECTIONS,
 } from "@/lib/profile.functions";
+import { CompletenessLine } from "@/components/orphan/TrustSignals";
 import type { ProfileSection, ProfileSectionRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
@@ -170,6 +172,13 @@ export function OrphanProfilePanel({
     queryKey: ["orphan-profile", orphanId],
     queryFn: () => fetchProfile({ data: { orphanId } }),
   });
+  const fetchCompleteness = useServerFn(getProfileCompleteness);
+  // للدائرة وحدها (الدالّة ترفض غيرها)؛ تُطلب بعد أن يُعرف أنّ القارئ يكتب.
+  const { data: comp } = useQuery({
+    queryKey: ["profile-completeness", orphanId],
+    queryFn: () => fetchCompleteness({ data: { orphanId } }),
+    enabled: Boolean(data?.profile?.may_write),
+  });
 
   const [editing, setEditing] = useState<ProfileSection | null>(null);
   const [fields, setFields] = useState<Record<string, string>>({});
@@ -250,7 +259,17 @@ export function OrphanProfilePanel({
           {t.title(orphanName)}
         </h2>
         {mayWrite ? (
-          <Badge variant="secondary">{t.count(profile.sections.length, ALL_SECTIONS.length)}</Badge>
+          comp?.completeness ? (
+            <CompletenessLine
+              filled={comp.completeness.filled}
+              missing={comp.completeness.missing}
+              labels={t.sections}
+            />
+          ) : (
+            <Badge variant="secondary">
+              {t.count(profile.sections.length, ALL_SECTIONS.length)}
+            </Badge>
+          )
         ) : (
           (profile.hidden_sections ?? 0) > 0 && (
             <Badge variant="outline" className="gap-1">

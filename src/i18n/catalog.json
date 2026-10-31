@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 616,
+ "count": 630,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -1224,6 +1224,98 @@
    "kind": "text",
    "hash": "71debc637539",
    "file": "src/components/orphan/ScopedSections.tsx"
+  },
+  "components/orphan/TrustSignals.building": {
+   "en": "Qualification program under way",
+   "ar": "برنامج تأهيلٍ قائم",
+   "kind": "text",
+   "hash": "7a067aff6548",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.complete": {
+   "en": "Profile complete",
+   "ar": "البروفايل مكتمل",
+   "kind": "text",
+   "hash": "c7e3376a3140",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.dotsLabel.one": {
+   "en": "Profile completeness: {0} of {1}",
+   "ar": "",
+   "kind": "plural",
+   "hash": "24ffa9e090c1",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.dotsLabel.other": {
+   "en": "Profile completeness: {0} of {1}",
+   "ar": "",
+   "kind": "plural",
+   "hash": "24ffa9e090c1",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.label": {
+   "en": "What we know about this child",
+   "ar": "ما نعرفه عن هذا الطفل",
+   "kind": "text",
+   "hash": "275049a7ed6d",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.missing": {
+   "en": "Missing:",
+   "ar": "ينقصه:",
+   "kind": "text",
+   "hash": "c145d24076a1",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.noPhoto": {
+   "en": "No photo consent",
+   "ar": "لا موافقة صورة",
+   "kind": "text",
+   "hash": "8b610e8f1f6a",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.noReport": {
+   "en": "No recent report",
+   "ar": "لا تقرير حديث",
+   "kind": "text",
+   "hash": "5be8e43e2c2e",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.photo": {
+   "en": "Documented photo consent",
+   "ar": "موافقةُ صورةٍ موثّقة",
+   "kind": "text",
+   "hash": "455dd3aeb2d2",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.profile.one": {
+   "en": "{0} of {1} profile section documented",
+   "ar": "",
+   "kind": "plural",
+   "hash": "2221612bc7a9",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.profile.other": {
+   "en": "{0} of {1} profile sections documented",
+   "ar": "",
+   "kind": "plural",
+   "hash": "ec3b46af5d47",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.profileShort": {
+   "en": "{0}/{1}",
+   "ar": "{0}/{1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "d5d6070c16e7",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.report": {
+   "en": "Approved report in the last 90 days",
+   "ar": "تقريرٌ معتمد آخر ٩٠ يوماً",
+   "kind": "text",
+   "hash": "de290201ade9",
+   "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
    "en": "Cancel",
@@ -3540,6 +3632,13 @@
    "ar": "الأقرب للاكتمال",
    "kind": "text",
    "hash": "dcb6d69eefe9",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.sorts.documented": {
+   "en": "Most documented",
+   "ar": "الأكثر توثيقاً",
+   "kind": "text",
+   "hash": "f99c5c39aebf",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.sorts.newest": {

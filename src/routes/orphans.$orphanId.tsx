@@ -28,6 +28,7 @@ import { AccessGate } from "@/components/protection/AccessGate";
 import { getOrphanViewAuthed } from "@/lib/protection.functions";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { ScopedSections } from "@/components/orphan/ScopedSections";
+import { TrustSignals } from "@/components/orphan/TrustSignals";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
@@ -357,6 +358,15 @@ function OrphanDetail() {
                     </span>
                   )}
                 </div>
+
+                {/* كم نعرف عنه — قبل القصّة، لأنّ الثقة تسبق التعاطف. */}
+                <TrustSignals
+                  className="mt-4 rounded-xl bg-secondary/60 px-3 py-2"
+                  profileSections={orphan.profile_sections}
+                  consentDocumented={orphan.consent_documented}
+                  building={orphan.building}
+                  recentReport={orphan.recent_report}
+                />
 
                 {detail?.story && (
                   <p className="mt-6 whitespace-pre-line text-base leading-8">{detail.story}</p>

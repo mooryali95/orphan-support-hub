@@ -47,7 +47,7 @@ const filterSchema = z.object({
   funding: z.enum(["any", "open", "full"]).nullish(),
   building: z.boolean().nullish(),
   search: z.string().trim().max(80).nullish(),
-  sort: z.enum(["waiting", "closest", "newest"]).nullish(),
+  sort: z.enum(["waiting", "closest", "newest", "documented"]).nullish(),
   limit: z.number().int().min(1).max(60).optional(),
   offset: z.number().int().min(0).max(10_000).optional(),
   group: z.string().uuid().nullish(),

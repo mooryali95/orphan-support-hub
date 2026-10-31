@@ -3,8 +3,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FileText, GraduationCap, Loader2, Plus } from "lucide-react";
+import { FileText, GraduationCap, Loader2, Plus, UserRound } from "lucide-react";
 import { OrgInbox } from "@/components/org/OrgInbox";
+import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { CompletenessLine } from "@/components/orphan/TrustSignals";
+import { getProfileCompleteness, SECTION_LABELS } from "@/lib/profile.functions";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +52,7 @@ function OrgPage() {
   const [showForm, setShowForm] = useState(false);
   const [reporting, setReporting] = useState<string | null>(null);
   const [building, setBuilding] = useState<string | null>(null);
+  const [profiling, setProfiling] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["org-workspace"],
@@ -186,6 +190,15 @@ function OrgPage() {
                     <Button
                       size="sm"
                       variant="outline"
+                      aria-expanded={profiling === o.id}
+                      onClick={() => setProfiling(profiling === o.id ? null : o.id)}
+                    >
+                      <UserRound className="size-4" aria-hidden="true" />
+                      {profiling === o.id ? "إغلاق" : "البروفايل"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
                       aria-expanded={building === o.id}
                       onClick={() => setBuilding(building === o.id ? null : o.id)}
                     >
@@ -205,6 +218,15 @@ function OrgPage() {
                 )}
               </div>
 
+              {/* تمام البروفايل في الصفّ نفسه: الجهة تعرف ما ينقص دون أن تفتح شيئاً. */}
+              {(o.status === "approved" || o.status === "fully_sponsored") && (
+                <OrgCompleteness orphanId={o.id} />
+              )}
+
+              {profiling === o.id && (
+                <OrphanProfilePanel orphanId={o.id} orphanName={o.display_name} />
+              )}
+
               {building === o.id && <QualificationManager orphanId={o.id} />}
 
               {reporting === o.id && (
@@ -219,6 +241,25 @@ function OrgPage() {
         )}
       </div>
     </DashboardShell>
+  );
+}
+
+/** النقاط الستّ وأسماء الناقص — من `orphan_profile_completeness` (للدائرة وحدها). */
+function OrgCompleteness({ orphanId }: { orphanId: string }) {
+  const fetchCompleteness = useServerFn(getProfileCompleteness);
+  const { data } = useQuery({
+    queryKey: ["profile-completeness", orphanId],
+    queryFn: () => fetchCompleteness({ data: { orphanId } }),
+  });
+  const c = data?.completeness;
+  if (!c) return null;
+  return (
+    <CompletenessLine
+      className="mt-3"
+      filled={c.filled}
+      missing={c.missing}
+      labels={SECTION_LABELS as Record<string, string>}
+    />
   );
 }
 
