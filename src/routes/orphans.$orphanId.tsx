@@ -586,7 +586,13 @@ function OrphanDetail() {
                 <Button asChild className="mt-5 w-full" size="lg">
                   <Link
                     to="/support"
-                    search={{ orphan: orphan.id, name: orphan.display_name, kind: mode }}
+                    search={{
+                      orphan: orphan.id,
+                      name: orphan.display_name,
+                      kind: mode,
+                      // المبلغ المقترح في «ادعم» يأتي من فجوة الطفل بعملته.
+                      ...(remaining > 0 ? { gap: remaining, cur: orphan.currency } : {}),
+                    }}
                   >
                     {t.continueTo(t.kinds[mode].label, orphan.display_name)}
                   </Link>

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 643,
+ "count": 648,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -4154,11 +4154,11 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.confirm": {
-   "en": "Record my support — {0} €",
-   "ar": "سجّل دعمي — {0} €",
+   "en": "Record my support — {0}",
+   "ar": "سجّل دعمي — {0}",
    "kind": "template",
    "params": 1,
-   "hash": "5e4aa9e776d9",
+   "hash": "50a07212f14f",
    "file": "src/routes/support.tsx"
   },
   "routes/support.country": {
@@ -4196,11 +4196,33 @@
    "hash": "59316b005e67",
    "file": "src/routes/support.tsx"
   },
+  "routes/support.fromGap": {
+   "en": "The uncovered monthly need here is {0}. Pick what suits you:",
+   "ar": "الحاجة الشهرية غير المغطّاة هنا {0}. اختر ما يناسبك:",
+   "kind": "template",
+   "params": 1,
+   "hash": "083be8329b16",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.fullMonth": {
+   "en": "Covers the month",
+   "ar": "يسدّ الشهر",
+   "kind": "text",
+   "hash": "ccb315a7fab2",
+   "file": "src/routes/support.tsx"
+  },
   "routes/support.h1": {
    "en": "Support",
    "ar": "ادعم",
    "kind": "text",
    "hash": "81bb0b6bce39",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.halfMonth": {
+   "en": "Half of it",
+   "ar": "نصفه",
+   "kind": "text",
+   "hash": "276830735e32",
    "file": "src/routes/support.tsx"
   },
   "routes/support.kinds.in_kind.label": {
@@ -4315,6 +4337,13 @@
    "hash": "32398511e20f",
    "file": "src/routes/support.tsx"
   },
+  "routes/support.quarterMonth": {
+   "en": "A quarter",
+   "ar": "ربعه",
+   "kind": "text",
+   "hash": "2d2e70600a30",
+   "file": "src/routes/support.tsx"
+  },
   "routes/support.s1": {
    "en": "1. Kind of support",
    "ar": "١. نوع الدعم",
@@ -4355,6 +4384,13 @@
    "ar": "سجّل الدخول لإتمام الدعم",
    "kind": "text",
    "hash": "1575965acff4",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.signInHint": {
+   "en": "You stay here; after signing in, your support is recorded with the same amount.",
+   "ar": "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
+   "kind": "text",
+   "hash": "1ddf3e7a4598",
    "file": "src/routes/support.tsx"
   },
   "routes/support.steps.0": {

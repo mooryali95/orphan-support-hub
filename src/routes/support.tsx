@@ -4,6 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
+import { AuthDialog } from "@/components/auth/AuthDialog";
+import { formatMoney } from "@/lib/format";
+import { DEFAULT_LAYER } from "@/components/map/layers";
+import { defaultAmount, gapOfTarget, suggestionsFor } from "@/lib/support-amounts";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -22,7 +26,7 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { pageTitle } from "@/config/brand";
-import { copyOf, defineCopy, pluralOf, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { OfferingNote } from "@/components/kit/OfferingNote";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
@@ -39,6 +43,12 @@ const search = z.object({
     .regex(/^[A-Z]{2}$/)
     .optional(),
   r: z.string().max(120).optional(),
+  // فجوة الطفل بعملته (من ملفّه) — منها يُقترح المبلغ.
+  gap: z.coerce.number().positive().max(1_000_000).optional(),
+  cur: z
+    .string()
+    .regex(/^[A-Z]{3}$/)
+    .optional(),
 });
 
 export const Route = createFileRoute("/support")({
@@ -87,9 +97,14 @@ const COPY = defineCopy("routes/support", {
     pickChildB: "، ثم اضغط «ادعم» في ملفّه.",
     noOptions: "لا خيارات متاحة هنا بعد.",
     otherAmount: "مبلغ آخر",
+    fromGap: (g: string) => `الحاجة الشهرية غير المغطّاة هنا ${g}. اختر ما يناسبك:`,
+    fullMonth: "يسدّ الشهر",
+    halfMonth: "نصفه",
+    quarterMonth: "ربعه",
     note: "ملاحظة (اختياري)",
-    confirm: (a: number) => `سجّل دعمي — ${a} €`,
+    confirm: (a: string) => `سجّل دعمي — ${a}`,
     signIn: "سجّل الدخول لإتمام الدعم",
+    signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
   },
   en: {
@@ -144,9 +159,14 @@ const COPY = defineCopy("routes/support", {
     pickChildB: ", then press “Support” on their page.",
     noOptions: "No options available here yet.",
     otherAmount: "Other amount",
+    fromGap: (g: string) => `The uncovered monthly need here is ${g}. Pick what suits you:`,
+    fullMonth: "Covers the month",
+    halfMonth: "Half of it",
+    quarterMonth: "A quarter",
     note: "Note (optional)",
-    confirm: (a: number) => `Record my support — ${a} €`,
+    confirm: (a: string) => `Record my support — ${a}`,
     signIn: "Sign in to complete your support",
+    signInHint: "You stay here; after signing in, your support is recorded with the same amount.",
     pledgeNote:
       "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
   },
@@ -154,9 +174,20 @@ const COPY = defineCopy("routes/support", {
 const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {
-  const { orphan, name, kind: presetKind, c: mapCountry, r: mapRegion } = Route.useSearch();
+  const {
+    orphan,
+    name,
+    kind: presetKind,
+    c: mapCountry,
+    r: mapRegion,
+    gap: orphanGap,
+    cur: orphanCur,
+  } = Route.useSearch();
   const navigate = Route.useNavigate();
   const t = useCopy(COPY);
+  const locale = useLocale();
+  // «ادعم في دقيقتين»: يُقاس من فتح المسار حتى التسجيل.
+  const openedAt = useRef<number>(Date.now());
   const { stats, demo } = useMapStats();
   const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -178,6 +209,32 @@ function SupportPage() {
 
   const catalog = data?.catalog ?? null;
   const activeCountry = country || catalog?.countries[0]?.code || "";
+
+  /** فجوة الهدف بعملته: الطفل من رابطه، والدولة أو المنطقة من مصدر الجغرافيا. */
+  const gapOf = useMemo(
+    () =>
+      gapOfTarget({
+        targetType,
+        target,
+        country: activeCountry,
+        stats,
+        orphanGap,
+        orphanCurrency: orphanCur,
+      }),
+    [targetType, target, activeCountry, stats, orphanGap, orphanCur],
+  );
+  const currency = gapOf?.currency ?? "EUR";
+  const suggested = gapOf
+    ? (["fullMonth", "halfMonth", "quarterMonth"] as const).map((k, i) => ({
+        label: t[k],
+        value: suggestionsFor(gapOf.gap)[i]!,
+      }))
+    : AMOUNTS.map((a) => ({ label: formatMoney(a, "EUR", locale), value: a }));
+  // حين تُعرف الفجوة يبدأ المبلغ بنصف الشهر — خطوةٌ محسوسة بلا ثقل.
+  useEffect(() => {
+    if (gapOf) setAmount(defaultAmount(gapOf, AMOUNTS[1]!));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gapOf?.gap, gapOf?.currency]);
 
   const options = useMemo(() => {
     if (!catalog || !targetType) return [];
@@ -266,6 +323,8 @@ function SupportPage() {
         amount,
         country: activeCountry || undefined,
         note: note || undefined,
+        currency,
+        elapsed: Math.min(86_400, Math.round((Date.now() - openedAt.current) / 1000)),
       },
     });
     setBusy(false);
@@ -288,6 +347,7 @@ function SupportPage() {
           demo={demo}
           selection={selection}
           onSelect={onSelect}
+          layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
           className="h-[60dvh] min-h-[26rem]"
           intro={{
             title: t.mapTitle,
@@ -455,15 +515,25 @@ function SupportPage() {
 
             {kind && targetType && target && (
               <Section title={t.s4}>
+                {gapOf && (
+                  <p className="mb-3 text-sm text-muted-foreground">
+                    {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
+                  </p>
+                )}
                 <div className="flex flex-wrap gap-2">
-                  {AMOUNTS.map((a) => (
+                  {suggested.map((a) => (
                     <Button
-                      key={a}
+                      key={a.label}
                       type="button"
-                      variant={amount === a ? "default" : "outline"}
-                      onClick={() => setAmount(a)}
+                      variant={amount === a.value ? "default" : "outline"}
+                      onClick={() => setAmount(a.value)}
                     >
-                      {a} €
+                      {a.label}
+                      {gapOf && (
+                        <span className="tabular-nums opacity-80">
+                          {formatMoney(a.value, currency, locale)}
+                        </span>
+                      )}
                     </Button>
                   ))}
                   <Input
@@ -488,12 +558,18 @@ function SupportPage() {
                   {user ? (
                     <Button size="lg" disabled={busy} onClick={confirm}>
                       {busy && <Loader2 className="size-4 animate-spin" />}
-                      {t.confirm(amount)}
+                      {t.confirm(formatMoney(amount, currency, locale))}
                     </Button>
                   ) : (
-                    <Button asChild size="lg">
-                      <Link to="/auth">{t.signIn}</Link>
-                    </Button>
+                    <AuthDialog
+                      title={t.signIn}
+                      hint={t.signInHint}
+                      trigger={(open) => (
+                        <Button size="lg" onClick={open}>
+                          {t.signIn}
+                        </Button>
+                      )}
+                    />
                   )}
                   <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
                   {result && !result.ok && (

@@ -95,6 +95,13 @@ export const createPledge = createServerFn({ method: "POST" })
           .regex(/^[A-Z]{2}$/)
           .optional(),
         note: z.string().trim().max(1000).optional(),
+        /** عملة الفجوة التي اقتُرح منها المبلغ؛ الافتراضي EUR. */
+        currency: z
+          .string()
+          .regex(/^[A-Z]{3}$/)
+          .optional(),
+        /** ثوانٍ من فتح المسار حتى التسجيل — لمقياس «ادعم في دقيقتين». */
+        elapsed: z.number().int().min(0).max(86_400).optional(),
       })
       .parse(input),
   )
@@ -106,6 +113,8 @@ export const createPledge = createServerFn({ method: "POST" })
       _amount: data.amount,
       _country: data.country ?? null,
       _note: data.note || null,
+      _currency: data.currency ?? "EUR",
+      _elapsed: data.elapsed ?? null,
     });
     if (error) return { ok: false as const, error: pledgeError(error.message), id: null };
     return { ok: true as const, error: null, id: id as string };
