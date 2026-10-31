@@ -15,6 +15,13 @@
       "when": 1793430287236,
       "tag": "0001_restrict_public_media_read",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793434313704,
+      "tag": "0002_restrict_lookup_reads",
+      "breakpoints": true
     }
   ]
 }
