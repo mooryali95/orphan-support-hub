@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { listAccessRequests } from "@/lib/protection.functions";
 import { AccessDecision } from "@/components/protection/AccessDecision";
+import { RequesterThread } from "@/components/protection/RequesterThread";
 import type { AccessRequestRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
 
@@ -120,6 +121,9 @@ export function AccessQueue() {
               <p className="mt-3 whitespace-pre-line rounded-xl bg-secondary/60 p-3 text-sm leading-7">
                 {row.reason}
               </p>
+
+              {/* المحادثة من طرف الإدارة: طلبُ توضيحٍ قبل القرار، في المكان نفسه. */}
+              {tab === "pending" && <RequesterThread requestId={row.id} viewer="admin" />}
 
               <AccessDecision
                 row={row}

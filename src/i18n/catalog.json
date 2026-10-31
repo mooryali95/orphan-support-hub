@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 647,
+ "count": 649,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -1969,11 +1969,25 @@
    "hash": "6a509e4c7c53",
    "file": "src/components/protection/RequesterThread.tsx"
   },
+  "components/protection/RequesterThread.adminPlaceholder": {
+   "en": "Ask the requester for a clarification or explain your decision…",
+   "ar": "اطلب توضيحاً من صاحب الطلب أو اشرح قرارك…",
+   "kind": "text",
+   "hash": "a2e8b66bcc16",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
   "components/protection/RequesterThread.placeholder": {
    "en": "Add a clarification or answer the administration's question…",
    "ar": "أضف توضيحاً أو أجب عن سؤال الإدارة…",
    "kind": "text",
    "hash": "a326085c721b",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.requester": {
+   "en": "Requester",
+   "ar": "صاحب الطلب",
+   "kind": "text",
+   "hash": "74c4d1715b0f",
    "file": "src/components/protection/RequesterThread.tsx"
   },
   "components/protection/RequesterThread.send": {

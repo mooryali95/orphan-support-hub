@@ -15,14 +15,18 @@ const COPY = defineCopy("components/protection/RequesterThread", {
     title: "المحادثة مع الإدارة",
     admin: "الإدارة",
     you: "أنت",
+    requester: "صاحب الطلب",
     placeholder: "أضف توضيحاً أو أجب عن سؤال الإدارة…",
+    adminPlaceholder: "اطلب توضيحاً من صاحب الطلب أو اشرح قرارك…",
     send: "إرسال",
   },
   en: {
     title: "Conversation with the administration",
     admin: "Administration",
     you: "You",
+    requester: "Requester",
     placeholder: "Add a clarification or answer the administration's question…",
+    adminPlaceholder: "Ask the requester for a clarification or explain your decision…",
     send: "Send",
   },
 });
@@ -31,7 +35,15 @@ const COPY = defineCopy("components/protection/RequesterThread", {
  * محادثة صاحب الطلب مع الإدارة — في صفحة الطفل نفسها، فلا يُسأل في
  * مكانٍ ويُجاب في آخر.
  */
-export function RequesterThread({ requestId }: { requestId: string }) {
+export function RequesterThread({
+  requestId,
+  viewer = "requester",
+}: {
+  requestId: string;
+  /** الإدارة ترى المحادثة نفسها من طرفها: «أنت» هي الإدارة. */
+  viewer?: "requester" | "admin";
+}) {
+  const mine = (fromAdmin: boolean) => (viewer === "admin" ? fromAdmin : !fromAdmin);
   const qc = useQueryClient();
   const locale = useLocale();
   const c = useCopy(COPY);
@@ -54,12 +66,13 @@ export function RequesterThread({ requestId }: { requestId: string }) {
               key={m.id}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm",
-                m.from_admin ? "me-6 bg-background" : "ms-6 bg-primary/10",
+                mine(m.from_admin) ? "ms-6 bg-primary/10" : "me-6 bg-background",
               )}
             >
               <p className="whitespace-pre-line">{m.body}</p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                {m.from_admin ? c.admin : c.you} · {formatDate(m.created_at, locale)}
+                {mine(m.from_admin) ? c.you : viewer === "admin" ? c.requester : c.admin} ·{" "}
+                {formatDate(m.created_at, locale)}
               </p>
             </li>
           ))}
@@ -68,7 +81,7 @@ export function RequesterThread({ requestId }: { requestId: string }) {
       <div className="mt-2 flex gap-2">
         <Textarea
           rows={2}
-          placeholder={c.placeholder}
+          placeholder={viewer === "admin" ? c.adminPlaceholder : c.placeholder}
           value={body}
           onChange={(e) => setBody(e.target.value)}
         />
