@@ -35,6 +35,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
         content: BRAND.description,
       },
       { property: "og:title", content: pageTitle("كفالاتي") },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content: BRAND.description,
@@ -57,12 +59,13 @@ function DashboardPage() {
   const { data: mode } = useQuery({ queryKey: ["payment-mode"], queryFn: () => fetchMode() });
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["my-sponsorships"],
     queryFn: () => fetchList(),
   });
 
   const sponsorships = data?.sponsorships ?? [];
+  const listFailed = isError || Boolean(data?.error);
   const activeTotal = sponsorships
     .filter((s) => s.status === "active")
     .reduce((acc, s) => acc + Number(s.amount), 0);
@@ -110,14 +113,14 @@ function DashboardPage() {
       </div>
       <FollowedChildren />
       <MyPledges />
-      <div className="grid gap-4 sm:grid-cols-3">
+      {!isLoading && !listFailed && <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="عدد الكفالات" value={String(sponsorships.length)} />
         <StatTile
           label="الكفالات النشطة"
           value={String(sponsorships.filter((s) => s.status === "active").length)}
         />
         <StatTile label="التزامك الشهري" value={formatMoney(activeTotal)} />
-      </div>
+      </div>}
 
       {mode?.onHold && (
         // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
@@ -143,6 +146,11 @@ function DashboardPage() {
           <div className="flex justify-center py-16">
             <Loader2 className="size-6 animate-spin text-muted-foreground" />
           </div>
+        ) : listFailed ? (
+          <div role="alert" className="space-y-3 py-8 text-center">
+            <p className="text-destructive">تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.</p>
+            <Button variant="outline" onClick={() => void refetch()}>إعادة المحاولة</Button>
+          </div>
         ) : sponsorships.length === 0 ? (
           <EmptyState
             title="لم تبدأ أي كفالة بعد"
@@ -159,8 +167,6 @@ function DashboardPage() {
               id: string;
               display_name: string;
               code: string;
-              city: string | null;
-              photo_url: string | null;
               monthly_need: number | string;
               funded_monthly: number | string;
             } | null;
@@ -170,7 +176,7 @@ function DashboardPage() {
               <article key={s.id} className="rounded-2xl border border-border bg-card p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <MuralImage
-                    photoUrl={orphan?.photo_url ?? null}
+                    photoUrl={null}
                     displayName={orphan?.display_name ?? "ملف محذوف"}
                     register={registerFor(orphan ? "" : "", percent)}
                     className="size-16 shrink-0 rounded-xl bg-secondary"

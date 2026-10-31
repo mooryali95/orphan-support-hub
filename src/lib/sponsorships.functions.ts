@@ -169,7 +169,7 @@ export const listMySponsorships = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("sponsorships")
       .select(
-        "id, amount, currency, type, status, created_at, orphan:orphans(id, display_name, code, city, photo_url, monthly_need, funded_monthly)",
+        "id, amount, currency, type, status, created_at, orphan:orphans(id, display_name, code, monthly_need, funded_monthly)",
       )
       .eq("sponsor_id", context.userId)
       .order("created_at", { ascending: false });
