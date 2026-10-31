@@ -582,7 +582,8 @@ export function WorldMap({
     const pts = [...pointers.current.values()];
     const start = pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 };
     gesture.current = { ...start, moved: false };
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    // لا التقاط هنا: الالتقاط عند الضغط يحوّل هدف النقرة إلى الغلاف فلا تصل
+    // إلى الدولة. يُلتقط المؤشّر حين يصير الضغط سحباً فعلاً (في الحركة).
   };
   const onPointerMoveGesture = (e: React.PointerEvent) => {
     const g = gesture.current;
@@ -594,6 +595,16 @@ export function WorldMap({
     const dy = now.center.y - g.center.y;
     // عتبة ٦ بكسل: دونها نقرة، فوقها سحب — وبعدها لا تُحسب نقرة.
     if (!g.moved && Math.hypot(dx, dy) < 6 && Math.abs(now.dist - g.dist) < 6) return;
+    if (!g.moved) {
+      // صار سحباً: الآن يُلتقط المؤشّر فلا يضيع إن خرج عن الخارطة، وتُلغى النقرة.
+      for (const id of pointers.current.keys()) {
+        try {
+          wrapRef.current?.setPointerCapture(id);
+        } catch {
+          /* مؤشّرٌ انتهى قبل الالتقاط: السحب يستمرّ بلا التقاط. */
+        }
+      }
+    }
     g.moved = true;
     let v = panBy(view.current, dx, dy, size);
     if (g.dist > 0 && now.dist > 0) v = zoomAround(v, now.dist / g.dist, now.center, size);
