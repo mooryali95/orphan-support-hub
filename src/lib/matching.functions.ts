@@ -32,7 +32,7 @@ export const getSuggestions = createServerFn({ method: "GET" })
     return {
       ok: true as const,
       error: null,
-      suggestions: (rows ?? []) as SuggestedOrphan[],
+      suggestions: (rows ?? []) as unknown as SuggestedOrphan[],
     };
   });
 
@@ -69,8 +69,8 @@ export const saveSponsorPreferences = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const db = withMatching(context.supabase);
     const { data: prefs, error } = await db.rpc("save_sponsor_preferences", {
-      _budget: data.monthlyBudget,
-      _region: data.preferredRegion,
+      _budget: data.monthlyBudget as never,
+      _region: data.preferredRegion as never,
     });
     if (error) return { ok: false as const, error: error.message, preferences: null };
     return { ok: true as const, error: null, preferences: prefs as SponsorPreferences };

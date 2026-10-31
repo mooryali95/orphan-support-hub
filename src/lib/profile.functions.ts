@@ -135,7 +135,7 @@ export const saveProfileSection = createServerFn({ method: "POST" })
       _orphan: data.orphanId,
       _section: data.section,
       _data: data.data,
-      _note: data.note || null,
+      _note: (data.note || null) as never,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };

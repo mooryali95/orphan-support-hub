@@ -87,10 +87,10 @@ export const assignEnrollmentRole = createServerFn({ method: "POST" })
     const { data: id, error } = await db.rpc("assign_enrollment_role", {
       _enrollment: data.enrollmentId,
       _role: data.role,
-      _person_name: data.personName || null,
-      _person_email: data.personEmail || null,
-      _person_contact: data.personContact || null,
-      _note: data.note || null,
+      _person_name: (data.personName || null) as never,
+      _person_email: (data.personEmail || null) as never,
+      _person_contact: (data.personContact || null) as never,
+      _note: (data.note || null) as never,
     });
     if (error) return { ok: false as const, error: error.message, id: null };
     return { ok: true as const, error: null, id: id as string };
@@ -156,7 +156,7 @@ export const recordTraitAssessment = createServerFn({ method: "POST" })
       _enrollment: data.enrollmentId,
       _scores: data.scores,
       _phase: data.phase,
-      _note: data.note || null,
+      _note: (data.note || null) as never,
     });
     if (error) return { ok: false as const, error: error.message, result: null };
     return { ok: true as const, error: null, result: res as AssessmentResult };

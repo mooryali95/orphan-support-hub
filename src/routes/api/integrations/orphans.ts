@@ -59,11 +59,11 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         const db = withIntegration(supabaseAdmin);
         const { data, error } = await db.rpc("api_orphan_cards", {
           _client: auth.client.id,
-          _country: url.searchParams.get("country"),
-          _region: url.searchParams.get("region"),
-          _age_band: url.searchParams.get("age_band"),
-          _gender: url.searchParams.get("gender"),
-          _funding: url.searchParams.get("funding"),
+          _country: url.searchParams.get("country") as never,
+          _region: url.searchParams.get("region") as never,
+          _age_band: url.searchParams.get("age_band") as never,
+          _gender: url.searchParams.get("gender") as never,
+          _funding: url.searchParams.get("funding") as never,
           _limit: num("limit", 50),
           _offset: num("offset", 0),
         });
@@ -180,7 +180,7 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         for (const record of records) {
           const { data, error } = await db.rpc("import_orphan_record", {
             _client: auth.client.id,
-            _payload: record as Record<string, unknown>,
+            _payload: record as never,
           });
           if (error) {
             rejected += 1;
@@ -217,7 +217,7 @@ export const Route = createFileRoute("/api/integrations/orphans")({
           created_count: created,
           updated_count: updated,
           failed_count: rejected,
-          result: summary,
+          result: summary as never,
         });
 
         await db.rpc("touch_api_client", { _client: auth.client.id, _imported: true });
