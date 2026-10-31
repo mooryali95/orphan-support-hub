@@ -185,7 +185,7 @@ export const decideAccessRequest = createServerFn({ method: "POST" })
     const { error } = await db.rpc("decide_orphan_access", {
       _request: data.requestId,
       _decision: data.decision,
-      _note: (data.note ?? null) as never,
+      _note: (data.note || null) as never,
       _days: data.days ?? 180,
     });
     if (error) return { ok: false as const, error: error.message };
@@ -203,7 +203,7 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
     const db = withProtection(context.supabase);
     const { error } = await db.rpc("revoke_orphan_access", {
       _request: data.requestId,
-      _note: (data.note ?? null) as never,
+      _note: (data.note || null) as never,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
