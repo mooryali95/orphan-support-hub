@@ -10,15 +10,28 @@ import {
   useRef,
   useState,
 } from "react";
-import { ArrowLeft, Globe2, List, MapPin, X } from "lucide-react";
+import { ArrowLeft, Globe2, Layers, List, LocateFixed, MapPin, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { countryName, normalize } from "@/lib/countries";
+import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, intlOf, pluralOf, type Locale, useLocale } from "@/lib/locale";
 import { arCount, COUNTRIES } from "@/lib/plural";
 import { cn } from "@/lib/utils";
 import { easeInOut, easeOut, fit, flight, type View } from "./camera";
+import {
+  clampView,
+  dirOfKey,
+  nearestInDirection,
+  panBy,
+  MAX_ZOOM,
+  pinchOf,
+  sameView,
+  zoomAround,
+  type Point,
+} from "./gesture";
 import { COHORT_MIN, type CountryStat, type MapStats, type RegionStat } from "./demo-stats";
+import { DEFAULT_LAYER, intensityOf, type MapLayer, metricOf, metricText, rankOf } from "./layers";
 
 /* ── البيانات ──────────────────────────────────────────────────────────── */
 
@@ -98,6 +111,19 @@ const COPY = defineCopy("components/map/WorldMap", {
     regionsOf: (c: string) => `مناطق ${c}`,
     countriesH: "الدول",
     closeList: "إغلاق القائمة",
+    reset: "إعادة الضبط",
+    layers: "طبقة الخارطة",
+    layerWaiting: "ينتظرون",
+    layerImpact: "الأثر",
+    layerGap: "الفجوة",
+    layerWaitingHint: "عدد الأطفال المعتمدين الذين ينتظرون كافلاً",
+    layerImpactHint: "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+    layerGapHint: "الحاجة الشهرية غير المغطّاة بالعملة",
+    delivered: "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+    gap: "الفجوة الشهرية",
+    hint: "اقرص للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول وEnter للدخول.",
+    countryButton: (name: string, n: string) => `${name}: ${n} — اضغط Enter للدخول`,
+    regionButton: (name: string, n: string) => `${name}: ${n}`,
   },
   en: {
     fewerThan: (n: number) => `fewer than ${n}`,
@@ -127,9 +153,28 @@ const COPY = defineCopy("components/map/WorldMap", {
     regionsOf: (c: string) => `Regions of ${c}`,
     countriesH: "Countries",
     closeList: "Close list",
+    reset: "Reset view",
+    layers: "Map layer",
+    layerWaiting: "Waiting",
+    layerImpact: "Impact",
+    layerGap: "Gap",
+    layerWaitingHint: "Approved children still waiting for a sponsor",
+    layerImpactHint: "Share sponsored, and children with a documented delivery in the last 90 days",
+    layerGapHint: "Monthly need not yet covered, in currency",
+    delivered: "Received a documented delivery in the last 90 days",
+    gap: "Monthly gap",
+    hint: "Pinch to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one.",
+    countryButton: (name: string, n: string) => `${name}: ${n} — press Enter to open`,
+    regionButton: (name: string, n: string) => `${name}: ${n}`,
   },
 });
 const sizeOf = (s: { total: number | null } | undefined) => s?.total ?? 1;
+/** لون الطبقة: «ينتظرون» بالأخضر الأساسي، «الأثر» بالازدهار، «الفجوة» بالحاجة. */
+const LAYER_FILL: Record<MapLayer, string> = {
+  waiting: "fill-primary",
+  impact: "fill-shore-thrive",
+  gap: "fill-shore-need",
+};
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(false);
@@ -153,8 +198,12 @@ const CountriesLayer = memo(function CountriesLayer({
   near,
   onPick,
   onHover,
+  onKey,
+  label,
+  layer,
 }: {
   countries: CountryShape[];
+  layer: MapLayer;
   /** داخل دولة: لا يُرسم إلا ما يجاورها — العالم كلّه في كل إطار ثقلٌ بلا فائدة. */
   near: Box | null;
   stats: MapStats;
@@ -162,8 +211,13 @@ const CountriesLayer = memo(function CountriesLayer({
   revealed: boolean;
   onPick: (code: string) => void;
   onHover: (code: string) => void;
+  /** الأسهم بين الدول — تُحلّ في الأب لأنّه يملك القائمة والمراكز. */
+  onKey: (e: React.KeyboardEvent<SVGPathElement>, code: string) => void;
+  label: (name: string, n: string) => string;
 }) {
   const locale = useLocale();
+  const hidden = copyOf(COPY, locale).fewerThan(COHORT_MIN);
+  const maxMetric = Math.max(1, ...countries.map((c) => metricOf(layer, stats[c.c]) ?? 0));
   const within = (b: Box) =>
     !near ||
     !(
@@ -178,19 +232,32 @@ const CountriesLayer = memo(function CountriesLayer({
         if (!within(c.b)) return null;
         const active = !!stats[c.c];
         const dim = focus && focus !== c.c;
+        // الدولة التي فيها ملفّات زرٌّ على الخارطة نفسها: تُركَّز وتُفتح بـEnter.
+        const focusable = active && focus !== c.c;
+        const text = active ? metricText(layer, stats[c.c], locale, hidden) : "";
         return (
           <path
             key={`${c.c}-${i}`}
+            style={
+              active && focus !== c.c
+                ? { fillOpacity: intensityOf(metricOf(layer, stats[c.c]), maxMetric) }
+                : undefined
+            }
             d={c.d}
             vectorEffect="non-scaling-stroke"
             onClick={active ? () => onPick(c.c) : undefined}
             onPointerEnter={active ? () => onHover(c.c) : undefined}
-            data-tip={
-              active && focus !== c.c ? `${c.n}|${shown(stats[c.c]!.total, locale)}` : undefined
-            }
+            onFocus={active ? () => onHover(c.c) : undefined}
+            onKeyDown={focusable ? (e) => onKey(e, c.c) : undefined}
+            data-tip={active && focus !== c.c ? `${c.n}|${text}` : undefined}
+            data-country={focusable ? c.c : undefined}
+            tabIndex={focusable ? 0 : -1}
+            role={focusable ? "button" : undefined}
+            aria-label={focusable ? label(c.n, text) : undefined}
             className={cn(
-              "stroke-background transition-[fill,opacity] duration-700 ease-[var(--ease-out)]",
-              active ? "cursor-pointer fill-primary/75 hover:fill-primary" : "fill-border",
+              "stroke-background transition-[fill,fill-opacity,opacity] duration-700 ease-[var(--ease-out)] outline-none",
+              active ? cn("cursor-pointer hover:brightness-110", LAYER_FILL[layer]) : "fill-border",
+              focusable && "focus-visible:fill-primary focus-visible:stroke-bridge",
               dim && "opacity-25",
               // أثناء الطيران تبقى الدولة ملوّنة، ثم تخلي مكانها لمناطقها.
               focus === c.c &&
@@ -198,7 +265,7 @@ const CountriesLayer = memo(function CountriesLayer({
                   ? "fill-transparent hover:fill-transparent"
                   : "fill-primary/35 hover:fill-primary/35"),
             )}
-            strokeWidth={0.6}
+            strokeWidth={focusable ? 1 : 0.6}
           />
         );
       })}
@@ -211,34 +278,55 @@ const RegionsLayer = memo(function RegionsLayer({
   stat,
   selected,
   onPick,
+  onKey,
+  label,
+  layer,
 }: {
   regions: RegionShape[];
   stat: CountryStat | undefined;
+  layer: MapLayer;
   selected: string | null;
   onPick: (id: string) => void;
+  onKey: (e: React.KeyboardEvent<SVGPathElement>, id: string) => void;
+  label: (name: string, n: string) => string;
 }) {
   const locale = useLocale();
-  const max = Math.max(1, ...Object.values(stat?.regions ?? {}).map(sizeOf));
+  const hidden = copyOf(COPY, locale).fewerThan(COHORT_MIN);
+  const max = Math.max(
+    1,
+    ...Object.values(stat?.regions ?? {}).map((x) => metricOf(layer, x) ?? 0),
+  );
   return (
     <g>
       {regions.map((r, i) => {
         const s = statFor(r, stat);
-        // كثافة اللون بعدد الأيتام: الأكثف أعمق خضرة.
-        const k = s ? 0.35 + 0.6 * (sizeOf(s) / max) : 0;
+        // كثافة اللون بقيمة الطبقة: الأكثر أعمق لوناً، والمحجوب أخفّ.
+        const k = s ? intensityOf(metricOf(layer, s), max) : 0;
+        const text = s ? metricText(layer, s, locale, hidden) : r.n;
+        // المنطقة التي فيها ملفّات تُركَّز؛ الخالية تُضغط فقط (لا تستحقّ موضعاً في الترتيب).
+        const focusable = !!s && selected !== r.id;
         return (
           <path
             key={r.id}
             d={r.d}
             vectorEffect="non-scaling-stroke"
             onClick={() => onPick(r.id)}
-            data-tip={s ? `${r.n}|${shown(s.total, locale)}` : r.n}
+            onKeyDown={focusable ? (e) => onKey(e, r.id) : undefined}
+            data-tip={s ? `${r.n}|${text}` : r.n}
+            data-region={focusable ? r.id : undefined}
+            tabIndex={focusable ? 0 : -1}
+            role={focusable ? "button" : undefined}
+            aria-label={focusable ? label(r.n, text) : undefined}
             style={{
               ["--i" as string]: Math.min(i, 24),
               fillOpacity: selected && selected !== r.id ? (s ? k * 0.45 : 0.5) : s ? k : 1,
             }}
             className={cn(
-              "map-region cursor-pointer stroke-background transition-[fill,fill-opacity] duration-500",
-              s ? "fill-primary hover:brightness-110" : "fill-secondary hover:fill-accent",
+              "map-region cursor-pointer stroke-background transition-[fill,fill-opacity] duration-500 outline-none",
+              s
+                ? cn("hover:brightness-110", LAYER_FILL[layer])
+                : "fill-secondary hover:fill-accent",
+              focusable && "focus-visible:stroke-bridge focus-visible:brightness-110",
               selected === r.id && "fill-bridge",
             )}
             strokeWidth={1.2}
@@ -319,8 +407,13 @@ export function WorldMap({
   className,
   intro,
   bare = false,
+  layer = DEFAULT_LAYER,
+  onLayer,
 }: {
   stats: MapStats;
+  /** الطبقة المعروضة؛ تُحفظ في الرابط عند الأب. بلا `onLayer` لا يظهر المفتاح. */
+  layer?: MapLayer;
+  onLayer?: (layer: MapLayer) => void;
   selection: MapSelection;
   onSelect: (s: MapSelection) => void;
   demo?: boolean;
@@ -378,6 +471,10 @@ export function WorldMap({
   const [size, setSize] = useState({ w: 1280, h: 660 });
   const [settled, setSettled] = useState(true);
   const [listOpen, setListOpen] = useState(false);
+  // الزائر حرّك الخارطة بيده: الإطار صار إطاره لا إطار الهدف، ويظهر «إعادة الضبط».
+  const [manual, setManual] = useState(false);
+  // آخر دخولٍ بلوحة المفاتيح: حين تظهر مناطق الدولة يُركَّز أكبرها، لا للفأرة.
+  const viaKeyboard = useRef(false);
   // تلميحٌ يتبع المؤشّر: اسم الدولة أو المنطقة وعددها — للفأرة وحدها.
   const [tip, setTip] = useState<{ x: number; y: number; name: string; n?: string } | null>(null);
   const onPointerMove = (e: React.PointerEvent) => {
@@ -451,9 +548,99 @@ export function WorldMap({
     return { x: v.x, y: v.y - inset.top * unit, w: size.w * unit, h: size.h * unit };
   }, [world, country, region, size, stats]);
 
+  /* ── الإيماءات: قرصةٌ وسحبٌ وعجلة ──
+   * تُحدَّث `view.current` مباشرةً بلا إعادة رسم React — الطبقات لا تتبع
+   * الإطار، والنقاط تُعاد بـpaint. والقيد يمنع الضياع. */
+  const pointers = useRef(new Map<number, Point>());
+  const gesture = useRef<{ dist: number; center: Point; moved: boolean } | null>(null);
+  const cancelFlight = useRef<(() => void) | null>(null);
+  const outer = useMemo<View | null>(() => {
+    if (!world) return null;
+    return fit([0, 0, world.w, world.h], size.h / Math.max(1, size.w), 1.1);
+  }, [world, size]);
+  const applyManual = useCallback(
+    (next: View) => {
+      if (!world || !outer) return;
+      cancelFlight.current?.();
+      // الحدّ الأقرب: العامّ، أو ربع إطار الهدف إن كان الهدف أقرب منه أصلاً.
+      const minW = Math.min(world.w / MAX_ZOOM, (target?.w ?? Infinity) / 4);
+      const v = clampView(next, world, outer, minW);
+      view.current = v;
+      paint(v);
+      setManual(true);
+      setSettled(true);
+    },
+    [world, outer, target, paint],
+  );
+  const localPoint = (e: { clientX: number; clientY: number }): Point => {
+    const box = wrapRef.current?.getBoundingClientRect();
+    return { x: e.clientX - (box?.left ?? 0), y: e.clientY - (box?.top ?? 0) };
+  };
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (bare || e.button !== 0) return;
+    pointers.current.set(e.pointerId, localPoint(e));
+    const pts = [...pointers.current.values()];
+    const start = pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 };
+    gesture.current = { ...start, moved: false };
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+  const onPointerMoveGesture = (e: React.PointerEvent) => {
+    const g = gesture.current;
+    if (!g || !pointers.current.has(e.pointerId) || !view.current) return;
+    pointers.current.set(e.pointerId, localPoint(e));
+    const pts = [...pointers.current.values()];
+    const now = pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 };
+    const dx = now.center.x - g.center.x;
+    const dy = now.center.y - g.center.y;
+    // عتبة ٦ بكسل: دونها نقرة، فوقها سحب — وبعدها لا تُحسب نقرة.
+    if (!g.moved && Math.hypot(dx, dy) < 6 && Math.abs(now.dist - g.dist) < 6) return;
+    g.moved = true;
+    let v = panBy(view.current, dx, dy, size);
+    if (g.dist > 0 && now.dist > 0) v = zoomAround(v, now.dist / g.dist, now.center, size);
+    gesture.current = { ...now, moved: true };
+    applyManual(v);
+  };
+  const onPointerUp = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    const moved = gesture.current?.moved ?? false;
+    if (pointers.current.size === 0) gesture.current = null;
+    else {
+      const pts = [...pointers.current.values()];
+      gesture.current = {
+        ...(pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 }),
+        moved,
+      };
+    }
+    // سحبٌ انتهى فوق دولة لا يُعدّ ضغطاً عليها.
+    if (moved) suppressClick.current = true;
+  };
+  const suppressClick = useRef(false);
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (suppressClick.current) {
+      suppressClick.current = false;
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+  // العجلة مع Ctrl/⌘ (أو قرصة لوحة اللمس) تكبّر؛ العجلة وحدها تبقى لتمرير الصفحة.
+  // مستمعٌ أصليّ غير سلبيّ: React يسجّل wheel سلبيّاً فلا يُمنع تكبير الصفحة.
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || bare) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || !view.current) return;
+      e.preventDefault();
+      const factor = Math.exp(-e.deltaY * 0.0025);
+      applyManual(zoomAround(view.current, factor, localPoint(e), size));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [bare, applyManual, size]);
+
   // الطيران إلى الهدف — والتلميح يُطفأ: ما تحت المؤشّر تغيّر.
   useEffect(() => {
     setTip(null);
+    setManual(false);
     if (!target) return;
     const from = view.current;
     if (!from || reduce) {
@@ -482,7 +669,38 @@ export function WorldMap({
       }
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      svgRef.current?.closest("section")?.removeAttribute("data-flying");
+      cancelFlight.current = null;
+    };
+    cancelFlight.current = stop;
+    return stop;
+  }, [target, paint, reduce]);
+
+  // «إعادة الضبط»: عودةٌ بطيرانٍ إلى إطار الهدف الحالي.
+  const resetView = useCallback(() => {
+    if (!target || !view.current) return;
+    setManual(false);
+    const from = view.current;
+    if (reduce) {
+      view.current = target;
+      paint(target);
+      return;
+    }
+    const f = flight(from, target);
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - t0) / f.duration);
+      const v = f.at(easeInOut(t));
+      view.current = v;
+      paint(v);
+      if (t < 1) raf = requestAnimationFrame(tick);
+      else cancelFlight.current = null;
+    };
+    raf = requestAnimationFrame(tick);
+    cancelFlight.current = () => cancelAnimationFrame(raf);
   }, [target, paint, reduce]);
 
   // النقاط تُعاد بعد كل رسم للطبقة.
@@ -510,24 +728,86 @@ export function WorldMap({
     [onSelect, selection.country],
   );
 
+  /* ── لوحة المفاتيح على الخارطة نفسها ──
+   * الأسهم تنتقل إلى أقرب دولةٍ (أو منطقة) في اتّجاهها بالمراكز المسقَطة،
+   * وEnter/Space تدخل. فتكون الخارطة هي المسار لا القائمة البديلة وحدها. */
+  const focusShape = (attr: "country" | "region", id: string) => {
+    svgRef.current?.querySelector<SVGPathElement>(`[data-${attr}="${CSS.escape(id)}"]`)?.focus();
+  };
+  const onCountryKey = useCallback(
+    (e: React.KeyboardEvent<SVGPathElement>, code: string) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        viaKeyboard.current = true;
+        pickCountry(code);
+        return;
+      }
+      const dir = dirOfKey(e.key);
+      if (!dir || !world) return;
+      e.preventDefault();
+      const from = world.countries.find((c) => c.c === code);
+      if (!from) return;
+      const next = nearestInDirection(
+        { x: from.p[0], y: from.p[1] },
+        world.countries.filter((c) => stats[c.c] && c.c !== code),
+        (c) => ({ x: c.p[0], y: c.p[1] }),
+        dir,
+      );
+      if (next) focusShape("country", next.c);
+    },
+    [world, stats, pickCountry],
+  );
+  const onRegionKey = useCallback(
+    (e: React.KeyboardEvent<SVGPathElement>, id: string) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        viaKeyboard.current = true;
+        pickRegion(id);
+        return;
+      }
+      const dir = dirOfKey(e.key);
+      if (!dir) return;
+      e.preventDefault();
+      const from = regions.find((r) => r.id === id);
+      if (!from) return;
+      const next = nearestInDirection(
+        { x: from.p[0], y: from.p[1] },
+        regions.filter((r) => r.id !== id && statFor(r, cStat)),
+        (r) => ({ x: r.p[0], y: r.p[1] }),
+        dir,
+      );
+      if (next) focusShape("region", next.id);
+    },
+    [regions, cStat, pickRegion],
+  );
+
   const activeCountries = useMemo(
     () =>
       (world?.countries ?? [])
         .filter((c) => stats[c.c])
-        .sort((a, b) => sizeOf(stats[b.c]) - sizeOf(stats[a.c])),
-    [world, stats],
+        .sort((a, b) => rankOf(layer, stats[b.c]) - rankOf(layer, stats[a.c])),
+    [world, stats, layer],
   );
   const rankedRegions = useMemo(
     () =>
       regions
         .map((r) => ({ r, s: statFor(r, cStat) }))
         .filter((x) => x.s)
-        .sort((a, b) => sizeOf(b.s) - sizeOf(a.s)),
-    [regions, cStat],
+        .sort((a, b) => rankOf(layer, b.s) - rankOf(layer, a.s)),
+    [regions, cStat, layer],
   );
 
   // المجموع من الدول التي يُكشف عددها؛ الصغيرة تُذكر دون رقمها.
   const totals = { total: Object.values(stats).reduce((a, s) => a + (s.total ?? 0), 0) };
+
+  // دخلنا دولةً بلوحة المفاتيح: حين تستقرّ وتظهر مناطقها يُركَّز أكبرها.
+  const revealedNow = !!country && shownFor === country.c && regions.length > 0 && settled;
+  useEffect(() => {
+    if (!revealedNow || !viaKeyboard.current || selection.region) return;
+    viaKeyboard.current = false;
+    const top = rankedRegions[0]?.r.id;
+    if (top) focusShape("region", top);
+  }, [revealedNow, rankedRegions, selection.region]);
 
   return (
     <section
@@ -540,18 +820,28 @@ export function WorldMap({
       <div
         ref={wrapRef}
         className="absolute inset-0"
-        onPointerMove={onPointerMove}
+        // إصبعٌ واحد يمرّر الصفحة عمودياً ما لم يحرّك الزائر الخارطة؛ بعدها الخارطة له كلّها.
+        style={{ touchAction: bare ? "auto" : manual ? "none" : "pan-y" }}
+        onPointerMove={(e) => {
+          onPointerMoveGesture(e);
+          onPointerMove(e);
+        }}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
         onPointerLeave={() => setTip(null)}
+        onClickCapture={onClickCapture}
       >
         {world && (
           <svg
             ref={svgRef}
-            className="size-full touch-manipulation select-none"
+            className="size-full select-none"
             preserveAspectRatio="xMidYMid meet"
-            role="img"
+            role="group"
             aria-label={
               country ? c$.mapOf(`${country.n}${region ? ` — ${region.n}` : ""}`) : c$.worldMap
             }
+            aria-description={bare ? undefined : c$.hint}
           >
             {/* الهبوط الأوّل: العالم يستقرّ من تكبيرٍ خفيف. */}
             <g className="map-land">
@@ -563,6 +853,9 @@ export function WorldMap({
                 near={nearBox}
                 onPick={pickCountry}
                 onHover={prefetchRegions}
+                onKey={onCountryKey}
+                label={c$.countryButton}
+                layer={layer}
               />
             </g>
             {/* المناطق تُرسم بعد الهبوط — لا تُثقل الطيران — ثم تظهر بالتتابع. */}
@@ -573,6 +866,9 @@ export function WorldMap({
                 stat={cStat}
                 selected={selection.region}
                 onPick={pickRegion}
+                onKey={onRegionKey}
+                label={c$.regionButton}
+                layer={layer}
               />
             )}
             {/* نقاط ذهبية تنبض فوق الدول التي فيها ملفّات — في العالم فقط. */}
@@ -606,7 +902,9 @@ export function WorldMap({
                   className="map-label pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_4px_12px_-4px_rgb(0_0_0/0.2)] backdrop-blur transition-[scale] duration-150 hover:scale-105"
                 >
                   {r.n}{" "}
-                  <span className="tabular-nums text-primary">{shown(rs!.total, locale)}</span>
+                  <span className="tabular-nums text-primary">
+                    {metricText(layer, rs, locale, shown(null, locale))}
+                  </span>
                 </button>
               );
             })}
@@ -681,10 +979,52 @@ export function WorldMap({
             </nav>
 
             <div className="pointer-events-auto flex items-center gap-2">
+              {onLayer && (
+                <div
+                  role="group"
+                  aria-label={c$.layers}
+                  className="flex items-center gap-0.5 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur"
+                >
+                  <Layers className="ms-2 size-4 text-muted-foreground" aria-hidden="true" />
+                  {(
+                    [
+                      ["waiting", c$.layerWaiting, c$.layerWaitingHint],
+                      ["impact", c$.layerImpact, c$.layerImpactHint],
+                      ["gap", c$.layerGap, c$.layerGapHint],
+                    ] as const
+                  ).map(([key, name, hint]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={layer === key}
+                      title={hint}
+                      onClick={() => onLayer(key)}
+                      className={cn(
+                        "min-h-8 rounded-full px-3 transition-colors",
+                        layer === key ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
+                      )}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              )}
               {demo && (
                 <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
                   {c$.demo}
                 </span>
+              )}
+              {manual && !sameView(view.current, target) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="map-rise bg-card/85 backdrop-blur"
+                  onClick={resetView}
+                >
+                  <LocateFixed aria-hidden="true" />
+                  {c$.reset}
+                </Button>
               )}
               <Button
                 type="button"
@@ -803,6 +1143,22 @@ export function WorldMap({
                         </dl>
                       </>
                     )}
+                    {layer === "gap" && s.gap != null && (
+                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                        <span className="text-muted-foreground">{c$.gap}</span>
+                        <span className="font-semibold tabular-nums text-shore-need">
+                          {formatMoney(s.gap, s.currency ?? "USD", locale)}
+                        </span>
+                      </p>
+                    )}
+                    {layer === "impact" && s.delivered != null && (
+                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                        <span className="text-muted-foreground">{c$.delivered}</span>
+                        <span className="font-semibold tabular-nums">
+                          {shown(s.delivered, locale)}
+                        </span>
+                      </p>
+                    )}
                     {(small || !split) && (
                       <p className="mt-2 text-xs leading-6 text-muted-foreground">
                         {c$.cohort(COHORT_MIN)}
@@ -844,7 +1200,7 @@ export function WorldMap({
                             >
                               {r.n}
                               <span className="tabular-nums text-muted-foreground">
-                                {shown(rs!.total, locale)}
+                                {metricText(layer, rs, locale, shown(null, locale))}
                               </span>
                             </button>
                           </li>

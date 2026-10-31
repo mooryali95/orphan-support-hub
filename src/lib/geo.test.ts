@@ -9,7 +9,15 @@ const rows = [
     sponsored: null,
     small: false,
     regions: [
-      { region: "Tirana", total: 8, sponsored: null, small: false },
+      {
+        region: "Tirana",
+        total: 8,
+        sponsored: null,
+        small: false,
+        gap: "420.00",
+        currency: "USD",
+        delivered: null,
+      },
       { region: "Kukës", total: null, sponsored: null, small: true },
     ],
   },
@@ -29,5 +37,14 @@ describe("مصدر الجغرافيا الواحد", () => {
     const stats = toMapStats(geo);
     expect(Object.keys(stats)).toEqual(["AL"]);
     expect(stats["AL"]!.regions["Kukës"]).toMatchObject({ small: true, total: null });
+  });
+
+  it("الفجوة رقمٌ ولو جاءت نصّاً، والحقول الجديدة تغيب بأمان قبل الهجرة", () => {
+    expect(geo.countries[0]!.regions[0]).toMatchObject({
+      gap: 420,
+      currency: "USD",
+      delivered: null,
+    });
+    expect(geo.countries[0]).toMatchObject({ gap: null, currency: null, delivered: null });
   });
 });
