@@ -3404,6 +3404,7 @@ export type Database = {
       is_donor_owner: { Args: { _entity: string }; Returns: boolean }
       is_locale_reviewer: { Args: { _locale: string }; Returns: boolean }
       is_protected_admin_email: { Args: { _email: string }; Returns: boolean }
+      is_published_orphan_folder: { Args: { _path: string }; Returns: boolean }
       ledger_receipt: {
         Args: {
           _delivered_at: string
