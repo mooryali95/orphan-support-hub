@@ -72,7 +72,7 @@ export const certifySupervisor = createServerFn({ method: "POST" })
       _user: data.userId,
       _level: data.level,
       _independence: data.independence,
-      _note: data.note || null,
+      _note: data.note || undefined,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
@@ -111,7 +111,7 @@ export const certifySupervisorByEmail = createServerFn({ method: "POST" })
       _email: data.email,
       _level: data.level,
       _independence: data.independence,
-      _note: data.note || null,
+      _note: data.note || undefined,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
@@ -128,7 +128,7 @@ export const revokeSupervisor = createServerFn({ method: "POST" })
     const db = withSupervisorAdmin(context.supabase);
     const { data: res, error } = await db.rpc("revoke_supervisor", {
       _user: data.userId,
-      _note: data.note || null,
+      _note: data.note || undefined,
     });
     if (error) return { ok: false as const, error: error.message, ended: 0 };
     const r = (res ?? {}) as { ended_assignments?: number };
@@ -181,8 +181,8 @@ export const recordUnitProgress = createServerFn({ method: "POST" })
       _enrollment: data.enrollmentId,
       _unit: data.unitId,
       _status: data.status,
-      _evidence: data.evidence || null,
-      _note: data.note || null,
+      _evidence: data.evidence || undefined,
+      _note: data.note || undefined,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };

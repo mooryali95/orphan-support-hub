@@ -58,18 +58,18 @@ export const listOrphanCards = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const db = withProtection(publicClient());
     const { data: res, error } = await db.rpc("list_orphan_cards", {
-      _country: data.country ?? null,
-      _region: data.region ?? null,
-      _age_band: data.ageBand ?? null,
-      _gender: data.gender ?? null,
-      _education_stage: data.educationStage ?? null,
-      _funding: data.funding ?? null,
-      _building: data.building ?? null,
-      _search: data.search ?? null,
+      _country: data.country || undefined,
+      _region: data.region || undefined,
+      _age_band: data.ageBand || undefined,
+      _gender: data.gender || undefined,
+      _education_stage: data.educationStage || undefined,
+      _funding: data.funding || undefined,
+      _building: data.building || undefined,
+      _search: data.search || undefined,
       _sort: data.sort ?? "waiting",
       _limit: data.limit ?? 24,
       _offset: data.offset ?? 0,
-      _group: data.group ?? null,
+      _group: data.group || undefined,
     });
     if (error) return { rows: [] as OrphanCardRow[], total: 0, error: error.message };
     const payload = (res ?? {}) as { rows?: OrphanCardRow[]; total?: number };
@@ -185,7 +185,7 @@ export const decideAccessRequest = createServerFn({ method: "POST" })
     const { error } = await db.rpc("decide_orphan_access", {
       _request: data.requestId,
       _decision: data.decision,
-      _note: data.note || null,
+      _note: data.note || undefined,
       _days: data.days ?? 180,
     });
     if (error) return { ok: false as const, error: error.message };
@@ -203,7 +203,7 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
     const db = withProtection(context.supabase);
     const { error } = await db.rpc("revoke_orphan_access", {
       _request: data.requestId,
-      _note: data.note || null,
+      _note: data.note || undefined,
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const, error: null };
