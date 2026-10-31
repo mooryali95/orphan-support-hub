@@ -43,7 +43,9 @@ export function flight(from: View, to: View) {
     };
   }
 
-  const duration = Math.min(2200, Math.max(900, Math.abs(S) * 700));
+  // أطول قليلاً ممّا تحسبه اليد ضرورياً: الطيران مشهدٌ نادر، وما يقلّ عن
+  // ثانيةٍ ونصف يُحَسّ قفزةً لا رحلة.
+  const duration = Math.min(2600, Math.max(1400, Math.abs(S) * 950));
   return {
     duration,
     at(t: number): View {
@@ -55,8 +57,11 @@ export function flight(from: View, to: View) {
   };
 }
 
-/** منحنى «قويّ» للدخول والخروج — بداية حاسمة ونهاية هادئة. */
-export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+/**
+ * منحنى الطيران: جيبيٌّ لطيف. مسار van Wijk يوازن السرعة المحسوسة بنفسه،
+ * فالمنحنى التكعيبي القويّ فوقه يضغط الرحلة كلّها في ثُلثها الأوسط وتصير قفزة.
+ */
+export const easeInOut = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
 export const easeOut = (t: number) => 1 - (1 - t) ** 4;
 
 /** إطار يحيط بالصندوق [x,y,w,h] بنسبة الحاوية، مع هامش. */

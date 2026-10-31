@@ -256,9 +256,11 @@ const CountriesLayer = memo(function CountriesLayer({
             aria-label={focusable ? label(c.n, text) : undefined}
             className={cn(
               "stroke-background transition-[fill,fill-opacity,opacity] duration-700 ease-[var(--ease-out)] outline-none",
-              active ? cn("cursor-pointer hover:brightness-110", LAYER_FILL[layer]) : "fill-border",
+              active
+                ? cn("map-active cursor-pointer hover:brightness-110", LAYER_FILL[layer])
+                : "fill-foreground/[0.07]",
               focusable && "focus-visible:fill-primary focus-visible:stroke-bridge",
-              dim && "opacity-25",
+              dim && "opacity-40",
               // أثناء الطيران تبقى الدولة ملوّنة، ثم تخلي مكانها لمناطقها.
               focus === c.c &&
                 (revealed
@@ -297,7 +299,7 @@ const RegionsLayer = memo(function RegionsLayer({
     ...Object.values(stat?.regions ?? {}).map((x) => metricOf(layer, x) ?? 0),
   );
   return (
-    <g>
+    <g className="map-regions">
       {regions.map((r, i) => {
         const s = statFor(r, stat);
         // كثافة اللون بقيمة الطبقة: الأكثر أعمق لوناً، والمحجوب أخفّ.
@@ -452,7 +454,7 @@ export function WorldMap({
     const c = world?.countries.find((x) => x.c === shownFor && x.c === selection.country);
     if (!c) return null;
     const [x, y, w, h] = c.b;
-    const r = Math.max(w, h, 20) * 3;
+    const r = Math.max(w, h, 20) * 6;
     return [x + w / 2 - r, y + h / 2 - r, r * 2, r * 2];
   }, [world, shownFor, selection.country]);
   const selectedCountryRef = useRef(selection.country);

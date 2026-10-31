@@ -11,18 +11,49 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDate, formatMoney } from "@/lib/format";
 import {
   getOfficeOpenPledges,
-  KIND_LABELS,
   recordPledgeDelivery,
-  TARGET_LABELS,
   type OpenPledge,
+  useWorkspaceLabels,
 } from "@/lib/workspaces.functions";
 import { EmptyState } from "@/components/kit/EmptyState";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+
+const COPY = defineCopy("components/offices/OfficePledges", {
+  ar: {
+    title: "تعهّدات بانتظار التسليم",
+    emptyTitle: "لا تعهّدات مفتوحة",
+    emptyText: "حين يدعم أحدٌ منطقة المكتب أو مجموعاتها يظهر هنا لتجهيزه وتسليمه.",
+    uploadFailed: "تعذّر رفع المستند",
+    recordFailed: "تعذّر التسجيل",
+    delivered: "سُجّل التسليم وأُبلغ الداعم",
+    preparing: "بدأ التجهيز وأُبلغ الداعم",
+    preparingBadge: "قيد التجهيز",
+    startPreparing: "بدء التجهيز",
+    proof: "مستند التسليم",
+    confirm: "تأكيد التسليم",
+  },
+  en: {
+    title: "Pledges awaiting delivery",
+    emptyTitle: "No open pledges",
+    emptyText:
+      "When someone supports the office's area or its groups, it appears here to prepare and deliver.",
+    uploadFailed: "The document could not be uploaded",
+    recordFailed: "It could not be recorded",
+    delivered: "Delivery recorded and the supporter notified",
+    preparing: "Preparation started and the supporter notified",
+    preparingBadge: "Being prepared",
+    startPreparing: "Start preparing",
+    proof: "Delivery document",
+    confirm: "Confirm delivery",
+  },
+});
 
 /**
  * تعهّدات منطقة المكتب: يُعلَن التجهيز، ثم يُثبَت التسليم بمستند،
  * فيُبلَّغ الداعم في الحالتين.
  */
 export function OfficePledges({ officeId, canWrite }: { officeId: string; canWrite: boolean }) {
+  const t = useCopy(COPY);
   const fetchOpen = useServerFn(getOfficeOpenPledges);
   const { data: pledges = [] } = useQuery({
     queryKey: ["office-pledges", officeId],
@@ -31,13 +62,9 @@ export function OfficePledges({ officeId, canWrite }: { officeId: string; canWri
 
   return (
     <section className="mt-10">
-      <h2 className="text-lg font-bold">تعهّدات بانتظار التسليم</h2>
+      <h2 className="text-lg font-bold">{t.title}</h2>
       {pledges.length === 0 ? (
-        <EmptyState
-          className="mt-3"
-          title="لا تعهّدات مفتوحة"
-          text="حين يدعم أحدٌ منطقة المكتب أو مجموعاتها يظهر هنا لتجهيزه وتسليمه."
-        />
+        <EmptyState className="mt-3" title={t.emptyTitle} text={t.emptyText} />
       ) : (
         <ul className="mt-3 divide-y divide-border rounded-xl border border-border bg-background">
           {pledges.map((p) => (
@@ -50,6 +77,9 @@ export function OfficePledges({ officeId, canWrite }: { officeId: string; canWri
 }
 
 function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWrite: boolean }) {
+  const t = useCopy(COPY);
+  const locale = useLocale();
+  const labels = useWorkspaceLabels();
   const record = useServerFn(recordPledgeDelivery);
   const qc = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
@@ -65,7 +95,7 @@ function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWr
         proofPath = `${officeId}/pledge-${p.id}-${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("office-media").upload(proofPath, file);
         if (error) {
-          toast.error("تعذّر رفع المستند");
+          toast.error(t.uploadFailed);
           return;
         }
       }
@@ -73,12 +103,10 @@ function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWr
         data: { pledgeId: p.id, officeId, stage, ...(proofPath ? { proofPath } : {}) },
       });
       if (!res.ok) {
-        toast.error("تعذّر التسجيل");
+        toast.error(t.recordFailed);
         return;
       }
-      toast.success(
-        stage === "delivered" ? "سُجّل التسليم وأُبلغ الداعم" : "بدأ التجهيز وأُبلغ الداعم",
-      );
+      toast.success(stage === "delivered" ? t.delivered : t.preparing);
       await qc.invalidateQueries({ queryKey: ["office-pledges", officeId] });
     } finally {
       setBusy(false);
@@ -89,16 +117,16 @@ function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWr
     <li className="grid gap-3 p-4 md:grid-cols-[1fr_auto] md:items-center">
       <div>
         <p className="font-medium">
-          {p.target ?? TARGET_LABELS[p.target_type]}{" "}
+          {p.target ?? labels.target[p.target_type]}{" "}
           <span className="text-xs text-muted-foreground">
-            · {KIND_LABELS[p.kind]} · {TARGET_LABELS[p.target_type]}
+            · {labels.kind[p.kind]} · {labels.target[p.target_type]}
           </span>
         </p>
         <p className="text-xs text-muted-foreground">
-          {formatMoney(p.amount, p.currency)} · {formatDate(p.created_at)}
+          {formatMoney(p.amount, p.currency, locale)} · {formatDate(p.created_at, locale)}
           {p.last_stage === "preparing" && (
             <Badge variant="secondary" className="ms-2">
-              قيد التجهيز
+              {t.preparingBadge}
             </Badge>
           )}
         </p>
@@ -107,14 +135,14 @@ function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWr
         <div className="flex flex-wrap items-center gap-2">
           {p.last_stage !== "preparing" && (
             <Button size="sm" variant="outline" disabled={busy} onClick={() => act("preparing")}>
-              <PackageOpen className="size-4" /> بدء التجهيز
+              <PackageOpen className="size-4" /> {t.startPreparing}
             </Button>
           )}
           <Input
             type="file"
             accept="image/jpeg,image/png,image/webp,application/pdf"
             capture="environment"
-            aria-label="مستند التسليم"
+            aria-label={t.proof}
             className="w-52"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
@@ -124,7 +152,7 @@ function Row({ p, officeId, canWrite }: { p: OpenPledge; officeId: string; canWr
             ) : (
               <PackageCheck className="size-4" />
             )}
-            تأكيد التسليم
+            {t.confirm}
           </Button>
         </div>
       )}

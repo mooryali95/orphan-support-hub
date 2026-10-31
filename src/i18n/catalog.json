@@ -1,7 +1,98 @@
 {
  "version": 1,
- "count": 649,
+ "count": 733,
  "entries": {
+  "components/DashboardShell.account": {
+   "en": "My account",
+   "ar": "حسابي",
+   "kind": "text",
+   "hash": "774ea5f16582",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.directory": {
+   "en": "Children's directory",
+   "ar": "دليل الأيتام",
+   "kind": "text",
+   "hash": "ae3660e62969",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.guardian": {
+   "en": "In my care",
+   "ar": "من أرعاهم",
+   "kind": "text",
+   "hash": "769012513911",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.home": {
+   "en": "Home",
+   "ar": "الصفحة الرئيسية",
+   "kind": "text",
+   "hash": "d8690983339c",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.nav": {
+   "en": "Navigation",
+   "ar": "التنقّل",
+   "kind": "text",
+   "hash": "4676fa326c1d",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.notifications": {
+   "en": "Notifications",
+   "ar": "الإشعارات",
+   "kind": "text",
+   "hash": "5818d8bb798c",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.org": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.signOut": {
+   "en": "Sign out",
+   "ar": "خروج",
+   "kind": "text",
+   "hash": "985bac9856e8",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.sponsor": {
+   "en": "Sponsor",
+   "ar": "كافل",
+   "kind": "text",
+   "hash": "44c272ecf017",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.sponsorships": {
+   "en": "My sponsorships",
+   "ar": "كفالاتي",
+   "kind": "text",
+   "hash": "b965001ea812",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.supervisor": {
+   "en": "Supervision",
+   "ar": "الإشراف",
+   "kind": "text",
+   "hash": "8f602a9c3e4e",
+   "file": "src/components/DashboardShell.tsx"
+  },
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
    "ar": "أكمل لهذا الطفل",
@@ -1078,6 +1169,225 @@
    "kind": "text",
    "hash": "d5e36efbecb4",
    "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/offices/OfficeChecklist.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.allDone": {
+   "en": "The office is ready.",
+   "ar": "المكتب جاهزٌ للعمل.",
+   "kind": "text",
+   "hash": "cc6e926ad9dc",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.apiKey": {
+   "en": "Sync key issued",
+   "ar": "مفتاح المزامنة صادر",
+   "kind": "text",
+   "hash": "b459209233a4",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.byAdmin": {
+   "en": "Administration",
+   "ar": "من الإدارة",
+   "kind": "text",
+   "hash": "f37e9b6cf98e",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.byOffice": {
+   "en": "This office",
+   "ar": "من المكتب",
+   "kind": "text",
+   "hash": "4908c1461e78",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.done": {
+   "en": "Done",
+   "ar": "تمّ",
+   "kind": "text",
+   "hash": "9adf50d91655",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.groups": {
+   "en": "Groups visible on the platform",
+   "ar": "المجموعات ظاهرة في المنصّة",
+   "kind": "text",
+   "hash": "d7710583af48",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.members": {
+   "en": "Office members assigned",
+   "ar": "أعضاء المكتب مُسنَدون",
+   "kind": "text",
+   "hash": "36b76e097b3c",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.membersN": {
+   "en": "{0} members",
+   "ar": "{0} أعضاء",
+   "kind": "template",
+   "params": 1,
+   "hash": "c34df1510bf6",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.noMembers": {
+   "en": "No members yet",
+   "ar": "لا أعضاء بعد",
+   "kind": "text",
+   "hash": "62716a22a298",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.noPlatform": {
+   "en": "No operating platform for this country yet",
+   "ar": "لا منصّة تشغيلٍ لهذه الدولة بعد",
+   "kind": "text",
+   "hash": "e31df3466c61",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.orphans": {
+   "en": "Approved files in the directory",
+   "ar": "ملفّاتٌ معتمدة في الدليل",
+   "kind": "text",
+   "hash": "aa28d8f211b3",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.pending": {
+   "en": "Not yet",
+   "ar": "لم يتمّ بعد",
+   "kind": "text",
+   "hash": "99f3c7f41681",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.platform": {
+   "en": "Operating platform linked to its organization",
+   "ar": "منصّة التشغيل مربوطة بجهتها",
+   "kind": "text",
+   "hash": "c7b95357c2f7",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.report": {
+   "en": "First report for supporters",
+   "ar": "أوّل تقريرٍ للداعمين",
+   "kind": "text",
+   "hash": "05fdd81904a3",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.sync": {
+   "en": "First successful sync",
+   "ar": "أوّل مزامنةٍ ناجحة",
+   "kind": "text",
+   "hash": "1648aaf65541",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.syncAt": {
+   "en": "Last sync {0}",
+   "ar": "آخر مزامنة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0350181e6eba",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.syncError": {
+   "en": "The last sync failed — ask the administration",
+   "ar": "آخر مزامنة أخفقت — راجع الإدارة",
+   "kind": "text",
+   "hash": "74fe6a0b0ff6",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.text": {
+   "en": "What the office needs before it runs fully. Items for the administration are marked; the rest is done here.",
+   "ar": "ما يلزم قبل أن يعمل المكتب كاملاً. ما تقرّره الإدارة مُعلَّمٌ بذلك؛ وما عداه من المكتب نفسه.",
+   "kind": "text",
+   "hash": "c937869a2c01",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficeChecklist.title": {
+   "en": "Office setup",
+   "ar": "بدء تشغيل المكتب",
+   "kind": "text",
+   "hash": "82e0d48d456c",
+   "file": "src/components/offices/OfficeChecklist.tsx"
+  },
+  "components/offices/OfficePledges.confirm": {
+   "en": "Confirm delivery",
+   "ar": "تأكيد التسليم",
+   "kind": "text",
+   "hash": "076fc3d7a947",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.delivered": {
+   "en": "Delivery recorded and the supporter notified",
+   "ar": "سُجّل التسليم وأُبلغ الداعم",
+   "kind": "text",
+   "hash": "c26990080c7d",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.emptyText": {
+   "en": "When someone supports the office's area or its groups, it appears here to prepare and deliver.",
+   "ar": "حين يدعم أحدٌ منطقة المكتب أو مجموعاتها يظهر هنا لتجهيزه وتسليمه.",
+   "kind": "text",
+   "hash": "35ce61cc48da",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.emptyTitle": {
+   "en": "No open pledges",
+   "ar": "لا تعهّدات مفتوحة",
+   "kind": "text",
+   "hash": "05e6c7647ecd",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.preparing": {
+   "en": "Preparation started and the supporter notified",
+   "ar": "بدأ التجهيز وأُبلغ الداعم",
+   "kind": "text",
+   "hash": "06d4165ad169",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.preparingBadge": {
+   "en": "Being prepared",
+   "ar": "قيد التجهيز",
+   "kind": "text",
+   "hash": "7f74cb3ba811",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.proof": {
+   "en": "Delivery document",
+   "ar": "مستند التسليم",
+   "kind": "text",
+   "hash": "3abe21099cc8",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.recordFailed": {
+   "en": "It could not be recorded",
+   "ar": "تعذّر التسجيل",
+   "kind": "text",
+   "hash": "fc0a06865c4e",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.startPreparing": {
+   "en": "Start preparing",
+   "ar": "بدء التجهيز",
+   "kind": "text",
+   "hash": "efc68787643e",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.title": {
+   "en": "Pledges awaiting delivery",
+   "ar": "تعهّدات بانتظار التسليم",
+   "kind": "text",
+   "hash": "400866840848",
+   "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficePledges.uploadFailed": {
+   "en": "The document could not be uploaded",
+   "ar": "تعذّر رفع المستند",
+   "kind": "text",
+   "hash": "632bce9c1388",
+   "file": "src/components/offices/OfficePledges.tsx"
   },
   "components/orphan/ScopedSections.education": {
    "en": "Education:",
@@ -2391,6 +2701,83 @@
    "hash": "da30c7874668",
    "file": "src/config/offering.ts"
   },
+  "lib/workspaces.labels.kind.in_kind": {
+   "en": "In-kind support",
+   "ar": "",
+   "kind": "text",
+   "hash": "c8a045f854aa",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.kind.qualification": {
+   "en": "Building capability",
+   "ar": "",
+   "kind": "text",
+   "hash": "c8c919d1fb8b",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.role.coordinator": {
+   "en": "Coordinator",
+   "ar": "",
+   "kind": "text",
+   "hash": "c0d1920ecc7a",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.role.field_officer": {
+   "en": "Field officer",
+   "ar": "",
+   "kind": "text",
+   "hash": "367067a10ed5",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.role.manager": {
+   "en": "Office manager",
+   "ar": "",
+   "kind": "text",
+   "hash": "6c9f01491f24",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.role.viewer": {
+   "en": "Viewer",
+   "ar": "",
+   "kind": "text",
+   "hash": "f259053b2899",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.target.country": {
+   "en": "Country",
+   "ar": "",
+   "kind": "text",
+   "hash": "386620fdccf1",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.target.group": {
+   "en": "Group",
+   "ar": "",
+   "kind": "text",
+   "hash": "f6bfb98b154b",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.target.institution": {
+   "en": "Organization",
+   "ar": "",
+   "kind": "text",
+   "hash": "088f9c8ba0d6",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.target.orphan": {
+   "en": "Child",
+   "ar": "",
+   "kind": "text",
+   "hash": "675c56406761",
+   "file": "src/lib/workspaces.functions.ts"
+  },
+  "lib/workspaces.labels.target.region": {
+   "en": "Region",
+   "ar": "",
+   "kind": "text",
+   "hash": "597b00c638bc",
+   "file": "src/lib/workspaces.functions.ts"
+  },
   "routes/__root/error.home": {
    "en": "Home",
    "ar": "الرئيسية",
@@ -3388,6 +3775,210 @@
    "params": 1,
    "hash": "2f72217ca79b",
    "file": "src/routes/index.tsx"
+  },
+  "routes/office.addMetric": {
+   "en": "Indicator",
+   "ar": "مؤشّر",
+   "kind": "text",
+   "hash": "708f5bcd6277",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.consent": {
+   "en": "I confirm these photos show no child's face without documented consent to publish.",
+   "ar": "أُقرّ أن هذه الصور لا تُظهر وجه طفلٍ إلا بموافقةٍ موثّقة على النشر.",
+   "kind": "text",
+   "hash": "9088e564179c",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.files": {
+   "en": "Photos and attachments ({0})",
+   "ar": "صور ومرفقات ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "301ee5d4b7cd",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.groups": {
+   "en": "Groups",
+   "ar": "المجموعات",
+   "kind": "text",
+   "hash": "92210342810b",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.metricName": {
+   "en": "Indicator name",
+   "ar": "اسم المؤشّر",
+   "kind": "text",
+   "hash": "f53b0fd84cf7",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.metricValue": {
+   "en": "Value",
+   "ar": "القيمة",
+   "kind": "text",
+   "hash": "a2c122336230",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.metrics": {
+   "en": "Indicators",
+   "ar": "المؤشّرات",
+   "kind": "text",
+   "hash": "f1457ab50f1d",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.metricsHint": {
+   "en": "Names you choose: visits, bags distributed, attendance…",
+   "ar": "أسماءٌ تختارها: زيارات، حقائب موزّعة، حضور…",
+   "kind": "text",
+   "hash": "e5c241c284de",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.newReport": {
+   "en": "New report",
+   "ar": "تقرير جديد",
+   "kind": "text",
+   "hash": "adb603d2bf09",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.noAccessA": {
+   "en": "You don't have access to this office.",
+   "ar": "لا تملك الاطّلاع على هذا المكتب.",
+   "kind": "text",
+   "hash": "4b7d7fe0f10f",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.noReports": {
+   "en": "No reports yet.",
+   "ar": "لا تقارير بعد.",
+   "kind": "text",
+   "hash": "5307379a6e9e",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.orphans": {
+   "en": "Approved beneficiaries",
+   "ar": "المستفيدون المعتمدون",
+   "kind": "text",
+   "hash": "3e7b7a8be8d5",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.photoAlt": {
+   "en": "Photo from the office report",
+   "ar": "صورة من تقرير المكتب",
+   "kind": "text",
+   "hash": "83aa840fd38f",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.publish": {
+   "en": "Publish",
+   "ar": "نشر",
+   "kind": "text",
+   "hash": "53774edc0187",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.rBody": {
+   "en": "Details",
+   "ar": "التفاصيل",
+   "kind": "text",
+   "hash": "472d6e4b89ab",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.rTitle": {
+   "en": "Title",
+   "ar": "العنوان",
+   "kind": "text",
+   "hash": "f4fd686e405c",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.removeMetric": {
+   "en": "Remove indicator",
+   "ar": "حذف المؤشّر",
+   "kind": "text",
+   "hash": "69246b9f2ccf",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.reports": {
+   "en": "Reports",
+   "ar": "التقارير",
+   "kind": "text",
+   "hash": "c22ea696174e",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.saveDraft": {
+   "en": "Save draft",
+   "ar": "حفظ مسودّة",
+   "kind": "text",
+   "hash": "362a39087599",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.saveFailed": {
+   "en": "It could not be saved.",
+   "ar": "تعذّر الحفظ.",
+   "kind": "text",
+   "hash": "d9ee04dcd025",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.saved": {
+   "en": "Report saved.",
+   "ar": "حُفظ التقرير.",
+   "kind": "text",
+   "hash": "aa9e7f41fb1d",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.status.draft": {
+   "en": "Draft",
+   "ar": "مسودّة",
+   "kind": "text",
+   "hash": "6f72db7bbccd",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.status.published": {
+   "en": "Published",
+   "ar": "منشور",
+   "kind": "text",
+   "hash": "ca034888bbd4",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.status.submitted": {
+   "en": "Submitted for review",
+   "ar": "مرفوع للمراجعة",
+   "kind": "text",
+   "hash": "4e18ff1822b6",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.submit": {
+   "en": "Submit for review",
+   "ar": "رفع للمراجعة",
+   "kind": "text",
+   "hash": "997d637e4189",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.title": {
+   "en": "Office dashboard",
+   "ar": "لوحة المكتب",
+   "kind": "text",
+   "hash": "5b5c164d3b92",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.uploadFailed": {
+   "en": "Some files could not be uploaded (images or PDF up to 10 MB).",
+   "ar": "تعذّر رفع بعض الملفات (صور أو PDF حتى 10 م.ب).",
+   "kind": "text",
+   "hash": "4ca6fa258c1e",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.wholeCountry": {
+   "en": "Whole country",
+   "ar": "الدولة كلّها",
+   "kind": "text",
+   "hash": "fff7cee8ae60",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
   },
   "routes/organizations.empty": {
    "en": "No approved organizations yet.",

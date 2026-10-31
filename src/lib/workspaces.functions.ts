@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { defineCopy, useCopy } from "@/lib/locale";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -39,6 +40,18 @@ export type OfficeDashboard = {
   orphans: number;
   pledges: Partial<Record<"qualification" | "in_kind", { count: number; amount: number }>>;
   reports: { draft: number; submitted: number; published: number };
+  /** بدء التشغيل (هجرة 1001): عدد الأعضاء وحال منصّة الدولة — بلا أسرار. */
+  members: number;
+  platform: {
+    key: string;
+    name: string;
+    org_linked: boolean;
+    api_key_issued: boolean;
+    last_sync_at: string | null;
+    has_error: boolean;
+    /** نصّ الخطأ للإدارة وحدها؛ لغيرها null. */
+    last_error: string | null;
+  } | null;
   can_write: boolean;
   can_publish: boolean;
 };
@@ -199,6 +212,33 @@ export const KIND_LABELS: Record<string, string> = {
   qualification: "بناء الأهلية",
   in_kind: "دعم عيني",
 };
+
+/** الأسماء نفسها بلغة الواجهة — لصفحات المكاتب التي يعمل عليها فريقٌ غير عربي. */
+const LABELS_COPY = defineCopy("lib/workspaces.labels", {
+  ar: { role: OFFICE_ROLE_LABELS, target: TARGET_LABELS, kind: KIND_LABELS },
+  en: {
+    role: {
+      manager: "Office manager",
+      coordinator: "Coordinator",
+      field_officer: "Field officer",
+      viewer: "Viewer",
+    } as Record<string, string>,
+    target: {
+      orphan: "Child",
+      group: "Group",
+      region: "Region",
+      country: "Country",
+      institution: "Organization",
+    } as Record<string, string>,
+    kind: { qualification: "Building capability", in_kind: "In-kind support" } as Record<
+      string,
+      string
+    >,
+  },
+});
+export function useWorkspaceLabels() {
+  return useCopy(LABELS_COPY);
+}
 
 export type AdminOfficesOverview = {
   countries: Array<{ code: string; name: string; status: string }>;

@@ -8,6 +8,40 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
 import { BRAND } from "@/config/brand";
+import { defineCopy, useCopy } from "@/lib/locale";
+
+const COPY = defineCopy("components/DashboardShell", {
+  ar: {
+    home: "الصفحة الرئيسية",
+    nav: "التنقّل",
+    portals: "بواباتي",
+    sponsorships: "كفالاتي",
+    org: "جهة الرعاية",
+    guardian: "من أرعاهم",
+    admin: "الإدارة",
+    directory: "دليل الأيتام",
+    supervisor: "الإشراف",
+    notifications: "الإشعارات",
+    account: "حسابي",
+    sponsor: "كافل",
+    signOut: "خروج",
+  },
+  en: {
+    home: "Home",
+    nav: "Navigation",
+    portals: "My portals",
+    sponsorships: "My sponsorships",
+    org: "Care organization",
+    guardian: "In my care",
+    admin: "Administration",
+    directory: "Children's directory",
+    supervisor: "Supervision",
+    notifications: "Notifications",
+    account: "My account",
+    sponsor: "Sponsor",
+    signOut: "Sign out",
+  },
+});
 
 export function DashboardShell({
   title,
@@ -20,6 +54,7 @@ export function DashboardShell({
 }) {
   const { user, roles, isAdmin, isCareOrg, isGuardian } = useAuth();
   const navigate = useNavigate();
+  const t = useCopy(COPY);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -31,14 +66,14 @@ export function DashboardShell({
       <header className="border-b border-border bg-background">
         <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center gap-x-4 px-4">
-          <Link to="/" aria-label={`${BRAND.name} — الصفحة الرئيسية`}>
+          <Link to="/" aria-label={`${BRAND.name} — ${t.home}`}>
             <KahataynLockup compact />
           </Link>
 
           {/* على الجوال كان التنقّل مخفياً كلّياً فلا سبيل إلى البوابات؛ صار صفاً
               يُمرَّر أفقياً تحت الشعار. */}
           <nav
-            aria-label="التنقّل"
+            aria-label={t.nav}
             className="order-last -mx-4 flex w-[calc(100%+2rem)] items-center gap-1 overflow-x-auto whitespace-nowrap border-t border-border px-4 py-2 text-sm md:order-none md:mx-0 md:w-auto md:border-0 md:p-0"
           >
             <Link
@@ -46,14 +81,14 @@ export function DashboardShell({
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
-              بواباتي
+              {t.portals}
             </Link>
             <Link
               to="/dashboard"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
-              كفالاتي
+              {t.sponsorships}
             </Link>
             {isCareOrg && (
               <Link
@@ -61,7 +96,7 @@ export function DashboardShell({
                 className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 activeProps={{ className: "bg-secondary text-foreground" }}
               >
-                جهة الرعاية
+                {t.org}
               </Link>
             )}
             {isGuardian && (
@@ -70,7 +105,7 @@ export function DashboardShell({
                 className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 activeProps={{ className: "bg-secondary text-foreground" }}
               >
-                من أرعاهم
+                {t.guardian}
               </Link>
             )}
             {isAdmin && (
@@ -79,14 +114,14 @@ export function DashboardShell({
                 className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 activeProps={{ className: "bg-secondary text-foreground" }}
               >
-                الإدارة
+                {t.admin}
               </Link>
             )}
             <Link
               to="/orphans"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
-              دليل الأيتام
+              {t.directory}
             </Link>
             {/* لوحة المشرف تظهر للجميع عمداً: من ليس مشرفاً تُخبره الصفحة
                 بذلك وتشرح كيف يصير، بدل أن يكون الباب مخفياً فلا يُعرف. */}
@@ -95,7 +130,7 @@ export function DashboardShell({
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
-              الإشراف
+              {t.supervisor}
             </Link>
             {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
                 إلغاء الاشتراك حكراً على من وصلته رسالة. */}
@@ -104,14 +139,14 @@ export function DashboardShell({
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
-              الإشعارات
+              {t.notifications}
             </Link>
             <Link
               to="/account"
               className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
-              حسابي
+              {t.account}
             </Link>
           </nav>
 
@@ -120,12 +155,12 @@ export function DashboardShell({
             <div className="hidden text-end sm:block">
               <p className="text-xs font-medium">{user?.email}</p>
               <p className="text-[11px] text-muted-foreground">
-                {roles.map((r) => ROLE_LABELS[r] ?? r).join("، ") || "كافل"}
+                {roles.map((r) => ROLE_LABELS[r] ?? r).join("، ") || t.sponsor}
               </p>
             </div>
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
-              خروج
+              {t.signOut}
             </Button>
           </div>
         </div>

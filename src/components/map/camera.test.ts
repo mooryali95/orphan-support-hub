@@ -15,10 +15,10 @@ describe("كاميرا الخارطة", () => {
     expect(b.w).toBeCloseTo(albania.w, 3);
   });
 
-  it("المدّة بين 0.9 و2.2 ثانية", () => {
+  it("المدّة بين 1.4 و2.6 ثانية", () => {
     const f = flight(world, albania);
-    expect(f.duration).toBeGreaterThanOrEqual(900);
-    expect(f.duration).toBeLessThanOrEqual(2200);
+    expect(f.duration).toBeGreaterThanOrEqual(1400);
+    expect(f.duration).toBeLessThanOrEqual(2600);
   });
 
   it("الإطار يحتوي الصندوق بنسبة الحاوية", () => {
