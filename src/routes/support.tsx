@@ -32,6 +32,7 @@ import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
 import { normalize, resolveCountry } from "@/lib/countries";
 import { CelebrateMark } from "@/components/kit/Celebrate";
+import { SupportSheet } from "@/components/support/SupportSheet";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
@@ -348,241 +349,242 @@ function SupportPage() {
           selection={selection}
           onSelect={onSelect}
           layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
-          className="h-[60dvh] min-h-[26rem]"
+          cardCompact
+          className="h-[calc(100dvh-4rem)]"
           intro={{
             title: t.mapTitle,
             text: t.mapText,
           }}
+          // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
           action={(ctx) => (
-            <Button
-              size="lg"
-              className="w-full"
-              onClick={() => {
-                if (!kind) setKind("qualification");
-                applyPlace(ctx.code, ctx.regionValue ?? ctx.regionName);
-                formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            >
-              {ctx.regionName ? t.supportRegion : t.supportCountry}
-            </Button>
+            <SupportSheet
+              ctx={ctx}
+              catalog={catalog}
+              stats={stats}
+              signedIn={!!user}
+              presetKind={presetKind}
+              openedAt={openedAt.current}
+            />
           )}
         />
       )}
-      <main
-        id="main"
-        tabIndex={-1}
-        className="mx-auto max-w-3xl scroll-mt-20 px-4 py-10"
-        ref={formRef}
-      >
-        <h1 className="text-3xl font-extrabold">{t.h1}</h1>
-        <p className="mt-2 text-muted-foreground">{t.lead}</p>
-        <OfferingNote className="mt-4" />
+      {orphan && (
+        <main
+          id="main"
+          tabIndex={-1}
+          className="mx-auto max-w-3xl scroll-mt-20 px-4 py-10"
+          ref={formRef}
+        >
+          <h1 className="text-3xl font-extrabold">{t.h1}</h1>
+          <p className="mt-2 text-muted-foreground">{t.lead}</p>
+          <OfferingNote className="mt-4" />
 
-        <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
-          {t.steps.map((s, i) => (
-            <li
-              key={s}
-              aria-current={i === step ? "step" : undefined}
-              className={cn(
-                "rounded-lg border px-2 py-2 text-center text-xs font-medium sm:text-sm",
-                i < step && "border-primary/40 bg-primary/5 text-primary",
-                i === step && "border-primary bg-primary text-primary-foreground",
-                i > step && "border-border text-muted-foreground",
-              )}
-            >
-              {s}
-            </li>
-          ))}
-        </ol>
+          <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
+            {t.steps.map((s, i) => (
+              <li
+                key={s}
+                aria-current={i === step ? "step" : undefined}
+                className={cn(
+                  "rounded-lg border px-2 py-2 text-center text-xs font-medium sm:text-sm",
+                  i < step && "border-primary/40 bg-primary/5 text-primary",
+                  i === step && "border-primary bg-primary text-primary-foreground",
+                  i > step && "border-border text-muted-foreground",
+                )}
+              >
+                {s}
+              </li>
+            ))}
+          </ol>
 
-        {isPending ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="size-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : !catalog ? (
-          <p className="mt-8 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
-            {t.preparingA}{" "}
-            <Link to="/orphans" className="underline">
-              {t.directory}
-            </Link>
-            .
-          </p>
-        ) : result?.ok ? (
-          <div className="mt-8 rounded-3xl bg-card p-8 text-center shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-12px_rgb(0_0_0/0.15)]">
-            <CelebrateMark />
-            <p
-              role="status"
-              className="celebrate-text mt-6 font-serif text-2xl font-bold text-primary"
-            >
-              {t.thanks}
+          {isPending ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : !catalog ? (
+            <p className="mt-8 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
+              {t.preparingA}{" "}
+              <Link to="/orphans" className="underline">
+                {t.directory}
+              </Link>
+              .
             </p>
-            <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
-              {result.text}
-            </p>
-            <Button asChild size="lg" className="celebrate-text mt-6">
-              <Link to="/workspaces">{t.portals}</Link>
-            </Button>
-          </div>
-        ) : (
-          <div className="mt-8 space-y-8">
-            <Section title={t.s1}>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {(Object.keys(KIND_INFO) as SupportKind[]).map((k) => (
-                  <Choice
-                    key={k}
-                    selected={kind === k}
-                    onClick={() => setKind(k)}
-                    title={t.kinds[k].label}
-                    text={t.kinds[k].text}
-                  />
-                ))}
-              </div>
-            </Section>
-
-            {kind && (
-              <Section title={t.s2}>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {(Object.keys(TARGET_INFO) as TargetType[]).map((tt) => (
+          ) : result?.ok ? (
+            <div className="mt-8 rounded-3xl bg-card p-8 text-center shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-12px_rgb(0_0_0/0.15)]">
+              <CelebrateMark />
+              <p
+                role="status"
+                className="celebrate-text mt-6 font-serif text-2xl font-bold text-primary"
+              >
+                {t.thanks}
+              </p>
+              <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
+                {result.text}
+              </p>
+              <Button asChild size="lg" className="celebrate-text mt-6">
+                <Link to="/workspaces">{t.portals}</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-8 space-y-8">
+              <Section title={t.s1}>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {(Object.keys(KIND_INFO) as SupportKind[]).map((k) => (
                     <Choice
-                      key={tt}
-                      selected={targetType === tt}
-                      onClick={() => {
-                        setTargetType(tt);
-                        setTarget(tt === "orphan" ? (orphan ?? "") : "");
-                      }}
-                      title={t.targets[tt].label}
-                      text={t.targets[tt].text}
+                      key={k}
+                      selected={kind === k}
+                      onClick={() => setKind(k)}
+                      title={t.kinds[k].label}
+                      text={t.kinds[k].text}
                     />
                   ))}
                 </div>
               </Section>
-            )}
 
-            {kind && targetType && (
-              <Section title={t.s3}>
-                {targetType !== "country" && catalog.countries.length > 1 && (
-                  <div className="mb-4 max-w-xs">
-                    <Label htmlFor="sp-country">{t.country}</Label>
-                    <select
-                      id="sp-country"
-                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-                      value={activeCountry}
-                      onChange={(e) => {
-                        setCountry(e.target.value);
-                        setTarget("");
-                      }}
-                    >
-                      {catalog.countries.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {targetType === "orphan" ? (
-                  orphan ? (
-                    <p className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
-                      {t.chosenChild} <strong>{name ?? t.fromDirectory}</strong>
-                    </p>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      {t.pickChildA}{" "}
-                      <Link to="/orphans" className="font-medium text-primary underline">
-                        {t.directory}
-                      </Link>
-                      {t.pickChildB}
-                    </p>
-                  )
-                ) : options.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t.noOptions}</p>
-                ) : (
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {options.map((o) => (
+              {kind && (
+                <Section title={t.s2}>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {(Object.keys(TARGET_INFO) as TargetType[]).map((tt) => (
                       <Choice
-                        key={o.value}
-                        selected={target === o.value}
-                        onClick={() => setTarget(o.value)}
-                        title={o.label}
-                        text={o.hint}
+                        key={tt}
+                        selected={targetType === tt}
+                        onClick={() => {
+                          setTargetType(tt);
+                          setTarget(tt === "orphan" ? (orphan ?? "") : "");
+                        }}
+                        title={t.targets[tt].label}
+                        text={t.targets[tt].text}
                       />
                     ))}
                   </div>
-                )}
-              </Section>
-            )}
+                </Section>
+              )}
 
-            {kind && targetType && target && (
-              <Section title={t.s4}>
-                {gapOf && (
-                  <p className="mb-3 text-sm text-muted-foreground">
-                    {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {suggested.map((a) => (
-                    <Button
-                      key={a.label}
-                      type="button"
-                      variant={amount === a.value ? "default" : "outline"}
-                      onClick={() => setAmount(a.value)}
-                    >
-                      {a.label}
-                      {gapOf && (
-                        <span className="tabular-nums opacity-80">
-                          {formatMoney(a.value, currency, locale)}
-                        </span>
-                      )}
-                    </Button>
-                  ))}
-                  <Input
-                    aria-label={t.otherAmount}
-                    type="number"
-                    min={1}
-                    className="w-28"
-                    value={amount}
-                    onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
-                  />
-                </div>
-                <div className="mt-4">
-                  <Label htmlFor="sp-note">{t.note}</Label>
-                  <Textarea
-                    id="sp-note"
-                    rows={2}
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-                </div>
-                <div className="mt-6">
-                  {user ? (
-                    <Button size="lg" disabled={busy} onClick={confirm}>
-                      {busy && <Loader2 className="size-4 animate-spin" />}
-                      {t.confirm(formatMoney(amount, currency, locale))}
-                    </Button>
-                  ) : (
-                    <AuthDialog
-                      title={t.signIn}
-                      hint={t.signInHint}
-                      trigger={(open) => (
-                        <Button size="lg" onClick={open}>
-                          {t.signIn}
-                        </Button>
-                      )}
-                    />
+              {kind && targetType && (
+                <Section title={t.s3}>
+                  {targetType !== "country" && catalog.countries.length > 1 && (
+                    <div className="mb-4 max-w-xs">
+                      <Label htmlFor="sp-country">{t.country}</Label>
+                      <select
+                        id="sp-country"
+                        className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                        value={activeCountry}
+                        onChange={(e) => {
+                          setCountry(e.target.value);
+                          setTarget("");
+                        }}
+                      >
+                        {catalog.countries.map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   )}
-                  <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
-                  {result && !result.ok && (
-                    <p role="alert" className="mt-3 text-sm text-destructive">
-                      {result.text}
+
+                  {targetType === "orphan" ? (
+                    orphan ? (
+                      <p className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+                        {t.chosenChild} <strong>{name ?? t.fromDirectory}</strong>
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        {t.pickChildA}{" "}
+                        <Link to="/orphans" className="font-medium text-primary underline">
+                          {t.directory}
+                        </Link>
+                        {t.pickChildB}
+                      </p>
+                    )
+                  ) : options.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">{t.noOptions}</p>
+                  ) : (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {options.map((o) => (
+                        <Choice
+                          key={o.value}
+                          selected={target === o.value}
+                          onClick={() => setTarget(o.value)}
+                          title={o.label}
+                          text={o.hint}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </Section>
+              )}
+
+              {kind && targetType && target && (
+                <Section title={t.s4}>
+                  {gapOf && (
+                    <p className="mb-3 text-sm text-muted-foreground">
+                      {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
                     </p>
                   )}
-                </div>
-              </Section>
-            )}
-          </div>
-        )}
-      </main>
+                  <div className="flex flex-wrap gap-2">
+                    {suggested.map((a) => (
+                      <Button
+                        key={a.label}
+                        type="button"
+                        variant={amount === a.value ? "default" : "outline"}
+                        onClick={() => setAmount(a.value)}
+                      >
+                        {a.label}
+                        {gapOf && (
+                          <span className="tabular-nums opacity-80">
+                            {formatMoney(a.value, currency, locale)}
+                          </span>
+                        )}
+                      </Button>
+                    ))}
+                    <Input
+                      aria-label={t.otherAmount}
+                      type="number"
+                      min={1}
+                      className="w-28"
+                      value={amount}
+                      onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <Label htmlFor="sp-note">{t.note}</Label>
+                    <Textarea
+                      id="sp-note"
+                      rows={2}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-6">
+                    {user ? (
+                      <Button size="lg" disabled={busy} onClick={confirm}>
+                        {busy && <Loader2 className="size-4 animate-spin" />}
+                        {t.confirm(formatMoney(amount, currency, locale))}
+                      </Button>
+                    ) : (
+                      <AuthDialog
+                        title={t.signIn}
+                        hint={t.signInHint}
+                        trigger={(open) => (
+                          <Button size="lg" onClick={open}>
+                            {t.signIn}
+                          </Button>
+                        )}
+                      />
+                    )}
+                    <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
+                    {result && !result.ok && (
+                      <p role="alert" className="mt-3 text-sm text-destructive">
+                        {result.text}
+                      </p>
+                    )}
+                  </div>
+                </Section>
+              )}
+            </div>
+          )}
+        </main>
+      )}
       <SiteFooter />
     </div>
   );
