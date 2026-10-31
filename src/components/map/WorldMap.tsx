@@ -542,7 +542,7 @@ export function WorldMap({
         x1 = Math.max(...act.map((c) => c.b[0] + c.b[2])),
         y1 = Math.max(...act.map((c) => c.b[1] + c.b[3]));
       v = act.length
-        ? fit([x0, y0, x1 - x0, y1 - y0], ah / aw, 1.6, 260)
+        ? fit([x0, y0, x1 - x0, y1 - y0], ah / aw, 1.6, 420)
         : fit([0, 0, world.w, world.h], ah / aw, 1);
     } else v = fit([0, 30, world.w, world.h - 60], ah / aw, 1.02);
     const unit = v.w / aw;
@@ -592,6 +592,12 @@ export function WorldMap({
     if (!g || !pointers.current.has(e.pointerId) || !view.current) return;
     pointers.current.set(e.pointerId, localPoint(e));
     const pts = [...pointers.current.values()];
+    // إصبعٌ واحد على الجوال يمرّر الصفحة لا الخارطة — إلى أن يقرص الزائر
+    // (أو يضغط «إعادة الضبط» لاحقاً). وإلا صار كل تمريرٍ سحباً يقفل الصفحة.
+    if (e.pointerType === "touch" && pts.length < 2 && !manual) {
+      g.center = pts[0]!;
+      return;
+    }
     const now = pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 };
     const dx = now.center.x - g.center.x;
     const dy = now.center.y - g.center.y;
@@ -624,8 +630,19 @@ export function WorldMap({
         moved,
       };
     }
-    // سحبٌ انتهى فوق دولة لا يُعدّ ضغطاً عليها.
-    if (moved) suppressClick.current = true;
+    // سحبٌ انتهى فوق دولة لا يُعدّ ضغطاً عليها — تُكبت نقرته التي تليه
+    // مباشرةً فقط؛ وبعد لحظةٍ يُمسح العَلَم فلا يبتلع لمسةً لاحقة بريئة.
+    if (moved) {
+      suppressClick.current = true;
+      window.clearTimeout(suppressTimer.current);
+      suppressTimer.current = window.setTimeout(() => (suppressClick.current = false), 250);
+    }
+  };
+  const suppressTimer = useRef<number | undefined>(undefined);
+  // المتصفّح أخذ الإيماءة لنفسه (تمرير الصفحة): تُنسى بلا أثر.
+  const onPointerCancel = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size === 0) gesture.current = null;
   };
   const suppressClick = useRef(false);
   const onClickCapture = (e: React.MouseEvent) => {
@@ -841,7 +858,7 @@ export function WorldMap({
         }}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        onPointerCancel={onPointerCancel}
         onPointerLeave={() => setTip(null)}
         onClickCapture={onClickCapture}
       >
@@ -890,7 +907,18 @@ export function WorldMap({
               className={cn("transition-opacity duration-500", country && "opacity-0")}
             >
               {activeCountries.map((c, i) => (
-                <g key={c.c} data-at={`${c.p[0]} ${c.p[1]}`} className="pointer-events-none">
+                // النقطة نفسها هدف اللمس: الدولة الصغيرة على الهاتف بضعة بكسلات،
+                // والنقطة ٢٨ بكسلاً فتُصاب بالإبهام.
+                <g
+                  key={c.c}
+                  data-at={`${c.p[0]} ${c.p[1]}`}
+                  className={cn(
+                    "cursor-pointer",
+                    country ? "pointer-events-none" : "pointer-events-auto",
+                  )}
+                  onClick={() => pickCountry(c.c)}
+                  onPointerEnter={() => prefetchRegions(c.c)}
+                >
                   <g className="map-dot" style={{ ["--i" as string]: i }}>
                     <circle r={14} className="map-pulse fill-bridge/30" />
                     <circle r={5} className="fill-bridge stroke-background" strokeWidth={2} />
@@ -945,7 +973,7 @@ export function WorldMap({
       {!bare && (
         <>
           {/* ── الطبقة العلوية: المسار، والعنوان، والبطاقات ── */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-3 p-4 md:p-6">
+          <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-2 p-3 md:gap-3 md:p-6">
             <nav aria-label={c$.breadcrumb} className="pointer-events-auto">
               <ol className="flex flex-wrap items-center gap-1 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur">
                 <li>
@@ -991,12 +1019,12 @@ export function WorldMap({
               </ol>
             </nav>
 
-            <div className="pointer-events-auto flex items-center gap-2">
+            <div className="pointer-events-auto flex w-full flex-wrap items-center gap-2 md:w-auto">
               {onLayer && (
                 <div
                   role="group"
                   aria-label={c$.layers}
-                  className="flex items-center gap-0.5 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur"
+                  className="flex shrink-0 items-center gap-0.5 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur"
                 >
                   <Layers className="ms-2 size-4 text-muted-foreground" aria-hidden="true" />
                   {(
@@ -1032,7 +1060,7 @@ export function WorldMap({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="map-rise bg-card/85 backdrop-blur"
+                  className="map-rise shrink-0 bg-card/85 backdrop-blur"
                   onClick={resetView}
                 >
                   <LocateFixed aria-hidden="true" />
@@ -1043,7 +1071,7 @@ export function WorldMap({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="bg-card/85 backdrop-blur"
+                className="shrink-0 bg-card/85 backdrop-blur"
                 aria-expanded={listOpen}
                 onClick={() => setListOpen((o) => !o)}
               >
