@@ -112,6 +112,8 @@ const COPY = defineCopy("components/map/WorldMap", {
     countriesH: "الدول",
     closeList: "إغلاق القائمة",
     reset: "إعادة الضبط",
+    expand: "توسيع البطاقة",
+    collapse: "طيّ البطاقة لرؤية الخارطة",
     layers: "طبقة الخارطة",
     layerWaiting: "ينتظرون",
     layerImpact: "الأثر",
@@ -154,6 +156,8 @@ const COPY = defineCopy("components/map/WorldMap", {
     countriesH: "Countries",
     closeList: "Close list",
     reset: "Reset view",
+    expand: "Expand the card",
+    collapse: "Collapse the card to see the map",
     layers: "Map layer",
     layerWaiting: "Waiting",
     layerImpact: "Impact",
@@ -472,6 +476,17 @@ export function WorldMap({
   const view = useRef<View | null>(null);
   const [size, setSize] = useState({ w: 1280, h: 660 });
   const [settled, setSettled] = useState(true);
+  // على الهاتف البطاقة ورقةٌ سفلية تُطوى لتظهر الخارطة كاملةً، وتعود مع كل اختيارٍ جديد.
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => setCollapsed(false), [selection.country, selection.region]);
+  // طيّ الورقة يحرّك الكاميرا قليلاً لإعادة التوسيط — بلا إخفاء البطاقة ولا رحلةٍ كاملة.
+  const sheetOnly = useRef(false);
+  const toggleSheet = useCallback((next?: boolean) => {
+    sheetOnly.current = true;
+    setCollapsed((v) => (next === undefined ? !v : next));
+  }, []);
+  // تموّجٌ عند اللمس: حلقةٌ تتّسع من نقطة الإصبع ثم تتلاشى.
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const [listOpen, setListOpen] = useState(false);
   // الزائر حرّك الخارطة بيده: الإطار صار إطاره لا إطار الهدف، ويظهر «إعادة الضبط».
   const [manual, setManual] = useState(false);
@@ -527,7 +542,9 @@ export function WorldMap({
     const inset = {
       top: 72,
       side: country && wide ? 424 : 0,
-      bottom: country && !wide ? Math.min(380, size.h * 0.48) : !country ? 120 : 16,
+      // الورقة السفلية: ٤٢٪ من الشاشة مفتوحةً (وتتمرّر داخلياً)، و٩ rem مطويّة.
+      bottom:
+        country && !wide ? (collapsed ? 156 : Math.round(size.h * 0.42) + 12) : !country ? 120 : 16,
     };
     const aw = Math.max(1, size.w - inset.side);
     const ah = Math.max(1, size.h - inset.top - inset.bottom);
@@ -548,13 +565,17 @@ export function WorldMap({
     const unit = v.w / aw;
     // في RTL البطاقة على اليمين (البداية): نمدّ الإطار يميناً بعرضها.
     return { x: v.x, y: v.y - inset.top * unit, w: size.w * unit, h: size.h * unit };
-  }, [world, country, region, size, stats]);
+  }, [world, country, region, size, stats, collapsed]);
 
   /* ── الإيماءات: قرصةٌ وسحبٌ وعجلة ──
    * تُحدَّث `view.current` مباشرةً بلا إعادة رسم React — الطبقات لا تتبع
    * الإطار، والنقاط تُعاد بـpaint. والقيد يمنع الضياع. */
   const pointers = useRef(new Map<number, Point>());
   const gesture = useRef<{ dist: number; center: Point; moved: boolean } | null>(null);
+  // زخم السحب: آخر عيّنات الموضع بزمنها، ومنها سرعة الرفع ليستمرّ الإطار قليلاً ثم يهدأ.
+  const samples = useRef<Array<{ x: number; y: number; t: number }>>([]);
+  const gestureIdle = useRef<number | undefined>(undefined);
+  const inertia = useRef<number>(0);
   const cancelFlight = useRef<(() => void) | null>(null);
   const outer = useMemo<View | null>(() => {
     if (!world) return null;
@@ -568,6 +589,11 @@ export function WorldMap({
       const minW = Math.min(world.w / MAX_ZOOM, (target?.w ?? Infinity) / 4);
       const v = clampView(next, world, outer, minW);
       view.current = v;
+      // أثناء الإيماءة تُطفأ الظلال والهالات كما في الطيران: إطارٌ خفيف يتبع الإصبع.
+      const sec = svgRef.current?.closest("section");
+      sec?.setAttribute("data-gesturing", "");
+      window.clearTimeout(gestureIdle.current);
+      gestureIdle.current = window.setTimeout(() => sec?.removeAttribute("data-gesturing"), 160);
       paint(v);
       setManual(true);
       setSettled(true);
@@ -580,7 +606,16 @@ export function WorldMap({
   };
   const onPointerDown = (e: React.PointerEvent) => {
     if (bare || e.button !== 0) return;
-    pointers.current.set(e.pointerId, localPoint(e));
+    cancelAnimationFrame(inertia.current);
+    const at = localPoint(e);
+    samples.current = [{ ...at, t: performance.now() }];
+    // تموّجٌ فوق ما يُلمس من الخارطة (دولة، منطقة، نقطة) — لا فوق الفراغ.
+    if ((e.target as Element).closest?.("[data-country],[data-region],[data-at]")) {
+      const id = performance.now();
+      setRipples((r) => [...r.slice(-3), { id, x: at.x, y: at.y }]);
+      window.setTimeout(() => setRipples((r) => r.filter((x) => x.id !== id)), 700);
+    }
+    pointers.current.set(e.pointerId, at);
     const pts = [...pointers.current.values()];
     const start = pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 };
     gesture.current = { ...start, moved: false };
@@ -614,6 +649,7 @@ export function WorldMap({
       }
     }
     g.moved = true;
+    samples.current = [...samples.current.slice(-5), { ...now.center, t: performance.now() }];
     let v = panBy(view.current, dx, dy, size);
     if (g.dist > 0 && now.dist > 0) v = zoomAround(v, now.dist / g.dist, now.center, size);
     gesture.current = { ...now, moved: true };
@@ -622,8 +658,30 @@ export function WorldMap({
   const onPointerUp = (e: React.PointerEvent) => {
     pointers.current.delete(e.pointerId);
     const moved = gesture.current?.moved ?? false;
-    if (pointers.current.size === 0) gesture.current = null;
-    else {
+    if (pointers.current.size === 0) {
+      gesture.current = null;
+      // سحبٌ انتهى بسرعة: يستمرّ بزخمٍ يتلاشى (٧٪ كل إطار) — لا توقّفٌ فجائي.
+      // السرعة من آخر عيّنتين متباعدتين بما يكفي، لا من الإطار الأخير وحده.
+      const now_ = performance.now();
+      const recent = samples.current.filter((p) => now_ - p.t < 160);
+      const a = recent[0];
+      const b = recent[recent.length - 1];
+      const dt = a && b ? b.t - a.t : 0;
+      const vx = dt > 0 ? (b!.x - a!.x) / dt : 0;
+      const vy = dt > 0 ? (b!.y - a!.y) / dt : 0;
+      if (moved && recent.length >= 2 && Math.hypot(vx, vy) > 0.25) {
+        let cx = vx * 16,
+          cy = vy * 16;
+        const glide = () => {
+          if (!view.current || Math.hypot(cx, cy) < 0.3) return;
+          applyManual(panBy(view.current, cx, cy, size));
+          cx *= 0.93;
+          cy *= 0.93;
+          inertia.current = requestAnimationFrame(glide);
+        };
+        inertia.current = requestAnimationFrame(glide);
+      }
+    } else {
       const pts = [...pointers.current.values()];
       gesture.current = {
         ...(pts.length >= 2 ? pinchOf(pts[0]!, pts[1]!) : { center: pts[0]!, dist: 0 }),
@@ -683,12 +741,16 @@ export function WorldMap({
     const f = flight(from, target);
     let raf = 0;
     const t0 = performance.now();
-    setSettled(false);
+    cancelAnimationFrame(inertia.current);
+    const gentle = sheetOnly.current;
+    sheetOnly.current = false;
+    const duration = gentle ? 420 : f.duration;
+    if (!gentle) setSettled(false);
     // أثناء الطيران: رسمٌ أسرع للأشكال، والنبض متوقّف — الكاميرا وحدها تتحرّك.
     svgRef.current?.closest("section")?.setAttribute("data-flying", "");
     const tick = (now: number) => {
-      const t = Math.min(1, (now - t0) / f.duration);
-      const v = f.at(easeInOut(t));
+      const t = Math.min(1, (now - t0) / duration);
+      const v = f.at(gentle ? easeOut(t) : easeInOut(t));
       view.current = v;
       paint(v);
       if (t < 1) raf = requestAnimationFrame(tick);
@@ -749,12 +811,26 @@ export function WorldMap({
     return () => window.removeEventListener("keydown", onKey);
   }, [selection, onSelect]);
 
+  // نبضةٌ خفيفة عند الاختيار حيث يدعمها الجهاز (أندرويد)؛ وعلى غيره لا شيء.
+  const haptic = () => {
+    try {
+      navigator.vibrate?.(8);
+    } catch {
+      /* لا شيء */
+    }
+  };
   const pickCountry = useCallback(
-    (c: string) => onSelect({ country: c, region: null }),
+    (c: string) => {
+      haptic();
+      onSelect({ country: c, region: null });
+    },
     [onSelect],
   );
   const pickRegion = useCallback(
-    (id: string) => onSelect({ country: selection.country, region: id }),
+    (id: string) => {
+      haptic();
+      onSelect({ country: selection.country, region: id });
+    },
     [onSelect, selection.country],
   );
 
@@ -952,6 +1028,14 @@ export function WorldMap({
           </div>
         )}
 
+        {ripples.map((r) => (
+          <span
+            key={r.id}
+            aria-hidden="true"
+            style={{ left: r.x, top: r.y }}
+            className="map-ripple pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bridge"
+          />
+        ))}
         {tip && (
           <div
             role="presentation"
@@ -1113,8 +1197,37 @@ export function WorldMap({
             <aside
               key={`${country.c}-${region?.id ?? ""}`}
               aria-live="polite"
-              className="map-rise absolute inset-x-3 bottom-3 rounded-3xl bg-card/95 p-5 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96"
+              data-collapsed={collapsed || undefined}
+              className={cn(
+                "map-rise map-sheet absolute inset-x-3 bottom-3 overflow-y-auto overscroll-contain rounded-3xl bg-card/95 p-5 pt-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96 md:overflow-visible md:pt-5",
+                collapsed ? "max-h-36" : "max-h-[42dvh] md:max-h-none",
+              )}
             >
+              {/* مقبض الورقة (هاتف): اضغط أو اسحب لأسفل لطيّها فترى الخارطة. */}
+              <button
+                type="button"
+                aria-expanded={!collapsed}
+                aria-label={collapsed ? c$.expand : c$.collapse}
+                onClick={() => toggleSheet()}
+                onPointerDown={(e) => {
+                  const y0 = e.clientY;
+                  const onMove = (ev: PointerEvent) => {
+                    const dy = ev.clientY - y0;
+                    if (Math.abs(dy) < 28) return;
+                    toggleSheet(dy > 0);
+                    done();
+                  };
+                  const done = () => {
+                    window.removeEventListener("pointermove", onMove);
+                    window.removeEventListener("pointerup", done);
+                  };
+                  window.addEventListener("pointermove", onMove);
+                  window.addEventListener("pointerup", done);
+                }}
+                className="mx-auto mb-2 block h-6 w-16 touch-none rounded-full md:hidden"
+              >
+                <span className="mx-auto block h-1.5 w-10 rounded-full bg-border" />
+              </button>
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="flex items-center gap-1 text-xs text-muted-foreground">
