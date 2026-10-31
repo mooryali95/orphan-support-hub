@@ -113,14 +113,16 @@ function DashboardPage() {
       </div>
       <FollowedChildren />
       <MyPledges />
-      {!isLoading && !listFailed && <div className="grid gap-4 sm:grid-cols-3">
-        <StatTile label="عدد الكفالات" value={String(sponsorships.length)} />
-        <StatTile
-          label="الكفالات النشطة"
-          value={String(sponsorships.filter((s) => s.status === "active").length)}
-        />
-        <StatTile label="التزامك الشهري" value={formatMoney(activeTotal)} />
-      </div>}
+      {!isLoading && !listFailed && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <StatTile label="عدد الكفالات" value={String(sponsorships.length)} />
+          <StatTile
+            label="الكفالات النشطة"
+            value={String(sponsorships.filter((s) => s.status === "active").length)}
+          />
+          <StatTile label="التزامك الشهري" value={formatMoney(activeTotal)} />
+        </div>
+      )}
 
       {mode?.onHold && (
         // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
@@ -149,7 +151,9 @@ function DashboardPage() {
         ) : listFailed ? (
           <div role="alert" className="space-y-3 py-8 text-center">
             <p className="text-destructive">تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.</p>
-            <Button variant="outline" onClick={() => void refetch()}>إعادة المحاولة</Button>
+            <Button variant="outline" onClick={() => void refetch()}>
+              إعادة المحاولة
+            </Button>
           </div>
         ) : sponsorships.length === 0 ? (
           <EmptyState

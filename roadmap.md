@@ -1,4 +1,5 @@
 # Monitoring fixes
+
 - [x] Restore sponsor sponsorship lists without requesting protected child fields; show load errors separately from empty lists.
 - [x] Count the entire email queue only for verified admins and reject failed counts.
 - [x] Run four regression tests and check preview build output.
