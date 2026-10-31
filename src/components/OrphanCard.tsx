@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, GraduationCap, Hammer } from "lucide-react";
+import { MapPin, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
@@ -17,8 +17,6 @@ const COPY = defineCopy("components/OrphanCard", {
     male: "ذكر",
     years: "سنة",
     ages: AGE_BAND_LABELS as Record<string, string>,
-    building: "برنامج بناء أهلية قائم",
-    notStarted: "برنامجه لم يبدأ بعد",
     complete: "اكتمل احتياجه الشهري",
     surplus: "فائض",
     remaining: "متبقٍّ شهرياً",
@@ -39,8 +37,6 @@ const COPY = defineCopy("components/OrphanCard", {
       age_18_plus: "18+",
       unknown: "Unknown",
     } as Record<string, string>,
-    building: "Qualification program under way",
-    notStarted: "Program not started yet",
     complete: "Monthly need covered",
     surplus: "surplus",
     remaining: "still needed monthly",
@@ -137,17 +133,8 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
           </p>
         </div>
 
-        {/* بدل القصّة: حالُ البناء — وهو ما يعني الكافل فعلاً، وليس
-            حكايةَ فقدٍ تُروى عن طفلٍ لغريب. */}
-        {orphan.building ? (
-          <p className="text-shore-thrive inline-flex items-center gap-1.5 text-xs font-medium">
-            <Hammer className="size-3.5" aria-hidden="true" />
-            {c.building}
-          </p>
-        ) : (
-          <p className="text-muted-foreground text-xs">{c.notStarted}</p>
-        )}
-
+        {/* بدل القصّة: الشارات الأربع (البروفايل، الصورة، البناء، التقرير) — ما يعني
+            الكافل فعلاً، لا حكايةَ فقدٍ تُروى عن طفلٍ لغريب. */}
         {/* كم نعرف عنه — أعدادٌ ونعم/لا من القاعدة، لا محتوى. */}
         <TrustSignals
           compact

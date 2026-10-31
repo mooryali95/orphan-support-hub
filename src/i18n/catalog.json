@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 648,
+ "count": 649,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -102,13 +102,6 @@
    "hash": "516843de659d",
    "file": "src/components/OrphanCard.tsx"
   },
-  "components/OrphanCard.building": {
-   "en": "Qualification program under way",
-   "ar": "برنامج بناء أهلية قائم",
-   "kind": "text",
-   "hash": "013c3bff24ad",
-   "file": "src/components/OrphanCard.tsx"
-  },
   "components/OrphanCard.complete": {
    "en": "Monthly need covered",
    "ar": "اكتمل احتياجه الشهري",
@@ -150,13 +143,6 @@
    "ar": "بحاجة لكافل",
    "kind": "text",
    "hash": "8ae5bc9f14f5",
-   "file": "src/components/OrphanCard.tsx"
-  },
-  "components/OrphanCard.notStarted": {
-   "en": "Program not started yet",
-   "ar": "برنامجه لم يبدأ بعد",
-   "kind": "text",
-   "hash": "9b4fd3fa9460",
    "file": "src/components/OrphanCard.tsx"
   },
   "components/OrphanCard.of": {
@@ -1360,6 +1346,13 @@
    "hash": "c145d24076a1",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
+  "components/orphan/TrustSignals.noBuilding": {
+   "en": "Qualification program not started yet",
+   "ar": "لم يبدأ برنامج التأهيل بعد",
+   "kind": "text",
+   "hash": "8be365e61381",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
   "components/orphan/TrustSignals.noPhoto": {
    "en": "No photo consent",
    "ar": "لا موافقة صورة",
@@ -1976,11 +1969,25 @@
    "hash": "6a509e4c7c53",
    "file": "src/components/protection/RequesterThread.tsx"
   },
+  "components/protection/RequesterThread.adminPlaceholder": {
+   "en": "Ask the requester for a clarification or explain your decision…",
+   "ar": "اطلب توضيحاً من صاحب الطلب أو اشرح قرارك…",
+   "kind": "text",
+   "hash": "a2e8b66bcc16",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
   "components/protection/RequesterThread.placeholder": {
    "en": "Add a clarification or answer the administration's question…",
    "ar": "أضف توضيحاً أو أجب عن سؤال الإدارة…",
    "kind": "text",
    "hash": "a326085c721b",
+   "file": "src/components/protection/RequesterThread.tsx"
+  },
+  "components/protection/RequesterThread.requester": {
+   "en": "Requester",
+   "ar": "صاحب الطلب",
+   "kind": "text",
+   "hash": "74c4d1715b0f",
    "file": "src/components/protection/RequesterThread.tsx"
   },
   "components/protection/RequesterThread.send": {
