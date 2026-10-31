@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 648,
+ "count": 647,
  "entries": {
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -102,13 +102,6 @@
    "hash": "516843de659d",
    "file": "src/components/OrphanCard.tsx"
   },
-  "components/OrphanCard.building": {
-   "en": "Qualification program under way",
-   "ar": "برنامج بناء أهلية قائم",
-   "kind": "text",
-   "hash": "013c3bff24ad",
-   "file": "src/components/OrphanCard.tsx"
-  },
   "components/OrphanCard.complete": {
    "en": "Monthly need covered",
    "ar": "اكتمل احتياجه الشهري",
@@ -150,13 +143,6 @@
    "ar": "بحاجة لكافل",
    "kind": "text",
    "hash": "8ae5bc9f14f5",
-   "file": "src/components/OrphanCard.tsx"
-  },
-  "components/OrphanCard.notStarted": {
-   "en": "Program not started yet",
-   "ar": "برنامجه لم يبدأ بعد",
-   "kind": "text",
-   "hash": "9b4fd3fa9460",
    "file": "src/components/OrphanCard.tsx"
   },
   "components/OrphanCard.of": {
@@ -1358,6 +1344,13 @@
    "ar": "ينقصه:",
    "kind": "text",
    "hash": "c145d24076a1",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.noBuilding": {
+   "en": "Qualification program not started yet",
+   "ar": "لم يبدأ برنامج التأهيل بعد",
+   "kind": "text",
+   "hash": "8be365e61381",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/orphan/TrustSignals.noPhoto": {

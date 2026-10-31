@@ -191,6 +191,7 @@
  "components/orphan/TrustSignals.dotsLabel.other": "Plotësia e profilit: {0} nga {1}",
  "components/orphan/TrustSignals.label": "Çfarë dimë për këtë fëmijë",
  "components/orphan/TrustSignals.missing": "Mungon:",
+ "components/orphan/TrustSignals.noBuilding": "Programi i kualifikimit nuk ka filluar ende",
  "components/orphan/TrustSignals.noPhoto": "Pa pëlqim për foto",
  "components/orphan/TrustSignals.noReport": "Pa raport të fundit",
  "components/orphan/TrustSignals.photo": "Pëlqim i dokumentuar për foto",

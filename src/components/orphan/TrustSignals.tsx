@@ -13,6 +13,7 @@ const COPY = defineCopy("components/orphan/TrustSignals", {
     photo: "موافقةُ صورةٍ موثّقة",
     noPhoto: "لا موافقة صورة",
     building: "برنامج تأهيلٍ قائم",
+    noBuilding: "لم يبدأ برنامج التأهيل بعد",
     report: "تقريرٌ معتمد آخر ٩٠ يوماً",
     noReport: "لا تقرير حديث",
     dotsLabel: (n: number, t: number) => `اكتمال البروفايل: ${n} من ${t}`,
@@ -29,6 +30,7 @@ const COPY = defineCopy("components/orphan/TrustSignals", {
     photo: "Documented photo consent",
     noPhoto: "No photo consent",
     building: "Qualification program under way",
+    noBuilding: "Qualification program not started yet",
     report: "Approved report in the last 90 days",
     noReport: "No recent report",
     dotsLabel: pluralOf({
@@ -114,7 +116,7 @@ export function TrustSignals({
       icon: Camera,
       text: consentDocumented ? t.photo : t.noPhoto,
     },
-    { key: "building", on: building, icon: Hammer, text: t.building },
+    { key: "building", on: building, icon: Hammer, text: building ? t.building : t.noBuilding },
     {
       key: "report",
       on: Boolean(recentReport),
@@ -127,26 +129,29 @@ export function TrustSignals({
       aria-label={t.label}
       className={cn("flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs", className)}
     >
-      {items
-        // المختصر (البطاقة): النقاط دائماً، والإشارات الحاضرة فقط — والبرنامج له سطره هناك.
-        .filter((it) => !compact || it.dots || (it.on && it.key !== "building"))
-        .map(({ key, on, icon: Icon, text, dots }) => (
-          <li
-            key={key}
-            title={dots ? t.profile(n, PROFILE_SECTIONS_TOTAL) : text}
-            className={cn(
-              "inline-flex items-center gap-1.5",
-              on ? "text-foreground" : "text-muted-foreground/70",
-            )}
-          >
-            {dots ? (
-              <ProfileDots filled={n} />
-            ) : (
-              Icon && <Icon className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-            )}
-            <span className={cn(compact && !dots && "sr-only")}>{text}</span>
-          </li>
-        ))}
+      {/* الشارات الأربع دائماً — في البطاقة أيقوناتٌ ونصّها للقارئ والتلميح؛
+          الحاضرة بلونها والغائبة خافتة، فيُقرأ «ما ينقص» بقدر «ما يوجد». */}
+      {items.map(({ key, on, icon: Icon, text, dots }) => (
+        <li
+          key={key}
+          title={dots ? t.profile(n, PROFILE_SECTIONS_TOTAL) : text}
+          className={cn(
+            "inline-flex items-center gap-1.5",
+            on
+              ? key === "building"
+                ? "text-shore-thrive"
+                : "text-foreground"
+              : "text-muted-foreground/60",
+          )}
+        >
+          {dots ? (
+            <ProfileDots filled={n} />
+          ) : (
+            Icon && <Icon className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+          )}
+          <span className={cn(compact && !dots && "sr-only")}>{text}</span>
+        </li>
+      ))}
     </ul>
   );
 }
