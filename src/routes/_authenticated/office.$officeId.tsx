@@ -4,7 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { FileText, ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
 
+import { OfficeChecklist } from "@/components/offices/OfficeChecklist";
 import { OfficePledges } from "@/components/offices/OfficePledges";
+import { useAuth } from "@/hooks/useAuth";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,28 +18,96 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/format";
 import {
   getOfficeDashboard,
-  KIND_LABELS,
   saveOfficeReport,
   type OfficeReport,
+  useWorkspaceLabels,
 } from "@/lib/workspaces.functions";
 import { pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 
+const COPY = defineCopy("routes/office", {
+  ar: {
+    title: "لوحة المكتب",
+    wholeCountry: "الدولة كلّها",
+    noAccessA: "لا تملك الاطّلاع على هذا المكتب.",
+    portals: "بواباتي",
+    groups: "المجموعات",
+    orphans: "المستفيدون المعتمدون",
+    reports: "التقارير",
+    noReports: "لا تقارير بعد.",
+    status: { draft: "مسودّة", submitted: "مرفوع للمراجعة", published: "منشور" } as Record<
+      OfficeReport["status"],
+      string
+    >,
+    newReport: "تقرير جديد",
+    rTitle: "العنوان",
+    rBody: "التفاصيل",
+    metrics: "المؤشّرات",
+    metricsHint: "أسماءٌ تختارها: زيارات، حقائب موزّعة، حضور…",
+    metricName: "اسم المؤشّر",
+    metricValue: "القيمة",
+    removeMetric: "حذف المؤشّر",
+    addMetric: "مؤشّر",
+    files: (n: number) => `صور ومرفقات (${n})`,
+    consent: "أُقرّ أن هذه الصور لا تُظهر وجه طفلٍ إلا بموافقةٍ موثّقة على النشر.",
+    saveDraft: "حفظ مسودّة",
+    submit: "رفع للمراجعة",
+    publish: "نشر",
+    uploadFailed: "تعذّر رفع بعض الملفات (صور أو PDF حتى 10 م.ب).",
+    saveFailed: "تعذّر الحفظ.",
+    saved: "حُفظ التقرير.",
+    photoAlt: "صورة من تقرير المكتب",
+  },
+  en: {
+    title: "Office dashboard",
+    wholeCountry: "Whole country",
+    noAccessA: "You don't have access to this office.",
+    portals: "My portals",
+    groups: "Groups",
+    orphans: "Approved beneficiaries",
+    reports: "Reports",
+    noReports: "No reports yet.",
+    status: { draft: "Draft", submitted: "Submitted for review", published: "Published" } as Record<
+      OfficeReport["status"],
+      string
+    >,
+    newReport: "New report",
+    rTitle: "Title",
+    rBody: "Details",
+    metrics: "Indicators",
+    metricsHint: "Names you choose: visits, bags distributed, attendance…",
+    metricName: "Indicator name",
+    metricValue: "Value",
+    removeMetric: "Remove indicator",
+    addMetric: "Indicator",
+    files: (n: number) => `Photos and attachments (${n})`,
+    consent: "I confirm these photos show no child's face without documented consent to publish.",
+    saveDraft: "Save draft",
+    submit: "Submit for review",
+    publish: "Publish",
+    uploadFailed: "Some files could not be uploaded (images or PDF up to 10 MB).",
+    saveFailed: "It could not be saved.",
+    saved: "Report saved.",
+    photoAlt: "Photo from the office report",
+  },
+});
+
 export const Route = createFileRoute("/_authenticated/office/$officeId")({
-  head: () => ({
-    meta: [{ title: pageTitle("لوحة المكتب", false) }, { name: "robots", content: "noindex" }],
+  head: ({ match }) => ({
+    meta: [
+      { title: pageTitle(copyOf(COPY, match.context.locale ?? "ar").title, false) },
+      { name: "robots", content: "noindex" },
+    ],
   }),
   component: OfficePage,
 });
 
-const STATUS_LABELS: Record<OfficeReport["status"], string> = {
-  draft: "مسودّة",
-  submitted: "مرفوع للمراجعة",
-  published: "منشور",
-};
-
 function OfficePage() {
   const { officeId } = Route.useParams();
+  const t = useCopy(COPY);
+  const locale = useLocale();
+  const labels = useWorkspaceLabels();
+  const { isAdmin } = useAuth();
   const fetchDash = useServerFn(getOfficeDashboard);
   const { data, isPending } = useQuery({
     queryKey: ["office", officeId],
@@ -45,7 +116,7 @@ function OfficePage() {
 
   if (isPending) {
     return (
-      <DashboardShell title="لوحة المكتب">
+      <DashboardShell title={t.title}>
         <div className="flex justify-center py-16">
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
@@ -55,11 +126,11 @@ function OfficePage() {
   const d = data?.dashboard;
   if (!d) {
     return (
-      <DashboardShell title="لوحة المكتب">
+      <DashboardShell title={t.title}>
         <p className="text-sm text-muted-foreground">
-          لا تملك الاطّلاع على هذا المكتب.{" "}
+          {t.noAccessA}{" "}
           <Link to="/workspaces" className="underline">
-            بواباتي
+            {t.portals}
           </Link>
         </p>
       </DashboardShell>
@@ -67,31 +138,33 @@ function OfficePage() {
   }
 
   const stats: Array<[string, number]> = [
-    ["المجموعات", d.groups],
-    ["المستفيدون المعتمدون", d.orphans],
-    [KIND_LABELS["qualification"] ?? "", d.pledges.qualification?.amount ?? 0],
-    [KIND_LABELS["in_kind"] ?? "", d.pledges.in_kind?.amount ?? 0],
+    [t.groups, d.groups],
+    [t.orphans, d.orphans],
+    [labels.kind["qualification"] ?? "", d.pledges.qualification?.amount ?? 0],
+    [labels.kind["in_kind"] ?? "", d.pledges.in_kind?.amount ?? 0],
   ];
 
   return (
     <DashboardShell
       title={d.office.name}
-      description={`${d.office.region ?? "الدولة كلّها"} — ${d.office.country}`}
+      description={`${d.office.region ?? t.wholeCountry} — ${d.office.country}`}
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map(([label, value]) => (
-          <StatTile key={label} label={label} value={value.toLocaleString("ar")} />
+          <StatTile key={label} label={label} value={value.toLocaleString(locale)} />
         ))}
       </div>
+
+      <OfficeChecklist d={d} isAdmin={isAdmin} />
 
       <OfficePledges officeId={officeId} canWrite={d.can_write} />
 
       {d.can_write && <ReportForm officeId={officeId} canPublish={d.can_publish} />}
 
       <section className="mt-10">
-        <h2 className="text-lg font-bold">التقارير</h2>
+        <h2 className="text-lg font-bold">{t.reports}</h2>
         {(data?.reports ?? []).length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">لا تقارير بعد.</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t.noReports}</p>
         ) : (
           <ul className="mt-3 space-y-3">
             {data!.reports.map((r) => (
@@ -102,10 +175,12 @@ function OfficePage() {
                     {r.title}
                   </span>
                   <Badge variant={r.status === "published" ? "default" : "secondary"}>
-                    {STATUS_LABELS[r.status]}
+                    {t.status[r.status]}
                   </Badge>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">{formatDate(r.created_at)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {formatDate(r.created_at, locale)}
+                </p>
                 {r.body && <p className="mt-2 whitespace-pre-line text-sm">{r.body}</p>}
                 {Object.keys(r.metrics).length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -127,6 +202,7 @@ function OfficePage() {
 }
 
 function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: boolean }) {
+  const t = useCopy(COPY);
   const save = useServerFn(saveOfficeReport);
   const qc = useQueryClient();
   const [title, setTitle] = useState("");
@@ -172,7 +248,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
       const path = `${officeId}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("office-media").upload(path, file);
       if (error) {
-        setMsg("تعذّر رفع بعض الملفات (صور أو PDF حتى 10 م.ب).");
+        setMsg(t.uploadFailed);
         continue;
       }
       added.push(path);
@@ -195,7 +271,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
     });
     setBusy(false);
     if (!res.ok) {
-      setMsg("تعذّر الحفظ.");
+      setMsg(t.saveFailed);
       return;
     }
     setTitle("");
@@ -208,33 +284,31 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
     } catch {
       /* لا شيء */
     }
-    setMsg("حُفظ التقرير.");
+    setMsg(t.saved);
     await qc.invalidateQueries({ queryKey: ["office", officeId] });
   }
 
   return (
     <section className="mt-10 rounded-xl border border-border bg-background p-5">
-      <h2 className="text-lg font-bold">تقرير جديد</h2>
+      <h2 className="text-lg font-bold">{t.newReport}</h2>
       <div className="mt-4 grid gap-4">
         <div>
-          <Label htmlFor="r-title">العنوان</Label>
+          <Label htmlFor="r-title">{t.rTitle}</Label>
           <Input id="r-title" value={title} onChange={(e) => setTitle(e.target.value)} />
         </div>
         <div>
-          <Label htmlFor="r-body">التفاصيل</Label>
+          <Label htmlFor="r-body">{t.rBody}</Label>
           <Textarea id="r-body" rows={5} value={body} onChange={(e) => setBody(e.target.value)} />
         </div>
 
         <div>
-          <p className="text-sm font-medium">المؤشّرات</p>
-          <p className="text-xs text-muted-foreground">
-            أسماءٌ تختارها: زيارات، حقائب موزّعة، حضور…
-          </p>
+          <p className="text-sm font-medium">{t.metrics}</p>
+          <p className="text-xs text-muted-foreground">{t.metricsHint}</p>
           <div className="mt-2 space-y-2">
             {metrics.map((row, i) => (
               <div key={i} className="flex gap-2">
                 <Input
-                  aria-label="اسم المؤشّر"
+                  aria-label={t.metricName}
                   value={row.key}
                   onChange={(e) =>
                     setMetrics((all) =>
@@ -243,7 +317,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
                   }
                 />
                 <Input
-                  aria-label="القيمة"
+                  aria-label={t.metricValue}
                   value={row.value}
                   onChange={(e) =>
                     setMetrics((all) =>
@@ -254,7 +328,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
                 <Button
                   variant="ghost"
                   size="icon"
-                  aria-label="حذف المؤشّر"
+                  aria-label={t.removeMetric}
                   onClick={() => setMetrics((all) => all.filter((_, j) => j !== i))}
                 >
                   <Trash2 className="size-4" />
@@ -267,7 +341,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
               onClick={() => setMetrics((all) => [...all, { key: "", value: "" }])}
             >
               <Plus className="size-4" />
-              مؤشّر
+              {t.addMetric}
             </Button>
           </div>
         </div>
@@ -275,7 +349,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
         <div>
           <Label htmlFor="r-files" className="flex items-center gap-2">
             <ImagePlus className="size-4" />
-            صور ومرفقات ({files.length})
+            {t.files(files.length)}
           </Label>
           <Input
             id="r-files"
@@ -293,7 +367,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
                 checked={consent}
                 onChange={(e) => setConsent(e.target.checked)}
               />
-              أُقرّ أن هذه الصور لا تُظهر وجه طفلٍ إلا بموافقةٍ موثّقة على النشر.
+              {t.consent}
             </label>
           )}
         </div>
@@ -304,14 +378,14 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
             variant="outline"
             onClick={() => submit("draft")}
           >
-            حفظ مسودّة
+            {t.saveDraft}
           </Button>
           <Button
             disabled={busy || title.trim().length < 3 || (files.length > 0 && !consent)}
             onClick={() => submit("submitted")}
           >
             {busy && <Loader2 className="size-4 animate-spin" />}
-            رفع للمراجعة
+            {t.submit}
           </Button>
           {canPublish && (
             <Button
@@ -319,7 +393,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
               variant="secondary"
               onClick={() => submit("published")}
             >
-              نشر
+              {t.publish}
             </Button>
           )}
         </div>
@@ -338,6 +412,7 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
  * الخزنة الخاصّة، لا روابط ثابتة تُتداول.
  */
 function Gallery({ paths }: { paths: string[] }) {
+  const t = useCopy(COPY);
   const { data: urls = [] } = useQuery({
     queryKey: ["office-gallery", ...paths],
     queryFn: async () => {
@@ -364,7 +439,7 @@ function Gallery({ paths }: { paths: string[] }) {
           <a key={u.url} href={u.url} target="_blank" rel="noreferrer">
             <img
               src={u.url}
-              alt="صورة من تقرير المكتب"
+              alt={t.photoAlt}
               loading="lazy"
               className="aspect-square w-full rounded-lg object-cover"
             />
