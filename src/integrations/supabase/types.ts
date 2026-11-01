@@ -2560,6 +2560,7 @@ export type Database = {
           created_at: string
           currency: string
           donor_entity_id: string | null
+          elapsed_seconds: number | null
           group_id: string | null
           id: string
           kind: string
@@ -2577,6 +2578,7 @@ export type Database = {
           created_at?: string
           currency?: string
           donor_entity_id?: string | null
+          elapsed_seconds?: number | null
           group_id?: string | null
           id?: string
           kind: string
@@ -2594,6 +2596,7 @@ export type Database = {
           created_at?: string
           currency?: string
           donor_entity_id?: string | null
+          elapsed_seconds?: number | null
           group_id?: string | null
           id?: string
           kind?: string
@@ -3562,6 +3565,7 @@ export type Database = {
       orphan_reports: { Args: { _orphan: string }; Returns: Json }
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
       orphan_traits: { Args: { _orphan: string }; Returns: Json }
+      orphan_trust: { Args: { _orphan: string }; Returns: Json }
       orphan_view: { Args: { _orphan: string }; Returns: Json }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
       payment_hold_state: { Args: never; Returns: Json }
