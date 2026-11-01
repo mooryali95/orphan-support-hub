@@ -415,7 +415,10 @@ export function WorldMap({
   bare = false,
   layer = DEFAULT_LAYER,
   onLayer,
+  cardCompact = false,
 }: {
+  /** بطاقةٌ مختصرة (الاسم والعدد ثم الفعل): حين يكون الفعل نفسه مساراً كاملاً كالدعم. */
+  cardCompact?: boolean;
   stats: MapStats;
   /** الطبقة المعروضة؛ تُحفظ في الرابط عند الأب. بلا `onLayer` لا يظهر المفتاح. */
   layer?: MapLayer;
@@ -1263,13 +1266,18 @@ export function WorldMap({
                 const small = s.small || s.total == null;
                 return (
                   <>
-                    <p className="mt-4 flex items-baseline gap-2">
-                      <span className="text-5xl font-extrabold text-primary">
+                    <p className={cn("flex items-baseline gap-2", cardCompact ? "mt-1" : "mt-4")}>
+                      <span
+                        className={cn(
+                          "font-extrabold text-primary",
+                          cardCompact ? "text-3xl" : "text-5xl",
+                        )}
+                      >
                         {small ? shown(null, locale) : <CountUp to={s.total!} reduce={reduce} />}
                       </span>
                       <span className="text-sm text-muted-foreground">{c$.verified}</span>
                     </p>
-                    {split && (
+                    {split && !cardCompact && (
                       <>
                         <div
                           className="mt-4 h-2 overflow-hidden rounded-full bg-secondary"
@@ -1297,7 +1305,7 @@ export function WorldMap({
                         </dl>
                       </>
                     )}
-                    {layer === "gap" && s.gap != null && (
+                    {!cardCompact && layer === "gap" && s.gap != null && (
                       <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
                         <span className="text-muted-foreground">{c$.gap}</span>
                         <span className="font-semibold tabular-nums text-shore-need">
@@ -1305,7 +1313,7 @@ export function WorldMap({
                         </span>
                       </p>
                     )}
-                    {layer === "impact" && s.delivered != null && (
+                    {!cardCompact && layer === "impact" && s.delivered != null && (
                       <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
                         <span className="text-muted-foreground">{c$.delivered}</span>
                         <span className="font-semibold tabular-nums">
@@ -1313,13 +1321,13 @@ export function WorldMap({
                         </span>
                       </p>
                     )}
-                    {(small || !split) && (
+                    {(small || !split) && !cardCompact && (
                       <p className="mt-2 text-xs leading-6 text-muted-foreground">
                         {c$.cohort(COHORT_MIN)}
                       </p>
                     )}
                     {action ? (
-                      <div className="mt-5">
+                      <div className={cardCompact ? "mt-3" : "mt-5"}>
                         {action({
                           code: country.c,
                           countryValue: cStat?.value ?? null,
@@ -1343,7 +1351,7 @@ export function WorldMap({
                         </Link>
                       </Button>
                     )}
-                    {!region && rankedRegions.length > 0 && (
+                    {!region && !cardCompact && rankedRegions.length > 0 && (
                       <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={c$.regions}>
                         {rankedRegions.slice(0, 6).map(({ r, s: rs }) => (
                           <li key={r.id}>

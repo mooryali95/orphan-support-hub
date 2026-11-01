@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 735,
+ "count": 759,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -2671,6 +2671,176 @@
    "kind": "text",
    "hash": "7c73674ea30f",
    "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/support/SupportSheet.amount": {
+   "en": "Monthly amount",
+   "ar": "المبلغ الشهري",
+   "kind": "text",
+   "hash": "f5510e98a9d5",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.another": {
+   "en": "Support again",
+   "ar": "دعمٌ آخر",
+   "kind": "text",
+   "hash": "df8f9e297ae2",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.children.one": {
+   "en": "{0} child",
+   "ar": "",
+   "kind": "plural",
+   "hash": "c59ca8318dc4",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.children.other": {
+   "en": "{0} children",
+   "ar": "",
+   "kind": "plural",
+   "hash": "a4f969cae864",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.confirm": {
+   "en": "Record my support — {0}",
+   "ar": "سجّل دعمي — {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "50a07212f14f",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.failed": {
+   "en": "It couldn't be recorded.",
+   "ar": "تعذّر التسجيل.",
+   "kind": "text",
+   "hash": "e530617d83c8",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.fromGap": {
+   "en": "The uncovered need here is {0}",
+   "ar": "الحاجة غير المغطّاة هنا {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "fc7293ad089e",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.fullMonth": {
+   "en": "Covers the month",
+   "ar": "يسدّ الشهر",
+   "kind": "text",
+   "hash": "ccb315a7fab2",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.halfMonth": {
+   "en": "Half",
+   "ar": "نصفه",
+   "kind": "text",
+   "hash": "0e505ae3eef6",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.inKind": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.kind": {
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "dfff08619ed0",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.note": {
+   "en": "Note (optional)",
+   "ar": "ملاحظة (اختياري)",
+   "kind": "text",
+   "hash": "ea4c13d492dc",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.other": {
+   "en": "Other amount",
+   "ar": "مبلغ آخر",
+   "kind": "text",
+   "hash": "b59a152ed5ff",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.pledgeNote": {
+   "en": "Recorded as a pledge; nothing is charged until online collection opens.",
+   "ar": "يُسجَّل تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
+   "kind": "text",
+   "hash": "096d76debdc3",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.pledged": {
+   "en": "Your support is recorded. We'll let you know when collection opens; follow it from “My portals”.",
+   "ar": "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
+   "kind": "text",
+   "hash": "58de354847c7",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.qualification": {
+   "en": "Building capability",
+   "ar": "بناء الأهلية",
+   "kind": "text",
+   "hash": "9b8287a2fc35",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.quarterMonth": {
+   "en": "A quarter",
+   "ar": "ربعه",
+   "kind": "text",
+   "hash": "2d2e70600a30",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.signIn": {
+   "en": "Sign in to complete your support",
+   "ar": "سجّل الدخول لإتمام الدعم",
+   "kind": "text",
+   "hash": "1575965acff4",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.signInHint": {
+   "en": "You stay here; after signing in, your support is recorded with the same amount.",
+   "ar": "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
+   "kind": "text",
+   "hash": "1ddf3e7a4598",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.thanks": {
+   "en": "Thank you",
+   "ar": "شكراً لك",
+   "kind": "text",
+   "hash": "4df92abf4974",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.thisCountry": {
+   "en": "This country",
+   "ar": "هذه الدولة",
+   "kind": "text",
+   "hash": "c1bd5d192ef3",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.thisRegion": {
+   "en": "This region",
+   "ar": "هذه المنطقة",
+   "kind": "text",
+   "hash": "c33ae6febd10",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.whom": {
+   "en": "For whom?",
+   "ar": "إلى من؟",
+   "kind": "text",
+   "hash": "aabca11c13dc",
+   "file": "src/components/support/SupportSheet.tsx"
   },
   "config/brand.description": {
    "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
