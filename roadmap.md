@@ -1,5 +1,10 @@
 # Monitoring fixes
 
+## Demo network
+- [ ] Add 34 country-distributed demo offices, including Albania.
+- [ ] Remove Saudi sample profiles from public display without deleting financial history.
+- [ ] Show explicit demo labels and future Rowad connection; verify map and directory.
+
 - [x] Restore sponsor sponsorship lists without requesting protected child fields; show load errors separately from empty lists.
 - [x] Count the entire email queue only for verified admins and reject failed counts.
 - [x] Run four regression tests and check preview build output.
