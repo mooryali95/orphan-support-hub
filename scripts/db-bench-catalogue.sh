@@ -36,7 +36,7 @@ PSQL=(psql "$DB_URL" -v ON_ERROR_STOP=1 --quiet --no-psqlrc)
 echo "▸ قاعدةٌ مؤقّتة ${DB_NAME}: المحاكاة والهجرات"
 "${PSQL[@]}" -f supabase/tests/harness.sql >/dev/null
 for f in $(ls supabase/migrations/*.sql | sort); do
-  "${PSQL[@]}" --set=client_min_messages=warning -f "$f" >/dev/null
+  PGOPTIONS="-c client_min_messages=warning" "${PSQL[@]}" -f "$f" >/dev/null
 done
 
 # جهةٌ وكافلٌ ثابتان، وبرنامج تأهيلٍ يمرّ به بعض الأطفال كي لا يكون عمود

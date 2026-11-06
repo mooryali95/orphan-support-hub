@@ -66,7 +66,8 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/profile-trust-verification.sql \
               supabase/tests/child-exposure-verification.sql \
               supabase/tests/grants-verification.sql \
-              supabase/tests/trust-accountability-verification.sql; do
+              supabase/tests/trust-accountability-verification.sql \
+              supabase/tests/cohort-perf-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.
   if out=$("${PSQL[@]}" -f "$suite" 2>&1); then
