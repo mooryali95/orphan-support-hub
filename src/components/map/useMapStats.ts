@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { geoQuery } from "@/lib/geo";
 import { DEMO_GEO, toMapStats } from "./demo-stats";
-import { DEMO_MODE } from "@/lib/demo-network";
+import { DEMO_MODE, demoGeography } from "@/lib/demo-network";
 
 /**
  * أعداد الخارطة من مصدر الجغرافيا الواحد. وحين تتعذّر القاعدة تُعرض
@@ -11,7 +11,8 @@ import { DEMO_MODE } from "@/lib/demo-network";
  */
 export function useMapStats() {
   const { data } = useQuery(geoQuery);
-  const geo = data?.available ? data : DEMO_GEO;
+  const demoGeo = useMemo(() => demoGeography(), []);
+  const geo = DEMO_MODE ? demoGeo : data?.available ? data : DEMO_GEO;
   const stats = useMemo(() => toMapStats(geo), [geo]);
   return { stats, geo, demo: DEMO_MODE || !data?.available };
 }
