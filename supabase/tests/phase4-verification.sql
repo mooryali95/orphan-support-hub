@@ -346,6 +346,10 @@ BEGIN
           'e2000000-0000-4000-8000-00000000000a', 'e1000000-0000-4000-8000-000000000002',
           100, 'submitted')
   RETURNING id INTO _o;
+  -- لا اعتماد بلا شهادة وفاةٍ وإثبات وصايةٍ موثَّقين (CP-06).
+  INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, verified)
+  VALUES (_o, 'death_certificate', 'death_certificate', _o || '/dc.pdf', true),
+         (_o, 'guardianship_proof', 'guardianship_proof', _o || '/gp.pdf', true);
 
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"e1000000-0000-4000-8000-000000000001","role":"authenticated"}';

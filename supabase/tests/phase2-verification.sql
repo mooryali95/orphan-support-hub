@@ -372,6 +372,10 @@ BEGIN
     RAISE NOTICE 'PASS — an organisation cannot approve its own profile';
   END;
 
+  -- الاعتماد يشترط إثبات الوصاية موثَّقاً أيضاً (CP-06)؛ شهادة الوفاة وُثّقت أعلاه.
+  INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, verified)
+  VALUES (_orphan, 'guardianship_proof', 'guardianship_proof', _orphan || '/gp.pdf', true);
+
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"d1000000-0000-4000-8000-000000000001","role":"authenticated"}';
   BEGIN
