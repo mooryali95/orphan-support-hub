@@ -71,6 +71,19 @@ export function securityHeaders(supabaseUrl: string | undefined): Record<string,
   };
 }
 
+/**
+ * صفحة الطفل الواحد ليست للفهرسة (CP-13): اسمه وعمره وحاجته تبقى في
+ * خزائن البحث ومعايناته بعد أن تنتهي الموافقة. فلا فهرسة ولا نسخة مخزّنة
+ * ولا مقتطف ولا صورة. والوسم نفسه في رأس الصفحة وفي رأس الاستجابة: الأوّل
+ * لمن يقرأ HTML، والثاني لمن لا يقرؤه (المعاينات، الصور، الزواحف المستعجلة).
+ */
+export const CHILD_PAGE_ROBOTS = "noindex, noarchive, nosnippet, noimageindex";
+
+/** `/orphans/<id>` وما تحته — لا الدليل `/orphans` نفسه، فهو المفهرَس. */
+function isChildPath(path: string): boolean {
+  return /^\/orphans\/[^/]+/.test(path);
+}
+
 /** المسارات التي لا يجوز أن تُخزَّن في وسيط أو متصفّح. */
 const NO_STORE = ["/dashboard", "/admin", "/org", "/guardian", "/auth"];
 
@@ -99,6 +112,7 @@ export function applySecurityHeaders(request: Request, response: Response): Resp
     // صفحات تحمل بيانات طفل أو مالاً: تخزينها في وسيط مشترك تسريب.
     headers.set("cache-control", "no-store, must-revalidate");
   }
+  if (isChildPath(path)) headers.set("x-robots-tag", CHILD_PAGE_ROBOTS);
 
   return new Response(response.body, {
     status: response.status,

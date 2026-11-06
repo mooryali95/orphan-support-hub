@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { withM5 } from "@/integrations/supabase/types.extra";
+import { publicClient } from "@/lib/protection.functions";
 
 /**
  * التمويل الزائد (M5) — يُقترَح لا يُرفَض.
@@ -21,26 +22,46 @@ export type FundingState = {
   surplus_unlocks: { title: string; summary: string; monthly_price: number; slug: string } | null;
 };
 
+/**
+ * بطاقة الاقتراح — ما تعرضه الواجهة وحده.
+ *
+ * لا منطقة ولا مرحلة دراسية ولا مدينة ولا صورة (APP-09): الاقتراح يُقرأ
+ * بلا دخول، والمنطقة مع المرحلة في حشدٍ صغير تدلّ على طفلٍ بعينه. القاعدة
+ * تحجبهما للحشد الصغير، والخادم هنا لا يمرّرهما أصلاً — فإن قُرئ من قاعدةٍ
+ * لم تُطبَّق عليها هجرة الحجب بعد، لم يخرج منها شيء.
+ */
 export type SuggestedOrphan = {
   id: string;
   code: string;
   display_name: string;
-  city: string | null;
-  region: string | null;
-  education_stage: string | null;
-  photo_url: string | null;
   currency: string;
   monthly_need: number;
   funded_monthly: number;
   gap: number;
 };
 
-/** حال تمويل ملف — يُقرأ للزائر أيضاً، فالفائض جزء ممّا يُعرض. */
+/** الصفّ من القاعدة ← البطاقة، بالحقول المسمّاة وحدها. */
+export function toSuggestions(rows: unknown): SuggestedOrphan[] {
+  if (!Array.isArray(rows)) return [];
+  return rows.map((r: Record<string, unknown>) => ({
+    id: String(r["id"]),
+    code: String(r["code"] ?? ""),
+    display_name: String(r["display_name"] ?? ""),
+    currency: String(r["currency"] ?? ""),
+    monthly_need: Number(r["monthly_need"] ?? 0),
+    funded_monthly: Number(r["funded_monthly"] ?? 0),
+    gap: Number(r["gap"] ?? 0),
+  }));
+}
+
+/**
+ * حال تمويل ملف — يُقرأ للزائر أيضاً، فالفائض جزء ممّا يُعرض.
+ * بمفتاح الزائر لا بمفتاح الخدمة: ما يُقرأ بلا دخول يمرّ بمنح الزائر.
+ */
 export const getFundingState = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ orphanId: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: state, error } = await withM5(supabaseAdmin).rpc("orphan_funding_state", {
+    const { data: state, error } = await withM5(publicClient()).rpc("orphan_funding_state", {
       _orphan: data.orphanId,
     });
     if (error) return { ok: false as const, error: error.message, state: null };
@@ -59,8 +80,8 @@ export const previewSponsorship = createServerFn({ method: "POST" })
     z.object({ orphanId: z.string().uuid(), amount: z.number().min(0).max(100000) }).parse(input),
   )
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const db = withM5(supabaseAdmin);
+    // بلا دخول، فبمفتاح الزائر: الاقتراح يمرّ بمنحه وحجبه (APP-09).
+    const db = withM5(publicClient());
 
     const { data: raw } = await db.rpc("orphan_funding_state", { _orphan: data.orphanId });
     const state = raw as FundingState | null;
@@ -81,7 +102,7 @@ export const previewSponsorship = createServerFn({ method: "POST" })
       ok: true as const,
       excess,
       gap: state.gap,
-      suggestions: (alts as SuggestedOrphan[] | null) ?? [],
+      suggestions: toSuggestions(alts),
     };
   });
 
@@ -117,8 +138,8 @@ export const createSponsorship = createServerFn({ method: "POST" })
     // التجاوز يحتاج إقراراً صريحاً. وليس منعاً: الطلب يعود بالمتبقّي
     // وباقتراحات، ثم يُعاد بـ`confirmExcess` إن أصرّ الكافل.
     if (!data.confirmExcess) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const db = withM5(supabaseAdmin);
+      // بجلسة الكافل نفسها لا بمفتاح الخدمة: الدالّتان ممنوحتان للمسجَّل.
+      const db = withM5(supabase);
       const { data: raw } = await db.rpc("orphan_funding_state", { _orphan: data.orphanId });
       const state = raw as { gap: number } | null;
       const gap = Number(state?.gap ?? 0);
@@ -134,7 +155,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
           needsExcessConfirmation: true as const,
           gap,
           excess: data.amount - gap,
-          suggestions: (alts as SuggestedOrphan[] | null) ?? [],
+          suggestions: toSuggestions(alts),
           error: "المبلغ يتجاوز المتبقّي لهذا الملف",
         };
       }

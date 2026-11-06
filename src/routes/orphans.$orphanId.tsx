@@ -32,6 +32,7 @@ import { TrustSignals } from "@/components/orphan/TrustSignals";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
+import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
@@ -45,7 +46,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     kinds: KIND_INFO as Record<SupportKind, { label: string; text: string }>,
     unavailable: "ملف غير متاح",
     sponsorOf: (n: string) => `كفالة ${n}`,
-    serviceType: "كفالة شهرية لبرامج تعليمية وتأهيلية",
+    shareTitle: "ملف كفالة موثّق",
     badAmount: "الرجاء إدخال مبلغ صحيح (5 فأكثر)",
     createFailed: "تعذّر إنشاء الكفالة",
     created: "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
@@ -96,7 +97,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     } as Record<SupportKind, { label: string; text: string }>,
     unavailable: "File unavailable",
     sponsorOf: (n: string) => `Sponsor ${n}`,
-    serviceType: "Monthly sponsorship for education and qualification programs",
+    shareTitle: "A verified sponsorship file",
     badAmount: "Please enter a valid amount (5 or more)",
     createFailed: "The sponsorship could not be created",
     created: "Your sponsorship request is registered — complete the payment from your dashboard",
@@ -166,45 +167,27 @@ export const Route = createFileRoute("/orphans/$orphanId")({
       return {
         meta: [
           { title: pageTitle(c.unavailable, true, l) },
-          { name: "robots", content: "noindex" },
+          { name: "robots", content: CHILD_PAGE_ROBOTS },
         ],
       };
     }
     const title = `${c.sponsorOf(loaderData.orphan.display_name)} — ${brand.name} — ${brand.slogan}`;
+    // معاينة المشاركة تُخزَّن عند المنصّات بعد انتهاء الموافقة نفسها، فلا
+    // تحمل اسم الطفل: عنوانٌ عامّ للملف، والاسم يبقى في الصفحة لمن يفتحها.
+    const shareTitle = `${c.shareTitle} — ${brand.name} — ${brand.slogan}`;
     const description = brand.description;
     return {
+      // صفحة الطفل ليست للفهرسة ولا لخزائن البحث (CP-13): لا `noindex` فقط بل
+      // لا نسخة مخزّنة ولا مقتطف ولا صورة. والدليل `/orphans` هو المفهرَس.
+      // ولا بيانات منظّمة هنا: كانت تصف الطفل «عرضاً» بسعرٍ و«متوفّر/نفد»،
+      // وكانت تحمل اسمه خاماً داخل <script> فيكسره اسمٌ فيه `</script>`
+      // (APP-01). وأيّ JSON-LD مستقبلاً يمرّ بـ`jsonLdScript` وحدها.
       meta: [
         { title },
+        { name: "robots", content: CHILD_PAGE_ROBOTS },
         { name: "description", content: description },
-        { property: "og:title", content: title },
+        { property: "og:title", content: shareTitle },
         { property: "og:description", content: description },
-      ],
-      scripts: [
-        {
-          type: "application/ld+json",
-          // بيانات منظّمة كـ«خدمة» لا كـ«شخص»: الملف يعرض برنامج كفالة
-          // له سعر ومزوّد، ولا يجوز أن يُفهرَس طفلٌ بوصفه كياناً.
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Service",
-            name: c.sponsorOf(loaderData.orphan.display_name),
-            description,
-            serviceType: c.serviceType,
-            // الاسم من main (IOCO ← كهاتين)، والمنطقة من الحاجب: المدينة
-            // صارت تفصيلاً خلف الإذن فلا تُفهرَس ولا تُعرض للزائر.
-            provider: { "@type": "Organization", name: `${brand.name}` },
-            areaServed: loaderData.orphan.country ?? undefined,
-            offers: {
-              "@type": "Offer",
-              price: String(loaderData.orphan.monthly_need),
-              priceCurrency: loaderData.orphan.currency,
-              availability:
-                loaderData.orphan.status === "fully_sponsored"
-                  ? "https://schema.org/SoldOut"
-                  : "https://schema.org/InStock",
-            },
-          }),
-        },
       ],
     };
   },
