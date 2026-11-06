@@ -401,7 +401,9 @@ BEGIN
   /* النطاقات صارت جزءاً من القرار: قبولٌ بلا نطاقٍ مرفوض. */
   _r := public.decide_orphan_access(
     _req, 'approved',
-    ARRAY['identity', 'journey', 'progress', 'profile_deep'],
+    /* والقصّة والمدينة صارتا نطاقين صريحين («القصّة» و«الموقع»)، فلا
+       يفتحهما القبولُ وحده (CP-04). */
+    ARRAY['identity', 'journey', 'progress', 'profile_deep', 'story', 'location'],
     'كافلٌ محتمل', 30);
   RESET ROLE;
 

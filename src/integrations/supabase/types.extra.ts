@@ -300,6 +300,10 @@ export type DatabaseWithPhase4 = Omit<DatabaseWithPhase2, "public"> & {
         Args: { _sponsorship: string; _succeeded: boolean; _amount: number; _currency: string };
         Returns: undefined;
       };
+      orphan_progress_reports: {
+        Args: { _orphan: string };
+        Returns: unknown;
+      };
     };
   };
 };
