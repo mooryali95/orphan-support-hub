@@ -73,14 +73,15 @@ CREATE POLICY "orphans_update" ON public.orphans FOR UPDATE TO authenticated
 -- والمهلة تُحسب من **لحظة تغيّر الحالة**، لا من `ended_at` ولا
 -- `updated_at`: الكافل يملك تحديث صفّه، فتعديلُ رسالته يجدّد `updated_at`،
 -- و`ended_at` لا يحرسه شيء. فعمودٌ يكتبه المشغّل وحده.
+--
+-- والصفوف السابقة لا تُحدَّث هنا (التحديث يوقظ مشغّلات الكفالة والتمويل
+-- على كل صفّ): يبقى عمودها فارغاً، ويُقدَّر تغيّرُ حالتها بـ
+-- `ended_at` ثم `updated_at` كما كانا قبل هذه الهجرة — وأوّلُ تعديلٍ
+-- يمسّه الكافل يُجمِّد هذا التقدير من القيم القديمة، فلا يجدّده التعديل.
 ALTER TABLE public.sponsorships
-  ADD COLUMN IF NOT EXISTS status_changed_at TIMESTAMPTZ NOT NULL DEFAULT now();
-
--- ما سبق هذه الهجرة: أقرب تقديرٍ لمتى تغيّرت الحالة.
-UPDATE public.sponsorships
-   SET status_changed_at = COALESCE(ended_at, updated_at, created_at)
- WHERE status IN ('completed', 'paused', 'cancelled')
-   AND status_changed_at > COALESCE(ended_at, updated_at, created_at);
+  ADD COLUMN IF NOT EXISTS status_changed_at TIMESTAMPTZ;
+ALTER TABLE public.sponsorships
+  ALTER COLUMN status_changed_at SET DEFAULT now();
 
 CREATE OR REPLACE FUNCTION public.stamp_sponsorship_status_change()
 RETURNS TRIGGER LANGUAGE plpgsql SET search_path = public AS $fn$
@@ -100,7 +101,8 @@ BEGIN
       NEW.status_changed_at := now();
     END IF;
   ELSIF current_user IN ('authenticated', 'anon') THEN
-    NEW.status_changed_at := OLD.status_changed_at;
+    NEW.status_changed_at := COALESCE(OLD.status_changed_at, OLD.ended_at,
+                                      OLD.updated_at, OLD.created_at);
   END IF;
   RETURN NEW;
 END $fn$;
@@ -121,7 +123,8 @@ RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
     WHERE s.orphan_id = _orphan_id AND s.sponsor_id = auth.uid()
       AND (s.status = 'active'
            OR (s.status IN ('completed', 'paused')
-               AND s.status_changed_at > now() - public.sponsor_access_grace()))
+               AND COALESCE(s.status_changed_at, s.ended_at, s.updated_at, s.created_at)
+                   > now() - public.sponsor_access_grace()))
   );
 $$;
 REVOKE ALL ON FUNCTION public.sponsors_orphan(UUID) FROM PUBLIC, anon;

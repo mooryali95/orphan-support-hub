@@ -25,7 +25,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('da100000-0000-4000-8000-000000000005', 'x-former@example.test', '{}'::jsonb),
   ('da100000-0000-4000-8000-000000000006', 'x-stranger@example.test', '{}'::jsonb),
   ('da100000-0000-4000-8000-000000000007', 'x-partner@example.test', '{}'::jsonb),
-  ('da100000-0000-4000-8000-000000000008', 'x-recent@example.test', '{}'::jsonb);
+  ('da100000-0000-4000-8000-000000000008', 'x-recent@example.test', '{}'::jsonb),
+  ('da100000-0000-4000-8000-000000000009', 'x-legacy@example.test', '{}'::jsonb);
 INSERT INTO public.user_roles (user_id, role)
 VALUES ('da100000-0000-4000-8000-000000000001', 'admin');
 
@@ -86,7 +87,9 @@ VALUES
   ('da100000-0000-4000-8000-000000000005', 'da300000-0000-4000-8000-00000000000b',
    20, 'USD', 'completed', now() - interval '6 years', now() - interval '4 years'),
   ('da100000-0000-4000-8000-000000000008', 'da300000-0000-4000-8000-00000000000b',
-   20, 'USD', 'completed', now() - interval '2 years', now() - interval '10 days');
+   20, 'USD', 'completed', now() - interval '2 years', now() - interval '10 days'),
+  ('da100000-0000-4000-8000-000000000009', 'da300000-0000-4000-8000-00000000000b',
+   20, 'USD', 'completed', now() - interval '5 years', now() - interval '3 years');
 
 /* المهلة تُحسب من لحظة تغيّر الحالة، لا من `ended_at` الذي يكتبه
    الكافل نفسه. والكفالة السابقة انتهت قبل أربع سنوات. */
@@ -99,6 +102,11 @@ BEGIN
       UPDATE public.sponsorships SET status_changed_at = ended_at
        WHERE sponsor_id IN ('da100000-0000-4000-8000-000000000005',
                             'da100000-0000-4000-8000-000000000008')
+    $q$;
+    /* وصفٌّ سابقٌ للهجرة: لا لحظة تغيّرٍ مسجّلة، فيُقدَّر بـ`ended_at`. */
+    EXECUTE $q$
+      UPDATE public.sponsorships SET status_changed_at = NULL
+       WHERE sponsor_id = 'da100000-0000-4000-8000-000000000009'
     $q$;
   END IF;
 END $$;
@@ -211,6 +219,12 @@ BEGIN
     END IF;
     IF _j->>'age_band' IS NULL THEN
       RAISE EXCEPTION 'FAIL — % لا يرى حتى الفئة العمرية', _label;
+    END IF;
+    /* والمتابِع لا يملك إلا ما مُنح: الرحلة والتقدّم. والكافل لا نطاق له
+       ضمناً — صلته تفتح الاحتياج والتقارير، لا النطاقات. */
+    IF _j->'scopes' IS DISTINCT FROM (CASE WHEN _label = 'المتابِع'
+                                          THEN '["journey", "progress"]' ELSE '[]' END)::jsonb THEN
+      RAISE EXCEPTION 'FAIL — نطاقات % ليست ما مُنح: %', _label, _j->'scopes';
     END IF;
   END LOOP;
   RAISE NOTICE 'PASS — CP-04: المتابِع والكافل العاديّ يريان الفئة العمرية لا المدينة ولا التاريخ ولا القصّة';
@@ -504,21 +518,26 @@ BEGIN
   RAISE NOTICE 'PASS — CP-12: الكافل السابق يُغلق عنه الملفّ بعد المهلة، والحاليّ ومن أنهى قريباً يبقيان';
 END $$;
 
--- والكافل لا يمدّ مهلته بنفسه: تعديل `ended_at` أو أيّ حقلٍ آخر لا يُجدّدها.
+-- والكافل لا يمدّ مهلته بنفسه: تعديل `ended_at` أو أيّ حقلٍ آخر لا يُجدّدها —
+-- لا في صفٍّ جديد ولا في صفٍّ سابقٍ للهجرة بلا لحظة تغيّرٍ مسجّلة.
 DO $$
-DECLARE _again BOOLEAN;
+DECLARE _who TEXT; _before BOOLEAN; _again BOOLEAN;
 BEGIN
-  SET LOCAL ROLE authenticated;
-  PERFORM set_config('request.jwt.claims',
-    '{"sub":"da100000-0000-4000-8000-000000000005","role":"authenticated"}', true);
-  UPDATE public.sponsorships SET ended_at = now(), message = NULL
-   WHERE sponsor_id = 'da100000-0000-4000-8000-000000000005';
-  _again := public.can_view_orphan_detail('da300000-0000-4000-8000-00000000000b');
-  RESET ROLE;
-  IF _again THEN
-    RAISE EXCEPTION 'FAIL — الكافل السابق جدّد مهلته بتعديل صفّه';
-  END IF;
-  RAISE NOTICE 'PASS — CP-12: الكافل لا يمدّ المهلة بتعديل صفّ كفالته';
+  FOREACH _who IN ARRAY ARRAY['da100000-0000-4000-8000-000000000005',
+                              'da100000-0000-4000-8000-000000000009'] LOOP
+    SET LOCAL ROLE authenticated;
+    PERFORM set_config('request.jwt.claims',
+      format('{"sub":"%s","role":"authenticated"}', _who), true);
+    _before := public.can_view_orphan_detail('da300000-0000-4000-8000-00000000000b');
+    UPDATE public.sponsorships SET ended_at = now(), message = NULL
+     WHERE sponsor_id = _who::uuid;
+    _again := public.can_view_orphan_detail('da300000-0000-4000-8000-00000000000b');
+    RESET ROLE;
+    IF _before OR _again THEN
+      RAISE EXCEPTION 'FAIL — كافلٌ سابق (%) يرى الملفّ (قبل التعديل %، بعده %)', _who, _before, _again;
+    END IF;
+  END LOOP;
+  RAISE NOTICE 'PASS — CP-12: الكافل لا يمدّ المهلة بتعديل صفّ كفالته، ولو كان صفّاً سابقاً للهجرة';
 END $$;
 
 
