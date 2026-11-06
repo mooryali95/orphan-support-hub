@@ -12,3 +12,7 @@
 ## Protected reads
 - Sponsorship dashboard joins use only permitted child card columns; private photos and locations stay behind the existing child-access gate.
 - Dispatch queue totals use a dynamically loaded privileged client only after an authenticated `is_admin` check; this counts all recipients without exposing their notification rows.
+
+## Demonstration boundaries
+- Keep showcase geography and fictional child cards in a shared browser-safe demo module, separate from payable child IDs; this prevents sample data from entering financial workflows.
+- Demo office records use an explicit name prefix and remain inactive until replaced by reviewed source data; this avoids implying accreditation or a live integration.

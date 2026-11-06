@@ -30,6 +30,8 @@ import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
 import { useMapStats } from "@/components/map/useMapStats";
 import { geoQuery } from "@/lib/geo";
+import { DEMO_MODE, DEMO_OFFICES } from "@/lib/demo-network";
+import { DemoNotice } from "@/components/DemoNotice";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -334,6 +336,8 @@ export const Route = createFileRoute("/")({
         { name: "description", content: c.description },
         { property: "og:title", content: c.title(brandFor(l).name) },
         { property: "og:description", content: c.description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
     };
   },
@@ -435,6 +439,7 @@ function HomePage() {
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
+        {DEMO_MODE && <DemoNotice />}
         {/* الخارطة من مصدر الجغرافيا الواحد (geo_stats)؛ وتجريبيةٌ بشارةٍ إن تعذّرت القاعدة. */}
         <WorldMap
           stats={stats}
@@ -445,6 +450,22 @@ function HomePage() {
           demo={demo}
           action={(ctx) => <MapActions ctx={ctx} />}
         />
+        {DEMO_MODE && (
+          <section className="border-b border-border px-4 py-10">
+            <div className="mx-auto max-w-6xl">
+              <h2 className="text-2xl font-bold">{locale === "ar" ? "شبكة المكاتب التجريبية" : "Demo office network"}</h2>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">{locale === "ar" ? "اختيرت ٣٤ دولة من سجل الحصر للتجربة، وليست قائمة المكاتب الرسمية أو ربطًا فعليًا؛ المواقع غير المحددة لم تُفترض." : "34 countries selected from the inventory for demonstration, not an official office list or a live connection. Unspecified locations have not been invented."}</p>
+              <ul className="mt-6 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+                {DEMO_OFFICES.map(([code, name, city]) => (
+                  <li key={code} className="border-b border-border py-3 text-sm">
+                    <strong>{name}</strong>
+                    <span className="ms-2 text-muted-foreground">{city ?? (locale === "ar" ? "الموقع غير محدد" : "Location unspecified")}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">

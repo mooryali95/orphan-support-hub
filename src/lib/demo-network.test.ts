@@ -11,7 +11,7 @@ describe("demo network rules", () => {
     expect(demoChildren({ country: "ألبانيا" }).total).toBe(8);
   });
   it("excludes Saudi sample data", () => {
-    expect(demoGeography().countries.some((c) => c.code === "SA")).toBe(false);
+    expect(demoGeography().countries.map((c) => String(c.code))).not.toContain("SA");
     expect(demoChildren({ country: "SA" }).total).toBe(0);
   });
   it("uses demo-only identities rather than payable child identifiers", () => {

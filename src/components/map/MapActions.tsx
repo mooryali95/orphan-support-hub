@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { defineCopy, useCopy } from "@/lib/locale";
 import type { MapActionContext } from "./WorldMap";
+import { DEMO_MODE } from "@/lib/demo-network";
 
 const COPY = defineCopy("components/map/MapActions", {
   ar: {
@@ -54,7 +55,7 @@ export function MapActions({ ctx }: { ctx: MapActionContext }) {
           <ArrowLeft className="ltr:-scale-x-100" aria-hidden="true" />
         </Link>
       </Button>
-      {user ? (
+      {DEMO_MODE ? null : user ? (
         <Button asChild size="lg" variant="outline" className="w-full">
           <Link to="/support" search={supportSearch}>
             <HeartHandshake aria-hidden="true" />

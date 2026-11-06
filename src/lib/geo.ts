@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { getGeoStats, type GeoCountryRow } from "@/lib/protection.functions";
 import { resolveCountry } from "@/lib/countries";
+import { DEMO_MODE, demoGeography } from "@/lib/demo-network";
 
 /**
  * الجغرافيا من مصدرٍ واحد — `geo_stats` في القاعدة.
@@ -62,6 +63,7 @@ export function shapeGeo(rows: GeoCountryRow[], available: boolean): Geo {
 export const geoQuery = queryOptions({
   queryKey: ["geo-stats"],
   queryFn: async () => {
+    if (DEMO_MODE) return demoGeography();
     const res = await getGeoStats();
     return shapeGeo(res.countries, res.available);
   },
