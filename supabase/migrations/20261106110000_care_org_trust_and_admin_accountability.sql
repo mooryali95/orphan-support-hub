@@ -79,19 +79,19 @@ UPDATE public.enrollment_roles r SET
     WHEN r.role = 'supervisor' AND EXISTS (
            SELECT 1 FROM public.supervisor_profiles s
             WHERE s.user_id = r.person_id AND s.active) THEN 'approved'
-    ELSE 'pending' END,
-  approved_at = CASE
-    WHEN r.person_id IS NOT NULL AND (r.ended_at IS NOT NULL OR r.role = 'supervisor')
-      THEN COALESCE(r.approved_at, r.assigned_at) END,
-  expires_at = CASE
-    WHEN r.person_id IS NULL THEN NULL
-    WHEN r.ended_at IS NOT NULL THEN COALESCE(r.expires_at, r.ended_at)
-    WHEN r.role = 'supervisor' THEN COALESCE(r.expires_at, now() + interval '365 days')
-    ELSE r.expires_at END,
-  decision_note = CASE
-    WHEN r.person_id IS NOT NULL AND r.ended_at IS NULL AND r.role = 'supervisor'
-      THEN COALESCE(r.decision_note, 'certified_supervisor') END
+    ELSE 'pending' END
 WHERE r.approval IS NULL;
+
+/* والمعتمَد منها يحمل لحظته وأجله: المنتهي أجلُه لحظةُ انتهائه، والمشرف
+   الحيّ سنةٌ من اليوم. */
+UPDATE public.enrollment_roles r SET
+  approved_at = COALESCE(r.approved_at, r.assigned_at),
+  expires_at = COALESCE(r.expires_at,
+                        CASE WHEN r.ended_at IS NOT NULL THEN r.ended_at
+                             ELSE now() + interval '365 days' END),
+  decision_note = COALESCE(r.decision_note,
+                           CASE WHEN r.ended_at IS NULL THEN 'certified_supervisor' END)
+WHERE r.approval = 'approved' AND r.person_id IS NOT NULL AND r.expires_at IS NULL;
 
 ALTER TABLE public.enrollment_roles DROP CONSTRAINT IF EXISTS ck_role_approval;
 ALTER TABLE public.enrollment_roles ADD CONSTRAINT ck_role_approval CHECK (
@@ -804,8 +804,10 @@ BEGIN
 END $fn$;
 REVOKE ALL ON FUNCTION public.guard_orphan_publication() FROM PUBLIC, anon, authenticated;
 
-DROP TRIGGER IF EXISTS trg_guard_orphan_publication ON public.orphans;
-CREATE TRIGGER trg_guard_orphan_publication
+-- الاسم يرتّبه بعد حارسَي الإدراج والتحديث (`trg_guard_orphan_*`): الجهة
+-- التي تعتمد ملفّها تُردّ لأنها ليست الإدارة، قبل أن يُسأل عن الوثائق.
+DROP TRIGGER IF EXISTS trg_require_publication_documents ON public.orphans;
+CREATE TRIGGER trg_require_publication_documents
 BEFORE INSERT OR UPDATE OF status ON public.orphans
 FOR EACH ROW EXECUTE FUNCTION public.guard_orphan_publication();
 
@@ -1125,6 +1127,13 @@ BEGIN
 END $fn$;
 REVOKE ALL ON FUNCTION public.confirm_disbursement_delivery(UUID, TEXT, TEXT) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.confirm_disbursement_delivery(UUID, TEXT, TEXT) TO authenticated;
+
+/* `confirm_disbursement_delivery` تقرأ `storage.objects` بصفة مالكها
+   (postgres). على Supabase يتجاوز postgres سياسات الصفوف؛ وهذه السياسة
+   تضمن القراءة لو لم يتجاوزها، فلا يصير كلُّ تأكيدٍ «مستنداً مفقوداً». */
+DROP POLICY IF EXISTS "orphan_docs_owner_read" ON storage.objects;
+CREATE POLICY "orphan_docs_owner_read" ON storage.objects FOR SELECT TO postgres
+  USING (bucket_id = 'orphan-documents');
 
 /* هل هذا الملفّ في الخزنة شاهدٌ لا يُمسّ؟ */
 CREATE OR REPLACE FUNCTION public.orphan_object_is_frozen(_bucket TEXT, _name TEXT)

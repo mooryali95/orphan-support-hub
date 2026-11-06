@@ -212,6 +212,15 @@ export type DatabaseWithPhase2 = Omit<DatabaseWithPayments, "public"> & {
         Args: { _id: string; _verified: boolean; _note?: string | null };
         Returns: undefined;
       };
+      record_photo_consent: {
+        Args: {
+          _orphan: string;
+          _state: string;
+          _document?: string | null;
+          _photo_url?: string | null;
+        };
+        Returns: undefined;
+      };
       next_orphan_code: {
         Args: Record<string, never>;
         Returns: string;
@@ -577,6 +586,9 @@ export type EnrollmentRoleRow = {
   consent_at: string | null;
   consent_document: string | null;
   assigned_at: string;
+  /** قرار الإدارة في إدخال صاحب الحساب دائرةَ الطفل، وأجله. */
+  approval: "pending" | "approved" | "rejected" | "not_required";
+  expires_at: string | null;
 };
 
 export type AssessmentRow = {

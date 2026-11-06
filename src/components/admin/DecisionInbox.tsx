@@ -20,6 +20,7 @@ import { reviewOrganization } from "@/lib/admin.functions";
 import { formatDate } from "@/lib/format";
 import { reviewProgressReport } from "@/lib/impact.functions";
 import {
+  decideCircleRole,
   getDecisionContext,
   getDecisionInbox,
   INBOX_LABELS,
@@ -145,6 +146,13 @@ const FIELD_LABELS: Record<string, string> = {
   created_at: "أُنشئ",
   story: "القصّة",
   need: "الاحتياج",
+  role: "الدور",
+  person_name: "صاحب الدور",
+  person_email: "بريده",
+  person_contact: "التواصل",
+  program: "البرنامج",
+  org: "الجهة",
+  assigned_by_email: "أسنده",
 };
 
 function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }) {
@@ -156,6 +164,7 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
   const report = useServerFn(reviewProgressReport);
   const office = useServerFn(reviewOfficeReport);
   const pledge = useServerFn(setPledgeStatus);
+  const circle = useServerFn(decideCircleRole);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -190,8 +199,10 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
               ? await office({ data: { id: item.id, publish: approve } })
               : item.kind === "pledge"
                 ? await pledge({ data: { id: item.id, status: approve ? "active" : "cancelled" } })
-                : // نوعٌ لا قرار له هنا: لا يُمرَّر إلى إجراءٍ آخر بالخطأ.
-                  { ok: false as const };
+                : item.kind === "circle_role"
+                  ? await circle({ data: { id: item.id, approve, note: n } })
+                  : // نوعٌ لا قرار له هنا: لا يُمرَّر إلى إجراءٍ آخر بالخطأ.
+                    { ok: false as const };
     setBusy(false);
     if (!res.ok) {
       toast.error("تعذّر تنفيذ القرار");
@@ -206,6 +217,7 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
   const approveLabel: Partial<Record<InboxItem["kind"], string>> = {
     office_report: "نشر",
     pledge: "فتح التعهّد (وصل المال)",
+    circle_role: "اعتماد لسنة",
   };
 
   return (

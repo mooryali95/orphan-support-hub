@@ -12,8 +12,10 @@ import {
   DOC_LABELS,
   REJECTION_CODES,
   REJECTION_LABELS,
+  REQUIRED_DOCS,
   createDocumentReadUrl,
   listOrphanDocuments,
+  unverifiedRequiredDocs,
   verifyDocument,
 } from "@/lib/intake.functions";
 
@@ -25,6 +27,8 @@ import {
  * منه الجهة ما تُصحّح.
  *
  * وهنا: الوثائق تُفتح وتُوثَّق واحدةً واحدة، والرفض يلزمه سبب مُهيكل.
+ * و«اعتماد» لا يُضغط قبل توثيق شهادة الوفاة وإثبات الوصاية — الشرط نفسه
+ * الذي ترفض به القاعدة (`review_orphan`)، فلا يَعِد الزرّ بما لا يقع.
  */
 export function OrphanReviewPanel({
   orphanId,
@@ -48,6 +52,8 @@ export function OrphanReviewPanel({
   });
 
   const docs = data?.documents ?? [];
+  const unverified = unverifiedRequiredDocs(docs);
+  const canApprove = !isLoading && unverified.length === 0;
 
   async function open(path: string) {
     const res = await readUrl({ data: { path } });
@@ -108,10 +114,30 @@ export function OrphanReviewPanel({
         </ul>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
+      {/* شرط النشر: كلّ إلزاميةٍ موثَّقة — المرفوع وحده لا يكفي. */}
+      <ul className="mt-4 space-y-1 text-xs" aria-label="شرط الاعتماد">
+        {REQUIRED_DOCS.map((k) => {
+          const ok = !unverified.includes(k);
+          return (
+            <li key={k} className="flex items-center gap-1.5">
+              {ok ? (
+                <CheckCircle2 className="text-shore-thrive size-3.5" aria-hidden="true" />
+              ) : (
+                <XCircle className="text-muted-foreground size-3.5" aria-hidden="true" />
+              )}
+              <span className={ok ? "" : "text-muted-foreground"}>
+                {DOC_LABELS[k] ?? k} — {ok ? "موثَّقة" : "لم تُوثَّق بعد"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <Button
           size="sm"
-          disabled={busy}
+          disabled={busy || !canApprove}
+          title={canApprove ? undefined : "وثّق شهادة الوفاة وإثبات الوصاية أولاً"}
           onClick={() => {
             setBusy(true);
             onDecided("approved");

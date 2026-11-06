@@ -56,6 +56,18 @@ export function missingRequiredDocs(kinds: readonly string[]): string[] {
   return REQUIRED_DOCS.filter((k) => !kinds.includes(k));
 }
 
+/**
+ * الإلزاميات التي لم تُوثَّق بعد — شرط النشر نفسه الذي تفرضه القاعدة في
+ * `review_orphan` (`orphan_missing_publication_docs`). المرفوع وحده لا
+ * يكفي: الإدارة تفتح الوثيقة وتوثّقها قبل النشر، كما تَعِد الأسئلة
+ * الشائعة. ولوحة المراجعة تبني زرّ الاعتماد عليها.
+ */
+export function unverifiedRequiredDocs(
+  docs: readonly { kind: string; verified: boolean }[],
+): string[] {
+  return REQUIRED_DOCS.filter((k) => !docs.some((d) => d.kind === k && d.verified));
+}
+
 export const REJECTION_CODES = [
   "documents_missing",
   "documents_unclear",
@@ -326,10 +338,13 @@ export const verifyDocument = createServerFn({ method: "POST" })
   });
 
 /**
- * ضبط موافقة الصورة.
+ * ضبط موافقة الصورة من الجهة أو الإدارة.
  *
- * الحارس في القاعدة يرفض صورة بلا موافقة موثّقة، فهذه الدالة لا «تسمح»
- * بشيء — هي الطريق الوحيد لتسجيل الموافقة، والقاعدة هي التي تفصل.
+ * تمرّ بـ`record_photo_consent` في القاعدة، لا بتحديثٍ مباشر: الكتابة
+ * المباشرة على `photo_consent*` مرفوضة (كانت تسمح بنسبة الموافقة للوليّ
+ * ونقض سحبه). والوثيقة معرّفُ «إقرار موافقة على الصورة» وثّقته الإدارة —
+ * لا نصٌّ حرّ — والفاعل من الجلسة. وسحب الوليّ لا يُنقض إلا منه أو من
+ * الإدارة؛ والقاعدة هي التي تفصل.
  */
 export const setPhotoConsent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -338,25 +353,19 @@ export const setPhotoConsent = createServerFn({ method: "POST" })
       .object({
         orphanId: z.string().uuid(),
         consent: z.enum(["none", "face_hidden", "granted", "withdrawn"]),
-        consentDocPath: z.string().trim().max(500).optional(),
+        consentDocumentId: z.string().uuid().optional(),
         photoUrl: z.string().trim().max(500).optional(),
       })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
     const db = withPhase2(context.supabase);
-    const { error } = await db
-      .from("orphans")
-      .update({
-        photo_consent: data.consent,
-        photo_consent_at: data.consent === "none" ? null : new Date().toISOString(),
-        photo_consent_by: context.userId,
-        ...(data.consentDocPath === undefined
-          ? {}
-          : { photo_consent_doc: data.consentDocPath || null }),
-        ...(data.photoUrl === undefined ? {} : { photo_url: data.photoUrl || null }),
-      })
-      .eq("id", data.orphanId);
+    const { error } = await db.rpc("record_photo_consent", {
+      _orphan: data.orphanId,
+      _state: data.consent,
+      _document: data.consentDocumentId ?? null,
+      _photo_url: data.photoUrl || null,
+    });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
   });

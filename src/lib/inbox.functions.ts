@@ -20,6 +20,7 @@ export type InboxKind =
   | "orphan"
   | "org"
   | "access"
+  | "circle_role"
   | "donor"
   | "progress_report"
   | "office_report"
@@ -39,6 +40,7 @@ export const INBOX_LABELS: Record<InboxKind, string> = {
   orphan: "ملف طفل",
   org: "جهة رعاية",
   access: "طلب اطّلاع",
+  circle_role: "دورٌ في دائرة طفل",
   donor: "جهة مانحة",
   progress_report: "تقرير جهة",
   office_report: "تقرير مكتب",
@@ -76,6 +78,35 @@ export const reviewOfficeReport = createServerFn({ method: "POST" })
     const { error } = await rpc(context.supabase).rpc("admin_review_office_report", {
       _report: data.id,
       _publish: data.publish,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+/**
+ * قرار الإدارة في دورٍ أسندته جهةٌ لصاحب حساب: لا يدخل أحدٌ دائرة الطفل
+ * (الاسم الحقيقي والصورة والصحّة) بإسناد الجهة وحده. والاعتماد لأجلٍ
+ * (٣٦٥ يوماً حدّاً في القاعدة)، والرفض يُنهي الدور؛ وكلاهما يُسجَّل.
+ */
+export const decideCircleRole = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        approve: z.boolean(),
+        days: z.number().int().min(1).max(365).optional(),
+        note: z.string().trim().max(400).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("decide_enrollment_role", {
+      _role: data.id,
+      _decision: data.approve ? "approved" : "rejected",
+      _days: data.days ?? 365,
+      _note: data.note ?? null,
     });
     return error
       ? { ok: false as const, error: error.message }
