@@ -8,7 +8,7 @@ export function DemoChildCard({ child }: { child: DemoChild }) {
   return (
     <article className="overflow-hidden rounded-lg border border-border bg-card">
       <div className="aspect-[16/6] bg-secondary">
-        <MuralImage photoUrl={null} displayName={child.id} register="waiting" className="size-full" />
+        <MuralImage photoUrl={null} displayName={child.id} register="need" className="size-full" />
       </div>
       <div className="space-y-2 p-5">
         <p className="text-xs font-semibold text-muted-foreground">{locale === "ar" ? "ملف تجريبي — غير قابل للكفالة" : "Demo file — not available for sponsorship"}</p>

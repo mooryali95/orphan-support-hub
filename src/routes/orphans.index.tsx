@@ -18,6 +18,9 @@ import { findCountry, geoQuery } from "@/lib/geo";
 import { arCount, COUNTRIES, FILES } from "@/lib/plural";
 import { brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
+import { DEMO_MODE, demoChildren } from "@/lib/demo-network";
+import { DemoNotice } from "@/components/DemoNotice";
+import { DemoChildCard } from "@/components/DemoChildCard";
 
 const optionsQuery = queryOptions({
   queryKey: ["orphan-filter-options"],
@@ -40,6 +43,8 @@ export const Route = createFileRoute("/orphans/")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
     };
   },
@@ -282,7 +287,8 @@ function OrphansPage() {
 
   const shown = pristine ? first : (result ?? first);
   const rows = shown.rows;
-  const total = shown.total;
+  const sample = demoChildren(filters);
+  const total = DEMO_MODE ? sample.total : shown.total;
   const pages = Math.max(1, Math.ceil(total / PAGE));
 
   const groupName = (id: string) => groups.find((g) => g.id === id)?.name ?? id;
@@ -368,8 +374,9 @@ function OrphansPage() {
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">{t.title}</h1>
+        {DEMO_MODE && <DemoNotice />}
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          {t.lead}
+          {DEMO_MODE ? (locale === "ar" ? "بطاقات افتراضية للتجربة فقط" : "Fictional example cards only") : t.lead}
           {countries.length > 1 ? t.inCountries(countries.length) : "."}
         </p>
 
@@ -602,7 +609,7 @@ function OrphansPage() {
           {t.files(total)}
         </p>
 
-        {rows.length === 0 ? (
+        {(DEMO_MODE ? sample.rows.length : rows.length) === 0 ? (
           <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
             <p>{t.empty}</p>
             {chips.length > 0 && (
@@ -621,7 +628,7 @@ function OrphansPage() {
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((orphan, i) => (
+            {DEMO_MODE ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />) : rows.map((orphan, i) => (
               // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
               <div
                 key={`${page}-${orphan.id}`}
