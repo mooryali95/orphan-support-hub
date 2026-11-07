@@ -134,7 +134,9 @@ BEGIN
            CASE WHEN pg_temp.old_cohort_is_safe(o.id) THEN o.region END AS region,
            CASE WHEN pg_temp.old_cohort_is_safe(o.id) THEN o.education_stage END AS education_stage,
            o.monthly_need, o.funded_monthly, o.currency,
-           o.status, o.org_id, o.created_at, o.group_id,
+           /* والجهة تُحجب مع المنطقة منذ 20261106140000 (١ب) — حكمٌ لا أداء. */
+           o.status, CASE WHEN pg_temp.old_cohort_is_safe(o.id) THEN o.org_id END AS org_id,
+           o.created_at, o.group_id,
            public.age_band_of(o.birth_date) AS age_band,
            (o.monthly_need - o.funded_monthly) AS gap,
            EXISTS (
@@ -261,7 +263,8 @@ LANGUAGE sql STABLE AS $fn$
   )
   SELECT c.id, c.code, c.display_name, c.gender, c.country, c.m_region,
          c.m_stage, public.age_band_of(c.birth_date),
-         c.monthly_need, c.funded_monthly, c.currency, c.status, c.org_id,
+         c.monthly_need, c.funded_monthly, c.currency, c.status,
+         CASE WHEN c.safe THEN c.org_id END,  -- محجوبةٌ منذ 20261106140000 (١ب)
          c.created_at,
          c.gap,
          c.building,

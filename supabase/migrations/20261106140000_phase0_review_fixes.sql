@@ -8,7 +8,8 @@
 --   ١) CP-05  حماية «أقلّ من ٥» تُلتفّ عليها: سجلّ الكفالة يُعيد المنطقة
 --             الخام لأيّ كفالةٍ «بانتظار الدفع» يُنشئها أيّ حساب، و
 --             `published_regions` تسرد كلّ منطقة، وكتالوج الدعم يُعلن منطقة
---             المجموعة وعدد أطفالها ثم يُفلتر الدليلُ بها.
+--             المجموعة وعدد أطفالها ثم يُفلتر الدليلُ بها، و`org_id` يدلّ
+--             على جهةٍ مدينتُها معلنة.
 --   ٢) CP-05  الخارطة: «صغيرة» و«مُخفاةٌ تكميلياً» علامتان مختلفتان،
 --             والترتيب بالعدد الحقيقي — فالطرح يُعيد ما أُخفي.
 --   ٣) CP-04  نصّ الاحتياج (العنوان والملاحظات) يقرؤه الزائر بنداء REST،
@@ -217,7 +218,9 @@ BEGIN
            CASE WHEN cs.safe THEN o.region END AS region,
            CASE WHEN cs.safe THEN o.education_stage END AS education_stage,
            o.monthly_need, o.funded_monthly, o.currency,
-           o.status, o.org_id, o.created_at, o.group_id, cs.safe AS cohort_safe,
+           /* والجهة كالمنطقة: في حشدٍ صغير تدلّ مدينتها المعلنة على الطفل. */
+           o.status, CASE WHEN cs.safe THEN o.org_id END AS org_id,
+           o.created_at, o.group_id, cs.safe AS cohort_safe,
            public.age_band_of(o.birth_date) AS age_band,
            (o.monthly_need - o.funded_monthly) AS gap,
            EXISTS (
@@ -290,6 +293,244 @@ GRANT EXECUTE ON FUNCTION public.list_orphan_cards(
   TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, TEXT, TEXT, INT, INT, UUID)
   TO anon, authenticated;
 
+
+-- ---------------------------------------------------------------------
+-- ١ب) CP-05 — الجهة لا تدلّ على طفل الحشد الصغير
+-- ---------------------------------------------------------------------
+-- مدينة الجهة ومنطقتها معلنتان في دليل الجهات — وهما بيانات مؤسّسة لا
+-- بيانات طفل. لكنّ `orphans.org_id` كان يُقرأ بنداء REST من الزائر وكلّ
+-- مسجَّل، ويعود في البطاقة والملفّ والاقتراحات: «أرديت ← جهة كوكس» يُعيد
+-- ما حجبته البطاقة. والصفحة كانت تحذف مدينة الجهة في الحشد الصغير من الردّ
+-- — بعد أن قرأتها؛ والقاعدة لم تحجب شيئاً.
+--
+-- الآن تُعرف الجهة كما تُعرف المنطقة: لحشدٍ آمن أو لمن يرى التفصيل. والعمود
+-- يُسحب من القراءة المباشرة؛ فالجهة ترى أطفالها من `org_orphans`، والإدارة
+-- من دوالّها، وسياسات RLS تقرؤه دون منح.
+REVOKE SELECT (org_id) ON TABLE public.orphans FROM anon, authenticated;
+
+/* الإدخال كان يقيّد التحديث بـ`org_id = _org_id` بصلاحية المستدعي — وهي
+   قراءةٌ للعمود المسحوب. فالسؤال يُسأل بصلاحية المالك، ولا يُجيب إلا مالك
+   الجهة: غيرُه لا يعرف منه لمن الطفل. */
+CREATE OR REPLACE FUNCTION public.orphan_in_my_org(_orphan UUID, _org UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  SELECT EXISTS (SELECT 1 FROM public.orphans o
+                  WHERE o.id = _orphan AND o.org_id = _org AND public.owns_org(_org));
+$fn$;
+REVOKE ALL ON FUNCTION public.orphan_in_my_org(UUID, UUID) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.orphan_in_my_org(UUID, UUID) TO authenticated;
+
+-- كما هي حرفاً إلا شرط الجهة في تحديث المسودّة.
+CREATE OR REPLACE FUNCTION public.create_orphan_intake(_payload jsonb)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+  _org_id UUID := (_payload->>'org_id')::uuid;
+  _orphan UUID := NULLIF(_payload->>'orphan_id', '')::uuid;
+  _code TEXT;
+  _need JSONB;
+  _doc JSONB;
+  _needs_total NUMERIC(12,2) := 0;
+BEGIN
+  IF _org_id IS NULL THEN
+    RAISE EXCEPTION 'intake: org_id is required' USING ERRCODE = '22023';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM public.care_organizations
+     WHERE id = _org_id AND owner_id = auth.uid() AND status = 'approved'
+  ) THEN
+    RAISE EXCEPTION 'intake: organisation not yours or not approved'
+      USING ERRCODE = '42501';
+  END IF;
+
+  IF _orphan IS NULL THEN
+    _code := public.next_orphan_code();
+    INSERT INTO public.orphans (
+      code, org_id, created_by, display_name, gender, birth_date,
+      city, region, education_stage, story, monthly_need, status
+    ) VALUES (
+      _code, _org_id, auth.uid(),
+      _payload->>'display_name',
+      COALESCE(_payload->>'gender', 'male'),
+      NULLIF(_payload->>'birth_date', '')::date,
+      NULLIF(_payload->>'city', ''),
+      NULLIF(_payload->>'region', ''),
+      NULLIF(_payload->>'education_stage', ''),
+      NULLIF(_payload->>'story', ''),
+      0,
+      'submitted'
+    ) RETURNING id INTO _orphan;
+  ELSE
+    UPDATE public.orphans SET
+      display_name    = _payload->>'display_name',
+      gender          = COALESCE(_payload->>'gender', 'male'),
+      birth_date      = NULLIF(_payload->>'birth_date', '')::date,
+      city            = NULLIF(_payload->>'city', ''),
+      region          = NULLIF(_payload->>'region', ''),
+      education_stage = NULLIF(_payload->>'education_stage', ''),
+      story           = NULLIF(_payload->>'story', ''),
+      status          = 'submitted',
+      updated_at      = now()
+    WHERE id = _orphan AND public.orphan_in_my_org(id, _org_id)
+      AND status IN ('draft', 'rejected');
+
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'intake: draft % is not yours or no longer editable', _orphan
+        USING ERRCODE = '42501';
+    END IF;
+
+    _code := (SELECT code FROM public.orphans WHERE id = _orphan);
+    DELETE FROM public.orphan_needs WHERE orphan_id = _orphan;
+  END IF;
+
+  INSERT INTO public.orphan_private (
+    orphan_id, full_name, national_id, guardian_name, guardian_relation,
+    guardian_phone, address, family_size, family_income,
+    health_notes, school_name, notes
+  ) VALUES (
+    _orphan,
+    NULLIF(_payload->>'full_name', ''),
+    NULLIF(_payload->>'national_id', ''),
+    NULLIF(_payload->>'guardian_name', ''),
+    NULLIF(_payload->>'guardian_relation', ''),
+    NULLIF(_payload->>'guardian_phone', ''),
+    NULLIF(_payload->>'address', ''),
+    NULLIF(_payload->>'family_size', '')::integer,
+    NULLIF(_payload->>'family_income', '')::numeric,
+    NULLIF(_payload->>'health_notes', ''),
+    NULLIF(_payload->>'school_name', ''),
+    NULLIF(_payload->>'private_notes', '')
+  )
+  ON CONFLICT (orphan_id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    national_id = EXCLUDED.national_id,
+    guardian_name = EXCLUDED.guardian_name,
+    guardian_relation = EXCLUDED.guardian_relation,
+    guardian_phone = EXCLUDED.guardian_phone,
+    address = EXCLUDED.address,
+    family_size = EXCLUDED.family_size,
+    family_income = EXCLUDED.family_income,
+    health_notes = EXCLUDED.health_notes,
+    school_name = EXCLUDED.school_name,
+    notes = EXCLUDED.notes;
+
+  FOR _need IN SELECT * FROM jsonb_array_elements(COALESCE(_payload->'needs', '[]'::jsonb))
+  LOOP
+    INSERT INTO public.orphan_needs (orphan_id, category, title, monthly_amount, notes)
+    VALUES (
+      _orphan,
+      COALESCE(_need->>'category', 'other')::public.need_category,
+      COALESCE(NULLIF(_need->>'title', ''), 'بند'),
+      COALESCE((_need->>'monthly_amount')::numeric, 0),
+      NULLIF(_need->>'note', '')
+    );
+    _needs_total := _needs_total + COALESCE((_need->>'monthly_amount')::numeric, 0);
+  END LOOP;
+
+  IF _needs_total = 0 THEN
+    UPDATE public.orphans
+       SET monthly_need = COALESCE((_payload->>'monthly_need')::numeric, 0)
+     WHERE id = _orphan;
+  END IF;
+
+  FOR _doc IN SELECT * FROM jsonb_array_elements(COALESCE(_payload->'documents', '[]'::jsonb))
+  LOOP
+    INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, file_name, mime_type, size_bytes, uploaded_by)
+    VALUES (
+      _orphan,
+      COALESCE(_doc->>'kind', 'other'),
+      COALESCE(_doc->>'kind', 'other')::public.orphan_doc_type,
+      _doc->>'storage_path',
+      NULLIF(_doc->>'file_name', ''),
+      NULLIF(_doc->>'mime_type', ''),
+      NULLIF(_doc->>'size_bytes', '')::integer,
+      auth.uid()
+    )
+    ON CONFLICT (storage_path) DO NOTHING;
+  END LOOP;
+
+  PERFORM public.write_audit('orphan.submitted', 'orphan', _orphan,
+    jsonb_build_object('code', _code, 'org_id', _org_id,
+                       'needs', jsonb_array_length(COALESCE(_payload->'needs', '[]'::jsonb)),
+                       'documents', jsonb_array_length(COALESCE(_payload->'documents', '[]'::jsonb))));
+
+  RETURN jsonb_build_object('id', _orphan, 'code', _code);
+END $function$;
+REVOKE ALL ON FUNCTION public.create_orphan_intake(JSONB) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.create_orphan_intake(JSONB) TO authenticated;
+
+/* اقتراحات الكافل: كما هي إلا الجهة، تُحجب مع المنطقة. */
+CREATE OR REPLACE FUNCTION public.suggest_orphans_for_sponsor(
+  _budget NUMERIC DEFAULT NULL, _region TEXT DEFAULT NULL, _limit INTEGER DEFAULT 12)
+RETURNS TABLE(id UUID, code TEXT, display_name TEXT, gender TEXT, country TEXT, region TEXT,
+              education_stage TEXT, age_band public.age_band, monthly_need NUMERIC,
+              funded_monthly NUMERIC, currency TEXT, status public.orphan_status, org_id UUID,
+              created_at TIMESTAMPTZ, gap NUMERIC, building BOOLEAN, completes BOOLEAN,
+              in_region BOOLEAN, waiting_days INTEGER)
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $fn$
+  WITH me AS (
+    SELECT COALESCE(_budget, p.monthly_budget) AS budget,
+           COALESCE(NULLIF(btrim(COALESCE(_region, '')), ''), p.preferred_region) AS region
+      FROM (SELECT NULL::UUID) z
+      LEFT JOIN public.profiles p ON p.id = auth.uid()
+  ),
+  cand AS (
+    SELECT o.id, o.code, o.display_name, o.gender, o.country, o.birth_date,
+           o.monthly_need, o.funded_monthly, o.currency, o.status, o.org_id,
+           o.created_at, o.approved_at,
+           cs.safe,
+           o.region AS raw_region, o.education_stage AS raw_stage,
+           (o.monthly_need - o.funded_monthly) AS gap,
+           EXISTS (
+             SELECT 1 FROM public.program_enrollments e
+              JOIN public.programs pr ON pr.id = e.program_id
+              WHERE e.orphan_id = o.id
+                AND pr.kind = 'qualification'
+                AND e.status IN ('proposed', 'funded')
+                AND public.enrollment_supervisor(e.id) IS NOT NULL
+                AND public.enrollment_has_consent(e.id)
+           ) AS building
+      FROM public.orphans o
+      JOIN public.cohort_safety() cs ON cs.orphan_id = o.id
+     WHERE o.status = 'approved'
+       AND (o.monthly_need - o.funded_monthly) > 0
+       AND NOT EXISTS (
+         SELECT 1 FROM public.sponsorships s
+          WHERE s.orphan_id = o.id
+            AND s.sponsor_id = auth.uid()
+            AND s.status IN ('pending_payment', 'active', 'paused')
+       )
+  ),
+  masked AS (
+    SELECT c.*,
+           CASE WHEN c.safe THEN c.raw_region END AS m_region,
+           CASE WHEN c.safe THEN c.raw_stage END AS m_stage,
+           CASE WHEN c.safe THEN c.org_id END AS m_org
+      FROM cand c
+  )
+  SELECT c.id, c.code, c.display_name, c.gender, c.country, c.m_region,
+         c.m_stage, public.age_band_of(c.birth_date),
+         c.monthly_need, c.funded_monthly, c.currency, c.status, c.m_org,
+         c.created_at,
+         c.gap,
+         c.building,
+         (me.budget IS NOT NULL AND c.gap <= me.budget) AS completes,
+         (me.region IS NOT NULL AND c.m_region IS NOT DISTINCT FROM me.region) AS in_region,
+         GREATEST(0, (now()::date - COALESCE(c.approved_at, c.created_at)::date))::INTEGER
+    FROM masked c CROSS JOIN me
+   ORDER BY
+     c.building DESC,
+     (me.budget IS NOT NULL AND c.gap <= me.budget) DESC,
+     (me.region IS NOT NULL AND c.m_region IS NOT DISTINCT FROM me.region) DESC,
+     COALESCE(c.approved_at, c.created_at) ASC,
+     c.id
+   LIMIT LEAST(GREATEST(COALESCE(_limit, 12), 1), 48);
+$fn$;
+REVOKE ALL ON FUNCTION public.suggest_orphans_for_sponsor(NUMERIC, TEXT, INTEGER)
+  FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.suggest_orphans_for_sponsor(NUMERIC, TEXT, INTEGER) TO authenticated;
 
 -- ---------------------------------------------------------------------
 -- ٢) CP-05 — الخارطة: كلّ منطقةٍ مخفيّة بعلامةٍ واحدة، ولا تُثبَّت بالطرح
@@ -916,7 +1157,9 @@ BEGIN
     'cohort_small', NOT public.cohort_is_safe(_orphan),
     'age_band', public.age_band_of(_o.birth_date),
     'monthly_need', _o.monthly_need, 'funded_monthly', _o.funded_monthly,
-    'currency', _o.currency, 'status', _o.status, 'org_id', _o.org_id,
+    'currency', _o.currency, 'status', _o.status,
+    /* الجهة تُعرف لمن يرى التفصيل أو لحشدٍ آمن (انظر ١ب). */
+    'org_id', CASE WHEN _safe THEN _o.org_id END,
     'created_at', _o.created_at,
     'may_view_detail', _may,
     'scopes', to_jsonb(_scopes),

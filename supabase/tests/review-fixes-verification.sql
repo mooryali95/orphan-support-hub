@@ -678,5 +678,138 @@ BEGIN
   RAISE NOTICE 'PASS — DB-07: الشريك — استيراد ← اعتمادٌ بوثائق موثَّقة ← مزامنةٌ تُمسَك ولا تُسقط النشر';
 END $$;
 
+-- =====================================================================
+-- DB-07 — المرآة: طالبٌ يُعتمد بوثائق جهة المنصّة، ثم مزامنةٌ تُمسَك
+-- =====================================================================
+-- طلاب المرآة يدخلون «قيد المراجعة» لجهة المنصّة؛ فهي التي ترفع الوثيقتين
+-- (صندوق الجهة) والإدارة توثّقهما. والمزامنة بعد النشر: القيم نفسها لا
+-- تترك شيئاً، والمنطقة الجديدة تُمسَك والطفل منشورٌ كما رُوجع.
+UPDATE public.operating_platforms SET org_id = 'dcc20000-0000-4000-8000-00000000000a'
+ WHERE key = 'rowad-albania';
+INSERT INTO public.api_clients (id, name, client_key, secret_hash, org_id, scopes, source)
+VALUES ('dcc50000-0000-4000-8000-00000000000e', 'مرآة المراجعة', 'ck_live_rv_mirror', 'x', NULL,
+        ARRAY['mirror:write'], 'rowad-albania');
+
+DO $$
+DECLARE _r JSONB; _id UUID; _err TEXT; _st TEXT;
+BEGIN
+  PERFORM set_config('request.jwt.claims', '', true);
+  SET LOCAL ROLE service_role;
+  _r := public.mirror_apply('dcc50000-0000-4000-8000-00000000000e', 'students',
+          '[{"external_ref":"rv-st-1","display_name":"طالبة المرآة","gender":"female","age":9,"region":"تيرانا-مراجعة"}]'::jsonb);
+  RESET ROLE;
+  SELECT id INTO _id FROM public.orphans WHERE external_source = 'rowad-albania' AND external_ref = 'rv-st-1';
+  IF _id IS NULL THEN RAISE EXCEPTION 'FAIL — المرآة لم تُدخل الطالبة: %', _r; END IF;
+
+  -- جهة المنصّة ترفع الوثيقتين؛ وقبل توثيقهما لا اعتماد.
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"dcc00000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+  INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, file_name)
+  VALUES (_id, 'death_certificate', 'death_certificate', _id || '/death.pdf', 'death.pdf'),
+         (_id, 'guardianship_proof', 'guardianship_proof', _id || '/guardianship.pdf', 'g.pdf');
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"dcc00000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+  BEGIN
+    PERFORM public.review_orphan(_id, 'approved', NULL, NULL);
+    _err := 'approved';
+  EXCEPTION WHEN check_violation THEN _err := 'blocked';
+  END;
+  UPDATE public.orphan_documents SET verified = true, verified_by = auth.uid(), verified_at = now()
+   WHERE orphan_id = _id;
+  PERFORM public.review_orphan(_id, 'approved', NULL, NULL);
+  RESET ROLE;
+  IF _err <> 'blocked' OR (SELECT status FROM public.orphans WHERE id = _id) <> 'approved' THEN
+    RAISE EXCEPTION 'FAIL — CP-06: طالب المرآة اعتُمد بلا توثيق، أو لم يُعتمد بعده (%)', _err;
+  END IF;
+
+  PERFORM set_config('request.jwt.claims', '', true);
+  SET LOCAL ROLE service_role;
+  PERFORM public.mirror_apply('dcc50000-0000-4000-8000-00000000000e', 'students',
+            '[{"external_ref":"rv-st-1","display_name":"طالبة المرآة","region":"تيرانا-مراجعة"}]'::jsonb);
+  RESET ROLE;
+  IF EXISTS (SELECT 1 FROM public.orphan_pending_edits WHERE orphan_id = _id) THEN
+    RAISE EXCEPTION 'FAIL — DB-07: مزامنة المرآة بالقيم نفسها أُمسكت كتعديل';
+  END IF;
+
+  SET LOCAL ROLE service_role;
+  PERFORM public.mirror_apply('dcc50000-0000-4000-8000-00000000000e', 'students',
+            '[{"external_ref":"rv-st-1","region":"دورس-مراجعة"}]'::jsonb);
+  RESET ROLE;
+  SELECT status::text INTO _st FROM public.orphans WHERE id = _id;
+  IF _st <> 'approved' OR (SELECT region FROM public.orphans WHERE id = _id) <> 'تيرانا-مراجعة'
+     OR (SELECT changes->>'region' FROM public.orphan_pending_edits WHERE orphan_id = _id)
+        IS DISTINCT FROM 'دورس-مراجعة' THEN
+    RAISE EXCEPTION 'FAIL — DB-07: مزامنة المرآة أسقطت النشر أو نشرت المنطقة بلا مراجعة (%)', _st;
+  END IF;
+  RAISE NOTICE 'PASS — DB-07: المرآة — اعتمادٌ بوثائق جهة المنصّة ← مزامنةٌ تُمسَك ولا تُسقط النشر';
+END $$;
+
+-- =====================================================================
+-- CP-05 — الجهة لا تدلّ على طفل الحشد الصغير
+-- =====================================================================
+-- «أرديت» وحيدٌ في منطقته: كان `org_id` يُقرأ من الجدول ومن الملفّ والدليل،
+-- ومدينة الجهة معلنة.
+DO $$
+DECLARE _v JSONB; _cards JSONB; _ok BOOLEAN; _id UUID;
+BEGIN
+  -- الزائر: لا عمود، ولا جهة في الملفّ ولا البطاقة.
+  SET LOCAL ROLE anon;
+  PERFORM set_config('request.jwt.claims', '{"role":"anon"}', true);
+  _ok := false;
+  BEGIN
+    PERFORM org_id FROM public.orphans WHERE id = 'dcc30000-0000-4000-8000-00000000000a';
+  EXCEPTION WHEN insufficient_privilege THEN _ok := true;
+  END;
+  _v := public.orphan_view('dcc30000-0000-4000-8000-00000000000a');
+  _cards := public.list_orphan_cards(_search := 'RV-L');
+  RESET ROLE;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — CP-05: الزائر يقرأ orphans.org_id بنداء REST'; END IF;
+  IF _v->>'org_id' IS NOT NULL OR _cards->'rows'->0->>'org_id' IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — CP-05: جهة طفل الحشد الصغير تُعاد للزائر (% / %)',
+      _v->>'org_id', _cards->'rows'->0->>'org_id';
+  END IF;
+
+  -- حسابٌ جديد: كذلك.
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"dcc00000-0000-4000-8000-000000000003","role":"authenticated"}', true);
+  _ok := false;
+  BEGIN
+    PERFORM org_id FROM public.orphans WHERE id = 'dcc30000-0000-4000-8000-00000000000a';
+  EXCEPTION WHEN insufficient_privilege THEN _ok := true;
+  END;
+  _v := public.orphan_view('dcc30000-0000-4000-8000-00000000000a');
+  RESET ROLE;
+  IF NOT _ok OR _v->>'org_id' IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — CP-05: حسابٌ جديد يعرف جهة طفل الحشد الصغير';
+  END IF;
+
+  -- والجهة تبقى تُكمل مسودّتها (كان الإدخال يقرأ العمود بصلاحيتها).
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"dcc00000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+  _id := (public.start_orphan_draft('dcc20000-0000-4000-8000-00000000000a')->>'id')::uuid;
+  PERFORM public.create_orphan_intake(jsonb_build_object(
+    'org_id', 'dcc20000-0000-4000-8000-00000000000a', 'orphan_id', _id,
+    'display_name', 'مسودّة الجهة', 'monthly_need', 50));
+  RESET ROLE;
+  IF (SELECT status FROM public.orphans WHERE id = _id) <> 'submitted' THEN
+    RAISE EXCEPTION 'FAIL — CP-05: سحب العمود كسر إكمال المسودّة';
+  END IF;
+
+  -- وغيرُ مالكها لا يُكملها ولا يعرف منها لمن الطفل.
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"dcc00000-0000-4000-8000-000000000003","role":"authenticated"}', true);
+  IF public.orphan_in_my_org('dcc30000-0000-4000-8000-00000000000a',
+                             'dcc20000-0000-4000-8000-00000000000a') THEN
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — CP-05: orphan_in_my_org تُجيب غير مالك الجهة';
+  END IF;
+  RESET ROLE;
+  RAISE NOTICE 'PASS — CP-05: جهة طفل الحشد الصغير لا تُقرأ من الجدول ولا الملفّ ولا الدليل، والإدخال يعمل';
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص المراجعة اجتازت ──'; END $$;
 ROLLBACK;
