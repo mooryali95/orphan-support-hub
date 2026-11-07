@@ -23,6 +23,23 @@ export function formatMoney(
   return `\u2068${text}\u2069`;
 }
 
+/**
+ * عددٌ كتلةً معزولة (FSI…PDI) كالمبلغ: لا يتفكّك وسط سطرٍ عربي.
+ * `compact` يكتب الكبير مختصراً («4.3 مليون»/«4.3M») حيث تكفي الرتبة.
+ */
+export function formatCount(
+  value: number,
+  locale = "ar",
+  opts: { compact?: boolean; percent?: boolean } = {},
+) {
+  const text = new Intl.NumberFormat(locale === "ar" ? AR_NUM : locale, {
+    ...(opts.compact && Math.abs(value) >= 10_000
+      ? { notation: "compact" as const, maximumFractionDigits: Math.abs(value) >= 1e6 ? 1 : 0 }
+      : { maximumFractionDigits: 1 }),
+  }).format(value);
+  return `\u2068${text}${opts.percent ? "%" : ""}\u2069`;
+}
+
 export function ageFromBirthDate(birthDate: string | null | undefined) {
   if (!birthDate) return null;
   const born = new Date(birthDate);

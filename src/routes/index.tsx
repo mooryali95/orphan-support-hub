@@ -25,13 +25,19 @@ import { formatMoney } from "@/lib/format";
 import { BRAND, brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
-import { DEFAULT_LAYER, type MapLayer, parseLayer } from "@/components/map/layers";
+import { type MapLayer, parseLayer } from "@/components/map/layers";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
 import { useMapStats } from "@/components/map/useMapStats";
 import { geoQuery } from "@/lib/geo";
-import { DEMO_MODE, DEMO_OFFICES } from "@/lib/demo-network";
-import { DemoNotice } from "@/components/DemoNotice";
+import { NetworkSection } from "@/components/map/NetworkSection";
+import { useAuth } from "@/hooks/useAuth";
+
+/**
+ * الصفحة الأولى تفتح على شبكة الندوة الحقيقية (بيانات بحثية بمصادرها) بدل
+ * المكاتب التجريبية؛ وطبقات أعداد المنصّة على بُعد ضغطة.
+ */
+const HOME_LAYER: MapLayer = "network";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -412,8 +418,9 @@ function HomePage() {
   const navigate = Route.useNavigate();
   const selection: MapSelection = { country: sp.c ?? null, region: sp.r ?? null };
   const { stats, demo, status } = useMapStats();
+  const { isAdmin } = useAuth();
   // الطبقة تبقى في الرابط عبر التنقّل، والافتراضية لا تُكتب فيه.
-  const layerSearch = sp.layer && sp.layer !== DEFAULT_LAYER ? { layer: sp.layer } : {};
+  const layerSearch = sp.layer && sp.layer !== HOME_LAYER ? { layer: sp.layer } : {};
   const onSelect = (s: MapSelection) =>
     void navigate({
       search: {
@@ -428,7 +435,7 @@ function HomePage() {
     void navigate({
       search: (prev) => {
         const { layer: _old, ...rest } = prev;
-        return layer === DEFAULT_LAYER ? rest : { ...rest, layer };
+        return layer === HOME_LAYER ? rest : { ...rest, layer };
       },
       replace: true,
       resetScroll: false,
@@ -440,42 +447,28 @@ function HomePage() {
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
-        {DEMO_MODE && <DemoNotice />}
-        {/* الخارطة من مصدر الجغرافيا الواحد (geo_stats). وخارج وضع العرض لا رقم إلا منه: هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
+        {/* الخارطة تفتح على شبكة الندوة (بيانات بحثية). أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
         <WorldMap
           stats={stats}
           selection={selection}
           onSelect={onSelect}
-          layer={sp.layer ?? DEFAULT_LAYER}
+          layer={sp.layer ?? HOME_LAYER}
           onLayer={onLayer}
           demo={demo}
           status={status}
+          showUnconfirmed={isAdmin}
           action={(ctx) => <MapActions ctx={ctx} />}
         />
-        {DEMO_MODE && (
-          <section className="border-b border-border px-4 py-10">
-            <div className="mx-auto max-w-6xl">
-              <h2 className="text-2xl font-bold">
-                {locale === "ar" ? "شبكة المكاتب التجريبية" : "Demo office network"}
-              </h2>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                {locale === "ar"
-                  ? "اختيرت ٣٤ دولة من سجل الحصر للتجربة، وليست قائمة المكاتب الرسمية أو ربطًا فعليًا؛ المواقع غير المحددة لم تُفترض."
-                  : "34 countries selected from the inventory for demonstration, not an official office list or a live connection. Unspecified locations have not been invented."}
-              </p>
-              <ul className="mt-6 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-                {DEMO_OFFICES.map(([code, name, city]) => (
-                  <li key={code} className="border-b border-border py-3 text-sm">
-                    <strong>{name}</strong>
-                    <span className="ms-2 text-muted-foreground">
-                      {city ?? (locale === "ar" ? "الموقع غير محدد" : "Location unspecified")}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
+        <NetworkSection
+          onPick={(code) => {
+            void navigate({
+              search: { c: code, layer: "needs" },
+              resetScroll: false,
+              viewTransition: false,
+            });
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
 
         {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">

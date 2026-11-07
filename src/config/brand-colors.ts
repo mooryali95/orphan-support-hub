@@ -18,6 +18,8 @@ const ROLES: Record<string, BrandColor> = {
   "bridge-bright": "goldBright",
   "thrive-tint": "greenTint",
   "shore-thrive": "thrive",
+  /** «تحتاج مكتباً» على خارطة الشبكة: كهرمانيٌّ دافئ، بعيدٌ عن الأخضر والذهبي. */
+  "office-gap": "amber",
   navy: "greenDeep",
   graphite: "stone",
   "gold-line": "gold",
