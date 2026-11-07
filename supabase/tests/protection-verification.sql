@@ -42,7 +42,7 @@ VALUES
    ووجودُها شرطٌ لأن يقيس فحصُ الصورة شيئاً: بحقلٍ فارغٍ يمرّ الفحص
    لأن لا صورة، لا لأن الحاجب عمل. */
 UPDATE public.orphans
-   SET photo_url = 'media/pr-1.jpg', photo_consent = 'face_hidden'
+   SET photo_url = 'e3000000-0000-4000-8000-00000000000b/pr-1.jpg', photo_consent = 'face_hidden'
  WHERE id = 'e3000000-0000-4000-8000-00000000000b';
 
 DO $$

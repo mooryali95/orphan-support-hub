@@ -280,18 +280,37 @@ BEGIN
   RAISE NOTICE 'PASS — التفضيلات لصاحبها وحده';
 END $$;
 
--- والمناطق تُقرأ من الملفّات لا من قائمةٍ مكتوبة.
+-- والمناطق تُقرأ من الملفّات لا من قائمةٍ مكتوبة — ومنطقةٌ لا حشد آمناً
+-- فيها لا تُسرد (مراجعة المرحلة صفر): «مكة المكرمة» فيها طفلٌ واحد.
 DO $$
-DECLARE _j JSONB;
+DECLARE _j JSONB; _safe JSONB;
 BEGIN
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"d1000000-0000-4000-8000-000000000004","role":"authenticated"}';
   _j := public.published_regions();
   RESET ROLE;
-  IF NOT (_j ? 'الرياض') OR NOT (_j ? 'مكة المكرمة') THEN
-    RAISE EXCEPTION 'FAIL — المناطق المعادة % لا تشمل المنشورَ فعلاً', _j;
+  IF _j ? 'مكة المكرمة' OR _j ? 'الرياض' THEN
+    RAISE EXCEPTION 'FAIL — المناطق % تسرد حشداً صغيراً', _j;
   END IF;
-  RAISE NOTICE 'PASS — المناطق تُقرأ من الملفّات المنشورة';
+
+  -- طفلان آخران بصفات أطفال الرياض الثلاثة: صار الحشد خمسة فتُسرد.
+  -- (كتلةٌ داخلية تُطوى بعد القياس فلا تمسّ بقيّة الفحوص.)
+  BEGIN
+    INSERT INTO public.orphans (code, display_name, org_id, created_by, monthly_need,
+                                region, gender, birth_date, country, status, approved_at)
+    SELECT 'MT-R' || g, 'طفل الرياض ' || g, o.org_id, o.created_by, 100,
+           o.region, o.gender, o.birth_date, o.country, 'approved', now()
+      FROM public.orphans o, generate_series(1, 2) g WHERE o.code = 'MT-BIG';
+    SET LOCAL ROLE authenticated;
+    _safe := public.published_regions();
+    RESET ROLE;
+    RAISE EXCEPTION USING ERRCODE = 'RVPRB', MESSAGE = 'probe';
+  EXCEPTION WHEN SQLSTATE 'RVPRB' THEN NULL;
+  END;
+  IF NOT (_safe ? 'الرياض') OR _safe ? 'مكة المكرمة' THEN
+    RAISE EXCEPTION 'FAIL — المناطق المعادة % لا تشمل المنشورَ الآمن فعلاً', _safe;
+  END IF;
+  RAISE NOTICE 'PASS — المناطق تُقرأ من الملفّات المنشورة، وما حشده صغيرٌ لا يُسرد';
 END $$;
 
 -- والكتابة لصاحب الصفّ وحده، والقاعدة هي من تفرض ذلك لا الدالّة.

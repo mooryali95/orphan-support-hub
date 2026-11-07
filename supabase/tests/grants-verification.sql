@@ -204,4 +204,185 @@ BEGIN
   RAISE NOTICE 'PASS — DB-09: دوالّ المسجَّلين مغلقةٌ على الزائر، ودوالّ الدليل مفتوحة';
 END $$;
 
+-- =====================================================================
+-- لقطة التصنيف — كلّ كائنٍ جديد يفشل هنا حتى يُصنَّف (مراجعة المرحلة صفر)
+-- ---------------------------------------------------------------------
+-- الفحوص أعلاه تلتقط أنماطاً بعينها (TRUNCATE، كتابة الزائر، الحذف،
+-- التسلسلات) وقائمةً ثابتة من الدوالّ. فدالّةٌ `SECURITY DEFINER` جديدة
+-- يُبقيها المنح الافتراضي مفتوحةً للزائر، أو جدولٌ جديد يُبقي SELECT/
+-- INSERT/UPDATE للعموم معتمداً على RLS وحدها، كانا يمرّان. واللقطتان هنا
+-- تُغلقان ذلك: أيّ فرقٍ — زيادةً أو نقصاً — يفشل ويُسمّى، فتُصنِّف الهجرة
+-- الجديدة كائنها صراحةً (بالسحب والمنح)، ثم تُحدَّث اللقطة في المراجعة نفسها.
+-- =====================================================================
+
+-- دوالّ DEFINER التي ينفّذها الزائر — كلٌّ منها مقصودٌ له.
+DO $$
+DECLARE _allowed TEXT[] := ARRAY[
+    -- ما يقرؤه الزائر: الدليل والخارطة والصفحة والكتالوج والترجمة
+    'enrollment_supervisor_standing(uuid)',
+    'geo_stats()',
+    'list_orphan_cards(text,text,text,text,text,text,boolean,text,text,integer,integer,uuid)',
+    'orphan_filter_options()',
+    'orphan_funding_state(uuid)',
+    'orphan_program_plan(uuid)',
+    'orphan_qualification(uuid)',
+    'orphan_trust(uuid)',
+    'orphan_view(uuid)',
+    'public_ui_locales()',
+    'published_regions()',
+    'published_ui_messages(text)',
+    'suggest_orphans_for_amount(numeric,uuid,integer)',
+    'support_catalog(text)',
+    'trait_model(text)',
+    -- دوالّ مُشغّلات: لا تُستدعى إلا مُشغّلاً، فالتنفيذ المباشر يُرفض
+    'anchor_invoice()',
+    'block_sponsorship_in_emergency()',
+    'guard_locked_money()',
+    'guard_locked_orphan()',
+    'guard_locked_scores()',
+    'issue_invoice()',
+    'lock_on_disbursement()',
+    'lock_on_pledge()',
+    'lock_on_sponsorship()',
+    'ui_translation_log()',
+    -- مساعداتٌ تُستدعى من سياسات أو دوالّ العموم، ولا تُعيد بيانات طفل
+    'brand_name()',
+    'cohort_is_safe(uuid)',
+    'is_donor_owner(uuid)',
+    'orphan_is_locked(uuid)',
+    'pledge_in_office(uuid,uuid)',
+    'resolve_country_code(text)',
+    'unlock_context_allows(uuid,text)',
+    'unsubscribe_by_token(uuid)'];
+  _now TEXT[]; _extra TEXT; _gone TEXT;
+BEGIN
+  SELECT array_agg(p.oid::regprocedure::text ORDER BY 1) INTO _now
+    FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+   WHERE n.nspname = 'public' AND p.prosecdef
+     AND has_function_privilege('anon', p.oid, 'EXECUTE');
+  SELECT string_agg(f, ', ') INTO _extra FROM unnest(_now) f WHERE f <> ALL (_allowed);
+  SELECT string_agg(f, ', ') INTO _gone FROM unnest(_allowed) f WHERE f <> ALL (_now);
+  IF _extra IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — دالّة DEFINER مفتوحةٌ للزائر ولم تُصنَّف: %', _extra
+      USING HINT = 'اسحبها من anon (REVOKE ALL ... FROM PUBLIC, anon) أو أضفها إلى القائمة بسبب.';
+  END IF;
+  IF _gone IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — دالّةٌ مقصودةٌ للزائر أُغلقت أو غاب اسمها: %', _gone;
+  END IF;
+  RAISE NOTICE 'PASS — DB-09: دوالّ DEFINER التي ينفّذها الزائر هي المصنَّفة وحدها (% دالّة)', cardinality(_now);
+END $$;
+
+-- صلاحيات anon وauthenticated على كلّ جدولٍ في public، جدولاً وعموداً.
+-- السطر: الجدول|الدور|صلاحيات الجدول|صلاحيات الأعمدة حيث لا صلاحية جدول.
+-- جدولٌ لا سطر له لا يملك العموم عليه شيئاً.
+DO $$
+DECLARE _expected TEXT[] := ARRAY[
+    'access_request_messages|authenticated|SELECT|',
+    'access_scope_packages|authenticated|SELECT|',
+    'access_scopes|authenticated|SELECT|',
+    'api_clients|authenticated|SELECT|',
+    'api_import_jobs|authenticated|SELECT|',
+    'audit_log|authenticated|SELECT|',
+    'care_organizations|anon||SELECT(about,city,id,logo_url,name,region,status)',
+    'care_organizations|authenticated|INSERT,SELECT,UPDATE|',
+    'countries|anon|SELECT|',
+    'countries|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'data_retention_policy|authenticated|SELECT|',
+    'disbursements|authenticated|INSERT,SELECT,UPDATE|',
+    'dispatch_runs|authenticated|SELECT|',
+    'donor_entities|authenticated|SELECT,UPDATE|',
+    'donor_members|authenticated|SELECT|',
+    'enrollment_roles|authenticated|SELECT|',
+    'enrollment_units|authenticated|SELECT|',
+    'guardian_e_consents|authenticated|SELECT|',
+    'institution_kinds|anon|SELECT|',
+    'institution_kinds|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'integrity_discrepancies|authenticated|SELECT|',
+    'integrity_log|authenticated|SELECT|',
+    'mirror_batches|authenticated|SELECT|',
+    'mirror_groups|authenticated|SELECT|',
+    'mirror_sync_state|authenticated|SELECT|',
+    'notification_prefs|authenticated|INSERT,SELECT,UPDATE|',
+    'notifications|authenticated|SELECT,UPDATE|',
+    'office_members|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'office_reports|authenticated|SELECT|',
+    'office_roles|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'offices|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'operating_platforms|authenticated|INSERT,SELECT,UPDATE|',
+    'ops_runs|authenticated|SELECT|',
+    'orphan_access_requests|authenticated|SELECT|',
+    'orphan_documents|authenticated|INSERT,SELECT,UPDATE|',
+    'orphan_locks|authenticated|SELECT|',
+    'orphan_needs|authenticated|DELETE,INSERT,SELECT,UPDATE|',
+    'orphan_pending_edits|authenticated|SELECT|',
+    'orphan_private|authenticated|INSERT,SELECT,UPDATE|',
+    'orphan_profile_sections|authenticated|SELECT|',
+    'orphan_trait_scores|authenticated|SELECT|',
+    'orphans|anon||SELECT(code,country,country_code,created_at,currency,display_name,funded_monthly,gender,id,monthly_need,status)',
+    'orphans|authenticated|INSERT,UPDATE|SELECT(approved_at,code,country,country_code,created_at,currency,display_name,funded_monthly,gender,id,monthly_need,photo_consent,rejection_code,rejection_reason,status,updated_at)',
+    'payment_events|authenticated|SELECT|',
+    'platform_settings|authenticated|SELECT|',
+    'pledge_deliveries|authenticated|SELECT|',
+    'profiles|authenticated|INSERT,SELECT,UPDATE|',
+    'program_enrollments|anon|SELECT|',
+    'program_enrollments|authenticated|INSERT,SELECT,UPDATE|',
+    'program_units|anon|SELECT|',
+    'program_units|authenticated|SELECT|',
+    'programs|anon|SELECT|',
+    'programs|authenticated|SELECT|',
+    'progress_reports|authenticated|INSERT,SELECT,UPDATE|',
+    'qualification_concepts|anon|SELECT|',
+    'qualification_concepts|authenticated|SELECT|',
+    'qualification_traits|anon|SELECT|',
+    'qualification_traits|authenticated|SELECT|',
+    'sponsorship_payments|authenticated|SELECT|',
+    'sponsorships|authenticated|INSERT,SELECT,UPDATE|',
+    'supervisor_profiles|authenticated|SELECT|',
+    'support_pledges|authenticated|SELECT|',
+    'timeline_events|authenticated|SELECT|',
+    'trait_assessments|authenticated|SELECT|',
+    'trait_definitions|anon|SELECT|',
+    'trait_definitions|authenticated|SELECT|',
+    'trait_dimensions|anon|SELECT|',
+    'trait_dimensions|authenticated|SELECT|',
+    'trait_score_revisions|authenticated|SELECT|',
+    'ui_locale_reviewers|authenticated|SELECT|',
+    'ui_locales|authenticated|SELECT|',
+    'unlock_requests|authenticated|SELECT|',
+    'user_roles|authenticated|SELECT|'];
+  _now TEXT[]; _extra TEXT; _gone TEXT;
+BEGIN
+  WITH roles AS (SELECT unnest(ARRAY['anon', 'authenticated']) AS rol),
+  tbl AS (
+    SELECT c.relname, r.rol,
+           (SELECT string_agg(p, ',' ORDER BY p)
+              FROM unnest(ARRAY['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER']) p
+             WHERE has_table_privilege(r.rol, c.oid, p)) AS tpriv,
+           (SELECT string_agg(x, ';' ORDER BY x) FROM (
+              SELECT p || '(' || string_agg(a.attname, ',' ORDER BY a.attname) || ')' AS x
+                FROM unnest(ARRAY['SELECT','INSERT','UPDATE']) p
+                JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum > 0 AND NOT a.attisdropped
+               WHERE NOT has_table_privilege(r.rol, c.oid, p)
+                 AND has_column_privilege(r.rol, c.oid, a.attname, p)
+               GROUP BY p) s) AS cpriv
+      FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace AND n.nspname = 'public'
+     CROSS JOIN roles r
+     WHERE c.relkind IN ('r', 'p')
+  )
+  SELECT array_agg(relname || '|' || rol || '|' || COALESCE(tpriv, '') || '|' || COALESCE(cpriv, '')
+                   ORDER BY relname, rol)
+    INTO _now
+    FROM tbl WHERE tpriv IS NOT NULL OR cpriv IS NOT NULL;
+
+  SELECT string_agg(x, E'\n  ') INTO _extra FROM unnest(_now) x WHERE x <> ALL (_expected);
+  SELECT string_agg(x, E'\n  ') INTO _gone FROM unnest(_expected) x WHERE x <> ALL (_now);
+  IF _extra IS NOT NULL OR _gone IS NOT NULL THEN
+    RAISE EXCEPTION E'FAIL — صلاحيات الجداول تخالف اللقطة.\n زائدٌ أو تغيّر:\n  %\n غائب:\n  %',
+      COALESCE(_extra, '—'), COALESCE(_gone, '—')
+      USING HINT = 'صنِّف الجدول الجديد: REVOKE ALL ... FROM anon, authenticated ثم امنح المقصود، وحدّث اللقطة.';
+  END IF;
+  RAISE NOTICE 'PASS — DB-04/DB-09: صلاحيات العموم على الجداول مطابقةٌ للّقطة سطراً سطراً (% سطراً)',
+    cardinality(_now);
+END $$;
+
 ROLLBACK;

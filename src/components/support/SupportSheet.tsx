@@ -113,7 +113,12 @@ export function SupportSheet({
       !regionValue || !r || normalize(r) === normalize(regionValue);
     for (const g of catalog?.groups ?? []) {
       if (g.country === ctx.code && here(g.region))
-        out.push({ type: "group", value: g.id, label: g.name, hint: t.children(g.children) });
+        out.push({
+          type: "group",
+          value: g.id,
+          label: g.name,
+          ...(g.children == null ? {} : { hint: t.children(g.children) }),
+        });
     }
     for (const i of catalog?.institutions ?? []) {
       if (i.country === ctx.code && here(i.region))
