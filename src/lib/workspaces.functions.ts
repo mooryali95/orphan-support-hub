@@ -30,7 +30,13 @@ export type Workspaces = {
   }>;
   donor_entities: Array<{ id: string; name: string; status: string; role: string }>;
   care_org: boolean;
+  /** حال جهة الحساب إن كانت له (هجرة 20261107130000)؛ قد تغيب قبل تطبيقها. */
+  care_org_status?: "pending" | "approved" | "rejected" | "suspended" | null;
   guardian: boolean;
+  /** اعتماد إشرافٍ نشط — به وحده يظهر باب «الإشراف» (UX-16). */
+  supervisor?: boolean;
+  /** اللغات التي يراجعها الحساب — مدخل المترجم إلى /translate (UX-16). */
+  translator_locales?: Array<{ code: string; name: string }>;
   pledges: number;
 };
 

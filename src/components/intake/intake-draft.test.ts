@@ -148,6 +148,13 @@ describe("الربط في الواجهة", () => {
     expect(form).not.toContain('"ioco:orphan-intake-draft"');
   });
 
+  it("المسودّة تُحفظ في القاعدة لا في المتصفّح (UX-04)", () => {
+    const form = src("components/intake/OrphanIntakeForm.tsx");
+    expect(form).not.toMatch(/\b(saveDraft|loadDraft)\(/);
+    expect(form).toContain("saveOrphanDraft");
+    expect(form).toContain("getOrphanIntake");
+  });
+
   it("زرّا الخروج والمستمع العامّ يمحون بيانات العمل", () => {
     for (const p of ["components/DashboardShell.tsx", "routes/_authenticated/account.tsx"]) {
       expect(src(p)).toContain("wipeBrowserUserData()");

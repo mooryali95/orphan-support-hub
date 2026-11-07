@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 837,
+ "count": 842,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -21,6 +21,13 @@
    "ar": "دليل الأيتام",
    "kind": "text",
    "hash": "ae3660e62969",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.donorRole": {
+   "en": "Donor entity",
+   "ar": "جهة مانحة",
+   "kind": "text",
+   "hash": "d93a396c6643",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.guardian": {
@@ -49,6 +56,13 @@
    "ar": "الإشعارات",
    "kind": "text",
    "hash": "5818d8bb798c",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.officeRole": {
+   "en": "Office member",
+   "ar": "عضو مكتب",
+   "kind": "text",
+   "hash": "42f34b978384",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.org": {
@@ -91,6 +105,27 @@
    "ar": "الإشراف",
    "kind": "text",
    "hash": "8f602a9c3e4e",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.supervisorRole": {
+   "en": "Supervisor",
+   "ar": "مشرف",
+   "kind": "text",
+   "hash": "659186f1ea9d",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.translate": {
+   "en": "Translation",
+   "ar": "الترجمة",
+   "kind": "text",
+   "hash": "c447791249da",
+   "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DashboardShell.translatorRole": {
+   "en": "Translation reviewer",
+   "ar": "مراجع ترجمة",
+   "kind": "text",
+   "hash": "c2ed3c6ab216",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/ExcessSuggestion.confirm": {
