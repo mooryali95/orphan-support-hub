@@ -68,7 +68,7 @@ function AuthPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const redirectTo = safePath(search.redirect);
-  const { stats, demo } = useMapStats();
+  const { stats, demo, status } = useMapStats();
   // الخارطة خلف النافذة تفتح على الدولة التي كان فيها الزائر، إن عُرفت.
   const fromMap = /[?&]c=([A-Z]{2})/.exec(redirectTo)?.[1] ?? null;
   const [selection, setSelection] = useState<MapSelection>({ country: fromMap, region: null });
@@ -79,6 +79,7 @@ function AuthPage() {
         <WorldMap
           stats={stats}
           demo={demo}
+          status={status}
           selection={selection}
           onSelect={setSelection}
           className="h-dvh min-h-dvh"

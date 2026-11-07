@@ -189,7 +189,7 @@ function SupportPage() {
   const locale = useLocale();
   // «ادعم في دقيقتين»: يُقاس من فتح المسار حتى التسجيل.
   const openedAt = useRef<number>(Date.now());
-  const { stats, demo } = useMapStats();
+  const { stats, demo, status } = useMapStats();
   const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const fetchCatalog = useServerFn(getSupportCatalog);
@@ -346,6 +346,7 @@ function SupportPage() {
         <WorldMap
           stats={stats}
           demo={demo}
+          status={status}
           selection={selection}
           onSelect={onSelect}
           layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
