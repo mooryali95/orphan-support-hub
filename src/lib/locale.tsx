@@ -203,7 +203,8 @@ export function placeLabel(
   region: string | null | undefined,
   locale: Locale,
 ): string {
-  const code = locale !== "ar" ? resolveCountry(country) : null;
+  // بالعربية أيضاً: البلد قد يُخزَّن رمزاً («AL»)، والرمز لا يُعرض للناس (UI-04).
+  const code = resolveCountry(country);
   const c = code ? countryName(code, locale) : country;
   return [c, region].filter(Boolean).join(" — ");
 }

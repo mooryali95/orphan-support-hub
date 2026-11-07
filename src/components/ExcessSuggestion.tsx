@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import type { SuggestedOrphan } from "@/lib/sponsorships.functions";
+import { Name } from "@/components/kit/Name";
 
 const COPY = defineCopy("components/ExcessSuggestion", {
   ar: {
@@ -77,7 +78,9 @@ export function ExcessSuggestion({
                 >
                   <HeartHandshake className="text-shore-need size-4 shrink-0" aria-hidden="true" />
                   {/* الاسم وحده: لا مدينة ولا منطقة في اقتراحٍ يراه الزائر. */}
-                  <span className="flex-1">{s.display_name}</span>
+                  <span className="flex-1">
+                    <Name>{s.display_name}</Name>
+                  </span>
                   <span className="text-bridge-ink text-xs font-bold tabular-nums">
                     {t.needs(formatMoney(s.gap, s.currency, locale))}
                   </span>

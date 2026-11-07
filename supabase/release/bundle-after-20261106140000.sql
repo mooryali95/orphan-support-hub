@@ -1,5 +1,5 @@
 -- ملف نشر كهاتين — كل الهجرات بعد 20261106140000
--- يُولَّد آلياً؛ لا تعدّله يدوياً. أُنشئ: 2026-11-07T15:06Z
+-- يُولَّد آلياً؛ لا تعدّله يدوياً. أُنشئ: 2026-11-07T15:20Z
 BEGIN;
 
 -- >>> migration 20261107100000 care_org_self_onboarding
@@ -1372,5 +1372,37 @@ REVOKE ALL ON FUNCTION public.my_workspaces() FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.my_workspaces() TO authenticated;
 
 INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20261107130000', 'workspace_relations');
+
+-- >>> migration 20261107140000 public_platform_stats
+DO $guard$ BEGIN
+  IF EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20261107140000') THEN
+    RAISE EXCEPTION 'الهجرة 20261107140000 مطبّقة سلفاً — أعد التوليد برقمٍ أحدث';
+  END IF;
+END $guard$;
+-- =====================================================================
+-- أرقام الصفحة الأولى بتجميعٍ واحد في القاعدة (PERF-06)
+-- =====================================================================
+-- كانت getPlatformStats تقرأ صفوف الملفات المنشورة كلّها لتجمع الاحتياج
+-- والمغطّى في المتصفّح/الخادم، وPostgREST يقطع الردّ عند max_rows (1000)،
+-- فيُنقص المجموع بصمتٍ بعد الألف. هنا رقمٌ واحد من استعلامٍ واحد.
+--
+-- SECURITY INVOKER: تُقرأ بصلاحيات المتّصل وسياساته، فلا تكشف أكثر ممّا كانت
+-- القراءة المباشرة تكشفه (أعمدة الاحتياج والتمويل مقروءة للزائر أصلاً).
+-- مجاميع لا صفوف: لا اسم ولا معرّف ولا مكان.
+CREATE OR REPLACE FUNCTION public.public_platform_stats()
+RETURNS JSONB LANGUAGE sql STABLE SECURITY INVOKER SET search_path = public AS $fn$
+  SELECT jsonb_build_object(
+    'total', count(*),
+    'fully_sponsored', count(*) FILTER (WHERE o.status = 'fully_sponsored'),
+    'monthly_need', COALESCE(sum(o.monthly_need), 0),
+    'monthly_funded', COALESCE(sum(o.funded_monthly), 0)
+  )
+    FROM public.orphans o
+   WHERE o.status IN ('approved', 'fully_sponsored');
+$fn$;
+REVOKE ALL ON FUNCTION public.public_platform_stats() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.public_platform_stats() TO anon, authenticated;
+
+INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES ('20261107140000', 'public_platform_stats');
 
 COMMIT;

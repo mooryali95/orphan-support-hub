@@ -51,12 +51,12 @@ export function DispatchHealthPanel() {
       ) : (
         <p className="border-border bg-card text-shore-thrive flex items-center gap-2 rounded-2xl border p-5 text-sm">
           <CheckCircle2 className="size-4" />
-          المخطط جاهز ولا أخطاء متكرّرة خلال آخر ٢٤ ساعة.
+          المخطط جاهز ولا أخطاء متكرّرة خلال آخر 24 ساعة.
         </p>
       )}
 
       <section>
-        <h2 className="text-sm font-bold">آخر ٢٤ ساعة</h2>
+        <h2 className="text-sm font-bold">آخر 24 ساعة</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Box label="دورات تشغيل" value={String(h.runs24h)} />
           <Box label="دورات فاشلة" value={String(h.failedRuns24h)} tone={h.failedRuns24h > 0} />

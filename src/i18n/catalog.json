@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 842,
+ "count": 856,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1455,9 +1455,9 @@
   },
   "components/map/WorldMap.delivered": {
    "en": "Received a documented delivery in the last 90 days",
-   "ar": "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "ar": "وصلهم تسليمٌ موثّق خلال 90 يوماً",
    "kind": "text",
-   "hash": "d205fd1663f1",
+   "hash": "7c3c789a114c",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.demo": {
@@ -1533,9 +1533,9 @@
   },
   "components/map/WorldMap.layerImpactHint": {
    "en": "Share sponsored, and children with a documented delivery in the last 90 days",
-   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال 90 يوماً",
    "kind": "text",
-   "hash": "e34083026666",
+   "hash": "7486107fec68",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.layerWaiting": {
@@ -2234,9 +2234,9 @@
   },
   "components/orphan/TrustSignals.report": {
    "en": "Approved report in the last 90 days",
-   "ar": "تقريرٌ معتمد آخر ٩٠ يوماً",
+   "ar": "تقريرٌ معتمد آخر 90 يوماً",
    "kind": "text",
-   "hash": "de290201ade9",
+   "hash": "ca27dd23cbc1",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
@@ -3235,27 +3235,6 @@
    "hash": "fc7293ad089e",
    "file": "src/components/support/SupportSheet.tsx"
   },
-  "components/support/SupportSheet.fullMonth": {
-   "en": "Covers the month",
-   "ar": "يسدّ الشهر",
-   "kind": "text",
-   "hash": "ccb315a7fab2",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
-  "components/support/SupportSheet.halfMonth": {
-   "en": "Half",
-   "ar": "نصفه",
-   "kind": "text",
-   "hash": "0e505ae3eef6",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
-  "components/support/SupportSheet.inKind": {
-   "en": "In-kind support",
-   "ar": "دعم عيني",
-   "kind": "text",
-   "hash": "92da4fd07d92",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
   "components/support/SupportSheet.kind": {
    "en": "Kind of support",
    "ar": "نوع الدعم",
@@ -3298,18 +3277,11 @@
    "hash": "b7840c387b58",
    "file": "src/components/support/SupportSheet.tsx"
   },
-  "components/support/SupportSheet.qualification": {
-   "en": "Building capability",
-   "ar": "بناء الأهلية",
+  "components/support/SupportSheet.rest": {
+   "en": "Cover the remaining need",
+   "ar": "سدّ المتبقّي",
    "kind": "text",
-   "hash": "9b8287a2fc35",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
-  "components/support/SupportSheet.quarterMonth": {
-   "en": "A quarter",
-   "ar": "ربعه",
-   "kind": "text",
-   "hash": "2d2e70600a30",
+   "hash": "cef384131891",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.signIn": {
@@ -3376,6 +3348,83 @@
    "hash": "99cd9a57660a",
    "file": "src/config/brand.ts"
   },
+  "config/giving-tracks.heading": {
+   "en": "Choose your impact",
+   "ar": "اختر أثرك",
+   "kind": "text",
+   "hash": "555091b5f6de",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.lead": {
+   "en": "Three equal doors. Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
+   "ar": "ثلاثة أبوابٍ متساوية. اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
+   "kind": "text",
+   "hash": "c87a17f12140",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.in_kind.cta": {
+   "en": "Give in kind",
+   "ar": "تبرّع عيناً",
+   "kind": "text",
+   "hash": "854313d1ee12",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.in_kind.name": {
+   "en": "In-kind giving",
+   "ar": "تبرع عيني",
+   "kind": "text",
+   "hash": "2c87b5c2f579",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.in_kind.promise": {
+   "en": "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
+   "ar": "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
+   "kind": "text",
+   "hash": "1cc0e69a5cf2",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.monthly.cta": {
+   "en": "Choose from the directory",
+   "ar": "اختر من الدليل",
+   "kind": "text",
+   "hash": "c5c4ca9220ba",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.monthly.name": {
+   "en": "Financial sponsorship",
+   "ar": "كفالة مادية",
+   "kind": "text",
+   "hash": "f72c55611381",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.monthly.promise": {
+   "en": "A fixed amount each month for one child. One table shows when it was paid and when it reached them, with a document.",
+   "ar": "مبلغٌ ثابت كل شهر لطفلٍ بعينه، ترى في جدولٍ واحد متى دُفع ومتى وصله موثّقاً.",
+   "kind": "text",
+   "hash": "b28ede2f8d54",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.qualification.cta": {
+   "en": "Support qualification",
+   "ar": "ادعم التأهيل",
+   "kind": "text",
+   "hash": "2748deee0e56",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.qualification.name": {
+   "en": "Qualification giving",
+   "ar": "تبرع تأهيل",
+   "kind": "text",
+   "hash": "113627a81a3f",
+   "file": "src/config/giving-tracks.ts"
+  },
+  "config/giving-tracks.tracks.qualification.promise": {
+   "en": "Fund a qualification journey, session by session with a supervisor, with the child's traits measured before and after.",
+   "ar": "تموّل رحلة تأهيلٍ بجلساتها ومشرفها، وتُقاس سمات الطفل قبلها وبعدها.",
+   "kind": "text",
+   "hash": "f6a6d1bb67a5",
+   "file": "src/config/giving-tracks.ts"
+  },
   "config/offering.later": {
    "en": "General donations will be added later.",
    "ar": "التبرّعات العامة ستُضاف لاحقاً.",
@@ -3396,6 +3445,97 @@
    "kind": "text",
    "hash": "da30c7874668",
    "file": "src/config/offering.ts"
+  },
+  "lib/event-labels.fallback": {
+   "en": "File update",
+   "ar": "تحديثٌ في الملف",
+   "kind": "text",
+   "hash": "15057edb990b",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.disbursement_delivered": {
+   "en": "This month's sponsorship delivered, with a document",
+   "ar": "وصلت كفالة الشهر موثّقة",
+   "kind": "text",
+   "hash": "43077c52425f",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.approved": {
+   "en": "File approved and published",
+   "ar": "اعتُمد الملف ونُشر",
+   "kind": "text",
+   "hash": "721368bd32a5",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.rejected": {
+   "en": "File returned for correction",
+   "ar": "أُعيد الملف للتصحيح",
+   "kind": "text",
+   "hash": "e31501bec71c",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.submitted": {
+   "en": "File submitted for review",
+   "ar": "رُفع الملف للمراجعة",
+   "kind": "text",
+   "hash": "cd5234993033",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.pledge.delivered": {
+   "en": "Your support was delivered, with a document",
+   "ar": "سُلّم دعمك موثّقاً",
+   "kind": "text",
+   "hash": "ebfd39a410ec",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.pledge.preparing": {
+   "en": "Your support is being prepared",
+   "ar": "بدأ تجهيز دعمك",
+   "kind": "text",
+   "hash": "ca01d598c302",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.published": {
+   "en": "Impact report published",
+   "ar": "نُشر تقرير أثر",
+   "kind": "text",
+   "hash": "24126e367b8f",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.rejected": {
+   "en": "Report returned for correction",
+   "ar": "أُعيد التقرير للتصحيح",
+   "kind": "text",
+   "hash": "4235eb0c100d",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.submitted": {
+   "en": "Progress report submitted",
+   "ar": "رُفع تقرير دوري",
+   "kind": "text",
+   "hash": "dc4ab2274ca8",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.sponsorship.started": {
+   "en": "Sponsorship started",
+   "ar": "بدأت الكفالة",
+   "kind": "text",
+   "hash": "3180bacbb5a9",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.trait.measured": {
+   "en": "New trait measurement",
+   "ar": "قياسٌ جديد لسمة",
+   "kind": "text",
+   "hash": "91e4d1f91ef0",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.unit.accepted": {
+   "en": "Completed a session",
+   "ar": "اجتاز جلسة",
+   "kind": "text",
+   "hash": "04f8db13caf5",
+   "file": "src/lib/event-labels.ts"
   },
   "lib/office-gap.absent": {
    "en": "no confirmed WAMY presence at the moment",
@@ -3668,6 +3808,14 @@
    "hash": "06664c83f8f4",
    "file": "src/routes/auth.tsx"
   },
+  "routes/auth.sponsoring": {
+   "en": "You're about to sponsor {0} with {1} a month. After signing in you'll return to their file with what you chose.",
+   "ar": "أنت على وشك كفالة {0} بـ{1} شهرياً. بعد الدخول تعود إلى ملفّه بما اخترته.",
+   "kind": "template",
+   "params": 2,
+   "hash": "6e7b76915718",
+   "file": "src/routes/auth.tsx"
+  },
   "routes/auth.terms": {
    "en": "terms of use",
    "ar": "شروط الاستخدام",
@@ -3776,9 +3924,9 @@
   },
   "routes/how-it-works.stages.0.0": {
    "en": "1",
-   "ar": "١",
+   "ar": "1",
    "kind": "text",
-   "hash": "06e30646ced4",
+   "hash": "faebccd5ab70",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.1": {
@@ -3797,9 +3945,9 @@
   },
   "routes/how-it-works.stages.1.0": {
    "en": "2",
-   "ar": "٢",
+   "ar": "2",
    "kind": "text",
-   "hash": "fb7237ae9b85",
+   "hash": "b2c11b8a39cc",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.1.1": {
@@ -3818,9 +3966,9 @@
   },
   "routes/how-it-works.stages.2.0": {
    "en": "3",
-   "ar": "٣",
+   "ar": "3",
    "kind": "text",
-   "hash": "1bde6e9551bd",
+   "hash": "6b02bf2e5c6c",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.2.1": {
@@ -3839,9 +3987,9 @@
   },
   "routes/how-it-works.stages.3.0": {
    "en": "4",
-   "ar": "٤",
+   "ar": "4",
    "kind": "text",
-   "hash": "1a9c10a16433",
+   "hash": "423fc76c72ee",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.3.1": {
@@ -3860,9 +4008,9 @@
   },
   "routes/how-it-works.stages.4.0": {
    "en": "5",
-   "ar": "٥",
+   "ar": "5",
    "kind": "text",
-   "hash": "1ab48a767a72",
+   "hash": "894edcf9bedc",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.4.1": {
@@ -3881,9 +4029,9 @@
   },
   "routes/how-it-works.stages.5.0": {
    "en": "6",
-   "ar": "٦",
+   "ar": "6",
    "kind": "text",
-   "hash": "2541ff347ff1",
+   "hash": "66ad433d199f",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.5.1": {
@@ -4138,83 +4286,6 @@
    "hash": "cc9e944dc157",
    "file": "src/routes/index.tsx"
   },
-  "routes/index.doors.0.0": {
-   "en": "Monthly sponsorship",
-   "ar": "كفالة شهرية",
-   "kind": "text",
-   "hash": "9630b012db18",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.0.1": {
-   "en": "A fixed amount each month. One table shows when it was paid and when it reached the child, with a document.",
-   "ar": "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
-   "kind": "text",
-   "hash": "3c1c5dbbe235",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.0.2": {
-   "en": "Choose from the directory",
-   "ar": "اختر من الدليل",
-   "kind": "text",
-   "hash": "c5c4ca9220ba",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.1.0": {
-   "en": "Building capability",
-   "ar": "بناء الأهلية",
-   "kind": "text",
-   "hash": "9b8287a2fc35",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.1.1": {
-   "en": "Fund a qualification journey session by session, with the child's traits measured before and after.",
-   "ar": "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.",
-   "kind": "text",
-   "hash": "c1362e0a09c6",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.1.2": {
-   "en": "Support qualification",
-   "ar": "ادعم التأهيل",
-   "kind": "text",
-   "hash": "2748deee0e56",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.2.0": {
-   "en": "In-kind support",
-   "ar": "دعم عيني",
-   "kind": "text",
-   "hash": "92da4fd07d92",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.2.1": {
-   "en": "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
-   "ar": "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
-   "kind": "text",
-   "hash": "1cc0e69a5cf2",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doors.2.2": {
-   "en": "Give in kind",
-   "ar": "ادعم عيناً",
-   "kind": "text",
-   "hash": "36638df6f41a",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doorsH": {
-   "en": "Three equal doors",
-   "ar": "ثلاثة أبوابٍ متساوية",
-   "kind": "text",
-   "hash": "6d563a167b7c",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.doorsP": {
-   "en": "Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
-   "ar": "اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
-   "kind": "text",
-   "hash": "b5f25391fd9c",
-   "file": "src/routes/index.tsx"
-  },
   "routes/index.eqA": {
    "en": "understand what is asked",
    "ar": "تفهّم الخطاب",
@@ -4266,9 +4337,9 @@
   },
   "routes/index.hadithSource": {
    "en": "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
-   "ar": "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+   "ar": "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
    "kind": "text",
-   "hash": "9948cfa16303",
+   "hash": "357084714a51",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.0.0": {
@@ -4384,6 +4455,20 @@
    "hash": "6e62c1d3a4fd",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.mapH": {
+   "en": "Where we work",
+   "ar": "أين نعمل",
+   "kind": "text",
+   "hash": "ad5d6341587f",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.mapP": {
+   "en": "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
+   "ar": "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
+   "kind": "text",
+   "hash": "a84d8b7148f4",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.months": {
    "en": "{0} months",
    "ar": "{0} شهراً",
@@ -4408,30 +4493,30 @@
   },
   "routes/index.ordinals.0": {
    "en": "1",
-   "ar": "١",
+   "ar": "1",
    "kind": "text",
-   "hash": "06e30646ced4",
+   "hash": "faebccd5ab70",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.1": {
    "en": "2",
-   "ar": "٢",
+   "ar": "2",
    "kind": "text",
-   "hash": "fb7237ae9b85",
+   "hash": "b2c11b8a39cc",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.2": {
    "en": "3",
-   "ar": "٣",
+   "ar": "3",
    "kind": "text",
-   "hash": "1bde6e9551bd",
+   "hash": "6b02bf2e5c6c",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.3": {
    "en": "4",
-   "ar": "٤",
+   "ar": "4",
    "kind": "text",
-   "hash": "1a9c10a16433",
+   "hash": "423fc76c72ee",
    "file": "src/routes/index.tsx"
   },
   "routes/index.partners": {
@@ -4495,6 +4580,48 @@
    "ar": "، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.",
    "kind": "text",
    "hash": "61c28bdcac24",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofField": {
+   "en": "countries with documented field activity",
+   "ar": "دول بنشاطٍ ميداني موثّق",
+   "kind": "text",
+   "hash": "f4d994f41f92",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofFiles": {
+   "en": "approved files on the platform",
+   "ar": "ملفات معتمدة على المنصّة",
+   "kind": "text",
+   "hash": "3dd50f25086e",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofFull": {
+   "en": "fully sponsored",
+   "ar": "مكفولون بالكامل",
+   "kind": "text",
+   "hash": "b9a57de50299",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofH": {
+   "en": "The platform today",
+   "ar": "المنصّة اليوم",
+   "kind": "text",
+   "hash": "6c6bc489fbd8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofOffices": {
+   "en": "countries with a confirmed WAMY office",
+   "ar": "دول فيها مكتبٌ مؤكَّد للندوة",
+   "kind": "text",
+   "hash": "d4e50372201a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.proofSource": {
+   "en": "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
+   "ar": "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
+   "kind": "text",
+   "hash": "4f5c8eaf2911",
    "file": "src/routes/index.tsx"
   },
   "routes/index.qualification": {
@@ -5359,27 +5486,6 @@
    "hash": "ae4265290310",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
-  "routes/orphans.orphanId.modes.in_kind": {
-   "en": "In-kind support",
-   "ar": "دعم عيني",
-   "kind": "text",
-   "hash": "92da4fd07d92",
-   "file": "src/routes/orphans.$orphanId.tsx"
-  },
-  "routes/orphans.orphanId.modes.monthly": {
-   "en": "Monthly sponsorship",
-   "ar": "كفالة شهرية",
-   "kind": "text",
-   "hash": "9630b012db18",
-   "file": "src/routes/orphans.$orphanId.tsx"
-  },
-  "routes/orphans.orphanId.modes.qualification": {
-   "en": "Capability building",
-   "ar": "بناء أهلية",
-   "kind": "text",
-   "hash": "7d7764e5919c",
-   "file": "src/routes/orphans.$orphanId.tsx"
-  },
   "routes/orphans.orphanId.monthlyNeed": {
    "en": "Monthly need",
    "ar": "الاحتياج الشهري",
@@ -5448,6 +5554,13 @@
    "ar": "المتبقّي شهرياً",
    "kind": "text",
    "hash": "19e32a69e140",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.restored": {
+   "en": "We kept what you chose before signing in: the amount and your message.",
+   "ar": "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
+   "kind": "text",
+   "hash": "47a47b53a156",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.shareTitle": {
@@ -5580,25 +5693,11 @@
    "hash": "083be8329b16",
    "file": "src/routes/support.tsx"
   },
-  "routes/support.fullMonth": {
-   "en": "Covers the month",
-   "ar": "يسدّ الشهر",
-   "kind": "text",
-   "hash": "ccb315a7fab2",
-   "file": "src/routes/support.tsx"
-  },
   "routes/support.h1": {
    "en": "Support",
    "ar": "ادعم",
    "kind": "text",
    "hash": "81bb0b6bce39",
-   "file": "src/routes/support.tsx"
-  },
-  "routes/support.halfMonth": {
-   "en": "Half of it",
-   "ar": "نصفه",
-   "kind": "text",
-   "hash": "276830735e32",
    "file": "src/routes/support.tsx"
   },
   "routes/support.kinds.in_kind.label": {
@@ -5637,10 +5736,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapText": {
-   "en": "Choose a country, then a region — or continue with the steps below.",
-   "ar": "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+   "en": "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
+   "ar": "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
    "kind": "text",
-   "hash": "e5c7eb6890e7",
+   "hash": "d55109d299e7",
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapTitle": {
@@ -5713,39 +5812,39 @@
    "hash": "32398511e20f",
    "file": "src/routes/support.tsx"
   },
-  "routes/support.quarterMonth": {
-   "en": "A quarter",
-   "ar": "ربعه",
+  "routes/support.rest": {
+   "en": "Cover the remaining need",
+   "ar": "سدّ المتبقّي",
    "kind": "text",
-   "hash": "2d2e70600a30",
+   "hash": "cef384131891",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s1": {
    "en": "1. Kind of support",
-   "ar": "١. نوع الدعم",
+   "ar": "1. نوع الدعم",
    "kind": "text",
-   "hash": "dd9683704413",
+   "hash": "3fcdfbbc1877",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s2": {
    "en": "2. Who is it for?",
-   "ar": "٢. إلى من يذهب؟",
+   "ar": "2. إلى من يذهب؟",
    "kind": "text",
-   "hash": "8c1de4647d34",
+   "hash": "756d2f8c3cc6",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s3": {
    "en": "3. Your choice",
-   "ar": "٣. الاختيار",
+   "ar": "3. الاختيار",
    "kind": "text",
-   "hash": "11fc4817ed94",
+   "hash": "2990b1e5514d",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s4": {
    "en": "4. Amount",
-   "ar": "٤. المبلغ",
+   "ar": "4. المبلغ",
    "kind": "text",
-   "hash": "c5cb8f669dc0",
+   "hash": "c0cc206c2298",
    "file": "src/routes/support.tsx"
   },
   "routes/support.section": {

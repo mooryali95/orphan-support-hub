@@ -8,7 +8,7 @@ import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatMoney, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
+import { formatDate, formatMoney, SPONSORSHIP_STATUS_LABELS, isolate } from "@/lib/format";
 import { getSponsorshipLedger, MESSAGE_STATUS_LABELS } from "@/lib/ledger.functions";
 import { pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
@@ -70,7 +70,7 @@ function SponsorshipPage() {
 
   return (
     <DashboardShell
-      title={`كفالة ${l.orphan.display_name}`}
+      title={`كفالة ${isolate(l.orphan.display_name)}`}
       description={`ملف ${l.orphan.code} · ${formatMoney(s.amount, s.currency)} ${s.type === "monthly" ? "شهرياً" : "لمرة واحدة"}`}
     >
       <div className="flex flex-wrap items-center gap-2">

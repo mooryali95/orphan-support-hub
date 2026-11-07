@@ -22,6 +22,8 @@ import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
@@ -97,6 +99,10 @@ function DashboardPage() {
     queryClient.invalidateQueries({ queryKey: ["my-sponsorships"] });
   }
 
+  const pending = sponsorships.filter((s) => s.status === "pending_payment");
+  const others = sponsorships.filter((s) => s.status !== "pending_payment");
+  const ready = !isLoading && !listFailed;
+
   return (
     <DashboardShell title="كفالاتي" description="متابعة كفالاتك الشهرية وحالة كل ملف.">
       {payment === "done" && (
@@ -107,144 +113,222 @@ function DashboardPage() {
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
       )}
-      <MyJourney />
-      <div className="mt-8">
-        <PaymentLookup />
-      </div>
-      <FollowedChildren />
-      <MyPledges />
-      {!isLoading && !listFailed && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatTile label="عدد الكفالات" value={String(sponsorships.length)} />
+
+      {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}
+      {!listFailed && (
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <StatTile label="عدد الكفالات" value={String(sponsorships.length)} loading={isLoading} />
           <StatTile
             label="الكفالات النشطة"
             value={String(sponsorships.filter((s) => s.status === "active").length)}
+            loading={isLoading}
           />
-          <StatTile label="التزامك الشهري" value={formatMoney(activeTotal)} />
+          <StatTile
+            label="التزامك الشهري"
+            value={formatMoney(activeTotal)}
+            loading={isLoading}
+            className="col-span-2 sm:col-span-1"
+          />
         </div>
       )}
 
-      {mode?.onHold && (
-        // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
-        // والكافل الذي يظنّ المنصة معطوبة لا يعود.
-        <p className="border-bridge/30 bg-bridge/8 text-foreground mt-6 rounded-2xl border p-4 text-sm leading-7">
-          <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason} وحتى ذلك الحين تُستكمل
-          الكفالة بتحويل بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.
-        </p>
-      )}
-
-      {mode &&
-        !mode.online &&
-        !mode.onHold &&
-        sponsorships.some((s) => s.status === "pending_payment") && (
-          <p className="border-bridge/30 bg-bridge/8 text-foreground mt-6 rounded-2xl border p-4 text-sm leading-7">
-            الدفع الإلكتروني قيد التفعيل. حتى ذلك الحين تُستكمل الكفالة بتحويل بنكي تؤكّده الإدارة،
-            وتُفعّل كفالتك فور تأكيد الاستلام.
+      {/* 2. ما يحتاج إجراءك (UX-12): الكفالة التي تنتظر الدفع لا تُدفن تحت الخطّ الزمني. */}
+      {ready && pending.length > 0 && (
+        <section
+          aria-labelledby="needs-action"
+          className="mt-8 rounded-2xl border border-bridge/40 bg-bridge/8 p-5"
+        >
+          <h2 id="needs-action" className="text-xl font-bold">
+            يحتاج إجراءك
+          </h2>
+          <p className="mt-1 text-sm leading-7 text-muted-foreground">
+            {mode?.online
+              ? "أكمل الدفع لتبدأ الكفالة؛ لا يُعلَن الطفل مكفولاً قبل تأكيده."
+              : "تُستكمل الكفالة بتحويلٍ بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام."}
           </p>
-        )}
-
-      <div className="mt-8 space-y-4">
-        {isLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="size-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : listFailed ? (
-          <div role="alert" className="space-y-3 py-8 text-center">
-            <p className="text-destructive">تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.</p>
-            <Button variant="outline" onClick={() => void refetch()}>
-              إعادة المحاولة
-            </Button>
-          </div>
-        ) : sponsorships.length === 0 ? (
-          <EmptyState
-            title="لم تبدأ أي كفالة بعد"
-            text="اختر ملفاً معتمداً من الدليل وابدأ كفالتك الأولى، أو ادعم مجموعةً أو منطقة."
-            action={
-              <Button asChild>
-                <Link to="/orphans">تصفّح الملفات</Link>
-              </Button>
-            }
-          />
-        ) : (
-          sponsorships.map((s) => {
-            const orphan = s.orphan as {
-              id: string;
-              display_name: string;
-              code: string;
-              monthly_need: number | string;
-              funded_monthly: number | string;
-            } | null;
-            const percent = orphan ? fundingPercent(orphan.monthly_need, orphan.funded_monthly) : 0;
-
-            return (
-              <article key={s.id} className="rounded-2xl border border-border bg-card p-5">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <MuralImage
-                    photoUrl={null}
-                    displayName={orphan?.display_name ?? "ملف محذوف"}
-                    register={registerFor(orphan ? "" : "", percent)}
-                    className="size-16 shrink-0 rounded-xl bg-secondary"
-                  />
-
+          {mode?.onHold && (
+            // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
+            // والكافل الذي يظنّ المنصة معطوبة لا يعود.
+            <p className="mt-3 text-sm leading-7">
+              <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason}
+            </p>
+          )}
+          <ul className="mt-4 space-y-3">
+            {pending.map((s) => {
+              const orphan = orphanOf(s);
+              return (
+                <li
+                  key={s.id}
+                  className="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.06)] sm:flex-row sm:items-center"
+                >
                   <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-bold">{orphan?.display_name ?? "ملف محذوف"}</h2>
-                      <Badge variant={s.status === "active" ? "default" : "secondary"}>
-                        {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
-                      </Badge>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="font-bold">
+                      <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
                       {formatMoney(s.amount, s.currency)}{" "}
-                      {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
+                      {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — طُلبت{" "}
                       {formatDate(s.created_at)}
                     </p>
-                    {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
                   </div>
-
-                  <div className="flex gap-2">
-                    {s.status !== "pending_payment" && (
-                      <Button asChild size="sm">
-                        <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
-                          الجدول والتفاصيل
-                        </Link>
-                      </Button>
-                    )}
+                  <div className="flex flex-wrap gap-2">
+                    <Button onClick={() => onPay(s.id)} disabled={paying === s.id}>
+                      {paying === s.id && <Loader2 className="size-4 animate-spin" />}
+                      {mode?.online ? "أكمل الدفع" : "تعليمات التحويل"}
+                    </Button>
                     {orphan && (
-                      <Button asChild variant="outline" size="sm">
+                      <Button asChild variant="outline">
                         <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
                           الملف
                         </Link>
                       </Button>
                     )}
-                    {s.status === "pending_payment" && (
-                      <Button size="sm" onClick={() => onPay(s.id)} disabled={paying === s.id}>
-                        {paying === s.id && <Loader2 className="size-4 animate-spin" />}
-                        {mode?.online ? "أكمل الدفع" : "تعليمات التحويل"}
-                      </Button>
-                    )}
-                    {(s.status === "active" || s.status === "pending_payment") && (
-                      <Button variant="ghost" size="sm" onClick={() => onCancel(s.id)}>
-                        إلغاء
-                      </Button>
-                    )}
+                    <Button variant="ghost" onClick={() => onCancel(s.id)}>
+                      إلغاء
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {ready && mode?.onHold && pending.length === 0 && (
+        <p className="mt-6 rounded-2xl border border-bridge/30 bg-bridge/8 p-4 text-sm leading-7 text-foreground">
+          <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason} وحتى ذلك الحين تُستكمل
+          الكفالة بتحويل بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.
+        </p>
+      )}
+
+      {/* 3. الكفالات، و«رحلتي» بجوارها مختصرةً بالأحدث. */}
+      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <section aria-labelledby="my-sponsorships">
+          <h2 id="my-sponsorships" className="text-xl font-bold">
+            كفالاتك
+          </h2>
+          <div className="mt-4 space-y-4">
+            {isLoading ? (
+              // هيكلٌ بأبعاد البطاقة (UI-17): لا دوّارة وسط فراغ.
+              Array.from({ length: 2 }, (_, i) => (
+                <div
+                  key={i}
+                  className="flex gap-4 rounded-2xl border border-border bg-card p-5"
+                  aria-hidden="true"
+                >
+                  <Skeleton className="size-16 rounded-xl" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-5 w-40" />
+                    <Skeleton className="h-4 w-56" />
+                    <Skeleton className="h-2 w-full max-w-sm" />
                   </div>
                 </div>
+              ))
+            ) : listFailed ? (
+              <div
+                role="alert"
+                className="space-y-3 rounded-2xl border border-border bg-card p-8 text-center"
+              >
+                <p className="text-destructive">تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.</p>
+                <Button variant="outline" onClick={() => void refetch()}>
+                  إعادة المحاولة
+                </Button>
+              </div>
+            ) : others.length === 0 ? (
+              <EmptyState
+                title={pending.length > 0 ? "لا كفالة جارية بعد" : "لم تبدأ أي كفالة بعد"}
+                text={
+                  pending.length > 0
+                    ? "حين يُؤكَّد دفع الكفالة أعلاه تظهر هنا بجدولها وأثرها."
+                    : "اختر ملفاً معتمداً من الدليل وابدأ كفالتك الأولى، أو ادعم مجموعةً أو منطقة."
+                }
+                action={
+                  <Button asChild>
+                    <Link to="/orphans">تصفّح الملفات</Link>
+                  </Button>
+                }
+              />
+            ) : (
+              others.map((s) => {
+                const orphan = orphanOf(s);
+                const percent = orphan
+                  ? fundingPercent(orphan.monthly_need, orphan.funded_monthly)
+                  : 0;
 
-                {/* الأثر تحت كل كفالة لا في صفحة منفصلة: الكافل يفتح
-                    لوحته ليطمئنّ، فإن لزمته نقرة أخرى لم يطمئنّ. */}
-                {orphan && s.status !== "pending_payment" && (
-                  <details className="group mt-4">
-                    <summary className="text-primary cursor-pointer list-none text-sm font-medium">
-                      <span className="group-open:hidden">عرض الأثر والتقارير</span>
-                      <span className="hidden group-open:inline">إخفاء الأثر</span>
-                    </summary>
-                    <ImpactPanel orphanId={orphan.id} orphanName={orphan.display_name} />
-                  </details>
-                )}
-              </article>
-            );
-          })
-        )}
+                return (
+                  <article key={s.id} className="rounded-2xl border border-border bg-card p-5">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                      <MuralImage
+                        photoUrl={null}
+                        displayName={orphan?.display_name ?? "ملف محذوف"}
+                        register={registerFor("", percent)}
+                        className="size-16 shrink-0 rounded-xl bg-secondary"
+                      />
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-lg font-bold">
+                            <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                          </h3>
+                          <Badge variant={s.status === "active" ? "default" : "secondary"}>
+                            {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+                          </Badge>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {formatMoney(s.amount, s.currency)}{" "}
+                          {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
+                          {formatDate(s.created_at)}
+                        </p>
+                        {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button asChild size="sm">
+                          <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
+                            الجدول والتفاصيل
+                          </Link>
+                        </Button>
+                        {orphan && (
+                          <Button asChild variant="outline" size="sm">
+                            <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
+                              الملف
+                            </Link>
+                          </Button>
+                        )}
+                        {s.status === "active" && (
+                          <Button variant="ghost" size="sm" onClick={() => onCancel(s.id)}>
+                            إلغاء
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* الأثر تحت كل كفالة لا في صفحة منفصلة: الكافل يفتح
+                        لوحته ليطمئنّ، فإن لزمته نقرة أخرى لم يطمئنّ. */}
+                    {orphan && (
+                      <details className="group mt-4">
+                        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-sm font-bold text-primary">
+                          <span className="group-open:hidden">عرض الأثر والتقارير</span>
+                          <span className="hidden group-open:inline">إخفاء الأثر</span>
+                        </summary>
+                        <ImpactPanel orphanId={orphan.id} orphanName={orphan.display_name} />
+                      </details>
+                    )}
+                  </article>
+                );
+              })
+            )}
+          </div>
+        </section>
+
+        <MyJourney limit={5} className="mt-0" />
+      </div>
+
+      {/* 4. ما يُرجع إليه أحياناً: من تتابعهم، والدعم العيني، والبحث عن دفعة، ثم الترشيح. */}
+      <div className="mt-12">
+        <FollowedChildren />
+        <MyPledges />
+        <PaymentLookup />
       </div>
 
       {/* الترشيح بعد الكفالات لا قبلها: اللوحة تُفتح للاطمئنان على من
@@ -254,4 +338,16 @@ function DashboardPage() {
       </div>
     </DashboardShell>
   );
+}
+
+type SponsorshipOrphan = {
+  id: string;
+  display_name: string;
+  code: string;
+  monthly_need: number | string;
+  funded_monthly: number | string;
+} | null;
+
+function orphanOf(s: { orphan: unknown }): SponsorshipOrphan {
+  return s.orphan as SponsorshipOrphan;
 }

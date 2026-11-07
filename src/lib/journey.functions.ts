@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { renderMonthlyDigest, type MonthlyDigest } from "@/lib/email/templates";
+import { isSponsorVisible } from "@/lib/event-labels";
 
 /**
  * «رحلتي» ورسالة الشهر.
@@ -31,7 +32,9 @@ export const getMyJourneyFeed = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data, error } = await rpc(context.supabase).rpc("my_journey_feed", { _limit: 40 });
-    return error ? ([] as FeedItem[]) : ((data ?? []) as FeedItem[]);
+    if (error) return [] as FeedItem[];
+    // ما هو عملٌ داخلي (رفع تقريرٍ لم يُراجَع، إعادةٌ للتصحيح) لا يصل الكافل.
+    return ((data ?? []) as FeedItem[]).filter((f) => isSponsorVisible(f.type));
   });
 
 /** معاينة رسالة الشهر كما ستصل — الإرسال معلّقٌ حتى يُرفع تعليق البريد. */
@@ -44,14 +47,3 @@ export const previewMonthlyDigest = createServerFn({ method: "GET" })
     const mail = renderMonthlyDigest("", data as MonthlyDigest, base);
     return { ok: true as const, html: mail.html, subject: mail.subject };
   });
-
-export const FEED_LABELS: Record<string, string> = {
-  "report.published": "نُشر تقرير أثر",
-  disbursement_delivered: "وصلت كفالة الشهر موثّقة",
-  "sponsorship.started": "بدأت الكفالة",
-  "orphan.approved": "اعتُمد الملف",
-  "pledge.preparing": "بدأ تجهيز دعمك",
-  "pledge.delivered": "سُلّم دعمك موثّقاً",
-  "unit.accepted": "اجتاز جلسة",
-  "trait.measured": "قياسٌ جديد لسمة",
-};

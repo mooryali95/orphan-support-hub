@@ -896,10 +896,10 @@ export type AgeBand =
 
 export const AGE_BAND_LABELS: Record<AgeBand, string> = {
   under_6: "دون السادسة",
-  age_6_11: "٦ – ١١",
-  age_12_14: "١٢ – ١٤",
-  age_15_17: "١٥ – ١٧",
-  age_18_plus: "١٨ فأكثر",
+  age_6_11: "6–11",
+  age_12_14: "12–14",
+  age_15_17: "15–17",
+  age_18_plus: "18 فأكثر",
   unknown: "غير محدّدة",
 };
 

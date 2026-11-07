@@ -21,16 +21,6 @@ export const REPORT_STATUS_LABELS: Record<string, string> = {
   rejected: "أُعيد للتصحيح",
 };
 
-export const TIMELINE_LABELS: Record<string, string> = {
-  "orphan.approved": "اعتُمد الملف ونُشر",
-  "orphan.rejected": "أُعيد الملف للتصحيح",
-  "report.submitted": "رُفع تقرير دوري",
-  "report.published": "نُشر تقرير الأثر",
-  "report.rejected": "أُعيد التقرير للتصحيح",
-  "sponsorship.started": "بدأت الكفالة",
-  disbursement_delivered: "وصلت كفالة الشهر موثّقة",
-};
-
 /** الفترة بصيغة YYYY-MM — نفس ما تفرضه القاعدة. */
 const periodSchema = z
   .string()

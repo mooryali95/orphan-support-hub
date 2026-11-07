@@ -70,7 +70,7 @@ export function RequesterThread({
               )}
             >
               <p className="whitespace-pre-line">{m.body}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {mine(m.from_admin) ? c.you : viewer === "admin" ? c.requester : c.admin} ·{" "}
                 {formatDate(m.created_at, locale)}
               </p>

@@ -7,7 +7,7 @@ import { Check, Inbox, Loader2, PackageCheck, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { createDocumentUploadUrl } from "@/lib/intake.functions";
 import {
   confirmDelivery,
@@ -15,6 +15,8 @@ import {
   moderateMessage,
   type PendingDelivery,
 } from "@/lib/ledger.functions";
+import { Name } from "@/components/kit/Name";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * «ما ينتظرك» — أول ما تراه جهة الرعاية.
@@ -29,7 +31,19 @@ export function OrgInbox() {
   const { data, isPending } = useQuery({ queryKey: ["org-inbox"], queryFn: () => fetchInbox() });
   const [busy, setBusy] = useState<string | null>(null);
 
-  if (isPending) return null;
+  // أثناء التحميل هيكلٌ بارتفاع الصندوق لا «لا شيء» (RT-07): كان الصندوق يُدرج
+  // فوق قائمة الأطفال بعد ثوانٍ فيدفعها خارج الشاشة (CLS 0.64).
+  if (isPending)
+    return (
+      <div
+        className="mb-10 rounded-2xl border border-border bg-card p-5"
+        aria-hidden="true"
+        data-testid="org-inbox-skeleton"
+      >
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="mt-4 h-14 w-full" />
+      </div>
+    );
   const messages = data?.messages ?? [];
   const deliveries = data?.deliveries ?? [];
   if (messages.length === 0 && deliveries.length === 0) return null;
@@ -81,7 +95,7 @@ export function OrgInbox() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-muted-foreground">
-                    إلى {m.orphan} · {formatDate(m.created_at)}
+                    إلى <Name>{m.orphan}</Name> · {formatDate(m.created_at)}
                   </p>
                   <p className="mt-1 whitespace-pre-line text-sm">{m.message}</p>
                 </div>
@@ -157,7 +171,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
     <li className="grid gap-2 py-3 md:grid-cols-[1fr_auto] md:items-center">
       <div>
         <p className="text-sm font-medium">
-          {d.orphan} · {formatMoney(d.amount, d.currency)}
+          <Name>{d.orphan}</Name> · {formatMoney(d.amount, d.currency)}
         </p>
         <p className="text-xs text-muted-foreground">
           {d.period_start ? formatDate(d.period_start) : ""} — حُوِّل {formatDate(d.created_at)}
@@ -167,7 +181,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         {/* زرّ عربيّ يحمل اسم الملف لا «Choose File» المتصفّح (UX-17). */}
         <FilePicker
           label="مستند الاستلام"
-          accessibleLabel={`مستند استلام ${d.orphan}`}
+          accessibleLabel={`مستند استلام ${isolate(d.orphan)}`}
           onPick={setFile}
         />
         <Input

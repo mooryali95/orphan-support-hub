@@ -248,7 +248,7 @@ export const applyUnlock = createServerFn({ method: "POST" })
     if (!r.ok) return { ok: false as const, error: r.error };
     return r.data.ok
       ? { ok: true as const }
-      : { ok: false as const, error: "انتهت نافذة الطلب (١٥ دقيقة). اطلب من جديد." };
+      : { ok: false as const, error: "انتهت نافذة الطلب (15 دقيقة). اطلب من جديد." };
   });
 
 /**

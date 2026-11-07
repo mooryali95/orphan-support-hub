@@ -19,9 +19,10 @@ import {
   TASK_LABELS,
 } from "@/lib/supervisor.functions";
 import type { SupervisedEnrollment } from "@/integrations/supabase/types.extra";
-import { formatDate } from "@/lib/format";
+import { formatDate, isolate } from "@/lib/format";
 import { readLang, saveLang, t, type Lang } from "@/lib/i18n";
 import { pageTitle } from "@/config/brand";
+import { Name } from "@/components/kit/Name";
 
 const TITLE = pageTitle("لوحة المشرف", false);
 
@@ -176,7 +177,9 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-bold">{row.orphan_name}</h3>
+            <h3 className="font-bold">
+              <Name>{row.orphan_name}</Name>
+            </h3>
             <Badge variant="secondary">{row.orphan_code}</Badge>
             <Badge>{stage?.label ?? row.stage}</Badge>
           </div>
@@ -193,14 +196,14 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
       </div>
 
       {/* شريط الرحلة — ست نقاط لا نصّ طويل */}
-      <ol className="mt-4 flex items-center gap-1" aria-label={`مرحلة ${row.orphan_name}`}>
+      <ol className="mt-4 flex items-center gap-1" aria-label={`مرحلة ${isolate(row.orphan_name)}`}>
         {QUALIFICATION_JOURNEY.map((s, i) => (
           <li key={s.stage} className="flex-1">
             <span
               className={`block h-1.5 rounded-full ${i <= idx ? "bg-shore-thrive" : "bg-border"}`}
               title={s.label}
             />
-            <span className="mt-1 block text-[10px] text-muted-foreground">{s.label}</span>
+            <span className="mt-1 block text-xs text-muted-foreground">{s.label}</span>
           </li>
         ))}
       </ol>
@@ -238,7 +241,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
         />
       </div>
 
-      <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
         <Ruler className="size-3" aria-hidden="true" />
         القياس حكمٌ على طفل: يُكتب من هنا وحده، ولا يُعرض على الكافل.
       </p>
@@ -295,7 +298,7 @@ function TodayList() {
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">
                   {lang === "ar" ? TASK_LABELS[task.task] : t(`task_${task.task}`, lang)} —{" "}
-                  {task.orphan}
+                  <Name>{task.orphan}</Name>
                 </span>
                 {task.detail && (
                   <span className="block text-xs text-muted-foreground">{task.detail}</span>

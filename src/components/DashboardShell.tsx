@@ -200,9 +200,7 @@ export function DashboardShell({
             <NotificationBell />
             <div className="hidden text-end sm:block">
               <p className="text-xs font-medium">{user?.email}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {roleLabels.join("، ") || t.sponsor}
-              </p>
+              <p className="text-xs text-muted-foreground">{roleLabels.join("، ") || t.sponsor}</p>
             </div>
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
@@ -213,8 +211,10 @@ export function DashboardShell({
       </header>
 
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
-        <h1 className="text-2xl font-extrabold">{title}</h1>
-        {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
+        <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">{title}</h1>
+        {description && (
+          <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">{description}</p>
+        )}
         <div className="mt-8">{children}</div>
       </main>
     </div>

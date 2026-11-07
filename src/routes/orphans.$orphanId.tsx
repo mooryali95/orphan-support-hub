@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -22,7 +22,7 @@ import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
-import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
+import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS, isolate } from "@/lib/format";
 import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
 import { getOrphanViewAuthed } from "@/lib/protection.functions";
@@ -34,15 +34,14 @@ import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
 import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { useGivingCopy } from "@/config/giving-tracks";
+import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
+import { Name } from "@/components/kit/Name";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
 const COPY = defineCopy("routes/orphans.orphanId", {
   ar: {
-    modes: { monthly: "كفالة شهرية", qualification: "بناء أهلية", in_kind: "دعم عيني" } as Record<
-      "monthly" | SupportKind,
-      string
-    >,
     kinds: KIND_INFO as Record<SupportKind, { label: string; text: string }>,
     unavailable: "ملف غير متاح",
     sponsorOf: (n: string) => `كفالة ${n}`,
@@ -73,6 +72,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "أرغب أن تكون كفالتي دون ذكر اسمي",
     start: "ابدأ الكفالة",
     signIn: "سجّل الدخول للكفالة",
+    restored: "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
     activates: "الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.",
     continueTo: (k: string, n: string) => `تابع — ${k} لـ${n}`,
     follow: "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
@@ -80,11 +80,6 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     support: (n: string) => `ادعم ${n}`,
   },
   en: {
-    modes: {
-      monthly: "Monthly sponsorship",
-      qualification: "Capability building",
-      in_kind: "In-kind support",
-    } as Record<"monthly" | SupportKind, string>,
     kinds: {
       qualification: {
         label: "Capability building",
@@ -138,6 +133,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "I'd like my sponsorship to stay anonymous",
     start: "Start sponsoring",
     signIn: "Sign in to sponsor",
+    restored: "We kept what you chose before signing in: the amount and your message.",
     activates:
       "The sponsorship starts once payment is complete, and you can pause it anytime from your dashboard.",
     continueTo: (k: string, n: string) => `Continue — ${k} for ${n}`,
@@ -171,7 +167,7 @@ export const Route = createFileRoute("/orphans/$orphanId")({
         ],
       };
     }
-    const title = `${c.sponsorOf(loaderData.orphan.display_name)} — ${brand.name} — ${brand.slogan}`;
+    const title = `${c.sponsorOf(isolate(loaderData.orphan.display_name))} — ${brand.name} — ${brand.slogan}`;
     // معاينة المشاركة تُخزَّن عند المنصّات بعد انتهاء الموافقة نفسها، فلا
     // تحمل اسم الطفل: عنوانٌ عامّ للملف، والاسم يبقى في الصفحة لمن يفتحها.
     const shareTitle = `${c.shareTitle} — ${brand.name} — ${brand.slogan}`;
@@ -201,6 +197,8 @@ function OrphanDetail() {
   const navigate = useNavigate();
   const locale = useLocale();
   const t = useCopy(COPY);
+  // أسماء المسارات من مكانها الواحد، كما في «اختر أثرك» في الصفحة الأولى.
+  const g = useGivingCopy();
 
   // الصفحة تُرسَم أولاً بما يراه الزائر، ثم تُعاد قراءتها بجلسة المستخدم:
   // من مُنح الإذن، ودائرة الطفل، يرون ما يحقّ لهم. بدونها كان الكلّ زائراً.
@@ -240,6 +238,22 @@ function OrphanDetail() {
   const [mode, setMode] = useState<"monthly" | SupportKind>("monthly");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  // العائد من الدخول يجد ما اختاره كما تركه (UX-09): المبلغ والرسالة والإخفاء.
+  // يُقرأ بعد التركيب (sessionStorage في المتصفّح وحده) ثم يُمحى.
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    const draft = loadDraft(orphanId);
+    if (!draft) return;
+    clearDraft(orphanId);
+    setAmount(draft.amount);
+    setMessage(draft.message);
+    setAnonymous(draft.anonymous);
+    setMode("monthly");
+    setRestored(true);
+    requestAnimationFrame(() =>
+      document.getElementById("sponsor-form")?.scrollIntoView({ block: "center" }),
+    );
+  }, [orphanId]);
   // اقتراح التجاوز يُملأ من ردّ الخادم حين يزيد المبلغ عن المتبقّي.
   const [excessOffer, setExcessOffer] = useState<{
     gap: number;
@@ -249,6 +263,14 @@ function OrphanDetail() {
 
   async function onSponsor(confirmExcess = false) {
     if (!user) {
+      saveDraft({
+        orphanId,
+        name: orphan.display_name,
+        amount,
+        message,
+        anonymous,
+        currency: orphan.currency,
+      });
       navigate({ to: "/auth", search: { redirect: `/orphans/${orphanId}` } });
       return;
     }
@@ -296,7 +318,10 @@ function OrphanDetail() {
     <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
-        <Link to="/orphans" className="text-sm text-primary hover:underline">
+        <Link
+          to="/orphans"
+          className="inline-flex min-h-11 items-center text-sm font-medium text-primary hover:underline"
+        >
           {t.back}
         </Link>
 
@@ -312,9 +337,13 @@ function OrphanDetail() {
               />
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl font-extrabold">{orphan.display_name}</h1>
+                  <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">
+                    <Name>{orphan.display_name}</Name>
+                  </h1>
                   {detail?.real_name && (
-                    <span className="text-sm text-muted-foreground">({detail.real_name})</span>
+                    <span className="text-sm text-muted-foreground">
+                      (<Name>{detail.real_name}</Name>)
+                    </span>
                   )}
                   <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
                   {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
@@ -444,13 +473,13 @@ function OrphanDetail() {
                   aria-selected={mode === key}
                   onClick={() => setMode(key)}
                   className={cn(
-                    "rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:text-sm",
+                    "min-h-11 rounded-xl px-2 py-2 text-sm font-medium transition-colors",
                     mode === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {t.modes[key]}
+                  {g.tracks[key].name}
                 </button>
               ))}
             </div>
@@ -480,6 +509,14 @@ function OrphanDetail() {
                 )}
 
                 <div className="mt-6 space-y-4">
+                  {restored && (
+                    <p
+                      role="status"
+                      className="rounded-xl bg-shore-thrive/10 px-3 py-2 text-sm leading-7 text-shore-thrive"
+                    >
+                      {t.restored}
+                    </p>
+                  )}
                   <div>
                     <Label htmlFor="amount">{t.amount(orphan.currency)}</Label>
                     <Input
@@ -494,7 +531,7 @@ function OrphanDetail() {
                         <button
                           type="button"
                           onClick={() => setAmount(String(Math.round(remaining)))}
-                          className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
+                          className="border-bridge text-bridge-ink inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium hover:bg-bridge/10"
                         >
                           {t.fullRest}
                         </button>
@@ -504,7 +541,7 @@ function OrphanDetail() {
                           key={v}
                           type="button"
                           onClick={() => setAmount(String(v))}
-                          className="rounded-md border border-input px-3 py-1 text-xs hover:bg-secondary"
+                          className="inline-flex min-h-11 min-w-14 items-center justify-center rounded-md border border-input px-4 text-sm tabular-nums hover:bg-secondary"
                         >
                           {v}
                         </button>
@@ -581,7 +618,7 @@ function OrphanDetail() {
                       ...(remaining > 0 ? { gap: remaining, cur: orphan.currency } : {}),
                     }}
                   >
-                    {t.continueTo(t.kinds[mode].label, orphan.display_name)}
+                    {t.continueTo(t.kinds[mode].label, isolate(orphan.display_name))}
                   </Link>
                 </Button>
                 <p className="mt-3 text-xs text-muted-foreground">{t.follow}</p>
@@ -608,7 +645,7 @@ function OrphanDetail() {
             </p>
           </div>
           <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">{t.support(orphan.display_name)}</a>
+            <a href="#sponsor-form">{t.support(isolate(orphan.display_name))}</a>
           </Button>
         </div>
       </div>

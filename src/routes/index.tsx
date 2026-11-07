@@ -13,6 +13,7 @@ import {
   HeartHandshake,
   Sprout,
   Package,
+  type LucideIcon,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -31,6 +32,8 @@ import { MapActions } from "@/components/map/MapActions";
 import { useMapStats } from "@/components/map/useMapStats";
 import { geoQuery } from "@/lib/geo";
 import { NetworkSection } from "@/components/map/NetworkSection";
+import { kindCounts, networkPaint } from "@/components/map/network-layer";
+import { GIVING_TRACKS, type GivingTrack, useGivingCopy } from "@/config/giving-tracks";
 import { useAuth } from "@/hooks/useAuth";
 
 /**
@@ -74,15 +77,6 @@ const COPY = defineCopy("routes/index", {
         "تقارير أثر دورية عن التعليم والصحة والمعيشة، حتى يصبح اليتيم قوة فاعلة في مجتمعه.",
       ],
     ],
-    doors: [
-      [
-        "كفالة شهرية",
-        "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
-        "اختر من الدليل",
-      ],
-      ["بناء الأهلية", "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.", "ادعم التأهيل"],
-      ["دعم عيني", "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.", "ادعم عيناً"],
-    ],
     crossing: [
       [
         "شطّ الفقد",
@@ -116,7 +110,7 @@ const COPY = defineCopy("routes/index", {
       ],
     ],
     // أرقام هندية عربية: خلطُها بالأرقام اللاتينية في نصٍّ عربي شذوذٌ بصري.
-    ordinals: ["١", "٢", "٣", "٤"],
+    ordinals: ["1", "2", "3", "4"],
     categories: {
       education: "تعليم",
       rehabilitation: "تأهيل",
@@ -131,14 +125,21 @@ const COPY = defineCopy("routes/index", {
     supportNow: "ادعم الآن",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
-    hadithSource: "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+    hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
     numbersH: "أرقام المنصّة اليوم",
     numbersP: "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
     stats: ["ملف معتمد", "مكفول بالكامل", "مبالغ الكفالة الشهرية", "الاحتياج الشهري الكلي"],
     startReal: "ابدأ من ملفٍّ حقيقي",
     partners: "جهات الرعاية الشريكة",
-    doorsH: "ثلاثة أبوابٍ متساوية",
-    doorsP: "اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
+    proofH: "المنصّة اليوم",
+    proofOffices: "دول فيها مكتبٌ مؤكَّد للندوة",
+    proofField: "دول بنشاطٍ ميداني موثّق",
+    proofFiles: "ملفات معتمدة على المنصّة",
+    proofFull: "مكفولون بالكامل",
+    proofSource:
+      "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
+    mapH: "أين نعمل",
+    mapP: "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
     crossingH: "شطّان ومضيق",
     crossingP:
       "الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر — كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.",
@@ -205,23 +206,6 @@ const COPY = defineCopy("routes/index", {
         "Regular impact reports on education, health and living conditions, until the orphan becomes an active force in their community.",
       ],
     ],
-    doors: [
-      [
-        "Monthly sponsorship",
-        "A fixed amount each month. One table shows when it was paid and when it reached the child, with a document.",
-        "Choose from the directory",
-      ],
-      [
-        "Building capability",
-        "Fund a qualification journey session by session, with the child's traits measured before and after.",
-        "Support qualification",
-      ],
-      [
-        "In-kind support",
-        "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
-        "Give in kind",
-      ],
-    ],
     crossing: [
       [
         "The shore of loss",
@@ -277,9 +261,15 @@ const COPY = defineCopy("routes/index", {
     stats: ["Approved files", "Fully sponsored", "Monthly sponsorship", "Total monthly need"],
     startReal: "Start with a real file",
     partners: "Partner care organizations",
-    doorsH: "Three equal doors",
-    doorsP:
-      "Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
+    proofH: "The platform today",
+    proofOffices: "countries with a confirmed WAMY office",
+    proofField: "countries with documented field activity",
+    proofFiles: "approved files on the platform",
+    proofFull: "fully sponsored",
+    proofSource:
+      "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
+    mapH: "Where we work",
+    mapP: "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
     crossingH: "Two shores and a strait",
     crossingP:
       "The logo isn't decoration: two palms holding a child, beneath two neighboring arcs — gold and green — like the two fingers in the hadith. Sponsor and orphan side by side; care that holds without hiding.",
@@ -392,12 +382,30 @@ const AWARENESS_LADDER = [
   },
 ];
 
-/** ثلاثة أبواب للدعم — الأيقونة والوجهة؛ النصوص في COPY. */
-const DOORS = [
-  { icon: HeartHandshake, to: "/orphans" as const },
-  { icon: Sprout, to: "/support" as const },
-  { icon: Package, to: "/support" as const },
-];
+/** «اختر أثرك» — الأيقونة والوجهة لكل مسار؛ الأسماء في config/giving-tracks. */
+const TRACK_DOOR: Record<
+  GivingTrack,
+  { icon: LucideIcon; tone: string; kind?: "qualification" | "in_kind" }
+> = {
+  qualification: {
+    icon: Sprout,
+    tone: "bg-shore-thrive/12 text-shore-thrive",
+    kind: "qualification",
+  },
+  // الكفالة تبدأ من طفلٍ بعينه في الدليل؛ والمساران الآخران من «ادعم» بنوعهما.
+  monthly: { icon: HeartHandshake, tone: "bg-primary/10 text-primary" },
+  in_kind: { icon: Package, tone: "bg-bridge/15 text-bridge-ink", kind: "in_kind" },
+};
+
+/**
+ * حضور الندوة من بياناتها البحثية (data/wamy-network) لا رقماً مكتوباً: دولٌ
+ * فيها مكتبٌ مؤكَّد (والمقرّ منها)، ودولٌ بنشاطٍ ميداني بلا مكتب. غير المؤكَّد
+ * لا يُعدّ.
+ */
+const NETWORK_COUNTS = (() => {
+  const k = kindCounts(networkPaint("network"));
+  return { offices: k.hq + k.office, field: k.field };
+})();
 
 /** الشطّان والمضيق — الاستعارة الحاكمة للهوية، لا صورة بلاغية. */
 const CROSSING = [
@@ -442,23 +450,168 @@ function HomePage() {
       viewTransition: false,
     });
 
+  const g = useGivingCopy();
+  const proof = [
+    { value: String(NETWORK_COUNTS.offices), label: c.proofOffices },
+    { value: String(NETWORK_COUNTS.field), label: c.proofField },
+    // أعداد المنصّة الحيّة: إن تعذّرت لا تُعرض، فلا «صفر» ولا رقمٌ مختلَق.
+    ...(data.stats
+      ? [
+          { value: String(data.stats.totalOrphans), label: c.proofFiles },
+          { value: String(data.stats.fullySponsored), label: c.proofFull },
+        ]
+      : []),
+  ];
+
   return (
     <div className="min-h-dvh">
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
-        {/* الخارطة تفتح على شبكة الندوة (بيانات بحثية). أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
-        <WorldMap
-          stats={stats}
-          selection={selection}
-          onSelect={onSelect}
-          layer={sp.layer ?? HOME_LAYER}
-          onLayer={onLayer}
-          demo={demo}
-          status={status}
-          showUnconfirmed={isAdmin}
-          action={(ctx) => <MapActions ctx={ctx} />}
-        />
+        {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
+        <section className="surface-crossing relative overflow-hidden border-b border-border/70">
+          <BrandPattern density="active" className="text-gold-line" opacity={0.14} tile={104} />
+          <div className="relative mx-auto max-w-6xl px-4 pt-10 pb-10 text-center md:pt-14 md:pb-12">
+            <div className="flex flex-col items-center">
+              <KahataynMark className="h-16 w-auto md:h-20" title={c.logo(brand.name)} />
+              <p className="mt-3 font-serif text-2xl font-bold text-primary md:text-3xl">
+                {brand.name}
+              </p>
+              <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
+            </div>
+            <h1 className="mx-auto mt-7 max-w-4xl text-[2rem] leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
+              {c.h1a}
+              <br />
+              {c.h1b}
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
+              {c.lead}
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Button asChild size="lg">
+                <Link to="/orphans">
+                  {c.browse}
+                  <ArrowLeft className="size-4 ltr:-scale-x-100" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="bg-background/70">
+                <Link to="/support">{c.supportNow}</Link>
+              </Button>
+            </div>
+
+            {/* شريط الدليل: أرقامٌ حقيقية فقط — بيانات الندوة البحثية وأعداد المنصّة الحيّة. */}
+            <section aria-labelledby="proof-heading" className="mx-auto mt-10 max-w-4xl">
+              <h2 id="proof-heading" className="sr-only">
+                {c.proofH}
+              </h2>
+              <dl
+                className={
+                  proof.length === 4
+                    ? "grid grid-cols-2 overflow-hidden rounded-2xl bg-card/85 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)] backdrop-blur md:grid-cols-4"
+                    : "grid grid-cols-2 overflow-hidden rounded-2xl bg-card/85 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)] backdrop-blur"
+                }
+              >
+                {proof.map((item, i) => (
+                  <div
+                    key={item.label}
+                    className={
+                      "flex flex-col gap-1 px-4 py-4 md:py-5 " +
+                      (i % 2 === 1 ? "border-s border-border/70 " : "") +
+                      (i >= 2 ? "border-t border-border/70 md:border-t-0 " : "") +
+                      (i === 2 && proof.length === 4 ? "md:border-s" : "")
+                    }
+                  >
+                    <dt className="text-sm leading-6 text-muted-foreground">{item.label}</dt>
+                    <dd className="order-first text-3xl font-extrabold text-primary tabular-nums">
+                      {item.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mx-auto mt-3 max-w-2xl text-xs leading-6 text-muted-foreground">
+                {c.proofSource}
+              </p>
+            </section>
+          </div>
+        </section>
+
+        {/* ── اختر أثرك: المسارات الثلاثة بأسمائها من config/giving-tracks ── */}
+        <section className="mx-auto max-w-6xl px-4 py-14 md:py-16" aria-labelledby="tracks-heading">
+          <h2 id="tracks-heading" className="text-[1.75rem] leading-tight font-extrabold">
+            {g.heading}
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">{g.lead}</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {GIVING_TRACKS.map((key) => {
+              const door = TRACK_DOOR[key];
+              const t = g.tracks[key];
+              return (
+                <Link
+                  key={key}
+                  {...(door.kind
+                    ? { to: "/support" as const, search: { kind: door.kind } }
+                    : { to: "/orphans" as const })}
+                  className="reveal group flex flex-col rounded-2xl border border-border bg-card p-6 transition-[border-color,box-shadow,transform] duration-200 ease-[var(--ease-out)] hover:border-primary/60 hover:shadow-md active:scale-[0.99]"
+                >
+                  <span
+                    className={`flex size-12 items-center justify-center rounded-xl ${door.tone}`}
+                  >
+                    <door.icon className="size-6" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-5 text-xl font-bold">{t.name}</h3>
+                  <p className="mt-2 flex-1 text-base leading-8 text-muted-foreground">
+                    {t.promise}
+                  </p>
+                  <span className="mt-5 inline-flex min-h-11 items-center gap-1 text-base font-bold text-primary">
+                    {t.cta}
+                    <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100 ltr:group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
+          <blockquote className="mx-auto mt-14 max-w-xl text-center">
+            {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
+            <p className="font-quran text-xl leading-10 text-shore-need" lang="ar" dir="rtl">
+              «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
+            </p>
+            {c.hadithMeaning && (
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.hadithMeaning}</p>
+            )}
+            <cite className="mt-2 block text-xs text-muted-foreground not-italic">
+              {c.hadithSource}
+            </cite>
+          </blockquote>
+        </section>
+
+        {/* ── الخارطة تحت الهيرو: «الشبكة» افتراضياً ── */}
+        <section
+          id="map"
+          aria-labelledby="map-heading"
+          className="scroll-mt-16 border-t border-border/70"
+        >
+          <div className="mx-auto max-w-6xl px-4 pt-12 pb-4">
+            <h2 id="map-heading" className="text-[1.75rem] leading-tight font-extrabold">
+              {c.mapH}
+            </h2>
+            <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">{c.mapP}</p>
+          </div>
+          {/* أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
+          <WorldMap
+            stats={stats}
+            selection={selection}
+            onSelect={onSelect}
+            layer={sp.layer ?? HOME_LAYER}
+            onLayer={onLayer}
+            demo={demo}
+            status={status}
+            showUnconfirmed={isAdmin}
+            action={(ctx) => <MapActions ctx={ctx} />}
+            className="h-[min(78dvh,760px)] min-h-[30rem]"
+          />
+        </section>
         <NetworkSection
           onPick={(code) => {
             void navigate({
@@ -466,54 +619,9 @@ function HomePage() {
               resetScroll: false,
               viewTransition: false,
             });
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.getElementById("map")?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
         />
-
-        {/* ── الهيرو: استراتيجية الفراغ — ما يُترك فارغاً يعمل بقدر ما يُملأ ── */}
-        <section className="surface-crossing relative overflow-hidden border-b border-border/70">
-          <BrandPattern density="active" className="text-gold-line" opacity={0.18} tile={104} />
-          <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
-            <KahataynMark className="mx-auto h-24 w-auto md:h-32" title={c.logo(brand.name)} />
-            <p className="mt-4 font-serif text-3xl font-bold text-primary md:text-4xl">
-              {brand.name}
-            </p>
-            <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
-            <h1 className="mt-10 text-4xl leading-tight font-extrabold md:text-5xl">
-              {c.h1a}
-              <br />
-              {c.h1b}
-            </h1>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-muted-foreground">
-              {c.lead}
-            </p>
-            <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
-                <Link to="/support">
-                  {c.supportNow}
-                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/orphans">{c.browse}</Link>
-              </Button>
-            </div>
-
-            {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
-            <blockquote className="mx-auto mt-14 max-w-lg">
-              {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
-              <p className="font-quran text-lg leading-9 text-shore-need" lang="ar" dir="rtl">
-                «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
-              </p>
-              {c.hadithMeaning && (
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.hadithMeaning}</p>
-              )}
-              <cite className="mt-2 block text-xs not-italic text-muted-foreground">
-                {c.hadithSource}
-              </cite>
-            </blockquote>
-          </div>
-        </section>
 
         {/* ── الأرقام ── */}
         <section className="border-t border-border/70 bg-secondary/30">
@@ -552,33 +660,6 @@ function HomePage() {
                 <Link to="/organizations">{c.partners}</Link>
               </Button>
             </div>
-          </div>
-        </section>
-
-        {/* ── ثلاثة أبواب للدعم ── */}
-        <section className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="doors-heading">
-          <h2 id="doors-heading" className="text-2xl font-extrabold">
-            {c.doorsH}
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.doorsP}</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {DOORS.map((d, i) => (
-              <Link
-                key={i}
-                to={d.to}
-                className="reveal group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
-              >
-                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <d.icon className="size-5" />
-                </span>
-                <h3 className="mt-4 font-bold">{c.doors[i]![0]}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.doors[i]![1]}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  {c.doors[i]![2]}
-                  <ArrowLeft className="ltr:-scale-x-100 size-4 transition-transform group-hover:-translate-x-0.5 ltr:group-hover:translate-x-0.5" />
-                </span>
-              </Link>
-            ))}
           </div>
         </section>
 
@@ -651,7 +732,7 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
+                <p className={`mt-4 text-xs font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
                 <h3 className="mt-1 font-bold">{c.ladder[i]![1]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
               </div>
@@ -705,8 +786,8 @@ function HomePage() {
                       <span
                         className={
                           program.kind === "qualification"
-                            ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-[11px] font-medium text-shore-thrive"
-                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-[11px] font-medium text-bridge-ink"
+                            ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-xs font-medium text-shore-thrive"
+                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-xs font-medium text-bridge-ink"
                         }
                       >
                         {program.kind === "qualification"
@@ -759,7 +840,7 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
                   <Icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{c.ordinals[i]}</p>
+                <p className="mt-4 text-xs font-bold text-muted-foreground">{c.ordinals[i]}</p>
                 <h3 className="mt-1 font-bold">{c.custody[i]![0]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
               </li>

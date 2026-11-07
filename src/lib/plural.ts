@@ -46,6 +46,37 @@ export const SESSIONS: ArForms = {
   other: "{n} جلسة",
 };
 
+export const MEMBERS: ArForms = {
+  zero: "لا أعضاء",
+  one: "عضو واحد",
+  two: "عضوان",
+  few: "{n} أعضاء",
+  many: "{n} عضواً",
+  other: "{n} عضو",
+};
+
+/**
+ * صفة الجهة المانحة كما تُكتب في القاعدة. الحقل نصٌّ حرّ («وقف»، «شركة»)،
+ * لكنّ ما يصل بمفتاحٍ إنجليزي («waqf»، «foundation») يُعرض بالعربية؛ وغيره كما كُتب.
+ */
+const ENTITY_TYPES: Record<string, string> = {
+  waqf: "وقف",
+  foundation: "مؤسسة",
+  company: "شركة",
+  corporate: "شركة",
+  charity: "جمعية خيرية",
+  ngo: "منظّمة غير ربحية",
+  association: "جمعية",
+  mosque: "مسجد",
+  family: "عائلة",
+  government: "جهة حكومية",
+  individual: "فرد",
+};
+export function entityTypeLabel(raw: string | null | undefined): string {
+  const v = (raw ?? "").trim();
+  return ENTITY_TYPES[v.toLowerCase()] ?? v;
+}
+
 export const COUNTRIES: ArForms = {
   zero: "لا دول",
   one: "دولة واحدة",

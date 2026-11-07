@@ -56,7 +56,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
       siteUrl: "https://ioco.sunkvalue.com",
       kind: "report_published",
       title: "نُشر تقرير أثر جديد عن محمد",
-      body: "تقرير شهر ٢٠٢٦-٠٨ يشمل التحصيل الدراسي والمتابعة الصحّية.",
+      body: "تقرير شهر 2026-08 يشمل التحصيل الدراسي والمتابعة الصحّية.",
       link: "/dashboard",
       unsubscribeUrl:
         "https://ioco.sunkvalue.com/unsubscribe?token=00000000-0000-4000-8000-000000000000",

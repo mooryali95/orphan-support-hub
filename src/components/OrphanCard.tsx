@@ -4,10 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { TrustSignals } from "@/components/orphan/TrustSignals";
-import { formatMoney, fundingPercent } from "@/lib/format";
+import { formatMoney, fundingPercent, isolate } from "@/lib/format";
 import { AGE_BAND_LABELS, type OrphanCardRow } from "@/integrations/supabase/types.extra";
 import { COLORS } from "@/config/brand-colors";
 import { defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { Name } from "@/components/kit/Name";
 
 const COPY = defineCopy("components/OrphanCard", {
   ar: {
@@ -103,16 +104,16 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h2 className="text-base font-bold">
+          <h2 className="text-lg font-bold">
             <Link
               to="/orphans/$orphanId"
               params={{ orphanId: orphan.id }}
               className="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
             >
-              {orphan.display_name}
+              <Name>{orphan.display_name}</Name>
             </Link>
           </h2>
-          <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+          <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
             <span>{orphan.gender === "female" ? c.female : c.male}</span>
             {orphan.age_band !== "unknown" && (
               <span>
@@ -166,7 +167,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
             )}
             <span className="text-muted-foreground text-xs tabular-nums">{percent}%</span>
           </div>
-          <CrossingProgress percent={percent} label={c.coverage(orphan.display_name)} />
+          <CrossingProgress percent={percent} label={c.coverage(isolate(orphan.display_name))} />
           <p className="text-muted-foreground text-xs tabular-nums">
             {formatMoney(orphan.funded_monthly, orphan.currency, locale)} {c.of}{" "}
             {formatMoney(orphan.monthly_need, orphan.currency, locale)}
