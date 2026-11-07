@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 836,
+ "count": 837,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -976,6 +976,13 @@
    "hash": "e5c178b2301f",
    "file": "src/components/map/network-copy.ts"
   },
+  "components/map/NetworkLayer.coverageNoDataList": {
+   "en": "Offices in countries with no reliable national orphan figure yet:",
+   "ar": "مكاتب لا رقم وطنياً موثوقاً للأيتام في دولها بعد:",
+   "kind": "text",
+   "hash": "48b4f354013e",
+   "file": "src/components/map/network-copy.ts"
+  },
   "components/map/NetworkLayer.coverageNone": {
    "en": "WAMY has an office here; no reliable national orphan figure yet.",
    "ar": "للندوة مكتبٌ قائم هنا، ولا رقم وطنياً موثوقاً للأيتام بعد.",
@@ -1013,9 +1020,9 @@
   },
   "components/map/NetworkLayer.decisionLead": {
    "en": "Countries with no confirmed office, ranked by estimated orphans weighted by confidence (high 1, medium 0.8, low 0.6). Countries without a reliable figure are not guessed.",
-   "ar": "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية ١، متوسطة ٠٫٨، منخفضة ٠٫٦). من لا رقم موثوقاً له لا يُخمَّن.",
+   "ar": "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية 1، متوسطة 0.8، منخفضة 0.6). من لا رقم موثوقاً له لا يُخمَّن.",
    "kind": "text",
-   "hash": "209a2578529c",
+   "hash": "a7ee66770081",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.derivedYears": {
@@ -1184,10 +1191,10 @@
   },
   "components/map/NetworkLayer.networkLine": {
    "en": "{0} offices with documented activity in 2024–2026, plus field activity in {1} countries with no confirmed office.",
-   "ar": "{0} مكتباً بنشاطٍ موثّق 2024–2026، ونشاطٌ ميداني في {1} دول بلا مكتبٍ مؤكَّد.",
+   "ar": "{0} مكتباً بنشاطٍ موثّق من 2024 إلى 2026، ونشاطٌ ميداني في {1} دول بلا مكتبٍ مؤكَّد.",
    "kind": "template",
    "params": 2,
-   "hash": "30e705abef51",
+   "hash": "e67f25f5ffd5",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.networkTitle": {

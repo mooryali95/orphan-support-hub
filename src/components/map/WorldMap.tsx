@@ -604,7 +604,15 @@ export function WorldMap({
       side: country && wide ? 424 : 0,
       // الورقة السفلية: ٤٢٪ من الشاشة مفتوحةً (وتتمرّر داخلياً)، و٩ rem مطويّة.
       bottom:
-        country && !wide ? (collapsed ? 156 : Math.round(size.h * 0.42) + 12) : !country ? 120 : 16,
+        country && !wide
+          ? collapsed
+            ? 156
+            : Math.round(size.h * 0.42) + 12
+          : !country
+            ? net && !intro && !wide
+              ? 300
+              : 120
+            : 16,
     };
     const aw = Math.max(1, size.w - inset.side);
     const ah = Math.max(1, size.h - inset.top - inset.bottom);
@@ -625,7 +633,7 @@ export function WorldMap({
     const unit = v.w / aw;
     // في RTL البطاقة على اليمين (البداية): نمدّ الإطار يميناً بعرضها.
     return { x: v.x, y: v.y - inset.top * unit, w: size.w * unit, h: size.h * unit };
-  }, [world, country, region, size, activeSet, collapsed]);
+  }, [world, country, region, size, activeSet, collapsed, net, intro]);
 
   /* ── الإيماءات: قرصةٌ وسحبٌ وعجلة ──
    * تُحدَّث `view.current` مباشرةً بلا إعادة رسم React — الطبقات لا تتبع

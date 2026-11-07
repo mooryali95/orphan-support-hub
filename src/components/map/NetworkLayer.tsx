@@ -355,7 +355,8 @@ export function NetworkIntro({
 }) {
   const t = useNetworkCopy();
   const locale = useLocale();
-  const n = (x: number) => formatCount(x, locale);
+  // أعدادٌ صغيرة صحيحة: بلا عزلٍ كي لا تنفصل عن واو العطف في السطر العربي.
+  const n = (x: number) => String(x);
   return (
     <>
       <p className="font-serif text-2xl font-bold text-primary md:text-4xl">
@@ -841,46 +842,63 @@ export function NetworkSources() {
 export function CoverageList({ onPick }: { onPick?: (code: string) => void }) {
   const t = useNetworkCopy();
   const locale = useLocale();
+  const all = coverage();
+  const known = all.filter((c) => c.estimate);
+  const unknown = all.filter((c) => !c.estimate);
   return (
-    <ol className="divide-y divide-border">
-      {coverage().map((c) => {
-        const name = nameOf(c.code, locale);
-        const inner = (
-          <>
-            <span className="min-w-0 flex-1 truncate">{name}</span>
-            <span
-              className={cn(
-                "shrink-0 text-sm tabular-nums",
-                c.estimate ? "font-bold text-primary" : "text-xs text-muted-foreground",
-              )}
-            >
-              {c.estimate
-                ? formatCount(c.estimate.value, locale, { compact: true })
-                : t.coverageNoData}
-            </span>
-            {c.estimate?.derived && (
-              <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
-                {t.estimate}
+    <>
+      <ol className="divide-y divide-border">
+        {known.map((c) => {
+          const name = nameOf(c.code, locale);
+          const inner = (
+            <>
+              <span className="min-w-0 flex-1 truncate">{name}</span>
+              <span className="shrink-0 text-sm font-bold tabular-nums text-primary">
+                {formatCount(c.estimate!.value, locale, { compact: true })}
               </span>
-            )}
-          </>
-        );
-        return (
-          <li key={c.code}>
-            {onPick ? (
-              <button
-                type="button"
-                onClick={() => onPick(c.code)}
-                className="flex min-h-11 w-full items-center gap-3 rounded-xl px-2 text-start transition-colors hover:bg-secondary"
-              >
-                {inner}
-              </button>
-            ) : (
-              <div className="flex min-h-11 items-center gap-3 px-2">{inner}</div>
-            )}
-          </li>
-        );
-      })}
-    </ol>
+              {c.estimate!.derived && (
+                <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
+                  {t.estimate}
+                </span>
+              )}
+            </>
+          );
+          return (
+            <li key={c.code}>
+              {onPick ? (
+                <button
+                  type="button"
+                  onClick={() => onPick(c.code)}
+                  className="flex min-h-11 w-full items-center gap-3 rounded-xl px-2 text-start transition-colors hover:bg-secondary"
+                >
+                  {inner}
+                </button>
+              ) : (
+                <div className="flex min-h-11 items-center gap-3 px-2">{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+      {unknown.length > 0 && (
+        <div className="mt-4 border-t border-border pt-3">
+          <p className="text-xs leading-6 text-muted-foreground">{t.coverageNoDataList}</p>
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {unknown.map((c) => (
+              <li key={c.code}>
+                <button
+                  type="button"
+                  onClick={onPick ? () => onPick(c.code) : undefined}
+                  disabled={!onPick}
+                  className="inline-flex min-h-8 items-center rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
+                >
+                  {nameOf(c.code, locale)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
   );
 }

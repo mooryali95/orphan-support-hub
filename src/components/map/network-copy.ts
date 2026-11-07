@@ -14,7 +14,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     layerNeedsHint: "دولٌ بلا مكتبٍ مؤكَّد مرتّبةً بحاجة الأيتام فيها",
     networkTitle: "شبكة الندوة العالمية للشباب الإسلامي",
     networkLine: (offices: string, field: string) =>
-      `${offices} مكتباً بنشاطٍ موثّق 2024–2026، ونشاطٌ ميداني في ${field} دول بلا مكتبٍ مؤكَّد.`,
+      `${offices} مكتباً بنشاطٍ موثّق من 2024 إلى 2026، ونشاطٌ ميداني في ${field} دول بلا مكتبٍ مؤكَّد.`,
     needsTitle: "أين تحتاج الندوة مكتباً؟",
     needsLine: (high: string, medium: string, data: string) =>
       `${high} دول أولويةً عالية، و${medium} متوسطة، و${data} تحتاج بيانات قبل الحكم.`,
@@ -52,10 +52,11 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     coverageNone: "للندوة مكتبٌ قائم هنا، ولا رقم وطنياً موثوقاً للأيتام بعد.",
     decision: "قرار التوسّع",
     decisionLead:
-      "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية ١، متوسطة ٠٫٨، منخفضة ٠٫٦). من لا رقم موثوقاً له لا يُخمَّن.",
+      "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية 1، متوسطة 0.8، منخفضة 0.6). من لا رقم موثوقاً له لا يُخمَّن.",
     coverageTitle: "التغطية الحالية: الحاجة حيث للندوة مكتب",
     coverageLead: "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها — لقراءة الحضور أمام الحاجة.",
     coverageNoData: "لا رقم وطنياً موثوقاً بعد",
+    coverageNoDataList: "مكاتب لا رقم وطنياً موثوقاً للأيتام في دولها بعد:",
     open: (name: string) => `افتح ${name} على الخارطة`,
     sources: "المصادر",
     sourcesLead: "رابطٌ لكلّ مؤشّر ولكلّ دليل حضور، كما وردت في البحث.",
@@ -125,6 +126,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     coverageTitle: "Current coverage: need where WAMY has an office",
     coverageLead: "Confirmed-office countries ranked by the same need — presence against need.",
     coverageNoData: "No reliable national figure yet",
+    coverageNoDataList: "Offices in countries with no reliable national orphan figure yet:",
     open: (name: string) => `Open ${name} on the map`,
     sources: "Sources",
     sourcesLead: "A link for every indicator and every piece of presence evidence, as researched.",
@@ -147,8 +149,16 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
 export const useNetworkCopy = () => copyOf(NETWORK_COPY, useLocale());
 export const networkCopy = (locale: Locale) => copyOf(NETWORK_COPY, locale);
 
-/** اسم الدولة بلغة الواجهة: العربية من البحث، وغيرها من المتصفّح. */
+/**
+ * أسماءٌ تختلف فيها بيانات ICU بين الخادم (Node) والمتصفّح فتُفسد الإماهة —
+ * تُثبَّت هنا بالإنجليزية (Node: «Palestinian Territories»، Chromium: «Palestine»).
+ */
+const EN_FIXED: Record<string, string> = { PS: "Palestine" };
+
+/** اسم الدولة بلغة الواجهة: العربية من البحث، وغيرها من Intl. */
 export const nameOf = (code: string, locale: Locale) =>
   locale === "ar"
     ? (NETWORK_BY_CODE.get(code)?.nameAr ?? countryName(code, "ar"))
-    : countryName(code, locale);
+    : locale === "en" && EN_FIXED[code]
+      ? EN_FIXED[code]
+      : countryName(code, locale);
