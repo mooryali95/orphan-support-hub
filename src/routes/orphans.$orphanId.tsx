@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -35,6 +35,7 @@ import { brandFor, pageTitle } from "@/config/brand";
 import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 import { useGivingCopy } from "@/config/giving-tracks";
+import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
 import { Name } from "@/components/kit/Name";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
@@ -71,6 +72,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "أرغب أن تكون كفالتي دون ذكر اسمي",
     start: "ابدأ الكفالة",
     signIn: "سجّل الدخول للكفالة",
+    restored: "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
     activates: "الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.",
     continueTo: (k: string, n: string) => `تابع — ${k} لـ${n}`,
     follow: "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
@@ -131,6 +133,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "I'd like my sponsorship to stay anonymous",
     start: "Start sponsoring",
     signIn: "Sign in to sponsor",
+    restored: "We kept what you chose before signing in: the amount and your message.",
     activates:
       "The sponsorship starts once payment is complete, and you can pause it anytime from your dashboard.",
     continueTo: (k: string, n: string) => `Continue — ${k} for ${n}`,
@@ -235,6 +238,22 @@ function OrphanDetail() {
   const [mode, setMode] = useState<"monthly" | SupportKind>("monthly");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  // العائد من الدخول يجد ما اختاره كما تركه (UX-09): المبلغ والرسالة والإخفاء.
+  // يُقرأ بعد التركيب (sessionStorage في المتصفّح وحده) ثم يُمحى.
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    const draft = loadDraft(orphanId);
+    if (!draft) return;
+    clearDraft(orphanId);
+    setAmount(draft.amount);
+    setMessage(draft.message);
+    setAnonymous(draft.anonymous);
+    setMode("monthly");
+    setRestored(true);
+    requestAnimationFrame(() =>
+      document.getElementById("sponsor-form")?.scrollIntoView({ block: "center" }),
+    );
+  }, [orphanId]);
   // اقتراح التجاوز يُملأ من ردّ الخادم حين يزيد المبلغ عن المتبقّي.
   const [excessOffer, setExcessOffer] = useState<{
     gap: number;
@@ -244,6 +263,14 @@ function OrphanDetail() {
 
   async function onSponsor(confirmExcess = false) {
     if (!user) {
+      saveDraft({
+        orphanId,
+        name: orphan.display_name,
+        amount,
+        message,
+        anonymous,
+        currency: orphan.currency,
+      });
       navigate({ to: "/auth", search: { redirect: `/orphans/${orphanId}` } });
       return;
     }
@@ -482,6 +509,14 @@ function OrphanDetail() {
                 )}
 
                 <div className="mt-6 space-y-4">
+                  {restored && (
+                    <p
+                      role="status"
+                      className="rounded-xl bg-shore-thrive/10 px-3 py-2 text-sm leading-7 text-shore-thrive"
+                    >
+                      {t.restored}
+                    </p>
+                  )}
                   <div>
                     <Label htmlFor="amount">{t.amount(orphan.currency)}</Label>
                     <Input

@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { normalize } from "@/lib/countries";
 import { formatMoney } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
-import { defaultAmount, gapOfTarget, suggestionsFor } from "@/lib/support-amounts";
+import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 import {
   createPledge,
   type SupportCatalog,
@@ -33,9 +33,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     inKind: "دعم عيني",
     amount: "المبلغ الشهري",
     fromGap: (g: string) => `الحاجة غير المغطّاة هنا ${g}`,
-    fullMonth: "يسدّ الشهر",
-    halfMonth: "نصفه",
-    quarterMonth: "ربعه",
+    rest: "سدّ المتبقّي",
     other: "مبلغ آخر",
     note: "ملاحظة (اختياري)",
     confirm: (a: string) => `سجّل دعمي — ${a}`,
@@ -58,9 +56,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     inKind: "In-kind support",
     amount: "Monthly amount",
     fromGap: (g: string) => `The uncovered need here is ${g}`,
-    fullMonth: "Covers the month",
-    halfMonth: "Half",
-    quarterMonth: "A quarter",
+    rest: "Cover the remaining need",
     other: "Other amount",
     note: "Note (optional)",
     confirm: (a: string) => `Record my support — ${a}`,
@@ -75,8 +71,6 @@ const COPY = defineCopy("components/support/SupportSheet", {
     failed: "It couldn't be recorded.",
   },
 });
-
-const FALLBACK = [10, 25, 50, 100];
 
 type Target = { type: TargetType; value: string; label: string; hint?: string };
 
@@ -152,14 +146,15 @@ export function SupportSheet({
     [target.type, ctx, stats],
   );
   const currency = gap?.currency ?? "EUR";
-  const suggested = gap
-    ? (["fullMonth", "halfMonth", "quarterMonth"] as const).map((k, i) => ({
-        label: t[k],
-        value: suggestionsFor(gap.gap)[i]!,
-      }))
-    : FALLBACK.map((a) => ({ label: formatMoney(a, "EUR", locale), value: a }));
-  const [amount, setAmount] = useState(() => defaultAmount(gap, FALLBACK[1]!));
-  useEffect(() => setAmount(defaultAmount(gap, FALLBACK[1]!)), [gap]);
+  // مبالغ فرد (UX-11): 25/50/100 و«سدّ المتبقّي» — لا كسور فجوةٍ جماعية.
+  const suggested = individualPresets(gap).map((p) => ({
+    key: `${p.kind}:${p.value}`,
+    label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
+    sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
+    value: p.value,
+  }));
+  const [amount, setAmount] = useState(() => defaultIndividualAmount(gap));
+  useEffect(() => setAmount(defaultIndividualAmount(gap)), [gap]);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
@@ -204,7 +199,7 @@ export function SupportSheet({
 
   const chip = (on: boolean) =>
     cn(
-      "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border px-3 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
+      "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
       on
         ? "border-primary bg-primary text-primary-foreground"
         : "border-border bg-background hover:border-primary/60",
@@ -266,18 +261,14 @@ export function SupportSheet({
         <div className="flex flex-wrap items-center gap-1.5">
           {suggested.map((a) => (
             <button
-              key={a.label}
+              key={a.key}
               type="button"
               aria-pressed={amount === a.value}
               onClick={() => setAmount(a.value)}
-              className={chip(amount === a.value)}
+              className={cn(chip(amount === a.value), "tabular-nums")}
             >
               {a.label}
-              {gap && (
-                <span className="text-xs tabular-nums opacity-80">
-                  {formatMoney(a.value, currency, locale)}
-                </span>
-              )}
+              {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
             </button>
           ))}
           <Input
@@ -285,7 +276,7 @@ export function SupportSheet({
             type="number"
             inputMode="numeric"
             min={1}
-            className="h-9 w-24 rounded-full"
+            className="h-11 w-28 rounded-full"
             value={amount}
             onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
           />

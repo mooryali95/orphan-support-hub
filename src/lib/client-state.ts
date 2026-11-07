@@ -15,6 +15,8 @@ export const USER_DATA_PREFIXES = [
   "ioco:orphan-intake-draft",
   // مسودّة تقرير المكتب الميداني.
   "office-draft:",
+  // ما اختاره الزائر في نموذج الكفالة قبل الدخول (المبلغ ورسالته للطفل).
+  "kh:sponsor-draft:",
 ] as const;
 
 /** صاحب ما في هذا المتصفّح من بيانات عمل — به يُعرف تبدّل المستخدم. */
