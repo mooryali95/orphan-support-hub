@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 853,
+ "count": 851,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3200,13 +3200,6 @@
    "hash": "fc7293ad089e",
    "file": "src/components/support/SupportSheet.tsx"
   },
-  "components/support/SupportSheet.inKind": {
-   "en": "In-kind support",
-   "ar": "دعم عيني",
-   "kind": "text",
-   "hash": "92da4fd07d92",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
   "components/support/SupportSheet.kind": {
    "en": "Kind of support",
    "ar": "نوع الدعم",
@@ -3247,13 +3240,6 @@
    "ar": "بواباتي",
    "kind": "text",
    "hash": "b7840c387b58",
-   "file": "src/components/support/SupportSheet.tsx"
-  },
-  "components/support/SupportSheet.qualification": {
-   "en": "Building capability",
-   "ar": "بناء الأهلية",
-   "kind": "text",
-   "hash": "9b8287a2fc35",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.rest": {

@@ -479,12 +479,12 @@ function HomePage() {
               </p>
               <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
             </div>
-            <h1 className="mx-auto mt-7 max-w-3xl text-[2rem] leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
+            <h1 className="mx-auto mt-7 max-w-4xl text-[2rem] leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
               {c.h1a}
               <br />
               {c.h1b}
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg md:leading-9">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
               {c.lead}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">

@@ -19,7 +19,7 @@ import {
 } from "@/lib/profile.functions";
 import { CompletenessLine } from "@/components/orphan/TrustSignals";
 import type { ProfileSection, ProfileSectionRow } from "@/integrations/supabase/types.extra";
-import { formatDate } from "@/lib/format";
+import { formatDate, isolate } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 
 const ALL_SECTIONS: ProfileSection[] = [
@@ -256,7 +256,7 @@ export function OrphanProfilePanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="profile-heading" className="flex items-center gap-2 text-lg font-bold">
           <UserRound className="size-5 text-shore-need" aria-hidden="true" />
-          {t.title(orphanName)}
+          {t.title(isolate(orphanName))}
         </h2>
         {mayWrite ? (
           comp?.completeness ? (

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { normalize } from "@/lib/countries";
 import { formatMoney } from "@/lib/format";
+import { useGivingCopy } from "@/config/giving-tracks";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 import {
@@ -29,8 +30,6 @@ const COPY = defineCopy("components/support/SupportSheet", {
     thisRegion: "هذه المنطقة",
     children: (n: number) => `${n} طفل`,
     kind: "نوع الدعم",
-    qualification: "بناء الأهلية",
-    inKind: "دعم عيني",
     amount: "المبلغ الشهري",
     fromGap: (g: string) => `الحاجة غير المغطّاة هنا ${g}`,
     rest: "سدّ المتبقّي",
@@ -52,8 +51,6 @@ const COPY = defineCopy("components/support/SupportSheet", {
     thisRegion: "This region",
     children: pluralOf({ one: "{0} child", other: "{0} children" }),
     kind: "Kind of support",
-    qualification: "Building capability",
-    inKind: "In-kind support",
     amount: "Monthly amount",
     fromGap: (g: string) => `The uncovered need here is ${g}`,
     rest: "Cover the remaining need",
@@ -94,6 +91,7 @@ export function SupportSheet({
   openedAt: number;
 }) {
   const t = useCopy(COPY);
+  const g = useGivingCopy();
   const locale = useLocale();
   const submit = useServerFn(createPledge);
 
@@ -206,8 +204,9 @@ export function SupportSheet({
     );
 
   return (
-    <div className="grid gap-3">
-      <fieldset>
+    // عمودٌ بعرض البطاقة: صفّ «إلى من؟» يتمرّر داخلها ولا يمدّها (كان يفيض خارجها).
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.whom}</legend>
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
           {targets.map((x) => (
@@ -225,13 +224,14 @@ export function SupportSheet({
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.kind}</legend>
         <div className="flex gap-1.5">
           {(
             [
-              ["qualification", t.qualification],
-              ["in_kind", t.inKind],
+              // أسماء المسارات من مكانها الواحد (config/giving-tracks).
+              ["qualification", g.tracks.qualification.name],
+              ["in_kind", g.tracks.in_kind.name],
             ] as const
           ).map(([k, label]) => (
             <button
@@ -249,7 +249,7 @@ export function SupportSheet({
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
           {t.amount}
           {gap && (

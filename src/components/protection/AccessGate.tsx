@@ -12,7 +12,7 @@ import { requestOrphanAccess } from "@/lib/protection.functions";
 import { getScopeCatalog } from "@/lib/scopes.functions";
 import { RequesterThread } from "@/components/protection/RequesterThread";
 import type { MyAccess } from "@/integrations/supabase/types.extra";
-import { formatDate } from "@/lib/format";
+import { formatDate, isolate } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const MIN_REASON = 20;
@@ -172,7 +172,7 @@ export function AccessGate({
           {t.hiddenH}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-          {t.hiddenP(orphanName)}
+          {t.hiddenP(isolate(orphanName))}
         </p>
         <Button
           className="mt-5"
@@ -193,7 +193,7 @@ export function AccessGate({
         {t.requestH}
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-        {t.requestA(orphanName)} <strong className="text-foreground">{t.temporary}</strong>
+        {t.requestA(isolate(orphanName))} <strong className="text-foreground">{t.temporary}</strong>
         {t.requestB}
       </p>
 
