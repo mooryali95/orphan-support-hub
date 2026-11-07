@@ -60,7 +60,7 @@ describe("الأرقام ثابتة في الصفحة (UI-18)", () => {
         .split("\n")
         .forEach((line, i) => {
           const t = line.trim();
-          if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) return;
+          if (/^(\/\/|\*|\/\*|\{\/\*)/.test(t)) return;
           if (ARABIC_INDIC.test(line)) hits.push(`${rel}:${i + 1}`);
         });
     }

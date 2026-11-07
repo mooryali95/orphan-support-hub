@@ -15,6 +15,7 @@ import {
   type PendingDelivery,
 } from "@/lib/ledger.functions";
 import { Name } from "@/components/kit/Name";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * «ما ينتظرك» — أول ما تراه جهة الرعاية.
@@ -29,7 +30,19 @@ export function OrgInbox() {
   const { data, isPending } = useQuery({ queryKey: ["org-inbox"], queryFn: () => fetchInbox() });
   const [busy, setBusy] = useState<string | null>(null);
 
-  if (isPending) return null;
+  // أثناء التحميل هيكلٌ بارتفاع الصندوق لا «لا شيء» (RT-07): كان الصندوق يُدرج
+  // فوق قائمة الأطفال بعد ثوانٍ فيدفعها خارج الشاشة (CLS 0.64).
+  if (isPending)
+    return (
+      <div
+        className="mb-10 rounded-2xl border border-border bg-card p-5"
+        aria-hidden="true"
+        data-testid="org-inbox-skeleton"
+      >
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="mt-4 h-14 w-full" />
+      </div>
+    );
   const messages = data?.messages ?? [];
   const deliveries = data?.deliveries ?? [];
   if (messages.length === 0 && deliveries.length === 0) return null;

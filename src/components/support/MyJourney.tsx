@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/kit/EmptyState";
 import { PageSection } from "@/components/kit/PageSection";
 import { Timeline, type TimelineItem } from "@/components/kit/Timeline";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getMyJourneyFeed, previewMonthlyDigest } from "@/lib/journey.functions";
 import { eventLabel } from "@/lib/event-labels";
 import { isolate } from "@/lib/format";
@@ -25,11 +26,16 @@ const ICONS: Record<string, { icon: LucideIcon; tone: TimelineItem["tone"] }> = 
  * «رحلتي» — كل ما صنعه دعمك في خطٍّ واحد، الأحدث أولاً.
  * ومعاينة «رسالة الشهر» كما ستصل حين يُفتح البريد.
  */
-export function MyJourney() {
+export function MyJourney({ limit = 5, className = "" }: { limit?: number; className?: string }) {
   const fetchFeed = useServerFn(getMyJourneyFeed);
   const fetchPreview = useServerFn(previewMonthlyDigest);
-  const { data: feed = [] } = useQuery({ queryKey: ["my-journey"], queryFn: () => fetchFeed() });
+  const { data: feed = [], isPending } = useQuery({
+    queryKey: ["my-journey"],
+    queryFn: () => fetchFeed(),
+  });
   const [preview, setPreview] = useState<string | null>(null);
+  // الأحدث خمسةٌ فقط (UI-05): الخطّ يُطمئن ولا يدفن الكفالات تحته؛ والباقي بطلب.
+  const [showAll, setShowAll] = useState(false);
 
   const items: TimelineItem[] = feed.map((f, i) => ({
     id: `${f.type}-${f.at}-${i}`,
@@ -39,6 +45,8 @@ export function MyJourney() {
     icon: ICONS[f.type]?.icon ?? Sparkles,
     tone: ICONS[f.type]?.tone ?? "muted",
   }));
+
+  const shown = showAll ? items : items.slice(0, limit);
 
   return (
     <PageSection
@@ -57,7 +65,7 @@ export function MyJourney() {
           <Mail className="size-4" /> معاينة رسالة الشهر
         </Button>
       }
-      className="mb-10"
+      className={className}
     >
       {preview && (
         <div className="mb-6 overflow-hidden rounded-2xl border border-border">
@@ -75,13 +83,35 @@ export function MyJourney() {
           />
         </div>
       )}
-      {items.length === 0 ? (
+      {isPending ? (
+        // هيكلٌ بارتفاع المحتوى (UI-17/RT-07): لا فراغ ثم قفزة حين يصل.
+        <div className="space-y-5 border-s border-border ps-6" aria-hidden="true">
+          {Array.from({ length: limit }, (_, i) => (
+            <div key={i} className="space-y-1.5">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+          ))}
+        </div>
+      ) : items.length === 0 ? (
         <EmptyState
           title="رحلتك تبدأ مع أول دعم"
           text="حين يُنشر تقرير أو تصل كفالة أو يجتاز من تدعمه جلسة، يظهر هنا."
         />
       ) : (
-        <Timeline items={items} />
+        <>
+          <Timeline items={shown} />
+          {items.length > limit && (
+            <Button
+              variant="link"
+              className="mt-3 px-0"
+              aria-expanded={showAll}
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll ? "عرض الأحدث فقط" : `عرض الكل (${items.length})`}
+            </Button>
+          )}
+        </>
       )}
     </PageSection>
   );

@@ -12,6 +12,7 @@ import { defaultAmount, gapOfTarget, suggestionsFor } from "@/lib/support-amount
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -400,8 +401,13 @@ function SupportPage() {
           </ol>
 
           {isPending ? (
-            <div className="flex justify-center py-16">
-              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            // هيكل الخطوة بأبعادها (UI-17): لا دوّارة وسط فراغ.
+            <div className="mt-8 space-y-3" aria-hidden="true">
+              <Skeleton className="h-6 w-40" />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Skeleton className="h-24 rounded-2xl" />
+                <Skeleton className="h-24 rounded-2xl" />
+              </div>
             </div>
           ) : !catalog ? (
             <p className="mt-8 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
