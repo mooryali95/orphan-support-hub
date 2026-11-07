@@ -291,7 +291,10 @@ function OrphanDetail() {
     <div className="min-h-dvh">
       <SiteHeader />
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
-        <Link to="/orphans" className="text-sm text-primary hover:underline">
+        <Link
+          to="/orphans"
+          className="inline-flex min-h-11 items-center text-sm font-medium text-primary hover:underline"
+        >
           {t.back}
         </Link>
 
@@ -443,7 +446,7 @@ function OrphanDetail() {
                   aria-selected={mode === key}
                   onClick={() => setMode(key)}
                   className={cn(
-                    "rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:text-sm",
+                    "min-h-11 rounded-xl px-2 py-2 text-sm font-medium transition-colors",
                     mode === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -493,7 +496,7 @@ function OrphanDetail() {
                         <button
                           type="button"
                           onClick={() => setAmount(String(Math.round(remaining)))}
-                          className="border-bridge text-bridge-ink rounded-md border px-3 py-1 text-xs font-medium hover:bg-bridge/10"
+                          className="border-bridge text-bridge-ink inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium hover:bg-bridge/10"
                         >
                           {t.fullRest}
                         </button>
@@ -503,7 +506,7 @@ function OrphanDetail() {
                           key={v}
                           type="button"
                           onClick={() => setAmount(String(v))}
-                          className="rounded-md border border-input px-3 py-1 text-xs hover:bg-secondary"
+                          className="inline-flex min-h-11 min-w-14 items-center justify-center rounded-md border border-input px-4 text-sm tabular-nums hover:bg-secondary"
                         >
                           {v}
                         </button>
