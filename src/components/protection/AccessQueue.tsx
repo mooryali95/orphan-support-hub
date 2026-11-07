@@ -11,6 +11,7 @@ import { AccessDecision } from "@/components/protection/AccessDecision";
 import { RequesterThread } from "@/components/protection/RequesterThread";
 import type { AccessRequestRow } from "@/integrations/supabase/types.extra";
 import { formatDate } from "@/lib/format";
+import { Name } from "@/components/kit/Name";
 
 type Tab = "pending" | "approved";
 
@@ -101,7 +102,9 @@ export function AccessQueue() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-56 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-bold">{row.orphan_name}</h3>
+                    <h3 className="font-bold">
+                      <Name>{row.orphan_name}</Name>
+                    </h3>
                     <Badge variant="secondary">{row.orphan_code}</Badge>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground" dir="ltr">

@@ -67,7 +67,7 @@ export function SiteFooter() {
             <cite className="mt-1 block text-xs not-italic text-muted-foreground">
               {c.hadithNote
                 ? "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d"
-                : "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه"}
+                : "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه"}
             </cite>
           </blockquote>
         </div>

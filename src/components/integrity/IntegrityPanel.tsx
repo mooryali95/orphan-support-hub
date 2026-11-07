@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDate } from "@/lib/format";
+import { formatDate, isolate } from "@/lib/format";
 import {
   applyUnlock,
   approveUnlock,
@@ -37,6 +37,7 @@ import {
 } from "@/lib/integrity.functions";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/config/brand";
+import { Name } from "@/components/kit/Name";
 
 const OP_LABEL: Record<UnlockOp, string> = {
   edit: `تصحيح بيانات في ${BRAND.name}`,
@@ -156,12 +157,14 @@ export function IntegrityPanel() {
       {closed.length > 0 && (
         <details className="group rounded-2xl bg-secondary/40 p-4">
           <summary className="cursor-pointer text-sm font-semibold">
-            طلبات مُغلقة ({closed.length}) — آخر ٩٠ يوماً
+            طلبات مُغلقة ({closed.length}) — آخر 90 يوماً
           </summary>
           <ul className="mt-3 divide-y divide-border text-sm">
             {closed.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                <span className="font-medium">{r.orphan}</span>
+                <span className="font-medium">
+                  <Name>{r.orphan}</Name>
+                </span>
                 <span className="text-muted-foreground">{OP_LABEL[r.op]}</span>
                 <StatusPill s={r.status} />
                 <span className="ms-auto text-xs text-muted-foreground">
@@ -254,7 +257,9 @@ function RequestCard({ r }: { r: UnlockRequest }) {
     <article className="rounded-3xl bg-card p-5 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]">
       <header className="flex flex-wrap items-center gap-2">
         <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
-        <h3 className="font-bold">{r.orphan}</h3>
+        <h3 className="font-bold">
+          <Name>{r.orphan}</Name>
+        </h3>
         <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
           {r.code}
         </bdi>
@@ -389,7 +394,9 @@ function DiscrepancyCard({ d }: { d: Discrepancy }) {
   return (
     <article className="rounded-3xl bg-card p-5 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]">
       <header className="flex flex-wrap items-center gap-2">
-        <h3 className="font-bold">{d.orphan}</h3>
+        <h3 className="font-bold">
+          <Name>{d.orphan}</Name>
+        </h3>
         <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
           {d.code}
         </bdi>
@@ -558,8 +565,8 @@ function NewRequest() {
                 : !found
                   ? "لا ملفّ بهذا الرقم"
                   : found.locked
-                    ? `${found.display_name} — مقفول`
-                    : `${found.display_name} — غير مقفول، يُعدَّل من مكانه`}
+                    ? `${isolate(found.display_name)} — مقفول`
+                    : `${isolate(found.display_name)} — غير مقفول، يُعدَّل من مكانه`}
           </p>
         </div>
         <div>

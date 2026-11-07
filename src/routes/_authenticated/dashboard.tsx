@@ -22,6 +22,7 @@ import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
+import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
@@ -188,7 +189,9 @@ function DashboardPage() {
 
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-bold">{orphan?.display_name ?? "ملف محذوف"}</h2>
+                      <h2 className="font-bold">
+                        <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                      </h2>
                       <Badge variant={s.status === "active" ? "default" : "secondary"}>
                         {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
                       </Badge>

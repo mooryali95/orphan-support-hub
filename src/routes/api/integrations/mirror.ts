@@ -61,7 +61,7 @@ export const Route = createFileRoute("/api/integrations/mirror")({
           return apiError(
             "body_too_large",
             413,
-            "الحمولة أكبر من ٢ ميغابايت.",
+            "الحمولة أكبر من 2 ميغابايت.",
             "Body exceeds 2 MB.",
           );
         }

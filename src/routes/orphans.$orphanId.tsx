@@ -22,7 +22,7 @@ import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
 import { useAuth } from "@/hooks/useAuth";
-import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS } from "@/lib/format";
+import { formatMoney, fundingPercent, NEED_CATEGORY_LABELS, isolate } from "@/lib/format";
 import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
 import { getOrphanViewAuthed } from "@/lib/protection.functions";
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
 import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { Name } from "@/components/kit/Name";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
@@ -171,7 +172,7 @@ export const Route = createFileRoute("/orphans/$orphanId")({
         ],
       };
     }
-    const title = `${c.sponsorOf(loaderData.orphan.display_name)} — ${brand.name} — ${brand.slogan}`;
+    const title = `${c.sponsorOf(isolate(loaderData.orphan.display_name))} — ${brand.name} — ${brand.slogan}`;
     // معاينة المشاركة تُخزَّن عند المنصّات بعد انتهاء الموافقة نفسها، فلا
     // تحمل اسم الطفل: عنوانٌ عامّ للملف، والاسم يبقى في الصفحة لمن يفتحها.
     const shareTitle = `${c.shareTitle} — ${brand.name} — ${brand.slogan}`;
@@ -312,9 +313,13 @@ function OrphanDetail() {
               />
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl font-extrabold">{orphan.display_name}</h1>
+                  <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">
+                    <Name>{orphan.display_name}</Name>
+                  </h1>
                   {detail?.real_name && (
-                    <span className="text-sm text-muted-foreground">({detail.real_name})</span>
+                    <span className="text-sm text-muted-foreground">
+                      (<Name>{detail.real_name}</Name>)
+                    </span>
                   )}
                   <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
                   {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
@@ -581,7 +586,7 @@ function OrphanDetail() {
                       ...(remaining > 0 ? { gap: remaining, cur: orphan.currency } : {}),
                     }}
                   >
-                    {t.continueTo(t.kinds[mode].label, orphan.display_name)}
+                    {t.continueTo(t.kinds[mode].label, isolate(orphan.display_name))}
                   </Link>
                 </Button>
                 <p className="mt-3 text-xs text-muted-foreground">{t.follow}</p>
@@ -608,7 +613,7 @@ function OrphanDetail() {
             </p>
           </div>
           <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">{t.support(orphan.display_name)}</a>
+            <a href="#sponsor-form">{t.support(isolate(orphan.display_name))}</a>
           </Button>
         </div>
       </div>

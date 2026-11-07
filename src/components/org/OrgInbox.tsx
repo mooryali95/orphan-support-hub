@@ -6,7 +6,7 @@ import { Check, Inbox, Loader2, PackageCheck, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { createDocumentUploadUrl } from "@/lib/intake.functions";
 import {
   confirmDelivery,
@@ -14,6 +14,7 @@ import {
   moderateMessage,
   type PendingDelivery,
 } from "@/lib/ledger.functions";
+import { Name } from "@/components/kit/Name";
 
 /**
  * «ما ينتظرك» — أول ما تراه جهة الرعاية.
@@ -80,7 +81,7 @@ export function OrgInbox() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-muted-foreground">
-                    إلى {m.orphan} · {formatDate(m.created_at)}
+                    إلى <Name>{m.orphan}</Name> · {formatDate(m.created_at)}
                   </p>
                   <p className="mt-1 whitespace-pre-line text-sm">{m.message}</p>
                 </div>
@@ -156,7 +157,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
     <li className="grid gap-2 py-3 md:grid-cols-[1fr_auto] md:items-center">
       <div>
         <p className="text-sm font-medium">
-          {d.orphan} · {formatMoney(d.amount, d.currency)}
+          <Name>{d.orphan}</Name> · {formatMoney(d.amount, d.currency)}
         </p>
         <p className="text-xs text-muted-foreground">
           {d.period_start ? formatDate(d.period_start) : ""} — حُوِّل {formatDate(d.created_at)}
@@ -166,7 +167,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         <Input
           type="file"
           accept="image/jpeg,image/png,image/webp,application/pdf"
-          aria-label={`مستند استلام ${d.orphan}`}
+          aria-label={`مستند استلام ${isolate(d.orphan)}`}
           className="w-56"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />

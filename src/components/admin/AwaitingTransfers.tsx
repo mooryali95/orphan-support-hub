@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listAwaitingTransfers, confirmManualTransfer } from "@/lib/manual-payments.functions";
 import { formatDate, formatMoney } from "@/lib/format";
+import { Name } from "@/components/kit/Name";
 
 /**
  * تحويلات بانتظار التأكيد.
@@ -65,7 +66,9 @@ export function AwaitingTransfers() {
             className="border-border bg-card flex flex-wrap items-center gap-3 rounded-2xl border p-4"
           >
             <div className="flex-1">
-              <p className="font-bold">{r.orphanName}</p>
+              <p className="font-bold">
+                <Name>{r.orphanName}</Name>
+              </p>
               <p className="text-muted-foreground mt-1 text-xs">
                 {r.orphanCode} — {formatMoney(r.amount, r.currency)}{" "}
                 {r.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — مرجع {r.reference} —{" "}

@@ -5,7 +5,7 @@ import { ArrowLeft, FileSearch, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { lookupPayment, type PaymentLookup as Result } from "@/lib/ledger.functions";
 import { cn } from "@/lib/utils";
 
@@ -88,7 +88,11 @@ export function PaymentLookup({ admin = false }: { admin?: boolean }) {
             mono
             sub={r.paid_at ? `دُفعت ${formatDate(r.paid_at)}` : undefined}
           />
-          <Step label="الكفالة والشهر" value={`${r.orphan} · ${r.month}`} sub={r.orphan_code} />
+          <Step
+            label="الكفالة والشهر"
+            value={`${isolate(r.orphan)} · ${isolate(r.month)}`}
+            sub={r.orphan_code}
+          />
           <Step
             label="ما جرى للمبلغ"
             value={

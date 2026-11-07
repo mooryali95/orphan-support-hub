@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 837,
+ "count": 850,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1420,9 +1420,9 @@
   },
   "components/map/WorldMap.delivered": {
    "en": "Received a documented delivery in the last 90 days",
-   "ar": "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "ar": "وصلهم تسليمٌ موثّق خلال 90 يوماً",
    "kind": "text",
-   "hash": "d205fd1663f1",
+   "hash": "7c3c789a114c",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.demo": {
@@ -1498,9 +1498,9 @@
   },
   "components/map/WorldMap.layerImpactHint": {
    "en": "Share sponsored, and children with a documented delivery in the last 90 days",
-   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
+   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال 90 يوماً",
    "kind": "text",
-   "hash": "e34083026666",
+   "hash": "7486107fec68",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.layerWaiting": {
@@ -2199,9 +2199,9 @@
   },
   "components/orphan/TrustSignals.report": {
    "en": "Approved report in the last 90 days",
-   "ar": "تقريرٌ معتمد آخر ٩٠ يوماً",
+   "ar": "تقريرٌ معتمد آخر 90 يوماً",
    "kind": "text",
-   "hash": "de290201ade9",
+   "hash": "ca27dd23cbc1",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
@@ -3362,6 +3362,97 @@
    "hash": "da30c7874668",
    "file": "src/config/offering.ts"
   },
+  "lib/event-labels.fallback": {
+   "en": "File update",
+   "ar": "تحديثٌ في الملف",
+   "kind": "text",
+   "hash": "15057edb990b",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.disbursement_delivered": {
+   "en": "This month's sponsorship delivered, with a document",
+   "ar": "وصلت كفالة الشهر موثّقة",
+   "kind": "text",
+   "hash": "43077c52425f",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.approved": {
+   "en": "File approved and published",
+   "ar": "اعتُمد الملف ونُشر",
+   "kind": "text",
+   "hash": "721368bd32a5",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.rejected": {
+   "en": "File returned for correction",
+   "ar": "أُعيد الملف للتصحيح",
+   "kind": "text",
+   "hash": "e31501bec71c",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.orphan.submitted": {
+   "en": "File submitted for review",
+   "ar": "رُفع الملف للمراجعة",
+   "kind": "text",
+   "hash": "cd5234993033",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.pledge.delivered": {
+   "en": "Your support was delivered, with a document",
+   "ar": "سُلّم دعمك موثّقاً",
+   "kind": "text",
+   "hash": "ebfd39a410ec",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.pledge.preparing": {
+   "en": "Your support is being prepared",
+   "ar": "بدأ تجهيز دعمك",
+   "kind": "text",
+   "hash": "ca01d598c302",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.published": {
+   "en": "Impact report published",
+   "ar": "نُشر تقرير أثر",
+   "kind": "text",
+   "hash": "24126e367b8f",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.rejected": {
+   "en": "Report returned for correction",
+   "ar": "أُعيد التقرير للتصحيح",
+   "kind": "text",
+   "hash": "4235eb0c100d",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.report.submitted": {
+   "en": "Progress report submitted",
+   "ar": "رُفع تقرير دوري",
+   "kind": "text",
+   "hash": "dc4ab2274ca8",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.sponsorship.started": {
+   "en": "Sponsorship started",
+   "ar": "بدأت الكفالة",
+   "kind": "text",
+   "hash": "3180bacbb5a9",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.trait.measured": {
+   "en": "New trait measurement",
+   "ar": "قياسٌ جديد لسمة",
+   "kind": "text",
+   "hash": "91e4d1f91ef0",
+   "file": "src/lib/event-labels.ts"
+  },
+  "lib/event-labels.labels.unit.accepted": {
+   "en": "Completed a session",
+   "ar": "اجتاز جلسة",
+   "kind": "text",
+   "hash": "04f8db13caf5",
+   "file": "src/lib/event-labels.ts"
+  },
   "lib/office-gap.absent": {
    "en": "no confirmed WAMY presence at the moment",
    "ar": "لا حضور مؤكَّداً للندوة حالياً",
@@ -3741,9 +3832,9 @@
   },
   "routes/how-it-works.stages.0.0": {
    "en": "1",
-   "ar": "١",
+   "ar": "1",
    "kind": "text",
-   "hash": "06e30646ced4",
+   "hash": "faebccd5ab70",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.1": {
@@ -3762,9 +3853,9 @@
   },
   "routes/how-it-works.stages.1.0": {
    "en": "2",
-   "ar": "٢",
+   "ar": "2",
    "kind": "text",
-   "hash": "fb7237ae9b85",
+   "hash": "b2c11b8a39cc",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.1.1": {
@@ -3783,9 +3874,9 @@
   },
   "routes/how-it-works.stages.2.0": {
    "en": "3",
-   "ar": "٣",
+   "ar": "3",
    "kind": "text",
-   "hash": "1bde6e9551bd",
+   "hash": "6b02bf2e5c6c",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.2.1": {
@@ -3804,9 +3895,9 @@
   },
   "routes/how-it-works.stages.3.0": {
    "en": "4",
-   "ar": "٤",
+   "ar": "4",
    "kind": "text",
-   "hash": "1a9c10a16433",
+   "hash": "423fc76c72ee",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.3.1": {
@@ -3825,9 +3916,9 @@
   },
   "routes/how-it-works.stages.4.0": {
    "en": "5",
-   "ar": "٥",
+   "ar": "5",
    "kind": "text",
-   "hash": "1ab48a767a72",
+   "hash": "894edcf9bedc",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.4.1": {
@@ -3846,9 +3937,9 @@
   },
   "routes/how-it-works.stages.5.0": {
    "en": "6",
-   "ar": "٦",
+   "ar": "6",
    "kind": "text",
-   "hash": "2541ff347ff1",
+   "hash": "66ad433d199f",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.5.1": {
@@ -4231,9 +4322,9 @@
   },
   "routes/index.hadithSource": {
    "en": "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
-   "ar": "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+   "ar": "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
    "kind": "text",
-   "hash": "9948cfa16303",
+   "hash": "357084714a51",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.0.0": {
@@ -4373,30 +4464,30 @@
   },
   "routes/index.ordinals.0": {
    "en": "1",
-   "ar": "١",
+   "ar": "1",
    "kind": "text",
-   "hash": "06e30646ced4",
+   "hash": "faebccd5ab70",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.1": {
    "en": "2",
-   "ar": "٢",
+   "ar": "2",
    "kind": "text",
-   "hash": "fb7237ae9b85",
+   "hash": "b2c11b8a39cc",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.2": {
    "en": "3",
-   "ar": "٣",
+   "ar": "3",
    "kind": "text",
-   "hash": "1bde6e9551bd",
+   "hash": "6b02bf2e5c6c",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.3": {
    "en": "4",
-   "ar": "٤",
+   "ar": "4",
    "kind": "text",
-   "hash": "1a9c10a16433",
+   "hash": "423fc76c72ee",
    "file": "src/routes/index.tsx"
   },
   "routes/index.partners": {
@@ -5687,30 +5778,30 @@
   },
   "routes/support.s1": {
    "en": "1. Kind of support",
-   "ar": "١. نوع الدعم",
+   "ar": "1. نوع الدعم",
    "kind": "text",
-   "hash": "dd9683704413",
+   "hash": "3fcdfbbc1877",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s2": {
    "en": "2. Who is it for?",
-   "ar": "٢. إلى من يذهب؟",
+   "ar": "2. إلى من يذهب؟",
    "kind": "text",
-   "hash": "8c1de4647d34",
+   "hash": "756d2f8c3cc6",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s3": {
    "en": "3. Your choice",
-   "ar": "٣. الاختيار",
+   "ar": "3. الاختيار",
    "kind": "text",
-   "hash": "11fc4817ed94",
+   "hash": "2990b1e5514d",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s4": {
    "en": "4. Amount",
-   "ar": "٤. المبلغ",
+   "ar": "4. المبلغ",
    "kind": "text",
-   "hash": "c5cb8f669dc0",
+   "hash": "c0cc206c2298",
    "file": "src/routes/support.tsx"
   },
   "routes/support.section": {

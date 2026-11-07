@@ -6,6 +6,7 @@ import { PageSection } from "@/components/kit/PageSection";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
 import { getMyAccess, getScopeCatalog } from "@/lib/scopes.functions";
+import { Name } from "@/components/kit/Name";
 
 const STATUS: Record<string, string> = {
   pending: "قيد المراجعة",
@@ -45,7 +46,9 @@ export function FollowedChildren() {
               className="block rounded-2xl border border-border bg-card p-4 hover:border-primary"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold">{r.orphan}</span>
+                <span className="font-semibold">
+                  <Name>{r.orphan}</Name>
+                </span>
                 <Badge variant={r.status === "approved" ? "default" : "secondary"}>
                   {STATUS[r.status] ?? r.status}
                 </Badge>

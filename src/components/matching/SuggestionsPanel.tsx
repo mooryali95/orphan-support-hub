@@ -18,6 +18,7 @@ import {
 } from "@/lib/matching.functions";
 import type { SuggestedOrphan } from "@/integrations/supabase/types.extra";
 import { formatMoney, fundingPercent } from "@/lib/format";
+import { Name } from "@/components/kit/Name";
 
 /**
  * مرشَّحون لك.
@@ -199,7 +200,9 @@ function SuggestionCard({ row }: { row: SuggestedOrphan }) {
           className="size-14 shrink-0 rounded-xl bg-secondary"
         />
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-bold">{row.display_name}</h3>
+          <h3 className="truncate font-bold">
+            <Name>{row.display_name}</Name>
+          </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {[row.city, row.region].filter(Boolean).join("، ") || "—"} — يتبقّى{" "}
             {formatMoney(row.gap, row.currency)}

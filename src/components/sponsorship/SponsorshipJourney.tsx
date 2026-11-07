@@ -26,6 +26,7 @@ import {
 } from "@/lib/ledger.functions";
 import { arCount, type ArForms } from "@/lib/plural";
 import { cn } from "@/lib/utils";
+import { Name } from "@/components/kit/Name";
 
 const MONTHS = [
   "يناير",
@@ -108,7 +109,7 @@ export function SponsorshipJourney({
               {[ledger.orphan.country, ledger.orphan.region].filter(Boolean).join(" · ")}
             </p>
             <h2 className="mt-1 font-serif text-3xl font-bold text-primary">
-              {ledger.orphan.display_name}
+              <Name>{ledger.orphan.display_name}</Name>
             </h2>
             <p className="mt-2 text-sm leading-7">
               <strong className="tabular-nums">{arCount(delivered, MONTHS_FORMS)}</strong> وصلت

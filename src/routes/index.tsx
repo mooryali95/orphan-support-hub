@@ -116,7 +116,7 @@ const COPY = defineCopy("routes/index", {
       ],
     ],
     // أرقام هندية عربية: خلطُها بالأرقام اللاتينية في نصٍّ عربي شذوذٌ بصري.
-    ordinals: ["١", "٢", "٣", "٤"],
+    ordinals: ["1", "2", "3", "4"],
     categories: {
       education: "تعليم",
       rehabilitation: "تأهيل",
@@ -131,7 +131,7 @@ const COPY = defineCopy("routes/index", {
     supportNow: "ادعم الآن",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
-    hadithSource: "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
+    hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
     numbersH: "أرقام المنصّة اليوم",
     numbersP: "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
     stats: ["ملف معتمد", "مكفول بالكامل", "مبالغ الكفالة الشهرية", "الاحتياج الشهري الكلي"],

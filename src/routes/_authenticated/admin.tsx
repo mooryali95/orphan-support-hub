@@ -16,6 +16,7 @@ import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { StatTile } from "@/components/kit/StatTile";
+import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
@@ -344,14 +345,16 @@ function AdminPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold">{p.name}</h3>
+                        <h3 className="font-bold">
+                          <Name>{p.name}</Name>
+                        </h3>
                         <Badge variant="secondary">
                           {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
                         </Badge>
                       </div>
                       <p className="text-muted-foreground mt-1 text-xs">
-                        {p.code} — {[p.city, p.region].filter(Boolean).join("، ")} — احتياج{" "}
-                        {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
+                        <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")} —
+                        احتياج {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
                       </p>
                     </div>
                     <Button
@@ -523,7 +526,8 @@ function Table({
             <tr key={i} className="border-border/60 border-b last:border-0">
               {cells.map((c, j) => (
                 <td key={j} className="px-4 py-3 align-middle tabular-nums">
-                  {c}
+                  {/* الخلايا بيانات: اسمٌ لاتيني أو رمزٌ في جدولٍ عربي يُعزل. */}
+                  <Name>{c}</Name>
                 </td>
               ))}
             </tr>

@@ -6,6 +6,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 
 import { DashboardShell } from "@/components/DashboardShell";
+import { arCount, entityTypeLabel, MEMBERS } from "@/lib/plural";
+import { formatCount } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,7 +61,12 @@ function DonorPage() {
   }
 
   return (
-    <DashboardShell title={d.entity.name} description={`${d.entity.type} · ${d.members} عضو`}>
+    <DashboardShell
+      title={d.entity.name}
+      description={[entityTypeLabel(d.entity.type), arCount(d.members, MEMBERS)]
+        .filter(Boolean)
+        .join(" · ")}
+    >
       {d.entity.status !== "approved" && (
         <p className="mb-6 rounded-lg border border-border bg-secondary/50 p-3 text-sm">
           الجهة قيد مراجعة الإدارة؛ يُفتح الدعم باسمها بعد اعتمادها.
@@ -67,11 +74,7 @@ function DonorPage() {
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         {(["qualification", "in_kind"] as const).map((k) => (
-          <StatTile
-            key={k}
-            label={KIND_LABELS[k] ?? k}
-            value={(d.by_kind[k] ?? 0).toLocaleString("ar")}
-          />
+          <StatTile key={k} label={KIND_LABELS[k] ?? k} value={formatCount(d.by_kind[k] ?? 0)} />
         ))}
       </div>
       <h2 className="mt-8 text-lg font-bold">توزيع الدعم حسب الهدف</h2>

@@ -8,7 +8,9 @@ import { EmptyState } from "@/components/kit/EmptyState";
 import { PageSection } from "@/components/kit/PageSection";
 import { Timeline, type TimelineItem } from "@/components/kit/Timeline";
 import { Button } from "@/components/ui/button";
-import { FEED_LABELS, getMyJourneyFeed, previewMonthlyDigest } from "@/lib/journey.functions";
+import { getMyJourneyFeed, previewMonthlyDigest } from "@/lib/journey.functions";
+import { eventLabel } from "@/lib/event-labels";
+import { isolate } from "@/lib/format";
 
 const ICONS: Record<string, { icon: LucideIcon; tone: TimelineItem["tone"] }> = {
   "report.published": { icon: FileText, tone: "done" },
@@ -32,7 +34,7 @@ export function MyJourney() {
   const items: TimelineItem[] = feed.map((f, i) => ({
     id: `${f.type}-${f.at}-${i}`,
     at: f.at,
-    title: [FEED_LABELS[f.type] ?? f.type, f.orphan].filter(Boolean).join(" — "),
+    title: [eventLabel(f.type), isolate(f.orphan)].filter(Boolean).join(" — "),
     text: f.kind === "timeline" ? null : f.text,
     icon: ICONS[f.type]?.icon ?? Sparkles,
     tone: ICONS[f.type]?.tone ?? "muted",
