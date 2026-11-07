@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
+import { wipeBrowserUserData } from "@/lib/client-state";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
 import { BRAND } from "@/config/brand";
@@ -57,6 +58,8 @@ export function DashboardShell({
   const t = useCopy(COPY);
 
   async function signOut() {
+    // يُمحى ما في المتصفّح قبل الخروج نفسه: الجهاز قد يكون مشتركاً (UX-05).
+    wipeBrowserUserData();
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }

@@ -46,6 +46,8 @@ export const Route = createFileRoute("/_authenticated/org")({
 });
 
 function OrgPage() {
+  // المسودّة تُحفظ لصاحبها وحده (UX-05).
+  const { user } = Route.useRouteContext();
   const fetchWorkspace = useServerFn(getMyOrgWorkspace);
   const register = useServerFn(registerOrganization);
   const queryClient = useQueryClient();
@@ -145,6 +147,7 @@ function OrgPage() {
         <div className="mt-6 max-w-3xl">
           <OrphanIntakeForm
             orgId={org.id}
+            userId={user.id}
             onDone={(code) => {
               toast.success(`أُرسل الملف ${code} للمراجعة`);
               setShowForm(false);
