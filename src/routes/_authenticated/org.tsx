@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { FileText, GraduationCap, Loader2, Plus, UserRound } from "lucide-react";
+import { Eye, FileText, GraduationCap, Loader2, PencilLine, Plus, UserRound } from "lucide-react";
 import { OrgInbox } from "@/components/org/OrgInbox";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { CompletenessLine } from "@/components/orphan/TrustSignals";
@@ -52,6 +52,8 @@ function OrgPage() {
   const [reporting, setReporting] = useState<string | null>(null);
   const [building, setBuilding] = useState<string | null>(null);
   const [profiling, setProfiling] = useState<string | null>(null);
+  // ملفٌّ قائم مفتوح من القاعدة: مسودّة تُستأنف، أو مرفوضٌ يُصحَّح، أو مُقدَّمٌ يُقرأ.
+  const [openFile, setOpenFile] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["org-workspace"],
@@ -126,7 +128,10 @@ function OrgPage() {
               setShowForm(false);
               refresh();
             }}
-            onCancel={() => setShowForm(false)}
+            onCancel={() => {
+              setShowForm(false);
+              refresh();
+            }}
           />
         </div>
       )}
@@ -166,6 +171,35 @@ function OrgPage() {
                   )}
                 </div>
 
+                {/* المسودّة والمرفوض يُفتحان للإكمال أو التصحيح وإعادة التقديم،
+                    والمُقدَّم وقيد المراجعة للقراءة (UX-04). */}
+                {(o.status === "draft" || o.status === "rejected") && org.status === "approved" && (
+                  <Button
+                    size="sm"
+                    variant={o.status === "rejected" ? "default" : "outline"}
+                    aria-expanded={openFile === o.id}
+                    onClick={() => setOpenFile(openFile === o.id ? null : o.id)}
+                  >
+                    <PencilLine className="size-4" aria-hidden="true" />
+                    {openFile === o.id
+                      ? "إغلاق"
+                      : o.status === "rejected"
+                        ? "صحّح وأعد التقديم"
+                        : "أكمل المسودّة"}
+                  </Button>
+                )}
+                {(o.status === "submitted" || o.status === "under_review") && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    aria-expanded={openFile === o.id}
+                    onClick={() => setOpenFile(openFile === o.id ? null : o.id)}
+                  >
+                    <Eye className="size-4" aria-hidden="true" />
+                    {openFile === o.id ? "إغلاق" : "عرض الملف"}
+                  </Button>
+                )}
+
                 {/* التقرير الدوري متاح على الملفات المنشورة وحدها: ملفّ
                   لم يُعتمد بعدُ لا كافل له ينتظر خبراً. */}
                 {(o.status === "approved" || o.status === "fully_sponsored") && (
@@ -204,6 +238,25 @@ function OrgPage() {
               {/* تمام البروفايل في الصفّ نفسه: الجهة تعرف ما ينقص دون أن تفتح شيئاً. */}
               {(o.status === "approved" || o.status === "fully_sponsored") && (
                 <OrgCompleteness orphanId={o.id} />
+              )}
+
+              {openFile === o.id && (
+                <div className="mt-4">
+                  <OrphanIntakeForm
+                    orgId={org.id}
+                    userId={user.id}
+                    orphanId={o.id}
+                    onDone={(code) => {
+                      toast.success(`أُرسل الملف ${code} للمراجعة`);
+                      setOpenFile(null);
+                      refresh();
+                    }}
+                    onCancel={() => {
+                      setOpenFile(null);
+                      refresh();
+                    }}
+                  />
+                </div>
               )}
 
               {profiling === o.id && (

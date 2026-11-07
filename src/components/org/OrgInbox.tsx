@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { FilePicker } from "@/components/kit/FilePicker";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -163,12 +164,11 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <Input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,application/pdf"
-          aria-label={`مستند استلام ${d.orphan}`}
-          className="w-56"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        {/* زرّ عربيّ يحمل اسم الملف لا «Choose File» المتصفّح (UX-17). */}
+        <FilePicker
+          label="مستند الاستلام"
+          accessibleLabel={`مستند استلام ${d.orphan}`}
+          onPick={setFile}
         />
         <Input
           aria-label="ملاحظة"

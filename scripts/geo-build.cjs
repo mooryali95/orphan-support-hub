@@ -23,6 +23,9 @@ const proj = d3.geoNaturalEarth1().fitExtent(
   { type: "FeatureCollection", features: countries },
 );
 const r = (n, d) => Math.round(n * 10 ** d) / 10 ** d;
+// تهجئاتٌ عربية شائعة لا تحملها Natural Earth — بها تطابق الخارطةُ ملفّاتٍ
+// كُتبت منطقتها نصّاً حرّاً قبل أن يصير الإدخال قائمةً (UX-10).
+const ALIASES = { "ALB-1498": ["شكودر", "شقودرة"] };
 
 function simplified(features, q) {
   let topo = topology({ f: { type: "FeatureCollection", features } }, 1e5);
@@ -83,7 +86,16 @@ for (const [code, feats] of by) {
         "",
       ),
       en: p.name_en || p.name || p.adm1_code,
-      alt: [p.name, p.name_alt, p.name_local, p.gn_name, p.woe_name].filter(Boolean).join("|"),
+      alt: [
+        p.name,
+        p.name_alt,
+        p.name_local,
+        p.gn_name,
+        p.woe_name,
+        ...(ALIASES[p.adm1_code] || []),
+      ]
+        .filter(Boolean)
+        .join("|"),
       d: pathOf(f, 3),
       b: box(f),
       p: [r(cx, 3), r(cy, 3)],
