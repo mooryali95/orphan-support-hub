@@ -18,9 +18,11 @@ const rpc = (client: unknown) => client as RpcClient;
 
 export type InboxKind =
   | "orphan"
+  | "orphan_edit"
   | "org"
   | "access"
   | "circle_role"
+  | "circle_role_renewal"
   | "donor"
   | "progress_report"
   | "office_report"
@@ -38,9 +40,11 @@ export type InboxItem = {
 
 export const INBOX_LABELS: Record<InboxKind, string> = {
   orphan: "ملف طفل",
+  orphan_edit: "تعديل ملفٍّ منشور",
   org: "جهة رعاية",
   access: "طلب اطّلاع",
   circle_role: "دورٌ في دائرة طفل",
+  circle_role_renewal: "تجديد دورٍ في دائرة طفل",
   donor: "جهة مانحة",
   progress_report: "تقرير جهة",
   office_report: "تقرير مكتب",
@@ -106,6 +110,34 @@ export const decideCircleRole = createServerFn({ method: "POST" })
       _role: data.id,
       _decision: data.approve ? "approved" : "rejected",
       _days: data.days ?? 365,
+      _note: data.note ?? null,
+    });
+    return error
+      ? { ok: false as const, error: error.message }
+      : { ok: true as const, error: null };
+  });
+
+/**
+ * قرار الإدارة في تعديلٍ على ملفٍّ منشور: ما كتبته الجهة أو الشريك بعد
+ * الاعتماد (الاسم والقصّة والمدينة والصورة… ونصوص الاحتياج) ممسوكٌ لم
+ * يُنشر، والملفّ باقٍ كما رُوجع. القبول يكتبه، والرفض يطويه؛ وكلاهما
+ * يُسجَّل ويُشعر الجهة.
+ */
+export const reviewOrphanEdit = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        approve: z.boolean(),
+        note: z.string().trim().max(400).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("review_orphan_edit", {
+      _orphan: data.id,
+      _decision: data.approve ? "approved" : "rejected",
       _note: data.note ?? null,
     });
     return error

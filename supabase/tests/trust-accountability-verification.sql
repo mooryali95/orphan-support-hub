@@ -545,8 +545,10 @@ END $$;
 
 
 -- =====================================================================
--- DB-07 + CP-10 — ما يُعدَّل بعد الاعتماد يعود للمراجعة ويغيب عن العموم
+-- DB-07 + CP-10 — ما يُعدَّل بعد الاعتماد لا يصل العموم قبل المراجعة
 -- =====================================================================
+-- (مراجعة المرحلة صفر: التعديل يُمسَك في `orphan_pending_edits` ويبقى الملفّ
+-- منشوراً كما راجعته الإدارة — لا يُسقَط من النشر ولا من لوحة كافله.)
 DO $$
 DECLARE _anon JSONB; _st TEXT;
 BEGIN
@@ -562,20 +564,26 @@ BEGIN
   PERFORM set_config('request.jwt.claims', '', true);
   _anon := public.orphan_view('dbb30000-0000-4000-8000-000000000002');
   RESET ROLE;
-  IF _st NOT IN ('submitted', 'under_review') OR _anon <> 'null'::jsonb THEN
-    RAISE EXCEPTION 'FAIL — CP-10: اسمٌ وعنوانٌ لم يُراجعا نُشرا فوراً (status=%)', _st;
+  IF _anon::text LIKE '%Rruga%' OR _anon->>'display_name' IS DISTINCT FROM 'إلير' THEN
+    RAISE EXCEPTION 'FAIL — CP-10: اسمٌ وعنوانٌ لم يُراجعا نُشرا فوراً (%)', _anon->>'display_name';
   END IF;
-  IF NOT EXISTS (SELECT 1 FROM public.audit_log
-                  WHERE action = 'orphan.sent_back_to_review'
-                    AND entity_id = 'dbb30000-0000-4000-8000-000000000002') THEN
-    RAISE EXCEPTION 'FAIL — DB-07: الإعادة للمراجعة بلا أثر';
+  IF _st <> 'approved' THEN
+    RAISE EXCEPTION 'FAIL — DB-07: التعديل أسقط الملفّ من النشر (status=%)', _st;
   END IF;
-  RAISE NOTICE 'PASS — CP-10: تعديل الاسم بعد الاعتماد يُعيد الملفّ للمراجعة ويحجبه عن العموم';
+  IF (SELECT changes->>'display_name' FROM public.orphan_pending_edits
+       WHERE orphan_id = 'dbb30000-0000-4000-8000-000000000002')
+       IS DISTINCT FROM 'Ardit Hoxha, Rruga e Kavajës 12'
+     OR NOT EXISTS (SELECT 1 FROM public.audit_log
+                     WHERE action = 'orphan.edit_held_for_review'
+                       AND entity_id = 'dbb30000-0000-4000-8000-000000000002') THEN
+    RAISE EXCEPTION 'FAIL — DB-07: التعديل لم يُمسَك للمراجعة أو بلا أثر';
+  END IF;
+  RAISE NOTICE 'PASS — CP-10: تعديل الاسم بعد الاعتماد يُمسَك للمراجعة، والعموم يرى ما راجعته الإدارة';
 END $$;
 
--- والطفل المكفول: القصّة والمدينة تعودان للمراجعة أيضاً.
+-- والطفل المكفول: القصّة والمدينة تُمسكان أيضاً، ويبقى منشوراً.
 DO $$
-DECLARE _st TEXT;
+DECLARE _st TEXT; _story TEXT; _city TEXT;
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
@@ -583,11 +591,15 @@ BEGIN
   UPDATE public.orphans SET story = 'rewritten after approval', city = 'حيٌّ جديد'
    WHERE id = 'dbb30000-0000-4000-8000-000000000003';
   RESET ROLE;
-  SELECT status::text INTO _st FROM public.orphans WHERE id = 'dbb30000-0000-4000-8000-000000000003';
-  IF _st NOT IN ('submitted', 'under_review') THEN
-    RAISE EXCEPTION 'FAIL — DB-07: قصّة طفلٍ مكفول أُعيدت كتابتها وبقيت معتمدة (%)', _st;
+  SELECT status::text, story, city INTO _st, _story, _city FROM public.orphans
+   WHERE id = 'dbb30000-0000-4000-8000-000000000003';
+  IF _story = 'rewritten after approval' OR _city = 'حيٌّ جديد' THEN
+    RAISE EXCEPTION 'FAIL — DB-07: قصّة طفلٍ مكفول أُعيدت كتابتها ونُشرت بلا مراجعة';
   END IF;
-  RAISE NOTICE 'PASS — DB-07: تعديل قصّة الطفل المكفول ومدينته يعيده للمراجعة';
+  IF _st NOT IN ('approved', 'fully_sponsored') THEN
+    RAISE EXCEPTION 'FAIL — DB-07: التعديل أسقط الطفل المكفول من النشر (%)', _st;
+  END IF;
+  RAISE NOTICE 'PASS — DB-07: تعديل قصّة الطفل المكفول ومدينته يُمسَك للمراجعة ولا يُسقطه';
 END $$;
 
 -- والصورة من خارج خزنة المنصّة لا تُقبل (تتبّعُ الزائرين).

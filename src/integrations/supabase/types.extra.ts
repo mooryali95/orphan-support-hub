@@ -954,7 +954,8 @@ export type OrphanView = OrphanCardRow & {
     needs: Array<{
       id: string;
       category: string;
-      title: string;
+      /** فارغٌ حتى تراجع الإدارة نصّ البند — تُعرض فئته بدله. */
+      title: string | null;
       monthly_amount: number;
     }>;
   };
@@ -1043,6 +1044,10 @@ export type GuardianOrphanRow = {
 export type OrgOrphanRow = GuardianOrphanRow & {
   rejection_code: string | null;
   rejection_reason: string | null;
+  /** حقول تعديلٍ على ملفٍّ منشور تنتظر الإدارة؛ المنشور ما زال ما رُوجع. */
+  pending_fields?: string[];
+  /** بنود احتياجٍ لم تُراجَع نصوصها بعد. */
+  needs_pending_review?: number;
 };
 
 /* =====================================================================

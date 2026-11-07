@@ -176,6 +176,13 @@ function OrgPage() {
                     {o.code} — {o.city ?? "—"} — {formatMoney(o.funded_monthly, o.currency)} /{" "}
                     {formatMoney(o.monthly_need, o.currency)}
                   </p>
+                  {((o.pending_fields?.length ?? 0) > 0 || (o.needs_pending_review ?? 0) > 0) && (
+                    // التعديل على ملفٍّ منشور لا يُنشر قبل المراجعة، ولا يُسقط الملفّ؛
+                    // فتعرف الجهة أنّ ما تراه الصفحة العامّة هو المراجَع.
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      تعديلٌ ينتظر مراجعة الإدارة — الصفحة العامّة تعرض النسخة المراجَعة.
+                    </p>
+                  )}
                   {o.status === "rejected" && (
                     // الرفض بلا سبب لا يُمكّن الجهة من التصحيح، فالسبب
                     // المُهيكل يُعرض هنا لا في بريد منفصل.

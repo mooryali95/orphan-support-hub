@@ -246,7 +246,9 @@ function SupportPage() {
           .map((g) => ({
             value: g.id,
             label: g.name,
-            hint: `${g.region ?? ""} · ${t.children(g.children)}`,
+            hint: [g.region, g.children == null ? null : t.children(g.children)]
+              .filter(Boolean)
+              .join(" · "),
           }));
       case "region":
         return catalog.regions

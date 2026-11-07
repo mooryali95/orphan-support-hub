@@ -392,10 +392,14 @@ function OrphanDetail() {
                   {(detail?.needs ?? []).map((need) => (
                     <li key={need.id} className="flex items-center justify-between py-3">
                       <div>
-                        <p className="text-sm font-medium">{need.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {t.needCats[need.category] ?? need.category}
+                        <p className="text-sm font-medium">
+                          {need.title ?? t.needCats[need.category] ?? need.category}
                         </p>
+                        {need.title && (
+                          <p className="text-xs text-muted-foreground">
+                            {t.needCats[need.category] ?? need.category}
+                          </p>
+                        )}
                       </div>
                       <span className="text-sm font-bold text-primary">
                         {formatMoney(need.monthly_amount, orphan.currency, locale)}

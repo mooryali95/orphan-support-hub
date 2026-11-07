@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { signChildPhoto } from "@/lib/child-photo";
 import {
   withProtection,
   type AccessRequestRow,
@@ -111,7 +112,17 @@ export const getOrphanViewAuthed = createServerFn({ method: "GET" })
     const db = withProtection(context.supabase);
     const { data: view, error } = await db.rpc("orphan_view", { _orphan: data.orphanId });
     if (error) return { orphan: null as OrphanView | null, error: error.message };
-    return { orphan: (view ?? null) as OrphanView | null, error: null as string | null };
+    const orphan = (view ?? null) as OrphanView | null;
+    /* الصورة مسارٌ في الخزنة الخاصّة: تُوقَّع بجلسة القارئ نفسه، فسياسة
+       الخزنة تفحص «الهوية» والموافقة مرّةً ثانية، والرابط ينقضي بعد دقائق. */
+    if (orphan?.detail) {
+      orphan.detail.photo_url = await signChildPhoto(
+        context.supabase,
+        orphan.id,
+        orphan.detail.photo_url,
+      );
+    }
+    return { orphan, error: null as string | null };
   });
 
 export const requestOrphanAccess = createServerFn({ method: "POST" })
