@@ -34,16 +34,13 @@ import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
 import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
+import { useGivingCopy } from "@/config/giving-tracks";
 import { Name } from "@/components/kit/Name";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
 const COPY = defineCopy("routes/orphans.orphanId", {
   ar: {
-    modes: { monthly: "كفالة شهرية", qualification: "بناء أهلية", in_kind: "دعم عيني" } as Record<
-      "monthly" | SupportKind,
-      string
-    >,
     kinds: KIND_INFO as Record<SupportKind, { label: string; text: string }>,
     unavailable: "ملف غير متاح",
     sponsorOf: (n: string) => `كفالة ${n}`,
@@ -81,11 +78,6 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     support: (n: string) => `ادعم ${n}`,
   },
   en: {
-    modes: {
-      monthly: "Monthly sponsorship",
-      qualification: "Capability building",
-      in_kind: "In-kind support",
-    } as Record<"monthly" | SupportKind, string>,
     kinds: {
       qualification: {
         label: "Capability building",
@@ -202,6 +194,8 @@ function OrphanDetail() {
   const navigate = useNavigate();
   const locale = useLocale();
   const t = useCopy(COPY);
+  // أسماء المسارات من مكانها الواحد، كما في «اختر أثرك» في الصفحة الأولى.
+  const g = useGivingCopy();
 
   // الصفحة تُرسَم أولاً بما يراه الزائر، ثم تُعاد قراءتها بجلسة المستخدم:
   // من مُنح الإذن، ودائرة الطفل، يرون ما يحقّ لهم. بدونها كان الكلّ زائراً.
@@ -455,7 +449,7 @@ function OrphanDetail() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {t.modes[key]}
+                  {g.tracks[key].name}
                 </button>
               ))}
             </div>
