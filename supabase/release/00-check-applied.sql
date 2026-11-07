@@ -29,4 +29,8 @@ SELECT to_regclass('public.orphan_access_requests')              AS m0905_protec
        to_regprocedure('public.lookup_payment(text)')             AS m0924_invoices,
        to_regprocedure('public.sponsor_qualification(uuid)')      AS m0925_sponsor_qualification,
        to_regclass('public.ops_runs')                             AS m0926_ops_health,
-       to_regclass('public.ui_translations')                      AS m0927_ui_i18n;
+       to_regclass('public.ui_translations')                      AS m0927_ui_i18n,
+       to_regprocedure('public.orphan_progress_reports(uuid)')    AS m1106_child_exposure,
+       to_regprocedure('public.decide_enrollment_role(uuid,text,integer,text)') AS m1106_trust,
+       to_regprocedure('public.cohort_safety()')                  AS m1106_cohort,
+       to_regclass('public.orphan_pending_edits')                 AS m1106_review_fixes;
