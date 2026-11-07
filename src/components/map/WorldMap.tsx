@@ -31,6 +31,7 @@ import {
   type Point,
 } from "./gesture";
 import { COHORT_MIN, type CountryStat, type MapStats, type RegionStat } from "./demo-stats";
+import type { MapSourceStatus } from "./map-source";
 import { DEFAULT_LAYER, intensityOf, type MapLayer, metricOf, metricText, rankOf } from "./layers";
 
 /* ── البيانات ──────────────────────────────────────────────────────────── */
@@ -91,6 +92,9 @@ const COPY = defineCopy("components/map/WorldMap", {
     breadcrumb: "موضعك على الخارطة",
     world: "العالم",
     demo: "بيانات تجريبية",
+    loading: "تُحمَّل أرقام الخارطة…",
+    unavailable: "أرقام الخارطة غير متاحة الآن",
+    unavailableHere: "لا تتوفّر الأرقام الآن — أعد المحاولة بعد قليل.",
     list: "قائمة",
     pick: "اختر بلداً",
     introA: "لترى من ينتظر كافلاً هناك —",
@@ -135,6 +139,9 @@ const COPY = defineCopy("components/map/WorldMap", {
     breadcrumb: "Your place on the map",
     world: "World",
     demo: "Sample data",
+    loading: "Loading map figures…",
+    unavailable: "Map figures are unavailable right now",
+    unavailableHere: "Figures are unavailable right now — please try again shortly.",
     list: "List",
     pick: "Choose a country",
     introA: "to see who is waiting for a sponsor there —",
@@ -409,6 +416,7 @@ export function WorldMap({
   selection,
   onSelect,
   demo = false,
+  status,
   action,
   className,
   intro,
@@ -426,6 +434,11 @@ export function WorldMap({
   selection: MapSelection;
   onSelect: (s: MapSelection) => void;
   demo?: boolean;
+  /**
+   * حال المصدر (`useMapStats`). أثناء التحميل وعند التعذّر لا رقم ولا «لا
+   * ملفّات هنا»: هيكلٌ أو «غير متاحة الآن» (ARC-11/PRD-15).
+   */
+  status?: MapSourceStatus;
   /** يستبدل زرّ «تصفّح من ينتظر هنا» — مثلاً «ادعم هذه المنطقة» أو «ادخل لتكفل». */
   action?: (ctx: MapActionContext) => ReactNode;
   className?: string;
@@ -436,6 +449,7 @@ export function WorldMap({
 }) {
   const locale = useLocale();
   const c$ = copyOf(COPY, locale);
+  const source: MapSourceStatus = status ?? (demo ? "demo" : "ready");
   const { data: rawWorld } = useQuery(worldQuery);
   const { data: rawRegions } = useRegions(selection.country);
   // الأسماء بلغة الواجهة: الدول من المتصفّح، والمناطق من اسمها اللاتيني في الملفّ.
@@ -1137,9 +1151,17 @@ export function WorldMap({
                   ))}
                 </div>
               )}
-              {demo && (
+              {source === "demo" && (
                 <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
                   {c$.demo}
+                </span>
+              )}
+              {source === "unavailable" && (
+                <span
+                  role="status"
+                  className="rounded-full bg-card/85 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur"
+                >
+                  {c$.unavailable}
                 </span>
               )}
               {manual && !sameView(view.current, target) && (
@@ -1178,19 +1200,39 @@ export function WorldMap({
                 {intro?.title ?? c$.pick}
               </p>
               <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground md:text-base">
-                {intro?.text ?? (
-                  <>
-                    {c$.introA}{" "}
-                    <strong className="text-foreground tabular-nums">
-                      {shown(totals.total, locale)}
-                    </strong>{" "}
-                    {c$.introB}{" "}
-                    <strong className="text-foreground">
-                      {c$.countries(activeCountries.length)}
-                    </strong>
-                    .
-                  </>
-                )}
+                {intro?.text ??
+                  (source === "loading" ? (
+                    // هيكلٌ بلا رقم: لا يُعرض عددٌ لم يصل بعد.
+                    <span
+                      role="status"
+                      aria-busy="true"
+                      className="inline-flex flex-col items-center gap-2"
+                    >
+                      <span className="sr-only">{c$.loading}</span>
+                      <span
+                        aria-hidden="true"
+                        className="block h-4 w-64 max-w-full animate-pulse rounded-full bg-muted"
+                      />
+                      <span
+                        aria-hidden="true"
+                        className="block h-4 w-40 max-w-full animate-pulse rounded-full bg-muted"
+                      />
+                    </span>
+                  ) : source === "unavailable" ? (
+                    c$.unavailableHere
+                  ) : (
+                    <>
+                      {c$.introA}{" "}
+                      <strong className="text-foreground tabular-nums">
+                        {shown(totals.total, locale)}
+                      </strong>{" "}
+                      {c$.introB}{" "}
+                      <strong className="text-foreground">
+                        {c$.countries(activeCountries.length)}
+                      </strong>
+                      .
+                    </>
+                  ))}
               </p>
             </div>
           )}
@@ -1257,8 +1299,17 @@ export function WorldMap({
 
               {(() => {
                 const s = region ? rStat : cStat;
+                // بلا أرقامٍ بعد (تحميل أو تعذّر): لا يُقال «لا ملفّات هنا» وهو غير معروف.
                 if (!s)
-                  return <p className="mt-4 text-sm leading-7 text-muted-foreground">{c$.none}</p>;
+                  return (
+                    <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                      {source === "loading"
+                        ? c$.loading
+                        : source === "unavailable"
+                          ? c$.unavailableHere
+                          : c$.none}
+                    </p>
+                  );
                 // التقسيم يأتي من القاعدة محجوباً إن صغر أحد شقّيه.
                 const split = s.total != null && s.sponsored != null;
                 const need = split ? s.total! - s.sponsored! : null;

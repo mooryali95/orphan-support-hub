@@ -198,12 +198,27 @@ function EnrollmentBoard({
                       {held.person_name ?? "—"}
                       {held.has_account && " (له حساب)"}
                     </span>
+                    {/* صاحب الحساب لا يدخل دائرة الطفل بإسناد الجهة وحده:
+                        الإدارة تقرّر، والقرار له أجل. */}
+                    {held.has_account && held.approval === "pending" && (
+                      <Badge variant="outline">بانتظار اعتماد الإدارة</Badge>
+                    )}
+                    {held.has_account && held.approval === "approved" && held.expires_at && (
+                      <span className="text-xs text-muted-foreground">
+                        معتمَد حتى {formatDate(held.expires_at)}
+                      </span>
+                    )}
                     {needsConsent &&
                       (held.consent_at ? (
                         <Badge variant="secondary" className="gap-1">
                           <ShieldCheck className="size-3" aria-hidden="true" />
                           إذن موثَّق {formatDate(held.consent_at)}
                         </Badge>
+                      ) : held.has_account ? (
+                        // الوليّ صاحب الحساب يوافق بنفسه من مساحته؛ لا تكتبه الجهة عنه.
+                        <span className="text-xs text-muted-foreground">
+                          ينتظر موافقة الوليّ من مساحته
+                        </span>
                       ) : (
                         <ConsentForm
                           busy={busy}

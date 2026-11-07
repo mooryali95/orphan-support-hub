@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { wipeBrowserUserData } from "@/lib/client-state";
 import {
   addPasskey,
   listPasskeys,
@@ -347,6 +348,8 @@ function AccountPage() {
             variant="ghost"
             className="text-muted-foreground"
             onClick={async () => {
+              // يُمحى ما في المتصفّح قبل الخروج نفسه: الجهاز قد يكون مشتركاً (UX-05).
+              wipeBrowserUserData();
               await supabase.auth.signOut();
               await navigate({ to: "/" });
             }}

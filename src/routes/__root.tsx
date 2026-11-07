@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { onAuthEvent } from "@/lib/client-state";
 import { BRAND_CSS } from "@/config/brand-colors";
 import { BRAND, brandFor } from "@/config/brand";
 import {
@@ -246,7 +247,10 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event) => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      // الخروج، أو دخول مستخدمٍ غير من ترك بياناته على الجهاز: تُمحى مسودّات
+      // العمل من المتصفّح وذاكرة الاستعلامات معها، فلا يرى الثاني ما للأوّل (UX-05).
+      onAuthEvent(event, session?.user?.id ?? null, () => queryClient.clear());
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();

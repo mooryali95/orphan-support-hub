@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 759,
+ "count": 762,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1082,6 +1082,13 @@
    "hash": "bc2eb925faf2",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.loading": {
+   "en": "Loading map figures…",
+   "ar": "تُحمَّل أرقام الخارطة…",
+   "kind": "text",
+   "hash": "f2478965ede1",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.mapOf": {
    "en": "Map of {0}",
    "ar": "خارطة {0}",
@@ -1154,6 +1161,20 @@
    "ar": "مكفول",
    "kind": "text",
    "hash": "6d23172d24c3",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.unavailable": {
+   "en": "Map figures are unavailable right now",
+   "ar": "أرقام الخارطة غير متاحة الآن",
+   "kind": "text",
+   "hash": "80b48dd0c22b",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.unavailableHere": {
+   "en": "Figures are unavailable right now — please try again shortly.",
+   "ar": "لا تتوفّر الأرقام الآن — أعد المحاولة بعد قليل.",
+   "kind": "text",
+   "hash": "df40ca9215cb",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.verified": {
@@ -4856,11 +4877,11 @@
    "hash": "19e32a69e140",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
-  "routes/orphans.orphanId.serviceType": {
-   "en": "Monthly sponsorship for education and qualification programs",
-   "ar": "كفالة شهرية لبرامج تعليمية وتأهيلية",
+  "routes/orphans.orphanId.shareTitle": {
+   "en": "A verified sponsorship file",
+   "ar": "ملف كفالة موثّق",
    "kind": "text",
-   "hash": "1e61b0360883",
+   "hash": "a1e917cea415",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.signIn": {

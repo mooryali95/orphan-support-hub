@@ -145,10 +145,13 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — approval stamps the publication time';
 
-  -- والآن يراه الكافل
+  -- والآن يراه الكافل — عبر الدالّة التي تختار الأعمدة، لا الجدول (CP-03)
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"e1000000-0000-4000-8000-000000000003","role":"authenticated"}';
-  IF NOT EXISTS (SELECT 1 FROM public.progress_reports WHERE id = _report) THEN
+  IF NOT EXISTS (
+    SELECT 1 FROM jsonb_array_elements(
+      public.orphan_progress_reports('e3000000-0000-4000-8000-00000000000b')->'reports') r
+     WHERE (r->>'id')::uuid = _report) THEN
     RESET ROLE;
     RAISE EXCEPTION 'FAIL — the sponsor cannot see the approved report';
   END IF;
@@ -343,6 +346,10 @@ BEGIN
           'e2000000-0000-4000-8000-00000000000a', 'e1000000-0000-4000-8000-000000000002',
           100, 'submitted')
   RETURNING id INTO _o;
+  -- لا اعتماد بلا شهادة وفاةٍ وإثبات وصايةٍ موثَّقين (CP-06).
+  INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, verified)
+  VALUES (_o, 'death_certificate', 'death_certificate', _o || '/dc.pdf', true),
+         (_o, 'guardianship_proof', 'guardianship_proof', _o || '/gp.pdf', true);
 
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"e1000000-0000-4000-8000-000000000001","role":"authenticated"}';

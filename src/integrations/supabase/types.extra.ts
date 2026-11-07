@@ -212,6 +212,15 @@ export type DatabaseWithPhase2 = Omit<DatabaseWithPayments, "public"> & {
         Args: { _id: string; _verified: boolean; _note?: string | null };
         Returns: undefined;
       };
+      record_photo_consent: {
+        Args: {
+          _orphan: string;
+          _state: string;
+          _document?: string | null;
+          _photo_url?: string | null;
+        };
+        Returns: undefined;
+      };
       next_orphan_code: {
         Args: Record<string, never>;
         Returns: string;
@@ -299,6 +308,10 @@ export type DatabaseWithPhase4 = Omit<DatabaseWithPhase2, "public"> & {
       announce_payment: {
         Args: { _sponsorship: string; _succeeded: boolean; _amount: number; _currency: string };
         Returns: undefined;
+      };
+      orphan_progress_reports: {
+        Args: { _orphan: string };
+        Returns: unknown;
       };
     };
   };
@@ -573,6 +586,9 @@ export type EnrollmentRoleRow = {
   consent_at: string | null;
   consent_document: string | null;
   assigned_at: string;
+  /** قرار الإدارة في إدخال صاحب الحساب دائرةَ الطفل، وأجله. */
+  approval: "pending" | "approved" | "rejected" | "not_required";
+  expires_at: string | null;
 };
 
 export type AssessmentRow = {
@@ -938,7 +954,8 @@ export type OrphanView = OrphanCardRow & {
     needs: Array<{
       id: string;
       category: string;
-      title: string;
+      /** فارغٌ حتى تراجع الإدارة نصّ البند — تُعرض فئته بدله. */
+      title: string | null;
       monthly_amount: number;
     }>;
   };
@@ -1027,6 +1044,10 @@ export type GuardianOrphanRow = {
 export type OrgOrphanRow = GuardianOrphanRow & {
   rejection_code: string | null;
   rejection_reason: string | null;
+  /** حقول تعديلٍ على ملفٍّ منشور تنتظر الإدارة؛ المنشور ما زال ما رُوجع. */
+  pending_fields?: string[];
+  /** بنود احتياجٍ لم تُراجَع نصوصها بعد. */
+  needs_pending_review?: number;
 };
 
 /* =====================================================================

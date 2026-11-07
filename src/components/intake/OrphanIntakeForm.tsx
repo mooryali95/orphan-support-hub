@@ -19,6 +19,7 @@ import {
 } from "@/lib/intake.functions";
 import { formatMoney, NEED_CATEGORY_LABELS } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { clearDraft, loadDraft, saveDraft } from "./intake-draft";
 
 /**
  * نموذج إدخال ملف اليتيم — سبع خطوات.
@@ -27,7 +28,9 @@ import { cn } from "@/lib/utils";
  * الأقلّ، وعرضها دفعةً واحدة يجعل المُدخِل يهجر النموذج أو يملأه على
  * عجل — وكلاهما يُنتج ملفّاً ناقصاً يُردّ من المراجعة.
  *
- * والمسودّة تُحفظ في المتصفّح بين الخطوات، فانقطاع الجلسة لا يُضيّع عملاً.
+ * والمسودّة تُحفظ في المتصفّح بين الخطوات، فانقطاع الجلسة لا يُضيّع عملاً —
+ * لكن بلا حقولها السرّية، ولمن كتبها لجهته وحدها، وتُمحى عند الخروج
+ * (`intake-draft.ts`، UX-05).
  */
 
 type Need = { category: string; title: string; monthlyAmount: number; notes?: string };
@@ -97,25 +100,36 @@ const STEPS = [
   "المستندات والإقرار",
 ] as const;
 
-const STORAGE_KEY = "ioco:orphan-intake-draft";
-
-function loadDraft(): Draft {
+/** المسودّة المحفوظة في المتصفّح: بلا حقولها السرّية، ولهذا المستخدم وهذه الجهة وحدهما. */
+function readSaved(userId: string, orgId: string): Draft {
   if (typeof window === "undefined") return EMPTY;
+  let storage: Storage;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...EMPTY, ...(JSON.parse(raw) as Partial<Draft>) } : EMPTY;
+    storage = window.localStorage;
   } catch {
-    // تخزين محجوب أو مسودّة تالفة: نبدأ نظيفاً بدل أن ينكسر النموذج.
     return EMPTY;
+  }
+  const saved = loadDraft(storage, userId, orgId);
+  return saved ? { ...EMPTY, ...(saved as Partial<Draft>) } : EMPTY;
+}
+
+function withStorage(fn: (s: Storage) => void) {
+  try {
+    fn(window.localStorage);
+  } catch {
+    /* التخزين محجوب: المسودّة تعيش في الذاكرة وحدها */
   }
 }
 
 export function OrphanIntakeForm({
   orgId,
+  userId,
   onDone,
   onCancel,
 }: {
   orgId: string;
+  /** صاحب المسودّة: لا تُستعاد لغيره على الجهاز نفسه. */
+  userId: string;
   onDone: (code: string) => void;
   onCancel: () => void;
 }) {
@@ -133,22 +147,18 @@ export function OrphanIntakeForm({
   // المسودّة تُقرأ بعد التركيب لا أثناء التوليد: الخادم لا يملك
   // localStorage، فقراءتها في التهيئة تجعل HTML الخادم مخالفاً لأول رسم.
   useEffect(() => {
-    const saved = loadDraft();
+    const saved = readSaved(userId, orgId);
     setDraft(saved);
     restored.current = true;
     if (saved.displayName || saved.documents.length > 0) {
-      toast.info("استُعيدت مسودّة محفوظة");
+      toast.info("استُعيدت مسودّة محفوظة — أعد إدخال البيانات السرّية، فهي لا تُحفظ في المتصفّح");
     }
-  }, []);
+  }, [userId, orgId]);
 
   useEffect(() => {
     if (!restored.current) return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-    } catch {
-      /* التخزين محجوب: المسودّة تعيش في الذاكرة وحدها */
-    }
-  }, [draft]);
+    withStorage((s) => saveDraft(s, userId, orgId, draft));
+  }, [draft, userId, orgId]);
 
   // كل انتقال يُنقل التركيز إلى عنوان الخطوة، وإلا بقي قارئ الشاشة
   // على الزرّ ولم يُعلن أن الصفحة تغيّرت.
@@ -276,11 +286,7 @@ export function OrphanIntakeForm({
         toast.error(res.error);
         return;
       }
-      try {
-        window.localStorage.removeItem(STORAGE_KEY);
-      } catch {
-        /* لا شيء يُفعل */
-      }
+      withStorage((s) => clearDraft(s, userId, orgId));
       onDone(res.code);
     } finally {
       setBusy(false);
@@ -366,7 +372,8 @@ export function OrphanIntakeForm({
           <>
             <p className="text-muted-foreground bg-secondary/50 rounded-lg p-3 text-xs leading-6">
               بيانات هذه الخطوة <strong>سرّية</strong>: لا تظهر للكافل ولا للزائر، وتُقرأ من الإدارة
-              والجهة وولي الأمر فقط.
+              والجهة وولي الأمر فقط. ولا تُحفظ في المتصفّح — ومثلها العنوان والأسرة والمدرسة والصحّة
+              وتاريخ الميلاد والمدينة — فأكمل الإرسال قبل إغلاق الصفحة.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="الاسم الكامل">
@@ -443,7 +450,10 @@ export function OrphanIntakeForm({
         )}
 
         {step === 4 && (
-          <Field label="ملاحظات صحّية" hint="سرّية — تُقرأ من الإدارة والجهة فقط">
+          <Field
+            label="ملاحظات صحّية"
+            hint="سرّية — تُقرأ من الإدارة والجهة فقط، ولا تُحفظ في المتصفّح"
+          >
             <Textarea
               rows={5}
               value={draft.healthNotes}

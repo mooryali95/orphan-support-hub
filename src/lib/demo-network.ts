@@ -84,17 +84,26 @@ export function demoChildren(filters: {
       id: `DEMO-${code}-${String(i + 1).padStart(2, "0")}`,
       country: name,
       countryCode: code,
-      gender: i % 2 === 0 ? "male" as const : "female" as const,
-      ageBand: i < 4 ? "age_6_11" as const : "age_12_14" as const,
+      gender: i % 2 === 0 ? ("male" as const) : ("female" as const),
+      ageBand: i < 4 ? ("age_6_11" as const) : ("age_12_14" as const),
     })),
   );
-  rows = rows.filter((r) =>
-    (!filters.country || filters.country === r.country || filters.country === r.countryCode) &&
-    (!filters.search || `${r.id} ${r.country}`.toLowerCase().includes(filters.search.toLowerCase())) &&
-    (!filters.gender || filters.gender === r.gender) &&
-    (!filters.ageBand || filters.ageBand === r.ageBand),
+  rows = rows.filter(
+    (r) =>
+      (!filters.country || filters.country === r.country || filters.country === r.countryCode) &&
+      (!filters.search ||
+        `${r.id} ${r.country}`.toLowerCase().includes(filters.search.toLowerCase())) &&
+      (!filters.gender || filters.gender === r.gender) &&
+      (!filters.ageBand || filters.ageBand === r.ageBand),
   );
-  if (filters.funding === "full" || filters.region || filters.educationStage || filters.group || filters.building) rows = [];
+  if (
+    filters.funding === "full" ||
+    filters.region ||
+    filters.educationStage ||
+    filters.group ||
+    filters.building
+  )
+    rows = [];
   if (filters.sort === "newest") rows.reverse();
   const total = rows.length;
   const offset = filters.offset ?? 0;

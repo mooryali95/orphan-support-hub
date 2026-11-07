@@ -76,10 +76,8 @@ export function ExcessSuggestion({
                   className="border-border bg-card hover:border-bridge flex items-center gap-2 rounded-lg border p-2.5 text-sm transition-colors"
                 >
                   <HeartHandshake className="text-shore-need size-4 shrink-0" aria-hidden="true" />
-                  <span className="flex-1">
-                    {s.display_name}
-                    {s.city && <span className="text-muted-foreground"> — {s.city}</span>}
-                  </span>
+                  {/* الاسم وحده: لا مدينة ولا منطقة في اقتراحٍ يراه الزائر. */}
+                  <span className="flex-1">{s.display_name}</span>
                   <span className="text-bridge-ink text-xs font-bold tabular-nums">
                     {t.needs(formatMoney(s.gap, s.currency, locale))}
                   </span>

@@ -189,7 +189,7 @@ function SupportPage() {
   const locale = useLocale();
   // «ادعم في دقيقتين»: يُقاس من فتح المسار حتى التسجيل.
   const openedAt = useRef<number>(Date.now());
-  const { stats, demo } = useMapStats();
+  const { stats, demo, status } = useMapStats();
   const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const fetchCatalog = useServerFn(getSupportCatalog);
@@ -246,7 +246,9 @@ function SupportPage() {
           .map((g) => ({
             value: g.id,
             label: g.name,
-            hint: `${g.region ?? ""} · ${t.children(g.children)}`,
+            hint: [g.region, g.children == null ? null : t.children(g.children)]
+              .filter(Boolean)
+              .join(" · "),
           }));
       case "region":
         return catalog.regions
@@ -346,6 +348,7 @@ function SupportPage() {
         <WorldMap
           stats={stats}
           demo={demo}
+          status={status}
           selection={selection}
           onSelect={onSelect}
           layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}

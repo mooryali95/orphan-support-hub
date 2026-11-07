@@ -81,6 +81,19 @@ describe("applySecurityHeaders", () => {
     expect(out.headers.get("x-frame-options")).toBe("SAMEORIGIN");
   });
 
+  // CP-13: صفحة الطفل لا تُفهرَس حتى لزاحفٍ لا يقرأ وسوم HTML.
+  it("يمنع فهرسة صفحة الطفل الواحد ويُبقي الدليل مفهرساً", () => {
+    for (const p of ["/orphans/a9200000-0000-4000-8000-000000000001", "/orphans/abc/"]) {
+      const out = applySecurityHeaders(new Request(`https://x.test${p}`), res());
+      expect(out.headers.get("x-robots-tag")).toContain("noindex");
+      expect(out.headers.get("x-robots-tag")).toContain("noimageindex");
+    }
+    for (const p of ["/orphans", "/orphans/", "/", "/organizations"]) {
+      const out = applySecurityHeaders(new Request(`https://x.test${p}`), res());
+      expect(out.headers.get("x-robots-tag")).toBeNull();
+    }
+  });
+
   it("يحفظ الحالة والجسم", async () => {
     const out = applySecurityHeaders(
       new Request("https://x.test/"),
