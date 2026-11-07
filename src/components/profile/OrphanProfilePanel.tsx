@@ -304,7 +304,7 @@ export function OrphanProfilePanel({
                 <div className="flex flex-wrap items-center gap-2">
                   {row && (
                     <span
-                      className={`text-[11px] ${stale ? "text-bridge-ink" : "text-muted-foreground"}`}
+                      className={`text-xs ${stale ? "text-bridge-ink" : "text-muted-foreground"}`}
                     >
                       {stale && <Clock className="me-1 inline size-3" aria-hidden="true" />}
                       {t.roles[row.updated_role ?? ""] ?? row.updated_role} —{" "}

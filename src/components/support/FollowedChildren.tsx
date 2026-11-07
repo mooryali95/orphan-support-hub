@@ -53,7 +53,7 @@ export function FollowedChildren() {
               {r.granted_scopes && r.granted_scopes.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
                   {r.granted_scopes.map((k) => (
-                    <span key={k} className="rounded-full bg-secondary px-2 py-0.5 text-[11px]">
+                    <span key={k} className="rounded-full bg-secondary px-2 py-0.5 text-xs">
                       {label(k)}
                     </span>
                   ))}

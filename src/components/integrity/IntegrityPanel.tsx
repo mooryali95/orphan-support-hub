@@ -187,7 +187,7 @@ export function IntegrityPanel() {
               className="flex items-center gap-3 border-s-2 border-border py-2 ps-4 text-sm"
             >
               <span className="min-w-0 flex-1">{KIND[e.kind] ?? e.kind}</span>
-              <bdi dir="ltr" className="font-mono text-[11px] text-muted-foreground">
+              <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
                 {e.hash}…
               </bdi>
               <span className="text-xs text-muted-foreground">{formatDate(e.at)}</span>
@@ -357,7 +357,7 @@ function RequestCard({ r }: { r: UnlockRequest }) {
           <div className="mt-2 flex gap-2">
             <code
               dir="ltr"
-              className="min-w-0 flex-1 truncate rounded-lg bg-card px-2 py-1.5 text-[11px]"
+              className="min-w-0 flex-1 truncate rounded-lg bg-card px-2 py-1.5 text-xs"
             >
               {token}
             </code>

@@ -373,7 +373,7 @@ export function NetworkIntro({
         admin={admin ?? false}
         className="pointer-events-auto mx-auto mt-3 w-fit max-w-full rounded-2xl bg-card/85 px-4 py-2 shadow-sm backdrop-blur"
       />
-      <p className="mx-auto mt-2 max-w-xl text-[11px] leading-5 text-muted-foreground">
+      <p className="mx-auto mt-2 max-w-xl text-xs leading-5 text-muted-foreground">
         <Info className="me-1 inline size-3 align-[-2px]" aria-hidden="true" />
         {t.research}
       </p>
@@ -393,7 +393,7 @@ function ConfidenceBadge({ c }: { c: Confidence }) {
   const t = useNetworkCopy();
   const label = c === "high" ? t.confHigh : c === "medium" ? t.confMedium : t.confLow;
   return (
-    <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", CONF_TONE[c])}>
+    <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", CONF_TONE[c])}>
       {label}
     </span>
   );
@@ -439,18 +439,18 @@ function IndicatorRow({ i }: { i: Indicator }) {
           {formatCount(i.value, locale, { compact: i.value >= 1e6, percent: i.unit === "pct" })}
         </span>
       </div>
-      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
         <span className="tabular-nums">{indicatorYears(i, locale)}</span>
         <span aria-hidden="true">·</span>
         <SourceLink href={i.url}>{i.sourceShort}</SourceLink>
         <ConfidenceBadge c={i.confidence} />
         {i.derived && (
-          <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
+          <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
             {t.estimate}
           </span>
         )}
         {unverified && (
-          <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
+          <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
             {t.unverifiable}
           </span>
         )}
@@ -498,7 +498,7 @@ export function TierChip({ tier, className }: { tier: Tier; className?: string }
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap",
         tier === "high" && "bg-office-gap text-card",
         tier === "medium" && "bg-office-gap/12 text-office-gap",
         tier === "data" && "bg-transparent text-office-gap shadow-[inset_0_0_0_1px_currentColor]",
@@ -600,7 +600,7 @@ function PresenceBody({ c, admin }: { c: NetworkCountry; admin: boolean }) {
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span
           className={cn(
-            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold",
+            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold",
             kind === "field" ? "bg-primary/10 text-primary" : "bg-primary text-primary-foreground",
           )}
         >
@@ -857,7 +857,7 @@ export function CoverageList({ onPick }: { onPick?: (code: string) => void }) {
                 {formatCount(c.estimate!.value, locale, { compact: true })}
               </span>
               {c.estimate!.derived && (
-                <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
+                <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
                   {t.estimate}
                 </span>
               )}

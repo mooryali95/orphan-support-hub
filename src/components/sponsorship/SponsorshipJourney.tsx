@@ -287,7 +287,7 @@ function MonthNode({
                 >
                   <Icon className="mx-auto size-5" strokeWidth={1.5} aria-hidden="true" />
                   <p className="mt-1.5 text-xs font-semibold">{label}</p>
-                  <p className="mt-0.5 text-[11px]">
+                  <p className="mt-0.5 text-xs">
                     {k === "paid"
                       ? st.paid
                         ? formatMoney(m.paid, currency)
@@ -433,7 +433,7 @@ function Receipt({
           تحقّق من إيصالٍ محفوظ
         </button>
       </div>
-      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+      <p className="mt-1 text-xs leading-5 text-muted-foreground">
         يُحسب من حقائق الشهر: الفواتير ومعاملاتها لدى المزوّد، والمدفوع، والتحويل، والوصول وتاريخه.
         إن تغيّر شيءٌ منها لاحقاً تغيّر الإيصال.
       </p>

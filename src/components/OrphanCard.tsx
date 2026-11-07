@@ -103,7 +103,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h2 className="text-base font-bold">
+          <h2 className="text-lg font-bold">
             <Link
               to="/orphans/$orphanId"
               params={{ orphanId: orphan.id }}
@@ -112,7 +112,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
               {orphan.display_name}
             </Link>
           </h2>
-          <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+          <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
             <span>{orphan.gender === "female" ? c.female : c.male}</span>
             {orphan.age_band !== "unknown" && (
               <span>

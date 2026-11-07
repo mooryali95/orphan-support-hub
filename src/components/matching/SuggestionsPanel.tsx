@@ -247,7 +247,7 @@ function SuggestionCard({ row }: { row: SuggestedOrphan }) {
       </ul>
 
       {!row.building && (
-        <p className="mt-2 text-[11px] leading-6 text-muted-foreground">
+        <p className="mt-2 text-xs leading-6 text-muted-foreground">
           برنامجه ينتظر مشرفاً معتمَداً أو إذناً موثَّقاً من جهته — وكفالتك تبقى نافعة، لكنّ البناء
           لا يتقدّم حتى يكتملا.
         </p>

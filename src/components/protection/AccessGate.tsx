@@ -221,7 +221,7 @@ export function AccessGate({
                   />
                   <span className="block text-sm font-semibold">{p.label}</span>
                   <span className="mt-1 block text-xs text-muted-foreground">{p.description}</span>
-                  <span className="mt-2 block text-[11px] text-muted-foreground">
+                  <span className="mt-2 block text-xs text-muted-foreground">
                     {p.scopes
                       .map((k) => catalog!.scopes.find((s) => s.key === k)?.label ?? k)
                       .join(" · ")}

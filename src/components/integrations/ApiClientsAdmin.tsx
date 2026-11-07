@@ -218,7 +218,7 @@ export function ApiClientsAdmin() {
               <div key={label} className="flex flex-wrap items-center gap-2">
                 <dt className="w-48 shrink-0 font-medium">{label}</dt>
                 <dd className="flex-1">
-                  <code className="rounded bg-secondary px-2 py-1 font-mono text-[11px]" dir="ltr">
+                  <code className="rounded bg-secondary px-2 py-1 font-mono text-xs" dir="ltr">
                     {value}
                   </code>
                 </dd>
@@ -253,7 +253,7 @@ export function ApiClientsAdmin() {
             >
               <div className="min-w-48 flex-1">
                 <p className="text-sm font-medium">{row.name}</p>
-                <p className="mt-1 font-mono text-[11px] text-muted-foreground" dir="ltr">
+                <p className="mt-1 font-mono text-xs text-muted-foreground" dir="ltr">
                   {row.client_key}
                 </p>
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -271,7 +271,7 @@ export function ApiClientsAdmin() {
 
               <div className="flex flex-wrap gap-1.5">
                 {row.scopes.map((s) => (
-                  <Badge key={s} variant="secondary" className="font-mono text-[10px]">
+                  <Badge key={s} variant="secondary" className="font-mono text-xs">
                     {s}
                   </Badge>
                 ))}

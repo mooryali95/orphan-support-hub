@@ -194,7 +194,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
               className={`block h-1.5 rounded-full ${i <= idx ? "bg-shore-thrive" : "bg-border"}`}
               title={s.label}
             />
-            <span className="mt-1 block text-[10px] text-muted-foreground">{s.label}</span>
+            <span className="mt-1 block text-xs text-muted-foreground">{s.label}</span>
           </li>
         ))}
       </ol>
@@ -232,7 +232,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
         />
       </div>
 
-      <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
         <Ruler className="size-3" aria-hidden="true" />
         القياس حكمٌ على طفل: يُكتب من هنا وحده، ولا يُعرض على الكافل.
       </p>

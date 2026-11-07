@@ -15,6 +15,7 @@ import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
+import { StatTile } from "@/components/kit/StatTile";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
@@ -174,7 +175,7 @@ function AdminPage() {
             >
               {label}
               {count !== null && count > 0 && (
-                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-[11px]">
+                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-xs">
                   {count}
                 </span>
               )}
@@ -468,20 +469,17 @@ function AdminPage() {
   );
 }
 
-const TONE: Record<string, string> = {
-  need: "text-shore-need",
-  bridge: "text-bridge-ink",
-  thrive: "text-shore-thrive",
-  muted: "text-muted-foreground",
-};
-
-function Stat({ label, value, tone }: { label: string; value: string; tone: string }) {
-  return (
-    <div className="border-border bg-card rounded-2xl border p-5">
-      <p className={`text-2xl font-extrabold ${TONE[tone] ?? TONE["need"]}`}>{value}</p>
-      <p className="text-muted-foreground mt-1 text-xs">{label}</p>
-    </div>
-  );
+// مؤشّر الإدارة هو StatTile نفسه (UI-13): رقمٌ فوق تسمية، بالألوان الدلالية.
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "need" | "thrive" | "bridge" | "muted";
+}) {
+  return <StatTile label={label} value={value} tone={tone === "bridge" ? "gold" : tone} />;
 }
 
 function Empty({ children }: { children: React.ReactNode }) {

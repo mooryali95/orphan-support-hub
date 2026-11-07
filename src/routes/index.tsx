@@ -651,7 +651,7 @@ function HomePage() {
                 >
                   <step.icon className="size-5" />
                 </span>
-                <p className={`mt-4 text-[11px] font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
+                <p className={`mt-4 text-xs font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
                 <h3 className="mt-1 font-bold">{c.ladder[i]![1]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
               </div>
@@ -705,8 +705,8 @@ function HomePage() {
                       <span
                         className={
                           program.kind === "qualification"
-                            ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-[11px] font-medium text-shore-thrive"
-                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-[11px] font-medium text-bridge-ink"
+                            ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-xs font-medium text-shore-thrive"
+                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-xs font-medium text-bridge-ink"
                         }
                       >
                         {program.kind === "qualification"
@@ -759,7 +759,7 @@ function HomePage() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
                   <Icon className="size-5" />
                 </span>
-                <p className="mt-4 text-[11px] font-bold text-muted-foreground">{c.ordinals[i]}</p>
+                <p className="mt-4 text-xs font-bold text-muted-foreground">{c.ordinals[i]}</p>
                 <h3 className="mt-1 font-bold">{c.custody[i]![0]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
               </li>

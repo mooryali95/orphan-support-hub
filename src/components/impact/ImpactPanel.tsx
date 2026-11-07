@@ -131,7 +131,7 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
                   {TIMELINE_LABELS[e.event_type] ?? e.event_type}
                   {e.detail && <span className="text-muted-foreground"> — {e.detail}</span>}
                 </p>
-                <p className="text-muted-foreground text-[11px]">{formatDate(e.created_at)}</p>
+                <p className="text-muted-foreground text-xs">{formatDate(e.created_at)}</p>
               </li>
             ))}
           </ol>

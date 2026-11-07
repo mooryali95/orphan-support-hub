@@ -26,11 +26,11 @@ export function PageSection({
     <section className={cn("mt-10 first:mt-0", className)} aria-labelledby={headingId}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id={headingId} className="text-lg font-bold">
+          <h2 id={headingId} className="text-xl font-bold">
             {title}
           </h2>
           {description && (
-            <p className="mt-1 max-w-2xl text-xs text-muted-foreground">{description}</p>
+            <p className="mt-1 max-w-2xl text-sm leading-7 text-muted-foreground">{description}</p>
           )}
         </div>
         {action}

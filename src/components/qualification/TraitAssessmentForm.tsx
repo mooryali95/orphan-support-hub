@@ -91,7 +91,7 @@ export function TraitAssessmentForm({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[11px] font-bold text-muted-foreground">مقياس السمات</p>
+        <p className="text-xs font-bold text-muted-foreground">مقياس السمات</p>
         <Button size="sm" variant="outline" onClick={() => setOpen((v) => !v)}>
           <Ruler className="size-3.5" aria-hidden="true" />
           {open ? "إغلاق" : "قياس جديد"}

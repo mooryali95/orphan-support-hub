@@ -318,7 +318,7 @@ export function SupportSheet({
           )}
         />
       )}
-      <p className="text-[11px] leading-5 text-muted-foreground">{t.pledgeNote}</p>
+      <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
       {result && !result.ok && (
         <p role="alert" className="text-sm text-destructive">
           {result.text}

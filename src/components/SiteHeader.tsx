@@ -72,7 +72,7 @@ export function SiteHeader() {
           <LanguageSwitch className="hidden sm:inline-flex" />
           {user && <NotificationBell />}
           {user ? (
-            <Button asChild size="sm">
+            <Button asChild>
               <Link to="/workspaces">{c.portals}</Link>
             </Button>
           ) : (
@@ -89,7 +89,7 @@ export function SiteHeader() {
                   </Button>
                 )}
               />
-              <Button asChild size="sm">
+              <Button asChild>
                 <Link to="/orphans">{c.sponsor}</Link>
               </Button>
             </>
@@ -100,7 +100,7 @@ export function SiteHeader() {
             aria-label={c.menu}
             aria-expanded={open}
             aria-controls="site-mobile-nav"
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-border md:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border md:hidden"
           >
             <Menu className="size-4" />
           </button>
