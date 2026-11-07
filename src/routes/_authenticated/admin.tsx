@@ -23,7 +23,7 @@ import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
+import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
 import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
 import { BRAND, pageTitle } from "@/config/brand";
 
@@ -71,7 +71,6 @@ const SECTIONS: Array<[string, Tab[]]> = [
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
-  const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("inbox");
   // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
@@ -410,28 +409,10 @@ function AdminPage() {
                       {org.license ?? "—"} — {org.email ?? "—"}
                     </p>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={async () => {
-                      const res = await decideOrg({ data: { id: org.id, decision: "approved" } });
-                      if (res.ok) toast.success("تم اعتماد الجهة");
-                      else toast.error(res.error ?? "تعذّر اعتماد الجهة");
-                      refresh();
-                    }}
-                  >
-                    اعتماد
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={async () => {
-                      const res = await decideOrg({ data: { id: org.id, decision: "rejected" } });
-                      if (res.ok) toast.success("تم رفض الطلب");
-                      else toast.error(res.error ?? "تعذّر رفض الطلب");
-                      refresh();
-                    }}
-                  >
-                    رفض
+                  {/* القرار من الصندوق: هناك بيانات التحقّق ووثائقه وما ينقص،
+                      لا ضغطة اعتمادٍ عمياء هنا (PRD-16). */}
+                  <Button size="sm" variant="outline" onClick={() => setTab("inbox")}>
+                    راجِع في صندوق القرارات
                   </Button>
                 </div>
               ))}

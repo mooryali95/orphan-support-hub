@@ -77,11 +77,20 @@ function WorkspacesPage() {
             to="/guardian"
           />
         )}
-        {ws.care_org && (
+        {ws.care_org ? (
           <Portal
             icon={<Building2 className="size-5" />}
-            title="المؤسسة"
+            title="جهة الرعاية"
             text="ملفّات جهتك ومستفيدوها."
+            to="/org"
+          />
+        ) : (
+          // أيّ حسابٍ يُسجّل جهته من هنا (UX-03): الطلب يُنشئها «بانتظار
+          // الاعتماد»، ولا تُرفع ملفات أطفالٍ قبل أن تعتمدها الإدارة.
+          <Portal
+            icon={<Building2 className="size-5" />}
+            title="سجّل جهة رعاية"
+            text="جمعية أو دار ترعى أطفالاً؟ قدّم بياناتها ووثيقة تسجيلها للاعتماد."
             to="/org"
           />
         )}
