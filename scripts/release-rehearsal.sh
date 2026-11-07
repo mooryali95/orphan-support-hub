@@ -2,6 +2,10 @@
 # بروفة النشر على البثّ — قبل أن يلمس ملفُّ نشرٍ القاعدة الحيّة.
 #
 #   DATABASE_URL=postgres://…/قاعدة_فارغة scripts/release-rehearsal.sh supabase/release/bundle-after-20261001100000.sql
+#   # حزمةٌ تبني على حزمةٍ لم تُطبَّق على البثّ بعد: مرّرهما بترتيب النشر،
+#   # فتُطبَّق كلّها بالترتيب، وإعادة التشغيل تُجرَّب على الأخيرة.
+#   DATABASE_URL=… scripts/release-rehearsal.sh supabase/release/bundle-after-20261001100000.sql \
+#                                               supabase/release/bundle-after-20261106140000.sql
 #
 # `db-test.sh` يبني القاعدة من الهجرات بترتيب المستودع؛ والبثّ لم يُبنَ هكذا.
 # فهذا السكربت يعيد الطريق الذي سلكه البثّ فعلاً (supabase/release/README.md):
@@ -24,7 +28,9 @@
 # يفشل عند أول خطأ. لا يُشغَّل على قاعدةٍ فيها بيانات.
 set -euo pipefail
 
-bundle="${1:?مرّر مسار ملف النشر}"
+: "${1:?مرّر مسار ملف النشر}"
+bundles=("$@")
+bundle="${bundles[-1]}"
 DB="${DATABASE_URL:?عيّن DATABASE_URL لقاعدةٍ فارغة}"
 # DROP ... IF EXISTS تُصدر NOTICE على كلّ كائنٍ جديد؛ ضجيجٌ لا قيمة له هنا.
 export PGOPTIONS="${PGOPTIONS:-} -c client_min_messages=warning"
@@ -123,8 +129,12 @@ smoke() {
 echo "▸ فحص الدخان قبل الحزمة (للعلم: false هنا ما تُصلحه الحزمة)"
 smoke | awk -F'|' '$2 == "f" { print "  ✗ " $1 }'
 
-echo "▸ تطبيق $(basename "$bundle")(${APPLY:-file})"
-apply_bundle
+last="$bundle"
+for bundle in "${bundles[@]}"; do
+  echo "▸ تطبيق $(basename "$bundle")(${APPLY:-file})"
+  apply_bundle
+done
+bundle="$last"
 after=$("${PSQL[@]}" -Atc "SELECT count(*) FROM supabase_migrations.schema_migrations")
 echo "  سُجّلت $((after - count)) هجرة؛ أحدث رقم: $("${PSQL[@]}" -Atc "SELECT max(version) FROM supabase_migrations.schema_migrations")"
 
