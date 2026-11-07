@@ -13,15 +13,20 @@ import {
   Users,
 } from "lucide-react";
 
+import { toast } from "sonner";
+
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  DONOR_ROLE_LABELS,
+  getMyDonorInvitations,
   getMyWorkspaces,
   OFFICE_ROLE_LABELS,
   registerDonorEntity,
+  respondDonorInvitation,
 } from "@/lib/workspaces.functions";
 import { BRAND, pageTitle } from "@/config/brand";
 
@@ -174,6 +179,7 @@ function WorkspacesPage() {
 
       <section className="mt-10">
         <h2 className="text-lg font-bold">الجهات المانحة</h2>
+        <DonorInvitations />
         {ws.donor_entities.length > 0 && (
           <ul className="mt-3 grid gap-3 md:grid-cols-2">
             {ws.donor_entities.map((e) => (
@@ -200,6 +206,69 @@ function WorkspacesPage() {
         <RegisterEntity />
       </section>
     </DashboardShell>
+  );
+}
+
+/** دعواتٌ إلى جهاتٍ مانحة: العضوية بقبول صاحب البريد وحده (DB-10). */
+function DonorInvitations() {
+  const fetchInvites = useServerFn(getMyDonorInvitations);
+  const respond = useServerFn(respondDonorInvitation);
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState<string | null>(null);
+  const { data: invites = [] } = useQuery({
+    queryKey: ["donor-invitations"],
+    queryFn: () => fetchInvites(),
+  });
+  if (invites.length === 0) return null;
+
+  async function answer(entityId: string, accept: boolean) {
+    setBusy(entityId);
+    const res = await respond({ data: { entityId, accept } });
+    setBusy(null);
+    if (!res.ok) {
+      toast.error("تعذّر تسجيل ردّك — ربما انتهت الدعوة");
+    } else {
+      toast.success(accept ? "انضممت إلى الجهة" : "رُدّت الدعوة");
+    }
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["donor-invitations"] }),
+      qc.invalidateQueries({ queryKey: ["workspaces"] }),
+    ]);
+  }
+
+  return (
+    <ul className="mt-3 grid gap-3 md:grid-cols-2" aria-label="دعوات الجهات المانحة">
+      {invites.map((i) => (
+        <li
+          key={i.entity_id}
+          className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-dashed border-primary/50 bg-background p-4"
+        >
+          <span className="min-w-0">
+            <span className="block font-semibold">{i.entity_name}</span>
+            <span className="block text-xs text-muted-foreground">
+              دعوةٌ بدور «{DONOR_ROLE_LABELS[i.role]}»
+            </span>
+          </span>
+          <span className="flex gap-2">
+            <Button
+              size="sm"
+              disabled={busy === i.entity_id}
+              onClick={() => answer(i.entity_id, true)}
+            >
+              قبول
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={busy === i.entity_id}
+              onClick={() => answer(i.entity_id, false)}
+            >
+              ردّ
+            </Button>
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
