@@ -17,6 +17,7 @@ import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
+import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
 import { SourcesPanel } from "@/components/integrity/SourcesPanel";
@@ -118,8 +119,8 @@ function AdminPage() {
     ["inbox", "صندوق القرارات", null],
     ["platform", "سجلّات المنصّة", null],
     ["overview", "نظرة عامة", null],
-    ["orphans", "الأيتام", o.orphan_rows.length],
-    ["sponsors", "الكفلاء", o.sponsor_rows.length],
+    ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
+    ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
@@ -269,34 +270,13 @@ function AdminPage() {
               </p>
             )}
           </section>
+
+          <AdminExports />
         </div>
       )}
 
-      {tab === "orphans" && (
-        <Table
-          head={["الملف", "الجهة", "الاحتياج", "المموَّل", "المتبقّي", "الكفلاء", "التغطية"]}
-          empty="لا توجد ملفات منشورة."
-          rows={o.orphan_rows.map((r) => [
-            <div key="n">
-              <p className="font-medium">{r.name}</p>
-              <p className="text-muted-foreground text-xs">
-                {r.code}
-                {r.city ? ` — ${r.city}` : ""}
-              </p>
-            </div>,
-            <span key="o" className="text-xs">
-              {r.org ?? "—"}
-            </span>,
-            formatMoney(r.need, cur),
-            formatMoney(r.funded, cur),
-            <span key="g" className={r.gap > 0 ? "text-bridge-ink font-bold" : "text-shore-thrive"}>
-              {r.gap > 0 ? formatMoney(r.gap, cur) : "مكتمل"}
-            </span>,
-            String(r.sponsors),
-            <CrossingProgress key="p" percent={fundingPercent(r.need, r.funded)} />,
-          ])}
-        />
-      )}
+      {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
+      {tab === "orphans" && <AdminOrphansList currency={cur} />}
 
       {tab === "monitoring" && (
         <>
@@ -305,27 +285,7 @@ function AdminPage() {
         </>
       )}
 
-      {tab === "sponsors" && (
-        <Table
-          head={["الكافل", "كفالات", "نشطة", "التزام شهري", "المسدَّد", "منذ"]}
-          empty="لا يوجد كفلاء بعد."
-          rows={o.sponsor_rows.map((r) => [
-            <div key="s">
-              <p className="font-medium">{r.name || "—"}</p>
-              <p className="text-muted-foreground text-xs" dir="ltr">
-                {r.email ?? "—"}
-              </p>
-            </div>,
-            String(r.sponsorships),
-            String(r.active),
-            formatMoney(r.monthly, cur),
-            <span key="p" className="text-shore-thrive font-bold">
-              {formatMoney(r.paid, cur)}
-            </span>,
-            formatDate(r.since),
-          ])}
-        />
-      )}
+      {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
@@ -470,49 +430,5 @@ function Empty({ children }: { children: React.ReactNode }) {
     <p className="border-border text-muted-foreground rounded-2xl border border-dashed p-6 text-center text-sm">
       {children}
     </p>
-  );
-}
-
-function Table({
-  head,
-  rows,
-  empty,
-}: {
-  head: string[];
-  rows: React.ReactNode[][];
-  empty: string;
-}) {
-  if (rows.length === 0) {
-    return (
-      <div className="mt-8">
-        <Empty>{empty}</Empty>
-      </div>
-    );
-  }
-  return (
-    <div className="border-border mt-8 overflow-x-auto rounded-2xl border">
-      <table className="bg-card w-full min-w-[720px] border-collapse text-sm">
-        <thead>
-          <tr className="bg-secondary/60 border-border border-b">
-            {head.map((h) => (
-              <th key={h} className="text-muted-foreground px-4 py-3 text-start text-xs font-bold">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((cells, i) => (
-            <tr key={i} className="border-border/60 border-b last:border-0">
-              {cells.map((c, j) => (
-                <td key={j} className="px-4 py-3 align-middle tabular-nums">
-                  {c}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
   );
 }

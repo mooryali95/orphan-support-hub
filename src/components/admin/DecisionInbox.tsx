@@ -6,6 +6,7 @@ import { Check, ExternalLink, Inbox, Loader2, X } from "lucide-react";
 
 import { EmptyState } from "@/components/kit/EmptyState";
 import { AccessDecision } from "@/components/protection/AccessDecision";
+import { TransferReconcile } from "@/components/admin/TransferReconcile";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -193,7 +194,7 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
   const { data: raw } = useQuery({
     queryKey: ["decision-context", item.kind, item.id],
     queryFn: () => fetchContext({ data: { kind: item.kind, id: item.id } }),
-    enabled: item.kind !== "access",
+    enabled: item.kind !== "access" && item.kind !== "transfer",
   });
   const ctx = raw ? (JSON.parse(raw) as Record<string, unknown> | null) : null;
   const { data: access } = useQuery({
@@ -263,7 +264,12 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
         </SheetDescription>
       </SheetHeader>
 
-      {item.kind === "access" ? (
+      {item.kind === "transfer" ? (
+        // التحويل لا يُعتمد بزرّ: يُطابَق بما وصل (UX-15).
+        <div className="mt-6">
+          <TransferReconcile sponsorshipId={item.id} onDone={onDone} />
+        </div>
+      ) : item.kind === "access" ? (
         accessRow ? (
           <div className="mt-6">
             <p className="whitespace-pre-line rounded-xl bg-secondary/60 p-3 text-sm leading-7">

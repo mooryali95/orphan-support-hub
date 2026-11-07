@@ -1,23 +1,22 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { listAwaitingTransfers, confirmManualTransfer } from "@/lib/manual-payments.functions";
+import { listAwaitingTransfers } from "@/lib/manual-payments.functions";
+import { TransferReconcile } from "@/components/admin/TransferReconcile";
 import { formatDate, formatMoney } from "@/lib/format";
 
 /**
  * تحويلات بانتظار التأكيد.
  *
  * بلا هذه الشاشة تبقى كفالة التحويل البنكي عالقة عند «بانتظار الدفع»
- * وإن وصل المال، لأن المزوّد اليدوي لا يرسل webhook يُفعّلها.
+ * وإن وصل المال، لأن المزوّد اليدوي لا يرسل webhook يُفعّلها. والتفعيل
+ * مطابقةٌ بما وصل لا ضغطة (UX-15): `TransferReconcile`.
  */
 export function AwaitingTransfers() {
   const fetchRows = useServerFn(listAwaitingTransfers);
-  const confirm = useServerFn(confirmManualTransfer);
-  const queryClient = useQueryClient();
-  const [busy, setBusy] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["awaiting-transfers"],
@@ -33,22 +32,6 @@ export function AwaitingTransfers() {
   }
 
   const rows = (data?.allowed && data.rows) || [];
-
-  async function onConfirm(id: string) {
-    setBusy(id);
-    try {
-      const res = await confirm({ data: { sponsorshipId: id } });
-      if (!res.ok) {
-        toast.error(res.error ?? "تعذّر تأكيد التحويل");
-        return;
-      }
-      toast.success("تم تأكيد الاستلام وتفعيل الكفالة");
-      queryClient.invalidateQueries({ queryKey: ["awaiting-transfers"] });
-      queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
-    } finally {
-      setBusy(null);
-    }
-  }
 
   return (
     <section>
@@ -72,10 +55,19 @@ export function AwaitingTransfers() {
                 {formatDate(r.createdAt)}
               </p>
             </div>
-            <Button size="sm" onClick={() => onConfirm(r.id)} disabled={busy === r.id}>
-              {busy === r.id && <Loader2 className="size-4 animate-spin" />}
-              تأكيد الاستلام وتفعيل الكفالة
+            <Button
+              size="sm"
+              variant={open === r.id ? "outline" : "default"}
+              aria-expanded={open === r.id}
+              onClick={() => setOpen(open === r.id ? null : r.id)}
+            >
+              {open === r.id ? "إغلاق" : "مطابقة التحويل"}
             </Button>
+            {open === r.id && (
+              <div className="basis-full">
+                <TransferReconcile sponsorshipId={r.id} onDone={() => setOpen(null)} />
+              </div>
+            )}
           </div>
         ))}
       </div>
