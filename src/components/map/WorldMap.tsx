@@ -32,7 +32,26 @@ import {
 } from "./gesture";
 import { COHORT_MIN, type CountryStat, type MapStats, type RegionStat } from "./demo-stats";
 import type { MapSourceStatus } from "./map-source";
-import { DEFAULT_LAYER, intensityOf, type MapLayer, metricOf, metricText, rankOf } from "./layers";
+import {
+  DEFAULT_LAYER,
+  intensityOf,
+  isNetworkLayer,
+  type MapLayer,
+  metricOf,
+  metricText,
+  rankOf,
+} from "./layers";
+import { interactiveCodes, kindCounts, networkPaint } from "./network-layer";
+import {
+  ExpansionList,
+  NetworkCountryCard,
+  NetworkIntro,
+  NetworkMarkers,
+  NetworkPatterns,
+  NetworkShapes,
+  PresenceList,
+} from "./NetworkLayer";
+import { networkCopy } from "./network-copy";
 
 /* ── البيانات ──────────────────────────────────────────────────────────── */
 
@@ -185,7 +204,12 @@ const LAYER_FILL: Record<MapLayer, string> = {
   waiting: "fill-primary",
   impact: "fill-shore-thrive",
   gap: "fill-shore-need",
+  // طبقتا الشبكة ترسمان بأنفسهما (`NetworkShapes`) — لا تلوين بأعداد المنصّة.
+  network: "fill-primary",
+  needs: "fill-office-gap",
 };
+/** طبقتا الشبكة لا تقرآن أعداد المنصّة: الدول تحتها أرضٌ محايدة. */
+const NO_STATS: MapStats = {};
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(false);
@@ -424,7 +448,10 @@ export function WorldMap({
   layer = DEFAULT_LAYER,
   onLayer,
   cardCompact = false,
+  showUnconfirmed = false,
 }: {
+  /** الإدارة ترى في «الشبكة» ما لم يُؤكَّد بعد (محايداً) لتراجعه؛ الزوّار لا. */
+  showUnconfirmed?: boolean;
   /** بطاقةٌ مختصرة (الاسم والعدد ثم الفعل): حين يكون الفعل نفسه مساراً كاملاً كالدعم. */
   cardCompact?: boolean;
   stats: MapStats;
@@ -449,7 +476,19 @@ export function WorldMap({
 }) {
   const locale = useLocale();
   const c$ = copyOf(COPY, locale);
+  const n$ = networkCopy(locale);
   const source: MapSourceStatus = status ?? (demo ? "demo" : "ready");
+  // طبقتا الشبكة: ما يُرسم وما يُفتح من البيانات البحثية لا من أعداد المنصّة.
+  const netLayer = isNetworkLayer(layer) ? layer : null;
+  const net = useMemo(
+    () => (netLayer ? networkPaint(netLayer, { showUnconfirmed }) : null),
+    [netLayer, showUnconfirmed],
+  );
+  const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
+  const activeSet = useMemo(
+    () => (net ? interactiveCodes(net) : new Set(Object.keys(stats))),
+    [net, stats],
+  );
   const { data: rawWorld } = useQuery(worldQuery);
   const { data: rawRegions } = useRegions(selection.country);
   // الأسماء بلغة الواجهة: الدول من المتصفّح، والمناطق من اسمها اللاتيني في الملفّ.
@@ -540,6 +579,10 @@ export function WorldMap({
     dotsRef.current?.querySelectorAll<SVGGElement>("[data-at]").forEach((g) => {
       g.setAttribute("transform", `translate(${g.dataset["at"]}) scale(${unit})`);
     });
+    // تخطيط «تحتاج مكتباً» بعرضٍ ثابت على الشاشة مهما كبّرنا.
+    svg.querySelectorAll<SVGPatternElement>("pattern[data-hatch]").forEach((p) => {
+      p.setAttribute("patternTransform", `rotate(45) scale(${unit})`);
+    });
   }, []);
 
   // الحاوية تحدّد النسبة؛ والنسبة تحدّد إطار العالم.
@@ -570,7 +613,7 @@ export function WorldMap({
     else if (country) v = fit(country.b, ah / aw, 1.35, 2);
     else if (ah / aw > 0.8) {
       // الجوال طوليّ: العالم كاملاً يصغر حتى لا يُرى. نبدأ من حيث الملفّات.
-      const act = world.countries.filter((c) => stats[c.c]);
+      const act = world.countries.filter((c) => activeSet.has(c.c));
       const x0 = Math.min(...act.map((c) => c.b[0])),
         y0 = Math.min(...act.map((c) => c.b[1])),
         x1 = Math.max(...act.map((c) => c.b[0] + c.b[2])),
@@ -582,7 +625,7 @@ export function WorldMap({
     const unit = v.w / aw;
     // في RTL البطاقة على اليمين (البداية): نمدّ الإطار يميناً بعرضها.
     return { x: v.x, y: v.y - inset.top * unit, w: size.w * unit, h: size.h * unit };
-  }, [world, country, region, size, stats, collapsed]);
+  }, [world, country, region, size, activeSet, collapsed]);
 
   /* ── الإيماءات: قرصةٌ وسحبٌ وعجلة ──
    * تُحدَّث `view.current` مباشرةً بلا إعادة رسم React — الطبقات لا تتبع
@@ -872,13 +915,13 @@ export function WorldMap({
       if (!from) return;
       const next = nearestInDirection(
         { x: from.p[0], y: from.p[1] },
-        world.countries.filter((c) => stats[c.c] && c.c !== code),
+        world.countries.filter((c) => activeSet.has(c.c) && c.c !== code),
         (c) => ({ x: c.p[0], y: c.p[1] }),
         dir,
       );
       if (next) focusShape("country", next.c);
     },
-    [world, stats, pickCountry],
+    [world, activeSet, pickCountry],
   );
   const onRegionKey = useCallback(
     (e: React.KeyboardEvent<SVGPathElement>, id: string) => {
@@ -966,13 +1009,14 @@ export function WorldMap({
             }
             aria-description={bare ? undefined : c$.hint}
           >
+            {net && <NetworkPatterns />}
             {/* الهبوط الأوّل: العالم يستقرّ من تكبيرٍ خفيف. */}
             <g className="map-land">
               <CountriesLayer
                 countries={world.countries}
-                stats={stats}
+                stats={net ? NO_STATS : stats}
                 focus={selection.country}
-                revealed={!!country && shownFor === country.c && regions.length > 0}
+                revealed={!net && !!country && shownFor === country.c && regions.length > 0}
                 near={nearBox}
                 onPick={pickCountry}
                 onHover={prefetchRegions}
@@ -980,9 +1024,19 @@ export function WorldMap({
                 label={c$.countryButton}
                 layer={layer}
               />
+              {net && (
+                <NetworkShapes
+                  countries={world.countries}
+                  paint={net}
+                  focus={selection.country}
+                  onPick={pickCountry}
+                  onHover={prefetchRegions}
+                  onKey={onCountryKey}
+                />
+              )}
             </g>
             {/* المناطق تُرسم بعد الهبوط — لا تُثقل الطيران — ثم تظهر بالتتابع. */}
-            {country && regions.length > 0 && shownFor === country.c && (
+            {!net && country && regions.length > 0 && shownFor === country.c && (
               <RegionsLayer
                 key={country.c}
                 regions={regions}
@@ -999,31 +1053,41 @@ export function WorldMap({
               ref={dotsRef}
               className={cn("transition-opacity duration-500", country && "opacity-0")}
             >
-              {activeCountries.map((c, i) => (
-                // النقطة نفسها هدف اللمس: الدولة الصغيرة على الهاتف بضعة بكسلات،
-                // والنقطة ٢٨ بكسلاً فتُصاب بالإبهام.
-                <g
-                  key={c.c}
-                  data-at={`${c.p[0]} ${c.p[1]}`}
-                  className={cn(
-                    "cursor-pointer",
-                    country ? "pointer-events-none" : "pointer-events-auto",
-                  )}
-                  onClick={() => pickCountry(c.c)}
-                  onPointerEnter={() => prefetchRegions(c.c)}
-                >
-                  <g className="map-dot" style={{ ["--i" as string]: i }}>
-                    <circle r={14} className="map-pulse fill-bridge/30" />
-                    <circle r={5} className="fill-bridge stroke-background" strokeWidth={2} />
+              {net ? (
+                <NetworkMarkers
+                  countries={world.countries}
+                  paint={net}
+                  interactive={!country}
+                  onPick={pickCountry}
+                  onHover={prefetchRegions}
+                />
+              ) : (
+                activeCountries.map((c, i) => (
+                  // النقطة نفسها هدف اللمس: الدولة الصغيرة على الهاتف بضعة بكسلات،
+                  // والنقطة ٢٨ بكسلاً فتُصاب بالإبهام.
+                  <g
+                    key={c.c}
+                    data-at={`${c.p[0]} ${c.p[1]}`}
+                    className={cn(
+                      "cursor-pointer",
+                      country ? "pointer-events-none" : "pointer-events-auto",
+                    )}
+                    onClick={() => pickCountry(c.c)}
+                    onPointerEnter={() => prefetchRegions(c.c)}
+                  >
+                    <g className="map-dot" style={{ ["--i" as string]: i }}>
+                      <circle r={14} className="map-pulse fill-bridge/30" />
+                      <circle r={5} className="fill-bridge stroke-background" strokeWidth={2} />
+                    </g>
                   </g>
-                </g>
-              ))}
+                ))
+              )}
             </g>
           </svg>
         )}
 
         {/* وسوم المناطق على الخارطة بعد أن تستقرّ: الاسم والعدد، وتُضغط. */}
-        {!bare && country && !region && settled && view.current && (
+        {!bare && !net && country && !region && settled && view.current && (
           <div className="pointer-events-none absolute inset-0">
             {placeLabels(rankedRegions, view.current, size).map(({ r, s: rs, x, y }, i) => {
               return (
@@ -1125,16 +1189,21 @@ export function WorldMap({
                 <div
                   role="group"
                   aria-label={c$.layers}
-                  className="flex shrink-0 items-center gap-0.5 rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur"
+                  className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur [scrollbar-width:none]"
                 >
-                  <Layers className="ms-2 size-4 text-muted-foreground" aria-hidden="true" />
+                  <Layers
+                    className="ms-2 size-4 shrink-0 text-muted-foreground"
+                    aria-hidden="true"
+                  />
                   {(
                     [
+                      ["network", n$.layerNetwork, n$.layerNetworkHint],
+                      ["needs", n$.layerNeeds, n$.layerNeedsHint],
                       ["waiting", c$.layerWaiting, c$.layerWaitingHint],
                       ["impact", c$.layerImpact, c$.layerImpactHint],
                       ["gap", c$.layerGap, c$.layerGapHint],
                     ] as const
-                  ).map(([key, name, hint]) => (
+                  ).map(([key, name, hint], i) => (
                     <button
                       key={key}
                       type="button"
@@ -1142,8 +1211,14 @@ export function WorldMap({
                       title={hint}
                       onClick={() => onLayer(key)}
                       className={cn(
-                        "min-h-8 rounded-full px-3 transition-colors",
-                        layer === key ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
+                        "min-h-8 shrink-0 rounded-full px-3 whitespace-nowrap transition-colors",
+                        // فاصلٌ رفيع بين طبقتي الشبكة (بحثية) وطبقات المنصّة (حيّة).
+                        i === 2 && "ms-1.5",
+                        layer === key
+                          ? key === "needs"
+                            ? "bg-office-gap text-card"
+                            : "bg-primary text-primary-foreground"
+                          : "hover:bg-secondary",
                       )}
                     >
                       {name}
@@ -1156,7 +1231,7 @@ export function WorldMap({
                   {c$.demo}
                 </span>
               )}
-              {source === "unavailable" && (
+              {source === "unavailable" && !net && (
                 <span
                   role="status"
                   className="rounded-full bg-card/85 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur"
@@ -1196,44 +1271,50 @@ export function WorldMap({
               key="world"
               className="map-rise pointer-events-none absolute inset-x-0 bottom-0 p-4 text-center md:p-10"
             >
-              <p className="font-serif text-3xl font-bold text-primary md:text-5xl">
-                {intro?.title ?? c$.pick}
-              </p>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground md:text-base">
-                {intro?.text ??
-                  (source === "loading" ? (
-                    // هيكلٌ بلا رقم: لا يُعرض عددٌ لم يصل بعد.
-                    <span
-                      role="status"
-                      aria-busy="true"
-                      className="inline-flex flex-col items-center gap-2"
-                    >
-                      <span className="sr-only">{c$.loading}</span>
-                      <span
-                        aria-hidden="true"
-                        className="block h-4 w-64 max-w-full animate-pulse rounded-full bg-muted"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className="block h-4 w-40 max-w-full animate-pulse rounded-full bg-muted"
-                      />
-                    </span>
-                  ) : source === "unavailable" ? (
-                    c$.unavailableHere
-                  ) : (
-                    <>
-                      {c$.introA}{" "}
-                      <strong className="text-foreground tabular-nums">
-                        {shown(totals.total, locale)}
-                      </strong>{" "}
-                      {c$.introB}{" "}
-                      <strong className="text-foreground">
-                        {c$.countries(activeCountries.length)}
-                      </strong>
-                      .
-                    </>
-                  ))}
-              </p>
+              {net && netLayer && netCounts && !intro ? (
+                <NetworkIntro layer={netLayer} counts={netCounts} admin={showUnconfirmed} />
+              ) : (
+                <>
+                  <p className="font-serif text-3xl font-bold text-primary md:text-5xl">
+                    {intro?.title ?? c$.pick}
+                  </p>
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground md:text-base">
+                    {intro?.text ??
+                      (source === "loading" ? (
+                        // هيكلٌ بلا رقم: لا يُعرض عددٌ لم يصل بعد.
+                        <span
+                          role="status"
+                          aria-busy="true"
+                          className="inline-flex flex-col items-center gap-2"
+                        >
+                          <span className="sr-only">{c$.loading}</span>
+                          <span
+                            aria-hidden="true"
+                            className="block h-4 w-64 max-w-full animate-pulse rounded-full bg-muted"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="block h-4 w-40 max-w-full animate-pulse rounded-full bg-muted"
+                          />
+                        </span>
+                      ) : source === "unavailable" ? (
+                        c$.unavailableHere
+                      ) : (
+                        <>
+                          {c$.introA}{" "}
+                          <strong className="text-foreground tabular-nums">
+                            {shown(totals.total, locale)}
+                          </strong>{" "}
+                          {c$.introB}{" "}
+                          <strong className="text-foreground">
+                            {c$.countries(activeCountries.length)}
+                          </strong>
+                          .
+                        </>
+                      ))}
+                  </p>
+                </>
+              )}
             </div>
           )}
 
@@ -1244,7 +1325,9 @@ export function WorldMap({
               aria-live="polite"
               data-collapsed={collapsed || undefined}
               className={cn(
-                "map-rise map-sheet absolute inset-x-3 bottom-3 overflow-y-auto overscroll-contain rounded-3xl bg-card/95 p-5 pt-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96 md:overflow-visible md:pt-5",
+                "map-rise map-sheet absolute inset-x-3 bottom-3 overflow-y-auto overscroll-contain rounded-3xl bg-card/95 p-5 pt-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96 md:pt-5",
+                // بطاقة الشبكة أطول (ثلاث كتل): تتمرّر داخلها على الحاسوب أيضاً.
+                net ? "md:top-20 md:overflow-y-auto" : "md:overflow-visible",
                 collapsed ? "max-h-36" : "max-h-[42dvh] md:max-h-none",
               )}
             >
@@ -1298,129 +1381,142 @@ export function WorldMap({
               </div>
 
               {(() => {
-                const s = region ? rStat : cStat;
-                // بلا أرقامٍ بعد (تحميل أو تعذّر): لا يُقال «لا ملفّات هنا» وهو غير معروف.
-                if (!s)
+                // في طبقتي الشبكة تصير أعداد المنصّة الكتلة الثالثة بحجمٍ مختصر.
+                const compact = cardCompact || !!net;
+                const platform = (() => {
+                  const s = region ? rStat : cStat;
+                  // بلا أرقامٍ بعد (تحميل أو تعذّر): لا يُقال «لا ملفّات هنا» وهو غير معروف.
+                  if (!s)
+                    return (
+                      <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                        {source === "loading"
+                          ? c$.loading
+                          : source === "unavailable"
+                            ? c$.unavailableHere
+                            : c$.none}
+                      </p>
+                    );
+                  // التقسيم يأتي من القاعدة محجوباً إن صغر أحد شقّيه.
+                  const split = s.total != null && s.sponsored != null;
+                  const need = split ? s.total! - s.sponsored! : null;
+                  const pct = split ? Math.round((s.sponsored! / Math.max(1, s.total!)) * 100) : 0;
+                  const small = s.small || s.total == null;
                   return (
-                    <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                      {source === "loading"
-                        ? c$.loading
-                        : source === "unavailable"
-                          ? c$.unavailableHere
-                          : c$.none}
-                    </p>
-                  );
-                // التقسيم يأتي من القاعدة محجوباً إن صغر أحد شقّيه.
-                const split = s.total != null && s.sponsored != null;
-                const need = split ? s.total! - s.sponsored! : null;
-                const pct = split ? Math.round((s.sponsored! / Math.max(1, s.total!)) * 100) : 0;
-                const small = s.small || s.total == null;
-                return (
-                  <>
-                    <p className={cn("flex items-baseline gap-2", cardCompact ? "mt-1" : "mt-4")}>
-                      <span
-                        className={cn(
-                          "font-extrabold text-primary",
-                          cardCompact ? "text-3xl" : "text-5xl",
-                        )}
-                      >
-                        {small ? shown(null, locale) : <CountUp to={s.total!} reduce={reduce} />}
-                      </span>
-                      <span className="text-sm text-muted-foreground">{c$.verified}</span>
-                    </p>
-                    {split && !cardCompact && (
-                      <>
-                        <div
-                          className="mt-4 h-2 overflow-hidden rounded-full bg-secondary"
-                          role="img"
-                          aria-label={c$.pctSponsored(pct)}
+                    <>
+                      <p className={cn("flex items-baseline gap-2", compact ? "mt-1" : "mt-4")}>
+                        <span
+                          className={cn(
+                            "font-extrabold text-primary",
+                            compact ? "text-3xl" : "text-5xl",
+                          )}
                         >
+                          {small ? shown(null, locale) : <CountUp to={s.total!} reduce={reduce} />}
+                        </span>
+                        <span className="text-sm text-muted-foreground">{c$.verified}</span>
+                      </p>
+                      {split && !compact && (
+                        <>
                           <div
-                            className="map-grow h-full rounded-full bg-primary"
-                            style={{ width: `${pct}%` }}
-                          />
+                            className="mt-4 h-2 overflow-hidden rounded-full bg-secondary"
+                            role="img"
+                            aria-label={c$.pctSponsored(pct)}
+                          >
+                            <div
+                              className="map-grow h-full rounded-full bg-primary"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <dl className="mt-2 flex justify-between text-sm">
+                            <div className="flex gap-1">
+                              <dt className="text-muted-foreground">{c$.sponsored}</dt>
+                              <dd className="font-semibold tabular-nums">
+                                {shown(s.sponsored, locale)}
+                              </dd>
+                            </div>
+                            <div className="flex gap-1">
+                              <dt className="text-muted-foreground">{c$.waiting}</dt>
+                              <dd className="font-semibold tabular-nums text-bridge-ink">
+                                {shown(need, locale)}
+                              </dd>
+                            </div>
+                          </dl>
+                        </>
+                      )}
+                      {!compact && layer === "gap" && s.gap != null && (
+                        <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                          <span className="text-muted-foreground">{c$.gap}</span>
+                          <span className="font-semibold tabular-nums text-shore-need">
+                            {formatMoney(s.gap, s.currency ?? "USD", locale)}
+                          </span>
+                        </p>
+                      )}
+                      {!compact && layer === "impact" && s.delivered != null && (
+                        <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
+                          <span className="text-muted-foreground">{c$.delivered}</span>
+                          <span className="font-semibold tabular-nums">
+                            {shown(s.delivered, locale)}
+                          </span>
+                        </p>
+                      )}
+                      {(small || !split) && !compact && (
+                        <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                          {c$.cohort(COHORT_MIN)}
+                        </p>
+                      )}
+                      {action ? (
+                        <div className={compact ? "mt-3" : "mt-5"}>
+                          {action({
+                            code: country.c,
+                            countryValue: cStat?.value ?? null,
+                            regionValue: rStat?.value ?? null,
+                            regionName: region?.n ?? null,
+                          })}
                         </div>
-                        <dl className="mt-2 flex justify-between text-sm">
-                          <div className="flex gap-1">
-                            <dt className="text-muted-foreground">{c$.sponsored}</dt>
-                            <dd className="font-semibold tabular-nums">
-                              {shown(s.sponsored, locale)}
-                            </dd>
-                          </div>
-                          <div className="flex gap-1">
-                            <dt className="text-muted-foreground">{c$.waiting}</dt>
-                            <dd className="font-semibold tabular-nums text-bridge-ink">
-                              {shown(need, locale)}
-                            </dd>
-                          </div>
-                        </dl>
-                      </>
-                    )}
-                    {!cardCompact && layer === "gap" && s.gap != null && (
-                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
-                        <span className="text-muted-foreground">{c$.gap}</span>
-                        <span className="font-semibold tabular-nums text-shore-need">
-                          {formatMoney(s.gap, s.currency ?? "USD", locale)}
-                        </span>
-                      </p>
-                    )}
-                    {!cardCompact && layer === "impact" && s.delivered != null && (
-                      <p className="mt-3 flex items-baseline justify-between gap-2 text-sm">
-                        <span className="text-muted-foreground">{c$.delivered}</span>
-                        <span className="font-semibold tabular-nums">
-                          {shown(s.delivered, locale)}
-                        </span>
-                      </p>
-                    )}
-                    {(small || !split) && !cardCompact && (
-                      <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                        {c$.cohort(COHORT_MIN)}
-                      </p>
-                    )}
-                    {action ? (
-                      <div className={cardCompact ? "mt-3" : "mt-5"}>
-                        {action({
-                          code: country.c,
-                          countryValue: cStat?.value ?? null,
-                          regionValue: rStat?.value ?? null,
-                          regionName: region?.n ?? null,
-                        })}
-                      </div>
-                    ) : (
-                      <Button asChild size="lg" className="mt-5 w-full">
-                        <Link
-                          to="/orphans"
-                          search={{
-                            // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخارطة.
-                            country: cStat?.value ?? country.c,
-                            ...(region && rStat ? { region: rStat.value } : {}),
-                            funding: "open",
-                          }}
-                        >
-                          {c$.browse}
-                          <ArrowLeft className="ltr:-scale-x-100" aria-hidden="true" />
-                        </Link>
-                      </Button>
-                    )}
-                    {!region && !cardCompact && rankedRegions.length > 0 && (
-                      <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={c$.regions}>
-                        {rankedRegions.slice(0, 6).map(({ r, s: rs }) => (
-                          <li key={r.id}>
-                            <button
-                              type="button"
-                              onClick={() => pickRegion(r.id)}
-                              className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
-                            >
-                              {r.n}
-                              <span className="tabular-nums text-muted-foreground">
-                                {metricText(layer, rs, locale, shown(null, locale))}
-                              </span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </>
+                      ) : (
+                        <Button asChild size="lg" className="mt-5 w-full">
+                          <Link
+                            to="/orphans"
+                            search={{
+                              // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخارطة.
+                              country: cStat?.value ?? country.c,
+                              ...(region && rStat ? { region: rStat.value } : {}),
+                              funding: "open",
+                            }}
+                          >
+                            {c$.browse}
+                            <ArrowLeft className="ltr:-scale-x-100" aria-hidden="true" />
+                          </Link>
+                        </Button>
+                      )}
+                      {!region && !compact && rankedRegions.length > 0 && (
+                        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={c$.regions}>
+                          {rankedRegions.slice(0, 6).map(({ r, s: rs }) => (
+                            <li key={r.id}>
+                              <button
+                                type="button"
+                                onClick={() => pickRegion(r.id)}
+                                className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
+                              >
+                                {r.n}
+                                <span className="tabular-nums text-muted-foreground">
+                                  {metricText(layer, rs, locale, shown(null, locale))}
+                                </span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  );
+                })();
+                return net ? (
+                  <NetworkCountryCard
+                    code={country.c}
+                    admin={showUnconfirmed}
+                    platform={platform}
+                  />
+                ) : (
+                  platform
                 );
               })()}
             </aside>
@@ -1434,7 +1530,15 @@ export function WorldMap({
               className="map-rise absolute inset-y-3 end-3 w-[min(22rem,calc(100%-1.5rem))] overflow-y-auto rounded-3xl bg-card/95 p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur"
             >
               <div className="flex items-center justify-between">
-                <h2 className="font-bold">{country ? c$.regionsOf(country.n) : c$.countriesH}</h2>
+                <h2 className="font-bold">
+                  {netLayer === "needs"
+                    ? n$.decision
+                    : net
+                      ? n$.officesH
+                      : country
+                        ? c$.regionsOf(country.n)
+                        : c$.countriesH}
+                </h2>
                 <button
                   type="button"
                   aria-label={c$.closeList}
@@ -1444,38 +1548,65 @@ export function WorldMap({
                   <X className="size-4" aria-hidden="true" />
                 </button>
               </div>
-              <ul className="mt-3 divide-y divide-border">
-                {(country
-                  ? rankedRegions.map(({ r, s }) => ({
-                      key: r.id,
-                      label: r.n,
-                      n: s!.total,
-                      go: () => pickRegion(r.id),
-                    }))
-                  : activeCountries.map((c) => ({
-                      key: c.c,
-                      label: c.n,
-                      n: stats[c.c]!.total,
-                      go: () => pickCountry(c.c),
-                    }))
-                ).map((x) => (
-                  <li key={x.key}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        x.go();
+              {net ? (
+                <div className="mt-3">
+                  {netLayer === "needs" ? (
+                    <>
+                      <p className="mb-3 text-xs leading-6 text-muted-foreground">
+                        {n$.decisionLead}
+                      </p>
+                      <ExpansionList
+                        dense
+                        onPick={(code) => {
+                          pickCountry(code);
+                          setListOpen(false);
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <PresenceList
+                      paint={net}
+                      onPick={(code) => {
+                        pickCountry(code);
                         setListOpen(false);
                       }}
-                      className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-2 text-start transition-colors hover:bg-secondary"
-                    >
-                      <span>{x.label}</span>
-                      <span className="text-sm tabular-nums text-muted-foreground">
-                        {shown(x.n, locale)}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                    />
+                  )}
+                </div>
+              ) : (
+                <ul className="mt-3 divide-y divide-border">
+                  {(country
+                    ? rankedRegions.map(({ r, s }) => ({
+                        key: r.id,
+                        label: r.n,
+                        n: s!.total,
+                        go: () => pickRegion(r.id),
+                      }))
+                    : activeCountries.map((c) => ({
+                        key: c.c,
+                        label: c.n,
+                        n: stats[c.c]!.total,
+                        go: () => pickCountry(c.c),
+                      }))
+                  ).map((x) => (
+                    <li key={x.key}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          x.go();
+                          setListOpen(false);
+                        }}
+                        className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-2 text-start transition-colors hover:bg-secondary"
+                      >
+                        <span>{x.label}</span>
+                        <span className="text-sm tabular-nums text-muted-foreground">
+                          {shown(x.n, locale)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </>

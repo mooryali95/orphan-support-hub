@@ -1,5 +1,10 @@
-/** Explicit showcase mode; turn off only after reviewing a real source connection. */
-export const DEMO_MODE = true;
+/**
+ * Explicit showcase mode — off. The home map now shows the researched WAMY
+ * network (`@/data/wamy-network`), and child cards/counts come only from the
+ * database. The fictional offices and child cards below stay for showcase use
+ * only and must never be presented as real or payable.
+ */
+export const DEMO_MODE: boolean = false;
 
 export const DEMO_OFFICES = [
   ["TD", "تشاد", "أنجمينا"],
