@@ -1,6 +1,7 @@
 # Monitoring fixes
 
 ## Demo network
+
 - [x] Add 34 country-distributed demo offices, including Albania.
 - [x] Remove Saudi sample profiles from public display without deleting financial history.
 - [x] Show explicit demo labels and future Rowad connection; verify map and directory.

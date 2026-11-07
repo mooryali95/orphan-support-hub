@@ -376,7 +376,11 @@ function OrphansPage() {
         <h1 className="text-3xl font-extrabold">{t.title}</h1>
         {DEMO_MODE && <DemoNotice />}
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          {DEMO_MODE ? (locale === "ar" ? "بطاقات افتراضية للتجربة فقط" : "Fictional example cards only") : t.lead}
+          {DEMO_MODE
+            ? locale === "ar"
+              ? "بطاقات افتراضية للتجربة فقط"
+              : "Fictional example cards only"
+            : t.lead}
           {countries.length > 1 ? t.inCountries(countries.length) : "."}
         </p>
 
@@ -628,16 +632,18 @@ function OrphansPage() {
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {DEMO_MODE ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />) : rows.map((orphan, i) => (
-              // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
-              <div
-                key={`${page}-${orphan.id}`}
-                className="stagger-in"
-                style={{ ["--i" as string]: i }}
-              >
-                <OrphanCard orphan={orphan} />
-              </div>
-            ))}
+            {DEMO_MODE
+              ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />)
+              : rows.map((orphan, i) => (
+                  // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
+                  <div
+                    key={`${page}-${orphan.id}`}
+                    className="stagger-in"
+                    style={{ ["--i" as string]: i }}
+                  >
+                    <OrphanCard orphan={orphan} />
+                  </div>
+                ))}
           </div>
         )}
 

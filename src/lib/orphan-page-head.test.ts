@@ -65,7 +65,9 @@ describe("رأس صفحة الطفل", () => {
 
     it(`[${locale}] معاينة المشاركة لا تحمل اسم الطفل`, () => {
       const meta = headFor(orphan, locale).meta ?? [];
-      for (const m of meta.filter((x) => x.property?.startsWith("og:") || x.name?.startsWith("twitter:"))) {
+      for (const m of meta.filter(
+        (x) => x.property?.startsWith("og:") || x.name?.startsWith("twitter:"),
+      )) {
         expect(m.content ?? "").not.toContain("Ali");
       }
     });
