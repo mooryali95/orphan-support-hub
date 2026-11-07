@@ -22,7 +22,7 @@ export function DemoChildCard({ child }: { child: DemoChild }) {
         <p>{countryName(child.countryCode, locale)}</p>
         <p className="text-sm text-muted-foreground">
           {locale === "ar"
-            ? `${child.gender === "male" ? "ذكر" : "أنثى"} · ${child.ageBand === "age_6_11" ? "٦–١١ سنة" : "١٢–١٤ سنة"}`
+            ? `${child.gender === "male" ? "ذكر" : "أنثى"} · ${child.ageBand === "age_6_11" ? "6–11 سنة" : "12–14 سنة"}`
             : `${child.gender === "male" ? "Boy" : "Girl"} · ${child.ageBand === "age_6_11" ? "6–11" : "12–14"}`}
         </p>
       </div>

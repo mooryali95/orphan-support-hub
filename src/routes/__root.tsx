@@ -32,6 +32,9 @@ import {
 import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
 import { PreviewBridge } from "@/components/i18n/PreviewBridge";
 
+const FONTS_CSS =
+  "https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap";
+
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
 async function loadUi(wanted: Locale): Promise<UiState> {
@@ -202,12 +205,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap",
-      },
+      // الاتصال المسبق بأصلَي الخطوط يُكتب أوّل <head> في RootShell (قبل وحدات
+      // الحزمة المحمّلة مسبقاً)، لا هنا: هنا كان يقع بعدها فلا يسبق شيئاً (RT-05).
+      // الأوزان المستعملة فقط: Tajawal 400/500/700/800 (300 لا يُستعمل)، وAmiri
+      // 400 للنصّ النبوي و700 للعناوين. و`display=swap` يرسم النصّ فوراً بالبديل.
+      { rel: "stylesheet", href: FONTS_CSS },
       // العلامة المضغوطة: مقطع «IO» بالطفل في الفراغ السالب — يصمد عند 16px
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -227,6 +229,9 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang={locale} dir={dirOf(locale)}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" as="style" href={FONTS_CSS} />
         <HeadContent />
         {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />

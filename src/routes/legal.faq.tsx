@@ -31,7 +31,7 @@ function Faq() {
 
 function FaqAr() {
   return (
-    <LegalPage title="الأسئلة الشائعة" updated="2026-08-26">
+    <LegalPage title="الأسئلة الشائعة" updated="2026-11-07">
       <Section title="ما الذي أدفع مقابله؟">
         <p>
           اشتراك شهري في برامج محدّدة تُقدَّم لليتيم — دعم دراسي أو تأهيل مهني أو دعم نفسي أو متابعة
@@ -105,8 +105,9 @@ function FaqAr() {
 
       <Section title="أنا جهة رعاية — كيف أنضمّ؟">
         <p>
-          سجّل حساباً واختر «جهة رعاية»، ثم أدخل بيانات الجهة ورقم ترخيصها. وتراجعها الإدارة قبل
-          السماح برفع الملفّات.
+          سجّل حساباً، ثم من «بواباتي» اختر «سجّل جهة رعاية». أدخل الاسم القانوني ورقم التسجيل أو
+          الترخيص والدولة والعنوان والممثّل القانوني ووسيلة تواصل، وارفع شهادة التسجيل أو الترخيص.
+          ولا تُعتمد الجهة — ولا تُرفع ملفّات أطفال — قبل أن تراجع الإدارة بياناتها ووثائقها.
         </p>
       </Section>
     </LegalPage>
@@ -115,7 +116,7 @@ function FaqAr() {
 
 function FaqEn() {
   return (
-    <LegalPage title="Frequently asked questions" updated="2026-08-26">
+    <LegalPage title="Frequently asked questions" updated="2026-11-07">
       <Section title="What am I paying for?">
         <p>
           A monthly subscription to specific programs delivered to the orphan — academic support,
@@ -203,8 +204,11 @@ function FaqEn() {
 
       <Section title="I'm a care organization — how do we join?">
         <p>
-          Create an account and choose “Care organization”, then enter the organization's details
-          and license number. The administration reviews it before you can upload files.
+          Create an account, then choose “Register a care organization” under “My portals”. Enter
+          the legal name, registration or licence number, country, address, legal representative and
+          a contact, and upload the registration certificate or licence. The organization is not
+          approved — and cannot upload children's files — until the administration has reviewed its
+          details and documents.
         </p>
       </Section>
     </LegalPage>

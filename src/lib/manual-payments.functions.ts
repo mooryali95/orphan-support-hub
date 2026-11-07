@@ -55,78 +55,60 @@ export const listAwaitingTransfers = createServerFn({ method: "GET" })
     return { allowed: true as const, rows };
   });
 
+/**
+ * تأكيد الاستلام بمطابقةٍ لا بضغطة (UX-15).
+ *
+ * كان التأكيد يُرسل معرّف الكفالة وحده، ويكتب بمفتاح الخدمة دفعةً بالمبلغ
+ * المتوقَّع لا بما وصل، بلا تاريخ قيدٍ ولا مرجعٍ بنكي ولا أثرٍ لمن أكّد.
+ * الآن يمرّ بـ`confirm_manual_transfer` في القاعدة بعميل المستخدم: الدور
+ * يُفحص هناك، ولا تفعيل بلا المبلغ المستلَم وعملته وتاريخ القيد والمرجع،
+ * والفرق لا يمرّ إلا بإقرارٍ وملاحظة، والأثر يُكتب في المعاملة نفسها.
+ */
 export const confirmManualTransfer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
         sponsorshipId: z.string().uuid(),
-        reference: z.string().trim().max(120).optional(),
+        receivedAmount: z.number().positive().max(1_000_000),
+        currency: z
+          .string()
+          .trim()
+          .regex(/^[A-Za-z]{3}$/),
+        valueDate: z
+          .string()
+          .trim()
+          .regex(/^\d{4}-\d{2}-\d{2}$/),
+        bankReference: z.string().trim().min(3).max(120),
+        acceptMismatch: z.boolean().optional(),
+        note: z.string().trim().max(400).optional(),
       })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    if (!(await assertAdmin(context.supabase))) {
-      return { ok: false as const, error: "غير مصرّح" };
-    }
-
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { withPayments, withPhase4 } = await import("@/integrations/supabase/types.extra");
-    const db = withPayments(supabaseAdmin);
-
-    const { data: sponsorship, error } = await db
-      .from("sponsorships")
-      .select("id, sponsor_id, amount, currency, status")
-      .eq("id", data.sponsorshipId)
-      .maybeSingle();
-
-    if (error || !sponsorship) return { ok: false as const, error: "لا توجد كفالة بهذا المعرّف" };
-    if (sponsorship.status === "active") return { ok: true as const, alreadyActive: true };
-    if (sponsorship.status === "cancelled" || sponsorship.status === "completed") {
-      return { ok: false as const, error: "هذه الكفالة منتهية" };
-    }
-
-    const { data: settings } = await db
-      .from("platform_settings")
-      .select("fee_percent")
-      .maybeSingle();
-
-    const amount = Number(sponsorship.amount);
-    const fee = Math.round(amount * (Number(settings?.fee_percent ?? 0) / 100) * 100) / 100;
-    const paidAt = new Date().toISOString();
-
-    const { error: payError } = await db.from("sponsorship_payments").insert({
-      sponsorship_id: sponsorship.id,
-      sponsor_id: sponsorship.sponsor_id,
-      amount,
-      currency: sponsorship.currency,
-      status: "paid",
-      provider: "manual",
-      provider_ref: data.reference ?? sponsorship.id.slice(0, 8).toUpperCase(),
-      fee_amount: fee,
-      net_amount: amount - fee,
-      paid_at: paidAt,
+    const { error } = await (
+      context.supabase as unknown as {
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => PromiseLike<{ error: { code?: string; message: string } | null }>;
+      }
+    ).rpc("confirm_manual_transfer", {
+      _sponsorship: data.sponsorshipId,
+      _received_amount: data.receivedAmount,
+      _currency: data.currency.toUpperCase(),
+      _value_date: data.valueDate,
+      _bank_reference: data.bankReference,
+      _accept_mismatch: data.acceptMismatch ?? false,
+      _note: data.note ?? null,
     });
-
-    if (payError && payError.code !== "23505") {
-      return { ok: false as const, error: "تعذّر تسجيل الدفعة" };
-    }
-
-    const { error: activateError } = await db
-      .from("sponsorships")
-      .update({ status: "active", provider: "manual", started_at: paidAt })
-      .eq("id", sponsorship.id);
-
-    if (activateError) return { ok: false as const, error: "تعذّر تفعيل الكفالة" };
-
-    // الإعلان بعد التفعيل، وفشله لا يُبطل وصول المال.
-    const { error: announceError } = await withPhase4(supabaseAdmin).rpc("announce_payment", {
-      _sponsorship: sponsorship.id,
-      _succeeded: true,
-      _amount: amount,
-      _currency: sponsorship.currency,
-    });
-    if (announceError) console.error("[payments] تعذّر إشعار الكافل", announceError.message);
-
-    return { ok: true as const };
+    if (!error) return { ok: true as const };
+    const byCode: Record<string, string> = {
+      "42501": "غير مصرّح",
+      "23514": "المبلغ المستلَم يخالف المتوقَّع — أقِرّ بالفرق واكتب ملاحظة",
+      "23505": "هذا المرجع البنكي مُطابَقٌ سلفاً على تحويلٍ آخر",
+      "55000": "الكفالة لا تنتظر تحويلاً بنكياً (فُعّلت أو أُلغيت)",
+      "22023": "تحقّق من المبلغ والعملة وتاريخ القيد والمرجع",
+    };
+    return { ok: false as const, error: byCode[error.code ?? ""] ?? "تعذّر تأكيد التحويل" };
   });

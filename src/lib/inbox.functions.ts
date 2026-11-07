@@ -20,6 +20,7 @@ export type InboxKind =
   | "orphan"
   | "orphan_edit"
   | "org"
+  | "transfer"
   | "access"
   | "circle_role"
   | "circle_role_renewal"
@@ -42,6 +43,7 @@ export const INBOX_LABELS: Record<InboxKind, string> = {
   orphan: "ملف طفل",
   orphan_edit: "تعديل ملفٍّ منشور",
   org: "جهة رعاية",
+  transfer: "تحويل بنكي",
   access: "طلب اطّلاع",
   circle_role: "دورٌ في دائرة طفل",
   circle_role_renewal: "تجديد دورٍ في دائرة طفل",

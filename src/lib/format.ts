@@ -55,12 +55,23 @@ export function fundingPercent(need: number | string, funded: number | string) {
   return Math.min(100, Math.round((f / n) * 100));
 }
 
+/**
+ * عزلُ نصٍّ من البيانات (اسم، رمز، بريد) داخل جملة: FSI…PDI — «أوّل حرفٍ
+ * قويّ» يحدّد اتجاهه، فلا تنقلب نقطة «Arta S.» ولا تتفكّك الأرقام بعده. وهو
+ * نظير `<Name>` حيث يلزم نصٌّ لا عنصر (aria-label، عنوان الصفحة، سطرٌ مركّب).
+ */
+export function isolate(text: string | null | undefined): string {
+  return text ? `⁨${text}⁩` : "";
+}
+
 export function formatDate(value: string | null | undefined, locale = "ar") {
   if (!value) return "—";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "—";
-  return new Intl.DateTimeFormat(locale === "ar" ? AR_NUM : locale, { dateStyle: "medium" }).format(
-    d,
+  // كتلةٌ معزولة كالمبلغ: «2026/11/02» بعد اسمٍ لاتيني في سطرٍ عربي كانت
+  // تتشابك معه («2026/11/Elda K. · 02»).
+  return isolate(
+    new Intl.DateTimeFormat(locale === "ar" ? AR_NUM : locale, { dateStyle: "medium" }).format(d),
   );
 }
 

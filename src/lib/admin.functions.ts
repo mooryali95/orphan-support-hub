@@ -32,6 +32,9 @@ export type AdminOverview = {
     disbursed: number;
     balance: number;
   };
+  /** أوّل صفحةٍ وحدها (١٠٠)؛ والعدد الكلّي معها — والباقي من `listAdminRows`. */
+  orphan_rows_total?: number;
+  sponsor_rows_total?: number;
   orphan_rows: Array<{
     id: string;
     code: string;
@@ -152,4 +155,63 @@ export const reviewOrganization = createServerFn({ method: "POST" })
 
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
+  });
+
+type RpcClient = {
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+};
+
+export type AdminOrphanRow = AdminOverview["orphan_rows"][number] & { currency?: string };
+export type AdminSponsorRow = AdminOverview["sponsor_rows"][number];
+
+/** صفحةٌ من قائمة الأيتام المنشورين أو الكفلاء، ببحث (PRD-13). */
+export const listAdminRows = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        list: z.enum(["orphans", "sponsors"]),
+        q: z.string().trim().max(120).optional(),
+        page: z.number().int().min(0).max(10_000).default(0),
+        pageSize: z.number().int().min(10).max(200).default(50),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: res, error } = await (context.supabase as unknown as RpcClient).rpc(
+      "admin_list",
+      {
+        _list: data.list,
+        _q: data.q || null,
+        _limit: data.pageSize,
+        _offset: data.page * data.pageSize,
+      },
+    );
+    type Cell = string | number | boolean | null;
+    if (error) return { ok: false as const, total: 0, rows: [] as Record<string, Cell>[] };
+    const out = res as { total: number; rows: Record<string, Cell>[] };
+    return { ok: true as const, total: out.total, rows: out.rows };
+  });
+
+export const EXPORT_DATASETS = ["orphans", "sponsorships", "payments"] as const;
+
+/**
+ * تصدير CSV للإدارة (PRD-13): القاعدة تفحص الدور وتختار الأعمدة — بلا
+ * بيانات الطفل السرّية — وتكتب أثر التصدير.
+ */
+export const exportAdminCsv = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ dataset: z.enum(EXPORT_DATASETS) }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await (context.supabase as unknown as RpcClient).rpc(
+      "admin_export",
+      { _dataset: data.dataset },
+    );
+    if (error) return { ok: false as const, error: "تعذّر التصدير" };
+    const { toCsv } = await import("@/lib/csv");
+    const list = (rows ?? []) as Record<string, unknown>[];
+    return { ok: true as const, csv: toCsv(list), count: list.length };
   });

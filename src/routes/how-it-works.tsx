@@ -48,23 +48,23 @@ const COPY = defineCopy("routes/how-it-works", {
     stagesH: "مراحل المسار",
     stages: [
       [
-        "١",
+        "1",
         "تسجيل جهة الرعاية واعتمادها",
         "تحقق من الترخيص وبيانات التواصل قبل السماح برفع الملفات.",
       ],
       [
-        "٢",
+        "2",
         "إنشاء ملف اليتيم",
         "بيانات عامة تُعرض للجمهور، وبيانات حسّاسة تبقى محجوبة في سجل خاص.",
       ],
-      ["٣", "مراجعة الإدارة", "اعتماد الملف أو رفضه مع سبب واضح، ثم نشره في الدليل العام."],
-      ["٤", "اختيار الكافل والدفع", "كفالة شهرية أو دعم لمرة واحدة، مع تحديث نسبة التغطية آلياً."],
+      ["3", "مراجعة الإدارة", "اعتماد الملف أو رفضه مع سبب واضح، ثم نشره في الدليل العام."],
+      ["4", "اختيار الكافل والدفع", "كفالة شهرية أو دعم لمرة واحدة، مع تحديث نسبة التغطية آلياً."],
       [
-        "٥",
+        "5",
         "المتابعة والتقارير",
         "تحديثات دورية عن التعليم والصحة، وإمكانية إيقاف أو تعديل الكفالة.",
       ],
-      ["٦", "التكامل الخارجي", "استيراد ملفات الأيتام من منصات داخلية عبر واجهة API موقّعة."],
+      ["6", "التكامل الخارجي", "استيراد ملفات الأيتام من منصات داخلية عبر واجهة API موقّعة."],
     ],
     ctaH: "جاهز لتكون سنداً ليتيم؟",
     ctaP: "اختر ملفاً معتمداً وابدأ كفالتك الشهرية اليوم.",
@@ -137,43 +137,46 @@ function HowItWorks() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">{c.h1(brandFor(locale).name)}</h1>
-        <p className="mt-3 leading-8 text-muted-foreground">{c.lead}</p>
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
+        {/* عمود القراءة يبدأ من حافة الشعار نفسها (UI-13). */}
+        <div className="max-w-4xl">
+          <h1 className="text-3xl font-extrabold">{c.h1(brandFor(locale).name)}</h1>
+          <p className="mt-3 leading-8 text-muted-foreground">{c.lead}</p>
 
-        <section className="mt-10 grid gap-4 sm:grid-cols-2">
-          {c.actors.map(([role, text]) => (
-            <div key={role} className="rounded-2xl border border-border bg-card p-5">
-              <h2 className="font-bold text-primary">{role}</h2>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">{text}</p>
-            </div>
-          ))}
-        </section>
-
-        <section className="mt-12">
-          <h2 className="text-2xl font-extrabold">{c.stagesH}</h2>
-          <ol className="mt-6 space-y-4">
-            {c.stages.map(([num, title, text]) => (
-              <li key={num} className="flex gap-4 rounded-2xl border border-border bg-card p-5">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-bold text-primary">
-                  {num}
-                </span>
-                <div>
-                  <h3 className="font-bold">{title}</h3>
-                  <p className="mt-1 text-sm leading-7 text-muted-foreground">{text}</p>
-                </div>
-              </li>
+          <section className="mt-10 grid gap-4 sm:grid-cols-2">
+            {c.actors.map(([role, text]) => (
+              <div key={role} className="rounded-2xl border border-border bg-card p-5">
+                <h2 className="font-bold text-primary">{role}</h2>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{text}</p>
+              </div>
             ))}
-          </ol>
-        </section>
+          </section>
 
-        <section className="surface-warm mt-12 rounded-3xl border border-border p-8 text-center">
-          <h2 className="text-xl font-extrabold">{c.ctaH}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{c.ctaP}</p>
-          <Button asChild size="lg" className="mt-6">
-            <Link to="/orphans">{c.cta}</Link>
-          </Button>
-        </section>
+          <section className="mt-12">
+            <h2 className="text-2xl font-extrabold">{c.stagesH}</h2>
+            <ol className="mt-6 space-y-4">
+              {c.stages.map(([num, title, text]) => (
+                <li key={num} className="flex gap-4 rounded-2xl border border-border bg-card p-5">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 font-bold text-primary">
+                    {num}
+                  </span>
+                  <div>
+                    <h3 className="font-bold">{title}</h3>
+                    <p className="mt-1 text-sm leading-7 text-muted-foreground">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="surface-warm mt-12 rounded-3xl border border-border p-8 text-center">
+            <h2 className="text-xl font-extrabold">{c.ctaH}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{c.ctaP}</p>
+            <Button asChild size="lg" className="mt-6">
+              <Link to="/orphans">{c.cta}</Link>
+            </Button>
+          </section>
+        </div>
       </main>
       <SiteFooter />
     </div>

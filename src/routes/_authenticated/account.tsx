@@ -136,7 +136,7 @@ function AccountPage() {
 
   return (
     <DashboardShell title="حسابي" description="من أنت، وكيف تدخل، وإلى أين تذهب.">
-      <div className="mx-auto max-w-2xl space-y-6 py-2">
+      <div className="max-w-2xl space-y-6 py-2">
         {/* ── من أنا ── */}
         <section className="stagger-in relative overflow-hidden rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_1px_2px_-1px_rgb(0_0_0/0.06),0_2px_4px_0_rgb(0_0_0/0.04)] sm:p-8">
           <div
@@ -385,7 +385,7 @@ function Row({
       </span>
       <span
         className={cn(
-          "rounded-full px-2 py-0.5 text-[11px] font-medium",
+          "rounded-full px-2 py-0.5 text-xs font-medium",
           on ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground",
         )}
       >

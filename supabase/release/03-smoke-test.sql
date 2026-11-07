@@ -74,6 +74,27 @@ WITH checks(name, ok) AS (VALUES
   ('لا نشر بلا وثيقتين موثَّقتين', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_require_publication_documents')),
   ('تفعيل الكفالة والصرف يُسجَّلان',
      EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_audit_sponsorship_status')
-     AND EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_audit_disbursement_write'))
+     AND EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_audit_disbursement_write')),
+  -- الدفعة ٢ — جانب العرض (bundle-after-20261106140000). قبلها تظهر false بلا خطأ.
+  ('تسجيل الجهة بدالّةٍ للمسجَّلين وحدهم',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.register_care_organization(jsonb)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.register_care_organization(jsonb)'), 'EXECUTE'), false)),
+  ('بيانات تحقّق الجهة ووثائقها لا يقرؤها العموم',
+     COALESCE(NOT has_table_privilege('authenticated', to_regclass('public.care_org_kyc'), 'SELECT')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.care_org_documents'), 'SELECT')
+              AND NOT has_table_privilege('anon', to_regclass('public.care_org_kyc'), 'SELECT'), false)),
+  ('خزنة وثائق الجهات خاصّة', COALESCE((SELECT NOT public FROM storage.buckets WHERE id = 'org-documents'), false)),
+  ('مسودّة ملفّ الطفل في القاعدة لجهته',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.save_orphan_draft(jsonb)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.get_orphan_intake(uuid)'), 'EXECUTE'), false)),
+  ('للدولة عملة، وملفّ الإدخال يأخذها',
+     EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'countries' AND column_name = 'currency')),
+  ('تفعيل التحويل بمطابقةٍ لا بضغطة',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.manual_transfer_reconciliations'), 'SELECT'), false)),
+  ('التصدير للإدارة بدالّةٍ تختار الأعمدة',
+     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;
