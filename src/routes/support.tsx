@@ -60,6 +60,10 @@ export const Route = createFileRoute("/support")({
       meta: [
         { title: pageTitle(copyOf(COPY, l).section, false, l) },
         { name: "description", content: copyOf(COPY, l).description },
+        { property: "og:title", content: pageTitle(copyOf(COPY, l).section, false, l) },
+        { property: "og:description", content: copyOf(COPY, l).description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
       ],
     };
   },

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 
 import { AuthDialog } from "@/components/auth/AuthDialog";
@@ -125,10 +125,16 @@ export function SupportSheet({
         });
     }
     return out;
-  }, [ctx, catalog, t]);
+  }, [ctx.code, ctx.regionValue, ctx.regionName, catalog, t]);
 
-  const [target, setTarget] = useState<Target>(targets[0]!);
-  useEffect(() => setTarget(targets[0]!), [targets]);
+  const fallbackTarget: Target = { type: "country", value: ctx.code, label: t.thisCountry };
+  const [target, setTarget] = useState<Target>(() => targets[0] ?? fallbackTarget);
+  useEffect(() => {
+    setTarget((previous) =>
+      targets.find((x) => x.type === previous.type && x.value === previous.value)
+      ?? targets[0] ?? previous,
+    );
+  }, [targets]);
   const [kind, setKind] = useState<SupportKind>(presetKind ?? "qualification");
   // المؤسّسة لا تأخذ «بناء الأهلية» (قيدٌ في القاعدة).
   useEffect(() => {
@@ -144,17 +150,26 @@ export function SupportSheet({
         country: ctx.code,
         stats,
       }),
-    [target.type, ctx, stats],
+    [target.type, ctx.code, ctx.regionValue, ctx.regionName, stats],
   );
   const currency = gap?.currency ?? "EUR";
   const suggested = gap
     ? (["fullMonth", "halfMonth", "quarterMonth"] as const).map((k, i) => ({
         label: t[k],
-        value: suggestionsFor(gap.gap)[i]!,
+        value: suggestionsFor(gap.gap)[i] ?? 25,
       }))
     : FALLBACK.map((a) => ({ label: formatMoney(a, "EUR", locale), value: a }));
-  const [amount, setAmount] = useState(() => defaultAmount(gap, FALLBACK[1]!));
-  useEffect(() => setAmount(defaultAmount(gap, FALLBACK[1]!)), [gap]);
+  const suggestedDefault = defaultAmount(gap, 25);
+  const [amount, setAmount] = useState(suggestedDefault);
+  const amountEdited = useRef(false);
+  // Only initialize untouched amounts; the map's place key starts a new sheet.
+  useEffect(() => {
+    if (!amountEdited.current) setAmount(suggestedDefault);
+  }, [suggestedDefault]);
+  function chooseAmount(value: number) {
+    amountEdited.current = true;
+    setAmount(value);
+  }
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
@@ -264,7 +279,7 @@ export function SupportSheet({
               key={a.label}
               type="button"
               aria-pressed={amount === a.value}
-              onClick={() => setAmount(a.value)}
+              onClick={() => chooseAmount(a.value)}
               className={chip(amount === a.value)}
             >
               {a.label}
@@ -282,7 +297,7 @@ export function SupportSheet({
             min={1}
             className="h-9 w-24 rounded-full"
             value={amount}
-            onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
+            onChange={(e) => chooseAmount(Math.max(1, Number(e.target.value) || 1))}
           />
         </div>
       </fieldset>
