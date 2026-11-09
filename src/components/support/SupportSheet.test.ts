@@ -38,9 +38,9 @@ async function chosenSheet() {
   if (!renderer) throw new Error("Sheet did not mount");
   const sheet = renderer;
   await act(async () => {
-    sheet.root.findAllByType("button").find((b) => b.children.includes("Institution"))?.props.onClick();
+    sheet.root.findAllByType("button").find((b) => b.children.includes("Institution"))?.props["onClick"]();
   });
-  await act(async () => { sheet.root.findByType("input").props.onChange({ target: { value: "73" } }); });
+  await act(async () => { sheet.root.findByType("input").props["onChange"]({ target: { value: "73" } }); });
   return sheet;
 }
 
@@ -58,11 +58,11 @@ describe("support choices survive same-place renders", () => {
     submit.mockClear();
     const sheet = await chosenSheet();
     await act(async () => { sheet.update(createElement(SupportSheet, {
-      ...props, signedIn: true, ctx: { ...props.ctx }, stats: { AL: { ...stats.AL } } as MapStats,
+      ...props, signedIn: true, ctx: { ...props.ctx }, stats: { AL: { ...stats["AL"] } } as MapStats,
     })); });
-    expect(sheet.root.findByType("input").props.value).toBe(73);
+    expect(sheet.root.findByType("input").props["value"]).toBe(73);
     await act(async () => {
-      sheet.root.findAllByType("button").find((b) => b.props.className?.includes("w-full"))?.props.onClick();
+      sheet.root.findAllByType("button").find((b) => b.props["className"]?.includes("w-full"))?.props["onClick"]();
     });
     expect(submit).toHaveBeenCalledWith({ data: expect.objectContaining({
       targetType: "institution", target: "institution-1", amount: 73, kind: "in_kind",
