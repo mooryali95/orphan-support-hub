@@ -42,7 +42,7 @@ VALUES
    ووجودُها شرطٌ لأن يقيس فحصُ الصورة شيئاً: بحقلٍ فارغٍ يمرّ الفحص
    لأن لا صورة، لا لأن الحاجب عمل. */
 UPDATE public.orphans
-   SET photo_url = 'e3000000-0000-4000-8000-00000000000b/pr-1.jpg', photo_consent = 'face_hidden'
+   SET photo_url = 'media/pr-1.jpg', photo_consent = 'face_hidden'
  WHERE id = 'e3000000-0000-4000-8000-00000000000b';
 
 DO $$
@@ -401,9 +401,7 @@ BEGIN
   /* النطاقات صارت جزءاً من القرار: قبولٌ بلا نطاقٍ مرفوض. */
   _r := public.decide_orphan_access(
     _req, 'approved',
-    /* والقصّة والمدينة صارتا نطاقين صريحين («القصّة» و«الموقع»)، فلا
-       يفتحهما القبولُ وحده (CP-04). */
-    ARRAY['identity', 'journey', 'progress', 'profile_deep', 'story', 'location'],
+    ARRAY['identity', 'journey', 'progress', 'profile_deep'],
     'كافلٌ محتمل', 30);
   RESET ROLE;
 

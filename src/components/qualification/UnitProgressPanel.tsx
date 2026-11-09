@@ -124,7 +124,7 @@ export function UnitProgressPanel({
                 className="flex w-full items-center gap-2 p-3 text-start"
               >
                 <span
-                  className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                  className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
                     u.status === "accepted"
                       ? "bg-shore-thrive text-white"
                       : "bg-secondary text-foreground"
@@ -134,7 +134,7 @@ export function UnitProgressPanel({
                   {u.status === "accepted" ? <Check className="size-3.5" /> : u.ordinal}
                 </span>
                 <span className="flex-1 text-xs font-medium">{u.title}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {UNIT_STATUS_LABELS[u.status]}
                 </span>
                 <ChevronDown
@@ -145,7 +145,7 @@ export function UnitProgressPanel({
 
               {isOpen && (
                 <div className="border-t border-border p-3">
-                  <dl className="space-y-2 text-xs leading-6">
+                  <dl className="space-y-2 text-[11px] leading-6">
                     <div>
                       <dt className="inline font-bold">المحور: </dt>
                       <dd className="inline text-muted-foreground">{u.focus}</dd>
@@ -175,7 +175,7 @@ export function UnitProgressPanel({
                   </dl>
 
                   {u.evidence && (
-                    <p className="mt-3 rounded-lg bg-secondary/60 p-2 text-xs leading-6">
+                    <p className="mt-3 rounded-lg bg-secondary/60 p-2 text-[11px] leading-6">
                       <span className="font-bold">المخرَج المسجَّل: </span>
                       {u.evidence}
                       {u.submitted_at && (
@@ -187,7 +187,7 @@ export function UnitProgressPanel({
                     </p>
                   )}
                   {u.note && (
-                    <p className="mt-2 text-xs leading-6 text-bridge-ink">
+                    <p className="mt-2 text-[11px] leading-6 text-bridge-ink">
                       <span className="font-bold">ملاحظتك: </span>
                       {u.note}
                     </p>
@@ -195,7 +195,7 @@ export function UnitProgressPanel({
 
                   <div className="mt-3 space-y-2">
                     <div>
-                      <Label htmlFor={`ev-${u.unit_id}`} className="text-xs">
+                      <Label htmlFor={`ev-${u.unit_id}`} className="text-[11px]">
                         المخرَج — رابطه أو وصفه
                       </Label>
                       <Input
@@ -207,7 +207,7 @@ export function UnitProgressPanel({
                       />
                     </div>
                     <div>
-                      <Label htmlFor={`nt-${u.unit_id}`} className="text-xs">
+                      <Label htmlFor={`nt-${u.unit_id}`} className="text-[11px]">
                         ملاحظة التقويم — تلزم عند الإعادة
                       </Label>
                       <Textarea
@@ -251,7 +251,7 @@ export function UnitProgressPanel({
                   </div>
 
                   {/* القاعدة تُعرض قبل أن تُمنَع */}
-                  <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                  <p className="mt-2 text-[11px] leading-6 text-muted-foreground">
                     {blocked
                       ? "تُقبل هذه الجلسة بعد قبول ما دونها: الترتيب في المنهجية بناءٌ متراكم لا قائمة."
                       : !hasEvidence

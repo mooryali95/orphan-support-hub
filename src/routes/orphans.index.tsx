@@ -376,11 +376,7 @@ function OrphansPage() {
         <h1 className="text-3xl font-extrabold">{t.title}</h1>
         {DEMO_MODE && <DemoNotice />}
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
-          {DEMO_MODE
-            ? locale === "ar"
-              ? "بطاقات افتراضية للتجربة فقط"
-              : "Fictional example cards only"
-            : t.lead}
+          {DEMO_MODE ? (locale === "ar" ? "بطاقات افتراضية للتجربة فقط" : "Fictional example cards only") : t.lead}
           {countries.length > 1 ? t.inCountries(countries.length) : "."}
         </p>
 
@@ -434,7 +430,7 @@ function OrphansPage() {
                 })
               }
               aria-label={t.sortLabel}
-              className="h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+              className="h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
             >
               {SORTS.map((key) => (
                 <option key={key} value={key}>
@@ -461,7 +457,7 @@ function OrphansPage() {
                   aria-pressed={funding === key}
                   onClick={() => set({ funding: key === "any" ? undefined : key })}
                   className={cn(
-                    "min-h-11 rounded px-3 py-1 text-sm font-medium transition-colors",
+                    "min-h-8 rounded px-3 py-1 text-xs font-medium transition-colors",
                     funding === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -514,7 +510,7 @@ function OrphansPage() {
                 id="f-age"
                 value={sp.age ?? ""}
                 onChange={(e) => set({ age: e.target.value || undefined })}
-                className="mt-1 h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
                 <option value="">{t.allAges}</option>
                 {AGE_BANDS.map((b) => (
@@ -532,7 +528,7 @@ function OrphansPage() {
                 id="f-gender"
                 value={sp.gender ?? ""}
                 onChange={(e) => set({ gender: e.target.value || undefined })}
-                className="mt-1 h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+                className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
               >
                 <option value="">{t.everyone}</option>
                 <option value="male">{t.male}</option>
@@ -556,7 +552,7 @@ function OrphansPage() {
                   id="f-group"
                   value={sp.group ?? ""}
                   onChange={(e) => set({ group: e.target.value || undefined })}
-                  className="mt-1 h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+                  className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
                 >
                   <option value="">{t.allGroups}</option>
                   {groups.map((g) => (
@@ -568,7 +564,7 @@ function OrphansPage() {
                 </select>
               </div>
             )}
-            <label className="flex min-h-11 items-center gap-2 text-sm">
+            <label className="flex min-h-9 items-center gap-2 text-xs">
               <input
                 type="checkbox"
                 checked={!!sp.building}
@@ -586,7 +582,7 @@ function OrphansPage() {
                   <button
                     type="button"
                     onClick={c.clear}
-                    className="inline-flex min-h-9 items-center gap-1 rounded-full bg-secondary px-3 text-sm pointer-coarse:min-h-11 transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
+                    className="inline-flex min-h-8 items-center gap-1 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
                     aria-label={t.remove(c.label)}
                   >
                     <bdi>{c.label}</bdi>
@@ -632,18 +628,16 @@ function OrphansPage() {
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {DEMO_MODE
-              ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />)
-              : rows.map((orphan, i) => (
-                  // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
-                  <div
-                    key={`${page}-${orphan.id}`}
-                    className="stagger-in"
-                    style={{ ["--i" as string]: i }}
-                  >
-                    <OrphanCard orphan={orphan} />
-                  </div>
-                ))}
+            {DEMO_MODE ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />) : rows.map((orphan, i) => (
+              // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
+              <div
+                key={`${page}-${orphan.id}`}
+                className="stagger-in"
+                style={{ ["--i" as string]: i }}
+              >
+                <OrphanCard orphan={orphan} />
+              </div>
+            ))}
           </div>
         )}
 
@@ -705,7 +699,7 @@ function Picker({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+        className="mt-1 h-9 rounded-md border border-input bg-background px-3 text-base md:text-sm"
       >
         <option value="">{all}</option>
         {options.map((o) => (

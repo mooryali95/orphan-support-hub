@@ -35,7 +35,7 @@ export function TraitComparison({ assessments }: { assessments: AssessmentRow[] 
   if (!c) {
     const hasBaseline = assessments.some((a) => a.phase === "baseline");
     return (
-      <p className="mt-3 rounded-xl border border-dashed border-border p-3 text-xs leading-6 text-muted-foreground">
+      <p className="mt-3 rounded-xl border border-dashed border-border p-3 text-[11px] leading-6 text-muted-foreground">
         {hasBaseline
           ? "لا مقارنة بعد: يلزم قياسٌ ثانٍ بعد الأوّلي."
           : "لا مقارنة بعد: يلزم قياسٌ أوّليّ قبل بدء البرنامج، وإلا فلا يُعرف من أين بدأ."}
@@ -55,7 +55,7 @@ export function TraitComparison({ assessments }: { assessments: AssessmentRow[] 
 
   return (
     <section className="mt-3" aria-labelledby="trait-compare">
-      <h5 id="trait-compare" className="flex items-center gap-1.5 text-xs font-bold">
+      <h5 id="trait-compare" className="flex items-center gap-1.5 text-[11px] font-bold">
         <ArrowLeftRight className="size-3.5" aria-hidden="true" />
         ما قبل البرنامج وبعده
       </h5>
@@ -68,7 +68,7 @@ export function TraitComparison({ assessments }: { assessments: AssessmentRow[] 
         </span>
       </p>
 
-      <table className="mt-3 w-full text-xs">
+      <table className="mt-3 w-full text-[11px]">
         <caption className="sr-only">
           مقارنة توزيع السمات بين القياس {PHASE_NAMES[c.before.phase]} والقياس{" "}
           {PHASE_NAMES[c.after.phase]}
@@ -114,7 +114,7 @@ export function TraitComparison({ assessments }: { assessments: AssessmentRow[] 
         </tbody>
       </table>
 
-      <p className="mt-2 text-xs leading-6 text-muted-foreground">
+      <p className="mt-2 text-[11px] leading-6 text-muted-foreground">
         الخريطة نسبية مجموعها مئة، فانخفاض سمةٍ قد يكون إعادةَ توزيعٍ لا تراجعاً — نمت غيرُها فأخذت
         من نصيبها. ولذلك لا تُلوَّن الفروق: القياس أداة بناء لا اختبار.
       </p>

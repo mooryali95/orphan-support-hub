@@ -87,19 +87,3 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON storage.objects TO authenticated;
 GRANT SELECT ON storage.objects TO anon;
 GRANT ALL ON storage.objects TO service_role;
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
--- ---------------------------------------------------------------------
--- صلاحيات Supabase الافتراضية على public
--- ---------------------------------------------------------------------
--- كل مشروعٍ مستضاف على Supabase يحمل هذه الأسطر الثلاثة: أيّ جدولٍ أو
--- دالّةٍ أو تسلسلٍ يُنشأ في public يُمنح لـ anon وauthenticated كاملاً.
--- غيابها هنا جعل الفحوص تمرّ على قاعدةٍ أضيق من البثّ (DB-04، DB-09):
--- الحذف المفتوح على البثّ كان محجوباً في المحاكاة فلم يُرَ. فكلّ هجرةٍ
--- جديدة تُختبر الآن بالصلاحيات التي ستلقاها فعلاً، وعليها أن تسحب
--- (`REVOKE ALL ... FROM anon, authenticated`) قبل أن تمنح.
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-  GRANT ALL ON TABLES TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-  GRANT ALL ON FUNCTIONS TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-  GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;

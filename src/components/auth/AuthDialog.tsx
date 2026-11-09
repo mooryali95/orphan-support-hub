@@ -54,7 +54,7 @@ export function AuthDialog({
               onDone?.();
             }}
           />
-          <p className="text-center text-xs leading-5 text-muted-foreground">{c.consent}</p>
+          <p className="text-center text-[11px] leading-5 text-muted-foreground">{c.consent}</p>
         </DialogContent>
       </Dialog>
     </>

@@ -13,7 +13,6 @@ import {
   KIND_LABELS,
   TARGET_LABELS,
 } from "@/lib/workspaces.functions";
-import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/donor/$entityId/report")({
   head: () => ({
@@ -82,9 +81,7 @@ function DonorReport() {
         <KahataynMark className="h-14 w-auto" />
       </header>
 
-      <h1 className="mt-8 text-2xl font-extrabold">
-        تقرير الأثر — <Name>{d.entity.name}</Name>
-      </h1>
+      <h1 className="mt-8 text-2xl font-extrabold">تقرير الأثر — {d.entity.name}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         صدر في {formatDate(new Date().toISOString())}
       </p>

@@ -15,18 +15,15 @@ import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
-import { StatTile } from "@/components/kit/StatTile";
-import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
-import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
 import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
+import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
 import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
 import { BRAND, pageTitle } from "@/config/brand";
 
@@ -74,6 +71,7 @@ const SECTIONS: Array<[string, Tab[]]> = [
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
+  const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("inbox");
   // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
@@ -121,8 +119,8 @@ function AdminPage() {
     ["inbox", "صندوق القرارات", null],
     ["platform", "سجلّات المنصّة", null],
     ["overview", "نظرة عامة", null],
-    ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
-    ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
+    ["orphans", "الأيتام", o.orphan_rows.length],
+    ["sponsors", "الكفلاء", o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
@@ -176,7 +174,7 @@ function AdminPage() {
             >
               {label}
               {count !== null && count > 0 && (
-                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-xs">
+                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-[11px]">
                   {count}
                 </span>
               )}
@@ -272,13 +270,34 @@ function AdminPage() {
               </p>
             )}
           </section>
-
-          <AdminExports />
         </div>
       )}
 
-      {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
-      {tab === "orphans" && <AdminOrphansList currency={cur} />}
+      {tab === "orphans" && (
+        <Table
+          head={["الملف", "الجهة", "الاحتياج", "المموَّل", "المتبقّي", "الكفلاء", "التغطية"]}
+          empty="لا توجد ملفات منشورة."
+          rows={o.orphan_rows.map((r) => [
+            <div key="n">
+              <p className="font-medium">{r.name}</p>
+              <p className="text-muted-foreground text-xs">
+                {r.code}
+                {r.city ? ` — ${r.city}` : ""}
+              </p>
+            </div>,
+            <span key="o" className="text-xs">
+              {r.org ?? "—"}
+            </span>,
+            formatMoney(r.need, cur),
+            formatMoney(r.funded, cur),
+            <span key="g" className={r.gap > 0 ? "text-bridge-ink font-bold" : "text-shore-thrive"}>
+              {r.gap > 0 ? formatMoney(r.gap, cur) : "مكتمل"}
+            </span>,
+            String(r.sponsors),
+            <CrossingProgress key="p" percent={fundingPercent(r.need, r.funded)} />,
+          ])}
+        />
+      )}
 
       {tab === "monitoring" && (
         <>
@@ -287,7 +306,27 @@ function AdminPage() {
         </>
       )}
 
-      {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
+      {tab === "sponsors" && (
+        <Table
+          head={["الكافل", "كفالات", "نشطة", "التزام شهري", "المسدَّد", "منذ"]}
+          empty="لا يوجد كفلاء بعد."
+          rows={o.sponsor_rows.map((r) => [
+            <div key="s">
+              <p className="font-medium">{r.name || "—"}</p>
+              <p className="text-muted-foreground text-xs" dir="ltr">
+                {r.email ?? "—"}
+              </p>
+            </div>,
+            String(r.sponsorships),
+            String(r.active),
+            formatMoney(r.monthly, cur),
+            <span key="p" className="text-shore-thrive font-bold">
+              {formatMoney(r.paid, cur)}
+            </span>,
+            formatDate(r.since),
+          ])}
+        />
+      )}
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
@@ -304,16 +343,14 @@ function AdminPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold">
-                          <Name>{p.name}</Name>
-                        </h3>
+                        <h3 className="font-bold">{p.name}</h3>
                         <Badge variant="secondary">
                           {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
                         </Badge>
                       </div>
                       <p className="text-muted-foreground mt-1 text-xs">
-                        <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")} —
-                        احتياج {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
+                        {p.code} — {[p.city, p.region].filter(Boolean).join("، ")} — احتياج{" "}
+                        {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
                       </p>
                     </div>
                     <Button
@@ -373,10 +410,28 @@ function AdminPage() {
                       {org.license ?? "—"} — {org.email ?? "—"}
                     </p>
                   </div>
-                  {/* القرار من الصندوق: هناك بيانات التحقّق ووثائقه وما ينقص،
-                      لا ضغطة اعتمادٍ عمياء هنا (PRD-16). */}
-                  <Button size="sm" variant="outline" onClick={() => setTab("inbox")}>
-                    راجِع في صندوق القرارات
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      const res = await decideOrg({ data: { id: org.id, decision: "approved" } });
+                      if (res.ok) toast.success("تم اعتماد الجهة");
+                      else toast.error(res.error ?? "تعذّر اعتماد الجهة");
+                      refresh();
+                    }}
+                  >
+                    اعتماد
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      const res = await decideOrg({ data: { id: org.id, decision: "rejected" } });
+                      if (res.ok) toast.success("تم رفض الطلب");
+                      else toast.error(res.error ?? "تعذّر رفض الطلب");
+                      refresh();
+                    }}
+                  >
+                    رفض
                   </Button>
                 </div>
               ))}
@@ -413,17 +468,20 @@ function AdminPage() {
   );
 }
 
-// مؤشّر الإدارة هو StatTile نفسه (UI-13): رقمٌ فوق تسمية، بالألوان الدلالية.
-function Stat({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone: "need" | "thrive" | "bridge" | "muted";
-}) {
-  return <StatTile label={label} value={value} tone={tone === "bridge" ? "gold" : tone} />;
+const TONE: Record<string, string> = {
+  need: "text-shore-need",
+  bridge: "text-bridge-ink",
+  thrive: "text-shore-thrive",
+  muted: "text-muted-foreground",
+};
+
+function Stat({ label, value, tone }: { label: string; value: string; tone: string }) {
+  return (
+    <div className="border-border bg-card rounded-2xl border p-5">
+      <p className={`text-2xl font-extrabold ${TONE[tone] ?? TONE["need"]}`}>{value}</p>
+      <p className="text-muted-foreground mt-1 text-xs">{label}</p>
+    </div>
+  );
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
@@ -431,5 +489,49 @@ function Empty({ children }: { children: React.ReactNode }) {
     <p className="border-border text-muted-foreground rounded-2xl border border-dashed p-6 text-center text-sm">
       {children}
     </p>
+  );
+}
+
+function Table({
+  head,
+  rows,
+  empty,
+}: {
+  head: string[];
+  rows: React.ReactNode[][];
+  empty: string;
+}) {
+  if (rows.length === 0) {
+    return (
+      <div className="mt-8">
+        <Empty>{empty}</Empty>
+      </div>
+    );
+  }
+  return (
+    <div className="border-border mt-8 overflow-x-auto rounded-2xl border">
+      <table className="bg-card w-full min-w-[720px] border-collapse text-sm">
+        <thead>
+          <tr className="bg-secondary/60 border-border border-b">
+            {head.map((h) => (
+              <th key={h} className="text-muted-foreground px-4 py-3 text-start text-xs font-bold">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((cells, i) => (
+            <tr key={i} className="border-border/60 border-b last:border-0">
+              {cells.map((c, j) => (
+                <td key={j} className="px-4 py-3 align-middle tabular-nums">
+                  {c}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

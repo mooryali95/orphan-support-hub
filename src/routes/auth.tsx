@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 
 import { KahataynLockup } from "@/components/brand/KahataynMark";
@@ -8,8 +8,6 @@ import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { useMapStats } from "@/components/map/useMapStats";
 import { brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
-import { formatMoney, isolate } from "@/lib/format";
-import { loadDraft, orphanIdOfPath, type SponsorDraft } from "@/lib/sponsor-draft";
 
 const COPY = defineCopy("routes/auth", {
   ar: {
@@ -23,8 +21,6 @@ const COPY = defineCopy("routes/auth", {
     and: " و",
     privacy: "سياسة الخصوصية",
     note: ". وهذه منصة تعالج بيانات أطفال، فاقرأهما.",
-    sponsoring: (name: string, amount: string) =>
-      `أنت على وشك كفالة ${name} بـ${amount} شهرياً. بعد الدخول تعود إلى ملفّه بما اخترته.`,
   },
   en: {
     section: "Sign in or create an account",
@@ -37,8 +33,6 @@ const COPY = defineCopy("routes/auth", {
     and: " and ",
     privacy: "privacy policy",
     note: ". This platform handles children's data, so please read them.",
-    sponsoring: (name: string, amount: string) =>
-      `You're about to sponsor ${name} with ${amount} a month. After signing in you'll return to their file with what you chose.`,
   },
 });
 
@@ -70,21 +64,14 @@ function safePath(value: string | undefined) {
 
 function AuthPage() {
   const c = useCopy(COPY);
-  const locale = useLocale();
-  const brand = brandFor(locale);
+  const brand = brandFor(useLocale());
   const search = Route.useSearch();
   const navigate = useNavigate();
   const redirectTo = safePath(search.redirect);
-  const { stats, demo, status } = useMapStats();
+  const { stats, demo } = useMapStats();
   // الخارطة خلف النافذة تفتح على الدولة التي كان فيها الزائر، إن عُرفت.
   const fromMap = /[?&]c=([A-Z]{2})/.exec(redirectTo)?.[1] ?? null;
   const [selection, setSelection] = useState<MapSelection>({ country: fromMap, region: null });
-  // القادم من نموذج الكفالة يرى لماذا هو هنا وإلى أين يعود (UX-09).
-  const [draft, setDraft] = useState<SponsorDraft | null>(null);
-  useEffect(() => {
-    const id = orphanIdOfPath(redirectTo);
-    setDraft(id ? loadDraft(id) : null);
-  }, [redirectTo]);
 
   return (
     <div className="relative min-h-dvh overflow-hidden">
@@ -92,7 +79,6 @@ function AuthPage() {
         <WorldMap
           stats={stats}
           demo={demo}
-          status={status}
           selection={selection}
           onSelect={setSelection}
           className="h-dvh min-h-dvh"
@@ -108,17 +94,11 @@ function AuthPage() {
             <KahataynLockup />
           </Link>
           <h1 className="sr-only">{c.h1}</h1>
-          {draft && (
-            <p className="mt-5 rounded-xl bg-secondary/70 px-4 py-3 text-center text-sm leading-7">
-              {c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))}
-            </p>
-          )}
           <AuthPanel
             className="mt-6"
             title={c.title}
             hint={c.hint}
-            // `href` لا `to`: الوجهة قد تحمل استعلاماً (?c=AL) فتبقى كما هي.
-            onDone={() => navigate({ href: redirectTo })}
+            onDone={() => navigate({ to: redirectTo })}
           />
           <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
             {c.agree}{" "}

@@ -1,48 +1,36 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-export type StatTone = "primary" | "gold" | "muted" | "need" | "thrive";
-
-const TONE: Record<StatTone, string> = {
-  primary: "text-primary",
-  gold: "text-bridge-ink",
-  muted: "text-foreground",
-  need: "text-shore-need",
-  thrive: "text-shore-thrive",
-};
-
 /**
- * مؤشّرٌ واحد: رقمٌ كبير وتسميةٌ تحته. موحّدٌ في كل اللوحات (UI-13) كي يُقرأ
- * المؤشّر بالعين نفسها أينما ظهر — لا نسخةٌ ثانية بالتسمية فوق الرقم.
- *
- * `loading` يرسم هيكلاً بارتفاع الرقم نفسه، فلا يقفز ما تحته حين يصل (RT-07).
+ * مؤشّرٌ واحد: رقمٌ كبير وتسميةٌ تحته. موحّدٌ في كل اللوحات كي يُقرأ
+ * المؤشّر بالعين نفسها أينما ظهر.
  */
 export function StatTile({
   label,
   value,
   hint,
   tone = "primary",
-  loading = false,
   className,
 }: {
   label: string;
   value: string;
   hint?: string;
-  tone?: StatTone;
-  loading?: boolean;
+  tone?: "primary" | "gold" | "muted";
   className?: string;
 }) {
   return (
     <div className={cn("rounded-2xl border border-border bg-card p-5", className)}>
-      {loading ? (
-        <Skeleton className="h-9 w-20" aria-hidden="true" />
-      ) : (
-        <p className={cn("text-[1.75rem] leading-9 font-extrabold tabular-nums", TONE[tone])}>
-          {value}
-        </p>
-      )}
-      <p className="mt-1 text-sm text-muted-foreground">{label}</p>
-      {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
+      <p
+        className={cn(
+          "text-2xl font-extrabold tabular-nums",
+          tone === "primary" && "text-primary",
+          tone === "gold" && "text-bridge-ink",
+          tone === "muted" && "text-foreground",
+        )}
+      >
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
+      {hint && <p className="mt-2 text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }

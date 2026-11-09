@@ -165,7 +165,7 @@ function StatusChip({ status }: { status: "built-in" | "suggested" | "draft" | "
   } as const;
   const [label, cls] = map[status];
   return (
-    <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium", cls)}>
+    <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium", cls)}>
       {label}
     </span>
   );

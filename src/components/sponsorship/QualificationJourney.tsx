@@ -114,7 +114,7 @@ export function QualificationJourney({
                   />
                   <span
                     className={cn(
-                      "mt-1.5 block text-xs leading-4",
+                      "mt-1.5 block text-[11px] leading-4",
                       i === stageIdx ? "font-bold text-foreground" : "text-muted-foreground",
                     )}
                   >
@@ -229,7 +229,7 @@ export function QualificationJourney({
                       style={{ width: `${g.latest}%` }}
                     />
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-1 text-[11px] text-muted-foreground">
                     {arCount(g.observations, MEASURES)}
                   </p>
                 </li>

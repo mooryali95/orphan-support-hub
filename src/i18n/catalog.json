@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 856,
+ "count": 759,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -21,13 +21,6 @@
    "ar": "دليل الأيتام",
    "kind": "text",
    "hash": "ae3660e62969",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.donorRole": {
-   "en": "Donor entity",
-   "ar": "جهة مانحة",
-   "kind": "text",
-   "hash": "d93a396c6643",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.guardian": {
@@ -56,13 +49,6 @@
    "ar": "الإشعارات",
    "kind": "text",
    "hash": "5818d8bb798c",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.officeRole": {
-   "en": "Office member",
-   "ar": "عضو مكتب",
-   "kind": "text",
-   "hash": "42f34b978384",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.org": {
@@ -105,27 +91,6 @@
    "ar": "الإشراف",
    "kind": "text",
    "hash": "8f602a9c3e4e",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.supervisorRole": {
-   "en": "Supervisor",
-   "ar": "مشرف",
-   "kind": "text",
-   "hash": "659186f1ea9d",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.translate": {
-   "en": "Translation",
-   "ar": "الترجمة",
-   "kind": "text",
-   "hash": "c447791249da",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.translatorRole": {
-   "en": "Translation reviewer",
-   "ar": "مراجع ترجمة",
-   "kind": "text",
-   "hash": "c2ed3c6ab216",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/ExcessSuggestion.confirm": {
@@ -918,462 +883,6 @@
    "hash": "8520e0afe7c7",
    "file": "src/components/map/MapActions.tsx"
   },
-  "components/map/NetworkLayer.blockNeed": {
-   "en": "National need",
-   "ar": "الحاجة الوطنية",
-   "kind": "text",
-   "hash": "1b62d03017e9",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.blockPlatform": {
-   "en": "On the platform now",
-   "ar": "على المنصّة الآن",
-   "kind": "text",
-   "hash": "e1ff673c34eb",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.blockPresence": {
-   "en": "WAMY presence",
-   "ar": "حضور الندوة",
-   "kind": "text",
-   "hash": "25f1cb242a14",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.blockWhy": {
-   "en": "Why it needs an office",
-   "ar": "لماذا تحتاج مكتباً",
-   "kind": "text",
-   "hash": "17bbeca5c810",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.city": {
-   "en": "City",
-   "ar": "المدينة",
-   "kind": "text",
-   "hash": "ad8e85b1c36d",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.cityUnknown": {
-   "en": "City not confirmed",
-   "ar": "المدينة غير مؤكَّدة",
-   "kind": "text",
-   "hash": "8a9fb3c9180a",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.confHigh": {
-   "en": "High confidence",
-   "ar": "ثقة عالية",
-   "kind": "text",
-   "hash": "86efa2248354",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.confLow": {
-   "en": "Low confidence",
-   "ar": "ثقة منخفضة",
-   "kind": "text",
-   "hash": "18b7243e551a",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.confMedium": {
-   "en": "Medium confidence",
-   "ar": "ثقة متوسطة",
-   "kind": "text",
-   "hash": "36f9ee4bb1bd",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.countryButton": {
-   "en": "{0}: {1} — press Enter to open",
-   "ar": "{0}: {1} — اضغط Enter للدخول",
-   "kind": "template",
-   "params": 2,
-   "hash": "9c822e2462c1",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageLead": {
-   "en": "Confirmed-office countries ranked by the same need — presence against need.",
-   "ar": "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها — لقراءة الحضور أمام الحاجة.",
-   "kind": "text",
-   "hash": "afba035d5ec0",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageLine": {
-   "en": "Need here: about {0} orphans, and WAMY has an office.",
-   "ar": "الحاجة هنا: نحو {0} يتيم، وللندوة مكتبٌ قائم.",
-   "kind": "template",
-   "params": 1,
-   "hash": "d3059f7f8d78",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageNoData": {
-   "en": "No reliable national figure yet",
-   "ar": "لا رقم وطنياً موثوقاً بعد",
-   "kind": "text",
-   "hash": "e5c178b2301f",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageNoDataList": {
-   "en": "Offices in countries with no reliable national orphan figure yet:",
-   "ar": "مكاتب لا رقم وطنياً موثوقاً للأيتام في دولها بعد:",
-   "kind": "text",
-   "hash": "48b4f354013e",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageNone": {
-   "en": "WAMY has an office here; no reliable national orphan figure yet.",
-   "ar": "للندوة مكتبٌ قائم هنا، ولا رقم وطنياً موثوقاً للأيتام بعد.",
-   "kind": "text",
-   "hash": "7eb52d847233",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.coverageTitle": {
-   "en": "Current coverage: need where WAMY has an office",
-   "ar": "التغطية الحالية: الحاجة حيث للندوة مكتب",
-   "kind": "text",
-   "hash": "d3f7667860d3",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.covered": {
-   "en": "Has an office",
-   "ar": "فيها مكتب",
-   "kind": "text",
-   "hash": "8a1a82960f05",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.data": {
-   "en": "Needs data",
-   "ar": "تحتاج بيانات",
-   "kind": "text",
-   "hash": "5164677c8e0f",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.decision": {
-   "en": "Expansion decision",
-   "ar": "قرار التوسّع",
-   "kind": "text",
-   "hash": "2d9d4ded93d5",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.decisionLead": {
-   "en": "Countries with no confirmed office, ranked by estimated orphans weighted by confidence (high 1, medium 0.8, low 0.6). Countries without a reliable figure are not guessed.",
-   "ar": "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية 1، متوسطة 0.8، منخفضة 0.6). من لا رقم موثوقاً له لا يُخمَّن.",
-   "kind": "text",
-   "hash": "a7ee66770081",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.derivedYears": {
-   "en": "{0} population × {1} rate",
-   "ar": "سكان {0} × نسبة {1}",
-   "kind": "template",
-   "params": 2,
-   "hash": "623fd2e348e1",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.estimate": {
-   "en": "Estimate",
-   "ar": "تقديري",
-   "kind": "text",
-   "hash": "f6340ca400d1",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.field": {
-   "en": "Field activity",
-   "ar": "نشاط ميداني",
-   "kind": "text",
-   "hash": "b3a57410039a",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.high": {
-   "en": "High priority",
-   "ar": "أولوية عالية",
-   "kind": "text",
-   "hash": "c0617f5319b0",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.hq": {
-   "en": "Headquarters",
-   "ar": "المقرّ الرئيسي",
-   "kind": "text",
-   "hash": "cd00a8cb56b7",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_child_pop_u18": {
-   "en": "Children under 18",
-   "ar": "الأطفال دون 18",
-   "kind": "text",
-   "hash": "3a022e92aef0",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_child_poverty_pct": {
-   "en": "Child poverty",
-   "ar": "فقر الأطفال",
-   "kind": "text",
-   "hash": "6b06dd6eeb83",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_children_in_residential_care": {
-   "en": "In residential care",
-   "ar": "في الرعاية الإيوائية",
-   "kind": "text",
-   "hash": "9b4f9c57576a",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_conflict_orphans": {
-   "en": "Lost one or both parents in the war",
-   "ar": "فقدوا أحد الوالدين أو كليهما في الحرب",
-   "kind": "text",
-   "hash": "12ee72569356",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_double_orphans": {
-   "en": "Lost both parents",
-   "ar": "فقدوا الوالدين معاً",
-   "kind": "text",
-   "hash": "91d30ba02e71",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_extreme_poverty_pct": {
-   "en": "Extreme poverty",
-   "ar": "الفقر المدقع",
-   "kind": "text",
-   "hash": "953126a8309a",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_orphan_rate_pct": {
-   "en": "Share of children orphaned",
-   "ar": "نسبة اليُتم بين الأطفال",
-   "kind": "text",
-   "hash": "d80a82503a67",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.ind_orphans_total": {
-   "en": "Orphans under 18",
-   "ar": "الأيتام دون 18",
-   "kind": "text",
-   "hash": "08fe9c8e08d4",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.lastEvidence": {
-   "en": "Latest evidence found: {0} — too old or too thin to confirm.",
-   "ar": "آخر دليلٍ وجده البحث: {0} — قديمٌ أو غير كافٍ للتأكيد.",
-   "kind": "template",
-   "params": 1,
-   "hash": "400083c7fbaa",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.latest": {
-   "en": "Latest documented activity",
-   "ar": "آخر نشاطٍ موثّق",
-   "kind": "text",
-   "hash": "effe83f10f49",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.layerNeeds": {
-   "en": "Needs an office",
-   "ar": "تحتاج مكتباً",
-   "kind": "text",
-   "hash": "859f0fd13034",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.layerNeedsHint": {
-   "en": "Countries with no confirmed office, ranked by orphan need",
-   "ar": "دولٌ بلا مكتبٍ مؤكَّد مرتّبةً بحاجة الأيتام فيها",
-   "kind": "text",
-   "hash": "8b66d732fe5c",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.layerNetwork": {
-   "en": "Network",
-   "ar": "الشبكة",
-   "kind": "text",
-   "hash": "599df29e3aa4",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.layerNetworkHint": {
-   "en": "WAMY offices and documented field activity",
-   "ar": "مكاتب الندوة العالمية للشباب الإسلامي ونشاطها الميداني الموثّق",
-   "kind": "text",
-   "hash": "3a9a56b509f8",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.legend": {
-   "en": "Colour key",
-   "ar": "مفتاح الألوان",
-   "kind": "text",
-   "hash": "ffd4ce867e91",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.medium": {
-   "en": "Medium priority",
-   "ar": "أولوية متوسطة",
-   "kind": "text",
-   "hash": "24778def2856",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.needsLine": {
-   "en": "{0} high-priority countries, {1} medium, and {2} that need data before a decision.",
-   "ar": "{0} دول أولويةً عالية، و{1} متوسطة، و{2} تحتاج بيانات قبل الحكم.",
-   "kind": "template",
-   "params": 3,
-   "hash": "0d469dd406d7",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.needsTitle": {
-   "en": "Where does WAMY need an office?",
-   "ar": "أين تحتاج الندوة مكتباً؟",
-   "kind": "text",
-   "hash": "65e9bcb7f50c",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.networkLine": {
-   "en": "{0} offices with documented activity in 2024–2026, plus field activity in {1} countries with no confirmed office.",
-   "ar": "{0} مكتباً بنشاطٍ موثّق من 2024 إلى 2026، ونشاطٌ ميداني في {1} دول بلا مكتبٍ مؤكَّد.",
-   "kind": "template",
-   "params": 2,
-   "hash": "e67f25f5ffd5",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.networkTitle": {
-   "en": "World Assembly of Muslim Youth network",
-   "ar": "شبكة الندوة العالمية للشباب الإسلامي",
-   "kind": "text",
-   "hash": "4537d4dbb369",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.noEvidence": {
-   "en": "The research found no evidence of an office or activity.",
-   "ar": "لم يجد البحث دليلاً على مكتبٍ أو نشاط.",
-   "kind": "text",
-   "hash": "5460e2888890",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.noNeed": {
-   "en": "No reliable national indicators for this country in the research yet.",
-   "ar": "لا مؤشّرات وطنية موثوقة لهذه الدولة في البحث بعد.",
-   "kind": "text",
-   "hash": "85d372cb7296",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.noPresence": {
-   "en": "No confirmed WAMY presence at the moment.",
-   "ar": "لا حضور مؤكَّداً للندوة حالياً.",
-   "kind": "text",
-   "hash": "9326e52d23b0",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.noPresenceNote": {
-   "en": "Presence is shown once the General Secretariat or a recent dated source confirms it.",
-   "ar": "يُعرض الحضور متى أكّدته الأمانة العامة أو مصدرٌ مؤرَّخ حديث.",
-   "kind": "text",
-   "hash": "edef394a3b81",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.notInNetwork": {
-   "en": "No WAMY research data for this country.",
-   "ar": "لا بيانات بحثية للندوة في هذه الدولة.",
-   "kind": "text",
-   "hash": "5badab641a03",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.office": {
-   "en": "Confirmed office",
-   "ar": "مكتب مؤكَّد",
-   "kind": "text",
-   "hash": "1490e557b34c",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.officesH": {
-   "en": "Offices and activity",
-   "ar": "المكاتب والنشاط",
-   "kind": "text",
-   "hash": "f693049f703b",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.open": {
-   "en": "Open {0} on the map",
-   "ar": "افتح {0} على الخارطة",
-   "kind": "template",
-   "params": 1,
-   "hash": "20e5a90d7ffb",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.presenceSource": {
-   "en": "Presence evidence",
-   "ar": "دليل الحضور",
-   "kind": "text",
-   "hash": "b1b67058b812",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.research": {
-   "en": "Research data from public sources, updated when the General Secretariat provides official data.",
-   "ar": "بيانات بحثية من مصادر عامة، تُحدَّث عند تزويد الأمانة العامة بالبيانات الرسمية.",
-   "kind": "text",
-   "hash": "dac857a570c6",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.source": {
-   "en": "Source",
-   "ar": "المصدر",
-   "kind": "text",
-   "hash": "055d731ad559",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.sources": {
-   "en": "Sources",
-   "ar": "المصادر",
-   "kind": "text",
-   "hash": "34f433b6368b",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.sourcesLead": {
-   "en": "A link for every indicator and every piece of presence evidence, as researched.",
-   "ar": "رابطٌ لكلّ مؤشّر ولكلّ دليل حضور، كما وردت في البحث.",
-   "kind": "text",
-   "hash": "e08241e901a4",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.sponsoredNote": {
-   "en": "Last confirmed number of orphans sponsored by WAMY: {0} ({1}) — an old figure, shown with its year.",
-   "ar": "آخر رقمٍ مؤكَّد لعدد الأيتام المكفولين لدى الندوة: {0} ({1}) — رقمٌ قديم يُذكر بسنته.",
-   "kind": "template",
-   "params": 2,
-   "hash": "3c7758c7e339",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.unconfirmed": {
-   "en": "Unconfirmed — admins only",
-   "ar": "غير مؤكَّد — للإدارة فقط",
-   "kind": "text",
-   "hash": "4f7aa8bbabf2",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkLayer.unverifiable": {
-   "en": "Unverified",
-   "ar": "تعذّر التحقّق",
-   "kind": "text",
-   "hash": "1980c666f623",
-   "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkSection.eyebrow": {
-   "en": "For the General Secretariat",
-   "ar": "للأمانة العامة",
-   "kind": "text",
-   "hash": "6b04f0d4f5d6",
-   "file": "src/components/map/NetworkSection.tsx"
-  },
-  "components/map/NetworkSection.lead": {
-   "en": "An analysis of documented public data: orphan need in each country against WAMY's presence there. Read it with the map above — select a country to see its card.",
-   "ar": "تحليلٌ من بياناتٍ عامّة موثّقة: حاجة الأيتام في كل دولة مقابل حضور الندوة فيها. يُقرأ مع الخارطة أعلاه — اضغط دولةً لترى بطاقتها.",
-   "kind": "text",
-   "hash": "e25fac6e2abc",
-   "file": "src/components/map/NetworkSection.tsx"
-  },
-  "components/map/NetworkSection.title": {
-   "en": "Expansion decision: where should the next office open?",
-   "ar": "قرار التوسّع: أين نفتح المكتب التالي؟",
-   "kind": "text",
-   "hash": "37a40b2a1dca",
-   "file": "src/components/map/NetworkSection.tsx"
-  },
   "components/map/WorldMap.back": {
    "en": "Back",
    "ar": "رجوع",
@@ -1455,9 +964,9 @@
   },
   "components/map/WorldMap.delivered": {
    "en": "Received a documented delivery in the last 90 days",
-   "ar": "وصلهم تسليمٌ موثّق خلال 90 يوماً",
+   "ar": "وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
    "kind": "text",
-   "hash": "7c3c789a114c",
+   "hash": "d205fd1663f1",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.demo": {
@@ -1533,9 +1042,9 @@
   },
   "components/map/WorldMap.layerImpactHint": {
    "en": "Share sponsored, and children with a documented delivery in the last 90 days",
-   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال 90 يوماً",
+   "ar": "نسبة المكفولين، ومن وصلهم تسليمٌ موثّق خلال ٩٠ يوماً",
    "kind": "text",
-   "hash": "7486107fec68",
+   "hash": "e34083026666",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.layerWaiting": {
@@ -1571,13 +1080,6 @@
    "ar": "الدول والمناطق",
    "kind": "text",
    "hash": "bc2eb925faf2",
-   "file": "src/components/map/WorldMap.tsx"
-  },
-  "components/map/WorldMap.loading": {
-   "en": "Loading map figures…",
-   "ar": "تُحمَّل أرقام الخارطة…",
-   "kind": "text",
-   "hash": "f2478965ede1",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.mapOf": {
@@ -1652,20 +1154,6 @@
    "ar": "مكفول",
    "kind": "text",
    "hash": "6d23172d24c3",
-   "file": "src/components/map/WorldMap.tsx"
-  },
-  "components/map/WorldMap.unavailable": {
-   "en": "Map figures are unavailable right now",
-   "ar": "أرقام الخارطة غير متاحة الآن",
-   "kind": "text",
-   "hash": "80b48dd0c22b",
-   "file": "src/components/map/WorldMap.tsx"
-  },
-  "components/map/WorldMap.unavailableHere": {
-   "en": "Figures are unavailable right now — please try again shortly.",
-   "ar": "لا تتوفّر الأرقام الآن — أعد المحاولة بعد قليل.",
-   "kind": "text",
-   "hash": "df40ca9215cb",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.verified": {
@@ -2234,9 +1722,9 @@
   },
   "components/orphan/TrustSignals.report": {
    "en": "Approved report in the last 90 days",
-   "ar": "تقريرٌ معتمد آخر 90 يوماً",
+   "ar": "تقريرٌ معتمد آخر ٩٠ يوماً",
    "kind": "text",
-   "hash": "ca27dd23cbc1",
+   "hash": "de290201ade9",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
@@ -3235,6 +2723,27 @@
    "hash": "fc7293ad089e",
    "file": "src/components/support/SupportSheet.tsx"
   },
+  "components/support/SupportSheet.fullMonth": {
+   "en": "Covers the month",
+   "ar": "يسدّ الشهر",
+   "kind": "text",
+   "hash": "ccb315a7fab2",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.halfMonth": {
+   "en": "Half",
+   "ar": "نصفه",
+   "kind": "text",
+   "hash": "0e505ae3eef6",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.inKind": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
   "components/support/SupportSheet.kind": {
    "en": "Kind of support",
    "ar": "نوع الدعم",
@@ -3277,11 +2786,18 @@
    "hash": "b7840c387b58",
    "file": "src/components/support/SupportSheet.tsx"
   },
-  "components/support/SupportSheet.rest": {
-   "en": "Cover the remaining need",
-   "ar": "سدّ المتبقّي",
+  "components/support/SupportSheet.qualification": {
+   "en": "Building capability",
+   "ar": "بناء الأهلية",
    "kind": "text",
-   "hash": "cef384131891",
+   "hash": "9b8287a2fc35",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.quarterMonth": {
+   "en": "A quarter",
+   "ar": "ربعه",
+   "kind": "text",
+   "hash": "2d2e70600a30",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.signIn": {
@@ -3348,83 +2864,6 @@
    "hash": "99cd9a57660a",
    "file": "src/config/brand.ts"
   },
-  "config/giving-tracks.heading": {
-   "en": "Choose your impact",
-   "ar": "اختر أثرك",
-   "kind": "text",
-   "hash": "555091b5f6de",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.lead": {
-   "en": "Three equal doors. Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
-   "ar": "ثلاثة أبوابٍ متساوية. اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
-   "kind": "text",
-   "hash": "c87a17f12140",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.in_kind.cta": {
-   "en": "Give in kind",
-   "ar": "تبرّع عيناً",
-   "kind": "text",
-   "hash": "854313d1ee12",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.in_kind.name": {
-   "en": "In-kind giving",
-   "ar": "تبرع عيني",
-   "kind": "text",
-   "hash": "2c87b5c2f579",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.in_kind.promise": {
-   "en": "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
-   "ar": "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
-   "kind": "text",
-   "hash": "1cc0e69a5cf2",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.monthly.cta": {
-   "en": "Choose from the directory",
-   "ar": "اختر من الدليل",
-   "kind": "text",
-   "hash": "c5c4ca9220ba",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.monthly.name": {
-   "en": "Financial sponsorship",
-   "ar": "كفالة مادية",
-   "kind": "text",
-   "hash": "f72c55611381",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.monthly.promise": {
-   "en": "A fixed amount each month for one child. One table shows when it was paid and when it reached them, with a document.",
-   "ar": "مبلغٌ ثابت كل شهر لطفلٍ بعينه، ترى في جدولٍ واحد متى دُفع ومتى وصله موثّقاً.",
-   "kind": "text",
-   "hash": "b28ede2f8d54",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.qualification.cta": {
-   "en": "Support qualification",
-   "ar": "ادعم التأهيل",
-   "kind": "text",
-   "hash": "2748deee0e56",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.qualification.name": {
-   "en": "Qualification giving",
-   "ar": "تبرع تأهيل",
-   "kind": "text",
-   "hash": "113627a81a3f",
-   "file": "src/config/giving-tracks.ts"
-  },
-  "config/giving-tracks.tracks.qualification.promise": {
-   "en": "Fund a qualification journey, session by session with a supervisor, with the child's traits measured before and after.",
-   "ar": "تموّل رحلة تأهيلٍ بجلساتها ومشرفها، وتُقاس سمات الطفل قبلها وبعدها.",
-   "kind": "text",
-   "hash": "f6a6d1bb67a5",
-   "file": "src/config/giving-tracks.ts"
-  },
   "config/offering.later": {
    "en": "General donations will be added later.",
    "ar": "التبرّعات العامة ستُضاف لاحقاً.",
@@ -3445,179 +2884,6 @@
    "kind": "text",
    "hash": "da30c7874668",
    "file": "src/config/offering.ts"
-  },
-  "lib/event-labels.fallback": {
-   "en": "File update",
-   "ar": "تحديثٌ في الملف",
-   "kind": "text",
-   "hash": "15057edb990b",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.disbursement_delivered": {
-   "en": "This month's sponsorship delivered, with a document",
-   "ar": "وصلت كفالة الشهر موثّقة",
-   "kind": "text",
-   "hash": "43077c52425f",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.orphan.approved": {
-   "en": "File approved and published",
-   "ar": "اعتُمد الملف ونُشر",
-   "kind": "text",
-   "hash": "721368bd32a5",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.orphan.rejected": {
-   "en": "File returned for correction",
-   "ar": "أُعيد الملف للتصحيح",
-   "kind": "text",
-   "hash": "e31501bec71c",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.orphan.submitted": {
-   "en": "File submitted for review",
-   "ar": "رُفع الملف للمراجعة",
-   "kind": "text",
-   "hash": "cd5234993033",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.pledge.delivered": {
-   "en": "Your support was delivered, with a document",
-   "ar": "سُلّم دعمك موثّقاً",
-   "kind": "text",
-   "hash": "ebfd39a410ec",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.pledge.preparing": {
-   "en": "Your support is being prepared",
-   "ar": "بدأ تجهيز دعمك",
-   "kind": "text",
-   "hash": "ca01d598c302",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.report.published": {
-   "en": "Impact report published",
-   "ar": "نُشر تقرير أثر",
-   "kind": "text",
-   "hash": "24126e367b8f",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.report.rejected": {
-   "en": "Report returned for correction",
-   "ar": "أُعيد التقرير للتصحيح",
-   "kind": "text",
-   "hash": "4235eb0c100d",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.report.submitted": {
-   "en": "Progress report submitted",
-   "ar": "رُفع تقرير دوري",
-   "kind": "text",
-   "hash": "dc4ab2274ca8",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.sponsorship.started": {
-   "en": "Sponsorship started",
-   "ar": "بدأت الكفالة",
-   "kind": "text",
-   "hash": "3180bacbb5a9",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.trait.measured": {
-   "en": "New trait measurement",
-   "ar": "قياسٌ جديد لسمة",
-   "kind": "text",
-   "hash": "91e4d1f91ef0",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/event-labels.labels.unit.accepted": {
-   "en": "Completed a session",
-   "ar": "اجتاز جلسة",
-   "kind": "text",
-   "hash": "04f8db13caf5",
-   "file": "src/lib/event-labels.ts"
-  },
-  "lib/office-gap.absent": {
-   "en": "no confirmed WAMY presence at the moment",
-   "ar": "لا حضور مؤكَّداً للندوة حالياً",
-   "kind": "text",
-   "hash": "adef8c12e579",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.derived": {
-   "en": " — estimate",
-   "ar": " — تقديري",
-   "kind": "text",
-   "hash": "b019eafb029c",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.derivedYears": {
-   "en": "{0} population × {1} rate",
-   "ar": "سكان {0} × نسبة {1}",
-   "kind": "template",
-   "params": 2,
-   "hash": "623fd2e348e1",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.end": {
-   "en": ".",
-   "ar": ".",
-   "kind": "text",
-   "hash": "0696ea22bb58",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.field": {
-   "en": "WAMY field activity, no confirmed office",
-   "ar": "نشاطٌ ميداني للندوة بلا مكتبٍ مؤكَّد",
-   "kind": "text",
-   "hash": "3809390ddcb2",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.noData": {
-   "en": "No reliable orphan figure yet — an official source is needed before ranking",
-   "ar": "لا رقم موثوقاً لعدد الأيتام بعد — يلزم مصدرٌ رسمي قبل الترتيب",
-   "kind": "text",
-   "hash": "5120dc2417ec",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.orphans": {
-   "en": "About {0} orphans",
-   "ar": "نحو {0} يتيم",
-   "kind": "template",
-   "params": 1,
-   "hash": "5b728c70daab",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.sep": {
-   "en": "; ",
-   "ar": "؛ ",
-   "kind": "text",
-   "hash": "a1045543115c",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.unverified": {
-   "en": "the circulating figure ({0}, {1}) could not be verified",
-   "ar": "الرقم المتداول ({0}، {1}) تعذّر التحقّق منه",
-   "kind": "template",
-   "params": 2,
-   "hash": "d7148744d90a",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.warOrphans": {
-   "en": "More than {0} children who lost one or both parents in the war",
-   "ar": "أكثر من {0} طفل فقدوا أحد الوالدين أو كليهما في الحرب",
-   "kind": "template",
-   "params": 1,
-   "hash": "fdad779dc7ad",
-   "file": "src/lib/office-gap.ts"
-  },
-  "lib/office-gap.when": {
-   "en": " ({0}, {1})",
-   "ar": " ({0}، {1})",
-   "kind": "template",
-   "params": 2,
-   "hash": "047251131d56",
-   "file": "src/lib/office-gap.ts"
   },
   "lib/workspaces.labels.kind.in_kind": {
    "en": "In-kind support",
@@ -3808,14 +3074,6 @@
    "hash": "06664c83f8f4",
    "file": "src/routes/auth.tsx"
   },
-  "routes/auth.sponsoring": {
-   "en": "You're about to sponsor {0} with {1} a month. After signing in you'll return to their file with what you chose.",
-   "ar": "أنت على وشك كفالة {0} بـ{1} شهرياً. بعد الدخول تعود إلى ملفّه بما اخترته.",
-   "kind": "template",
-   "params": 2,
-   "hash": "6e7b76915718",
-   "file": "src/routes/auth.tsx"
-  },
   "routes/auth.terms": {
    "en": "terms of use",
    "ar": "شروط الاستخدام",
@@ -3924,9 +3182,9 @@
   },
   "routes/how-it-works.stages.0.0": {
    "en": "1",
-   "ar": "1",
+   "ar": "١",
    "kind": "text",
-   "hash": "faebccd5ab70",
+   "hash": "06e30646ced4",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.1": {
@@ -3945,9 +3203,9 @@
   },
   "routes/how-it-works.stages.1.0": {
    "en": "2",
-   "ar": "2",
+   "ar": "٢",
    "kind": "text",
-   "hash": "b2c11b8a39cc",
+   "hash": "fb7237ae9b85",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.1.1": {
@@ -3966,9 +3224,9 @@
   },
   "routes/how-it-works.stages.2.0": {
    "en": "3",
-   "ar": "3",
+   "ar": "٣",
    "kind": "text",
-   "hash": "6b02bf2e5c6c",
+   "hash": "1bde6e9551bd",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.2.1": {
@@ -3987,9 +3245,9 @@
   },
   "routes/how-it-works.stages.3.0": {
    "en": "4",
-   "ar": "4",
+   "ar": "٤",
    "kind": "text",
-   "hash": "423fc76c72ee",
+   "hash": "1a9c10a16433",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.3.1": {
@@ -4008,9 +3266,9 @@
   },
   "routes/how-it-works.stages.4.0": {
    "en": "5",
-   "ar": "5",
+   "ar": "٥",
    "kind": "text",
-   "hash": "894edcf9bedc",
+   "hash": "1ab48a767a72",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.4.1": {
@@ -4029,9 +3287,9 @@
   },
   "routes/how-it-works.stages.5.0": {
    "en": "6",
-   "ar": "6",
+   "ar": "٦",
    "kind": "text",
-   "hash": "66ad433d199f",
+   "hash": "2541ff347ff1",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.5.1": {
@@ -4286,6 +3544,83 @@
    "hash": "cc9e944dc157",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.doors.0.0": {
+   "en": "Monthly sponsorship",
+   "ar": "كفالة شهرية",
+   "kind": "text",
+   "hash": "9630b012db18",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.0.1": {
+   "en": "A fixed amount each month. One table shows when it was paid and when it reached the child, with a document.",
+   "ar": "مبلغٌ ثابت كل شهر، ترى في جدولٍ واحد متى دُفع ومتى وصل الطفل موثّقاً.",
+   "kind": "text",
+   "hash": "3c1c5dbbe235",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.0.2": {
+   "en": "Choose from the directory",
+   "ar": "اختر من الدليل",
+   "kind": "text",
+   "hash": "c5c4ca9220ba",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.0": {
+   "en": "Building capability",
+   "ar": "بناء الأهلية",
+   "kind": "text",
+   "hash": "9b8287a2fc35",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.1": {
+   "en": "Fund a qualification journey session by session, with the child's traits measured before and after.",
+   "ar": "تموّل رحلة تأهيلٍ بجلساتها، وتُقاس سماته قبلها وبعدها.",
+   "kind": "text",
+   "hash": "c1362e0a09c6",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.1.2": {
+   "en": "Support qualification",
+   "ar": "ادعم التأهيل",
+   "kind": "text",
+   "hash": "2748deee0e56",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.0": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.1": {
+   "en": "School bags, clothing and devices, prepared, delivered and documented with photos by the local office.",
+   "ar": "حقائب وكسوة وأجهزة، يجهّزها المكتب ويسلّمها ويوثّقها بالصور.",
+   "kind": "text",
+   "hash": "1cc0e69a5cf2",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doors.2.2": {
+   "en": "Give in kind",
+   "ar": "ادعم عيناً",
+   "kind": "text",
+   "hash": "36638df6f41a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doorsH": {
+   "en": "Three equal doors",
+   "ar": "ثلاثة أبوابٍ متساوية",
+   "kind": "text",
+   "hash": "6d563a167b7c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.doorsP": {
+   "en": "Choose what suits you, and for whom: a specific child, their group, a region, a country, or an organization working with them.",
+   "ar": "اختر ما يناسبك، ولمن: يتيمٌ بعينه، أو مجموعته، أو منطقة، أو دولة، أو مؤسسة تعمل معهم.",
+   "kind": "text",
+   "hash": "b5f25391fd9c",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.eqA": {
    "en": "understand what is asked",
    "ar": "تفهّم الخطاب",
@@ -4337,9 +3672,9 @@
   },
   "routes/index.hadithSource": {
    "en": "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
-   "ar": "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
+   "ar": "رواه البخاري (٦٠٠٥) عن سهل بن سعد رضي الله عنه",
    "kind": "text",
-   "hash": "357084714a51",
+   "hash": "9948cfa16303",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.0.0": {
@@ -4455,20 +3790,6 @@
    "hash": "6e62c1d3a4fd",
    "file": "src/routes/index.tsx"
   },
-  "routes/index.mapH": {
-   "en": "Where we work",
-   "ar": "أين نعمل",
-   "kind": "text",
-   "hash": "ad5d6341587f",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.mapP": {
-   "en": "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
-   "ar": "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
-   "kind": "text",
-   "hash": "a84d8b7148f4",
-   "file": "src/routes/index.tsx"
-  },
   "routes/index.months": {
    "en": "{0} months",
    "ar": "{0} شهراً",
@@ -4493,30 +3814,30 @@
   },
   "routes/index.ordinals.0": {
    "en": "1",
-   "ar": "1",
+   "ar": "١",
    "kind": "text",
-   "hash": "faebccd5ab70",
+   "hash": "06e30646ced4",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.1": {
    "en": "2",
-   "ar": "2",
+   "ar": "٢",
    "kind": "text",
-   "hash": "b2c11b8a39cc",
+   "hash": "fb7237ae9b85",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.2": {
    "en": "3",
-   "ar": "3",
+   "ar": "٣",
    "kind": "text",
-   "hash": "6b02bf2e5c6c",
+   "hash": "1bde6e9551bd",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.3": {
    "en": "4",
-   "ar": "4",
+   "ar": "٤",
    "kind": "text",
-   "hash": "423fc76c72ee",
+   "hash": "1a9c10a16433",
    "file": "src/routes/index.tsx"
   },
   "routes/index.partners": {
@@ -4580,48 +3901,6 @@
    "ar": "، فتُنتج السمة أفعالاً، ثم يُقاس التحوّل. والخدمات أدناه مدخلاتٌ في هذا النظام لا غاياتٍ بذاتها.",
    "kind": "text",
    "hash": "61c28bdcac24",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofField": {
-   "en": "countries with documented field activity",
-   "ar": "دول بنشاطٍ ميداني موثّق",
-   "kind": "text",
-   "hash": "f4d994f41f92",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofFiles": {
-   "en": "approved files on the platform",
-   "ar": "ملفات معتمدة على المنصّة",
-   "kind": "text",
-   "hash": "3dd50f25086e",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofFull": {
-   "en": "fully sponsored",
-   "ar": "مكفولون بالكامل",
-   "kind": "text",
-   "hash": "b9a57de50299",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofH": {
-   "en": "The platform today",
-   "ar": "المنصّة اليوم",
-   "kind": "text",
-   "hash": "6c6bc489fbd8",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofOffices": {
-   "en": "countries with a confirmed WAMY office",
-   "ar": "دول فيها مكتبٌ مؤكَّد للندوة",
-   "kind": "text",
-   "hash": "d4e50372201a",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.proofSource": {
-   "en": "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
-   "ar": "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
-   "kind": "text",
-   "hash": "4f5c8eaf2911",
    "file": "src/routes/index.tsx"
   },
   "routes/index.qualification": {
@@ -5486,6 +4765,27 @@
    "hash": "ae4265290310",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.modes.in_kind": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.modes.monthly": {
+   "en": "Monthly sponsorship",
+   "ar": "كفالة شهرية",
+   "kind": "text",
+   "hash": "9630b012db18",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.modes.qualification": {
+   "en": "Capability building",
+   "ar": "بناء أهلية",
+   "kind": "text",
+   "hash": "7d7764e5919c",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.monthlyNeed": {
    "en": "Monthly need",
    "ar": "الاحتياج الشهري",
@@ -5556,18 +4856,11 @@
    "hash": "19e32a69e140",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
-  "routes/orphans.orphanId.restored": {
-   "en": "We kept what you chose before signing in: the amount and your message.",
-   "ar": "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
+  "routes/orphans.orphanId.serviceType": {
+   "en": "Monthly sponsorship for education and qualification programs",
+   "ar": "كفالة شهرية لبرامج تعليمية وتأهيلية",
    "kind": "text",
-   "hash": "47a47b53a156",
-   "file": "src/routes/orphans.$orphanId.tsx"
-  },
-  "routes/orphans.orphanId.shareTitle": {
-   "en": "A verified sponsorship file",
-   "ar": "ملف كفالة موثّق",
-   "kind": "text",
-   "hash": "a1e917cea415",
+   "hash": "1e61b0360883",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.signIn": {
@@ -5693,11 +4986,25 @@
    "hash": "083be8329b16",
    "file": "src/routes/support.tsx"
   },
+  "routes/support.fullMonth": {
+   "en": "Covers the month",
+   "ar": "يسدّ الشهر",
+   "kind": "text",
+   "hash": "ccb315a7fab2",
+   "file": "src/routes/support.tsx"
+  },
   "routes/support.h1": {
    "en": "Support",
    "ar": "ادعم",
    "kind": "text",
    "hash": "81bb0b6bce39",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.halfMonth": {
+   "en": "Half of it",
+   "ar": "نصفه",
+   "kind": "text",
+   "hash": "276830735e32",
    "file": "src/routes/support.tsx"
   },
   "routes/support.kinds.in_kind.label": {
@@ -5736,10 +5043,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapText": {
-   "en": "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
-   "ar": "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
+   "en": "Choose a country, then a region — or continue with the steps below.",
+   "ar": "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
    "kind": "text",
-   "hash": "d55109d299e7",
+   "hash": "e5c7eb6890e7",
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapTitle": {
@@ -5812,39 +5119,39 @@
    "hash": "32398511e20f",
    "file": "src/routes/support.tsx"
   },
-  "routes/support.rest": {
-   "en": "Cover the remaining need",
-   "ar": "سدّ المتبقّي",
+  "routes/support.quarterMonth": {
+   "en": "A quarter",
+   "ar": "ربعه",
    "kind": "text",
-   "hash": "cef384131891",
+   "hash": "2d2e70600a30",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s1": {
    "en": "1. Kind of support",
-   "ar": "1. نوع الدعم",
+   "ar": "١. نوع الدعم",
    "kind": "text",
-   "hash": "3fcdfbbc1877",
+   "hash": "dd9683704413",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s2": {
    "en": "2. Who is it for?",
-   "ar": "2. إلى من يذهب؟",
+   "ar": "٢. إلى من يذهب؟",
    "kind": "text",
-   "hash": "756d2f8c3cc6",
+   "hash": "8c1de4647d34",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s3": {
    "en": "3. Your choice",
-   "ar": "3. الاختيار",
+   "ar": "٣. الاختيار",
    "kind": "text",
-   "hash": "2990b1e5514d",
+   "hash": "11fc4817ed94",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s4": {
    "en": "4. Amount",
-   "ar": "4. المبلغ",
+   "ar": "٤. المبلغ",
    "kind": "text",
-   "hash": "c0cc206c2298",
+   "hash": "c5cb8f669dc0",
    "file": "src/routes/support.tsx"
   },
   "routes/support.section": {

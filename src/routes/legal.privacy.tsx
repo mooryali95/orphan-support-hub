@@ -36,7 +36,7 @@ function PrivacyAr() {
       updated="2026-08-26"
       intro="هذه المنصة تعالج بيانات أطفال. وهي من أعلى فئات الحساسية في كل نظام لحماية البيانات، ونتعامل معها على هذا الأساس لا على أساس أنها بيانات مستخدمين عاديين."
     >
-      <Section title="1. البيانات التي نجمعها">
+      <Section title="١. البيانات التي نجمعها">
         <p className="font-medium">عن اليتيم:</p>
         <ul>
           <li>
@@ -62,7 +62,7 @@ function PrivacyAr() {
         </ul>
       </Section>
 
-      <Section title="2. أساس المعالجة">
+      <Section title="٢. أساس المعالجة">
         <ul>
           <li>
             <strong>موافقة ولي الأمر</strong> — لبيانات اليتيم السرّية ووثائقه وصورته.
@@ -76,7 +76,7 @@ function PrivacyAr() {
         </ul>
       </Section>
 
-      <Section title="3. صورة اليتيم">
+      <Section title="٣. صورة اليتيم">
         <p>
           الأصل هو <strong>عدم النشر</strong>. ولا تُنشر صورة إلا في إحدى حالتين:
         </p>
@@ -94,7 +94,7 @@ function PrivacyAr() {
         </p>
       </Section>
 
-      <Section title="4. من يرى ماذا">
+      <Section title="٤. من يرى ماذا">
         <ul>
           <li>
             <strong>الزائر والكافل:</strong> البيانات العامة فقط. لا اسم كامل، لا هوية، لا وثائق، لا
@@ -112,7 +112,7 @@ function PrivacyAr() {
         </ul>
       </Section>
 
-      <Section title="5. مدّة الاحتفاظ">
+      <Section title="٥. مدّة الاحتفاظ">
         <table>
           <thead>
             <tr>
@@ -145,7 +145,7 @@ function PrivacyAr() {
         </table>
       </Section>
 
-      <Section title="6. حقوقك">
+      <Section title="٦. حقوقك">
         <p>
           لك أن تطلب نسخة من بياناتك، أو تصحيحها، أو حذفها، أو سحب موافقتك. ويُستثنى من الحذف ما
           يلزمنا الاحتفاظ به نظاماً — وأهمّه السجلّ المالي.
@@ -158,7 +158,7 @@ function PrivacyAr() {
         </p>
       </Section>
 
-      <Section title="7. الأمن">
+      <Section title="٧. الأمن">
         <ul>
           <li>عزل البيانات مفروض في قاعدة البيانات نفسها لا في الواجهة.</li>
           <li>الوثائق في خزنة خاصة، تُقرأ بروابط موقّعة تنتهي بعد دقيقة.</li>
@@ -167,7 +167,7 @@ function PrivacyAr() {
         </ul>
       </Section>
 
-      <Section title="8. أطراف ثالثة">
+      <Section title="٨. أطراف ثالثة">
         <ul>
           <li>
             <strong>مزوّد الاستضافة وقاعدة البيانات</strong> — لتشغيل المنصة.

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { entityTypeLabel } from "@/lib/plural";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -244,9 +243,7 @@ export function OfficesAdmin() {
               >
                 <span>
                   <span className="font-semibold">{e.name}</span>
-                  <span className="ms-2 text-xs text-muted-foreground">
-                    {entityTypeLabel(e.type)}
-                  </span>
+                  <span className="ms-2 text-xs text-muted-foreground">{e.type}</span>
                 </span>
                 <span className="flex gap-2">
                   {e.status !== "approved" && (

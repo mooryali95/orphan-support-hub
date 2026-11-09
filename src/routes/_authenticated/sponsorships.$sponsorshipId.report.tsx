@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { BRAND } from "@/config/brand";
 import { formatDate, formatMoney } from "@/lib/format";
 import { getSponsorshipLedger, monthState } from "@/lib/ledger.functions";
-import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/report")({
   head: () => ({
@@ -97,7 +96,7 @@ function ReportPage() {
 
       <h1 className="mt-8 text-2xl font-extrabold">تقرير الكفالة لعام {year}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        كفالة <Name>{l.orphan.display_name}</Name> · ملف <Name>{l.orphan.code}</Name> ·{" "}
+        كفالة {l.orphan.display_name} · ملف {l.orphan.code} ·{" "}
         {formatMoney(l.sponsorship.amount, cur)} شهرياً
       </p>
 

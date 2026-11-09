@@ -106,7 +106,7 @@ export function AccessDecision({
                   <span className="font-medium">{s.label}</span>
                   <span
                     className={cn(
-                      "ms-2 text-xs",
+                      "ms-2 text-[11px]",
                       s.sensitivity >= 3 ? "text-bridge-ink" : "text-muted-foreground",
                     )}
                   >
@@ -215,7 +215,7 @@ export function AccessDecision({
                 )}
               >
                 <p className="whitespace-pre-line">{m.body}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
+                <p className="mt-1 text-[11px] text-muted-foreground">
                   {m.from_admin ? "الإدارة" : "صاحب الطلب"} · {formatDate(m.created_at)}
                 </p>
               </li>

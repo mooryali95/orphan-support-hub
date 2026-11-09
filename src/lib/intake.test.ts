@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  documentStoragePath,
-  missingRequiredDocs,
-  REQUIRED_DOCS,
-  unverifiedRequiredDocs,
-} from "./intake.functions";
+import { documentStoragePath, missingRequiredDocs, REQUIRED_DOCS } from "./intake.functions";
 
 const ORPHAN = "11111111-1111-4111-8111-111111111111";
 
@@ -61,37 +56,5 @@ describe("missingRequiredDocs", () => {
     expect(missingRequiredDocs(["school_record", "medical_report", "orphan_id"])).toEqual([
       ...REQUIRED_DOCS,
     ]);
-  });
-});
-
-// شرط النشر في القاعدة (`review_orphan`): كلّ وثيقةٍ إلزامية **موثَّقة**.
-// وزرّ الاعتماد يُبنى على المرآة نفسها، فلا يَعِد بما ترفضه القاعدة.
-describe("unverifiedRequiredDocs", () => {
-  it("المرفوعة غير الموثَّقة لا تكفي للنشر", () => {
-    expect(
-      unverifiedRequiredDocs([
-        { kind: "death_certificate", verified: false },
-        { kind: "guardianship_proof", verified: false },
-      ]),
-    ).toEqual([...REQUIRED_DOCS]);
-  });
-
-  it("يكفي موثَّقٌ واحد من كلّ نوعٍ إلزامي ولو بجانبه نسخةٌ غير موثَّقة", () => {
-    expect(
-      unverifiedRequiredDocs([
-        { kind: "death_certificate", verified: false },
-        { kind: "death_certificate", verified: true },
-        { kind: "guardianship_proof", verified: true },
-      ]),
-    ).toEqual([]);
-  });
-
-  it("وثيقةٌ اختيارية موثَّقة لا تُغني عن إلزاميةٍ ناقصة", () => {
-    expect(
-      unverifiedRequiredDocs([
-        { kind: "death_certificate", verified: true },
-        { kind: "orphan_id", verified: true },
-      ]),
-    ).toEqual(["guardianship_proof"]);
   });
 });

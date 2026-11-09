@@ -1,18 +1,23 @@
-# مجموعةٌ واحدة لكلّ الزواحف: الزاحف الذي يجد مجموعةً باسمه يتبعها وحدها
-# ويُهمل مجموعة «*»، فكانت مجموعات Googlebot وBingbot (Allow: / وحدها)
-# تُسقط عنها أسطر المنع أدناه.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
 User-agent: *
 Allow: /
 
 # اللوحات ومسارات الواجهة البرمجية ليست للفهرسة: صفحات محمية لا يبلغها
 # الزاحف أصلاً، وإدراجها يكشف بنية المنصة بلا فائدة.
-# وصفحات الأطفال (/orphans/<id>) لا تُمنع هنا عمداً: المنع يحجب عن الزاحف
-# وسم noindex فيبقى الرابط مفهرساً بلا محتوى. فهي تُزحف وتحمل noindex.
 Disallow: /dashboard
 Disallow: /admin
-# «/org» بحدّ المقطع: المطابقة هنا بالبادئة، و«/org» وحدها تمنع «/organizations».
-Disallow: /org$
-Disallow: /org/
+Disallow: /org
 Disallow: /guardian
 Disallow: /auth
 Disallow: /api/

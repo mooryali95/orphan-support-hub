@@ -114,11 +114,7 @@ BEGIN
      OR (SELECT external_deleted_at FROM public.orphans WHERE id = _o) IS NOT NULL THEN
     RAISE EXCEPTION 'FAIL — المرآة غيّرت هوية مكفولٍ أو حذفته';
   END IF;
-  /* غير المكفول منشورٌ أيضاً، فتغييرُ منطقته من المصدر يُمسَك للمراجعة
-     (مراجعة المرحلة صفر) — والمهمّ هنا أنّ الدفعة لم تنكسر عنده. */
-  IF (SELECT changes->>'region' FROM public.orphan_pending_edits WHERE orphan_id = _o2)
-       IS DISTINCT FROM 'Elbasan'
-     OR (SELECT status FROM public.orphans WHERE id = _o2) <> 'approved' THEN
+  IF (SELECT region FROM public.orphans WHERE id = _o2) <> 'Elbasan' THEN
     RAISE EXCEPTION 'FAIL — الإمساك كسر بقية الدفعة (غير المكفول لم يُحدَّث)';
   END IF;
   IF (SELECT count(*) FROM public.integrity_discrepancies WHERE orphan_id = _o AND status = 'open') < 2 THEN

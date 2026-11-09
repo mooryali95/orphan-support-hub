@@ -16,3 +16,6 @@
 ## Demonstration boundaries
 - Keep showcase geography and fictional child cards in a shared browser-safe demo module, separate from payable child IDs; this prevents sample data from entering financial workflows.
 - Demo office records use an explicit name prefix and remain inactive until replaced by reviewed source data; this avoids implying accreditation or a live integration.
+
+## Support selections
+- Preserve valid recipients and user-edited amounts across same-place map, catalog, and auth updates; only the existing place-keyed card starts a fresh support sheet, preventing silent pledge changes.

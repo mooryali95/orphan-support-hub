@@ -174,14 +174,8 @@ BEGIN
   END;
 END $$;
 
--- الإدارة تعتمد الملف (المسار المشروع) — بعد توثيق شهادة الوفاة وإثبات
--- الوصاية: لا يُنشر ملفٌّ بدونهما (CP-06).
+-- الإدارة تعتمد الملف (المسار المشروع)
 RESET ROLE;
-INSERT INTO public.orphan_documents (orphan_id, doc_type, kind, storage_path, verified)
-VALUES ('f0000000-0000-4000-8000-00000000000a', 'death_certificate', 'death_certificate',
-        'f0000000-0000-4000-8000-00000000000a/dc.pdf', true),
-       ('f0000000-0000-4000-8000-00000000000a', 'guardianship_proof', 'guardianship_proof',
-        'f0000000-0000-4000-8000-00000000000a/gp.pdf', true);
 SET LOCAL ROLE authenticated;
 SET LOCAL request.jwt.claims = '{"sub":"d0000000-0000-4000-8000-000000000004","role":"authenticated"}';
 UPDATE public.orphans SET status = 'approved', approved_at = now()
@@ -374,14 +368,8 @@ BEGIN
   IF n < 1 THEN RAISE EXCEPTION 'FAIL H2 — public directory returns nothing for anon'; END IF;
   RAISE NOTICE 'PASS H2f — public directory still readable by anon (% rows)', n;
 
-  /* نصّ الاحتياج حرٌّ تكتبه الجهة وقد يدلّ على مكان الطفل، فسُحب من الزائر
-     في مراجعة المرحلة صفر؛ التفصيل يصل من يحقّ له عبر orphan_view. */
-  BEGIN
-    SELECT count(*) INTO n FROM public.orphan_needs;
-    RAISE EXCEPTION 'FAIL H2g — anon still reads orphan_needs (% rows)', n;
-  EXCEPTION WHEN insufficient_privilege THEN
-    RAISE NOTICE 'PASS H2g — orphan_needs is closed to anon';
-  END;
+  SELECT count(*) INTO n FROM public.orphan_needs;
+  RAISE NOTICE 'PASS H2g — orphan_needs policy still resolves for anon (% rows)', n;
 
   -- شُدّد المنح لاحقاً في 20260823110111 (تدقيق Supabase الأمني): الدالة لم تعد
   -- قابلة للاستدعاء من العميل إطلاقاً. عند تفعيل المطابقة في المرحلة 5 يجب

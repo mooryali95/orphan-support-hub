@@ -101,7 +101,7 @@ export function KahataynLockup({
         {!compact && (
           <span
             className={cn(
-              "mt-1 hidden text-xs font-medium sm:block",
+              "mt-1 hidden text-[11px] font-medium sm:block",
               onDark ? "text-white/75" : "text-bridge-ink",
             )}
           >

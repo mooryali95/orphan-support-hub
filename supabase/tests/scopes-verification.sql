@@ -26,7 +26,7 @@ INSERT INTO public.orphans
    photo_url, photo_consent, monthly_need, status, approved_at)
 VALUES ('b3000000-0000-4000-8000-00000000000b', 'SC-1', 'طفل النطاقات',
         'b2000000-0000-4000-8000-00000000000a', 'b1000000-0000-4000-8000-000000000002',
-        'السعودية', 'الرياض', 'قصّة الطفل.', 'b3000000-0000-4000-8000-00000000000b/sc-1.jpg', 'face_hidden',
+        'السعودية', 'الرياض', 'قصّة الطفل.', 'media/sc-1.jpg', 'face_hidden',
         200, 'approved', now());
 
 INSERT INTO public.orphan_private (orphan_id, full_name)

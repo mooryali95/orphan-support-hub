@@ -30,10 +30,8 @@ export type SupportCatalog = {
     id: string;
     name: string;
     country: string;
-    /** محجوبةٌ إن كان في أطفال المجموعة من حشده صغير — المنطقة تدلّ عليه. */
     region: string | null;
-    /** لا يُنشر عددٌ دون حدّ الحشد (٥). */
-    children: number | null;
+    children: number;
   }>;
   institutions: Array<{
     id: string;

@@ -9,18 +9,9 @@ import type { GeoCount } from "@/lib/geo";
 import { formatMoney } from "@/lib/format";
 import { intlOf, type Locale } from "@/lib/locale";
 
-export const MAP_LAYERS = ["waiting", "impact", "gap", "network", "needs"] as const;
+export const MAP_LAYERS = ["waiting", "impact", "gap"] as const;
 export type MapLayer = (typeof MAP_LAYERS)[number];
 export const DEFAULT_LAYER: MapLayer = "waiting";
-
-/**
- * طبقتا شبكة الندوة («الشبكة» و«تحتاج مكتباً») لا تقرآن أعداد المنصّة:
- * تلوينهما من البيانات البحثية في `@/data/wamy-network` (انظر `network-layer.ts`).
- */
-export const NETWORK_LAYERS = ["network", "needs"] as const;
-export type NetworkLayer = (typeof NETWORK_LAYERS)[number];
-export const isNetworkLayer = (layer: MapLayer): layer is NetworkLayer =>
-  (NETWORK_LAYERS as readonly string[]).includes(layer);
 
 /** من الرابط: ما ليس طبقةً معروفة يُهمَل بصمت. */
 export function parseLayer(raw: unknown): MapLayer | undefined {
@@ -44,8 +35,6 @@ export function metricOf(layer: MapLayer, s: GeoCount | undefined): number | nul
       return s.sponsored == null ? null : Math.round((s.sponsored / Math.max(1, s.total)) * 100);
     case "gap":
       return s.gap;
-    default:
-      return null;
   }
 }
 
@@ -79,7 +68,5 @@ export function metricText(
       return `${m.toLocaleString(intlOf(locale))}%`;
     case "gap":
       return formatMoney(m, s?.currency ?? "USD", locale);
-    default:
-      return hidden;
   }
 }

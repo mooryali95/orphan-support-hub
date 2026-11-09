@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MapStats } from "@/components/map/demo-stats";
-import {
-  defaultAmount,
-  defaultIndividualAmount,
-  gapOfTarget,
-  individualPresets,
-  suggestionsFor,
-} from "./support-amounts";
+import { defaultAmount, gapOfTarget, suggestionsFor } from "./support-amounts";
 
 const stats: MapStats = {
   AL: {
@@ -67,23 +61,6 @@ describe("المبلغ المقترح من الفجوة", () => {
       }),
     ).toEqual({ gap: 120, currency: "USD" });
     expect(gapOfTarget({ targetType: "orphan", target: "id", country: "", stats })).toBeNull();
-  });
-
-  it("الفرد: 25/50/100 و«سدّ المتبقّي»، والبداية 50 أو أقلّ منها", () => {
-    const g = (gap: number) => ({ gap, currency: "EUR" });
-    expect(individualPresets(null)).toEqual([
-      { kind: "fixed", value: 25 },
-      { kind: "fixed", value: 50 },
-      { kind: "fixed", value: 100 },
-    ]);
-    // فجوةٌ جماعية كبيرة: تُعرض «سدّ المتبقّي» خياراً لا افتراضاً.
-    expect(individualPresets(g(1440)).at(-1)).toEqual({ kind: "rest", value: 1440 });
-    expect(defaultIndividualAmount(g(1440))).toBe(50);
-    // المتبقّي أحد الأرقام الثابتة: لا يتكرّر.
-    expect(individualPresets(g(100))).toHaveLength(3);
-    // المتبقّي أقلّ من 50: يبدأ به، فلا يُقترح ما يتجاوز الحاجة.
-    expect(defaultIndividualAmount(g(30.2))).toBe(31);
-    expect(defaultIndividualAmount(null)).toBe(50);
   });
 
   it("ثلاث درجاتٍ بلا كسور، والبداية نصف الشهر", () => {

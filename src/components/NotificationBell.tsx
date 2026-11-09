@@ -84,7 +84,9 @@ export function NotificationBell() {
                   {n.body && (
                     <p className="text-muted-foreground mt-0.5 text-xs leading-5">{n.body}</p>
                   )}
-                  <p className="text-muted-foreground mt-1 text-xs">{formatDate(n.created_at)}</p>
+                  <p className="text-muted-foreground mt-1 text-[11px]">
+                    {formatDate(n.created_at)}
+                  </p>
                 </>
               );
               return (

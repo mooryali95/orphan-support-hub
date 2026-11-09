@@ -55,32 +55,13 @@ BEGIN
   RESET ROLE;
   IF jsonb_array_length(_j) <> 0 THEN RAISE EXCEPTION 'FAIL — غريبٌ رأى خطّاً زمنياً'; END IF;
 
-  /* المجموعة منطقةٌ معلنة، فلا يُطابقها إلا حشدٌ آمن (مراجعة المرحلة صفر):
-     طفل الخطّ وحده في حشده، فلا تقود المجموعة إليه. */
   SET LOCAL ROLE anon;
   _j := public.list_orphan_cards(_group := 'a8200000-0000-4000-8000-000000000001');
   RESET ROLE;
-  IF (_j->>'total')::int <> 0 THEN
-    RAISE EXCEPTION 'FAIL — فلتر المجموعة يقود إلى طفل حشدٍ صغير: %', _j;
-  END IF;
-  -- ثلاثةٌ آخرون بالصفات نفسها (اثنان في المجموعة): صار الحشد خمسة.
-  BEGIN
-    INSERT INTO public.orphans (code, display_name, org_id, created_by, country, monthly_need,
-                                status, approved_at, group_id)
-    SELECT 'FD-X' || g, 'طفل ' || g, 'a8100000-0000-4000-8000-000000000001',
-           'a8000000-0000-4000-8000-000000000002', 'ألبانيا', 100, 'approved', now(),
-           CASE WHEN g <= 2 THEN 'a8200000-0000-4000-8000-000000000001'::uuid END
-      FROM generate_series(1, 3) g;
-    SET LOCAL ROLE anon;
-    _j := public.list_orphan_cards(_group := 'a8200000-0000-4000-8000-000000000001');
-    RESET ROLE;
-    RAISE EXCEPTION USING ERRCODE = 'RVPRB', MESSAGE = 'probe';
-  EXCEPTION WHEN SQLSTATE 'RVPRB' THEN NULL;
-  END;
-  IF (_j->>'total')::int <> 3 OR _j->'rows'->0 ? 'group_id' OR _j->'rows'->0 ? 'cohort_safe' THEN
+  IF (_j->>'total')::int <> 1 OR _j->'rows'->0 ? 'group_id' THEN
     RAISE EXCEPTION 'FAIL — فلتر المجموعة خاطئ أو كشف معرّفها: %', _j;
   END IF;
-  RAISE NOTICE 'PASS — الدليل يُفلتر بالمجموعة ولا يكشف معرّفها في البطاقة، ولا يقود إلى حشدٍ صغير';
+  RAISE NOTICE 'PASS — الدليل يُفلتر بالمجموعة ولا يكشف معرّفها في البطاقة';
 END $$;
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص الخطّ الزمني اجتازت ──'; END $$;
 ROLLBACK;

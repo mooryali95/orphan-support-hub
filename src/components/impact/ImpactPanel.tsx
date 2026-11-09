@@ -13,11 +13,9 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { listReports, listTimeline } from "@/lib/impact.functions";
-import { eventLabel } from "@/lib/event-labels";
+import { listReports, listTimeline, TIMELINE_LABELS } from "@/lib/impact.functions";
 import { createDocumentReadUrl } from "@/lib/intake.functions";
 import { formatDate } from "@/lib/format";
-import { Name } from "@/components/kit/Name";
 
 /**
  * أثر الكفالة كما يراه الكافل.
@@ -26,9 +24,8 @@ import { Name } from "@/components/kit/Name";
  * الطفل انتقل إلى صفّ أعلى أو أن علاجه تمّ، فالكفالة اقتطاع شهري بلا
  * قصّة — وأول مراجعة للحساب تُنهيه.
  *
- * والتقارير هنا **معتمَدة من الإدارة** حصراً: دالّة القاعدة تحجب غير
- * المعتمَد عن الكافل، فما يصله مُراجَع لا مُدَّعى. وملاحظة الصحّة
- * والمرفقات لا تصله أصلاً (تبقى لدائرة الطفل)، فلا تظهر خانتها له.
+ * والتقارير هنا **معتمَدة من الإدارة** حصراً: سياسة القاعدة تحجب غير
+ * المعتمَد عن الكافل، فما يصله مُراجَع لا مُدَّعى.
  */
 export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphanName: string }) {
   const fetchReports = useServerFn(listReports);
@@ -121,9 +118,7 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
       {events.length > 0 && (
         <section>
           <h4 className="text-sm font-bold">الخط الزمني</h4>
-          <p className="sr-only">
-            الخط الزمني لملف <Name>{orphanName}</Name>
-          </p>
+          <p className="sr-only">الخط الزمني لملف {orphanName}</p>
           <ol className="border-border mt-2 border-s ps-4">
             {events.map((e) => (
               <li key={e.id} className="relative py-2">
@@ -132,10 +127,10 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
                   aria-hidden="true"
                 />
                 <p className="text-sm">
-                  {eventLabel(e.event_type)}
+                  {TIMELINE_LABELS[e.event_type] ?? e.event_type}
                   {e.detail && <span className="text-muted-foreground"> — {e.detail}</span>}
                 </p>
-                <p className="text-muted-foreground text-xs">{formatDate(e.created_at)}</p>
+                <p className="text-muted-foreground text-[11px]">{formatDate(e.created_at)}</p>
               </li>
             ))}
           </ol>

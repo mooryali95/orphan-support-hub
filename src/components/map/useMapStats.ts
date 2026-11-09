@@ -2,23 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { geoQuery } from "@/lib/geo";
-import { DEMO_MODE } from "@/lib/demo-network";
-import { toMapStats } from "./demo-stats";
-import { resolveMapSource } from "./map-source";
+import { DEMO_GEO, toMapStats } from "./demo-stats";
+import { DEMO_MODE, demoGeography } from "@/lib/demo-network";
 
 /**
- * أعداد الخارطة من مصدر الجغرافيا الواحد.
- *
- * في وضع العرض الصريح (`DEMO_MODE`) تُعرض المكاتب التجريبية بشارتها. وخارجه
- * لا رقم إلا من القاعدة: أثناء التحميل هيكلٌ فارغ، وعند التعذّر «غير متاحة
- * الآن» — لا أرقامٌ مختلَقة (ARC-11/PRD-15).
+ * أعداد الخارطة من مصدر الجغرافيا الواحد. وحين تتعذّر القاعدة تُعرض
+ * البيانات التجريبية بشارةٍ ظاهرة (`demo`) — لا صمتاً.
  */
 export function useMapStats() {
-  const { data, isError } = useQuery(geoQuery);
-  const { geo, status } = useMemo(
-    () => resolveMapSource(data, { demoMode: DEMO_MODE, failed: isError }),
-    [data, isError],
-  );
+  const { data } = useQuery(geoQuery);
+  const demoGeo = useMemo(() => demoGeography(), []);
+  const geo = DEMO_MODE ? demoGeo : data?.available ? data : DEMO_GEO;
   const stats = useMemo(() => toMapStats(geo), [geo]);
-  return { stats, geo, status, demo: status === "demo" };
+  return { stats, geo, demo: DEMO_MODE || !data?.available };
 }

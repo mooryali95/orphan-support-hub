@@ -16,7 +16,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { onAuthEvent } from "@/lib/client-state";
 import { BRAND_CSS } from "@/config/brand-colors";
 import { BRAND, brandFor } from "@/config/brand";
 import {
@@ -31,9 +30,6 @@ import {
 } from "@/lib/locale";
 import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
 import { PreviewBridge } from "@/components/i18n/PreviewBridge";
-
-const FONTS_CSS =
-  "https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap";
 
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
@@ -205,11 +201,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      // الاتصال المسبق بأصلَي الخطوط يُكتب أوّل <head> في RootShell (قبل وحدات
-      // الحزمة المحمّلة مسبقاً)، لا هنا: هنا كان يقع بعدها فلا يسبق شيئاً (RT-05).
-      // الأوزان المستعملة فقط: Tajawal 400/500/700/800 (300 لا يُستعمل)، وAmiri
-      // 400 للنصّ النبوي و700 للعناوين. و`display=swap` يرسم النصّ فوراً بالبديل.
-      { rel: "stylesheet", href: FONTS_CSS },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap",
+      },
       // العلامة المضغوطة: مقطع «IO» بالطفل في الفراغ السالب — يصمد عند 16px
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -229,9 +226,6 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang={locale} dir={dirOf(locale)}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preload" as="style" href={FONTS_CSS} />
         <HeadContent />
         {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />
@@ -252,10 +246,7 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      // الخروج، أو دخول مستخدمٍ غير من ترك بياناته على الجهاز: تُمحى مسودّات
-      // العمل من المتصفّح وذاكرة الاستعلامات معها، فلا يرى الثاني ما للأوّل (UX-05).
-      onAuthEvent(event, session?.user?.id ?? null, () => queryClient.clear());
+    const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();

@@ -19,7 +19,7 @@ import {
 } from "@/lib/profile.functions";
 import { CompletenessLine } from "@/components/orphan/TrustSignals";
 import type { ProfileSection, ProfileSectionRow } from "@/integrations/supabase/types.extra";
-import { formatDate, isolate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 
 const ALL_SECTIONS: ProfileSection[] = [
@@ -256,7 +256,7 @@ export function OrphanProfilePanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="profile-heading" className="flex items-center gap-2 text-lg font-bold">
           <UserRound className="size-5 text-shore-need" aria-hidden="true" />
-          {t.title(isolate(orphanName))}
+          {t.title(orphanName)}
         </h2>
         {mayWrite ? (
           comp?.completeness ? (
@@ -304,7 +304,7 @@ export function OrphanProfilePanel({
                 <div className="flex flex-wrap items-center gap-2">
                   {row && (
                     <span
-                      className={`text-xs ${stale ? "text-bridge-ink" : "text-muted-foreground"}`}
+                      className={`text-[11px] ${stale ? "text-bridge-ink" : "text-muted-foreground"}`}
                     >
                       {stale && <Clock className="me-1 inline size-3" aria-hidden="true" />}
                       {t.roles[row.updated_role ?? ""] ?? row.updated_role} —{" "}

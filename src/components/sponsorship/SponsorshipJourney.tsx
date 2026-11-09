@@ -26,7 +26,6 @@ import {
 } from "@/lib/ledger.functions";
 import { arCount, type ArForms } from "@/lib/plural";
 import { cn } from "@/lib/utils";
-import { Name } from "@/components/kit/Name";
 
 const MONTHS = [
   "يناير",
@@ -109,7 +108,7 @@ export function SponsorshipJourney({
               {[ledger.orphan.country, ledger.orphan.region].filter(Boolean).join(" · ")}
             </p>
             <h2 className="mt-1 font-serif text-3xl font-bold text-primary">
-              <Name>{ledger.orphan.display_name}</Name>
+              {ledger.orphan.display_name}
             </h2>
             <p className="mt-2 text-sm leading-7">
               <strong className="tabular-nums">{arCount(delivered, MONTHS_FORMS)}</strong> وصلت
@@ -288,7 +287,7 @@ function MonthNode({
                 >
                   <Icon className="mx-auto size-5" strokeWidth={1.5} aria-hidden="true" />
                   <p className="mt-1.5 text-xs font-semibold">{label}</p>
-                  <p className="mt-0.5 text-xs">
+                  <p className="mt-0.5 text-[11px]">
                     {k === "paid"
                       ? st.paid
                         ? formatMoney(m.paid, currency)
@@ -434,7 +433,7 @@ function Receipt({
           تحقّق من إيصالٍ محفوظ
         </button>
       </div>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
         يُحسب من حقائق الشهر: الفواتير ومعاملاتها لدى المزوّد، والمدفوع، والتحويل، والوصول وتاريخه.
         إن تغيّر شيءٌ منها لاحقاً تغيّر الإيصال.
       </p>
