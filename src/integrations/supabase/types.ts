@@ -335,6 +335,7 @@ export type Database = {
           code: string
           created_at: string
           emergency_note: string | null
+          in_network: boolean
           name_ar: string
           name_local: string | null
           sort_order: number
@@ -344,6 +345,7 @@ export type Database = {
           code: string
           created_at?: string
           emergency_note?: string | null
+          in_network?: boolean
           name_ar: string
           name_local?: string | null
           sort_order?: number
@@ -353,6 +355,7 @@ export type Database = {
           code?: string
           created_at?: string
           emergency_note?: string | null
+          in_network?: boolean
           name_ar?: string
           name_local?: string | null
           sort_order?: number
