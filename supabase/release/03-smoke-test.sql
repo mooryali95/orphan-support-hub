@@ -95,6 +95,24 @@ WITH checks(name, ok) AS (VALUES
               AND NOT has_function_privilege('anon', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
               AND NOT has_table_privilege('authenticated', to_regclass('public.manual_transfer_reconciliations'), 'SELECT'), false)),
   ('التصدير للإدارة بدالّةٍ تختار الأعمدة',
-     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false))
+     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false)),
+  -- الدفعة 3B — التشغيل والتقوية (bundle-after-20261107140000). قبلها تظهر false بلا خطأ.
+  ('حال إيقاف الدفع بدالّة، وإعدادات المنصّة للإدارة',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.payment_hold_state()'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.payment_hold_state()'), 'EXECUTE'), false)
+     AND NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public'
+                      AND tablename = 'platform_settings' AND policyname = 'settings_read')),
+  ('المستخدم لا يكتب في إشعاره إلا read_at',
+     NOT has_table_privilege('authenticated', 'public.notifications', 'UPDATE')
+     AND has_column_privilege('authenticated', 'public.notifications', 'read_at', 'UPDATE')),
+  ('عضوية الجهة المانحة بدعوةٍ تُقبل',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.respond_donor_invitation(uuid,boolean)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.donor_member_invites'), 'SELECT'), false)),
+  ('مخزن الآحاد وحجز مفتاح التكرار لمفتاح الخدمة وحده',
+     COALESCE(NOT has_function_privilege('authenticated', to_regprocedure('public.api_claim_nonce(uuid,text,integer)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.api_request_nonces'), 'SELECT'), false)),
+  ('عدّاد الفواتير لكل سنة مغلقٌ على العموم',
+     COALESCE(NOT has_table_privilege('authenticated', to_regclass('public.invoice_counters'), 'SELECT')
+              AND NOT has_table_privilege('anon', to_regclass('public.invoice_counters'), 'SELECT'), false))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;
