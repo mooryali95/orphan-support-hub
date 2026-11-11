@@ -131,141 +131,144 @@ function DevelopersPage() {
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="text-3xl font-extrabold">للمطوّرين</h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          اربط منصّتك بـ{BRAND.name}. المفاتيح تُصدرها الإدارة بنطاقٍ محدّد، والسرّ يُعرض مرّة
-          واحدة. حماية الطفل في القاعدة لا في البوّابة: المفتاح لا يفتح ملفّ طفل.
-        </p>
-
-        <section className="mt-8 rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-bold">المصادقة</h2>
-          <ul className="mt-2 space-y-1 text-sm" dir="ltr">
-            <li>
-              <code>X-Api-Key</code> — ck_live_…
-            </li>
-            <li>
-              <code>X-Api-Secret</code> — sk_live_…
-            </li>
-            <li>
-              <code>X-Api-Timestamp</code> — Unix seconds, ±5 min
-            </li>
-          </ul>
-          <p className="mt-2 text-xs text-muted-foreground">
-            الرؤوس القديمة X-IOSO-* ما زالت مقبولة.
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
+        {/* عمود القراءة يبدأ من حافة الشعار نفسها (UI-13). */}
+        <div className="max-w-5xl">
+          <h1 className="text-3xl font-extrabold">للمطوّرين</h1>
+          <p className="mt-3 max-w-2xl text-muted-foreground">
+            اربط منصّتك بـ{BRAND.name}. المفاتيح تُصدرها الإدارة بنطاقٍ محدّد، والسرّ يُعرض مرّة
+            واحدة. حماية الطفل في القاعدة لا في البوّابة: المفتاح لا يفتح ملفّ طفل.
           </p>
-        </section>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[16rem_1fr]">
-          <nav aria-label="النقاط" className="space-y-2">
-            {ENDPOINTS.map((e) => (
-              <button
-                key={e.id}
-                type="button"
-                aria-pressed={active.id === e.id}
-                onClick={() => setActive(e)}
-                className={cn(
-                  "w-full rounded-xl border p-3 text-start",
-                  active.id === e.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/60",
-                )}
-              >
-                <span className="text-sm font-semibold">{e.title}</span>
-                <span className="mt-1 block font-mono text-[11px] text-muted-foreground" dir="ltr">
-                  {e.method} {e.path}
-                </span>
-              </button>
-            ))}
-          </nav>
-
-          <section>
-            <h2 className="text-lg font-bold">{active.title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{active.text}</p>
-            <p className="mt-2 text-xs">
-              النطاق: <code dir="ltr">{active.scope}</code>
+          <section className="mt-8 rounded-2xl border border-border bg-card p-5">
+            <h2 className="font-bold">المصادقة</h2>
+            <ul className="mt-2 space-y-1 text-sm" dir="ltr">
+              <li>
+                <code>X-Api-Key</code> — ck_live_…
+              </li>
+              <li>
+                <code>X-Api-Secret</code> — sk_live_…
+              </li>
+              <li>
+                <code>X-Api-Timestamp</code> — Unix seconds, ±5 min
+              </li>
+            </ul>
+            <p className="mt-2 text-xs text-muted-foreground">
+              الرؤوس القديمة X-IOSO-* ما زالت مقبولة.
             </p>
+          </section>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="dev-key" className="text-xs">
-                  المفتاح (اختياري — لا يُرسَل)
-                </Label>
-                <Input
-                  id="dev-key"
-                  dir="ltr"
-                  value={key}
-                  onChange={(e) => setKey(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="dev-secret" className="text-xs">
-                  السرّ (يُنسخ ولا يُعرض)
-                </Label>
-                <Input
-                  id="dev-secret"
-                  dir="ltr"
-                  type="password"
-                  autoComplete="off"
-                  value={secret}
-                  onChange={(e) => setSecret(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 overflow-hidden rounded-xl border border-border">
-              <div className="flex items-center justify-between bg-secondary/60 px-3 py-2 text-xs">
-                <span>curl</span>
-                <span className="flex gap-2">
-                  <button
-                    type="button"
-                    className="underline"
-                    onClick={() => setStamp(Math.floor(Date.now() / 1000))}
-                  >
-                    تحديث الوقت
-                  </button>
-                  <Button size="sm" variant="ghost" onClick={copy}>
-                    {copied ? <Check className="size-4" /> : <Copy className="size-4" />} نسخ
-                  </Button>
-                </span>
-              </div>
-              <pre className="overflow-x-auto bg-card p-3 text-xs leading-6" dir="ltr">
-                {curl}
-              </pre>
-            </div>
-
-            {active.body && (
-              <>
-                <p className="mt-4 text-xs font-semibold">جسم الطلب</p>
-                <pre
-                  className="mt-1 overflow-x-auto rounded-xl border border-border bg-card p-3 text-xs"
-                  dir="ltr"
+          <div className="mt-8 grid gap-6 lg:grid-cols-[16rem_1fr]">
+            <nav aria-label="النقاط" className="space-y-2">
+              {ENDPOINTS.map((e) => (
+                <button
+                  key={e.id}
+                  type="button"
+                  aria-pressed={active.id === e.id}
+                  onClick={() => setActive(e)}
+                  className={cn(
+                    "w-full rounded-xl border p-3 text-start",
+                    active.id === e.id
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/60",
+                  )}
                 >
-                  {active.body}
+                  <span className="text-sm font-semibold">{e.title}</span>
+                  <span className="mt-1 block font-mono text-xs text-muted-foreground" dir="ltr">
+                    {e.method} {e.path}
+                  </span>
+                </button>
+              ))}
+            </nav>
+
+            <section>
+              <h2 className="text-lg font-bold">{active.title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{active.text}</p>
+              <p className="mt-2 text-xs">
+                النطاق: <code dir="ltr">{active.scope}</code>
+              </p>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="dev-key" className="text-xs">
+                    المفتاح (اختياري — لا يُرسَل)
+                  </Label>
+                  <Input
+                    id="dev-key"
+                    dir="ltr"
+                    value={key}
+                    onChange={(e) => setKey(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="dev-secret" className="text-xs">
+                    السرّ (يُنسخ ولا يُعرض)
+                  </Label>
+                  <Input
+                    id="dev-secret"
+                    dir="ltr"
+                    type="password"
+                    autoComplete="off"
+                    value={secret}
+                    onChange={(e) => setSecret(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-xl border border-border">
+                <div className="flex items-center justify-between bg-secondary/60 px-3 py-2 text-xs">
+                  <span>curl</span>
+                  <span className="flex gap-2">
+                    <button
+                      type="button"
+                      className="underline"
+                      onClick={() => setStamp(Math.floor(Date.now() / 1000))}
+                    >
+                      تحديث الوقت
+                    </button>
+                    <Button size="sm" variant="ghost" onClick={copy}>
+                      {copied ? <Check className="size-4" /> : <Copy className="size-4" />} نسخ
+                    </Button>
+                  </span>
+                </div>
+                <pre className="overflow-x-auto bg-card p-3 text-xs leading-6" dir="ltr">
+                  {curl}
                 </pre>
-              </>
-            )}
+              </div>
+
+              {active.body && (
+                <>
+                  <p className="mt-4 text-xs font-semibold">جسم الطلب</p>
+                  <pre
+                    className="mt-1 overflow-x-auto rounded-xl border border-border bg-card p-3 text-xs"
+                    dir="ltr"
+                  >
+                    {active.body}
+                  </pre>
+                </>
+              )}
+            </section>
+          </div>
+
+          <section className="mt-10">
+            <h2 className="font-bold">الأخطاء</h2>
+            <table className="mt-3 w-full text-sm">
+              <tbody className="divide-y divide-border">
+                {ERRORS.map(([status, code, text]) => (
+                  <tr key={code}>
+                    <td className="w-16 px-3 py-2 font-mono text-xs" dir="ltr">
+                      {status}
+                    </td>
+                    <td className="w-56 px-3 py-2 font-mono text-xs" dir="ltr">
+                      {code}
+                    </td>
+                    <td className="px-3 py-2">{text}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
         </div>
-
-        <section className="mt-10">
-          <h2 className="font-bold">الأخطاء</h2>
-          <table className="mt-3 w-full text-sm">
-            <tbody className="divide-y divide-border">
-              {ERRORS.map(([status, code, text]) => (
-                <tr key={code}>
-                  <td className="w-16 px-3 py-2 font-mono text-xs" dir="ltr">
-                    {status}
-                  </td>
-                  <td className="w-56 px-3 py-2 font-mono text-xs" dir="ltr">
-                    {code}
-                  </td>
-                  <td className="px-3 py-2">{text}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
       </main>
       <SiteFooter />
     </div>

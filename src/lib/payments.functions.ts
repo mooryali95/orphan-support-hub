@@ -64,8 +64,15 @@ export const startCheckout = createServerFn({ method: "POST" })
 
     if (error) return { ok: false as const, error: error.message };
     if (!sponsorship) return { ok: false as const, error: "لا توجد كفالة بهذا المعرّف" };
-    if (sponsorship.status === "cancelled" || sponsorship.status === "completed") {
-      return { ok: false as const, error: "هذه الكفالة منتهية" };
+    // الدفع يبدأ الكفالة؛ المنتهية والجارية لا تنتظر جلسة دفع.
+    if (sponsorship.status !== "pending_payment") {
+      return {
+        ok: false as const,
+        error:
+          sponsorship.status === "cancelled" || sponsorship.status === "completed"
+            ? "هذه الكفالة منتهية"
+            : "هذه الكفالة لا تنتظر دفعاً",
+      };
     }
 
     // تحديد المعدّل قبل أي عمل: إنشاء جلسات دفع بلا حدّ يُنشئ ضغطاً على
@@ -76,24 +83,55 @@ export const startCheckout = createServerFn({ method: "POST" })
       return { ok: false as const, error: "محاولات كثيرة في وقت قصير. أعد المحاولة بعد قليل." };
     }
 
-    // الفحص هنا لا في الواجهة: زرّ مخفيّ يُتجاوَز بطلب واحد، والتحصيل
-    // قبل موافقة المزوّد يعرّض أموال الكفلاء للتجميد.
-    const hold = await readHold(supabase);
-    if (hold.onHold) {
-      return { ok: false as const, error: hold.reason, onHold: true as const };
-    }
-
-    const { paymentProvider } = await import("@/lib/payments");
+    const { paymentProvider, CurrencyNotSupportedError } = await import("@/lib/payments");
     const provider = paymentProvider();
 
-    const origin = process.env["APP_ORIGIN"] ?? "";
-    const orphanName =
-      (sponsorship.orphans as { display_name?: string } | null)?.display_name ?? "يتيم";
+    // التعليق يخصّ التحصيل الإلكتروني وحده: التحويل اليدوي تطابقه الإدارة
+    // قبل التفعيل، فلا يُغلق بإغلاق المزوّد. والفحص هنا لا في الواجهة: زرّ
+    // مخفيّ يُتجاوَز بطلب واحد.
+    if (provider.id !== "manual") {
+      const hold = await readHold(supabase);
+      if (hold.onHold) {
+        return { ok: false as const, error: hold.reason, onHold: true as const };
+      }
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { withPayments } = await import("@/integrations/supabase/types.extra");
+    const admin = withPayments(supabaseAdmin);
 
     // مفتاح منع التكرار مشتقّ من الكفالة والشهر: ضغط الزر مرّتين في نفس
-    // الشهر لا ينشئ دفعتين.
+    // الشهر لا ينشئ دفعتين. والتحويل اليدوي بمفتاحٍ واحد لا يتبدّل بالشهر.
     const period = new Date().toISOString().slice(0, 7);
-    const idempotencyKey = `${sponsorship.id}:${period}`;
+    const idempotencyKey =
+      provider.id === "manual" ? `${sponsorship.id}:manual` : `${sponsorship.id}:${period}`;
+
+    // APP-07: جلسةٌ قائمة لهذا الشهر تُعاد كما هي، بدل جلسةٍ جديدة لدى المزوّد
+    // عند كل ضغطة. المهجورة تُنهيها المطابقة الدورية فيتحرّر المفتاح.
+    const { data: existing, error: existingError } = await admin
+      .from("sponsorship_payments")
+      .select("checkout_url")
+      .eq("idempotency_key", idempotencyKey)
+      .eq("status", "pending")
+      .maybeSingle();
+    if (existingError) {
+      console.error("[payments] تعذّر قراءة الجلسة القائمة", existingError.message);
+      return { ok: false as const, error: "تعذّر بدء الدفع، حاول لاحقاً" };
+    }
+    if (existing?.checkout_url) {
+      return {
+        ok: true as const,
+        checkoutUrl: existing.checkout_url,
+        provider: provider.id,
+        online: provider.id !== "manual",
+      };
+    }
+
+    // أصلٌ واحد للروابط المطلقة (ARC-12): PUBLIC_BASE_URL، و APP_ORIGIN احتياطاً.
+    const { appBaseUrl } = await import("@/lib/env.server");
+    const origin = appBaseUrl() ?? "";
+    const orphanName =
+      (sponsorship.orphans as { display_name?: string } | null)?.display_name ?? "يتيم";
 
     let session;
     try {
@@ -108,6 +146,13 @@ export const startCheckout = createServerFn({ method: "POST" })
         cancelUrl: `${origin}/dashboard?payment=cancelled`,
       });
     } catch (cause) {
+      if (cause instanceof CurrencyNotSupportedError) {
+        // APP-04: لا تُحصَّل كفالةٌ باليورو على منتجٍ بالدولار.
+        return {
+          ok: false as const,
+          error: `الدفع الإلكتروني لا يقبل عملة هذه الكفالة (${sponsorship.currency}) بعد. يمكنك إكمالها بتحويلٍ بنكي.`,
+        };
+      }
       const message = cause instanceof Error ? cause.message : String(cause);
       console.error("[payments] تعذّر إنشاء جلسة الدفع", message);
       return { ok: false as const, error: "تعذّر بدء الدفع، حاول لاحقاً" };
@@ -115,22 +160,17 @@ export const startCheckout = createServerFn({ method: "POST" })
 
     // قيد الدفعة المعلّقة يُكتب بـservice_role: سجلّ المدفوعات ممنوع على
     // العميل عمداً (إصلاح C3)، وهذا المسار خادمي بعد التحقّق من الهوية.
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { withPayments } = await import("@/integrations/supabase/types.extra");
-
-    const { error: paymentError } = await withPayments(supabaseAdmin)
-      .from("sponsorship_payments")
-      .insert({
-        sponsorship_id: sponsorship.id,
-        sponsor_id: userId,
-        amount: Number(sponsorship.amount),
-        currency: sponsorship.currency,
-        status: "pending",
-        provider: provider.id,
-        provider_checkout_id: session.providerCheckoutId,
-        checkout_url: session.checkoutUrl,
-        idempotency_key: idempotencyKey,
-      });
+    const { error: paymentError } = await admin.from("sponsorship_payments").insert({
+      sponsorship_id: sponsorship.id,
+      sponsor_id: userId,
+      amount: Number(sponsorship.amount),
+      currency: sponsorship.currency,
+      status: "pending",
+      provider: provider.id,
+      provider_checkout_id: session.providerCheckoutId,
+      checkout_url: session.checkoutUrl,
+      idempotency_key: idempotencyKey,
+    });
 
     // 23505 يعني أن جلسة هذا الشهر أُنشئت سابقاً — نُكمل إلى نفس الرابط.
     if (paymentError && paymentError.code !== "23505") {

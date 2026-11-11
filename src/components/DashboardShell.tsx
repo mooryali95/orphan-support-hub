@@ -1,12 +1,16 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
+import { wipeBrowserUserData } from "@/lib/client-state";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_LABELS } from "@/lib/format";
+import { getMyWorkspaces } from "@/lib/workspaces.functions";
 import { BRAND } from "@/config/brand";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -21,9 +25,14 @@ const COPY = defineCopy("components/DashboardShell", {
     admin: "الإدارة",
     directory: "دليل الأيتام",
     supervisor: "الإشراف",
+    translate: "الترجمة",
     notifications: "الإشعارات",
     account: "حسابي",
     sponsor: "كافل",
+    supervisorRole: "مشرف",
+    translatorRole: "مراجع ترجمة",
+    officeRole: "عضو مكتب",
+    donorRole: "جهة مانحة",
     signOut: "خروج",
   },
   en: {
@@ -36,9 +45,14 @@ const COPY = defineCopy("components/DashboardShell", {
     admin: "Administration",
     directory: "Children's directory",
     supervisor: "Supervision",
+    translate: "Translation",
     notifications: "Notifications",
     account: "My account",
     sponsor: "Sponsor",
+    supervisorRole: "Supervisor",
+    translatorRole: "Translation reviewer",
+    officeRole: "Office member",
+    donorRole: "Donor entity",
     signOut: "Sign out",
   },
 });
@@ -55,8 +69,28 @@ export function DashboardShell({
   const { user, roles, isAdmin, isCareOrg, isGuardian } = useAuth();
   const navigate = useNavigate();
   const t = useCopy(COPY);
+  // الأبواب والعنوان من علاقات الحساب كلّها لا من user_roles وحده (UX-16):
+  // المشرف وعضو المكتب والمترجم كانوا يُقرؤون «كافلاً».
+  const fetchWorkspaces = useServerFn(getMyWorkspaces);
+  const { data: wsRes } = useQuery({
+    queryKey: ["workspaces"],
+    queryFn: () => fetchWorkspaces(),
+    enabled: Boolean(user),
+    staleTime: 5 * 60_000,
+  });
+  const ws = wsRes?.workspaces ?? null;
+  const translatorLocale = ws?.translator_locales?.[0]?.code;
+  const roleLabels = [
+    ...roles.filter((r) => r !== "sponsor").map((r) => ROLE_LABELS[r] ?? r),
+    ...(ws?.supervisor ? [t.supervisorRole] : []),
+    ...((ws?.offices.length ?? 0) > 0 ? [t.officeRole] : []),
+    ...((ws?.translator_locales?.length ?? 0) > 0 ? [t.translatorRole] : []),
+    ...((ws?.donor_entities.length ?? 0) > 0 ? [t.donorRole] : []),
+  ];
 
   async function signOut() {
+    // يُمحى ما في المتصفّح قبل الخروج نفسه: الجهاز قد يكون مشتركاً (UX-05).
+    wipeBrowserUserData();
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }
@@ -123,15 +157,27 @@ export function DashboardShell({
             >
               {t.directory}
             </Link>
-            {/* لوحة المشرف تظهر للجميع عمداً: من ليس مشرفاً تُخبره الصفحة
-                بذلك وتشرح كيف يصير، بدل أن يكون الباب مخفياً فلا يُعرف. */}
-            <Link
-              to="/supervisor"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-            >
-              {t.supervisor}
-            </Link>
+            {/* «الإشراف» للمشرف المعتمد وحده: لغيره كان باباً إلى «لستَ مشرفاً»
+                بلا طريق (UX-16). وطريق الاعتماد مشروحٌ في صفحته لمن يصلها. */}
+            {ws?.supervisor && (
+              <Link
+                to="/supervisor"
+                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+              >
+                {t.supervisor}
+              </Link>
+            )}
+            {translatorLocale && (
+              <Link
+                to="/translate/$locale"
+                params={{ locale: translatorLocale }}
+                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+              >
+                {t.translate}
+              </Link>
+            )}
             {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
                 إلغاء الاشتراك حكراً على من وصلته رسالة. */}
             <Link
@@ -154,9 +200,7 @@ export function DashboardShell({
             <NotificationBell />
             <div className="hidden text-end sm:block">
               <p className="text-xs font-medium">{user?.email}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {roles.map((r) => ROLE_LABELS[r] ?? r).join("، ") || t.sponsor}
-              </p>
+              <p className="text-xs text-muted-foreground">{roleLabels.join("، ") || t.sponsor}</p>
             </div>
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
@@ -167,8 +211,10 @@ export function DashboardShell({
       </header>
 
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
-        <h1 className="text-2xl font-extrabold">{title}</h1>
-        {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
+        <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">{title}</h1>
+        {description && (
+          <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">{description}</p>
+        )}
         <div className="mt-8">{children}</div>
       </main>
     </div>

@@ -38,6 +38,7 @@ import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrat
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
+import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/reconcile'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
@@ -196,6 +197,11 @@ const ApiOpsHealthRoute = ApiOpsHealthRouteImport.update({
   path: '/api/ops/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentsReconcileRoute = ApiPaymentsReconcileRouteImport.update({
+  id: '/api/payments/reconcile',
+  path: '/api/payments/reconcile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   id: '/api/payments/webhook',
   path: '/api/payments/webhook',
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
+  '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -316,6 +323,7 @@ export interface FileRoutesByTo {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
+  '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -357,6 +365,7 @@ export interface FileRoutesById {
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
+  '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
+    | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -437,6 +447,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
+    | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -477,6 +488,7 @@ export interface FileRouteTypes {
     | '/api/integrations/orphans'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
+    | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/_authenticated/donor/$entityId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
@@ -508,6 +520,7 @@ export interface RootRouteChildren {
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiOpsHealthRoute: typeof ApiOpsHealthRoute
+  ApiPaymentsReconcileRoute: typeof ApiPaymentsReconcileRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -719,6 +732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOpsHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payments/reconcile': {
+      id: '/api/payments/reconcile'
+      path: '/api/payments/reconcile'
+      fullPath: '/api/payments/reconcile'
+      preLoaderRoute: typeof ApiPaymentsReconcileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/payments/webhook': {
       id: '/api/payments/webhook'
       path: '/api/payments/webhook'
@@ -848,6 +868,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiOpsHealthRoute: ApiOpsHealthRoute,
+  ApiPaymentsReconcileRoute: ApiPaymentsReconcileRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

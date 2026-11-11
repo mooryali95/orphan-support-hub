@@ -15,16 +15,26 @@ import { SupervisorAdmin } from "@/components/qualification/SupervisorAdmin";
 import { AccessQueue } from "@/components/protection/AccessQueue";
 import { ApiClientsAdmin } from "@/components/integrations/ApiClientsAdmin";
 import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
+import { StatTile } from "@/components/kit/StatTile";
+import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
+import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
 import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAdminOverview, reviewOrphan, reviewOrganization } from "@/lib/admin.functions";
-import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
+import {
+  formatDate,
+  formatMoney,
+  formatMoneyTotals,
+  fundingPercent,
+  ORPHAN_STATUS_LABELS,
+} from "@/lib/format";
+import type { AdminOverview } from "@/lib/admin.functions";
 import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -71,7 +81,6 @@ const SECTIONS: Array<[string, Tab[]]> = [
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
-  const decideOrg = useServerFn(reviewOrganization);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("inbox");
   // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
@@ -119,8 +128,8 @@ function AdminPage() {
     ["inbox", "صندوق القرارات", null],
     ["platform", "سجلّات المنصّة", null],
     ["overview", "نظرة عامة", null],
-    ["orphans", "الأيتام", o.orphan_rows.length],
-    ["sponsors", "الكفلاء", o.sponsor_rows.length],
+    ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
+    ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
@@ -174,7 +183,7 @@ function AdminPage() {
             >
               {label}
               {count !== null && count > 0 && (
-                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-[11px]">
+                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-xs">
                   {count}
                 </span>
               )}
@@ -224,33 +233,38 @@ function AdminPage() {
             </div>
           </section>
 
+          {/* لكلّ عملةٍ سطرها (PRD-14 / UX-07): لا يُجمع يورو مع دولار. */}
           <section>
             <h2 className="text-sm font-bold">التمويل الشهري</h2>
-            <div className="border-border bg-card mt-4 rounded-2xl border p-6">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <p className="text-2xl font-extrabold">
-                  {formatMoney(o.orphans.monthly_funded, cur)}
-                  <span className="text-muted-foreground text-sm font-normal">
-                    {" "}
-                    من {formatMoney(o.orphans.monthly_need, cur)}
-                  </span>
-                </p>
-                <p className="text-bridge-ink text-sm font-bold">
-                  المتبقّي {formatMoney(o.orphans.monthly_gap, cur)}
-                </p>
-              </div>
-              <CrossingProgress
-                percent={fundingPercent(o.orphans.monthly_need, o.orphans.monthly_funded)}
-                className="mt-4"
-                label="تغطية الاحتياج الشهري الكلي"
-              />
+            <div className="mt-4 space-y-4">
+              {byCurrency(o).orphans.map((r) => (
+                <div key={r.currency} className="border-border bg-card rounded-2xl border p-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <p className="text-2xl font-extrabold">
+                      {formatMoney(r.monthly_funded, r.currency)}
+                      <span className="text-muted-foreground text-sm font-normal">
+                        {" "}
+                        من {formatMoney(r.monthly_need, r.currency)}
+                      </span>
+                    </p>
+                    <p className="text-bridge-ink text-sm font-bold">
+                      المتبقّي {formatMoney(r.monthly_gap, r.currency)}
+                    </p>
+                  </div>
+                  <CrossingProgress
+                    percent={fundingPercent(r.monthly_need, r.monthly_funded)}
+                    className="mt-4"
+                    label={`تغطية الاحتياج الشهري بعملة ${r.currency}`}
+                  />
+                </div>
+              ))}
             </div>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <Stat label="كافل" value={String(o.sponsors.total)} tone="need" />
               <Stat label="كفالة نشطة" value={String(o.sponsors.active)} tone="thrive" />
               <Stat
                 label="التزام شهري"
-                value={formatMoney(o.sponsors.monthly_committed, cur)}
+                value={formatMoneyTotals(byCurrency(o).committed, cur)}
                 tone="bridge"
               />
             </div>
@@ -258,46 +272,38 @@ function AdminPage() {
 
           <section>
             <h2 className="text-sm font-bold">الخزينة</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="المحصّل" value={formatMoney(o.money.collected, cur)} tone="thrive" />
-              <Stat label="المصروف" value={formatMoney(o.money.disbursed, cur)} tone="need" />
-              <Stat label="الرصيد" value={formatMoney(o.money.balance, cur)} tone="bridge" />
-              <Stat label="بانتظار الدفع" value={formatMoney(o.money.pending, cur)} tone="muted" />
-            </div>
-            {o.money.failed > 0 && (
-              <p className="text-destructive mt-3 text-xs">
-                دفعات فاشلة بقيمة {formatMoney(o.money.failed, cur)} — تحتاج متابعة.
-              </p>
-            )}
+            {byCurrency(o).money.map((m) => (
+              <div key={m.currency} className="mt-4">
+                <p className="text-muted-foreground text-xs font-bold">{m.currency}</p>
+                <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <Stat
+                    label="المحصّل"
+                    value={formatMoney(m.collected, m.currency)}
+                    tone="thrive"
+                  />
+                  <Stat label="المصروف" value={formatMoney(m.disbursed, m.currency)} tone="need" />
+                  <Stat label="الرصيد" value={formatMoney(m.balance, m.currency)} tone="bridge" />
+                  <Stat
+                    label="بانتظار الدفع"
+                    value={formatMoney(m.pending, m.currency)}
+                    tone="muted"
+                  />
+                </div>
+                {m.failed > 0 && (
+                  <p className="text-destructive mt-3 text-xs">
+                    دفعات فاشلة بقيمة {formatMoney(m.failed, m.currency)} — تحتاج متابعة.
+                  </p>
+                )}
+              </div>
+            ))}
           </section>
+
+          <AdminExports />
         </div>
       )}
 
-      {tab === "orphans" && (
-        <Table
-          head={["الملف", "الجهة", "الاحتياج", "المموَّل", "المتبقّي", "الكفلاء", "التغطية"]}
-          empty="لا توجد ملفات منشورة."
-          rows={o.orphan_rows.map((r) => [
-            <div key="n">
-              <p className="font-medium">{r.name}</p>
-              <p className="text-muted-foreground text-xs">
-                {r.code}
-                {r.city ? ` — ${r.city}` : ""}
-              </p>
-            </div>,
-            <span key="o" className="text-xs">
-              {r.org ?? "—"}
-            </span>,
-            formatMoney(r.need, cur),
-            formatMoney(r.funded, cur),
-            <span key="g" className={r.gap > 0 ? "text-bridge-ink font-bold" : "text-shore-thrive"}>
-              {r.gap > 0 ? formatMoney(r.gap, cur) : "مكتمل"}
-            </span>,
-            String(r.sponsors),
-            <CrossingProgress key="p" percent={fundingPercent(r.need, r.funded)} />,
-          ])}
-        />
-      )}
+      {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
+      {tab === "orphans" && <AdminOrphansList currency={cur} />}
 
       {tab === "monitoring" && (
         <>
@@ -306,27 +312,7 @@ function AdminPage() {
         </>
       )}
 
-      {tab === "sponsors" && (
-        <Table
-          head={["الكافل", "كفالات", "نشطة", "التزام شهري", "المسدَّد", "منذ"]}
-          empty="لا يوجد كفلاء بعد."
-          rows={o.sponsor_rows.map((r) => [
-            <div key="s">
-              <p className="font-medium">{r.name || "—"}</p>
-              <p className="text-muted-foreground text-xs" dir="ltr">
-                {r.email ?? "—"}
-              </p>
-            </div>,
-            String(r.sponsorships),
-            String(r.active),
-            formatMoney(r.monthly, cur),
-            <span key="p" className="text-shore-thrive font-bold">
-              {formatMoney(r.paid, cur)}
-            </span>,
-            formatDate(r.since),
-          ])}
-        />
-      )}
+      {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
@@ -343,14 +329,16 @@ function AdminPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold">{p.name}</h3>
+                        <h3 className="font-bold">
+                          <Name>{p.name}</Name>
+                        </h3>
                         <Badge variant="secondary">
                           {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
                         </Badge>
                       </div>
                       <p className="text-muted-foreground mt-1 text-xs">
-                        {p.code} — {[p.city, p.region].filter(Boolean).join("، ")} — احتياج{" "}
-                        {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
+                        <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")} —
+                        احتياج {formatMoney(p.need, p.currency ?? cur)} — {formatDate(p.created_at)}
                       </p>
                     </div>
                     <Button
@@ -410,28 +398,10 @@ function AdminPage() {
                       {org.license ?? "—"} — {org.email ?? "—"}
                     </p>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={async () => {
-                      const res = await decideOrg({ data: { id: org.id, decision: "approved" } });
-                      if (res.ok) toast.success("تم اعتماد الجهة");
-                      else toast.error(res.error ?? "تعذّر اعتماد الجهة");
-                      refresh();
-                    }}
-                  >
-                    اعتماد
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={async () => {
-                      const res = await decideOrg({ data: { id: org.id, decision: "rejected" } });
-                      if (res.ok) toast.success("تم رفض الطلب");
-                      else toast.error(res.error ?? "تعذّر رفض الطلب");
-                      refresh();
-                    }}
-                  >
-                    رفض
+                  {/* القرار من الصندوق: هناك بيانات التحقّق ووثائقه وما ينقص،
+                      لا ضغطة اعتمادٍ عمياء هنا (PRD-16). */}
+                  <Button size="sm" variant="outline" onClick={() => setTab("inbox")}>
+                    راجِع في صندوق القرارات
                   </Button>
                 </div>
               ))}
@@ -468,20 +438,17 @@ function AdminPage() {
   );
 }
 
-const TONE: Record<string, string> = {
-  need: "text-shore-need",
-  bridge: "text-bridge-ink",
-  thrive: "text-shore-thrive",
-  muted: "text-muted-foreground",
-};
-
-function Stat({ label, value, tone }: { label: string; value: string; tone: string }) {
-  return (
-    <div className="border-border bg-card rounded-2xl border p-5">
-      <p className={`text-2xl font-extrabold ${TONE[tone] ?? TONE["need"]}`}>{value}</p>
-      <p className="text-muted-foreground mt-1 text-xs">{label}</p>
-    </div>
-  );
+// مؤشّر الإدارة هو StatTile نفسه (UI-13): رقمٌ فوق تسمية، بالألوان الدلالية.
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "need" | "thrive" | "bridge" | "muted";
+}) {
+  return <StatTile label={label} value={value} tone={tone === "bridge" ? "gold" : tone} />;
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
@@ -492,46 +459,22 @@ function Empty({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Table({
-  head,
-  rows,
-  empty,
-}: {
-  head: string[];
-  rows: React.ReactNode[][];
-  empty: string;
-}) {
-  if (rows.length === 0) {
-    return (
-      <div className="mt-8">
-        <Empty>{empty}</Empty>
-      </div>
-    );
-  }
-  return (
-    <div className="border-border mt-8 overflow-x-auto rounded-2xl border">
-      <table className="bg-card w-full min-w-[720px] border-collapse text-sm">
-        <thead>
-          <tr className="bg-secondary/60 border-border border-b">
-            {head.map((h) => (
-              <th key={h} className="text-muted-foreground px-4 py-3 text-start text-xs font-bold">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((cells, i) => (
-            <tr key={i} className="border-border/60 border-b last:border-0">
-              {cells.map((c, j) => (
-                <td key={j} className="px-4 py-3 align-middle tabular-nums">
-                  {c}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+/**
+ * المجاميع بعملاتها؛ وفي قاعدةٍ لم تُطبَّق عليها هجرة ٣أ تُعرض المجاميع
+ * القديمة بعملة المنصّة كما كانت — لا صفحةٌ فارغة.
+ */
+function byCurrency(o: AdminOverview) {
+  const cur = o.currency;
+  return {
+    orphans: o.orphans_by_currency ?? [
+      {
+        currency: cur,
+        monthly_need: o.orphans.monthly_need,
+        monthly_funded: o.orphans.monthly_funded,
+        monthly_gap: o.orphans.monthly_gap,
+      },
+    ],
+    committed: o.committed_by_currency ?? [{ currency: cur, amount: o.sponsors.monthly_committed }],
+    money: o.money_by_currency ?? [{ currency: cur, disputed: 0, ...o.money }],
+  };
 }

@@ -2,7 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Building2, HandHeart, Landmark, Loader2, ShieldCheck, Users } from "lucide-react";
+import {
+  Building2,
+  HandHeart,
+  Landmark,
+  Languages,
+  Loader2,
+  ShieldCheck,
+  UserCheck,
+  Users,
+} from "lucide-react";
+
+import { toast } from "sonner";
 
 import { DashboardShell } from "@/components/DashboardShell";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +21,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  DONOR_ROLE_LABELS,
+  getMyDonorInvitations,
   getMyWorkspaces,
   OFFICE_ROLE_LABELS,
   registerDonorEntity,
+  respondDonorInvitation,
 } from "@/lib/workspaces.functions";
 import { BRAND, pageTitle } from "@/config/brand";
 
@@ -65,7 +79,7 @@ function WorkspacesPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Portal
           icon={<HandHeart className="size-5" />}
-          title="الداعم"
+          title="كفالاتي"
           text={`كفالاتك وتعهّداتك (${ws.pledges} تعهّد).`}
           to="/dashboard"
         />
@@ -77,14 +91,55 @@ function WorkspacesPage() {
             to="/guardian"
           />
         )}
-        {ws.care_org && (
+        {ws.care_org ? (
           <Portal
             icon={<Building2 className="size-5" />}
-            title="المؤسسة"
-            text="ملفّات جهتك ومستفيدوها."
+            title="جهة الرعاية"
+            text={
+              ws.care_org_status === "pending"
+                ? "طلب الاعتماد عند الإدارة — أكمل وثائقه."
+                : ws.care_org_status === "rejected"
+                  ? "أُعيد الطلب للتصحيح — افتحه لترى السبب."
+                  : "ملفّات جهتك ومستفيدوها."
+            }
+            to="/org"
+          />
+        ) : (
+          // أيّ حسابٍ يُسجّل جهته من هنا (UX-03): الطلب يُنشئها «بانتظار
+          // الاعتماد»، ولا تُرفع ملفات أطفالٍ قبل أن تعتمدها الإدارة.
+          <Portal
+            icon={<Building2 className="size-5" />}
+            title="سجّل جهة رعاية"
+            text="جمعية أو دار ترعى أطفالاً؟ قدّم بياناتها ووثيقة تسجيلها للاعتماد."
             to="/org"
           />
         )}
+        {ws.supervisor && (
+          <Portal
+            icon={<UserCheck className="size-5" />}
+            title="الإشراف"
+            text="المستفيدون المُسنَدون إليك ومراحلهم."
+            to="/supervisor"
+          />
+        )}
+        {(ws.translator_locales ?? []).map((l) => (
+          <Link
+            key={l.code}
+            to="/translate/$locale"
+            params={{ locale: l.code }}
+            className="flex items-start gap-3 rounded-xl border border-border bg-background p-5 hover:border-primary"
+          >
+            <span className="rounded-lg bg-secondary p-2 text-primary">
+              <Languages className="size-5" />
+            </span>
+            <span>
+              <span className="block font-semibold">مراجعة الترجمة — {l.name}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">
+                نصوص الواجهة بلغة {l.name}: ترجمتها ومراجعتها.
+              </span>
+            </span>
+          </Link>
+        ))}
         {ws.admin && (
           <Portal
             icon={<ShieldCheck className="size-5" />}
@@ -95,13 +150,10 @@ function WorkspacesPage() {
         )}
       </div>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-bold">المكاتب</h2>
-        {ws.offices.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">
-            لست عضواً في مكتب. تُسنِد الإدارة أعضاء المكاتب.
-          </p>
-        ) : (
+      {/* المكاتب لأعضائها وحدهم: لا قسمٌ فارغ يقول «لست عضواً» لكلّ حساب (UX-16). */}
+      {ws.offices.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-lg font-bold">المكاتب</h2>
           <ul className="mt-3 grid gap-3 md:grid-cols-2">
             {ws.offices.map((o) => (
               <li key={o.id}>
@@ -122,11 +174,12 @@ function WorkspacesPage() {
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </section>
+      )}
 
       <section className="mt-10">
         <h2 className="text-lg font-bold">الجهات المانحة</h2>
+        <DonorInvitations />
         {ws.donor_entities.length > 0 && (
           <ul className="mt-3 grid gap-3 md:grid-cols-2">
             {ws.donor_entities.map((e) => (
@@ -156,6 +209,69 @@ function WorkspacesPage() {
   );
 }
 
+/** دعواتٌ إلى جهاتٍ مانحة: العضوية بقبول صاحب البريد وحده (DB-10). */
+function DonorInvitations() {
+  const fetchInvites = useServerFn(getMyDonorInvitations);
+  const respond = useServerFn(respondDonorInvitation);
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState<string | null>(null);
+  const { data: invites = [] } = useQuery({
+    queryKey: ["donor-invitations"],
+    queryFn: () => fetchInvites(),
+  });
+  if (invites.length === 0) return null;
+
+  async function answer(entityId: string, accept: boolean) {
+    setBusy(entityId);
+    const res = await respond({ data: { entityId, accept } });
+    setBusy(null);
+    if (!res.ok) {
+      toast.error("تعذّر تسجيل ردّك — ربما انتهت الدعوة");
+    } else {
+      toast.success(accept ? "انضممت إلى الجهة" : "رُدّت الدعوة");
+    }
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["donor-invitations"] }),
+      qc.invalidateQueries({ queryKey: ["workspaces"] }),
+    ]);
+  }
+
+  return (
+    <ul className="mt-3 grid gap-3 md:grid-cols-2" aria-label="دعوات الجهات المانحة">
+      {invites.map((i) => (
+        <li
+          key={i.entity_id}
+          className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-dashed border-primary/50 bg-background p-4"
+        >
+          <span className="min-w-0">
+            <span className="block font-semibold">{i.entity_name}</span>
+            <span className="block text-xs text-muted-foreground">
+              دعوةٌ بدور «{DONOR_ROLE_LABELS[i.role]}»
+            </span>
+          </span>
+          <span className="flex gap-2">
+            <Button
+              size="sm"
+              disabled={busy === i.entity_id}
+              onClick={() => answer(i.entity_id, true)}
+            >
+              قبول
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={busy === i.entity_id}
+              onClick={() => answer(i.entity_id, false)}
+            >
+              ردّ
+            </Button>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function Portal({
   icon,
   title,
@@ -165,7 +281,7 @@ function Portal({
   icon: React.ReactNode;
   title: string;
   text: string;
-  to: "/dashboard" | "/guardian" | "/org" | "/admin";
+  to: "/dashboard" | "/guardian" | "/org" | "/admin" | "/supervisor";
 }) {
   return (
     <Link

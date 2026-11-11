@@ -31,7 +31,7 @@ function Faq() {
 
 function FaqAr() {
   return (
-    <LegalPage title="الأسئلة الشائعة" updated="2026-08-26">
+    <LegalPage title="الأسئلة الشائعة" updated="2026-11-07">
       <Section title="ما الذي أدفع مقابله؟">
         <p>
           اشتراك شهري في برامج محدّدة تُقدَّم لليتيم — دعم دراسي أو تأهيل مهني أو دعم نفسي أو متابعة
@@ -85,7 +85,11 @@ function FaqAr() {
       </Section>
 
       <Section title="هل أستطيع الإلغاء؟">
-        <p>نعم، في أي وقت من لوحتك، ويسري من الدورة التالية بلا رسوم ولا مساءلة.</p>
+        <p>
+          نعم، في أي وقت من لوحتك، بلا رسوم ولا مساءلة. ولا تنتهي فوراً: تبقى جاريةً حتى آخر الشهر
+          الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها. وإن كان الظرف مؤقّتاً
+          فكفالة التحويل البنكي تُوقَف شهراً إلى ثلاثة، أو يُخفَّض مبلغها.
+        </p>
       </Section>
 
       <Section title="لماذا الدفع الإلكتروني موقوف الآن؟">
@@ -105,8 +109,9 @@ function FaqAr() {
 
       <Section title="أنا جهة رعاية — كيف أنضمّ؟">
         <p>
-          سجّل حساباً واختر «جهة رعاية»، ثم أدخل بيانات الجهة ورقم ترخيصها. وتراجعها الإدارة قبل
-          السماح برفع الملفّات.
+          سجّل حساباً، ثم من «بواباتي» اختر «سجّل جهة رعاية». أدخل الاسم القانوني ورقم التسجيل أو
+          الترخيص والدولة والعنوان والممثّل القانوني ووسيلة تواصل، وارفع شهادة التسجيل أو الترخيص.
+          ولا تُعتمد الجهة — ولا تُرفع ملفّات أطفال — قبل أن تراجع الإدارة بياناتها ووثائقها.
         </p>
       </Section>
     </LegalPage>
@@ -115,7 +120,7 @@ function FaqAr() {
 
 function FaqEn() {
   return (
-    <LegalPage title="Frequently asked questions" updated="2026-08-26">
+    <LegalPage title="Frequently asked questions" updated="2026-11-07">
       <Section title="What am I paying for?">
         <p>
           A monthly subscription to specific programs delivered to the orphan — academic support,
@@ -179,8 +184,10 @@ function FaqEn() {
 
       <Section title="Can I cancel?">
         <p>
-          Yes, at any time from your dashboard. It takes effect from the next cycle, with no fees
-          and no questions.
+          Yes, at any time from your dashboard, with no fees and no questions. It does not stop
+          instantly: it runs to the end of the month you already paid, so the child receives it in
+          full, and nothing is charged after that. If the pause is temporary, a bank-transfer
+          sponsorship can be paused for one to three months or have its amount lowered.
         </p>
       </Section>
 
@@ -203,8 +210,11 @@ function FaqEn() {
 
       <Section title="I'm a care organization — how do we join?">
         <p>
-          Create an account and choose “Care organization”, then enter the organization's details
-          and license number. The administration reviews it before you can upload files.
+          Create an account, then choose “Register a care organization” under “My portals”. Enter
+          the legal name, registration or licence number, country, address, legal representative and
+          a contact, and upload the registration certificate or licence. The organization is not
+          approved — and cannot upload children's files — until the administration has reviewed its
+          details and documents.
         </p>
       </Section>
     </LegalPage>

@@ -82,7 +82,7 @@ export const getDispatchHealth = createServerFn({ method: "GET" })
       alerts.push(`المخطط ناقص — التصريف موقوف حتى تُطبَّق الهجرات: ${schema.missing.join("، ")}`);
     }
     if (dbErrorRuns >= 3) {
-      alerts.push(`تكرّرت أخطاء قاعدة البيانات في التصريف (${dbErrorRuns} مرة خلال ٢٤ ساعة).`);
+      alerts.push(`تكرّرت أخطاء قاعدة البيانات في التصريف (${dbErrorRuns} مرة خلال 24 ساعة).`);
     }
     if ((failedQueue ?? 0) > 0) {
       alerts.push(`${failedQueue} إشعاراً استنفد محاولاته ولم يُرسل.`);

@@ -181,7 +181,7 @@ function EnrollmentBoard({
 
       {/* الأدوار */}
       <div className="mt-4">
-        <p className="text-[11px] font-bold text-muted-foreground">الأدوار</p>
+        <p className="text-xs font-bold text-muted-foreground">الأدوار</p>
         <ul className="mt-2 space-y-2">
           {ROLES.map((role) => {
             const held = detail.roles.find((r) => r.role === role);
@@ -198,12 +198,27 @@ function EnrollmentBoard({
                       {held.person_name ?? "—"}
                       {held.has_account && " (له حساب)"}
                     </span>
+                    {/* صاحب الحساب لا يدخل دائرة الطفل بإسناد الجهة وحده:
+                        الإدارة تقرّر، والقرار له أجل. */}
+                    {held.has_account && held.approval === "pending" && (
+                      <Badge variant="outline">بانتظار اعتماد الإدارة</Badge>
+                    )}
+                    {held.has_account && held.approval === "approved" && held.expires_at && (
+                      <span className="text-xs text-muted-foreground">
+                        معتمَد حتى {formatDate(held.expires_at)}
+                      </span>
+                    )}
                     {needsConsent &&
                       (held.consent_at ? (
                         <Badge variant="secondary" className="gap-1">
                           <ShieldCheck className="size-3" aria-hidden="true" />
                           إذن موثَّق {formatDate(held.consent_at)}
                         </Badge>
+                      ) : held.has_account ? (
+                        // الوليّ صاحب الحساب يوافق بنفسه من مساحته؛ لا تكتبه الجهة عنه.
+                        <span className="text-xs text-muted-foreground">
+                          ينتظر موافقة الوليّ من مساحته
+                        </span>
                       ) : (
                         <ConsentForm
                           busy={busy}
@@ -288,7 +303,7 @@ function RoleForm({
       }}
     >
       <div className="min-w-32 flex-1">
-        <Label htmlFor="rn" className="text-[11px]">
+        <Label htmlFor="rn" className="text-xs">
           الاسم
         </Label>
         <Input
@@ -300,7 +315,7 @@ function RoleForm({
         />
       </div>
       <div className="min-w-40 flex-1">
-        <Label htmlFor="re" className="text-[11px]">
+        <Label htmlFor="re" className="text-xs">
           البريد (إن كان له حساب)
         </Label>
         <Input
@@ -312,7 +327,7 @@ function RoleForm({
         />
       </div>
       <div className="min-w-28 flex-1">
-        <Label htmlFor="rc" className="text-[11px]">
+        <Label htmlFor="rc" className="text-xs">
           وسيلة تواصل
         </Label>
         <Input
@@ -343,7 +358,7 @@ function ConsentForm({ busy, onSubmit }: { busy: boolean; onSubmit: (doc: string
       }}
     >
       <div className="min-w-40 flex-1">
-        <Label htmlFor="cd" className="text-[11px]">
+        <Label htmlFor="cd" className="text-xs">
           مرجع وثيقة الإذن
         </Label>
         <Input

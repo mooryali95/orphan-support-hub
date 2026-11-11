@@ -56,69 +56,74 @@ function TraitsPage() {
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="text-3xl font-extrabold">{c.title}</h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">{c.lead}</p>
-        {c.dataNote && model.length > 0 && (
-          <p className="mt-2 max-w-2xl text-xs text-muted-foreground">{c.dataNote}</p>
-        )}
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
+        {/* عمود القراءة يبدأ من حافة الشعار نفسها (UI-13). */}
+        <div className="max-w-5xl">
+          <h1 className="text-3xl font-extrabold">{c.title}</h1>
+          <p className="mt-3 max-w-2xl text-muted-foreground">{c.lead}</p>
+          {c.dataNote && model.length > 0 && (
+            <p className="mt-2 max-w-2xl text-xs text-muted-foreground">{c.dataNote}</p>
+          )}
 
-        {isPending ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="size-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : model.length === 0 ? (
-          <p className="mt-10 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
-            {c.empty}
-          </p>
-        ) : (
-          <div className="mt-10 space-y-10">
-            {model.map((dim) => (
-              <section key={dim.key} aria-labelledby={`dim-${dim.key}`}>
-                <div className="flex flex-wrap items-baseline gap-3 border-b border-border pb-2">
-                  <h2 id={`dim-${dim.key}`} className="text-xl font-bold">
-                    {dim.label}
-                  </h2>
-                  {dim.label_local && (
-                    <span lang="sq" dir="ltr" className="text-sm text-muted-foreground">
-                      {dim.label_local}
+          {isPending ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : model.length === 0 ? (
+            <p className="mt-10 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
+              {c.empty}
+            </p>
+          ) : (
+            <div className="mt-10 space-y-10">
+              {model.map((dim) => (
+                <section key={dim.key} aria-labelledby={`dim-${dim.key}`}>
+                  <div className="flex flex-wrap items-baseline gap-3 border-b border-border pb-2">
+                    <h2 id={`dim-${dim.key}`} className="text-xl font-bold">
+                      {dim.label}
+                    </h2>
+                    {dim.label_local && (
+                      <span lang="sq" dir="ltr" className="text-sm text-muted-foreground">
+                        {dim.label_local}
+                      </span>
+                    )}
+                    <span className="ms-auto text-xs text-muted-foreground">
+                      {c.traits(dim.traits.length)}
                     </span>
+                  </div>
+                  {dim.description && (
+                    <p className="mt-2 text-sm text-muted-foreground">{dim.description}</p>
                   )}
-                  <span className="ms-auto text-xs text-muted-foreground">
-                    {c.traits(dim.traits.length)}
-                  </span>
-                </div>
-                {dim.description && (
-                  <p className="mt-2 text-sm text-muted-foreground">{dim.description}</p>
-                )}
-                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  {dim.traits.map((t) => (
-                    <article
-                      key={t.id}
-                      className="rounded-xl border border-border bg-background p-5"
-                    >
-                      <h3 className="font-semibold">{t.name}</h3>
-                      {t.stage && <p className="mt-0.5 text-xs text-muted-foreground">{t.stage}</p>}
-                      {t.definition && <p className="mt-2 text-sm">{t.definition}</p>}
-                      {t.elements.length > 0 && (
-                        <ul className="mt-3 list-disc space-y-1 ps-5 text-sm text-muted-foreground">
-                          {t.elements.map((e) => (
-                            <li key={e}>{e}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        )}
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    {dim.traits.map((t) => (
+                      <article
+                        key={t.id}
+                        className="rounded-xl border border-border bg-background p-5"
+                      >
+                        <h3 className="font-semibold">{t.name}</h3>
+                        {t.stage && (
+                          <p className="mt-0.5 text-xs text-muted-foreground">{t.stage}</p>
+                        )}
+                        {t.definition && <p className="mt-2 text-sm">{t.definition}</p>}
+                        {t.elements.length > 0 && (
+                          <ul className="mt-3 list-disc space-y-1 ps-5 text-sm text-muted-foreground">
+                            {t.elements.map((e) => (
+                              <li key={e}>{e}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
 
-        <div className="mt-12">
-          <Button asChild size="lg">
-            <Link to="/support">{c.cta}</Link>
-          </Button>
+          <div className="mt-12">
+            <Button asChild size="lg">
+              <Link to="/support">{c.cta}</Link>
+            </Button>
+          </div>
         </div>
       </main>
       <SiteFooter />

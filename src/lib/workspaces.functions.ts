@@ -30,7 +30,13 @@ export type Workspaces = {
   }>;
   donor_entities: Array<{ id: string; name: string; status: string; role: string }>;
   care_org: boolean;
+  /** حال جهة الحساب إن كانت له (هجرة 20261107130000)؛ قد تغيب قبل تطبيقها. */
+  care_org_status?: "pending" | "approved" | "rejected" | "suspended" | null;
   guardian: boolean;
+  /** اعتماد إشرافٍ نشط — به وحده يظهر باب «الإشراف» (UX-16). */
+  supervisor?: boolean;
+  /** اللغات التي يراجعها الحساب — مدخل المترجم إلى /translate (UX-16). */
+  translator_locales?: Array<{ code: string; name: string }>;
   pledges: number;
 };
 
@@ -390,7 +396,42 @@ export const recordPledgeDelivery = createServerFn({ method: "POST" })
       : { ok: true as const, error: null };
   });
 
-export type DonorMember = { email: string; role: "owner" | "finance" | "member" };
+export type DonorMember = {
+  email: string;
+  role: "owner" | "finance" | "member";
+  /** DB-10: الدعوة المعلّقة تظهر بحالها حتى يقبلها صاحبها. */
+  status?: "member" | "invited";
+  expires_at?: string;
+};
+
+export type DonorInvitation = {
+  entity_id: string;
+  entity_name: string;
+  role: DonorMember["role"];
+  created_at: string;
+  expires_at: string;
+};
+
+/** دعوات الجهات المانحة لبريد هذا الحساب (DB-10): لا عضوية بلا قبول. */
+export const getMyDonorInvitations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await rpc(context.supabase).rpc("my_donor_invitations");
+    return error ? ([] as DonorInvitation[]) : ((data ?? []) as DonorInvitation[]);
+  });
+
+export const respondDonorInvitation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ entityId: z.string().uuid(), accept: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("respond_donor_invitation", {
+      _entity: data.entityId,
+      _accept: data.accept,
+    });
+    return error ? { ok: false as const } : { ok: true as const };
+  });
 export type DonorPledge = {
   id: string;
   kind: "qualification" | "in_kind";

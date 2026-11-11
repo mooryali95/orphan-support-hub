@@ -122,11 +122,16 @@ export function ReportForm({
         <Row id={`hea-${orphanId}`} label="الصحة" value={health} onChange={setHealth} rows={3} />
         <Row id={`liv-${orphanId}`} label="المعيشة" value={living} onChange={setLiving} rows={3} />
       </div>
+      {/* ما يراه الكافل يُقال لكاتب التقرير قبل أن يكتب، لا بعد أن يُنشر. */}
+      <p className="text-muted-foreground text-xs leading-6">
+        يرى الكافل بعد الاعتماد الخلاصةَ والتعليم والمعيشة. أمّا الصحة والمرفقات فتبقى لدائرة الطفل
+        (الجهة والوليّ والإدارة) ولا تصل الكافل.
+      </p>
 
       <div>
         <p className="text-xs font-medium">المرفقات</p>
         <p className="text-muted-foreground mt-1 text-xs leading-6">
-          تُحفظ في الخزنة الخاصة، ولا يفتحها الكافل إلا برابط موقّع بعد اعتماد التقرير.
+          تُحفظ في الخزنة الخاصة، ولا يفتحها إلا من حول الطفل برابطٍ موقّع.
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           {files.map((f, i) => (

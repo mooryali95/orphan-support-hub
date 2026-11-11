@@ -169,6 +169,10 @@ BEGIN
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — قُبل مستندٌ من مجلّد طفلٍ آخر'; END IF;
   RAISE NOTICE 'PASS — الوصول تؤكّده الجهة وحدها، بمستندٍ من مجلّد الطفل نفسه';
 
+  -- المستند مرفوعٌ فعلاً قبل التأكيد: التأكيد بملفٍّ غير موجود مرفوض (DB-05).
+  INSERT INTO storage.objects (bucket_id, name)
+  VALUES ('orphan-documents', 'f3000000-0000-4000-8000-000000000001/receipt.jpg');
+
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"f1000000-0000-4000-8000-000000000002","role":"authenticated"}';
   IF jsonb_array_length(public.org_pending_deliveries()) <> 1 THEN

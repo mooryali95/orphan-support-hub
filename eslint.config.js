@@ -8,8 +8,16 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     // ملفات مولَّدة آلياً وتحمل تحذير «لا تُعدَّل مباشرة»؛ أي إصلاح فيها
-    // يضيع عند إعادة توليدها من Lovable.
-    ignores: ["dist", ".output", ".vinxi", "src/routeTree.gen.ts", "src/integrations/**"],
+    // يضيع عند إعادة توليدها من Lovable. و`.claude/worktrees` نسخ عملٍ محلّية
+    // لفروعٍ أخرى، ليست من هذا الفرع.
+    ignores: [
+      "dist",
+      ".output",
+      ".vinxi",
+      "src/routeTree.gen.ts",
+      "src/integrations/**",
+      ".claude/worktrees/**",
+    ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

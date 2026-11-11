@@ -49,6 +49,84 @@ WITH checks(name, ok) AS (VALUES
   ('الزائر لا يقرأ جدول الترجمات', NOT has_table_privilege('anon', 'public.ui_translations', 'SELECT')),
   ('النشر للإدارة وحدها', has_function_privilege('authenticated', 'public.ui_translation_publish(text,text[])', 'EXECUTE')
                            AND NOT has_function_privilege('anon', 'public.ui_translation_publish(text,text[])', 'EXECUTE')),
-  ('سجلّ مراجعات الترجمة إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'uitr_frozen'))
+  ('سجلّ مراجعات الترجمة إلحاقٌ فقط', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'uitr_frozen')),
+  -- المرحلة صفر (bundle-after-20261001100000). قبل تطبيقها تظهر هذه false
+  -- بلا خطأ: الدوالّ والجداول تُبحث بـ to_regprocedure/to_regclass أولاً.
+  ('anon لا يكتب في أيّ جدولٍ في public',
+     NOT EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+                  WHERE n.nspname = 'public' AND c.relkind IN ('r', 'v', 'p')
+                    AND has_table_privilege('anon', c.oid, 'INSERT, UPDATE, DELETE'))),
+  ('لا أحد يقرأ جهة الطفل مباشرةً (orphans.org_id)',
+     NOT has_column_privilege('anon', 'public.orphans', 'org_id', 'SELECT')
+     AND NOT has_column_privilege('authenticated', 'public.orphans', 'org_id', 'SELECT')),
+  ('anon لا يقرأ المنطقة مباشرةً', NOT has_column_privilege('anon', 'public.orphans', 'region', 'SELECT')),
+  ('anon لا يقرأ نصوص الاحتياج', NOT has_table_privilege('anon', 'public.orphan_needs', 'SELECT')),
+  ('تقارير الطفل للكافل بدالّةٍ تختار الأعمدة',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.orphan_progress_reports(uuid)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.orphan_progress_reports(uuid)'), 'EXECUTE'), false)),
+  ('موافقة الصورة بدالّتها وحدها',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.record_photo_consent(uuid,text,uuid,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.record_photo_consent(uuid,text,uuid,text)'), 'EXECUTE'), false)),
+  ('خزنة صور الأطفال خاصّة', COALESCE((SELECT NOT public FROM storage.buckets WHERE id = 'orphan-photos'), false)),
+  ('التعديل على ملفٍّ منشور يُمسَك للمراجعة',
+     EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_hold_public_edit')
+     AND COALESCE((SELECT relrowsecurity FROM pg_class WHERE oid = to_regclass('public.orphan_pending_edits')), false)),
+  ('لا نشر بلا وثيقتين موثَّقتين', EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_require_publication_documents')),
+  ('تفعيل الكفالة والصرف يُسجَّلان',
+     EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_audit_sponsorship_status')
+     AND EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_audit_disbursement_write')),
+  -- الدفعة ٢ — جانب العرض (bundle-after-20261106140000). قبلها تظهر false بلا خطأ.
+  ('تسجيل الجهة بدالّةٍ للمسجَّلين وحدهم',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.register_care_organization(jsonb)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.register_care_organization(jsonb)'), 'EXECUTE'), false)),
+  ('بيانات تحقّق الجهة ووثائقها لا يقرؤها العموم',
+     COALESCE(NOT has_table_privilege('authenticated', to_regclass('public.care_org_kyc'), 'SELECT')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.care_org_documents'), 'SELECT')
+              AND NOT has_table_privilege('anon', to_regclass('public.care_org_kyc'), 'SELECT'), false)),
+  ('خزنة وثائق الجهات خاصّة', COALESCE((SELECT NOT public FROM storage.buckets WHERE id = 'org-documents'), false)),
+  ('مسودّة ملفّ الطفل في القاعدة لجهته',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.save_orphan_draft(jsonb)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.get_orphan_intake(uuid)'), 'EXECUTE'), false)),
+  ('للدولة عملة، وملفّ الإدخال يأخذها',
+     EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'countries' AND column_name = 'currency')),
+  ('تفعيل التحويل بمطابقةٍ لا بضغطة',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.manual_transfer_reconciliations'), 'SELECT'), false)),
+  ('التصدير للإدارة بدالّةٍ تختار الأعمدة',
+     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false)),
+  -- الدفعة 3A — المال ودورة الكفالة (bundle-after-20261107140000). قبلها تظهر false بلا خطأ.
+  ('الإلغاء بدالّته، وقيد التحصيل للخادم وحده',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('authenticated', to_regprocedure('public.record_provider_charge(uuid,text,text,text,text,text,numeric,text,timestamp with time zone)'), 'EXECUTE')
+              AND has_function_privilege('service_role', to_regprocedure('public.record_provider_charge(uuid,text,text,text,text,text,numeric,text,timestamp with time zone)'), 'EXECUTE'), false)),
+  ('خروج الطفل يُنهي كفالاته',
+     EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_end_sponsorships_on_child_exit'
+              AND tgrelid = 'public.orphans'::regclass)),
+  ('بنود المال للإدارة وحدها',
+     COALESCE(NOT has_table_privilege('anon', to_regclass('public.money_issues'), 'SELECT')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.money_issues'), 'INSERT'), false)),
+  ('أرقام الصفحة الأولى بعملاتها',
+     EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'public_platform_stats' AND prosrc LIKE '%by_currency%')),
+  -- الدفعة 3B — التشغيل والتقوية (bundle-after-20261107140000). قبلها تظهر false بلا خطأ.
+  ('حال إيقاف الدفع بدالّة، وإعدادات المنصّة للإدارة',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.payment_hold_state()'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.payment_hold_state()'), 'EXECUTE'), false)
+     AND NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public'
+                      AND tablename = 'platform_settings' AND policyname = 'settings_read')),
+  ('المستخدم لا يكتب في إشعاره إلا read_at',
+     NOT has_table_privilege('authenticated', 'public.notifications', 'UPDATE')
+     AND has_column_privilege('authenticated', 'public.notifications', 'read_at', 'UPDATE')),
+  ('عضوية الجهة المانحة بدعوةٍ تُقبل',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.respond_donor_invitation(uuid,boolean)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.donor_member_invites'), 'SELECT'), false)),
+  ('مخزن الآحاد وحجز مفتاح التكرار لمفتاح الخدمة وحده',
+     COALESCE(NOT has_function_privilege('authenticated', to_regprocedure('public.api_claim_nonce(uuid,text,integer)'), 'EXECUTE')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.api_request_nonces'), 'SELECT'), false)),
+  ('عدّاد الفواتير لكل سنة مغلقٌ على العموم',
+     COALESCE(NOT has_table_privilege('authenticated', to_regclass('public.invoice_counters'), 'SELECT')
+              AND NOT has_table_privilege('anon', to_regclass('public.invoice_counters'), 'SELECT'), false))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;

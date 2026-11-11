@@ -12,8 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { normalize } from "@/lib/countries";
 import { formatMoney } from "@/lib/format";
+import { useGivingCopy } from "@/config/giving-tracks";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
-import { defaultAmount, gapOfTarget, suggestionsFor } from "@/lib/support-amounts";
+import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 import {
   createPledge,
   type SupportCatalog,
@@ -29,13 +30,9 @@ const COPY = defineCopy("components/support/SupportSheet", {
     thisRegion: "هذه المنطقة",
     children: (n: number) => `${n} طفل`,
     kind: "نوع الدعم",
-    qualification: "بناء الأهلية",
-    inKind: "دعم عيني",
     amount: "المبلغ الشهري",
     fromGap: (g: string) => `الحاجة غير المغطّاة هنا ${g}`,
-    fullMonth: "يسدّ الشهر",
-    halfMonth: "نصفه",
-    quarterMonth: "ربعه",
+    rest: "سدّ المتبقّي",
     other: "مبلغ آخر",
     note: "ملاحظة (اختياري)",
     confirm: (a: string) => `سجّل دعمي — ${a}`,
@@ -54,13 +51,9 @@ const COPY = defineCopy("components/support/SupportSheet", {
     thisRegion: "This region",
     children: pluralOf({ one: "{0} child", other: "{0} children" }),
     kind: "Kind of support",
-    qualification: "Building capability",
-    inKind: "In-kind support",
     amount: "Monthly amount",
     fromGap: (g: string) => `The uncovered need here is ${g}`,
-    fullMonth: "Covers the month",
-    halfMonth: "Half",
-    quarterMonth: "A quarter",
+    rest: "Cover the remaining need",
     other: "Other amount",
     note: "Note (optional)",
     confirm: (a: string) => `Record my support — ${a}`,
@@ -75,8 +68,6 @@ const COPY = defineCopy("components/support/SupportSheet", {
     failed: "It couldn't be recorded.",
   },
 });
-
-const FALLBACK = [10, 25, 50, 100];
 
 type Target = { type: TargetType; value: string; label: string; hint?: string };
 
@@ -100,6 +91,7 @@ export function SupportSheet({
   openedAt: number;
 }) {
   const t = useCopy(COPY);
+  const g = useGivingCopy();
   const locale = useLocale();
   const submit = useServerFn(createPledge);
 
@@ -113,7 +105,12 @@ export function SupportSheet({
       !regionValue || !r || normalize(r) === normalize(regionValue);
     for (const g of catalog?.groups ?? []) {
       if (g.country === ctx.code && here(g.region))
-        out.push({ type: "group", value: g.id, label: g.name, hint: t.children(g.children) });
+        out.push({
+          type: "group",
+          value: g.id,
+          label: g.name,
+          ...(g.children == null ? {} : { hint: t.children(g.children) }),
+        });
     }
     for (const i of catalog?.institutions ?? []) {
       if (i.country === ctx.code && here(i.region))
@@ -130,9 +127,11 @@ export function SupportSheet({
   const fallbackTarget: Target = { type: "country", value: ctx.code, label: t.thisCountry };
   const [target, setTarget] = useState<Target>(() => targets[0] ?? fallbackTarget);
   useEffect(() => {
-    setTarget((previous) =>
-      targets.find((x) => x.type === previous.type && x.value === previous.value)
-      ?? targets[0] ?? previous,
+    setTarget(
+      (previous) =>
+        targets.find((x) => x.type === previous.type && x.value === previous.value) ??
+        targets[0] ??
+        previous,
     );
   }, [targets]);
   const [kind, setKind] = useState<SupportKind>(presetKind ?? "qualification");
@@ -153,13 +152,14 @@ export function SupportSheet({
     [target.type, ctx.code, ctx.regionValue, ctx.regionName, stats],
   );
   const currency = gap?.currency ?? "EUR";
-  const suggested = gap
-    ? (["fullMonth", "halfMonth", "quarterMonth"] as const).map((k, i) => ({
-        label: t[k],
-        value: suggestionsFor(gap.gap)[i] ?? 25,
-      }))
-    : FALLBACK.map((a) => ({ label: formatMoney(a, "EUR", locale), value: a }));
-  const suggestedDefault = defaultAmount(gap, 25);
+  // مبالغ فرد (UX-11): 25/50/100 و«سدّ المتبقّي» — لا كسور فجوةٍ جماعية.
+  const suggested = individualPresets(gap).map((p) => ({
+    key: `${p.kind}:${p.value}`,
+    label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
+    sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
+    value: p.value,
+  }));
+  const suggestedDefault = defaultIndividualAmount(gap);
   const [amount, setAmount] = useState(suggestedDefault);
   const amountEdited = useRef(false);
   // Only initialize untouched amounts; the map's place key starts a new sheet.
@@ -214,15 +214,16 @@ export function SupportSheet({
 
   const chip = (on: boolean) =>
     cn(
-      "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border px-3 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
+      "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
       on
         ? "border-primary bg-primary text-primary-foreground"
         : "border-border bg-background hover:border-primary/60",
     );
 
   return (
-    <div className="grid gap-3">
-      <fieldset>
+    // عمودٌ بعرض البطاقة: صفّ «إلى من؟» يتمرّر داخلها ولا يمدّها (كان يفيض خارجها).
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.whom}</legend>
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
           {targets.map((x) => (
@@ -240,13 +241,14 @@ export function SupportSheet({
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.kind}</legend>
         <div className="flex gap-1.5">
           {(
             [
-              ["qualification", t.qualification],
-              ["in_kind", t.inKind],
+              // أسماء المسارات من مكانها الواحد (config/giving-tracks).
+              ["qualification", g.tracks.qualification.name],
+              ["in_kind", g.tracks.in_kind.name],
             ] as const
           ).map(([k, label]) => (
             <button
@@ -264,7 +266,7 @@ export function SupportSheet({
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
           {t.amount}
           {gap && (
@@ -276,18 +278,14 @@ export function SupportSheet({
         <div className="flex flex-wrap items-center gap-1.5">
           {suggested.map((a) => (
             <button
-              key={a.label}
+              key={a.key}
               type="button"
               aria-pressed={amount === a.value}
               onClick={() => chooseAmount(a.value)}
-              className={chip(amount === a.value)}
+              className={cn(chip(amount === a.value), "tabular-nums")}
             >
               {a.label}
-              {gap && (
-                <span className="text-xs tabular-nums opacity-80">
-                  {formatMoney(a.value, currency, locale)}
-                </span>
-              )}
+              {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
             </button>
           ))}
           <Input
@@ -295,7 +293,7 @@ export function SupportSheet({
             type="number"
             inputMode="numeric"
             min={1}
-            className="h-9 w-24 rounded-full"
+            className="h-11 w-28 rounded-full"
             value={amount}
             onChange={(e) => chooseAmount(Math.max(1, Number(e.target.value) || 1))}
           />
@@ -328,7 +326,7 @@ export function SupportSheet({
           )}
         />
       )}
-      <p className="text-[11px] leading-5 text-muted-foreground">{t.pledgeNote}</p>
+      <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
       {result && !result.ok && (
         <p role="alert" className="text-sm text-destructive">
           {result.text}

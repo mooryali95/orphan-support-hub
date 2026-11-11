@@ -21,10 +21,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDate } from "@/lib/format";
+import { formatDate, isolate } from "@/lib/format";
 import {
   applyUnlock,
   approveUnlock,
+  archiveChild,
+  CHILD_EXIT_REASONS,
   getIntegrityQueue,
   issueGrant,
   rejectUnlock,
@@ -37,10 +39,11 @@ import {
 } from "@/lib/integrity.functions";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/config/brand";
+import { Name } from "@/components/kit/Name";
 
 const OP_LABEL: Record<UnlockOp, string> = {
   edit: `تصحيح بيانات في ${BRAND.name}`,
-  archive: "أرشفة الملفّ",
+  archive: "خروج الطفل من البرنامج (أرشفة)",
   unlock: "رفع القفل",
   rowad_update: "تعديلٌ في منصّة التشغيل",
   rowad_delete: "حذفٌ في منصّة التشغيل",
@@ -156,12 +159,14 @@ export function IntegrityPanel() {
       {closed.length > 0 && (
         <details className="group rounded-2xl bg-secondary/40 p-4">
           <summary className="cursor-pointer text-sm font-semibold">
-            طلبات مُغلقة ({closed.length}) — آخر ٩٠ يوماً
+            طلبات مُغلقة ({closed.length}) — آخر 90 يوماً
           </summary>
           <ul className="mt-3 divide-y divide-border text-sm">
             {closed.map((r) => (
               <li key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                <span className="font-medium">{r.orphan}</span>
+                <span className="font-medium">
+                  <Name>{r.orphan}</Name>
+                </span>
                 <span className="text-muted-foreground">{OP_LABEL[r.op]}</span>
                 <StatusPill s={r.status} />
                 <span className="ms-auto text-xs text-muted-foreground">
@@ -187,7 +192,7 @@ export function IntegrityPanel() {
               className="flex items-center gap-3 border-s-2 border-border py-2 ps-4 text-sm"
             >
               <span className="min-w-0 flex-1">{KIND[e.kind] ?? e.kind}</span>
-              <bdi dir="ltr" className="font-mono text-[11px] text-muted-foreground">
+              <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
                 {e.hash}…
               </bdi>
               <span className="text-xs text-muted-foreground">{formatDate(e.at)}</span>
@@ -254,7 +259,9 @@ function RequestCard({ r }: { r: UnlockRequest }) {
     <article className="rounded-3xl bg-card p-5 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]">
       <header className="flex flex-wrap items-center gap-2">
         <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
-        <h3 className="font-bold">{r.orphan}</h3>
+        <h3 className="font-bold">
+          <Name>{r.orphan}</Name>
+        </h3>
         <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
           {r.code}
         </bdi>
@@ -357,7 +364,7 @@ function RequestCard({ r }: { r: UnlockRequest }) {
           <div className="mt-2 flex gap-2">
             <code
               dir="ltr"
-              className="min-w-0 flex-1 truncate rounded-lg bg-card px-2 py-1.5 text-[11px]"
+              className="min-w-0 flex-1 truncate rounded-lg bg-card px-2 py-1.5 text-xs"
             >
               {token}
             </code>
@@ -389,7 +396,9 @@ function DiscrepancyCard({ d }: { d: Discrepancy }) {
   return (
     <article className="rounded-3xl bg-card p-5 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]">
       <header className="flex flex-wrap items-center gap-2">
-        <h3 className="font-bold">{d.orphan}</h3>
+        <h3 className="font-bold">
+          <Name>{d.orphan}</Name>
+        </h3>
         <bdi dir="ltr" className="font-mono text-xs text-muted-foreground">
           {d.code}
         </bdi>
@@ -477,7 +486,9 @@ function DiscrepancyCard({ d }: { d: Discrepancy }) {
 /** طلبٌ رسمي جديد: ملفٌّ مقفول، وعملية، وسبب، ومستند. */
 function NewRequest() {
   const submit = useServerFn(requestUnlock);
+  const exitNow = useServerFn(archiveChild);
   const refresh = useRefresh();
+  const [exitReason, setExitReason] = useState<keyof typeof CHILD_EXIT_REASONS | "">("");
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
   const [op, setOp] = useState<UnlockOp>("edit");
@@ -518,13 +529,39 @@ function NewRequest() {
       className="map-rise space-y-4 rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]"
       onSubmit={async (e) => {
         e.preventDefault();
-        if (!found?.locked) return;
+        if (!found) return;
+        if (op === "archive" && !exitReason) return void toast.error("اختر سبب خروج الطفل");
+        // GAP-05: الخروج يُنهي كفالاته ويوقف تحصيلها ويُبلغ كفلاءه — والسبب
+        // يُقال لهم، فلا أرشفة بلا سبب. غير المقفول يُخرَج مباشرةً بلا موافقتين.
+        if (!found.locked) {
+          if (op !== "archive" || !exitReason) return;
+          setBusy(true);
+          const res = await exitNow({
+            data: {
+              orphanId: found.id,
+              reason: exitReason,
+              note: reason.trim().slice(0, 500) || undefined,
+            },
+          });
+          setBusy(false);
+          if (!res.ok) return void toast.error(res.error);
+          toast.success("خرج الطفل من البرنامج، وأُغلقت طلبات كفالته");
+          setOpen(false);
+          setReason("");
+          await refresh();
+          return;
+        }
         setBusy(true);
         const res = await submit({
           data: {
             orphanId: found.id,
             op,
-            patch: op === "edit" || op === "rowad_update" ? { [field]: value || null } : {},
+            patch:
+              op === "edit" || op === "rowad_update"
+                ? { [field]: value || null }
+                : op === "archive"
+                  ? { exit_reason: exitReason, exit_note: reason.trim().slice(0, 500) }
+                  : {},
             reason,
             ...(doc.trim() ? { document: doc.trim() } : {}),
           },
@@ -558,8 +595,8 @@ function NewRequest() {
                 : !found
                   ? "لا ملفّ بهذا الرقم"
                   : found.locked
-                    ? `${found.display_name} — مقفول`
-                    : `${found.display_name} — غير مقفول، يُعدَّل من مكانه`}
+                    ? `${isolate(found.display_name)} — مقفول`
+                    : `${isolate(found.display_name)} — غير مقفول، يُعدَّل من مكانه`}
           </p>
         </div>
         <div>
@@ -577,6 +614,31 @@ function NewRequest() {
             ))}
           </select>
         </div>
+        {op === "archive" && (
+          <div className="sm:col-span-2">
+            <Label htmlFor="nr-exit">سبب الخروج</Label>
+            <select
+              id="nr-exit"
+              required
+              value={exitReason}
+              onChange={(e) => setExitReason(e.target.value as typeof exitReason)}
+              className="mt-1.5 h-9 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
+            >
+              <option value="">اختر…</option>
+              {(Object.keys(CHILD_EXIT_REASONS) as Array<keyof typeof CHILD_EXIT_REASONS>).map(
+                (k) => (
+                  <option key={k} value={k}>
+                    {CHILD_EXIT_REASONS[k]}
+                  </option>
+                ),
+              )}
+            </select>
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+              تنتهي كفالاته اليوم ويتوقّف تحصيلها، ويُبلَّغ كفلاؤه بالسبب، ثم يُعرض عليهم بعد أيامٍ
+              طفلٌ ينتظر.
+            </p>
+          </div>
+        )}
         {(op === "edit" || op === "rowad_update") && (
           <>
             <div>
@@ -631,9 +693,16 @@ function NewRequest() {
         />
       </div>
       <div className="flex gap-2">
-        <Button type="submit" disabled={busy || !found?.locked || reason.trim().length < 10}>
+        <Button
+          type="submit"
+          disabled={
+            busy ||
+            !found ||
+            (found.locked ? reason.trim().length < 10 : op !== "archive" || !exitReason)
+          }
+        >
           {busy && <Loader2 className="animate-spin" />}
-          ارفع الطلب
+          {found && !found.locked && op === "archive" ? "أخرِج الطفل الآن" : "ارفع الطلب"}
         </Button>
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
           إلغاء

@@ -56,18 +56,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ARC-07: نسخةٌ مثبّتة لا latest — ترقية bun تغيّر الحلّ والبناء بلا التزام.
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.4.4
 
-      # bun.lock يشير إلى مرآة Lovable الخاصة. إن تعذّر الوصول إليها من
-      # العدّاء، نعيد الحلّ من سجلّ npm العام — الحزم كلها منشورة هناك.
-      - name: تركيب الحزم
+      # bun.lock يشير إلى مرآة Lovable الخاصة (europe-west1-npm.pkg.dev)، وهي لا
+      # تُبلغ من العدّاء. فتُعاد كتابة عناوين المرآة إلى registry.npmjs.org في
+      # نسخة العدّاء وحدها (لا تُلتزم)، ثم يُركَّب **بالقفل** كما هو: النسخ
+      # وبصمات integrity نفسها. ولا رجوع إلى تركيبٍ بلا قفل أبداً — قفلٌ لا
+      # يُحلّ يُسقط CI بدل أن يبني نسخاً لم يُراجعها أحد.
+      - name: تركيب الحزم من القفل
         run: |
-          bun install --frozen-lockfile || {
-            echo "::warning::تعذّر التركيب من المرآة المثبّتة في bun.lock؛ إعادة الحلّ من registry.npmjs.org"
-            bun install --registry https://registry.npmjs.org
-          }
+          sed -i 's#https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/#https://registry.npmjs.org/#g' bun.lock
+          if grep -q 'europe-west1-npm.pkg.dev' bun.lock; then
+            echo "::error::بقي في bun.lock عنوانٌ للمرآة لم تُعَد كتابته"; exit 1
+          fi
+          bun install --frozen-lockfile
+          git checkout -- bun.lock
+
+      # تقريرٌ لا بوّابة: ثغرةٌ في تبعيةٍ غير مباشرة لا تُصلح في الدمج نفسه،
+      # لكنّها تُرى في كلّ تشغيل (Summary) حتى تُعالَج.
+      - name: تدقيق التبعيات (تقرير)
+        continue-on-error: true
+        run: |
+          {
+            echo '### bun audit'
+            echo '```'
+            bun audit 2>&1 || true
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: فحص الأنواع
         run: bun run typecheck
@@ -83,3 +101,9 @@ jobs:
 
       - name: البناء
         run: bun run build
+
+      # اختبار المتصفّح (scripts/e2e-smoke.mjs) لا يُشغَّل هنا عمداً: /support
+      # والرحلة تحتاج بيانات Supabase حيّة (كتالوج الدعم)، والعدّاء لا يملك
+      # قاعدةً ولا يصحّ أن يضرب قاعدة الإنتاج. يُشغَّل يدوياً على نشرٍ قائم:
+      #   BASE_URL=https://… node scripts/e2e-smoke.mjs
+      # أو محلّياً على البناء: node scripts/serve-worker.mjs & node scripts/e2e-smoke.mjs

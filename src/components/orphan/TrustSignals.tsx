@@ -14,7 +14,7 @@ const COPY = defineCopy("components/orphan/TrustSignals", {
     noPhoto: "لا موافقة صورة",
     building: "برنامج تأهيلٍ قائم",
     noBuilding: "لم يبدأ برنامج التأهيل بعد",
-    report: "تقريرٌ معتمد آخر ٩٠ يوماً",
+    report: "تقريرٌ معتمد آخر 90 يوماً",
     noReport: "لا تقرير حديث",
     dotsLabel: (n: number, t: number) => `اكتمال البروفايل: ${n} من ${t}`,
     missing: "ينقصه:",

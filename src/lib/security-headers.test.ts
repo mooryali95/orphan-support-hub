@@ -81,6 +81,36 @@ describe("applySecurityHeaders", () => {
     expect(out.headers.get("x-frame-options")).toBe("SAMEORIGIN");
   });
 
+  // CP-13: صفحة الطفل لا تُفهرَس حتى لزاحفٍ لا يقرأ وسوم HTML.
+  it("يمنع فهرسة صفحة الطفل الواحد ويُبقي الدليل مفهرساً", () => {
+    for (const p of ["/orphans/a9200000-0000-4000-8000-000000000001", "/orphans/abc/"]) {
+      const out = applySecurityHeaders(new Request(`https://x.test${p}`), res());
+      expect(out.headers.get("x-robots-tag")).toContain("noindex");
+      expect(out.headers.get("x-robots-tag")).toContain("noimageindex");
+    }
+    for (const p of ["/orphans", "/orphans/", "/", "/organizations"]) {
+      const out = applySecurityHeaders(new Request(`https://x.test${p}`), res());
+      expect(out.headers.get("x-robots-tag")).toBeNull();
+    }
+  });
+
+  it("APP-08: السكربت بأحادية الطلب لا بـ unsafe-inline", () => {
+    const csp = securityHeaders("https://db.example.co", "abc123")["content-security-policy"] ?? "";
+    const script = csp.split("; ").find((d) => d.startsWith("script-src"));
+    expect(script).toBe("script-src 'self' 'nonce-abc123'");
+  });
+
+  it("APP-08: الأحادية تصل الرأس من applySecurityHeaders", () => {
+    const out = applySecurityHeaders(new Request("https://x.test/"), res(), "n0nce");
+    expect(out.headers.get("content-security-policy")).toContain("'nonce-n0nce'");
+    expect(out.headers.get("content-security-policy")).not.toMatch(/script-src[^;]*unsafe-inline/);
+  });
+
+  it("نتائج دوالّ الخادم (/_serverFn) لا تُخزَّن", () => {
+    const out = applySecurityHeaders(new Request("https://x.test/_serverFn/abc"), res());
+    expect(out.headers.get("cache-control")).toContain("no-store");
+  });
+
   it("يحفظ الحالة والجسم", async () => {
     const out = applySecurityHeaders(
       new Request("https://x.test/"),

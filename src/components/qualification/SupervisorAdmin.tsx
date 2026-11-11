@@ -149,7 +149,7 @@ export function SupervisorAdmin() {
         </div>
         <div className="w-32">
           <Label htmlFor="sv-ind" className="text-xs">
-            مؤشّر الاستقلال ٪
+            مؤشّر الاستقلال %
           </Label>
           <Input
             id="sv-ind"
@@ -169,7 +169,7 @@ export function SupervisorAdmin() {
         </Button>
       </form>
       <p className="mt-2 text-xs text-muted-foreground">
-        الاستقلالية تُعقد عند ٨٥٪. ومن دونها يبقى إشرافه مقروناً بمتابعة الإدارة — طورٌ في التأهيل
+        الاستقلالية تُعقد عند 85%. ومن دونها يبقى إشرافه مقروناً بمتابعة الإدارة — طورٌ في التأهيل
         لا حكمٌ على الكفاءة.
       </p>
 
@@ -196,7 +196,7 @@ export function SupervisorAdmin() {
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   <span>المستوى {LEVEL_LABELS[row.level]}</span>
                   <span>·</span>
-                  <span>{row.independence_index}٪</span>
+                  <span>{row.independence_index}%</span>
                   {row.certified_at && (
                     <>
                       <span>·</span>

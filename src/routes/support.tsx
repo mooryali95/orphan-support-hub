@@ -7,11 +7,12 @@ import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { formatMoney } from "@/lib/format";
 import { DEFAULT_LAYER } from "@/components/map/layers";
-import { defaultAmount, gapOfTarget, suggestionsFor } from "@/lib/support-amounts";
+import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -81,7 +82,7 @@ const COPY = defineCopy("routes/support", {
     pledged: "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
     failed: "تعذّر التسجيل.",
     mapTitle: "أين تريد أن تدعم؟",
-    mapText: "اختر دولةً ثم منطقة، أو تابع بالخطوات أدناه.",
+    mapText: "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
     supportRegion: "ادعم هذه المنطقة",
     supportCountry: "ادعم هذه الدولة",
     h1: "ادعم",
@@ -91,10 +92,10 @@ const COPY = defineCopy("routes/support", {
     directory: "دليل الأيتام",
     thanks: "شكراً لك",
     portals: "بواباتي",
-    s1: "١. نوع الدعم",
-    s2: "٢. إلى من يذهب؟",
-    s3: "٣. الاختيار",
-    s4: "٤. المبلغ",
+    s1: "1. نوع الدعم",
+    s2: "2. إلى من يذهب؟",
+    s3: "3. الاختيار",
+    s4: "4. المبلغ",
     country: "الدولة",
     chosenChild: "الطفل المختار:",
     fromDirectory: "من الدليل",
@@ -103,9 +104,7 @@ const COPY = defineCopy("routes/support", {
     noOptions: "لا خيارات متاحة هنا بعد.",
     otherAmount: "مبلغ آخر",
     fromGap: (g: string) => `الحاجة الشهرية غير المغطّاة هنا ${g}. اختر ما يناسبك:`,
-    fullMonth: "يسدّ الشهر",
-    halfMonth: "نصفه",
-    quarterMonth: "ربعه",
+    rest: "سدّ المتبقّي",
     note: "ملاحظة (اختياري)",
     confirm: (a: string) => `سجّل دعمي — ${a}`,
     signIn: "سجّل الدخول لإتمام الدعم",
@@ -142,7 +141,8 @@ const COPY = defineCopy("routes/support", {
       "Your support is recorded. We'll let you know when payment collection opens, and you can follow it from “My portals”.",
     failed: "It couldn't be recorded.",
     mapTitle: "Where would you like to support?",
-    mapText: "Choose a country, then a region — or continue with the steps below.",
+    mapText:
+      "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
     supportRegion: "Support this region",
     supportCountry: "Support this country",
     h1: "Support",
@@ -165,9 +165,7 @@ const COPY = defineCopy("routes/support", {
     noOptions: "No options available here yet.",
     otherAmount: "Other amount",
     fromGap: (g: string) => `The uncovered monthly need here is ${g}. Pick what suits you:`,
-    fullMonth: "Covers the month",
-    halfMonth: "Half of it",
-    quarterMonth: "A quarter",
+    rest: "Cover the remaining need",
     note: "Note (optional)",
     confirm: (a: string) => `Record my support — ${a}`,
     signIn: "Sign in to complete your support",
@@ -176,7 +174,6 @@ const COPY = defineCopy("routes/support", {
       "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
   },
 });
-const AMOUNTS = [10, 25, 50, 100];
 
 function SupportPage() {
   const {
@@ -193,7 +190,7 @@ function SupportPage() {
   const locale = useLocale();
   // «ادعم في دقيقتين»: يُقاس من فتح المسار حتى التسجيل.
   const openedAt = useRef<number>(Date.now());
-  const { stats, demo } = useMapStats();
+  const { stats, demo, status } = useMapStats();
   const formRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const fetchCatalog = useServerFn(getSupportCatalog);
@@ -207,7 +204,7 @@ function SupportPage() {
   const [targetType, setTargetType] = useState<TargetType | null>(orphan ? "orphan" : null);
   const [country, setCountry] = useState<string>("");
   const [target, setTarget] = useState<string>(orphan ?? "");
-  const [amount, setAmount] = useState<number>(25);
+  const [amount, setAmount] = useState<number>(() => defaultIndividualAmount(null));
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
@@ -229,15 +226,16 @@ function SupportPage() {
     [targetType, target, activeCountry, stats, orphanGap, orphanCur],
   );
   const currency = gapOf?.currency ?? "EUR";
-  const suggested = gapOf
-    ? (["fullMonth", "halfMonth", "quarterMonth"] as const).map((k, i) => ({
-        label: t[k],
-        value: suggestionsFor(gapOf.gap)[i]!,
-      }))
-    : AMOUNTS.map((a) => ({ label: formatMoney(a, "EUR", locale), value: a }));
-  // حين تُعرف الفجوة يبدأ المبلغ بنصف الشهر — خطوةٌ محسوسة بلا ثقل.
+  // مبالغ فرد (UX-11): 25/50/100 و«سدّ المتبقّي» حين تُعرف الفجوة.
+  const suggested = individualPresets(gapOf).map((p) => ({
+    key: `${p.kind}:${p.value}`,
+    label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
+    sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
+    value: p.value,
+  }));
+  // حين تُعرف الفجوة يبدأ المبلغ بـ50 — أو بالمتبقّي إن كان أقلّ.
   useEffect(() => {
-    if (gapOf) setAmount(defaultAmount(gapOf, AMOUNTS[1]!));
+    if (gapOf) setAmount(defaultIndividualAmount(gapOf));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gapOf?.gap, gapOf?.currency]);
 
@@ -250,7 +248,9 @@ function SupportPage() {
           .map((g) => ({
             value: g.id,
             label: g.name,
-            hint: `${g.region ?? ""} · ${t.children(g.children)}`,
+            hint: [g.region, g.children == null ? null : t.children(g.children)]
+              .filter(Boolean)
+              .join(" · "),
           }));
       case "region":
         return catalog.regions
@@ -350,6 +350,7 @@ function SupportPage() {
         <WorldMap
           stats={stats}
           demo={demo}
+          status={status}
           selection={selection}
           onSelect={onSelect}
           layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
@@ -401,8 +402,13 @@ function SupportPage() {
           </ol>
 
           {isPending ? (
-            <div className="flex justify-center py-16">
-              <Loader2 className="size-6 animate-spin text-muted-foreground" />
+            // هيكل الخطوة بأبعادها (UI-17): لا دوّارة وسط فراغ.
+            <div className="mt-8 space-y-3" aria-hidden="true">
+              <Skeleton className="h-6 w-40" />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Skeleton className="h-24 rounded-2xl" />
+                <Skeleton className="h-24 rounded-2xl" />
+              </div>
             </div>
           ) : !catalog ? (
             <p className="mt-8 rounded-xl border border-border bg-secondary/40 p-5 text-sm">
@@ -528,17 +534,15 @@ function SupportPage() {
                   <div className="flex flex-wrap gap-2">
                     {suggested.map((a) => (
                       <Button
-                        key={a.label}
+                        key={a.key}
                         type="button"
+                        className="tabular-nums"
+                        aria-pressed={amount === a.value}
                         variant={amount === a.value ? "default" : "outline"}
                         onClick={() => setAmount(a.value)}
                       >
                         {a.label}
-                        {gapOf && (
-                          <span className="tabular-nums opacity-80">
-                            {formatMoney(a.value, currency, locale)}
-                          </span>
-                        )}
+                        {a.sub && <span className="opacity-80">{a.sub}</span>}
                       </Button>
                     ))}
                     <Input

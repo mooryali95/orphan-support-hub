@@ -16,15 +16,31 @@
  * والخطوط من Google تحتاج نطاقيها صراحةً، والصور تحتاج `data:` للصور
  * المضمَّنة و`blob:` لمعاينة ما يرفعه المستخدم قبل إرساله.
  */
-function contentSecurityPolicy(supabaseOrigin: string | null): string {
+/**
+ * السكربت (APP-08): أحاديةٌ لكلّ طلب يولّدها src/server.ts وتمرّرها TanStack
+ * (router.options.ssr.nonce) إلى كلّ سكربتٍ تكتبه — بيانات الترطيب وسكربتات
+ * الصفحة. فلا `'unsafe-inline'`: سكربتٌ محقونٌ بلا الأحادية لا يعمل.
+ * و`'self'` للحزم الخارجية من أصلنا. بلا أحادية (ردّ JSON مثلاً) لا يُسمح
+ * بسكربتٍ مضمَّن أصلاً. ووضع التطوير وحده يُبقي `'unsafe-inline'` لأدوات
+ * المحرّر التي تحقن سكربتاتها.
+ */
+function scriptSource(nonce: string | null | undefined, allowInline: boolean): string {
+  if (allowInline) return "script-src 'self' 'unsafe-inline'";
+  return nonce ? `script-src 'self' 'nonce-${nonce}'` : "script-src 'self'";
+}
+
+function contentSecurityPolicy(
+  supabaseOrigin: string | null,
+  nonce?: string | null,
+  allowInline = false,
+): string {
   const connect = ["'self'", supabaseOrigin, "https://api.creem.io", "https://test-api.creem.io"]
     .filter(Boolean)
     .join(" ");
 
   return [
     "default-src 'self'",
-    // 'unsafe-inline' للسكربت لازم لبيانات الترطيب التي تحقنها TanStack.
-    "script-src 'self' 'unsafe-inline'",
+    scriptSource(nonce, allowInline),
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     `img-src 'self' data: blob: ${supabaseOrigin ?? ""}`.trim(),
@@ -40,7 +56,11 @@ function contentSecurityPolicy(supabaseOrigin: string | null): string {
   ].join("; ");
 }
 
-export function securityHeaders(supabaseUrl: string | undefined): Record<string, string> {
+export function securityHeaders(
+  supabaseUrl: string | undefined,
+  nonce?: string | null,
+  allowInline = false,
+): Record<string, string> {
   let origin: string | null = null;
   try {
     origin = supabaseUrl ? new URL(supabaseUrl).origin : null;
@@ -49,7 +69,7 @@ export function securityHeaders(supabaseUrl: string | undefined): Record<string,
   }
 
   return {
-    "content-security-policy": contentSecurityPolicy(origin),
+    "content-security-policy": contentSecurityPolicy(origin, nonce, allowInline),
     // frame-ancestors تكفي في المتصفّحات الحديثة، وهذا للقديمة منها.
     "x-frame-options": "DENY",
     "x-content-type-options": "nosniff",
@@ -71,6 +91,19 @@ export function securityHeaders(supabaseUrl: string | undefined): Record<string,
   };
 }
 
+/**
+ * صفحة الطفل الواحد ليست للفهرسة (CP-13): اسمه وعمره وحاجته تبقى في
+ * خزائن البحث ومعايناته بعد أن تنتهي الموافقة. فلا فهرسة ولا نسخة مخزّنة
+ * ولا مقتطف ولا صورة. والوسم نفسه في رأس الصفحة وفي رأس الاستجابة: الأوّل
+ * لمن يقرأ HTML، والثاني لمن لا يقرؤه (المعاينات، الصور، الزواحف المستعجلة).
+ */
+export const CHILD_PAGE_ROBOTS = "noindex, noarchive, nosnippet, noimageindex";
+
+/** `/orphans/<id>` وما تحته — لا الدليل `/orphans` نفسه، فهو المفهرَس. */
+function isChildPath(path: string): boolean {
+  return /^\/orphans\/[^/]+/.test(path);
+}
+
 /** المسارات التي لا يجوز أن تُخزَّن في وسيط أو متصفّح. */
 const NO_STORE = ["/dashboard", "/admin", "/org", "/guardian", "/auth"];
 
@@ -83,13 +116,22 @@ const NO_STORE = ["/dashboard", "/admin", "/org", "/guardian", "/auth"];
  */
 function isPrivatePath(path: string): boolean {
   if (path.startsWith("/api/")) return true;
+  // نتائج دوالّ الخادم (GET) تحمل بيانات المستخدم كما تحملها /api.
+  if (path.startsWith("/_serverFn/")) return true;
   return NO_STORE.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
-export function applySecurityHeaders(request: Request, response: Response): Response {
+export function applySecurityHeaders(
+  request: Request,
+  response: Response,
+  nonce?: string | null,
+  allowInline = false,
+): Response {
   const headers = new Headers(response.headers);
 
-  for (const [k, v] of Object.entries(securityHeaders(process.env["SUPABASE_URL"]))) {
+  for (const [k, v] of Object.entries(
+    securityHeaders(process.env["SUPABASE_URL"], nonce, allowInline),
+  )) {
     // لا يُدهس ما ضبطه المسار عمداً.
     if (!headers.has(k)) headers.set(k, v);
   }
@@ -99,6 +141,7 @@ export function applySecurityHeaders(request: Request, response: Response): Resp
     // صفحات تحمل بيانات طفل أو مالاً: تخزينها في وسيط مشترك تسريب.
     headers.set("cache-control", "no-store, must-revalidate");
   }
+  if (isChildPath(path)) headers.set("x-robots-tag", CHILD_PAGE_ROBOTS);
 
   return new Response(response.body, {
     status: response.status,

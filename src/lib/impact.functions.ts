@@ -21,16 +21,6 @@ export const REPORT_STATUS_LABELS: Record<string, string> = {
   rejected: "أُعيد للتصحيح",
 };
 
-export const TIMELINE_LABELS: Record<string, string> = {
-  "orphan.approved": "اعتُمد الملف ونُشر",
-  "orphan.rejected": "أُعيد الملف للتصحيح",
-  "report.submitted": "رُفع تقرير دوري",
-  "report.published": "نُشر تقرير الأثر",
-  "report.rejected": "أُعيد التقرير للتصحيح",
-  "sponsorship.started": "بدأت الكفالة",
-  disbursement_delivered: "وصلت كفالة الشهر موثّقة",
-};
-
 /** الفترة بصيغة YYYY-MM — نفس ما تفرضه القاعدة. */
 const periodSchema = z
   .string()
@@ -94,22 +84,43 @@ export const reviewProgressReport = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-/** تقارير ملف واحد — RLS تحجب غير المعتمَد عن الكافل. */
+/** تقرير كما تُعيده `orphan_progress_reports` — الأعمدة يختارها الخادم بحسب القارئ. */
+export type ProgressReportView = {
+  id: string;
+  period: string;
+  status: string;
+  summary: string | null;
+  education_note: string | null;
+  /** لدائرة الطفل وحدها (أو لمن مُنح «الملفّ العميق») — للكافل `null`. */
+  health_note: string | null;
+  living_note: string | null;
+  /** مسارات الخزنة لدائرة الطفل وحدها — للكافل قائمةٌ فارغة. */
+  attachments: string[];
+  review_note: string | null;
+  published_at: string | null;
+  created_at: string;
+};
+
+/**
+ * تقارير ملف واحد.
+ *
+ * لا تُقرأ من الجدول: سياسته لدائرة الطفل وحدها، وRLS تحجب صفّاً لا
+ * عموداً. فالدالّة تُعيد للكافل التقرير المعتمد بتعليمه ومعيشته وخلاصته،
+ * بلا ملاحظة الصحّة ولا مسارات المرفقات — كما تَعِد سياسة الخصوصية.
+ */
 export const listReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ orphanId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const db = withPhase4(context.supabase);
-    const { data: rows, error } = await db
-      .from("progress_reports")
-      .select(
-        "id, period, status, summary, education_note, health_note, living_note, attachments, review_note, published_at, created_at",
-      )
-      .eq("orphan_id", data.orphanId)
-      .order("period", { ascending: false });
+    const { data: res, error } = await db.rpc("orphan_progress_reports", {
+      _orphan: data.orphanId,
+    });
 
-    if (error) return { ok: false as const, error: error.message, reports: [] };
-    return { ok: true as const, reports: rows ?? [] };
+    if (error)
+      return { ok: false as const, error: error.message, reports: [] as ProgressReportView[] };
+    const reports = (res as { reports?: ProgressReportView[] } | null)?.reports ?? [];
+    return { ok: true as const, reports };
   });
 
 /** طابور التقارير المعلّقة — للإدارة. */

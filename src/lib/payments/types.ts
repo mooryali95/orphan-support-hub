@@ -81,7 +81,21 @@ export interface PaymentProvider {
 
   parseEvent(rawBody: string): PaymentEvent;
 
-  cancelSubscription(providerSubscriptionId: string): Promise<void>;
+  /**
+   * يُنهي الاشتراك لدى المزوّد. `scheduled` = عند نهاية الدورة المدفوعة
+   * (إلغاء الكافل)، و`immediate` = الآن (خروج الطفل، أو تحصيلٌ بعد الانتهاء).
+   */
+  cancelSubscription(providerSubscriptionId: string, mode?: CancelMode): Promise<void>;
+}
+
+export type CancelMode = "scheduled" | "immediate";
+
+/** المزوّد لا يحصّل بهذه العملة: يُرفض الدفع بدل تحصيلها بعملةٍ أخرى (APP-04). */
+export class CurrencyNotSupportedError extends Error {
+  constructor(readonly currency: string) {
+    super(`مزوّد الدفع لا يحصّل بعملة ${currency}`);
+    this.name = "CurrencyNotSupportedError";
+  }
 }
 
 /** يُرفع حين يُطلب من المحوّل ما لم يُوصَّل بعد. */

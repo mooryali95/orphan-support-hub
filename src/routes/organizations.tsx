@@ -50,36 +50,39 @@ function OrganizationsPage() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">{c.title}</h1>
-        <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
+        {/* عمود القراءة يبدأ من حافة الشعار نفسها (UI-13). */}
+        <div className="max-w-5xl">
+          <h1 className="text-3xl font-extrabold">{c.title}</h1>
+          <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
 
-        {data.organizations.length === 0 ? (
-          <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            {c.empty}
-          </p>
-        ) : (
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {data.organizations.map((org) => (
-              <article key={org.id} className="rounded-2xl border border-border bg-card p-5">
-                <div className="flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Building2 className="size-5" />
-                  </span>
-                  <div>
-                    <h2 className="font-bold">{org.name}</h2>
-                    <p className="text-xs text-muted-foreground">
-                      {[org.city, org.region].filter(Boolean).join(" — ")}
-                    </p>
+          {data.organizations.length === 0 ? (
+            <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+              {c.empty}
+            </p>
+          ) : (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {data.organizations.map((org) => (
+                <article key={org.id} className="rounded-2xl border border-border bg-card p-5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Building2 className="size-5" />
+                    </span>
+                    <div>
+                      <h2 className="font-bold">{org.name}</h2>
+                      <p className="text-xs text-muted-foreground">
+                        {[org.city, org.region].filter(Boolean).join(" — ")}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                {org.about && (
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{org.about}</p>
-                )}
-              </article>
-            ))}
-          </div>
-        )}
+                  {org.about && (
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">{org.about}</p>
+                  )}
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
       <SiteFooter />
     </div>

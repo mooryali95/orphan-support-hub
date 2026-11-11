@@ -136,7 +136,7 @@ export function OfficeChecklist({ d, isAdmin }: { d: OfficeDashboard; isAdmin: b
                 </span>
               )}
             </span>
-            <span className="shrink-0 rounded-full bg-background px-2 py-0.5 text-[11px] text-muted-foreground">
+            <span className="shrink-0 rounded-full bg-background px-2 py-0.5 text-xs text-muted-foreground">
               {it.admin ? (
                 isAdmin ? (
                   <Link to="/admin" className="underline">

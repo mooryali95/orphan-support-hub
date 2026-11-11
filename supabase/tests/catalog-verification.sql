@@ -18,9 +18,14 @@ BEGIN
   SET LOCAL ROLE anon;
   _j := public.support_catalog();
   RESET ROLE;
-  IF (_j->'groups'->0->>'children')::int <> 1 OR jsonb_array_length(_j->'institutions') <> 1
-     OR NOT (_j->'regions') @> '[{"country":"AL","name":"دوريس"}]' THEN
+  /* مجموعةٌ بطفلٍ واحد (حشده صغير): لا عدد دون الحدّ، ولا منطقة، ولا تدخل
+     منطقتها قائمة المناطق — وإلا دلّت على الطفل (مراجعة المرحلة صفر). */
+  IF jsonb_array_length(_j->'groups') <> 1 OR jsonb_array_length(_j->'institutions') <> 1 THEN
     RAISE EXCEPTION 'FAIL — الكتالوج ناقص: %', _j;
+  END IF;
+  IF _j->'groups'->0->>'children' IS NOT NULL OR _j->'groups'->0->>'region' IS NOT NULL
+     OR (_j->'regions') @> '[{"country":"AL","name":"دوريس"}]' THEN
+    RAISE EXCEPTION 'FAIL — الكتالوج يكشف حشداً صغيراً: %', _j;
   END IF;
   IF _j::text LIKE '%مشرف سرّي%' OR _j::text LIKE '%طفل الكتالوج%' THEN
     RAISE EXCEPTION 'FAIL — الكتالوج سرّب المشرف أو أسماء الأطفال';

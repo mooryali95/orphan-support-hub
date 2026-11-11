@@ -355,7 +355,7 @@ function ReviewRow({
         <p className="text-sm leading-7" dir="rtl" lang="ar">
           {row.ar || "—"}
         </p>
-        <p className="mt-1 break-all font-mono text-[10px] text-muted-foreground" dir="ltr">
+        <p className="mt-1 break-all font-mono text-xs text-muted-foreground" dir="ltr">
           {row.key}
         </p>
       </div>
@@ -373,17 +373,13 @@ function ReviewRow({
           className="text-sm"
         />
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", cls)}>
-            {label}
-          </span>
+          <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", cls)}>{label}</span>
           {row.stale && (
-            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] text-destructive">
+            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
               تغيّر الأصل
             </span>
           )}
-          {row.origin === "machine" && (
-            <span className="text-[11px] text-muted-foreground">آلية</span>
-          )}
+          {row.origin === "machine" && <span className="text-xs text-muted-foreground">آلية</span>}
           <span className="ms-auto" />
           <Button size="sm" variant="ghost" disabled={busy || !dirty} onClick={() => submit(false)}>
             احفظ

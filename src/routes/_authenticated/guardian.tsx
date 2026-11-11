@@ -13,8 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { getGuardianWorkspace } from "@/lib/impact.functions";
-import { formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import { formatMoney, fundingPercent, ORPHAN_STATUS_LABELS, isolate } from "@/lib/format";
 import { BRAND, pageTitle } from "@/config/brand";
+import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/guardian")({
   /* أولياء الأمور وحدهم — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -104,7 +105,9 @@ function GuardianPage() {
             return (
               <article key={o.id} className="border-border bg-card rounded-2xl border p-5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-bold">{o.display_name}</h2>
+                  <h2 className="font-bold">
+                    <Name>{o.display_name}</Name>
+                  </h2>
                   <Badge variant="secondary">{ORPHAN_STATUS_LABELS[o.status] ?? o.status}</Badge>
                   <span className="text-muted-foreground text-xs tabular-nums">{o.code}</span>
                 </div>
@@ -116,7 +119,7 @@ function GuardianPage() {
                 <CrossingProgress
                   percent={percent}
                   className="mt-3 max-w-sm"
-                  label={`تغطية احتياج ${o.display_name} الشهري`}
+                  label={`تغطية احتياج ${isolate(o.display_name)} الشهري`}
                 />
 
                 {/* لا شيء هنا عن الكفلاء: من يكفل وبكم علاقة بين الكافل

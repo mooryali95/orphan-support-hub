@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/hooks/useAuth";
 import { LocaleProvider } from "@/lib/locale";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * حارس المصادقة، ومعه الأدوار (M2).
@@ -15,9 +16,10 @@ import { LocaleProvider } from "@/lib/locale";
  */
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
+    // الرابط المحمي يحفظ وجهته (UX-09): بعد الدخول يعود إليها لا إلى اللوحة.
+    if (error || !data.user) throw redirect({ to: "/auth", search: { redirect: location.href } });
 
     const { data: roleRows } = await supabase
       .from("user_roles")
@@ -30,6 +32,9 @@ export const Route = createFileRoute("/_authenticated")({
   // البوابات بعد الدخول عربيةٌ في هذه المرحلة: من اختار الإنجليزية يراها
   // متّسقةً من اليمين بالعربية، لا نصّاً عربياً في تخطيطٍ من اليسار. وحين
   // تُترجم بوابةٌ يُرفع هذا الغلاف عنها.
+  // بين فتح الرابط ومعرفة الجلسة لا شاشة فارغة (UI-17): هيكل البوابة بأبعاد
+  // محتواها — ترويسة، وعنوان، وثلاثة مؤشّرات، وصفوف — فلا يقفز شيء حين تصل.
+  pendingComponent: PortalSkeleton,
   component: () => (
     <LocaleProvider locale="ar">
       <div dir="rtl" lang="ar">
@@ -38,3 +43,40 @@ export const Route = createFileRoute("/_authenticated")({
     </LocaleProvider>
   ),
 });
+
+function PortalSkeleton() {
+  return (
+    <div dir="rtl" lang="ar" className="min-h-dvh bg-secondary/30" aria-busy="true">
+      <div className="border-b border-border bg-background">
+        <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center gap-4 px-4">
+          <Skeleton className="h-8 w-28" />
+          <Skeleton className="ms-auto h-9 w-24" />
+        </div>
+      </div>
+      <main className="mx-auto max-w-6xl px-4 py-10" aria-hidden="true">
+        <Skeleton className="h-9 w-48" />
+        <Skeleton className="mt-3 h-5 w-72 max-w-full" />
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-2xl border border-border bg-card p-5">
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="mt-2 h-4 w-24" />
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 space-y-4">
+          {[0, 1].map((i) => (
+            <div key={i} className="flex gap-4 rounded-2xl border border-border bg-card p-5">
+              <Skeleton className="size-16 rounded-xl" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-56 max-w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}

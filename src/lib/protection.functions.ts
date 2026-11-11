@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { signChildPhoto } from "@/lib/child-photo";
 import {
   withProtection,
   type AccessRequestRow,
@@ -56,6 +57,16 @@ const filterSchema = z.object({
 export const listOrphanCards = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => filterSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
+    // APP-10: الدليل عامّ ويكلّف استعلاماً ثقيلاً؛ يُحدّ بالعنوان (ويبقى
+    // مفتوحاً إن تعذّر العدّ — انظر FAIL_CLOSED).
+    const { limitCurrentRequest, RATE_LIMITED_MESSAGE } = await import("@/lib/rate-limit");
+    if (!(await limitCurrentRequest("search")).allowed) {
+      return {
+        rows: [] as OrphanCardRow[],
+        total: 0,
+        error: RATE_LIMITED_MESSAGE as string | null,
+      };
+    }
     const db = withProtection(publicClient());
     const { data: res, error } = await db.rpc("list_orphan_cards", {
       _country: (data.country ?? null) as never,
@@ -111,7 +122,17 @@ export const getOrphanViewAuthed = createServerFn({ method: "GET" })
     const db = withProtection(context.supabase);
     const { data: view, error } = await db.rpc("orphan_view", { _orphan: data.orphanId });
     if (error) return { orphan: null as OrphanView | null, error: error.message };
-    return { orphan: (view ?? null) as OrphanView | null, error: null as string | null };
+    const orphan = (view ?? null) as OrphanView | null;
+    /* الصورة مسارٌ في الخزنة الخاصّة: تُوقَّع بجلسة القارئ نفسه، فسياسة
+       الخزنة تفحص «الهوية» والموافقة مرّةً ثانية، والرابط ينقضي بعد دقائق. */
+    if (orphan?.detail) {
+      orphan.detail.photo_url = await signChildPhoto(
+        context.supabase,
+        orphan.id,
+        orphan.detail.photo_url,
+      );
+    }
+    return { orphan, error: null as string | null };
   });
 
 export const requestOrphanAccess = createServerFn({ method: "POST" })
@@ -218,7 +239,11 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
 export const getGeoStats = createServerFn({ method: "GET" }).handler(async () => {
   const db = withProtection(publicClient());
   const { data, error } = await db.rpc("geo_stats" as never);
-  if (error || !data) return { available: false as const, countries: [] as GeoCountryRow[] };
+  if (error || !data) {
+    // يُسجَّل التعذّر: الخارطة تقول «غير متاحة» للزائر، والانقطاع لا يمرّ صامتاً (ARC-11).
+    console.error("geo_stats unavailable", error?.code ?? "no-data", error?.message ?? "");
+    return { available: false as const, countries: [] as GeoCountryRow[] };
+  }
   return {
     available: true as const,
     countries: (data as { countries?: GeoCountryRow[] }).countries ?? [],

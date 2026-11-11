@@ -114,7 +114,11 @@ BEGIN
      OR (SELECT external_deleted_at FROM public.orphans WHERE id = _o) IS NOT NULL THEN
     RAISE EXCEPTION 'FAIL — المرآة غيّرت هوية مكفولٍ أو حذفته';
   END IF;
-  IF (SELECT region FROM public.orphans WHERE id = _o2) <> 'Elbasan' THEN
+  /* غير المكفول منشورٌ أيضاً، فتغييرُ منطقته من المصدر يُمسَك للمراجعة
+     (مراجعة المرحلة صفر) — والمهمّ هنا أنّ الدفعة لم تنكسر عنده. */
+  IF (SELECT changes->>'region' FROM public.orphan_pending_edits WHERE orphan_id = _o2)
+       IS DISTINCT FROM 'Elbasan'
+     OR (SELECT status FROM public.orphans WHERE id = _o2) <> 'approved' THEN
     RAISE EXCEPTION 'FAIL — الإمساك كسر بقية الدفعة (غير المكفول لم يُحدَّث)';
   END IF;
   IF (SELECT count(*) FROM public.integrity_discrepancies WHERE orphan_id = _o AND status = 'open') < 2 THEN
@@ -170,7 +174,7 @@ BEGIN
   -- ٦) النافذة تنتهي
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
-  _req := public.admin_request_unlock(_o, 'archive', '{}'::jsonb, 'انتقال الطفل إلى رعاية أسرته');
+  _req := public.admin_request_unlock(_o, 'archive', '{"exit_reason":"returned_to_family"}'::jsonb, 'انتقال الطفل إلى رعاية أسرته');
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated"}';
   PERFORM public.admin_approve_unlock(_req);
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated"}';

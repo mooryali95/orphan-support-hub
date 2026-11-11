@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { BRAND } from "@/config/brand";
 import { formatDate, formatMoney } from "@/lib/format";
 import { getSponsorshipLedger, monthState } from "@/lib/ledger.functions";
+import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/report")({
   head: () => ({
@@ -96,7 +97,7 @@ function ReportPage() {
 
       <h1 className="mt-8 text-2xl font-extrabold">تقرير الكفالة لعام {year}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        كفالة {l.orphan.display_name} · ملف {l.orphan.code} ·{" "}
+        كفالة <Name>{l.orphan.display_name}</Name> · ملف <Name>{l.orphan.code}</Name> ·{" "}
         {formatMoney(l.sponsorship.amount, cur)} شهرياً
       </p>
 
@@ -149,9 +150,10 @@ function ReportPage() {
       </table>
 
       <footer className="mt-10 border-t border-border pt-4 text-xs text-muted-foreground">
-        صدر في {formatDate(new Date().toISOString())}. الوصول الموثّق يعني أن جهة الرعاية رفعت مستند
-        استلامٍ راجعته المنصّة. ولكل شهرٍ إيصالٌ يُحسب من حقائقه: احفظ هذا التقرير، وتحقّق من أيّ
-        إيصالٍ فيه لاحقاً من صفحة الكفالة — إن تغيّرت حقيقةٌ تغيّر رقمها. «{BRAND.tagline}».
+        صدر في {formatDate(new Date().toISOString())}. «الوصول الموثّق» يعني أن جهة الرعاية سجّلت
+        التسليم ورفعت مستند استلامه؛ المستند محفوظ في المنصّة ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه.
+        ولكل شهرٍ إيصالٌ يُحسب من حقائقه: احفظ هذا التقرير، وتحقّق من أيّ إيصالٍ فيه لاحقاً من صفحة
+        الكفالة — إن تغيّرت حقيقةٌ تغيّر رقمها. «{BRAND.tagline}».
       </footer>
     </main>
   );
