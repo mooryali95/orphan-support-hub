@@ -28,7 +28,10 @@ describe("APP-11: لا تصل رسائل القاعدة الخام إلى الم
   });
 
   it("الخام يصير رسالةً عربية بمرجع الطلب، بلا اسم قيدٍ أو جدول", () => {
-    const out = publicError('duplicate key value violates unique constraint "ux_payments"', "abc123");
+    const out = publicError(
+      'duplicate key value violates unique constraint "ux_payments"',
+      "abc123",
+    );
     expect(out).not.toMatch(/ux_payments|duplicate/);
     expect(out).toContain("abc123");
   });

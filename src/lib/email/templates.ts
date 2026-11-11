@@ -120,6 +120,10 @@ export type TemplateInput = {
  * فلا يمكن أن يقول التطبيق شيئاً ويقول البريد شيئاً آخر — وهو تناقض
  * يظهر حتماً حين يُصاغ النصّان في موضعين.
  */
+/**
+ * معاينةٌ نصّية فقط — لا يُرسل بها شيء. الإرسال كلّه عبر قالب
+ * email-templates/notification.tsx (برابط إلغاء الاشتراك) من email-outbox.server.ts.
+ */
 export function renderNotificationEmail(input: TemplateInput): OutgoingEmail {
   const url = input.link ? `${input.baseUrl.replace(/\/$/, "")}${input.link}` : null;
   const cta = url ? { label: ctaLabel(input.kind), url } : undefined;
