@@ -127,7 +127,9 @@ export const startCheckout = createServerFn({ method: "POST" })
       };
     }
 
-    const origin = process.env["APP_ORIGIN"] ?? "";
+    // أصلٌ واحد للروابط المطلقة (ARC-12): PUBLIC_BASE_URL، و APP_ORIGIN احتياطاً.
+    const { appBaseUrl } = await import("@/lib/env.server");
+    const origin = appBaseUrl() ?? "";
     const orphanName =
       (sponsorship.orphans as { display_name?: string } | null)?.display_name ?? "يتيم";
 

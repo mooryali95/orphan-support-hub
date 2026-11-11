@@ -30,7 +30,45 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn" && !isLovableRoute(ctx.request),
 });
 
+/**
+ * رصد دوالّ الخادم (ARC-05 + APP-11). كلّ فشلٍ — نتيجة `{ ok: false }` أو
+ * استثناء — يُكتب سطراً منظَّماً بمعرّف الطلب واسم الدالّة. ثم يُنقّى ما يصل
+ * المتصفّح: رسائل القاعدة الخام (أسماء القيود والجداول) تصير رسالةً عربية
+ * بمرجعٍ يطابق السطر؛ وما كُتب ليُعرض (عربيٌّ من الهجرات، أو رمزٌ تفرّعه
+ * الواجهة) يمرّ كما هو. التوجيه وnotFound وResponse تمرّ بلا لمس.
+ */
+const serverFnObservability = createMiddleware({ type: "function" }).server(
+  async ({ next, serverFnMeta }) => {
+    const { isRedirect, isNotFound } = await import("@tanstack/react-router");
+    const log = await import("@/lib/server-log");
+    const fn = serverFnMeta?.name ?? "unknown";
+    const fields = { fn, file: serverFnMeta?.filename };
+    try {
+      const out = await next();
+      const result = (out as { result?: unknown }).result;
+      if (result && typeof result === "object" && (result as { ok?: unknown }).ok === false) {
+        const raw = (result as { error?: unknown }).error;
+        let ref: string | null;
+        if (typeof raw === "string" && raw !== "" && !log.isCuratedMessage(raw)) {
+          ref = log.logServerError(`serverFn.${fn}`, raw, fields);
+        } else {
+          log.logServerEvent("warn", `serverFn.${fn}`, { ...fields, outcome: "ok_false", raw });
+          ref = (await import("@/lib/request-context")).currentRequest()?.requestId ?? null;
+        }
+        return { ...out, result: log.sanitizeFailure(result, ref) } as typeof out;
+      }
+      return out;
+    } catch (error) {
+      if (isRedirect(error) || isNotFound(error) || error instanceof Response) throw error;
+      const ref = log.logServerError(`serverFn.${fn}`, error, fields);
+      const message = error instanceof Error ? error.message : String(error);
+      if (log.isCuratedMessage(message)) throw error;
+      throw new Error(log.publicError(error, ref));
+    }
+  },
+);
+
 export const startInstance = createStart(() => ({
-  functionMiddleware: [attachSupabaseAuth],
+  functionMiddleware: [serverFnObservability, attachSupabaseAuth],
   requestMiddleware: [errorMiddleware, csrfMiddleware],
 }));

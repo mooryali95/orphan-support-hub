@@ -20,12 +20,23 @@ export function makeQueryClient() {
 // قابلية التسلسل في الموجّه (مفاتيح `unknown`)، فتُمرَّر بنوعٍ معتم.
 type Dehydrated = { queries: Record<string, never> };
 
+/**
+ * أحادية CSP للطلب الجاري (APP-08): يضبط الخادم موصّلها (request-context.ts)،
+ * وفي المتصفّح لا موصّل فلا أحادية — المتصفّح لا يحتاجها بعد الرسم.
+ */
+function cspNonce(): string | undefined {
+  const read = (globalThis as Record<string, unknown>)["__iocoCspNonce"];
+  return typeof read === "function" ? (read as () => string | undefined)() : undefined;
+}
+
 export const getRouter = () => {
   const queryClient = makeQueryClient();
+  const nonce = cspNonce();
 
   const router = createRouter({
     routeTree,
     context: { queryClient },
+    ...(nonce ? { ssr: { nonce } } : {}),
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     // لا يظهر مؤشّر التنقّل قبل 250ms حتى لا يومض في التنقّلات الفورية،

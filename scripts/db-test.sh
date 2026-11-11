@@ -75,7 +75,8 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/workspace-relations-verification.sql \
               supabase/tests/sponsorship-lifecycle-verification.sql \
               supabase/tests/child-exit-verification.sql \
-              supabase/tests/currency-totals-verification.sql; do
+              supabase/tests/currency-totals-verification.sql \
+              supabase/tests/ops-hardening-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.
   if out=$("${PSQL[@]}" -f "$suite" 2>&1); then
@@ -86,5 +87,9 @@ for suite in supabase/tests/phase0-verification.sql \
     fail=1
   fi
 done
+
+# ARC-01: types.ts مولَّدٌ من البثّ؛ ما يذكره ولا تُنشئه السلسلة انجراف.
+echo "▸ انجراف المخطط (types.ts و drizzle/ مقابل السلسلة)"
+DATABASE_URL="$DB" scripts/check-types-drift.sh || fail=1
 
 exit "$fail"

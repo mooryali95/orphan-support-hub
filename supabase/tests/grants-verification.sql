@@ -304,7 +304,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'mirror_sync_state|authenticated|SELECT|',
     'money_issues|authenticated|SELECT|',
     'notification_prefs|authenticated|INSERT,SELECT,UPDATE|',
-    'notifications|authenticated|SELECT,UPDATE|',
+    'notifications|authenticated|SELECT|UPDATE(read_at)',
     'office_members|authenticated|DELETE,INSERT,SELECT,UPDATE|',
     'office_reports|authenticated|SELECT|',
     'office_roles|authenticated|DELETE,INSERT,SELECT,UPDATE|',

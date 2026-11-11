@@ -43,7 +43,8 @@ export const previewMonthlyDigest = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await rpc(context.supabase).rpc("my_monthly_digest");
     if (error) return { ok: false as const, html: null, subject: null };
-    const base = process.env["PUBLIC_BASE_URL"] ?? "";
+    const { appBaseUrl } = await import("@/lib/env.server");
+    const base = appBaseUrl() ?? "";
     const mail = renderMonthlyDigest("", data as MonthlyDigest, base);
     return { ok: true as const, html: mail.html, subject: mail.subject };
   });

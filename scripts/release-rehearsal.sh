@@ -69,6 +69,13 @@ for part in live-part1.sql live-part2.sql live-part3-repair.sql live-part4-grant
     "${PSQL[@]}" -1 -f "$R/$part"
   fi
 done
+# ARC-01: Lovable طبّق ملفّات drizzle/migrations الثلاثة على البثّ في 2026-10-30/31
+# من خارج السلسلة (لا تُسجَّل في schema_migrations). تُطبَّق هنا كما طُبّقت، فتُجرَّب
+# 20261108200000_port_drizzle_policies على حال البثّ الحقيقية لا على قاعدةٍ تنقصها.
+for f in $(ls drizzle/migrations/*.sql 2>/dev/null | sort); do
+  printf '  %s (drizzle)\n' "$(basename "$f")"
+  "${PSQL[@]}" -1 -f "$f"
+done
 # الجزءان ٧ و٨ سُجّلا على البثّ (٥٩ هجرة) ولا يحمل ملفّاهما سطر التسجيل.
 "${PSQL[@]}" -c "INSERT INTO supabase_migrations.schema_migrations (version, name) VALUES
     ('20260930100000', 'pledge_currency'), ('20261001100000', 'office_onboarding')

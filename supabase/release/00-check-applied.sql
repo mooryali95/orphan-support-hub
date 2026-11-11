@@ -41,4 +41,8 @@ SELECT to_regclass('public.orphan_access_requests')              AS m0905_protec
            AND prosrc LIKE '%translator_locales%' LIMIT 1)          AS m1107_workspaces,
        to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)') AS m1108_lifecycle,
        to_regclass('public.sponsor_exit_followups')               AS m1108_child_exit,
-       to_regprocedure('public.guard_orphan_currency()')          AS m1108_currency;
+       to_regprocedure('public.guard_orphan_currency()')          AS m1108_currency,
+       to_regprocedure('public.payment_hold_state()')             AS m1108_drizzle_port,
+       to_regclass('public.donor_member_invites')                 AS m1108_donor_invites,
+       to_regclass('public.api_request_nonces')                   AS m1108_replay,
+       to_regclass('public.invoice_counters')                     AS m1108_invoices;

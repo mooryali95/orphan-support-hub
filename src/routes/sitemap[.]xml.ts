@@ -16,7 +16,8 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const origin = process.env["PUBLIC_BASE_URL"] ?? process.env["APP_ORIGIN"] ?? "";
+        const { appBaseUrl } = await import("@/lib/env.server");
+        const origin = appBaseUrl() ?? "";
         const now = new Date().toISOString().slice(0, 10);
 
         const staticPages: Array<[string, string, string]> = [

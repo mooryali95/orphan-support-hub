@@ -105,6 +105,11 @@ export const saveNotificationPrefs = createServerFn({ method: "POST" })
 export const unsubscribeByToken = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ token: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
+    // APP-10: مسارٌ بلا جلسة يقبل رمزاً — يُحدّ بالعنوان ويُغلق إن تعذّر العدّ.
+    const { limitCurrentRequest, RATE_LIMITED_MESSAGE } = await import("@/lib/rate-limit");
+    if (!(await limitCurrentRequest("auth")).allowed) {
+      return { ok: false as const, error: RATE_LIMITED_MESSAGE };
+    }
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
     const supabase = createClient(process.env["SUPABASE_URL"]!, key, {
       auth: { persistSession: false, autoRefreshToken: false },

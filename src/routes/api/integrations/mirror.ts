@@ -7,6 +7,8 @@ import {
   authFailureResponse,
   authenticateClient,
   guardApiRate,
+  guardClientRate,
+  guardReplay,
   hasScope,
   readBodyCapped,
 } from "@/lib/integrations/client";
@@ -47,6 +49,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
         if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
+        const clientLimited = await guardClientRate(auth.client);
+        if (clientLimited) return clientLimited;
         if (!hasScope(auth.client, "mirror:write")) {
           return apiError(
             "scope_denied",
@@ -65,6 +69,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
             "Body exceeds 2 MB.",
           );
         }
+        const replay = await guardReplay(request, auth.client, raw.text);
+        if (replay) return replay;
         let body: Body;
         try {
           body = JSON.parse(raw.text) as Body;
