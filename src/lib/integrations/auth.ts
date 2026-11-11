@@ -11,7 +11,9 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypt
  * ويُخزَّن عندنا مُجزَّأً بملحٍ فلا يُستردّ. والمقايضة في صالحنا.
  *
  * ومع ذلك يبقى **ختم الوقت** شرطاً: طلبٌ ملتقَط يُعاد إرساله إلى الأبد
- * بلا نافذةٍ زمنية.
+ * بلا نافذةٍ زمنية. والختم وحده لا يمنع الإعادة **داخل** النافذة (APP-12):
+ * فكلّ كتابةٍ تحمل أحاديةً تُقبل مرّةً واحدة (`replayNonce` ومخزن
+ * `api_request_nonces`) — `X-Api-Nonce` من الشريك، أو بصمة الطلب نفسه.
  */
 
 const SCRYPT_KEYLEN = 32;
@@ -48,7 +50,37 @@ export function digest(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
 }
 
-export type AuthFailure = { code: string; status: number; message: string };
+export const NONCE_MAX_LENGTH = 200;
+export const REPLAY_WINDOW_SECONDS = WINDOW_SECONDS;
+
+/**
+ * أحادية الطلب في مخزن الإعادة، أو null إن لم يلزم.
+ *
+ * - `X-Api-Nonce` من الشريك تُستعمل كما هي (`n:`)، لكل طريقة.
+ * - بلاها، الكتابة بلا مفتاح تكرار تأخذ بصمة الطلب نفسه (`f:`): الختم
+ *   والطريقة والمسار وبصمة الجسم. فالطلب الملتقَط حرفاً بحرف لا يمرّ مرّتين،
+ *   والشريك الذي يعيد المحاولة يولّد ختماً جديداً كما يفعل أصلاً.
+ * - القراءة (GET) آمنة الإعادة، والكتابة بمفتاح تكرار يحرسها المفتاح.
+ */
+export function replayNonce(req: {
+  nonce: string | null;
+  timestamp: string | null;
+  method: string;
+  path: string;
+  body: string;
+  idempotencyKey: string | null;
+}): string | null {
+  if (req.nonce) {
+    if (req.nonce.length > NONCE_MAX_LENGTH) throw new Error("nonce_too_long");
+    return `n:${req.nonce}`;
+  }
+  if (req.method.toUpperCase() === "GET" || req.idempotencyKey) return null;
+  return `f:${digest(
+    [req.timestamp ?? "", req.method.toUpperCase(), req.path, digest(req.body)].join("\n"),
+  )}`;
+}
+
+export type AuthFailure ={ code: string; status: number; message: string };
 
 /** ختمٌ خارج النافذة يُرفض: بلا ذلك يُعاد الطلب الملتقَط أبداً. */
 export function timestampFresh(value: string | null, nowMs = Date.now()): boolean {

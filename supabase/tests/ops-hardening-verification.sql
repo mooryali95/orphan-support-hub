@@ -198,5 +198,110 @@ BEGIN
   RAISE NOTICE 'PASS — DB-10: الدعوة لا تكشف الحساب ولا تُدخل أحداً بلا قبوله، ولا تخرج من جهةٍ لم تُعتمد';
 END $$;
 
+
+-- ---------------------------------------------------------------------
+-- APP-12
+-- ---------------------------------------------------------------------
+INSERT INTO public.care_organizations (id, owner_id, name, status)
+VALUES ('b3100000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000004', 'جهة التكامل 3B', 'approved');
+INSERT INTO public.api_clients (id, name, client_key, secret_hash, org_id, scopes) VALUES
+  ('b3200000-0000-4000-8000-000000000001', 'شريك 3B', 'ck_b3', 'x',
+   'b3100000-0000-4000-8000-000000000001', ARRAY['orphans:import']);
+
+DO $$
+DECLARE _first BOOLEAN; _second BOOLEAN; _r1 JSONB; _r2 JSONB; _r3 JSONB; _r4 JSONB;
+BEGIN
+  _first := public.api_claim_nonce('b3200000-0000-4000-8000-000000000001', 'n-1', 300);
+  _second := public.api_claim_nonce('b3200000-0000-4000-8000-000000000001', 'n-1', 300);
+  IF NOT _first OR _second THEN
+    RAISE EXCEPTION 'FAIL — الآحاد لا تمنع الإعادة: % ثم %', _first, _second;
+  END IF;
+  -- الآحاد المنتهية تُكنس، فلا يكبر المخزن بلا حدّ.
+  UPDATE public.api_request_nonces SET seen_at = now() - interval '1 hour'
+   WHERE client_id = 'b3200000-0000-4000-8000-000000000001';
+  _first := public.api_claim_nonce('b3200000-0000-4000-8000-000000000001', 'n-2', 300);
+  IF NOT _first OR EXISTS (SELECT 1 FROM public.api_request_nonces WHERE nonce = 'n-1') THEN
+    RAISE EXCEPTION 'FAIL — الآحاد المنتهية لا تُكنس';
+  END IF;
+
+  _r1 := public.api_reserve_import('b3200000-0000-4000-8000-000000000001', 'ck_b3', 'k-1', 'd-1', 3);
+  _r2 := public.api_reserve_import('b3200000-0000-4000-8000-000000000001', 'ck_b3', 'k-1', 'd-1', 3);
+  IF (_r1->>'reserved')::boolean IS NOT TRUE OR (_r2->>'reserved')::boolean OR _r2->>'state' <> 'processing' THEN
+    RAISE EXCEPTION 'FAIL — مفتاح التكرار لا يُحجز ذرّياً: % ثم %', _r1, _r2;
+  END IF;
+  PERFORM public.api_finish_import((_r1->>'id')::uuid, 1, 0, 0, '{"created":1}'::jsonb);
+  _r3 := public.api_reserve_import('b3200000-0000-4000-8000-000000000001', 'ck_b3', 'k-1', 'd-1', 3);
+  _r4 := public.api_reserve_import('b3200000-0000-4000-8000-000000000001', 'ck_b3', 'k-1', 'd-other', 3);
+  IF _r3->>'state' <> 'done' OR _r3->'result'->>'created' <> '1' OR _r4->>'state' <> 'digest_mismatch' THEN
+    RAISE EXCEPTION 'FAIL — الإعادة لا تُعيد النتيجة الأولى أو تقبل حمولةً مختلفة: % / %', _r3, _r4;
+  END IF;
+  IF has_function_privilege('authenticated', 'public.api_claim_nonce(uuid,text,integer)', 'EXECUTE')
+     OR has_function_privilege('authenticated', 'public.api_reserve_import(uuid,text,text,text,integer,integer)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'FAIL — دوالّ البوّابة مفتوحةٌ للمسجَّل';
+  END IF;
+  RAISE NOTICE 'PASS — APP-12: الطلب المكرّر يُرفض، ومفتاح التكرار يُحجز قبل المعالجة لا بعدها';
+END $$;
+
+
+-- ---------------------------------------------------------------------
+-- GAP-06
+-- ---------------------------------------------------------------------
+INSERT INTO public.orphans (id, code, display_name, org_id, created_by, country, region, monthly_need, status, approved_at)
+VALUES ('b3300000-0000-4000-8000-000000000001', 'B3-1', 'طفل الفاتورة 3B', 'b3100000-0000-4000-8000-000000000001',
+        'b3000000-0000-4000-8000-000000000004', 'ألبانيا', 'Tirana', 100, 'approved', now());
+INSERT INTO public.sponsorships (id, sponsor_id, orphan_id, amount, currency, status, started_at)
+VALUES ('b3400000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000005',
+        'b3300000-0000-4000-8000-000000000001', 40, 'EUR', 'active', now() - interval '1 month');
+
+DO $$
+DECLARE _a TEXT; _b TEXT; _c TEXT; _d TEXT; _ok BOOLEAN;
+BEGIN
+  INSERT INTO public.sponsorship_payments (sponsorship_id, sponsor_id, amount, currency, status, provider,
+         provider_payment_id, paid_at)
+  VALUES ('b3400000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000005', 40, 'EUR',
+          'paid', 'creem', 'ord_b3_1', '2031-03-01T10:00:00Z')
+  RETURNING invoice_no INTO _a;
+
+  -- حدثٌ مكرّر من المزوّد يُرفض — ولا يحرق رقماً.
+  _ok := false;
+  BEGIN
+    INSERT INTO public.sponsorship_payments (sponsorship_id, sponsor_id, amount, currency, status, provider,
+           provider_payment_id, paid_at)
+    VALUES ('b3400000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000005', 40, 'EUR',
+            'paid', 'creem', 'ord_b3_1', '2031-03-01T10:00:00Z');
+  EXCEPTION WHEN unique_violation THEN _ok := true;
+  END;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — الحدث المكرّر لم يُرفض'; END IF;
+
+  INSERT INTO public.sponsorship_payments (sponsorship_id, sponsor_id, amount, currency, status, provider,
+         provider_payment_id, paid_at)
+  VALUES ('b3400000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000005', 40, 'EUR',
+          'paid', 'creem', 'ord_b3_2', '2031-04-01T10:00:00Z')
+  RETURNING invoice_no INTO _b;
+  INSERT INTO public.sponsorship_payments (sponsorship_id, sponsor_id, amount, currency, status, provider,
+         provider_payment_id, paid_at)
+  VALUES ('b3400000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000005', 40, 'EUR',
+          'paid', 'creem', 'ord_b3_3', '2032-01-02T10:00:00Z')
+  RETURNING invoice_no INTO _c;
+
+  IF _a <> 'INV-2031-000001' OR _b <> 'INV-2031-000002' THEN
+    RAISE EXCEPTION 'FAIL — ثغرةٌ في الترقيم بعد إدراجٍ فاشل: % ثم %', _a, _b;
+  END IF;
+  IF _c <> 'INV-2032-000001' THEN
+    RAISE EXCEPTION 'FAIL — الترقيم لا يبدأ من جديد كل سنة: %', _c;
+  END IF;
+
+  -- العدّاد لا يُقرأ ولا يُكتب من الخارج.
+  IF has_table_privilege('authenticated', 'public.invoice_counters', 'SELECT')
+     OR has_table_privilege('authenticated', 'public.invoice_counters', 'UPDATE')
+     OR has_table_privilege('anon', 'public.invoice_counters', 'SELECT') THEN
+    RAISE EXCEPTION 'FAIL — عدّاد الفواتير مفتوحٌ للعموم';
+  END IF;
+  -- فاتورةٌ قائمة في سنةٍ بعينها لا يُعاد رقمها: العدّاد يبدأ بعد أكبر رقمٍ مُصدَر.
+  SELECT max(invoice_no) INTO _d FROM public.sponsorship_payments WHERE invoice_no LIKE 'INV-2031-%';
+  IF _d <> 'INV-2031-000002' THEN RAISE EXCEPTION 'FAIL — أكبر رقمٍ في السنة: %', _d; END IF;
+  RAISE NOTICE 'PASS — GAP-06: رقم الفاتورة لكل سنة، متّصلٌ بلا ثغرةٍ عند الإدراج الفاشل';
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص الدفعة 3B (التشغيل والتقوية) اجتازت ──'; END $$;
 ROLLBACK;

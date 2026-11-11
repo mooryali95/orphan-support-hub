@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { digest, hashSecret, newClientKey, newSecret, secretMatches, timestampFresh } from "./auth";
+import {
+  digest,
+  hashSecret,
+  newClientKey,
+  newSecret,
+  replayNonce,
+  secretMatches,
+  timestampFresh,
+} from "./auth";
 
 describe("مصادقة شركاء التكامل", () => {
   it("السرّ المولَّد يُطابق تجزيئه، ويختلف عن غيره", () => {
@@ -100,5 +108,38 @@ describe("حدّ حجم الجسم", () => {
     const req = new Request("https://x.test", { method: "POST", body: '{"a":1}' });
     const res = await readBodyCapped(req);
     expect(res.ok && res.text).toBe('{"a":1}');
+  });
+});
+
+describe("APP-12: حماية الإعادة", () => {
+  const base = {
+    nonce: null,
+    timestamp: "1700000000",
+    method: "POST",
+    path: "/api/integrations/mirror",
+    body: '{"entity":"groups"}',
+    idempotencyKey: null,
+  };
+
+  it("الأحادية الصريحة من الشريك تُستعمل كما هي", () => {
+    expect(replayNonce({ ...base, nonce: "abc-1" })).toBe("n:abc-1");
+  });
+
+  it("بلا أحادية: الطلب نفسه حرفاً بحرف يعطي البصمة نفسها، وأيّ فرقٍ يغيّرها", () => {
+    const a = replayNonce(base);
+    expect(a).toMatch(/^f:[0-9a-f]{64}$/);
+    expect(replayNonce({ ...base })).toBe(a);
+    expect(replayNonce({ ...base, timestamp: "1700000001" })).not.toBe(a);
+    expect(replayNonce({ ...base, body: '{"entity":"students"}' })).not.toBe(a);
+    expect(replayNonce({ ...base, path: "/api/integrations/orphans" })).not.toBe(a);
+  });
+
+  it("القراءة والكتابة بمفتاح تكرار لا تحتاجان بصمة: الأولى آمنة، والثانية يحرسها المفتاح", () => {
+    expect(replayNonce({ ...base, method: "GET" })).toBeNull();
+    expect(replayNonce({ ...base, idempotencyKey: "k-1" })).toBeNull();
+  });
+
+  it("أحاديةٌ أطول من الحدّ تُرفض بدل أن تُقصّ فتتصادم", () => {
+    expect(() => replayNonce({ ...base, nonce: "x".repeat(201) })).toThrow();
   });
 });

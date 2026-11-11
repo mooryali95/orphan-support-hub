@@ -1,4 +1,11 @@
-import { AUTH_ERRORS, secretMatches, timestampFresh, type AuthFailure } from "./auth";
+import {
+  AUTH_ERRORS,
+  REPLAY_WINDOW_SECONDS,
+  replayNonce,
+  secretMatches,
+  timestampFresh,
+  type AuthFailure,
+} from "./auth";
 
 export type ApiClientRow = {
   id: string;
@@ -95,6 +102,63 @@ const EN: Record<string, string> = {
 
 export function authFailureResponse(failure: AuthFailure): Response {
   return apiError(failure.code, failure.status, failure.message, EN[failure.code] ?? failure.code);
+}
+
+/**
+ * حارس الإعادة (APP-12): يُستدعى بعد المصادقة وقراءة الجسم. الطلب المكرّر
+ * داخل النافذة يأخذ 409، وتعذّر المخزن يُغلق (503) ولا يُمرّر.
+ */
+export async function guardReplay(
+  request: Request,
+  client: ApiClientRow,
+  body: string,
+): Promise<Response | null> {
+  let nonce: string | null;
+  try {
+    nonce = replayNonce({
+      nonce: request.headers.get("x-api-nonce"),
+      timestamp: header(request, "timestamp"),
+      method: request.method,
+      path: new URL(request.url).pathname,
+      body,
+      idempotencyKey: request.headers.get("idempotency-key"),
+    });
+  } catch {
+    return apiError("invalid_nonce", 400, "X-Api-Nonce أطول من الحدّ.", "X-Api-Nonce too long.");
+  }
+  if (!nonce) return null;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const db = supabaseAdmin as unknown as {
+    rpc: (
+      fn: "api_claim_nonce",
+      args: { _client: string; _nonce: string; _window_seconds: number },
+    ) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>;
+  };
+  const { data, error } = await db.rpc("api_claim_nonce", {
+    _client: client.id,
+    _nonce: nonce,
+    _window_seconds: REPLAY_WINDOW_SECONDS,
+  });
+  if (error) {
+    const { logServerError } = await import("@/lib/server-log");
+    logServerError("integrations.replay_guard", error);
+    return apiError(
+      "temporarily_unavailable",
+      503,
+      "تعذّر التحقّق من الطلب. أعد المحاولة بعد قليل.",
+      "Could not verify the request. Retry shortly.",
+    );
+  }
+  if (data !== true) {
+    return apiError(
+      "replay_detected",
+      409,
+      "هذا الطلب وصل من قبل. أعد المحاولة بختم وقتٍ جديد أو X-Api-Nonce جديدة.",
+      "This request was already received. Retry with a fresh timestamp or X-Api-Nonce.",
+    );
+  }
+  return null;
 }
 
 /** أقصى حجمٍ لجسم الطلب في بوّابات التكامل: ٢ ميغابايت. */
