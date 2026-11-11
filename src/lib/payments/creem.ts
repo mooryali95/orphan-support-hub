@@ -1,7 +1,9 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 import {
+  CurrencyNotSupportedError,
   ProviderNotReadyError,
+  type CancelMode,
   type CheckoutRequest,
   type CheckoutSession,
   type PaymentEvent,
@@ -40,11 +42,34 @@ const ENV = {
   webhookSecret: "CREEM_WEBHOOK_SECRET",
   productMonthly: "CREEM_PRODUCT_MONTHLY",
   productOnetime: "CREEM_PRODUCT_ONETIME",
+  /** عملة المنتجين أعلاه كما سُعّرا في لوحة Creem (الافتراض USD). */
+  productCurrency: "CREEM_PRODUCT_CURRENCY",
 } as const;
 
 function env(name: string): string | undefined {
   const v = process.env[name];
   return v && v.length > 0 ? v : undefined;
+}
+
+/**
+ * المنتج الذي يحصّل بعملة الكفالة (APP-04).
+ *
+ * منتج Creem مسعّرٌ بعملةٍ واحدة، و`units` تضرب سعره: كفالةٌ بـ40 يورو على
+ * منتجٍ بدولار واحد كانت تُحصَّل 40 دولاراً. فالعملة تُطابَق صراحةً:
+ * `CREEM_PRODUCT_MONTHLY_EUR` منتجٌ بيورو واحد، وإلا فالمنتج العامّ إن
+ * كانت عملته (`CREEM_PRODUCT_CURRENCY`) هي عملة الكفالة — وإلا رُفض الدفع.
+ */
+function productFor(kind: "MONTHLY" | "ONETIME", currency: string): string {
+  const cur = currency.trim().toUpperCase();
+  const specific = env(`CREEM_PRODUCT_${kind}_${cur}`);
+  if (specific) return specific;
+  const general = env(kind === "MONTHLY" ? ENV.productMonthly : ENV.productOnetime);
+  const generalCurrency = (env(ENV.productCurrency) ?? "USD").toUpperCase();
+  if (general && generalCurrency === cur) return general;
+  if (!general) {
+    throw new ProviderNotReadyError(kind === "MONTHLY" ? ENV.productMonthly : ENV.productOnetime);
+  }
+  throw new CurrencyNotSupportedError(cur);
 }
 
 /**
@@ -132,9 +157,6 @@ export const creemProvider: PaymentProvider = {
   },
 
   async createCheckout(req: CheckoutRequest): Promise<CheckoutSession> {
-    const monthly = env(ENV.productMonthly);
-    const onetime = env(ENV.productOnetime);
-
     const body: Json = {
       request_id: req.idempotencyKey,
       success_url: req.returnUrl,
@@ -144,19 +166,23 @@ export const creemProvider: PaymentProvider = {
     };
 
     if (req.recurring) {
-      if (!monthly) throw new ProviderNotReadyError(ENV.productMonthly);
-      const units = Math.round(req.amount);
-      if (units < 1) {
-        throw new Error("الكفالة الشهرية لا تقلّ عن وحدة واحدة (دولار واحد)");
+      const product = productFor("MONTHLY", req.currency);
+      // الوحدات أعدادٌ صحيحة: مبلغٌ كسريّ لا يُدوَّر صامتاً إلى مبلغٍ آخر.
+      if (!Number.isInteger(req.amount)) {
+        throw new Error("الكفالة الشهرية بمبلغٍ صحيح بلا كسور");
       }
-      body["product_id"] = monthly;
+      const units = req.amount;
+      if (units < 1) {
+        throw new Error("الكفالة الشهرية لا تقلّ عن وحدة واحدة");
+      }
+      body["product_id"] = product;
       body["units"] = units;
     } else {
-      if (!onetime) throw new ProviderNotReadyError(ENV.productOnetime);
+      const product = productFor("ONETIME", req.currency);
       const cents = Math.round(req.amount * 100);
       // الحدّ الأدنى عند Creem وحدة كاملة من العملة.
-      if (cents < 100) throw new Error("أقل مبلغ مقبول دولار واحد");
-      body["product_id"] = onetime;
+      if (cents < 100) throw new Error("أقل مبلغ مقبول وحدة واحدة من العملة");
+      body["product_id"] = product;
       body["units"] = 1;
       body["custom_price"] = cents;
     }
@@ -245,10 +271,26 @@ export const creemProvider: PaymentProvider = {
     };
   },
 
-  async cancelSubscription(providerSubscriptionId: string): Promise<void> {
-    await call(`/v1/subscriptions/${encodeURIComponent(providerSubscriptionId)}/cancel`, {
-      method: "POST",
-      body: JSON.stringify({ mode: "immediate" }),
-    });
+  /**
+   * `scheduled` يُبقي الاشتراك حتى آخر الدورة المدفوعة ثم يُنهيه (فيصل
+   * `subscription.canceled` حينها)، و`immediate` يُنهيه الآن. الإلغاء
+   * المكرّر لاشتراكٍ مُلغى يُعدّ نجاحاً: المقصود أن لا يُحصَّل، وقد تحقّق.
+   */
+  async cancelSubscription(providerSubscriptionId: string, mode: CancelMode = "immediate") {
+    try {
+      await call(`/v1/subscriptions/${encodeURIComponent(providerSubscriptionId)}/cancel`, {
+        method: "POST",
+        body: JSON.stringify({ mode }),
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (
+        /already (been )?cancel|canceled|cancelled/i.test(message) &&
+        /Creem 4\d\d/.test(message)
+      ) {
+        return;
+      }
+      throw error;
+    }
   },
 };

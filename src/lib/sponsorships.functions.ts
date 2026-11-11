@@ -187,27 +187,168 @@ export const createSponsorship = createServerFn({ method: "POST" })
 export const listMySponsorships = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+    // حقول الدورة (موعد الإلغاء، الإيقاف) أحدث من الأنواع المولَّدة.
+    const db = context.supabase as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (
+            c: string,
+            v: string,
+          ) => {
+            order: (
+              c: string,
+              o: { ascending: boolean },
+            ) => PromiseLike<{ data: MySponsorship[] | null; error: { message: string } | null }>;
+          };
+        };
+      };
+    };
+    const { data, error } = await db
       .from("sponsorships")
       .select(
-        "id, amount, currency, type, status, created_at, orphan:orphans(id, display_name, code, monthly_need, funded_monthly)",
+        "id, amount, currency, type, status, created_at, started_at, ended_at, end_reason, cancel_effective_at, paused_until, provider_subscription_id, orphan:orphans(id, display_name, code, monthly_need, funded_monthly)",
       )
       .eq("sponsor_id", context.userId)
       .order("created_at", { ascending: false });
 
-    if (error) return { sponsorships: [], error: error.message };
+    if (error) return { sponsorships: [] as MySponsorship[], error: error.message };
     return { sponsorships: data ?? [], error: null as string | null };
   });
 
+export type MySponsorship = {
+  id: string;
+  amount: number;
+  currency: string;
+  type: "monthly" | "one_time" | "partial";
+  status: "pending_payment" | "active" | "paused" | "cancelled" | "completed";
+  created_at: string;
+  started_at: string | null;
+  ended_at: string | null;
+  end_reason: "sponsor_cancelled" | "child_exit" | "provider_cancelled" | "admin" | null;
+  cancel_effective_at: string | null;
+  paused_until: string | null;
+  provider_subscription_id: string | null;
+  orphan: {
+    id: string;
+    display_name: string;
+    code: string;
+    monthly_need: number;
+    funded_monthly: number;
+  } | null;
+};
+
+type Rpc = {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>;
+};
+
+/** رسالة الخطأ كما يفهمها الكافل، من رمز القاعدة لا من نصّها. */
+function lifecycleError(error: { message: string; code?: string }): string {
+  if (error.code === "0A000")
+    return "الكفالة بالبطاقة لا تُوقَف ولا يُعدَّل مبلغها من هنا بعد. يمكنك إنهاؤها ثم البدء بمبلغٍ جديد.";
+  if (error.code === "55000") return "حال الكفالة لا تسمح بهذا الآن.";
+  if (error.code === "22023") return "القيمة خارج الحدود المسموحة.";
+  if (error.code === "P0002") return "لا توجد كفالة بهذا المعرّف.";
+  return "تعذّر التنفيذ، حاول لاحقاً.";
+}
+
+export const CANCEL_REASONS = {
+  financial: "ظرفٌ مالي",
+  another_child: "أريد كفالة طفلٍ آخر",
+  dissatisfied: "لست راضياً عن المتابعة",
+  temporary: "أحتاج توقّفاً مؤقّتاً",
+  other: "سببٌ آخر",
+} as const;
+
+/**
+ * إنهاء الكفالة (APP-02 / PRD-10 / UX-02).
+ *
+ * الطلب المعلّق يُلغى فوراً، والجارية تبقى حتى آخر المدّة المدفوعة. القاعدة
+ * تُبلغ الجهة والإدارة وتكتب الأثر؛ وإن كان للكفالة اشتراكٌ لدى المزوّد
+ * يُلغى هنا فوراً عند نهاية الدورة (scheduled)، وإن تعذّر أعادته المطابقة.
+ */
 export const cancelSponsorship = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        reason: z.enum(Object.keys(CANCEL_REASONS) as [keyof typeof CANCEL_REASONS]).optional(),
+        note: z.string().trim().max(500).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: res, error } = await (context.supabase as unknown as Rpc).rpc(
+      "sponsor_cancel_sponsorship",
+      { _sponsorship: data.id, _reason: data.reason ?? null, _note: data.note || null },
+    );
+    if (error) return { ok: false as const, error: lifecycleError(error) };
+    const r = res as {
+      status: string;
+      effective_at: string;
+      immediate: boolean;
+      provider_cancel: boolean;
+    };
+
+    if (r.provider_cancel) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { paymentProvider } = await import("@/lib/payments");
+        const { processProviderCancellations } = await import("@/lib/payments/reconcile");
+        type Db = Parameters<typeof processProviderCancellations>[0];
+        await processProviderCancellations(
+          supabaseAdmin as unknown as Db,
+          paymentProvider(),
+          data.id,
+        );
+      } catch (cause) {
+        // الطلب سُجّل في القاعدة؛ المطابقة الدورية تعيد المحاولة.
+        console.error("[sponsorships] تعذّر الإلغاء لدى المزوّد الآن", cause);
+      }
+    }
+    return { ok: true as const, effectiveAt: r.effective_at, immediate: r.immediate };
+  });
+
+/** إيقافٌ مؤقّت من شهرٍ إلى ثلاثة — لكفالات التحويل (UX-13). */
+export const pauseSponsorship = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), months: z.number().int().min(1).max(3) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: res, error } = await (context.supabase as unknown as Rpc).rpc(
+      "sponsor_pause_sponsorship",
+      { _sponsorship: data.id, _months: data.months },
+    );
+    if (error) return { ok: false as const, error: lifecycleError(error) };
+    return { ok: true as const, pausedUntil: (res as { paused_until: string }).paused_until };
+  });
+
+export const resumeSponsorship = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("sponsorships")
-      .update({ status: "cancelled", ended_at: new Date().toISOString() })
-      .eq("id", data.id)
-      .eq("sponsor_id", context.userId);
-    if (error) return { ok: false as const, error: error.message };
+    const { error } = await (context.supabase as unknown as Rpc).rpc("sponsor_resume_sponsorship", {
+      _sponsorship: data.id,
+    });
+    if (error) return { ok: false as const, error: lifecycleError(error) };
+    return { ok: true as const };
+  });
+
+/** تعديل المبلغ الشهري — من التحويل القادم (UX-13). */
+export const changeSponsorshipAmount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), amount: z.number().int().min(5).max(100000) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await (context.supabase as unknown as Rpc).rpc("sponsor_change_amount", {
+      _sponsorship: data.id,
+      _amount: data.amount,
+    });
+    if (error) return { ok: false as const, error: lifecycleError(error) };
     return { ok: true as const };
   });
