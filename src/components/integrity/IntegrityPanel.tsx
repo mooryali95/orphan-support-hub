@@ -25,6 +25,8 @@ import { formatDate, isolate } from "@/lib/format";
 import {
   applyUnlock,
   approveUnlock,
+  archiveChild,
+  CHILD_EXIT_REASONS,
   getIntegrityQueue,
   issueGrant,
   rejectUnlock,
@@ -41,7 +43,7 @@ import { Name } from "@/components/kit/Name";
 
 const OP_LABEL: Record<UnlockOp, string> = {
   edit: `تصحيح بيانات في ${BRAND.name}`,
-  archive: "أرشفة الملفّ",
+  archive: "خروج الطفل من البرنامج (أرشفة)",
   unlock: "رفع القفل",
   rowad_update: "تعديلٌ في منصّة التشغيل",
   rowad_delete: "حذفٌ في منصّة التشغيل",
@@ -484,7 +486,9 @@ function DiscrepancyCard({ d }: { d: Discrepancy }) {
 /** طلبٌ رسمي جديد: ملفٌّ مقفول، وعملية، وسبب، ومستند. */
 function NewRequest() {
   const submit = useServerFn(requestUnlock);
+  const exitNow = useServerFn(archiveChild);
   const refresh = useRefresh();
+  const [exitReason, setExitReason] = useState<keyof typeof CHILD_EXIT_REASONS | "">("");
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
   const [op, setOp] = useState<UnlockOp>("edit");
@@ -525,13 +529,39 @@ function NewRequest() {
       className="map-rise space-y-4 rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06)]"
       onSubmit={async (e) => {
         e.preventDefault();
-        if (!found?.locked) return;
+        if (!found) return;
+        if (op === "archive" && !exitReason) return void toast.error("اختر سبب خروج الطفل");
+        // GAP-05: الخروج يُنهي كفالاته ويوقف تحصيلها ويُبلغ كفلاءه — والسبب
+        // يُقال لهم، فلا أرشفة بلا سبب. غير المقفول يُخرَج مباشرةً بلا موافقتين.
+        if (!found.locked) {
+          if (op !== "archive" || !exitReason) return;
+          setBusy(true);
+          const res = await exitNow({
+            data: {
+              orphanId: found.id,
+              reason: exitReason,
+              note: reason.trim().slice(0, 500) || undefined,
+            },
+          });
+          setBusy(false);
+          if (!res.ok) return void toast.error(res.error);
+          toast.success("خرج الطفل من البرنامج، وأُغلقت طلبات كفالته");
+          setOpen(false);
+          setReason("");
+          await refresh();
+          return;
+        }
         setBusy(true);
         const res = await submit({
           data: {
             orphanId: found.id,
             op,
-            patch: op === "edit" || op === "rowad_update" ? { [field]: value || null } : {},
+            patch:
+              op === "edit" || op === "rowad_update"
+                ? { [field]: value || null }
+                : op === "archive"
+                  ? { exit_reason: exitReason, exit_note: reason.trim().slice(0, 500) }
+                  : {},
             reason,
             ...(doc.trim() ? { document: doc.trim() } : {}),
           },
@@ -584,6 +614,31 @@ function NewRequest() {
             ))}
           </select>
         </div>
+        {op === "archive" && (
+          <div className="sm:col-span-2">
+            <Label htmlFor="nr-exit">سبب الخروج</Label>
+            <select
+              id="nr-exit"
+              required
+              value={exitReason}
+              onChange={(e) => setExitReason(e.target.value as typeof exitReason)}
+              className="mt-1.5 h-9 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
+            >
+              <option value="">اختر…</option>
+              {(Object.keys(CHILD_EXIT_REASONS) as Array<keyof typeof CHILD_EXIT_REASONS>).map(
+                (k) => (
+                  <option key={k} value={k}>
+                    {CHILD_EXIT_REASONS[k]}
+                  </option>
+                ),
+              )}
+            </select>
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+              تنتهي كفالاته اليوم ويتوقّف تحصيلها، ويُبلَّغ كفلاؤه بالسبب، ثم يُعرض عليهم بعد أيامٍ
+              طفلٌ ينتظر.
+            </p>
+          </div>
+        )}
         {(op === "edit" || op === "rowad_update") && (
           <>
             <div>
@@ -638,9 +693,16 @@ function NewRequest() {
         />
       </div>
       <div className="flex gap-2">
-        <Button type="submit" disabled={busy || !found?.locked || reason.trim().length < 10}>
+        <Button
+          type="submit"
+          disabled={
+            busy ||
+            !found ||
+            (found.locked ? reason.trim().length < 10 : op !== "archive" || !exitReason)
+          }
+        >
           {busy && <Loader2 className="animate-spin" />}
-          ارفع الطلب
+          {found && !found.locked && op === "archive" ? "أخرِج الطفل الآن" : "ارفع الطلب"}
         </Button>
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
           إلغاء

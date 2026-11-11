@@ -29,7 +29,8 @@ export type InboxKind =
   | "office_report"
   | "pledge"
   | "unlock"
-  | "discrepancy";
+  | "discrepancy"
+  | "money_issue";
 
 export type InboxItem = {
   kind: InboxKind;
@@ -53,7 +54,25 @@ export const INBOX_LABELS: Record<InboxKind, string> = {
   pledge: "تعهّد",
   unlock: "طلب فكّ",
   discrepancy: "اختلافٌ من المصدر",
+  money_issue: "مال يحتاج قراراً",
 };
+
+/**
+ * بندٌ ماليّ (تحصيلٌ بعد الانتهاء، عملةٌ أو مبلغٌ مخالف، إلغاءٌ تعذّر لدى
+ * المزوّد، خروج طفل) يُغلق بملاحظةٍ تقول ما فُعل — ويُكتب الأثر في القاعدة.
+ */
+export const resolveMoneyIssue = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ id: z.string().uuid(), note: z.string().trim().min(3).max(1000) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("admin_resolve_money_issue", {
+      _issue: data.id,
+      _note: data.note,
+    });
+    return error ? { ok: false as const, error: error.message } : { ok: true as const };
+  });
 
 export const getDecisionInbox = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

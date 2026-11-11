@@ -211,6 +211,37 @@ export const requestUnlock = createServerFn({ method: "POST" })
     return r.ok ? { ok: true as const, id: r.data } : { ok: false as const, error: r.error };
   });
 
+/** أسباب خروج الطفل من البرنامج (GAP-05) — تُقال للكافل في إشعاره. */
+export const CHILD_EXIT_REASONS = {
+  graduated: "تخرّج من البرنامج",
+  aged_out: "بلغ سنّ الخروج",
+  returned_to_family: "عاد إلى رعاية أسرته",
+  transferred: "انتقل إلى جهةٍ أخرى",
+  deceased: "وفاة",
+  other: "سببٌ آخر",
+} as const;
+
+/** إخراج طفلٍ غير مقفول بسبب — المقفول بطلب أرشفةٍ بموافقتين. */
+export const archiveChild = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) =>
+    z
+      .object({
+        orphanId: z.string().uuid(),
+        reason: z.enum(Object.keys(CHILD_EXIT_REASONS) as [keyof typeof CHILD_EXIT_REASONS]),
+        note: z.string().trim().max(500).optional(),
+      })
+      .parse(i),
+  )
+  .handler(async ({ data, context }) => {
+    const r = await call(context.supabase, "admin_archive_child", {
+      _orphan: data.orphanId,
+      _reason: data.reason,
+      _note: data.note ?? null,
+    });
+    return r.ok ? { ok: true as const } : { ok: false as const, error: r.error };
+  });
+
 const byId = z.object({ id: z.string().uuid() });
 
 export const approveUnlock = createServerFn({ method: "POST" })

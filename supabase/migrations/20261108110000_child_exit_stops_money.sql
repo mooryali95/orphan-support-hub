@@ -85,15 +85,19 @@ CREATE TRIGGER guard_archive_request BEFORE INSERT ON public.unlock_requests
 -- ---------------------------------------------------------------------
 -- ٢) لحظة الخروج: السبب يُختم، وحقوله لا تُكتب من العميل
 -- ---------------------------------------------------------------------
+-- ليست DEFINER: الحارس يحتاج current_user الحقيقي ليميّز العميل. والأرشفة
+-- نفسها تمرّ من دوالّ الإدارة (DEFINER) فتقرأ الطلب المعتمد.
 CREATE OR REPLACE FUNCTION public.stamp_child_exit()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $fn$
+RETURNS trigger LANGUAGE plpgsql SET search_path = public AS $fn$
 DECLARE _patch JSONB;
 BEGIN
   IF NEW.status = 'archived' AND OLD.status IS DISTINCT FROM 'archived' THEN
     -- الأرشفة بطلبٍ معتمد: السبب في الطلب نفسه.
-    SELECT r.patch INTO _patch FROM public.unlock_requests r
-     WHERE r.id::text = NULLIF(current_setting('kahatayn.unlock', true), '')
-       AND r.orphan_id = NEW.id AND r.op = 'archive';
+    IF NULLIF(current_setting('kahatayn.unlock', true), '') IS NOT NULL THEN
+      SELECT r.patch INTO _patch FROM public.unlock_requests r
+       WHERE r.id::text = current_setting('kahatayn.unlock', true)
+         AND r.orphan_id = NEW.id AND r.op = 'archive';
+    END IF;
     NEW.exit_reason := COALESCE(NEW.exit_reason, _patch->>'exit_reason', 'other');
     NEW.exit_note := COALESCE(NEW.exit_note, NULLIF(btrim(COALESCE(_patch->>'exit_note', '')), ''));
     NEW.exited_at := now();
@@ -111,6 +115,7 @@ END $fn$;
 DROP TRIGGER IF EXISTS trg_stamp_child_exit ON public.orphans;
 CREATE TRIGGER trg_stamp_child_exit BEFORE UPDATE ON public.orphans
   FOR EACH ROW EXECUTE FUNCTION public.stamp_child_exit();
+REVOKE ALL ON FUNCTION public.stamp_child_exit() FROM PUBLIC, anon, authenticated;
 
 
 -- ---------------------------------------------------------------------
@@ -185,6 +190,8 @@ DROP TRIGGER IF EXISTS trg_end_sponsorships_on_child_exit ON public.orphans;
 CREATE TRIGGER trg_end_sponsorships_on_child_exit AFTER UPDATE OF status ON public.orphans
   FOR EACH ROW WHEN (NEW.status = 'archived' AND OLD.status IS DISTINCT FROM NEW.status)
   EXECUTE FUNCTION public.end_sponsorships_on_child_exit();
+REVOKE ALL ON FUNCTION public.end_sponsorships_on_child_exit() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.guard_archive_request() FROM PUBLIC, anon, authenticated;
 
 
 -- ---------------------------------------------------------------------

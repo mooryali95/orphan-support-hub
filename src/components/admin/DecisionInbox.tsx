@@ -32,6 +32,7 @@ import {
   getDecisionInbox,
   INBOX_LABELS,
   reviewOfficeReport,
+  resolveMoneyIssue,
   reviewOrphanEdit,
   setPledgeStatus,
   type InboxItem,
@@ -194,7 +195,7 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
   const { data: raw } = useQuery({
     queryKey: ["decision-context", item.kind, item.id],
     queryFn: () => fetchContext({ data: { kind: item.kind, id: item.id } }),
-    enabled: item.kind !== "access" && item.kind !== "transfer",
+    enabled: item.kind !== "access" && item.kind !== "transfer" && item.kind !== "money_issue",
   });
   const ctx = raw ? (JSON.parse(raw) as Record<string, unknown> | null) : null;
   const { data: access } = useQuery({
@@ -264,7 +265,9 @@ function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }
         </SheetDescription>
       </SheetHeader>
 
-      {item.kind === "transfer" ? (
+      {item.kind === "money_issue" ? (
+        <MoneyIssueDecision item={item} onDone={onDone} />
+      ) : item.kind === "transfer" ? (
         // التحويل لا يُعتمد بزرّ: يُطابَق بما وصل (UX-15).
         <div className="mt-6">
           <TransferReconcile sponsorshipId={item.id} onDone={onDone} />
@@ -371,6 +374,49 @@ function OrgEvidence({ documents, missing }: { documents: OrgDoc[]; missing: str
           لا يُعتمد قبل: {missing.map((m) => ORG_MISSING_LABELS[m] ?? m).join("، ")}
         </p>
       )}
+    </div>
+  );
+}
+
+/**
+ * بندٌ ماليّ: لا «اعتماد» ولا «رفض» — يُعالَج خارج الصندوق (ردٌّ لدى المزوّد،
+ * إلغاءٌ من لوحته، تحقّقٌ من توقّف التحصيل) ثم يُغلق بملاحظةٍ تقول ما فُعل.
+ */
+function MoneyIssueDecision({ item, onDone }: { item: InboxItem; onDone: () => void }) {
+  const resolve = useServerFn(resolveMoneyIssue);
+  const qc = useQueryClient();
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="mt-6 space-y-4">
+      <p className="rounded-xl bg-secondary/60 p-3 text-sm leading-7">{item.subtitle}</p>
+      <p className="text-xs leading-6 text-muted-foreground">
+        التحصيل بعد انتهاء الكفالة لم يُقيَّد ولم يُعِد الكفالة؛ ردّه من لوحة المزوّد يُغلق البند
+        تلقائياً حين يصل حدث الردّ. والإلغاء لدى المزوّد يُعاد كل ساعة، فإن تعذّر ثلاثاً فألغِه من
+        لوحته.
+      </p>
+      <Textarea
+        rows={2}
+        aria-label="ما فُعل"
+        placeholder="ما فُعل (إلزامي) — مثلاً: رُدّ المبلغ من لوحة المزوّد"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
+      <Button
+        disabled={busy || note.trim().length < 3}
+        onClick={async () => {
+          setBusy(true);
+          const res = await resolve({ data: { id: item.id, note: note.trim() } });
+          setBusy(false);
+          if (!res.ok) return void toast.error("تعذّر إغلاق البند");
+          toast.success("أُغلق البند");
+          await qc.invalidateQueries({ queryKey: ["decision-inbox"] });
+          onDone();
+        }}
+      >
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+        أُغلق — عولج
+      </Button>
     </div>
   );
 }
