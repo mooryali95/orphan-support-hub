@@ -95,6 +95,19 @@ WITH checks(name, ok) AS (VALUES
               AND NOT has_function_privilege('anon', to_regprocedure('public.confirm_manual_transfer(uuid,numeric,text,date,text,boolean,text)'), 'EXECUTE')
               AND NOT has_table_privilege('authenticated', to_regclass('public.manual_transfer_reconciliations'), 'SELECT'), false)),
   ('التصدير للإدارة بدالّةٍ تختار الأعمدة',
-     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false))
+     COALESCE(NOT has_function_privilege('anon', to_regprocedure('public.admin_export(text)'), 'EXECUTE'), false)),
+  ('الإلغاء بدالّته، وقيد التحصيل للخادم وحده',
+     COALESCE(has_function_privilege('authenticated', to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('anon', to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)'), 'EXECUTE')
+              AND NOT has_function_privilege('authenticated', to_regprocedure('public.record_provider_charge(uuid,text,text,text,text,text,numeric,text,timestamp with time zone)'), 'EXECUTE')
+              AND has_function_privilege('service_role', to_regprocedure('public.record_provider_charge(uuid,text,text,text,text,text,numeric,text,timestamp with time zone)'), 'EXECUTE'), false)),
+  ('خروج الطفل يُنهي كفالاته',
+     EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trg_end_sponsorships_on_child_exit'
+              AND tgrelid = 'public.orphans'::regclass)),
+  ('بنود المال للإدارة وحدها',
+     COALESCE(NOT has_table_privilege('anon', to_regclass('public.money_issues'), 'SELECT')
+              AND NOT has_table_privilege('authenticated', to_regclass('public.money_issues'), 'INSERT'), false)),
+  ('أرقام الصفحة الأولى بعملاتها',
+     EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'public_platform_stats' AND prosrc LIKE '%by_currency%'))
 )
 SELECT name, ok FROM checks ORDER BY ok, name;

@@ -38,4 +38,7 @@ SELECT to_regclass('public.orphan_access_requests')              AS m0905_protec
        to_regprocedure('public.save_orphan_draft(jsonb)')         AS m1107_intake_drafts,
        to_regclass('public.manual_transfer_reconciliations')      AS m1107_admin_ops,
        (SELECT true FROM pg_proc WHERE proname = 'my_workspaces'
-           AND prosrc LIKE '%translator_locales%' LIMIT 1)          AS m1107_workspaces;
+           AND prosrc LIKE '%translator_locales%' LIMIT 1)          AS m1107_workspaces,
+       to_regprocedure('public.sponsor_cancel_sponsorship(uuid,text,text)') AS m1108_lifecycle,
+       to_regclass('public.sponsor_exit_followups')               AS m1108_child_exit,
+       to_regprocedure('public.guard_orphan_currency()')          AS m1108_currency;
