@@ -188,3 +188,10 @@ export async function guardApiRate(request: Request): Promise<Response | null> {
   const verdict = await hitRateLimit("api", await identityOf(request));
   return verdict.allowed ? null : tooManyRequests(verdict);
 }
+
+/** وبعد المصادقة: حدٌّ لكلّ مفتاح شريك أيّاً كان عنوانه (APP-10). */
+export async function guardClientRate(client: ApiClientRow): Promise<Response | null> {
+  const { hitRateLimit, tooManyRequests } = await import("@/lib/rate-limit");
+  const verdict = await hitRateLimit("api_client", `k:${client.id}`);
+  return verdict.allowed ? null : tooManyRequests(verdict);
+}

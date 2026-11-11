@@ -7,6 +7,8 @@ import {
   authFailureResponse,
   authenticateClient,
   guardApiRate,
+  guardClientRate,
+  guardReplay,
   hasScope,
   readBodyCapped,
 } from "@/lib/integrations/client";
@@ -38,6 +40,8 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
+        const clientLimited = await guardClientRate(auth.client);
+        if (clientLimited) return clientLimited;
         if (!hasScope(auth.client, "orphans:read")) {
           return apiError(
             "scope_denied",
@@ -91,6 +95,8 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         if (limited) return limited;
         const auth = await authenticateClient(request);
         if (!auth.ok) return authFailureResponse(auth.failure);
+        const clientLimited = await guardClientRate(auth.client);
+        if (clientLimited) return clientLimited;
         if (!hasScope(auth.client, "orphans:import")) {
           return apiError(
             "scope_denied",
@@ -145,22 +151,54 @@ export const Route = createFileRoute("/api/integrations/orphans")({
         const { withIntegration } = await import("@/integrations/supabase/types.extra");
         const db = withIntegration(supabaseAdmin);
 
+        const replay = await guardReplay(request, auth.client, raw);
+        if (replay) return replay;
+
         /* مفتاح التكرار: الشبكة تُعيد الإرسال عند أي شكّ، فبلا هذا
            تُنشأ ملفّاتٌ مكرّرة لأطفالٍ حقيقيين. وغيابُه مقبول، لكنّ
-           وجوده هو الفرق بين إعادةٍ آمنة وإعادةٍ مكلفة. */
+           وجوده هو الفرق بين إعادةٍ آمنة وإعادةٍ مكلفة.
+           APP-12: المفتاح يُحجز ذرّياً قبل المعالجة، فإعادتان متزامنتان لا
+           تستوردان معاً — الثانية تأخذ «قيد المعالجة» أو النتيجة الأولى. */
         const idem = request.headers.get("idempotency-key");
         const requestDigest = digest(raw);
+        const rpcAny = supabaseAdmin as unknown as {
+          rpc: (
+            fn: string,
+            args: Record<string, unknown>,
+          ) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>;
+        };
+        let jobId: string | null = null;
 
         if (idem) {
-          const { data: prior } = await db
-            .from("api_import_jobs")
-            .select("id, request_digest, result")
-            .eq("client_id", auth.client.id)
-            .eq("idempotency_key", idem)
-            .maybeSingle();
-          const seen = prior as { request_digest?: string; result?: unknown } | null;
-          if (seen) {
-            if (seen.request_digest !== requestDigest) {
+          const { data: reservation, error: reserveError } = await rpcAny.rpc(
+            "api_reserve_import",
+            {
+              _client: auth.client.id,
+              _source: auth.client.client_key,
+              _key: idem,
+              _digest: requestDigest,
+              _received: records.length,
+            },
+          );
+          if (reserveError) {
+            const { logServerError } = await import("@/lib/server-log");
+            const ref = logServerError("integrations.import.reserve", reserveError);
+            return apiError(
+              "temporarily_unavailable",
+              503,
+              "تعذّر حجز مفتاح التكرار. أعد المحاولة بعد قليل.",
+              "Could not reserve the idempotency key. Retry shortly.",
+              { ref },
+            );
+          }
+          const r = (reservation ?? {}) as {
+            reserved?: boolean;
+            id?: string;
+            state?: string;
+            result?: Record<string, unknown>;
+          };
+          if (!r.reserved) {
+            if (r.state === "digest_mismatch") {
               return apiError(
                 "idempotency_key_reused",
                 409,
@@ -168,8 +206,17 @@ export const Route = createFileRoute("/api/integrations/orphans")({
                 "The same idempotency key was used with a different body.",
               );
             }
-            return apiOk({ replayed: true, ...(seen.result as Record<string, unknown>) });
+            if (r.state === "processing") {
+              return apiError(
+                "idempotency_in_progress",
+                409,
+                "طلبٌ بالمفتاح نفسه قيد المعالجة. أعد المحاولة بعد قليل.",
+                "A request with this idempotency key is still processing. Retry shortly.",
+              );
+            }
+            return apiOk({ replayed: true, ...(r.result ?? {}) });
           }
+          jobId = r.id ?? null;
         }
 
         const results: Array<Record<string, unknown>> = [];
@@ -183,8 +230,13 @@ export const Route = createFileRoute("/api/integrations/orphans")({
             _payload: record as never,
           });
           if (error) {
+            // APP-11: الرسالة الخام في السجلّ، والشريك يأخذ رمزاً ومرجعاً.
+            const { classifyError, logServerError } = await import("@/lib/server-log");
+            const ref = logServerError("integrations.import.record", error, {
+              client: auth.client.id,
+            });
             rejected += 1;
-            results.push({ ok: false, code: "import_failed", detail: error.message });
+            results.push({ ok: false, code: "import_failed", reason: classifyError(error), ref });
             continue;
           }
           const r = (data ?? {}) as Record<string, unknown>;
@@ -208,17 +260,27 @@ export const Route = createFileRoute("/api/integrations/orphans")({
           note_en: "Every imported record stays under_review until our admins approve it.",
         };
 
-        await db.from("api_import_jobs").insert({
-          client_id: auth.client.id,
-          source: auth.client.client_key,
-          idempotency_key: idem,
-          request_digest: requestDigest,
-          received_count: records.length,
-          created_count: created,
-          updated_count: updated,
-          failed_count: rejected,
-          result: summary as never,
-        });
+        if (jobId) {
+          await rpcAny.rpc("api_finish_import", {
+            _job: jobId,
+            _created: created,
+            _updated: updated,
+            _failed: rejected,
+            _result: summary,
+          });
+        } else {
+          await db.from("api_import_jobs").insert({
+            client_id: auth.client.id,
+            source: auth.client.client_key,
+            idempotency_key: null,
+            request_digest: requestDigest,
+            received_count: records.length,
+            created_count: created,
+            updated_count: updated,
+            failed_count: rejected,
+            result: summary as never,
+          });
+        }
 
         await db.rpc("touch_api_client", { _client: auth.client.id, _imported: true });
 

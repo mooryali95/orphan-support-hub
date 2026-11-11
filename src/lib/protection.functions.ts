@@ -57,6 +57,16 @@ const filterSchema = z.object({
 export const listOrphanCards = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => filterSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
+    // APP-10: الدليل عامّ ويكلّف استعلاماً ثقيلاً؛ يُحدّ بالعنوان (ويبقى
+    // مفتوحاً إن تعذّر العدّ — انظر FAIL_CLOSED).
+    const { limitCurrentRequest, RATE_LIMITED_MESSAGE } = await import("@/lib/rate-limit");
+    if (!(await limitCurrentRequest("search")).allowed) {
+      return {
+        rows: [] as OrphanCardRow[],
+        total: 0,
+        error: RATE_LIMITED_MESSAGE as string | null,
+      };
+    }
     const db = withProtection(publicClient());
     const { data: res, error } = await db.rpc("list_orphan_cards", {
       _country: (data.country ?? null) as never,

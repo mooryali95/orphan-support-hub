@@ -46,6 +46,14 @@ export function secretMatches(secret: string, salt: string, expectedHash: string
   return timingSafeEqual(actual, expected);
 }
 
+/** مقارنة سرّين ثابتة الزمن (APP-12): المقارنة العادية تُسرّب طول البادئة المطابقة. */
+export function safeEqual(a: string | null | undefined, b: string): boolean {
+  if (typeof a !== "string") return false;
+  const x = createHash("sha256").update(a).digest();
+  const y = createHash("sha256").update(b).digest();
+  return timingSafeEqual(x, y);
+}
+
 export function digest(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
 }
@@ -80,7 +88,7 @@ export function replayNonce(req: {
   )}`;
 }
 
-export type AuthFailure ={ code: string; status: number; message: string };
+export type AuthFailure = { code: string; status: number; message: string };
 
 /** ختمٌ خارج النافذة يُرفض: بلا ذلك يُعاد الطلب الملتقَط أبداً. */
 export function timestampFresh(value: string | null, nowMs = Date.now()): boolean {

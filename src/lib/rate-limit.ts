@@ -8,7 +8,7 @@ import { withPhase7 } from "@/integrations/supabase/types.extra";
  * أضعافه فعلياً — وهو أسوأ من غيابه لأنه يوهم بالحماية.
  */
 
-export type Bucket = "auth" | "search" | "checkout" | "intake" | "api";
+export type Bucket = "auth" | "search" | "checkout" | "intake" | "api" | "api_client" | "cron";
 
 /** حدود محافظة: تُوقف الآلة ولا تُزعج الإنسان. */
 const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
@@ -22,26 +22,48 @@ const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
   // التخمين مجّانياً واستنزاف المعالج ممكناً. مئةٌ وعشرون في الدقيقة لكل
   // مصدر تكفي مزامنةً بدفعات من خمسمئة.
   api: { limit: 120, windowSeconds: 60 },
+  // بعد المصادقة: لكلّ مفتاح شريك، أيّاً كان عنوانه — فلا يتوزّع مفتاحٌ
+  // مسرَّب على عناوين كثيرة ليتجاوز الحدّ.
+  api_client: { limit: 300, windowSeconds: 60 },
+  // مسارات المجدول (التصريف والصحّة): قبل فحص السرّ، فلا يُخمَّن بلا حدّ.
+  cron: { limit: 30, windowSeconds: 60 },
 };
+
+/**
+ * ما يُغلق عند تعذّر العدّ (APP-10). الدخول والدفع والبوّابات والمجدول
+ * والإدخال حسّاسة: حاجزٌ معطّل فيها بابٌ مفتوح للتخمين والاستنزاف، والإغلاق
+ * المؤقّت أهون. أمّا البحث العامّ فيبقى مفتوحاً: تعطيل الدليل لعطلٍ في
+ * العدّاد يضرّ الزائرين ولا يحمي شيئاً.
+ */
+export const FAIL_CLOSED: ReadonlySet<Bucket> = new Set<Bucket>([
+  "auth",
+  "checkout",
+  "intake",
+  "api",
+  "api_client",
+  "cron",
+]);
+
+/**
+ * عنوان الطالب من ترويسة المنصّة وحدها. Cloudflare تضع cf-connecting-ip
+ * وتستبدل ما يرسله العميل بالاسم نفسه؛ أمّا x-forwarded-for فيكتبه العميل
+ * كما يشاء، فالثقة به تجعل لكلّ طلبٍ دلواً جديداً.
+ */
+export function clientIp(request: Request): string {
+  return request.headers.get("cf-connecting-ip")?.trim() || "unknown";
+}
 
 /**
  * هوية الطالب.
  *
- * المستخدم المسجَّل يُعرَّف بمعرّفه؛ وغيره ببصمة من العنوان ووكيل
- * المتصفّح. والبصمة تُجزَّأ لا تُخزَّن خاماً: عنوان IP بيان شخصي، وحفظه
- * لتحديد المعدّل وحده لا يبرّر الاحتفاظ به مقروءاً.
+ * المستخدم المسجَّل يُعرَّف بمعرّفه؛ وغيره بعنوانه من ترويسة المنصّة وحدها
+ * (APP-10: وكيل المتصفّح كان جزءاً من البصمة، فتغييره يعطي دلواً جديداً).
+ * والعنوان يُجزَّأ لا يُخزَّن خاماً: عنوان IP بيانٌ شخصي.
  */
 export async function identityOf(request: Request, userId?: string | null): Promise<string> {
   if (userId) return `u:${userId}`;
-
-  const ip =
-    request.headers.get("cf-connecting-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown";
-  const ua = request.headers.get("user-agent") ?? "";
-
   const { createHash } = await import("node:crypto");
-  return `a:${createHash("sha256").update(`${ip}|${ua}`).digest("hex").slice(0, 32)}`;
+  return `a:${createHash("sha256").update(clientIp(request)).digest("hex").slice(0, 32)}`;
 }
 
 export type RateVerdict = {
@@ -63,15 +85,30 @@ export async function hitRateLimit(bucket: Bucket, identity: string): Promise<Ra
   });
 
   if (error) {
-    // تعذّر العدّ: يُسمح بالمرور. حاجز معطّل يمنع المستخدمين الشرعيين
-    // بينما تبقى الإساءة ممكنة بطرق أخرى — فالفشل هنا إلى جانب الإتاحة.
-    console.error("[rate-limit] تعذّر العدّ", error.message);
-    return { allowed: true, hits: 0, limit: cfg.limit, resetAt: null };
+    // تعذّر العدّ: الحسّاس يُغلق، والبحث العامّ يمرّ (FAIL_CLOSED أعلاه).
+    const { logServerError } = await import("@/lib/server-log");
+    logServerError("rate_limit.unavailable", error, { bucket });
+    return { allowed: !FAIL_CLOSED.has(bucket), hits: 0, limit: cfg.limit, resetAt: null };
   }
 
   const v = data as { allowed: boolean; hits: number; limit: number; reset_at: string };
   return { allowed: v.allowed, hits: v.hits, limit: v.limit, resetAt: v.reset_at };
 }
+
+/**
+ * حدّ الطلب الجاري داخل دالّة خادم (بلا Request في يدها): يقرأ العنوان من
+ * طلب TanStack الحالي. يُعيد الحكم، والدالّة تختار ردّها.
+ */
+export async function limitCurrentRequest(
+  bucket: Bucket,
+  userId?: string | null,
+): Promise<RateVerdict> {
+  const { getRequest } = await import("@tanstack/react-start/server");
+  const request = getRequest();
+  return hitRateLimit(bucket, await identityOf(request, userId));
+}
+
+export const RATE_LIMITED_MESSAGE = "محاولات كثيرة في وقت قصير. أعد المحاولة بعد قليل.";
 
 /** استجابة 429 قياسية مع `Retry-After`. */
 export function tooManyRequests(verdict: RateVerdict): Response {
