@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EXPORT_DATASETS, exportAdminCsv, listAdminRows } from "@/lib/admin.functions";
-import { formatDate, formatMoney, fundingPercent } from "@/lib/format";
+import { formatDate, formatMoney, formatMoneyTotals, fundingPercent } from "@/lib/format";
 
 const PAGE = 50;
 
@@ -193,15 +193,25 @@ export function AdminSponsorsList({ currency }: { currency: string }) {
           </div>,
           String(num(r["sponsorships"])),
           String(num(r["active"])),
-          formatMoney(num(r["monthly"]), currency),
+          // لكلّ عملةٍ مجموعها (PRD-14)؛ والقاعدة الأقدم تُعيد المجموع وحده.
+          byCur(r["monthly_by_currency"], num(r["monthly"]), currency),
           <span key="p" className="text-shore-thrive font-bold">
-            {formatMoney(num(r["paid"]), currency)}
+            {byCur(r["paid_by_currency"], num(r["paid"]), currency)}
           </span>,
           formatDate(str(r["since"]) || null),
         ])}
       />
     </>
   );
+}
+
+function byCur(value: unknown, total: number, fallback: string) {
+  if (!Array.isArray(value)) return formatMoney(total, fallback);
+  const totals = value.map((v: Record<string, unknown>) => ({
+    currency: str(v["currency"]),
+    amount: num(v["amount"]),
+  }));
+  return formatMoneyTotals(totals, fallback);
 }
 
 const EXPORT_LABELS: Record<(typeof EXPORT_DATASETS)[number], string> = {

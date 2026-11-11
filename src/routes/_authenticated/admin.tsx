@@ -27,7 +27,14 @@ import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
-import { formatDate, formatMoney, fundingPercent, ORPHAN_STATUS_LABELS } from "@/lib/format";
+import {
+  formatDate,
+  formatMoney,
+  formatMoneyTotals,
+  fundingPercent,
+  ORPHAN_STATUS_LABELS,
+} from "@/lib/format";
+import type { AdminOverview } from "@/lib/admin.functions";
 import { BRAND, pageTitle } from "@/config/brand";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -226,33 +233,38 @@ function AdminPage() {
             </div>
           </section>
 
+          {/* لكلّ عملةٍ سطرها (PRD-14 / UX-07): لا يُجمع يورو مع دولار. */}
           <section>
             <h2 className="text-sm font-bold">التمويل الشهري</h2>
-            <div className="border-border bg-card mt-4 rounded-2xl border p-6">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <p className="text-2xl font-extrabold">
-                  {formatMoney(o.orphans.monthly_funded, cur)}
-                  <span className="text-muted-foreground text-sm font-normal">
-                    {" "}
-                    من {formatMoney(o.orphans.monthly_need, cur)}
-                  </span>
-                </p>
-                <p className="text-bridge-ink text-sm font-bold">
-                  المتبقّي {formatMoney(o.orphans.monthly_gap, cur)}
-                </p>
-              </div>
-              <CrossingProgress
-                percent={fundingPercent(o.orphans.monthly_need, o.orphans.monthly_funded)}
-                className="mt-4"
-                label="تغطية الاحتياج الشهري الكلي"
-              />
+            <div className="mt-4 space-y-4">
+              {byCurrency(o).orphans.map((r) => (
+                <div key={r.currency} className="border-border bg-card rounded-2xl border p-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <p className="text-2xl font-extrabold">
+                      {formatMoney(r.monthly_funded, r.currency)}
+                      <span className="text-muted-foreground text-sm font-normal">
+                        {" "}
+                        من {formatMoney(r.monthly_need, r.currency)}
+                      </span>
+                    </p>
+                    <p className="text-bridge-ink text-sm font-bold">
+                      المتبقّي {formatMoney(r.monthly_gap, r.currency)}
+                    </p>
+                  </div>
+                  <CrossingProgress
+                    percent={fundingPercent(r.monthly_need, r.monthly_funded)}
+                    className="mt-4"
+                    label={`تغطية الاحتياج الشهري بعملة ${r.currency}`}
+                  />
+                </div>
+              ))}
             </div>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <Stat label="كافل" value={String(o.sponsors.total)} tone="need" />
               <Stat label="كفالة نشطة" value={String(o.sponsors.active)} tone="thrive" />
               <Stat
                 label="التزام شهري"
-                value={formatMoney(o.sponsors.monthly_committed, cur)}
+                value={formatMoneyTotals(byCurrency(o).committed, cur)}
                 tone="bridge"
               />
             </div>
@@ -260,17 +272,30 @@ function AdminPage() {
 
           <section>
             <h2 className="text-sm font-bold">الخزينة</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="المحصّل" value={formatMoney(o.money.collected, cur)} tone="thrive" />
-              <Stat label="المصروف" value={formatMoney(o.money.disbursed, cur)} tone="need" />
-              <Stat label="الرصيد" value={formatMoney(o.money.balance, cur)} tone="bridge" />
-              <Stat label="بانتظار الدفع" value={formatMoney(o.money.pending, cur)} tone="muted" />
-            </div>
-            {o.money.failed > 0 && (
-              <p className="text-destructive mt-3 text-xs">
-                دفعات فاشلة بقيمة {formatMoney(o.money.failed, cur)} — تحتاج متابعة.
-              </p>
-            )}
+            {byCurrency(o).money.map((m) => (
+              <div key={m.currency} className="mt-4">
+                <p className="text-muted-foreground text-xs font-bold">{m.currency}</p>
+                <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <Stat
+                    label="المحصّل"
+                    value={formatMoney(m.collected, m.currency)}
+                    tone="thrive"
+                  />
+                  <Stat label="المصروف" value={formatMoney(m.disbursed, m.currency)} tone="need" />
+                  <Stat label="الرصيد" value={formatMoney(m.balance, m.currency)} tone="bridge" />
+                  <Stat
+                    label="بانتظار الدفع"
+                    value={formatMoney(m.pending, m.currency)}
+                    tone="muted"
+                  />
+                </div>
+                {m.failed > 0 && (
+                  <p className="text-destructive mt-3 text-xs">
+                    دفعات فاشلة بقيمة {formatMoney(m.failed, m.currency)} — تحتاج متابعة.
+                  </p>
+                )}
+              </div>
+            ))}
           </section>
 
           <AdminExports />
@@ -313,7 +338,7 @@ function AdminPage() {
                       </div>
                       <p className="text-muted-foreground mt-1 text-xs">
                         <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")} —
-                        احتياج {formatMoney(p.need, cur)} — {formatDate(p.created_at)}
+                        احتياج {formatMoney(p.need, p.currency ?? cur)} — {formatDate(p.created_at)}
                       </p>
                     </div>
                     <Button
@@ -432,4 +457,24 @@ function Empty({ children }: { children: React.ReactNode }) {
       {children}
     </p>
   );
+}
+
+/**
+ * المجاميع بعملاتها؛ وفي قاعدةٍ لم تُطبَّق عليها هجرة ٣أ تُعرض المجاميع
+ * القديمة بعملة المنصّة كما كانت — لا صفحةٌ فارغة.
+ */
+function byCurrency(o: AdminOverview) {
+  const cur = o.currency;
+  return {
+    orphans: o.orphans_by_currency ?? [
+      {
+        currency: cur,
+        monthly_need: o.orphans.monthly_need,
+        monthly_funded: o.orphans.monthly_funded,
+        monthly_gap: o.orphans.monthly_gap,
+      },
+    ],
+    committed: o.committed_by_currency ?? [{ currency: cur, amount: o.sponsors.monthly_committed }],
+    money: o.money_by_currency ?? [{ currency: cur, disputed: 0, ...o.money }],
+  };
 }

@@ -15,7 +15,27 @@ describe("أرقام الصفحة الأولى من تجميع القاعدة", 
       fullySponsored: 40,
       monthlyNeed: 137500,
       monthlyFunded: 52000,
+      byCurrency: [],
     });
+  });
+
+  // UX-07: «$ 750 / $ 2,750» لملفاتٍ كلّها باليورو.
+  it("يقرأ المجاميع لكلّ عملة ولا يجمعها", () => {
+    const s = toPlatformStats({
+      total: 3,
+      fully_sponsored: 0,
+      monthly_need: 900,
+      monthly_funded: 200,
+      by_currency: [
+        { currency: "EUR", monthly_need: "600.00", monthly_funded: 150 },
+        { currency: "USD", monthly_need: 300, monthly_funded: 50 },
+        { currency: "bad!", monthly_need: 1, monthly_funded: 1 },
+      ],
+    });
+    expect(s?.byCurrency).toEqual([
+      { currency: "EUR", monthlyNeed: 600, monthlyFunded: 150 },
+      { currency: "USD", monthlyNeed: 300, monthlyFunded: 50 },
+    ]);
   });
 
   it("ما ليس رقماً «غير متاح» لا صفر", () => {

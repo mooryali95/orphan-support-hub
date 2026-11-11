@@ -4,9 +4,13 @@
 // الهندية في خط Tajawal فتهتزّ الأعمدة. التثبيت يضمن ثباتاً واصطفافاً.
 const AR_NUM = "ar-u-nu-latn";
 
+/**
+ * العملة إلزامية (UI-01 / UX-07): الافتراض «USD» كان يكتب كفالاتٍ باليورو
+ * دولارات. كلّ مبلغٍ يُكتب بعملة سجلّه، فإن غابت فشل البناء لا العرض.
+ */
 export function formatMoney(
   amount: number | string | null | undefined,
-  currency = "USD",
+  currency: string,
   locale = "ar",
 ) {
   const value = Number(amount ?? 0);
@@ -21,6 +25,36 @@ export function formatMoney(
     .format(value)
     .replace("US$", "$");
   return `\u2068${text}\u2069`;
+}
+
+export type CurrencyTotal = { currency: string; amount: number };
+
+/**
+ * مجاميع بعملاتها — لا يُجمع يورو مع دولار (UI-01 / UX-07 / PRD-14).
+ * الترتيب بالأكبر ثم برمز العملة، فيثبت بين تحميلٍ وآخر.
+ */
+export function totalsByCurrency(
+  items: ReadonlyArray<{ amount: number | string | null | undefined; currency: string | null }>,
+): CurrencyTotal[] {
+  const sums = new Map<string, number>();
+  for (const it of items) {
+    const cur = (it.currency ?? "").trim().toUpperCase();
+    if (!cur) continue;
+    sums.set(cur, (sums.get(cur) ?? 0) + Number(it.amount ?? 0));
+  }
+  return [...sums.entries()]
+    .map(([currency, amount]) => ({ currency, amount }))
+    .sort((a, b) => b.amount - a.amount || a.currency.localeCompare(b.currency));
+}
+
+/** «€ 800 + $ 1,000» — وبلا مبالغ «0» بعملة المنصّة الاحتياطية. */
+export function formatMoneyTotals(
+  totals: ReadonlyArray<CurrencyTotal>,
+  fallbackCurrency: string,
+  locale = "ar",
+) {
+  if (totals.length === 0) return formatMoney(0, fallbackCurrency, locale);
+  return totals.map((t) => formatMoney(t.amount, t.currency, locale)).join(" + ");
 }
 
 /**
@@ -88,7 +122,7 @@ export const ORPHAN_STATUS_LABELS: Record<string, string> = {
 export const SPONSORSHIP_STATUS_LABELS: Record<string, string> = {
   pending_payment: "بانتظار الدفع",
   active: "نشطة",
-  paused: "موقوفة مؤقتاً",
+  paused: "موقوفة مؤقّتاً",
   cancelled: "ملغاة",
   completed: "مكتملة",
 };

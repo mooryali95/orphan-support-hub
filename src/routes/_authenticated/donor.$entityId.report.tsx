@@ -6,7 +6,7 @@ import { Loader2, Printer } from "lucide-react";
 import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/config/brand";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatDate, formatMoney, formatMoneyTotals, totalsByCurrency } from "@/lib/format";
 import {
   getDonorDashboard,
   getDonorPledges,
@@ -58,10 +58,12 @@ function DonorReport() {
     );
   }
   const delivered = pledges.filter((p) => p.delivered_at).length;
-  const total = pledges
-    .filter((p) => p.status !== "cancelled")
-    .reduce((a, p) => a + Number(p.amount), 0);
+  // لكلّ عملةٍ مجموعها (UI-01): €500 و€300 و$1,000 كانت «€ 1,800».
+  const live = pledges.filter((p) => p.status !== "cancelled");
   const cur = pledges[0]?.currency ?? "EUR";
+  const total = formatMoneyTotals(totalsByCurrency(live), cur);
+  const byKind = (k: "qualification" | "in_kind") =>
+    formatMoneyTotals(totalsByCurrency(live.filter((p) => p.kind === k)), cur);
 
   return (
     <main className="mx-auto max-w-3xl bg-background px-6 py-10 print:max-w-none print:p-0">
@@ -91,7 +93,7 @@ function DonorReport() {
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         {[
-          ["مجموع الدعم", formatMoney(total, cur)],
+          ["مجموع الدعم (بلا الملغى)", total],
           ["التعهّدات", String(pledges.length)],
           ["سُلّم موثّقاً", String(delivered)],
         ].map(([l, v]) => (
@@ -104,8 +106,8 @@ function DonorReport() {
 
       <h2 className="mt-8 font-bold">حسب النوع</h2>
       <p className="mt-1 text-sm">
-        {KIND_LABELS["qualification"]}: {formatMoney(d.by_kind.qualification ?? 0, cur)} ·{" "}
-        {KIND_LABELS["in_kind"]}: {formatMoney(d.by_kind.in_kind ?? 0, cur)}
+        {KIND_LABELS["qualification"]}: {byKind("qualification")} · {KIND_LABELS["in_kind"]}:{" "}
+        {byKind("in_kind")}
       </p>
 
       <table className="mt-6 w-full border-collapse text-sm">
@@ -137,8 +139,9 @@ function DonorReport() {
       </table>
 
       <footer className="mt-10 border-t border-border pt-4 text-xs text-muted-foreground">
-        «موثّق» يعني أن مكتب المنطقة رفع مستند تسليمٍ راجعته المنصّة. لا يحمل هذا التقرير أسماء
-        الأطفال الحقيقية ولا صورهم.
+        «موثّق» يعني أن مكتب المنطقة سجّل التسليم ورفع مستنده؛ والمستند محفوظ في المنصّة ويُطلب
+        للاطّلاع، ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه. المبالغ بعملة كل تعهّد، ولا تُجمع عملتان في
+        رقم واحد. لا يحمل هذا التقرير أسماء الأطفال الحقيقية ولا صورهم.
       </footer>
     </main>
   );

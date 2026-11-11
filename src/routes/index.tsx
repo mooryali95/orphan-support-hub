@@ -22,7 +22,8 @@ import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, formatMoneyTotals } from "@/lib/format";
+import type { PlatformStats } from "@/lib/orphans.functions";
 import { BRAND, brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
@@ -54,7 +55,7 @@ const COPY = defineCopy("routes/index", {
   ar: {
     title: (brand: string) => `${brand} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
     description:
-      "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.",
+      "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
     ladder: [
       [
         "الدراية",
@@ -84,7 +85,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "المضيق",
-        "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على برامج مسمّاة لا على بندٍ مبهم.",
+        "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
       ],
       [
         "شطّ العمران",
@@ -121,7 +122,7 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `شعار ${brand}`,
     h1a: "لا نقدّم رعايةً مؤقّتة،",
     h1b: "بل نبني نظم عمران",
-    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.",
+    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
     supportNow: "ادعم الآن",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
@@ -183,7 +184,7 @@ const COPY = defineCopy("routes/index", {
     title: (brand: string) =>
       `${brand} — Carrying the orphan from the shore of loss to the shore of thriving`,
     description:
-      "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, named education and qualification programs with defined outcomes, and regular impact reports.",
+      "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
     ladder: [
       [
         "Awareness",
@@ -213,7 +214,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "The strait",
-        "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on named programs — not a vague line item.",
+        "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
       ],
       [
         "The shore of thriving",
@@ -249,7 +250,7 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `${brand} logo`,
     h1a: "We don't offer temporary care —",
     h1b: "we build systems for thriving",
-    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on named programs with defined outcomes — and the impact comes back to you as a report.",
+    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
     supportNow: "Support now",
     browse: "Browse children's files",
     hadithMeaning:
@@ -641,12 +642,9 @@ function HomePage() {
               />
               <StatTile
                 label={c.stats[2]!}
-                value={data.stats ? formatMoney(data.stats.monthlyFunded, undefined, locale) : "—"}
+                value={moneyLine(data.stats, "monthlyFunded", locale)}
               />
-              <StatTile
-                label={c.stats[3]!}
-                value={data.stats ? formatMoney(data.stats.monthlyNeed, undefined, locale) : "—"}
-              />
+              <StatTile label={c.stats[3]!} value={moneyLine(data.stats, "monthlyNeed", locale)} />
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -851,5 +849,19 @@ function HomePage() {
 
       <SiteFooter />
     </div>
+  );
+}
+
+/** المبلغ لكلّ عملةٍ على حدة (UX-07)؛ وبلا تقسيمٍ بالعملة «—» لا رقمٌ بعملةٍ مفترضة. */
+function moneyLine(
+  stats: PlatformStats | null,
+  key: "monthlyFunded" | "monthlyNeed",
+  locale: string,
+) {
+  if (!stats || stats.byCurrency.length === 0) return "—";
+  return formatMoneyTotals(
+    stats.byCurrency.map((r) => ({ currency: r.currency, amount: r[key] })),
+    stats.byCurrency[0]!.currency,
+    locale,
   );
 }

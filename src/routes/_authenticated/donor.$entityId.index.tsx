@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 
 import { DashboardShell } from "@/components/DashboardShell";
 import { arCount, entityTypeLabel, MEMBERS } from "@/lib/plural";
-import { formatCount } from "@/lib/format";
+import { formatDate, formatMoney, formatMoneyTotals, totalsByCurrency } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import {
   DONOR_ROLE_LABELS,
   getDonorDashboard,
   getDonorMembers,
+  getDonorPledges,
   KIND_LABELS,
   setDonorMember,
   TARGET_LABELS,
@@ -32,10 +33,19 @@ export const Route = createFileRoute("/_authenticated/donor/$entityId/")({
 function DonorPage() {
   const { entityId } = Route.useParams();
   const fetchDash = useServerFn(getDonorDashboard);
+  const fetchPledges = useServerFn(getDonorPledges);
   const { data, isPending } = useQuery({
     queryKey: ["donor", entityId],
     queryFn: () => fetchDash({ data: { entityId } }),
   });
+  const { data: pledges = [] } = useQuery({
+    queryKey: ["donor-pledges", entityId],
+    queryFn: () => fetchPledges({ data: { entityId } }),
+  });
+  // المبالغ بعملاتها من التعهّدات نفسها (UX-14 / UI-01): لا رقمٌ بلا عملة،
+  // ولا يُجمع يورو مع دولار.
+  const live = pledges.filter((p) => p.status !== "cancelled");
+  const fallback = pledges[0]?.currency ?? "EUR";
 
   if (isPending) {
     return (
@@ -74,7 +84,11 @@ function DonorPage() {
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         {(["qualification", "in_kind"] as const).map((k) => (
-          <StatTile key={k} label={KIND_LABELS[k] ?? k} value={formatCount(d.by_kind[k] ?? 0)} />
+          <StatTile
+            key={k}
+            label={`${KIND_LABELS[k] ?? k} — مجموع التعهّدات`}
+            value={formatMoneyTotals(totalsByCurrency(live.filter((p) => p.kind === k)), fallback)}
+          />
         ))}
       </div>
       <h2 className="mt-8 text-lg font-bold">توزيع الدعم حسب الهدف</h2>
@@ -90,6 +104,31 @@ function DonorPage() {
         )}
       </div>
 
+      <h2 className="mt-8 text-lg font-bold">تعهّدات الجهة</h2>
+      {pledges.length === 0 ? (
+        <p className="mt-3 text-sm text-muted-foreground">لا تعهّدات باسم الجهة بعد.</p>
+      ) : (
+        <ul className="mt-3 divide-y divide-border rounded-xl border border-border bg-card">
+          {pledges.map((p) => (
+            <li
+              key={p.id}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm"
+            >
+              <span className="font-medium">{KIND_LABELS[p.kind] ?? p.kind}</span>
+              <span className="text-muted-foreground">
+                {p.target ?? "—"} ({TARGET_LABELS[p.target_type] ?? p.target_type})
+              </span>
+              <span className="tabular-nums">{formatMoney(p.amount, p.currency)}</span>
+              <Badge variant="secondary" className="ms-auto">
+                {p.delivered_at
+                  ? `سُلّم موثّقاً ${formatDate(p.delivered_at)}`
+                  : (PLEDGE_STATUS[p.status] ?? p.status)}
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div className="mt-8">
         <Button asChild variant="outline" size="sm">
           <Link to="/donor/$entityId/report" params={{ entityId }}>
@@ -102,6 +141,13 @@ function DonorPage() {
     </DashboardShell>
   );
 }
+
+const PLEDGE_STATUS: Record<string, string> = {
+  pending: "بانتظار فتح التحصيل",
+  active: "نشط",
+  fulfilled: "اكتمل",
+  cancelled: "أُلغي",
+};
 
 /** فريق الجهة: المالك يدعو بالبريد بدورٍ (مالك، مالي، مطّلع) ويزيل. */
 function DonorTeam({ entityId }: { entityId: string }) {

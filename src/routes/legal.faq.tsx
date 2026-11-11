@@ -85,7 +85,11 @@ function FaqAr() {
       </Section>
 
       <Section title="هل أستطيع الإلغاء؟">
-        <p>نعم، في أي وقت من لوحتك، ويسري من الدورة التالية بلا رسوم ولا مساءلة.</p>
+        <p>
+          نعم، في أي وقت من لوحتك، بلا رسوم ولا مساءلة. ولا تنتهي فوراً: تبقى جاريةً حتى آخر الشهر
+          الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها. وإن كان الظرف مؤقّتاً
+          فكفالة التحويل البنكي تُوقَف شهراً إلى ثلاثة، أو يُخفَّض مبلغها.
+        </p>
       </Section>
 
       <Section title="لماذا الدفع الإلكتروني موقوف الآن؟">
@@ -180,8 +184,10 @@ function FaqEn() {
 
       <Section title="Can I cancel?">
         <p>
-          Yes, at any time from your dashboard. It takes effect from the next cycle, with no fees
-          and no questions.
+          Yes, at any time from your dashboard, with no fees and no questions. It does not stop
+          instantly: it runs to the end of the month you already paid, so the child receives it in
+          full, and nothing is charged after that. If the pause is temporary, a bank-transfer
+          sponsorship can be paused for one to three months or have its amount lowered.
         </p>
       </Section>
 

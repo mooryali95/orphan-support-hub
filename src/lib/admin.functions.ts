@@ -32,6 +32,27 @@ export type AdminOverview = {
     disbursed: number;
     balance: number;
   };
+  /**
+   * لكلّ عملةٍ مجاميعها (PRD-14). الحقول المجمّعة أعلاه تضيف اليورو إلى
+   * الدولار فلا تُعرض؛ وتغيب هذه في قاعدةٍ لم تُطبَّق عليها هجرة ٣أ.
+   */
+  orphans_by_currency?: Array<{
+    currency: string;
+    monthly_need: number;
+    monthly_funded: number;
+    monthly_gap: number;
+  }>;
+  committed_by_currency?: Array<{ currency: string; amount: number }>;
+  money_by_currency?: Array<{
+    currency: string;
+    collected: number;
+    fees: number;
+    pending: number;
+    failed: number;
+    disputed: number;
+    disbursed: number;
+    balance: number;
+  }>;
   /** أوّل صفحةٍ وحدها (١٠٠)؛ والعدد الكلّي معها — والباقي من `listAdminRows`. */
   orphan_rows_total?: number;
   sponsor_rows_total?: number;
@@ -64,6 +85,7 @@ export type AdminOverview = {
     city: string | null;
     region: string | null;
     need: number;
+    currency?: string;
     status: string;
     created_at: string;
   }>;

@@ -62,7 +62,7 @@ const COPY = defineCopy("routes/how-it-works", {
       [
         "5",
         "المتابعة والتقارير",
-        "تحديثات دورية عن التعليم والصحة، وإمكانية إيقاف أو تعديل الكفالة.",
+        "تقارير عن التعليم والصحة حين ترفعها الجهة وتعتمدها الإدارة. وتُنهي الكفالة متى شئت فتنتهي بعد آخر شهرٍ مدفوع؛ وكفالة التحويل البنكي تُوقَف مؤقّتاً أو يُعدَّل مبلغها من لوحتك.",
       ],
       ["6", "التكامل الخارجي", "استيراد ملفات الأيتام من منصات داخلية عبر واجهة API موقّعة."],
     ],
@@ -117,7 +117,7 @@ const COPY = defineCopy("routes/how-it-works", {
       [
         "5",
         "Follow-up and reports",
-        "Regular updates on education and health, and the option to pause or change the sponsorship.",
+        "Education and health reports as the care organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
       ],
       [
         "6",

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -14,9 +14,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
-import { listMySponsorships, cancelSponsorship } from "@/lib/sponsorships.functions";
+import { listMySponsorships, type MySponsorship } from "@/lib/sponsorships.functions";
+import { SponsorshipControls } from "@/components/sponsorship/SponsorshipControls";
 import { startCheckout, getPaymentMode } from "@/lib/payments.functions";
-import { formatDate, formatMoney, fundingPercent, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
+import {
+  formatDate,
+  formatMoney,
+  formatMoneyTotals,
+  fundingPercent,
+  SPONSORSHIP_STATUS_LABELS,
+  totalsByCurrency,
+} from "@/lib/format";
 import { BRAND, pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
@@ -53,13 +61,11 @@ function DashboardPage() {
   const { payment } = Route.useSearch();
   const navigate = Route.useNavigate();
   const fetchList = useServerFn(listMySponsorships);
-  const cancel = useServerFn(cancelSponsorship);
   const pay = useServerFn(startCheckout);
   const fetchMode = useServerFn(getPaymentMode);
   const [paying, setPaying] = useState<string | null>(null);
 
   const { data: mode } = useQuery({ queryKey: ["payment-mode"], queryFn: () => fetchMode() });
-  const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["my-sponsorships"],
@@ -68,9 +74,11 @@ function DashboardPage() {
 
   const sponsorships = data?.sponsorships ?? [];
   const listFailed = isError || Boolean(data?.error);
-  const activeTotal = sponsorships
-    .filter((s) => s.status === "active")
-    .reduce((acc, s) => acc + Number(s.amount), 0);
+  // بعملة كل كفالة: €40 + €60 لا تُكتب «$ 100»، ولا يُجمع يورو مع دولار.
+  const activeTotals = totalsByCurrency(
+    sponsorships.filter((s) => s.status === "active" && !s.cancel_effective_at),
+  );
+  const fallbackCurrency = sponsorships[0]?.currency ?? "EUR";
 
   async function onPay(id: string) {
     setPaying(id);
@@ -87,16 +95,6 @@ function DashboardPage() {
     } finally {
       setPaying(null);
     }
-  }
-
-  async function onCancel(id: string) {
-    const res = await cancel({ data: { id } });
-    if (!res.ok) {
-      toast.error(res.error ?? "تعذّر إلغاء الكفالة");
-      return;
-    }
-    toast.success("تم إلغاء الكفالة");
-    queryClient.invalidateQueries({ queryKey: ["my-sponsorships"] });
   }
 
   const pending = sponsorships.filter((s) => s.status === "pending_payment");
@@ -125,7 +123,7 @@ function DashboardPage() {
           />
           <StatTile
             label="التزامك الشهري"
-            value={formatMoney(activeTotal)}
+            value={formatMoneyTotals(activeTotals, fallbackCurrency)}
             loading={isLoading}
             className="col-span-2 sm:col-span-1"
           />
@@ -183,9 +181,7 @@ function DashboardPage() {
                         </Link>
                       </Button>
                     )}
-                    <Button variant="ghost" onClick={() => onCancel(s.id)}>
-                      إلغاء
-                    </Button>
+                    <SponsorshipControls s={s} />
                   </div>
                 </li>
               );
@@ -277,8 +273,9 @@ function DashboardPage() {
                         <p className="mt-1 text-sm text-muted-foreground">
                           {formatMoney(s.amount, s.currency)}{" "}
                           {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
-                          {formatDate(s.created_at)}
+                          {formatDate(s.started_at ?? s.created_at)}
                         </p>
+                        <LifecycleNote s={s} />
                         {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
                       </div>
 
@@ -295,11 +292,7 @@ function DashboardPage() {
                             </Link>
                           </Button>
                         )}
-                        {s.status === "active" && (
-                          <Button variant="ghost" size="sm" onClick={() => onCancel(s.id)}>
-                            إلغاء
-                          </Button>
-                        )}
+                        <SponsorshipControls s={s} />
                       </div>
                     </div>
 
@@ -338,6 +331,23 @@ function DashboardPage() {
       </div>
     </DashboardShell>
   );
+}
+
+/** ما سيحدث للكفالة، بتاريخه — لا حالةٌ مبهمة. */
+function LifecycleNote({ s }: { s: MySponsorship }) {
+  const text =
+    s.cancel_effective_at && (s.status === "active" || s.status === "paused")
+      ? `تنتهي في ${formatDate(s.cancel_effective_at)} بعد آخر شهرٍ مدفوع، ولا يُحصَّل منك شيءٌ بعدها.`
+      : s.status === "paused" && s.paused_until
+        ? `موقوفة مؤقّتاً بطلبك — تُستأنف تلقائياً في ${formatDate(s.paused_until)}.`
+        : s.status === "paused"
+          ? "أوقف مزوّد الدفع التحصيل مؤقّتاً."
+          : s.status === "completed" && s.end_reason === "child_exit"
+            ? `انتهت في ${formatDate(s.ended_at)} لأن الطفل غادر البرنامج — راجع إشعاراتك للتفاصيل.`
+            : s.status === "cancelled" && s.ended_at
+              ? `انتهت في ${formatDate(s.ended_at)}.`
+              : null;
+  return text ? <p className="mt-1 text-sm leading-7 text-bridge-ink">{text}</p> : null;
 }
 
 type SponsorshipOrphan = {

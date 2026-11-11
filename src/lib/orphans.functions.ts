@@ -60,6 +60,11 @@ export type PlatformStats = {
   fullySponsored: number;
   monthlyFunded: number;
   monthlyNeed: number;
+  /**
+   * لكلّ عملةٍ مجموعها (UX-07): الصفحة لا تكتب «$ 750» لملفاتٍ باليورو، ولا
+   * تجمع العملتين. فارغةٌ في قاعدةٍ لم تُطبَّق عليها الهجرة فتُعرض «—».
+   */
+  byCurrency: Array<{ currency: string; monthlyNeed: number; monthlyFunded: number }>;
 };
 
 type StatsRow = {
@@ -80,7 +85,21 @@ export function toPlatformStats(row: unknown): PlatformStats | null {
     monthlyFunded: n(r.monthly_funded),
     monthlyNeed: n(r.monthly_need),
   };
-  return Object.values(out).every(Number.isFinite) ? out : null;
+  if (!Object.values(out).every(Number.isFinite)) return null;
+  const raw = (row as { by_currency?: unknown }).by_currency;
+  const byCurrency = (Array.isArray(raw) ? raw : [])
+    .map((x: Record<string, unknown>) => ({
+      currency: String(x["currency"] ?? "").toUpperCase(),
+      monthlyNeed: n(x["monthly_need"]),
+      monthlyFunded: n(x["monthly_funded"]),
+    }))
+    .filter(
+      (x) =>
+        /^[A-Z]{3}$/.test(x.currency) &&
+        Number.isFinite(x.monthlyNeed) &&
+        Number.isFinite(x.monthlyFunded),
+    );
+  return { ...out, byCurrency };
 }
 
 /**
@@ -118,7 +137,7 @@ async function legacyPlatformStats(
         .eq("status", "fully_sponsored"),
       supabase
         .from("orphans")
-        .select("monthly_need, funded_monthly")
+        .select("monthly_need, funded_monthly, currency")
         .in("status", ["approved", "fully_sponsored"]),
     ]);
 
@@ -130,5 +149,14 @@ async function legacyPlatformStats(
     fullySponsored: sponsored ?? 0,
     monthlyFunded: (sums ?? []).reduce((acc, r) => acc + Number(r.funded_monthly ?? 0), 0),
     monthlyNeed: (sums ?? []).reduce((acc, r) => acc + Number(r.monthly_need ?? 0), 0),
+    byCurrency: [...new Set((sums ?? []).map((r) => r.currency))].map((currency) => ({
+      currency,
+      monthlyNeed: (sums ?? [])
+        .filter((r) => r.currency === currency)
+        .reduce((acc, r) => acc + Number(r.monthly_need ?? 0), 0),
+      monthlyFunded: (sums ?? [])
+        .filter((r) => r.currency === currency)
+        .reduce((acc, r) => acc + Number(r.funded_monthly ?? 0), 0),
+    })),
   };
 }

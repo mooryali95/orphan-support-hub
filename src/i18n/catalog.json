@@ -4021,10 +4021,10 @@
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.4.2": {
-   "en": "Regular updates on education and health, and the option to pause or change the sponsorship.",
-   "ar": "تحديثات دورية عن التعليم والصحة، وإمكانية إيقاف أو تعديل الكفالة.",
+   "en": "Education and health reports as the care organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
+   "ar": "تقارير عن التعليم والصحة حين ترفعها الجهة وتعتمدها الإدارة. وتُنهي الكفالة متى شئت فتنتهي بعد آخر شهرٍ مدفوع؛ وكفالة التحويل البنكي تُوقَف مؤقّتاً أو يُعدَّل مبلغها من لوحتك.",
    "kind": "text",
-   "hash": "382b529a8076",
+   "hash": "ea1ac19b71ea",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.5.0": {
@@ -4147,10 +4147,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.1.1": {
-   "en": "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on named programs — not a vague line item.",
-   "ar": "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على برامج مسمّاة لا على بندٍ مبهم.",
+   "en": "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
+   "ar": "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
    "kind": "text",
-   "hash": "71da43ac293d",
+   "hash": "ebb81758e426",
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.2.0": {
@@ -4252,10 +4252,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.description": {
-   "en": "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, named education and qualification programs with defined outcomes, and regular impact reports.",
-   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، وبرامج تعليم وتأهيل مسمّاة بمخرجاتها، وتقارير أثر دورية.",
+   "en": "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
+   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
    "kind": "text",
-   "hash": "3e7e9f395cb9",
+   "hash": "c51f7141b4d3",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.0": {
@@ -4441,10 +4441,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.lead": {
-   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on named programs with defined outcomes — and the impact comes back to you as a report.",
-   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على برامج مسمّاة بمخرجاتها — ويعود إليك أثرها تقريراً.",
+   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
+   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
    "kind": "text",
-   "hash": "335a41c12101",
+   "hash": "1aa5fb79f31d",
    "file": "src/routes/index.tsx"
   },
   "routes/index.logo": {
@@ -5273,10 +5273,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.orphanId.activates": {
-   "en": "The sponsorship starts once payment is complete, and you can pause it anytime from your dashboard.",
-   "ar": "الكفالة تُفعّل بعد إتمام الدفع، ويمكنك إيقافها في أي وقت من لوحتك.",
+   "en": "The sponsorship starts once payment is confirmed, and you can end it from your dashboard at any time — it stops after the last paid month.",
+   "ar": "الكفالة تبدأ بعد تأكيد الدفع، ويمكنك إنهاؤها متى شئت من لوحتك فتنتهي بعد آخر شهرٍ مدفوع.",
    "kind": "text",
-   "hash": "b0021d06d922",
+   "hash": "8966eccac12d",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.ages.age_12_14": {

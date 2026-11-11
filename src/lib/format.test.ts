@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { ageFromBirthDate, formatDate, formatMoney, fundingPercent } from "./format";
+import {
+  ageFromBirthDate,
+  formatDate,
+  formatMoney,
+  formatMoneyTotals,
+  fundingPercent,
+  totalsByCurrency,
+} from "./format";
 
 /** الأرقام الهندية العربية ٠-٩ — ما يجب ألّا يظهر في واجهة يُقرأ منها المال. */
 const ARABIC_INDIC = /[\u0660-\u0669\u06F0-\u06F9]/;
@@ -50,27 +57,54 @@ describe("formatDate", () => {
 });
 
 describe("formatMoney", () => {
-  it("يعرض العملة الافتراضية بالدولار", () => {
-    expect(formatMoney(80)).toContain("80");
-    expect(formatMoney(80)).toMatch(/\$/);
+  it("يكتب الدولار برمزه وحده", () => {
+    expect(formatMoney(80, "USD")).toContain("80");
+    expect(formatMoney(80, "USD")).toMatch(/\$/);
     // لا «US$»: تنقلبها خوارزمية الاتجاه إلى «$US» في السطر العربي.
-    expect(formatMoney(80)).not.toContain("US$");
+    expect(formatMoney(80, "USD")).not.toContain("US$");
+  });
+
+  it("يكتب كل مبلغٍ بعملته", () => {
+    expect(formatMoney(40, "EUR")).toContain("€");
   });
 
   it("يعيد صفراً للقيم الفارغة بدل NaN معروضاً للكافل", () => {
-    expect(formatMoney(null)).toContain("0");
-    expect(formatMoney(undefined)).toContain("0");
+    expect(formatMoney(null, "EUR")).toContain("0");
+    expect(formatMoney(undefined, "EUR")).toContain("0");
   });
 
   it("يقبل النصوص كما تصل من postgres numeric", () => {
-    expect(formatMoney("150.00")).toContain("150");
+    expect(formatMoney("150.00", "EUR")).toContain("150");
   });
 
   // العقد الذي يحرسه هذا الاختبار: أرقام لاتينية دائماً. لو بُدِّلت اللغة إلى
   // «ar-SA» أو «ar-EG» — وهو تغيير يبدو أصحّ لجمهور عربي — لانقلبت الأرقام
   // هندية، فاختلف المبلغ بين جهاز وآخر وانهار اصطفاف `tabular-nums`.
   it("يثبّت الأرقام على اللاتينية في المال والتاريخ معاً", () => {
-    expect(formatMoney(1250)).not.toMatch(ARABIC_INDIC);
+    expect(formatMoney(1250, "EUR")).not.toMatch(ARABIC_INDIC);
     expect(formatDate("2026-01-15")).not.toMatch(ARABIC_INDIC);
+  });
+});
+
+// UI-01 / UX-07: €40 + €60 كانت تُكتب «$ 100»، و€500 + $1,000 «€ 1,500».
+describe("totalsByCurrency", () => {
+  it("لا يجمع عملتين", () => {
+    const t = totalsByCurrency([
+      { amount: 500, currency: "EUR" },
+      { amount: "300", currency: "eur" },
+      { amount: 1000, currency: "USD" },
+    ]);
+    expect(t).toEqual([
+      { currency: "USD", amount: 1000 },
+      { currency: "EUR", amount: 800 },
+    ]);
+    const text = formatMoneyTotals(t, "USD");
+    expect(text).toContain("€");
+    expect(text).toContain("$");
+    expect(text).toContain(" + ");
+  });
+
+  it("المجموع الفارغ صفرٌ بعملةٍ مذكورة", () => {
+    expect(formatMoneyTotals([], "EUR")).toContain("€");
   });
 });
