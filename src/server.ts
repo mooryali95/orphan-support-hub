@@ -3,7 +3,12 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { applySecurityHeaders } from "./lib/security-headers";
-import { newRequestId, runWithRequestContext } from "./lib/request-context";
+import {
+  installNonceAccessor,
+  newNonce,
+  newRequestId,
+  runWithRequestContext,
+} from "./lib/request-context";
 import { logServerError } from "./lib/server-log";
 
 type ServerEntry = {
@@ -54,6 +59,11 @@ type WaitUntilCtx = { waitUntil?: (p: Promise<unknown>) => void } | undefined;
 
 let configChecked = false;
 
+installNonceAccessor();
+
+/** وضع التطوير وحده يقبل السكربت المضمَّن (أدوات المحرّر تحقن سكربتاتها). */
+const ALLOW_INLINE_SCRIPTS = import.meta.env.DEV;
+
 /**
  * التحقّق من الإعداد عند أوّل طلب (ARC-12): Workers لا تملك لحظة إقلاعٍ تقرأ
  * البيئة قبلها. النقص يُكتب سطراً واحداً بالأسماء لا بالقيم، ويظهر في
@@ -95,18 +105,25 @@ function withRequestId(response: Response, requestId: string): Response {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const requestId = newRequestId(request);
+    const nonce = newNonce();
     const waitUntilCtx = ctx as WaitUntilCtx;
     return runWithRequestContext(
       {
         requestId,
+        nonce,
         waitUntil: waitUntilCtx?.waitUntil ? (p) => waitUntilCtx.waitUntil!(p) : undefined,
       },
-      async () => withRequestId(await handle(request, env, ctx), requestId),
+      async () => withRequestId(await handle(request, env, ctx, nonce), requestId),
     );
   },
 };
 
-async function handle(request: Request, env: unknown, ctx: unknown): Promise<Response> {
+async function handle(
+  request: Request,
+  env: unknown,
+  ctx: unknown,
+  nonce: string,
+): Promise<Response> {
   await checkConfigOnce();
   try {
     const handler = await getServerEntry();
@@ -114,7 +131,7 @@ async function handle(request: Request, env: unknown, ctx: unknown): Promise<Res
     const normalised = await normalizeCatastrophicSsrResponse(response);
     // كل استجابة تمرّ من هنا، فالرؤوس تُطبَّق مرّة واحدة على الجميع
     // بدل تكرارها في كل مسار — والتكرار يعني نسياناً في مسار ما.
-    return applySecurityHeaders(request, normalised);
+    return applySecurityHeaders(request, normalised, nonce, ALLOW_INLINE_SCRIPTS);
   } catch (error) {
     logServerError("request.unhandled", error, { path: new URL(request.url).pathname });
     return applySecurityHeaders(
@@ -123,6 +140,8 @@ async function handle(request: Request, env: unknown, ctx: unknown): Promise<Res
         status: 500,
         headers: { "content-type": "text/html; charset=utf-8" },
       }),
+      nonce,
+      ALLOW_INLINE_SCRIPTS,
     );
   }
 }

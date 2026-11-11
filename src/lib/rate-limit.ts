@@ -76,13 +76,20 @@ export type RateVerdict = {
 export async function hitRateLimit(bucket: Bucket, identity: string): Promise<RateVerdict> {
   const cfg = LIMITS[bucket];
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await withPhase7(supabaseAdmin).rpc("hit_rate_limit", {
-    _bucket: bucket,
-    _identity: identity,
-    _limit: cfg.limit,
-    _window_seconds: cfg.windowSeconds,
-  });
+  let data: unknown = null;
+  let error: unknown = null;
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    ({ data, error } = await withPhase7(supabaseAdmin).rpc("hit_rate_limit", {
+      _bucket: bucket,
+      _identity: identity,
+      _limit: cfg.limit,
+      _window_seconds: cfg.windowSeconds,
+    }));
+  } catch (thrown) {
+    // مفتاح الخدمة غائب أو الشبكة انقطعت: الحكم نفسه كخطأ القاعدة.
+    error = thrown;
+  }
 
   if (error) {
     // تعذّر العدّ: الحسّاس يُغلق، والبحث العامّ يمرّ (FAIL_CLOSED أعلاه).

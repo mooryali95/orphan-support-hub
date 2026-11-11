@@ -39,6 +39,12 @@ describe("APP-10: تحديد المعدّل", () => {
     expect((await hitRateLimit("search", "a:x")).allowed).toBe(true);
   });
 
+  it("استثناءٌ (مفتاح الخدمة غائب) يُعامَل كتعذّر العدّ لا كانهيار", async () => {
+    rpc.mockRejectedValue(new Error("Missing Supabase environment variable(s)"));
+    expect((await hitRateLimit("search", "a:x")).allowed).toBe(true);
+    expect((await hitRateLimit("auth", "a:x")).allowed).toBe(false);
+  });
+
   it("الحكم من القاعدة يُمرَّر كما هو", async () => {
     rpc.mockResolvedValue({
       data: { allowed: false, hits: 11, limit: 10, reset_at: "2030-01-01T00:00:00Z" },

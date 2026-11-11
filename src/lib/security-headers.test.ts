@@ -94,6 +94,23 @@ describe("applySecurityHeaders", () => {
     }
   });
 
+  it("APP-08: السكربت بأحادية الطلب لا بـ unsafe-inline", () => {
+    const csp = securityHeaders("https://db.example.co", "abc123")["content-security-policy"] ?? "";
+    const script = csp.split("; ").find((d) => d.startsWith("script-src"));
+    expect(script).toBe("script-src 'self' 'nonce-abc123'");
+  });
+
+  it("APP-08: الأحادية تصل الرأس من applySecurityHeaders", () => {
+    const out = applySecurityHeaders(new Request("https://x.test/"), res(), "n0nce");
+    expect(out.headers.get("content-security-policy")).toContain("'nonce-n0nce'");
+    expect(out.headers.get("content-security-policy")).not.toMatch(/script-src[^;]*unsafe-inline/);
+  });
+
+  it("نتائج دوالّ الخادم (/_serverFn) لا تُخزَّن", () => {
+    const out = applySecurityHeaders(new Request("https://x.test/_serverFn/abc"), res());
+    expect(out.headers.get("cache-control")).toContain("no-store");
+  });
+
   it("يحفظ الحالة والجسم", async () => {
     const out = applySecurityHeaders(
       new Request("https://x.test/"),
