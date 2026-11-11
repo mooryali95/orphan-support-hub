@@ -174,7 +174,7 @@ BEGIN
   -- ٦) النافذة تنتهي
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
-  _req := public.admin_request_unlock(_o, 'archive', '{}'::jsonb, 'انتقال الطفل إلى رعاية أسرته');
+  _req := public.admin_request_unlock(_o, 'archive', '{"exit_reason":"returned_to_family"}'::jsonb, 'انتقال الطفل إلى رعاية أسرته');
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated"}';
   PERFORM public.admin_approve_unlock(_req);
   SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated"}';
