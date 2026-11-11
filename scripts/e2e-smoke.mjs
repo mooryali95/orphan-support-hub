@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // اختبار المتصفّح الشامل للمسار العام — ما يمرّ به الزائر قبل أن يكفل.
 //
-//   npx vite build && (npx vite preview --port 4173 &) && node scripts/e2e-smoke.mjs
+//   npx vite build && (node scripts/serve-worker.mjs &) && node scripts/e2e-smoke.mjs
+//   (`vite preview` لا يشغّل عامل Cloudflare؛ serve-worker يخدم الناتج نفسه.)
 //   BASE_URL=https://… node scripts/e2e-smoke.mjs     # على نشرٍ قائم
 //
 // لكل صفحة: تُحمَّل بلا خطأ خادم، ولها عنوانٌ وعنوانٌ رئيسي، والاتجاه
