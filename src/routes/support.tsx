@@ -210,6 +210,10 @@ function SupportPage() {
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
 
   const catalog = data?.catalog ?? null;
+  const supportable = useMemo(
+    () => new Set((catalog?.countries ?? []).map((c) => c.code)),
+    [catalog],
+  );
   const activeCountry = country || catalog?.countries[0]?.code || "";
 
   /** فجوة الهدف بعملته: الطفل من رابطه، والدولة أو المنطقة من مصدر الجغرافيا. */
@@ -355,6 +359,7 @@ function SupportPage() {
           onSelect={onSelect}
           layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
           cardCompact
+          supportable={supportable}
           className="h-[calc(100dvh-4rem)]"
           intro={{
             title: t.mapTitle,

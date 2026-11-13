@@ -236,7 +236,9 @@ const CountriesLayer = memo(function CountriesLayer({
   onKey,
   label,
   layer,
+  extra,
 }: {
+  extra?: ReadonlySet<string> | undefined;
   countries: CountryShape[];
   layer: MapLayer;
   /** داخل دولة: لا يُرسم إلا ما يجاورها — العالم كلّه في كل إطار ثقلٌ بلا فائدة. */
@@ -265,11 +267,11 @@ const CountriesLayer = memo(function CountriesLayer({
     <g>
       {countries.map((c, i) => {
         if (!within(c.b)) return null;
-        const active = !!stats[c.c];
+        const active = !!stats[c.c] || !!extra?.has(c.c);
         const dim = focus && focus !== c.c;
         // الدولة التي فيها ملفّات زرٌّ على الخارطة نفسها: تُركَّز وتُفتح بـEnter.
         const focusable = active && focus !== c.c;
-        const text = active ? metricText(layer, stats[c.c], locale, hidden) : "";
+        const text = stats[c.c] ? metricText(layer, stats[c.c], locale, hidden) : "";
         return (
           <path
             key={`${c.c}-${i}`}
@@ -449,7 +451,10 @@ export function WorldMap({
   onLayer,
   cardCompact = false,
   showUnconfirmed = false,
+  supportable,
 }: {
+  /** دولٌ يُدعم فيها المكان (التأهيل والعيني) وإن لم تكن فيها ملفّات أطفال بعد. */
+  supportable?: ReadonlySet<string>;
   /** الإدارة ترى في «الشبكة» ما لم يُؤكَّد بعد (محايداً) لتراجعه؛ الزوّار لا. */
   showUnconfirmed?: boolean;
   /** بطاقةٌ مختصرة (الاسم والعدد ثم الفعل): حين يكون الفعل نفسه مساراً كاملاً كالدعم. */
@@ -486,8 +491,12 @@ export function WorldMap({
   );
   const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
   const activeSet = useMemo(
-    () => (net ? interactiveCodes(net) : new Set(Object.keys(stats))),
-    [net, stats],
+    () => {
+      const set = net ? interactiveCodes(net) : new Set(Object.keys(stats));
+      supportable?.forEach((c) => set.add(c));
+      return set;
+    },
+    [net, stats, supportable],
   );
   const { data: rawWorld } = useQuery(worldQuery);
   const { data: rawRegions } = useRegions(selection.country);
@@ -1023,6 +1032,7 @@ export function WorldMap({
               <CountriesLayer
                 countries={world.countries}
                 stats={net ? NO_STATS : stats}
+                extra={net ? undefined : supportable}
                 focus={selection.country}
                 revealed={!net && !!country && shownFor === country.c && regions.length > 0}
                 near={nearBox}
@@ -1394,8 +1404,8 @@ export function WorldMap({
                 const platform = (() => {
                   const s = region ? rStat : cStat;
                   // بلا أرقامٍ بعد (تحميل أو تعذّر): لا يُقال «لا ملفّات هنا» وهو غير معروف.
-                  if (!s)
-                    return (
+                  if (!s) {
+                    const note = (
                       <p className="mt-4 text-sm leading-7 text-muted-foreground">
                         {source === "loading"
                           ? c$.loading
@@ -1404,6 +1414,22 @@ export function WorldMap({
                             : c$.none}
                       </p>
                     );
+                    // بلا ملفّات أطفال: يبقى دعم المكان نفسه متاحاً في دول الشبكة.
+                    if (!action || !supportable?.has(country.c)) return note;
+                    return (
+                      <>
+                        {note}
+                        <div className="mt-3">
+                          {action({
+                            code: country.c,
+                            countryValue: null,
+                            regionValue: null,
+                            regionName: region?.n ?? null,
+                          })}
+                        </div>
+                      </>
+                    );
+                  }
                   // التقسيم يأتي من القاعدة محجوباً إن صغر أحد شقّيه.
                   const split = s.total != null && s.sponsored != null;
                   const need = split ? s.total! - s.sponsored! : null;

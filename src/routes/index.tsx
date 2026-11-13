@@ -34,6 +34,9 @@ import { useMapStats } from "@/components/map/useMapStats";
 import { geoQuery } from "@/lib/geo";
 import { NetworkSection } from "@/components/map/NetworkSection";
 import { kindCounts, networkPaint } from "@/components/map/network-layer";
+
+// دول الشبكة الظاهرة للزوّار — نفسها قائمة دعم التأهيل (countries.in_network).
+const HOME_SUPPORTABLE: ReadonlySet<string> = new Set(networkPaint("network").keys());
 import { GIVING_TRACKS, type GivingTrack, useGivingCopy } from "@/config/giving-tracks";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -609,6 +612,7 @@ function HomePage() {
             demo={demo}
             status={status}
             showUnconfirmed={isAdmin}
+            supportable={HOME_SUPPORTABLE}
             action={(ctx) => <MapActions ctx={ctx} />}
             className="h-[min(78dvh,760px)] min-h-[30rem]"
           />
