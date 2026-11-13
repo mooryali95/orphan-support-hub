@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/motion/Reveal";
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -633,7 +634,11 @@ function OrphansPage() {
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {DEMO_MODE
-              ? sample.rows.map((child) => <DemoChildCard key={child.id} child={child} />)
+              ? sample.rows.map((child, i) => (
+                  <Reveal key={child.id} delay={(i % 6) * 0.05}>
+                    <DemoChildCard child={child} />
+                  </Reveal>
+                ))
               : rows.map((orphan, i) => (
                   // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
                   <div

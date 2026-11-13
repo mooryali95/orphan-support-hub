@@ -198,7 +198,7 @@ function DashboardPage() {
       )}
 
       {/* 3. الكفالات، و«رحلتي» بجوارها مختصرةً بالأحدث. */}
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <div className="reveal-scroll mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <section aria-labelledby="my-sponsorships">
           <h2 id="my-sponsorships" className="text-xl font-bold">
             كفالاتك
@@ -252,7 +252,7 @@ function DashboardPage() {
                   : 0;
 
                 return (
-                  <article key={s.id} className="rounded-2xl border border-border bg-card p-5">
+                  <article key={s.id} className="rounded-3xl border border-border bg-card p-5 shadow-soft lift">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       <MuralImage
                         photoUrl={null}

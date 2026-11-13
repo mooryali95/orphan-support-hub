@@ -70,12 +70,18 @@
   --color-office-gap: var(--office-gap);
   --color-navy: var(--navy);
   --color-gold-line: var(--gold-line);
-  --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Reem Kufi", "IBM Plex Sans Arabic", ui-sans-serif, sans-serif;
+  --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", "Times New Roman", serif;
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 1rem;
+  --shadow-soft: 0 1px 2px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 12px 32px -12px color-mix(in oklab, var(--primary) 28%, transparent);
+  --shadow-lift: 0 2px 4px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 24px 48px -16px color-mix(in oklab, var(--primary) 38%, transparent);
+  --gradient-primary: linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 70%, var(--bridge)));
 
   /* الألوان كلّها في src/config/brand.json — تُحقن من src/config/brand-colors.ts.
      هنا ما ليس لوناً فقط. */
@@ -130,6 +136,12 @@
   h3,
   h4 {
     text-wrap: balance;
+  }
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0;
   }
   p,
   li {
@@ -469,5 +481,65 @@ header.sticky {
   }
   .celebrate-leaf {
     display: none;
+  }
+}
+
+/* ── الهوية الجديدة: سطوح مرفوعة، وأشكالٌ عائمة، وظهورٌ مع التمرير ── */
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+@utility shadow-lift {
+  box-shadow: var(--shadow-lift);
+}
+@utility bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+@utility lift {
+  transition:
+    transform 260ms var(--ease-out),
+    box-shadow 260ms var(--ease-out),
+    border-color 200ms var(--ease-out);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+@keyframes blob-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(4%, -6%) scale(1.08) rotate(12deg);
+  }
+  66% {
+    transform: translate(-5%, 4%) scale(0.95) rotate(-8deg);
+  }
+}
+@utility blob {
+  position: absolute;
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  filter: blur(48px);
+  opacity: 0.45;
+  pointer-events: none;
+  animation: blob-drift 18s var(--ease-in-out) infinite;
+}
+
+/* الظهور مع التمرير بلا سكربت (animation-timeline)؛ المتصفّح الذي لا يدعمه يعرض المحتوى ثابتاً. */
+@keyframes scroll-rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility reveal-scroll {
+  @supports (animation-timeline: view()) {
+    animation: scroll-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
   }
 }

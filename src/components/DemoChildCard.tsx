@@ -6,7 +6,7 @@ import { countryName } from "@/lib/countries";
 export function DemoChildCard({ child }: { child: DemoChild }) {
   const locale = useLocale();
   return (
-    <article className="overflow-hidden rounded-lg border border-border bg-card">
+    <article className="lift overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
       <div className="aspect-[16/6] bg-secondary">
         <MuralImage photoUrl={null} displayName={child.id} register="need" className="size-full" />
       </div>

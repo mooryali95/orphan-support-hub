@@ -33,7 +33,7 @@ import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
 import { PreviewBridge } from "@/components/i18n/PreviewBridge";
 
 const FONTS_CSS =
-  "https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&family=Amiri:wght@400;700&display=swap";
 
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
