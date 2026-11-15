@@ -70,8 +70,8 @@
   --color-office-gap: var(--office-gap);
   --color-navy: var(--navy);
   --color-gold-line: var(--gold-line);
-  --font-display: "Reem Kufi", "IBM Plex Sans Arabic", ui-sans-serif, sans-serif;
-  --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Readex Pro", ui-sans-serif, sans-serif;
+  --font-sans: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", "Times New Roman", serif;
 }
 
@@ -120,7 +120,7 @@
      الأوزان: 500 متن، 700 تسميات وعناوين، 800 للعنوان الرئيسي وحده. */
   html:lang(ar) body,
   [lang="ar"] {
-    font-weight: 500;
+    font-weight: 400;
   }
 
   body {
@@ -140,7 +140,7 @@
   h1,
   h2 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0;
   }
   p,
