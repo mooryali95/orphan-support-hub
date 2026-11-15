@@ -3115,6 +3115,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _enrollment_supervisor_any: {
+        Args: { _enrollment: string }
+        Returns: string
+      }
       _ops_checks: { Args: never; Returns: Json }
       _ops_level: { Args: { _checks: Json }; Returns: string }
       access_scope_catalog: { Args: never; Returns: Json }
