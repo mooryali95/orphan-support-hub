@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1342,
+ "count": 1364,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3810,6 +3810,14 @@
    "hash": "e98bd3dc3182",
    "file": "src/components/vision/VisionStore.tsx"
   },
+  "components/vision/VisionStore.decision.scenario": {
+   "en": "Decision: a budget scenario approved — first destination {0}",
+   "ar": "قرار: اعتُمد سيناريو ميزانية — أوّل وجهاته {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "ec9e1007c2be",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
   "components/vision/VisionStore.disbursed": {
    "en": "Disbursed to the Albania office: €{0} for {1}",
    "ar": "صرفٌ إلى مكتب ألبانيا: {0} € لـ{1}",
@@ -4007,6 +4015,148 @@
    "kind": "text",
    "hash": "cffd204a68c1",
    "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/WhatIf.after": {
+   "en": "After the scenario",
+   "ar": "بعد السيناريو",
+   "kind": "text",
+   "hash": "fbfdfe1b13c3",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.applied": {
+   "en": "Approved — it shows in the log and role boards",
+   "ar": "اعتُمد — يظهر في السجلّ ولوحات الأدوار",
+   "kind": "text",
+   "hash": "a37434d030e5",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.apply": {
+   "en": "Approve scenario",
+   "ar": "اعتمد السيناريو",
+   "kind": "text",
+   "hash": "c792ac8aa4cb",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.budget": {
+   "en": "Budget (SAR)",
+   "ar": "الميزانية (ر.س)",
+   "kind": "text",
+   "hash": "2f8292a438fd",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.byCity": {
+   "en": "Funding by city: now → after",
+   "ar": "التمويل حسب المدينة: الآن ← بعد",
+   "kind": "text",
+   "hash": "e4dd38ad0c70",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.city": {
+   "en": "To one city",
+   "ar": "لمدينةٍ بعينها",
+   "kind": "text",
+   "hash": "92753abdff10",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.close": {
+   "en": "Until the gap closes",
+   "ar": "حتى تُغلق الفجوة",
+   "kind": "text",
+   "hash": "543d04cd2b2c",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.even": {
+   "en": "In proportion to gaps",
+   "ar": "بنسبة الفجوات",
+   "kind": "text",
+   "hash": "be16d9e02245",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.funding": {
+   "en": "Qualification funding",
+   "ar": "تمويل التأهيل",
+   "kind": "text",
+   "hash": "249e337c8e6d",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.gap": {
+   "en": "All to the largest gap",
+   "ar": "كلّها لأكبر فجوة",
+   "kind": "text",
+   "hash": "c80239f694b7",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.gapK": {
+   "en": "Children in the gap",
+   "ar": "أطفالٌ في الفجوة",
+   "kind": "text",
+   "hash": "b017afffe0fd",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.groups": {
+   "en": "Funded groups",
+   "ar": "مجموعات مموّلة",
+   "kind": "text",
+   "hash": "694eb838f309",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.h": {
+   "en": "What if",
+   "ar": "ماذا لو",
+   "kind": "text",
+   "hash": "126c57d7a142",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.how": {
+   "en": "Split",
+   "ar": "طريقة التوزيع",
+   "kind": "text",
+   "hash": "a6dd52670fbd",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.lead": {
+   "en": "Try a budget and a split, and see its effect before approving. Nothing changes until you press “Approve”.",
+   "ar": "جرّب ميزانيةً وطريقة توزيع، وانظر أثرها قبل أن تعتمد. لا يتغيّر شيءٌ حتى تضغط «اعتمد».",
+   "kind": "text",
+   "hash": "7f78c3e97e1a",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.months": {
+   "en": "{0} months",
+   "ar": "{0} شهراً",
+   "kind": "template",
+   "params": 1,
+   "hash": "e7a031123783",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.never": {
+   "en": "Over two years",
+   "ar": "أكثر من سنتين",
+   "kind": "text",
+   "hash": "01b64205934a",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.now": {
+   "en": "Now",
+   "ar": "الآن",
+   "kind": "text",
+   "hash": "f78c5cf576af",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.unused": {
+   "en": "It covers all the need; {0} stays unallocated in the fund.",
+   "ar": "تكفي الحاجةَ كلّها؛ يبقى {0} غير مخصّص في الصندوق.",
+   "kind": "template",
+   "params": 1,
+   "hash": "e15924b15528",
+   "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/vision/WhatIf.which": {
+   "en": "City",
+   "ar": "المدينة",
+   "kind": "text",
+   "hash": "ad8e85b1c36d",
+   "file": "src/components/vision/WhatIf.tsx"
   },
   "config/brand.description": {
    "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
@@ -7445,6 +7595,13 @@
    "ar": "المؤشّر",
    "kind": "text",
    "hash": "bf1123b58bc7",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.tabWhatIf": {
+   "en": "What if",
+   "ar": "ماذا لو",
+   "kind": "text",
+   "hash": "126c57d7a142",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.title": {

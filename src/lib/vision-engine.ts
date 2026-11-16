@@ -343,6 +343,7 @@ export type Action =
   | { type: "apply"; key: string; at: number }
   | { type: "setFee"; pct: number }
   | { type: "advanceMonth"; at: number }
+  | { type: "scenario"; scenario: Scenario; at: number }
   | { type: "reset" };
 
 function ev(s: VisionState, at: number, layer: Layer, kind: EventKind, args: VisionEvent["args"]) {
@@ -412,6 +413,8 @@ export function reduce(prev: VisionState, a: Action): VisionState {
   if (a.type === "reset") return seed();
   const s: VisionState = structuredClone(prev);
   switch (a.type) {
+    case "scenario":
+      return applyScenario(prev, a.scenario, a.at);
     case "advanceMonth": {
       let n: VisionState = s;
       // 1) الكفلاء الشهريون يدعمون أكبر فجوة.
@@ -570,4 +573,102 @@ export function revive(raw: unknown): VisionState {
     return seed();
   }
   return { ...seed(), ...x } as VisionState;
+}
+
+/* ── «ماذا لو»: ميزانيةٌ افتراضية يُرى أثرها قبل اعتمادها ─────────── */
+
+export type Strategy = "gap" | "even" | "city";
+export type Scenario = { amount: number; strategy: Strategy; city?: string };
+export const DECISION_FUND = "صندوق القرار";
+
+/** توزيع الميزانية على المدن: كلّها لأكبر فجوة، أو بنسبة الفجوات، أو لمدينةٍ بعينها. */
+export function planOf(s: VisionState, sc: Scenario): Array<{ city: string; amount: number }> {
+  const amount = Math.max(0, Math.round(sc.amount));
+  if (!amount) return [];
+  const r = ranked(s);
+  // لا تُعطى مدينةٌ فوق فجوتها: ما زاد يبقى في الصندوق («غير مخصّص»).
+  const cap = (id: string) => {
+    const c = s.cities.find((x) => x.id === id);
+    return c ? Math.max(0, cityNeedSar(c) - c.funded) : 0;
+  };
+  if (sc.strategy === "city" && sc.city) {
+    const v = Math.min(amount, cap(sc.city));
+    return v >= 10 ? [{ city: sc.city, amount: v }] : [];
+  }
+  if (sc.strategy === "gap") {
+    // من الأكبر فجوةً إلى ما يليها، حتى تنفد الميزانية.
+    const out: Array<{ city: string; amount: number }> = [];
+    let left = amount;
+    for (const c of r) {
+      if (left < 10) break;
+      const v = Math.min(left, cap(c.id));
+      if (v >= 10) out.push({ city: c.id, amount: v });
+      left -= v;
+    }
+    return out;
+  }
+  const gaps = r.filter((c) => c.gap > 0);
+  const total = gaps.reduce((a, c) => a + c.gap, 0);
+  if (!total) return [];
+  return gaps
+    .map((c) => ({ city: c.id, amount: Math.min(cap(c.id), Math.round((amount * c.gap) / total)) }))
+    .filter((x) => x.amount >= 10);
+}
+
+function fund(s: VisionState, plan: Array<{ city: string; amount: number }>, at: number) {
+  let n = s;
+  for (const p of plan) {
+    n = reduce(n, {
+      type: "donate",
+      donor: DECISION_FUND,
+      amount: p.amount,
+      method: "bank",
+      target: { kind: "city", id: p.city },
+      at,
+    });
+    n = reduce(n, { type: "confirmTransfer", id: n.donations[0]!.id, at });
+  }
+  return n;
+}
+
+/** يحاكي الخطّة على نسخةٍ ولا يمسّ الحال: الأرقام بعدها، وكم شهراً حتى تُغلق الفجوة. */
+export function whatIf(s: VisionState, sc: Scenario, horizon = 24) {
+  const plan = planOf(s, sc);
+  const after = fund(s, plan, 0);
+  const months = (start: VisionState) => {
+    let n = start;
+    for (let m = 1; m <= horizon; m++) {
+      n = reduce(n, { type: "advanceMonth", at: 0 });
+      if (totals(n).gap === 0) return m;
+    }
+    return null;
+  };
+  return {
+    plan,
+    unused: Math.max(0, Math.round(sc.amount) - plan.reduce((a, p) => a + p.amount, 0)),
+    now: totals(s),
+    next: totals(after),
+    cities: after.cities.map((c) => ({
+      id: c.id,
+      before: fundingPct(s.cities.find((x) => x.id === c.id)!),
+      after: fundingPct(c),
+    })),
+    monthsNow: months(s),
+    monthsNext: months(after),
+  };
+}
+
+/** اعتماد السيناريو: تُنفَّذ الخطّة على الحال الحقيقية في البيئة، وتُسجَّل قراراً. */
+export function applyScenario(s: VisionState, sc: Scenario, at: number) {
+  const plan = planOf(s, sc);
+  if (!plan.length) return s;
+  const n = fund(s, plan, at);
+  ev(n, at, "decision", "decision", {
+    kind: "scenario",
+    city: plan[0]!.city,
+    group: "",
+    amount: plan.reduce((a, p) => a + p.amount, 0),
+    gap: 0,
+  });
+  return n;
 }

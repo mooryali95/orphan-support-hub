@@ -176,6 +176,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
       campaign: (place: string) => `قرار: أُطلقت حملةٌ لـ${place}`,
       redirect: (place: string, to: string) => `قرار: أُعيد توجيه فائض ${place} إلى ${to}`,
       fundGroup: (place: string) => `قرار: أُولويةٌ لتمويل ${place}`,
+      scenario: (place: string) => `قرار: اعتُمد سيناريو ميزانية — أوّل وجهاته ${place}`,
     } as Record<string, (a: string, b: string) => string>,
     // النموذج
     formH: "تبرّعٌ تجريبي",
@@ -223,6 +224,8 @@ const COPY = defineCopy("components/vision/VisionStore", {
       campaign: (place: string) => `Decision: a campaign launched for ${place}`,
       redirect: (place: string, to: string) => `Decision: ${place}'s surplus redirected to ${to}`,
       fundGroup: (place: string) => `Decision: priority funding for ${place}`,
+      scenario: (place: string) =>
+        `Decision: a budget scenario approved — first destination ${place}`,
     } as Record<string, (a: string, b: string) => string>,
     formH: "Test donation",
     formLead: "It passes through the three layers as real money will — nothing is collected.",
