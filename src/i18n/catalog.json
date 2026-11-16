@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1268,
+ "count": 1301,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3437,6 +3437,83 @@
    "kind": "text",
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/vision/ImpactCard.children": {
+   "en": "Children my impact reaches",
+   "ar": "أطفالٌ يصلهم أثري",
+   "kind": "text",
+   "hash": "54e0d3cb0992",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.given": {
+   "en": "Given",
+   "ar": "ما قدّمت",
+   "kind": "text",
+   "hash": "93a64b3f057e",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.groups": {
+   "en": "Groups my support reached",
+   "ar": "مجموعات وصلها دعمي",
+   "kind": "text",
+   "hash": "fbd8bb646b70",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.h": {
+   "en": "My impact card",
+   "ar": "بطاقة أثري",
+   "kind": "text",
+   "hash": "83af53b6c8ec",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.lead": {
+   "en": "An image with your figures only — no child's name or place. Save or share it.",
+   "ar": "صورةٌ بأرقامك وحدها — لا اسم طفلٍ ولا مكان. احفظها أو شاركها.",
+   "kind": "text",
+   "hash": "69d660aa81e2",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.measured": {
+   "en": "Measurements completed",
+   "ar": "قياساتٌ اكتملت",
+   "kind": "text",
+   "hash": "41b094ffcc03",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.sandbox": {
+   "en": "Sandbox",
+   "ar": "بيئة تجريبية",
+   "kind": "text",
+   "hash": "f210c8a3143b",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.save": {
+   "en": "Save image",
+   "ar": "حفظ الصورة",
+   "kind": "text",
+   "hash": "65d672354e62",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.share": {
+   "en": "Share",
+   "ar": "مشاركة",
+   "kind": "text",
+   "hash": "d310b49e70c4",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.tag": {
+   "en": "Care that builds capability",
+   "ar": "رعايةٌ تبني الأهليّة",
+   "kind": "text",
+   "hash": "ab220f762748",
+   "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/ImpactCard.title": {
+   "en": "My impact on the Vision and Directions platform",
+   "ar": "أثري في منصة الرؤية والتوجهات",
+   "kind": "text",
+   "hash": "86bbb57cdc34",
+   "file": "src/components/vision/ImpactCard.tsx"
   },
   "components/vision/Story.again": {
    "en": "Replay",
@@ -8974,6 +9051,160 @@
    "kind": "text",
    "hash": "63e0d89b9f39",
    "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.receipt.back": {
+   "en": "Back",
+   "ar": "عودة",
+   "kind": "text",
+   "hash": "926a33c500f3",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.bank": {
+   "en": "Bank transfer",
+   "ar": "تحويل بنكي",
+   "kind": "text",
+   "hash": "e6c1813b0449",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.brand": {
+   "en": "Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
+   "kind": "text",
+   "hash": "e8b8e8936f8b",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.card": {
+   "en": "Card via Creem",
+   "ar": "بطاقة عبر Creem",
+   "kind": "text",
+   "hash": "796cb5eefc52",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.date": {
+   "en": "Date",
+   "ar": "التاريخ",
+   "kind": "text",
+   "hash": "d69460f8793a",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.donor": {
+   "en": "Supporter",
+   "ar": "الداعم",
+   "kind": "text",
+   "hash": "47e67dc4b816",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.fee": {
+   "en": "Platform fee",
+   "ar": "رسوم المنصّة",
+   "kind": "text",
+   "hash": "9aabec9969fd",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.fingerprint": {
+   "en": "Fingerprint (SHA-256)",
+   "ar": "البصمة (SHA-256)",
+   "kind": "text",
+   "hash": "e77b4b0f9247",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.fpNote": {
+   "en": "Computed from the invoice, amount, destination and date; any change alters it.",
+   "ar": "تُحسب من رقم الفاتورة والمبلغ والوجهة والتاريخ؛ أيّ تغييرٍ فيها يغيّر البصمة.",
+   "kind": "text",
+   "hash": "7134a9f23f07",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.gross": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.invoice": {
+   "en": "Invoice",
+   "ar": "رقم الفاتورة",
+   "kind": "text",
+   "hash": "9dc17da44679",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.method": {
+   "en": "Payment method",
+   "ar": "طريقة الدفع",
+   "kind": "text",
+   "hash": "2d40b82d5b9f",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.missing": {
+   "en": "This donation isn't in your sandbox.",
+   "ar": "لم نجد هذا التبرّع في بيئتك التجريبية.",
+   "kind": "text",
+   "hash": "59fa7efc7b98",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.net": {
+   "en": "Net to the field",
+   "ar": "الصافي للميدان",
+   "kind": "text",
+   "hash": "9016a22d06b9",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.org": {
+   "en": "World Assembly of Muslim Youth",
+   "ar": "الندوة العالمية للشباب الإسلامي",
+   "kind": "text",
+   "hash": "fb269e263c29",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.path": {
+   "en": "Where it went",
+   "ar": "أين ذهب",
+   "kind": "text",
+   "hash": "eee173b81af9",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.pending": {
+   "en": "The transfer awaits reconciliation — the receipt is issued after.",
+   "ar": "التحويل بانتظار المطابقة — يصدر الإيصال بعدها.",
+   "kind": "text",
+   "hash": "baa014412112",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.print": {
+   "en": "Print or save as PDF",
+   "ar": "اطبع أو احفظ PDF",
+   "kind": "text",
+   "hash": "1ecb43a84bce",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.thanks": {
+   "en": "Thank you — the impact of your support reaches you from operations.",
+   "ar": "جزاك الله خيراً — أثر دعمك يصلك من منصّة التشغيل.",
+   "kind": "text",
+   "hash": "e327851be0cc",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.title": {
+   "en": "Donation receipt",
+   "ar": "إيصال تبرّع",
+   "kind": "text",
+   "hash": "111bc4199fe7",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.to": {
+   "en": "Destination",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "cffd204a68c1",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.watermark": {
+   "en": "Sandbox — not an official receipt",
+   "ar": "تجريبي — ليس إيصالاً رسمياً",
+   "kind": "text",
+   "hash": "131b341131ba",
+   "file": "src/routes/vision.receipt.$id.tsx"
   }
  },
  "skipped": []
