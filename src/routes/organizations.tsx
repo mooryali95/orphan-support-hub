@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/kit/EmptyState";
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
@@ -57,9 +58,7 @@ function OrganizationsPage() {
           <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
 
           {data.organizations.length === 0 ? (
-            <p className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-              {c.empty}
-            </p>
+            <EmptyState className="mt-10" title={c.empty} />
           ) : (
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {data.organizations.map((org) => (

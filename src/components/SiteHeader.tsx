@@ -74,7 +74,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ms-auto flex items-center gap-2">
-          <ThemeSwitch />
+          <ThemeSwitch className="hidden sm:inline-grid" />
           <LanguageSwitch className="hidden sm:inline-flex" />
           {user && <NotificationBell />}
           {user ? (
@@ -128,7 +128,10 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <LanguageSwitch className="justify-start sm:hidden" />
+          <div className="flex items-center gap-1 sm:hidden">
+            <LanguageSwitch className="justify-start" />
+            <ThemeSwitch withLabel />
+          </div>
           {!user && (
             <AuthDialog
               trigger={(openAuth) => (

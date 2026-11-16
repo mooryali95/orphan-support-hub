@@ -11,7 +11,7 @@ const COPY = defineCopy("components/kit/ThemeSwitch", {
 });
 
 /** زرّ المظهر: الشمس والقمر يتبادلان بدورانٍ قصير، والحالة في الكعكة. */
-export function ThemeSwitch({ className }: { className?: string }) {
+export function ThemeSwitch({ className, withLabel }: { className?: string; withLabel?: boolean }) {
   const c = useCopy(COPY);
   const [theme, setTheme] = useState<Theme>("light");
   useEffect(() => {
@@ -30,7 +30,10 @@ export function ThemeSwitch({ className }: { className?: string }) {
         setTheme(next);
       }}
       className={cn(
-        "relative inline-grid size-9 place-items-center rounded-lg text-muted-foreground transition-[background-color,color,scale] duration-200 hover:bg-secondary hover:text-foreground active:scale-[0.94]",
+        withLabel
+          ? "inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium"
+          : "inline-grid size-9 place-items-center rounded-lg",
+        "relative text-muted-foreground transition-[background-color,color,scale] duration-200 hover:bg-secondary hover:text-foreground active:scale-[0.94]",
         className,
       )}
     >
@@ -39,6 +42,7 @@ export function ThemeSwitch({ className }: { className?: string }) {
         className={cn(
           "col-start-1 row-start-1 size-[1.15rem] transition-[opacity,rotate,scale] duration-300 ease-[var(--ease-out)]",
           dark ? "scale-50 -rotate-90 opacity-0" : "opacity-100",
+          withLabel && dark && "hidden",
         )}
       />
       <Moon
@@ -46,8 +50,10 @@ export function ThemeSwitch({ className }: { className?: string }) {
         className={cn(
           "col-start-1 row-start-1 size-[1.1rem] transition-[opacity,rotate,scale] duration-300 ease-[var(--ease-out)]",
           dark ? "opacity-100" : "scale-50 rotate-90 opacity-0",
+          withLabel && !dark && "hidden",
         )}
       />
+      {withLabel && <span>{dark ? c.toLight : c.toDark}</span>}
     </button>
   );
 }
