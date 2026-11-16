@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1336,
+ "count": 1342,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3718,6 +3718,13 @@
    "hash": "8c759b73ccd3",
    "file": "src/components/vision/VisionKit.tsx"
   },
+  "components/vision/VisionStore.advance": {
+   "en": "Advance a month",
+   "ar": "تقدّم شهراً",
+   "kind": "text",
+   "hash": "0a2f7e8c0894",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
   "components/vision/VisionStore.allocFull": {
    "en": "{0} allocated to {1} — now fully funded",
    "ar": "خُصِّص {0} لـ{1} — اكتمل تمويلها",
@@ -3919,12 +3926,27 @@
    "hash": "2d40b82d5b9f",
    "file": "src/components/vision/VisionStore.tsx"
   },
+  "components/vision/VisionStore.month": {
+   "en": "A new month began: {0} — recurring sponsors, sessions and measurement",
+   "ar": "بدأ شهرٌ جديد: {0} — كفلاءٌ شهريون، وجلسات، وقياس",
+   "kind": "template",
+   "params": 1,
+   "hash": "04e37d82bef4",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
   "components/vision/VisionStore.moved": {
    "en": "and {0} more moved across the layers",
    "ar": "وتحرّك بعده {0} في الطبقات",
    "kind": "template",
    "params": 1,
    "hash": "6f8357e6adb7",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.now": {
+   "en": "Now",
+   "ar": "الآن",
+   "kind": "text",
+   "hash": "f78c5cf576af",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.pending": {
@@ -7444,6 +7466,27 @@
    "ar": "الدعم",
    "kind": "text",
    "hash": "ba3aaee9dae2",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.trendGap": {
+   "en": "Children in the gap",
+   "ar": "أطفالٌ في الفجوة",
+   "kind": "text",
+   "hash": "b017afffe0fd",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.trendMeasured": {
+   "en": "In a measured journey",
+   "ar": "في رحلةٍ مقيسة",
+   "kind": "text",
+   "hash": "ab4cbd25ec20",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.trendsH": {
+   "en": "Month by month — use “Advance a month” in the bar above",
+   "ar": "الاتجاه شهراً بشهر — «تقدّم شهراً» من الشريط أعلاه",
+   "kind": "text",
+   "hash": "6dbce99e36ef",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.trustees": {

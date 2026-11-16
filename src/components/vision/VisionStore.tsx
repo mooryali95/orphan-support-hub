@@ -154,6 +154,9 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedEmpty: "لا أحداث بعد. جرّب تبرّعاً من «رحلة المال» أو من النموذج.",
     layer: { support: "الدعم", operations: "التشغيل", decision: "القرار" },
     moved: (n: number) => `وتحرّك بعده ${n} في الطبقات`,
+    month: (m: string) => `بدأ شهرٌ جديد: ${m} — كفلاءٌ شهريون، وجلسات، وقياس`,
+    advance: "تقدّم شهراً",
+    now: "الآن",
     donation: (amt: string, donor: string, place: string) =>
       `${donor} تبرّع بـ ${amt} لـ${place} (بطاقة)`,
     pending: (amt: string, donor: string, place: string) =>
@@ -196,6 +199,9 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedEmpty: "No events yet. Try a donation from the money journey or the form.",
     layer: { support: "Support", operations: "Operations", decision: "Decision" },
     moved: (n: number) => `and ${n} more moved across the layers`,
+    month: (m: string) => `A new month began: ${m} — recurring sponsors, sessions and measurement`,
+    advance: "Advance a month",
+    now: "Now",
     donation: (amt: string, donor: string, place: string) =>
       `${donor} gave ${amt} to ${place} (card)`,
     pending: (amt: string, donor: string, place: string) =>
@@ -290,6 +296,8 @@ export function useEventText() {
         return e.layer === "operations"
           ? c.measuredOps(place(s("group")), num(n("before")), num(n("after")))
           : c.measuredDec(num(n("measured")));
+      case "month":
+        return c.month(monthLabel(n("month"), locale));
       case "decision":
         return (c.decision[s("kind")] ?? c.decision["campaign"]!)(
           place(s("city")),
@@ -327,7 +335,8 @@ export function LiveToasts() {
     // لم يكن قبلها حدث: الدفعة كلّها جديدة؛ وإن غاب المرئيّ عن السجلّ (قُصّ) نكتفي بالأحدث.
     const batch = state.events.slice(0, seen.current === "" ? undefined : i < 0 ? 1 : i);
     seen.current = top;
-    const first = batch[batch.length - 1];
+    // شهرٌ جديد يُعنون الدفعة كلّها؛ وإلا فالحدث الذي أطلقها.
+    const first = batch.find((e) => e.kind === "month") ?? batch[batch.length - 1];
     if (!first) return;
     toast(c.layer[first.layer], {
       description: batch.length > 1 ? `${text(first)} · ${c.moved(batch.length - 1)}` : text(first),
@@ -544,6 +553,43 @@ export function DonateForm({
         </p>
       </div>
     </form>
+  );
+}
+
+/** اسم الشهر في البيئة: الشهر 0 هو نوفمبر 2026. */
+export function monthLabel(m: number, locale: string) {
+  const d = new Date(Date.UTC(2026, 10 + m, 1));
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(d);
+}
+
+/** «تقدّم شهراً»: الزمن في البيئة — يحرّك الدعم الشهري والجلسات والقياس دفعةً واحدة. */
+export function TimeControl() {
+  const { state, dispatch, ready } = useVision();
+  const c = useCopy(COPY);
+  const locale = useLocale();
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      <span className="hidden text-xs text-muted-foreground sm:inline" aria-live="polite">
+        {ready ? monthLabel(state.month, locale) : ""}
+      </span>
+      <button
+        type="button"
+        onClick={() => dispatch({ type: "advanceMonth" })}
+        className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-wine/20 bg-white px-3 text-xs font-semibold text-wine transition-[background-color,scale] hover:bg-wine/5 active:scale-[0.96]"
+      >
+        {c.advance}
+        <span aria-hidden="true" className="ltr:hidden">
+          ‹
+        </span>
+        <span aria-hidden="true" className="rtl:hidden">
+          ›
+        </span>
+      </button>
+    </div>
   );
 }
 
