@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1219,
+ "count": 1237,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3437,6 +3437,132 @@
    "kind": "text",
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/vision/Story.again": {
+   "en": "Replay",
+   "ar": "أعد الجولة",
+   "kind": "text",
+   "hash": "f21e7b9ded9d",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.approve": {
+   "en": "They approve the top recommendation — it returns to the field as a group or a campaign.",
+   "ar": "يعتمد أعلى توصية — فتعود إلى الميدان مجموعةً أو حملة.",
+   "kind": "text",
+   "hash": "07b220ed5808",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.decision": {
+   "en": "The decision-maker sees aggregates only: the gap narrowed, the recommendations changed.",
+   "ar": "صاحب القرار يرى المجموع وحده: الفجوة ضاقت، والتوصيات تغيّرت.",
+   "kind": "text",
+   "hash": "42d9fcff9ebd",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.donate": {
+   "en": "A supporter enters with no account and donates by card to a group awaiting funding.",
+   "ar": "داعمٌ يدخل دون حساب، ويتبرّع لمجموعةٍ تنتظر التمويل — بالبطاقة.",
+   "kind": "text",
+   "hash": "6d375f44fb72",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.done": {
+   "en": "The cycle is complete: donation → operations → measurement → decision. Try it yourself in any role.",
+   "ar": "اكتملت الدورة: تبرّعٌ ← تشغيل ← قياس ← قرار. جرّبها بنفسك بأيّ دور.",
+   "kind": "text",
+   "hash": "a0eccd54dede",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.intro": {
+   "en": "Three layers around one orphan: operations, support and decision. Let's follow one donation.",
+   "ar": "ثلاث طبقاتٍ حول يتيمٍ واحد: التشغيل، والدعم، والقرار. لنتبع تبرّعاً واحداً.",
+   "kind": "text",
+   "hash": "59ced5c6b685",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.measure": {
+   "en": "Follow-up measurement: the trait rises and the children leave the need list.",
+   "ar": "القياس البعدي: ترتفع السمة، ويخرج الأطفال من قائمة الحاجة.",
+   "kind": "text",
+   "hash": "4fec0e8c01fc",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.money": {
+   "en": "The money is recorded in WAMY's account with its invoice and fee, then allocated to the group and disbursed.",
+   "ar": "المال يُقيَّد في حساب الندوة بفاتورته ورسومه، ثم يُخصَّص للمجموعة ويُصرف للمكتب.",
+   "kind": "text",
+   "hash": "ec66871e039f",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.ops": {
+   "en": "The group is now fully funded and reaches its supervisor in operations.",
+   "ar": "اكتمل تمويل المجموعة، فتصل إلى المشرف في منصّة التشغيل.",
+   "kind": "text",
+   "hash": "da55f7b8cc61",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.caps.sessions": {
+   "en": "The supervisor records all six sessions — each reaches the supporter and the board at once.",
+   "ar": "المشرف يسجّل الجلسات الستّ — كلّ جلسةٍ تصل الداعم والقرار فوراً.",
+   "kind": "text",
+   "hash": "cbe9411a559e",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.decider": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.donor": {
+   "en": "A supporter from Riyadh",
+   "ar": "داعمٌ من الرياض",
+   "kind": "text",
+   "hash": "771984b2a9f2",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.pause": {
+   "en": "Pause",
+   "ar": "إيقافٌ مؤقّت",
+   "kind": "text",
+   "hash": "ef277325f78d",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.resume": {
+   "en": "Resume",
+   "ar": "متابعة",
+   "kind": "text",
+   "hash": "661df2191803",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.stop": {
+   "en": "End the tour",
+   "ar": "إنهاء الجولة",
+   "kind": "text",
+   "hash": "c0c37d7401b0",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.supervisor": {
+   "en": "Supervisor “A. R.”",
+   "ar": "المشرف «أ. ر.»",
+   "kind": "text",
+   "hash": "7c710cdfa991",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.watch": {
+   "en": "Watch the story",
+   "ar": "شاهد القصّة",
+   "kind": "text",
+   "hash": "1826af0e8e19",
+   "file": "src/components/vision/Story.tsx"
+  },
+  "components/vision/Story.watchLead": {
+   "en": "A one-minute guided run: one donation passes through all three roles until it returns as a decision.",
+   "ar": "جولةٌ آلية من دقيقة: تبرّعٌ واحد يمرّ بالأدوار الثلاثة حتى يعود قراراً.",
+   "kind": "text",
+   "hash": "759ff989366f",
+   "file": "src/components/vision/Story.tsx"
   },
   "components/vision/VisionKit.concept": {
    "en": "Concept · illustrative data",
