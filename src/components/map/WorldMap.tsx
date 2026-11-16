@@ -10,7 +10,22 @@ import {
   useRef,
   useState,
 } from "react";
-import { ArrowLeft, Globe2, Layers, List, LocateFixed, MapPin, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Globe2,
+  Layers,
+  List,
+  LocateFixed,
+  MapPin,
+  Minus,
+  Pause,
+  Play,
+  Plus,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { countryName, normalize } from "@/lib/countries";
@@ -18,7 +33,8 @@ import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, intlOf, pluralOf, type Locale, useLocale } from "@/lib/locale";
 import { arCount, COUNTRIES } from "@/lib/plural";
 import { cn } from "@/lib/utils";
-import { easeInOut, easeOut, fit, flight, type View } from "./camera";
+import { easeInOut, easeOut, fit, flight, lerpView, spring, type View, zoomLevel } from "./camera";
+import { MapSearch, type SearchItem } from "./MapSearch";
 import {
   clampView,
   dirOfKey,
@@ -146,8 +162,21 @@ const COPY = defineCopy("components/map/WorldMap", {
     layerGapHint: "الحاجة الشهرية غير المغطّاة بالعملة",
     delivered: "وصلهم تسليمٌ موثّق خلال 90 يوماً",
     gap: "الفجوة الشهرية",
-    hint: "اقرص للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول وEnter للدخول.",
+    hint: "اقرص أو انقر مرّتين للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول، وEnter للدخول، و+ و− للتكبير، و/ للبحث.",
     countryButton: (name: string, n: string) => `${name}: ${n} — اضغط Enter للدخول`,
+    zoom: "التكبير",
+    zoomIn: "تكبير",
+    zoomOut: "تصغير",
+    zoomWorld: "العالم كاملاً",
+    zoomFit: "عودة إلى الإطار",
+    search: "ابحث",
+    searchPlaceholder: "ابحث عن دولة أو منطقة…",
+    searchNone: "لا نتائج",
+    searchClose: "إغلاق البحث",
+    tour: "اكتشف",
+    tourStop: "أوقف الجولة",
+    prev: "السابق",
+    next: "التالي",
     regionButton: (name: string, n: string) => `${name}: ${n}`,
   },
   en: {
@@ -193,8 +222,21 @@ const COPY = defineCopy("components/map/WorldMap", {
     layerGapHint: "Monthly need not yet covered, in currency",
     delivered: "Received a documented delivery in the last 90 days",
     gap: "Monthly gap",
-    hint: "Pinch to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one.",
+    hint: "Pinch or double-tap to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one, + and − zoom, / searches.",
     countryButton: (name: string, n: string) => `${name}: ${n} — press Enter to open`,
+    zoom: "Zoom",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    zoomWorld: "Whole world",
+    zoomFit: "Back to the frame",
+    search: "Search",
+    searchPlaceholder: "Search a country or region…",
+    searchNone: "No results",
+    searchClose: "Close search",
+    tour: "Explore",
+    tourStop: "Stop the tour",
+    prev: "Previous",
+    next: "Next",
     regionButton: (name: string, n: string) => `${name}: ${n}`,
   },
 });
@@ -402,19 +444,36 @@ function placeLabels<T extends { r: RegionShape }>(
 
 /* ── عدّادٌ يتصاعد إلى رقمه ─────────────────────────────────────────── */
 
-function CountUp({ to, reduce }: { to: number; reduce: boolean }) {
-  const [n, setN] = useState(reduce ? to : 0);
+/**
+ * يتدحرج من آخر رقمٍ عُرض لا من الصفر: الانتقال بين دولتين أو طبقتين
+ * يُقرأ فرقاً بين رقمين، لا عدّاً جديداً في كل مرّة.
+ */
+function CountUp({
+  to,
+  reduce,
+  memo,
+}: {
+  to: number;
+  reduce: boolean;
+  memo?: { current: number };
+}) {
+  const from = memo?.current ?? 0;
+  const [n, setN] = useState(reduce ? to : from);
   useEffect(() => {
+    if (memo) memo.current = to;
     if (reduce || to < COHORT_MIN) return setN(to);
     let raf = 0;
     const t0 = performance.now();
+    const start = from < COHORT_MIN ? 0 : from;
     const tick = (now: number) => {
       const t = Math.min(1, (now - t0) / 1100);
-      setN(Math.round(to * easeOut(t)));
+      setN(Math.round(start + (to - start) * easeOut(t)));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
+    // `from` يُقرأ مرّةً عند التركيب: هو نقطة البداية لا تبعيّة.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [to, reduce]);
   return <span className="tabular-nums">{shown(to < COHORT_MIN ? to : n, useLocale())}</span>;
 }
@@ -490,14 +549,11 @@ export function WorldMap({
     [netLayer, showUnconfirmed],
   );
   const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
-  const activeSet = useMemo(
-    () => {
-      const set = net ? interactiveCodes(net) : new Set(Object.keys(stats));
-      supportable?.forEach((c) => set.add(c));
-      return set;
-    },
-    [net, stats, supportable],
-  );
+  const activeSet = useMemo(() => {
+    const set = net ? interactiveCodes(net) : new Set(Object.keys(stats));
+    supportable?.forEach((c) => set.add(c));
+    return set;
+  }, [net, stats, supportable]);
   const { data: rawWorld } = useQuery(worldQuery);
   const { data: rawRegions } = useRegions(selection.country);
   // الأسماء بلغة الواجهة: الدول من المتصفّح، والمناطق من اسمها اللاتيني في الملفّ.
@@ -538,6 +594,8 @@ export function WorldMap({
   const wrapRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const dotsRef = useRef<SVGGElement>(null);
+  const zoomRef = useRef<HTMLDivElement>(null);
+  const outerRef = useRef<View | null>(null);
   const view = useRef<View | null>(null);
   const [size, setSize] = useState({ w: 1280, h: 660 });
   const [settled, setSettled] = useState(true);
@@ -553,8 +611,23 @@ export function WorldMap({
   // تموّجٌ عند اللمس: حلقةٌ تتّسع من نقطة الإصبع ثم تتلاشى.
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const [listOpen, setListOpen] = useState(false);
+  // «اكتشف»: جولةٌ تطير بين الدول وحدها حتى يلمس الزائر شيئاً.
+  const [touring, setTouring] = useState(false);
+  // مؤشّر الطبقة المنزلق: يُقاس من الزرّ المختار بعد كل تغيير.
+  const layerRef = useRef<HTMLDivElement>(null);
+  const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
+  useLayoutEffect(() => {
+    const btn = layerRef.current?.querySelector<HTMLElement>('button[aria-pressed="true"]');
+    setPill(btn ? { left: btn.offsetLeft, width: btn.offsetWidth } : null);
+  }, [layer, size.w, locale]);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  // آخر رقمٍ عُرض في البطاقة: الرقم التالي يتدحرج منه.
+  const countMemo = useRef(0);
   // الزائر حرّك الخارطة بيده: الإطار صار إطاره لا إطار الهدف، ويظهر «إعادة الضبط».
   const [manual, setManual] = useState(false);
+  // الإطار ابتعد عن إطار الهدف (بيد الزائر أو بأزرار التكبير): تصير البوصلة «عودة».
+  const [drifted, setDrifted] = useState(false);
+  const targetRef = useRef<View | null>(null);
   // آخر دخولٍ بلوحة المفاتيح: حين تظهر مناطق الدولة يُركَّز أكبرها، لا للفأرة.
   const viaKeyboard = useRef(false);
   // تلميحٌ يتبع المؤشّر: اسم الدولة أو المنطقة وعددها — للفأرة وحدها.
@@ -592,6 +665,16 @@ export function WorldMap({
     svg.querySelectorAll<SVGPatternElement>("pattern[data-hatch]").forEach((p) => {
       p.setAttribute("patternTransform", `rotate(45) scale(${unit})`);
     });
+    // شبكة المحيط: نقاطٌ بمسافةٍ ثابتة على الشاشة، فتُحَسّ حركة الكاميرا حتى فوق الماء.
+    svg
+      .querySelector<SVGPatternElement>("pattern[data-grid]")
+      ?.setAttribute("patternTransform", `scale(${unit})`);
+    // مؤشّر التكبير: موضعه على مقياسٍ لوغاريتمي من العالم كاملاً إلى أقصى تكبير.
+    const o = outerRef.current;
+    if (o && zoomRef.current) {
+      const z = Math.log(Math.max(1, zoomLevel(v, o))) / Math.log(MAX_ZOOM);
+      zoomRef.current.style.setProperty("--z", String(Math.min(1, Math.max(0, z))));
+    }
   }, []);
 
   // الحاوية تحدّد النسبة؛ والنسبة تحدّد إطار العالم.
@@ -658,6 +741,7 @@ export function WorldMap({
     if (!world) return null;
     return fit([0, 0, world.w, world.h], size.h / Math.max(1, size.w), 1.1);
   }, [world, size]);
+  outerRef.current = outer;
   const applyManual = useCallback(
     (next: View) => {
       if (!world || !outer) return;
@@ -674,15 +758,74 @@ export function WorldMap({
       paint(v);
       setManual(true);
       setSettled(true);
+      setDrifted(!sameView(v, targetRef.current));
     },
     [world, outer, target, paint],
   );
+  /**
+   * حركةٌ قصيرة بنابض (الأزرار، النقر المزدوج، لوحة المفاتيح): الكاميرا
+   * تندفع وتستقرّ بلمسة تجاوزٍ لا تكاد تُرى، والتكبير هندسيّ فكلّ خطوةٍ
+   * تُحَسّ بالقدر نفسه.
+   */
+  const glideTo = useCallback(
+    (next: View) => {
+      if (!world || !outer || !view.current) return;
+      cancelAnimationFrame(inertia.current);
+      cancelFlight.current?.();
+      const minW = Math.min(world.w / MAX_ZOOM, (target?.w ?? Infinity) / 4);
+      const to = clampView(next, world, outer, minW);
+      const from = view.current;
+      setManual(true);
+      setSettled(true);
+      setTip(null);
+      if (reduce) {
+        view.current = to;
+        paint(to);
+        setDrifted(!sameView(to, targetRef.current));
+        return;
+      }
+      setDrifted(!sameView(to, targetRef.current));
+      const sp = spring();
+      const sec = svgRef.current?.closest("section");
+      sec?.setAttribute("data-gesturing", "");
+      const t0 = performance.now();
+      let raf = 0;
+      const tick = (now: number) => {
+        const ms = now - t0;
+        const v = lerpView(from, to, sp.at(ms));
+        view.current = v;
+        paint(v);
+        if (ms < sp.duration) raf = requestAnimationFrame(tick);
+        else {
+          sec?.removeAttribute("data-gesturing");
+          cancelFlight.current = null;
+        }
+      };
+      raf = requestAnimationFrame(tick);
+      cancelFlight.current = () => {
+        cancelAnimationFrame(raf);
+        sec?.removeAttribute("data-gesturing");
+        cancelFlight.current = null;
+      };
+    },
+    [world, outer, target, paint, reduce],
+  );
+  const zoomBy = useCallback(
+    (factor: number, at?: Point) => {
+      if (!view.current) return;
+      glideTo(zoomAround(view.current, factor, at ?? { x: size.w / 2, y: size.h / 2 }, size));
+    },
+    [glideTo, size],
+  );
+  // النقر المزدوج على الفراغ (أو على أرضٍ لا تُفتح) يقرّب حول موضعه؛ مع Shift يبعّد.
+  const lastTap = useRef<{ t: number; x: number; y: number } | null>(null);
   const localPoint = (e: { clientX: number; clientY: number }): Point => {
     const box = wrapRef.current?.getBoundingClientRect();
     return { x: e.clientX - (box?.left ?? 0), y: e.clientY - (box?.top ?? 0) };
   };
   const onPointerDown = (e: React.PointerEvent) => {
     if (bare || e.button !== 0) return;
+    setTouring(false);
     cancelAnimationFrame(inertia.current);
     const at = localPoint(e);
     samples.current = [{ ...at, t: performance.now() }];
@@ -765,6 +908,22 @@ export function WorldMap({
         moved,
       };
     }
+    if (!moved && pointers.current.size === 0 && !bare) {
+      const at = localPoint(e);
+      const onShape = (e.target as Element).closest?.(
+        "[data-country],[data-region],[data-at],button,a",
+      );
+      const prev = lastTap.current;
+      if (
+        !onShape &&
+        prev &&
+        performance.now() - prev.t < 320 &&
+        Math.hypot(prev.x - at.x, prev.y - at.y) < 30
+      ) {
+        lastTap.current = null;
+        zoomBy(e.shiftKey ? 1 / 2 : 2, at);
+      } else lastTap.current = onShape ? null : { t: performance.now(), ...at };
+    }
     // سحبٌ انتهى فوق دولة لا يُعدّ ضغطاً عليها — تُكبت نقرته التي تليه
     // مباشرةً فقط؛ وبعد لحظةٍ يُمسح العَلَم فلا يبتلع لمسةً لاحقة بريئة.
     if (moved) {
@@ -802,10 +961,12 @@ export function WorldMap({
     return () => el.removeEventListener("wheel", onWheel);
   }, [bare, applyManual, size]);
 
+  targetRef.current = target;
   // الطيران إلى الهدف — والتلميح يُطفأ: ما تحت المؤشّر تغيّر.
   useEffect(() => {
     setTip(null);
     setManual(false);
+    setDrifted(false);
     if (!target) return;
     const from = view.current;
     if (!from || reduce) {
@@ -851,6 +1012,7 @@ export function WorldMap({
   const resetView = useCallback(() => {
     if (!target || !view.current) return;
     setManual(false);
+    setDrifted(false);
     const from = view.current;
     if (reduce) {
       view.current = target;
@@ -881,6 +1043,7 @@ export function WorldMap({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
+      setTouring(false);
       if (selection.region) onSelect({ country: selection.country, region: null });
       else if (selection.country) onSelect({ country: null, region: null });
     };
@@ -899,6 +1062,7 @@ export function WorldMap({
   const pickCountry = useCallback(
     (c: string) => {
       haptic();
+      setTouring(false);
       onSelect({ country: c, region: null });
     },
     [onSelect],
@@ -906,6 +1070,7 @@ export function WorldMap({
   const pickRegion = useCallback(
     (id: string) => {
       haptic();
+      setTouring(false);
       onSelect({ country: selection.country, region: id });
     },
     [onSelect, selection.country],
@@ -980,6 +1145,88 @@ export function WorldMap({
     [regions, cStat, layer],
   );
 
+  /* ── التنقّل: البحث، والجولة، والسابق/التالي ── */
+  const tourCodes = useMemo(
+    () =>
+      net
+        ? (world?.countries ?? []).filter((c) => activeSet.has(c.c)).map((c) => c.c)
+        : activeCountries.map((c) => c.c),
+    [net, world, activeSet, activeCountries],
+  );
+  const tourMs = 5200;
+  useEffect(() => {
+    if (!touring || !settled || tourCodes.length < 2) return;
+    const id = window.setTimeout(
+      () => {
+        const i = tourCodes.indexOf(selection.country ?? "");
+        const next = tourCodes[(i + 1) % tourCodes.length];
+        if (next) onSelect({ country: next, region: null });
+      },
+      selection.country ? tourMs : 500,
+    );
+    return () => window.clearTimeout(id);
+  }, [touring, settled, selection.country, tourCodes, onSelect]);
+
+  /** الدولة (أو المنطقة) المجاورة في الترتيب نفسه الذي تعرضه القائمة. */
+  const stepPlace = useCallback(
+    (d: 1 | -1) => {
+      const list = selection.region ? rankedRegions.map((x) => x.r.id) : tourCodes;
+      const cur = selection.region ?? selection.country ?? "";
+      const i = list.indexOf(cur);
+      if (list.length < 2) return;
+      const next = list[(Math.max(0, i) + d + list.length) % list.length]!;
+      if (selection.region) pickRegion(next);
+      else pickCountry(next);
+    },
+    [selection, rankedRegions, tourCodes, pickRegion, pickCountry],
+  );
+  const siblingsCount = selection.region ? rankedRegions.length : tourCodes.length;
+
+  const searchItems = useMemo<SearchItem[]>(() => {
+    if (!world) return [];
+    const cs: SearchItem[] = world.countries
+      .filter((c) => activeSet.has(c.c))
+      .map((c) => {
+        const st = net ? undefined : stats[c.c];
+        return {
+          key: `c-${c.c}`,
+          label: c.n,
+          alt: [countryName(c.c, "en"), countryName(c.c, "ar"), c.c],
+          ...(st ? { sub: shown(st.total, locale) } : {}),
+          kind: "country",
+          go: () => pickCountry(c.c),
+        };
+      });
+    const rs: SearchItem[] =
+      country && !net
+        ? regions.map((r) => ({
+            key: `r-${r.id}`,
+            label: r.n,
+            alt: [r.en, ...r.alt.split("|")].filter(Boolean),
+            sub: country.n,
+            kind: "region",
+            go: () => pickRegion(r.id),
+          }))
+        : [];
+    return [...rs, ...cs];
+  }, [world, activeSet, net, stats, locale, country, regions, pickCountry, pickRegion]);
+
+  // + و− و0 على الخارطة (لا في حقلٍ يُكتب فيه).
+  const onMapKey = (e: React.KeyboardEvent) => {
+    if (bare || (e.target as HTMLElement).closest("input,textarea")) return;
+    if (e.key === "+" || e.key === "=") zoomBy(1.8);
+    else if (e.key === "-" || e.key === "_") zoomBy(1 / 1.8);
+    else if (e.key === "0") onCompass();
+    else return;
+    e.preventDefault();
+  };
+  // البوصلة: من إطارٍ حرّكه الزائر إلى إطار الهدف، ومن دولةٍ إلى العالم.
+  const onCompass = () => {
+    setTouring(false);
+    if (drifted) resetView();
+    else if (selection.country) onSelect({ country: null, region: null });
+  };
+
   // المجموع من الدول التي يُكشف عددها؛ الصغيرة تُذكر دون رقمها.
   const totals = { total: Object.values(stats).reduce((a, s) => a + (s.total ?? 0), 0) };
 
@@ -995,6 +1242,7 @@ export function WorldMap({
   return (
     <section
       aria-label={c$.section}
+      onKeyDown={onMapKey}
       className={cn(
         "relative isolate h-[calc(100dvh-4rem)] min-h-[32rem] overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,var(--color-thrive-tint),var(--color-background)_70%)]",
         className,
@@ -1027,6 +1275,27 @@ export function WorldMap({
             aria-description={bare ? undefined : c$.hint}
           >
             {net && <NetworkPatterns />}
+            {/* المحيط: شبكة نقاطٍ خافتة ثابتة الحجم على الشاشة — عمقٌ وإحساسٌ بالحركة. */}
+            <defs>
+              <pattern
+                id="map-grid"
+                data-grid=""
+                width={22}
+                height={22}
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx={11} cy={11} r={1} className="fill-foreground/[0.09]" />
+              </pattern>
+            </defs>
+            <rect
+              aria-hidden="true"
+              x={-world.w}
+              y={-world.h}
+              width={world.w * 3}
+              height={world.h * 3}
+              fill="url(#map-grid)"
+              className="map-grid pointer-events-none"
+            />
             {/* الهبوط الأوّل: العالم يستقرّ من تكبيرٍ خفيف. */}
             <g className="map-land">
               <CountriesLayer
@@ -1064,6 +1333,18 @@ export function WorldMap({
                 onKey={onRegionKey}
                 label={c$.regionButton}
                 layer={layer}
+              />
+            )}
+            {/* حدّ الدولة المختارة يُرسم بخطٍّ مضيء — تنفصل عن الخارطة كأنها رُفعت. */}
+            {country && settled && (
+              <path
+                key={`outline-${country.c}`}
+                d={country.d}
+                pathLength={1}
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+                aria-hidden="true"
+                className="map-outline pointer-events-none"
               />
             )}
             {/* نقاط ذهبية تنبض فوق الدول التي فيها ملفّات — في العالم فقط. */}
@@ -1153,8 +1434,73 @@ export function WorldMap({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,color-mix(in_oklch,var(--color-background)_85%,transparent)_100%)]"
       />
 
+      {/* بقعة ضوء: داخل دولةٍ تخفت الأطراف فتجتمع العين على المكان. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "map-spotlight pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700",
+          country && !bare && "opacity-100",
+        )}
+      />
+
       {!bare && (
         <>
+          {/* ── أدوات الكاميرا: تكبير، ومؤشّر المستوى، وتصغير، وبوصلة ── */}
+          <div
+            ref={zoomRef}
+            role="group"
+            aria-label={c$.zoom}
+            // على الهاتف تُخلي مكانها للورقة المفتوحة (القرصة تكفي)، وتعود حين تُطوى.
+            data-hidden={(!!country && !collapsed) || undefined}
+            className="map-controls pointer-events-auto absolute end-3 top-56 z-[5] transition-[opacity,translate] duration-300 max-md:data-[hidden]:pointer-events-none max-md:data-[hidden]:translate-x-3 max-md:data-[hidden]:opacity-0 flex flex-col items-center gap-0.5 rounded-full bg-card/85 p-1 shadow-[0_0_0_1px_rgb(0_0_0/0.05),0_8px_24px_-10px_rgb(0_0_0/0.3)] backdrop-blur md:end-6 md:top-auto md:bottom-6"
+          >
+            <button
+              type="button"
+              aria-label={c$.zoomIn}
+              title={`${c$.zoomIn} (+)`}
+              onClick={() => {
+                setTouring(false);
+                zoomBy(1.8);
+              }}
+              className="map-ctrl"
+            >
+              <Plus className="size-4" aria-hidden="true" />
+            </button>
+            <div
+              aria-hidden="true"
+              className="relative my-1 hidden h-14 w-1 rounded-full bg-secondary sm:block"
+            >
+              <span className="map-zoom-thumb absolute -inset-x-[3px] h-2.5 rounded-full bg-primary shadow-sm" />
+            </div>
+            <button
+              type="button"
+              aria-label={c$.zoomOut}
+              title={`${c$.zoomOut} (−)`}
+              onClick={() => {
+                setTouring(false);
+                zoomBy(1 / 1.8);
+              }}
+              className="map-ctrl"
+            >
+              <Minus className="size-4" aria-hidden="true" />
+            </button>
+            <span aria-hidden="true" className="my-0.5 h-px w-5 bg-border" />
+            <button
+              type="button"
+              aria-label={drifted ? c$.zoomFit : c$.zoomWorld}
+              title={`${drifted ? c$.zoomFit : c$.zoomWorld} (0)`}
+              onClick={onCompass}
+              disabled={!country && !drifted}
+              className="map-ctrl disabled:opacity-40"
+            >
+              {drifted ? (
+                <LocateFixed className="size-4" aria-hidden="true" />
+              ) : (
+                <Compass className="map-compass size-4" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+
           {/* ── الطبقة العلوية: المسار، والعنوان، والبطاقات ── */}
           <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-2 p-3 md:gap-3 md:p-6">
             <nav aria-label={c$.breadcrumb} className="pointer-events-auto">
@@ -1205,10 +1551,22 @@ export function WorldMap({
             <div className="pointer-events-auto flex w-full flex-wrap items-center gap-2 md:w-auto">
               {onLayer && (
                 <div
+                  ref={layerRef}
                   role="group"
                   aria-label={c$.layers}
-                  className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur [scrollbar-width:none]"
+                  className="relative flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full bg-card/85 p-1 text-sm shadow-sm backdrop-blur [scrollbar-width:none]"
                 >
+                  {/* مؤشّرٌ ينزلق بين الطبقات بدل أن يقفز اللون من زرٍّ إلى زرّ. */}
+                  {pill && (
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "map-pill absolute inset-y-1 rounded-full",
+                        layer === "needs" ? "bg-office-gap" : "bg-primary",
+                      )}
+                      style={{ left: pill.left, width: pill.width }}
+                    />
+                  )}
                   <Layers
                     className="ms-2 size-4 shrink-0 text-muted-foreground"
                     aria-hidden="true"
@@ -1229,14 +1587,18 @@ export function WorldMap({
                       title={hint}
                       onClick={() => onLayer(key)}
                       className={cn(
-                        "min-h-8 shrink-0 rounded-full px-3 whitespace-nowrap transition-colors",
+                        "relative min-h-8 shrink-0 rounded-full px-3 whitespace-nowrap transition-colors duration-300",
                         // فاصلٌ رفيع بين طبقتي الشبكة (بحثية) وطبقات المنصّة (حيّة).
                         i === 2 && "ms-1.5",
                         layer === key
                           ? key === "needs"
-                            ? "bg-office-gap text-card"
-                            : "bg-primary text-primary-foreground"
-                          : "hover:bg-secondary",
+                            ? "text-card"
+                            : "text-primary-foreground"
+                          : "hover:bg-secondary/70",
+                        // قبل القياس الأوّل: لونٌ ثابت كما كان.
+                        layer === key &&
+                          !pill &&
+                          (key === "needs" ? "bg-office-gap" : "bg-primary"),
                       )}
                     >
                       {name}
@@ -1257,17 +1619,32 @@ export function WorldMap({
                   {c$.unavailable}
                 </span>
               )}
-              {manual && !sameView(view.current, target) && (
-                <Button
+              <MapSearch
+                items={searchItems}
+                copy={{
+                  open: c$.search,
+                  placeholder: c$.searchPlaceholder,
+                  none: c$.searchNone,
+                  close: c$.searchClose,
+                }}
+              />
+              {tourCodes.length > 1 && (
+                <button
                   type="button"
-                  variant="outline"
-                  size="sm"
-                  className="map-rise shrink-0 bg-card/85 backdrop-blur"
-                  onClick={resetView}
+                  aria-pressed={touring}
+                  onClick={() => setTouring((t) => !t)}
+                  className={cn(
+                    "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm shadow-sm backdrop-blur transition-[background-color,color,scale] active:scale-[0.97]",
+                    touring ? "bg-bridge text-bridge-foreground" : "bg-card/85 hover:bg-card",
+                  )}
                 >
-                  <LocateFixed aria-hidden="true" />
-                  {c$.reset}
-                </Button>
+                  {touring ? (
+                    <Pause className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Play className="size-4" aria-hidden="true" />
+                  )}
+                  <span className="max-sm:sr-only">{touring ? c$.tourStop : c$.tour}</span>
+                </button>
               )}
               <Button
                 type="button"
@@ -1342,8 +1719,22 @@ export function WorldMap({
               key={`${country.c}-${region?.id ?? ""}`}
               aria-live="polite"
               data-collapsed={collapsed || undefined}
+              // سحبٌ أفقيّ على البطاقة ينتقل إلى الجار: في العربية يميناً للتالي.
+              onPointerDown={(e) => {
+                swipe.current = { x: e.clientX, y: e.clientY };
+              }}
+              onPointerUp={(e) => {
+                const s0 = swipe.current;
+                swipe.current = null;
+                if (!s0) return;
+                const dx = e.clientX - s0.x;
+                const dy = e.clientY - s0.y;
+                if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 2) return;
+                stepPlace(dx > 0 === (locale === "ar") ? 1 : -1);
+              }}
+              style={{ touchAction: "pan-y" }}
               className={cn(
-                "map-rise map-sheet absolute inset-x-3 bottom-3 overflow-y-auto overscroll-contain rounded-3xl bg-card/95 p-5 pt-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96 md:pt-5",
+                "map-card map-sheet absolute inset-x-3 bottom-3 overflow-y-auto overscroll-contain rounded-3xl bg-card/95 p-5 pt-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-8px_rgb(0_0_0/0.18)] backdrop-blur md:inset-x-auto md:start-6 md:bottom-6 md:w-96 md:pt-5",
                 // بطاقة الشبكة أطول (ثلاث كتل): تتمرّر داخلها على الحاسوب أيضاً.
                 net ? "md:top-20 md:overflow-y-auto" : "md:overflow-visible",
                 collapsed ? "max-h-36" : "max-h-[42dvh] md:max-h-none",
@@ -1380,23 +1771,57 @@ export function WorldMap({
                     <MapPin className="size-3.5" aria-hidden="true" />
                     {region ? country.n : c$.country}
                   </p>
-                  <h2 className="mt-1 text-2xl font-extrabold">{region ? region.n : country.n}</h2>
+                  <h2 className="map-title mt-1 text-2xl font-extrabold">
+                    {region ? region.n : country.n}
+                  </h2>
                 </div>
-                <button
-                  type="button"
-                  aria-label={c$.back}
-                  onClick={() =>
-                    onSelect(
-                      region
-                        ? { country: country.c, region: null }
-                        : { country: null, region: null },
-                    )
-                  }
-                  className="-m-1 grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
-                >
-                  <X className="size-4" aria-hidden="true" />
-                </button>
+                <div className="-m-1 flex shrink-0 items-center gap-0.5">
+                  {siblingsCount > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        aria-label={c$.prev}
+                        title={c$.prev}
+                        onClick={() => stepPlace(-1)}
+                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
+                      >
+                        <ChevronRight className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={c$.next}
+                        title={c$.next}
+                        onClick={() => stepPlace(1)}
+                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
+                      >
+                        <ChevronLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    aria-label={c$.back}
+                    onClick={() =>
+                      onSelect(
+                        region
+                          ? { country: country.c, region: null }
+                          : { country: null, region: null },
+                      )
+                    }
+                    className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
+                  >
+                    <X className="size-4" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
+              {/* الجولة: شريطٌ يمتلئ حتى الدولة التالية. */}
+              {touring && (
+                <span
+                  aria-hidden="true"
+                  className="map-tour-bar absolute inset-x-5 top-0 h-0.5 rounded-full bg-bridge"
+                  style={{ animationDuration: `${tourMs}ms` }}
+                />
+              )}
 
               {(() => {
                 // في طبقتي الشبكة تصير أعداد المنصّة الكتلة الثالثة بحجمٍ مختصر.
@@ -1444,7 +1869,11 @@ export function WorldMap({
                             compact ? "text-3xl" : "text-5xl",
                           )}
                         >
-                          {small ? shown(null, locale) : <CountUp to={s.total!} reduce={reduce} />}
+                          {small ? (
+                            shown(null, locale)
+                          ) : (
+                            <CountUp to={s.total!} reduce={reduce} memo={countMemo} />
+                          )}
                         </span>
                         <span className="text-sm text-muted-foreground">{c$.verified}</span>
                       </p>

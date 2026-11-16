@@ -252,7 +252,10 @@ function DashboardPage() {
                   : 0;
 
                 return (
-                  <article key={s.id} className="rounded-3xl border border-border bg-card p-5 shadow-soft lift">
+                  <article
+                    key={s.id}
+                    className="rounded-3xl border border-border bg-card p-5 shadow-soft lift"
+                  >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       <MuralImage
                         photoUrl={null}

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 856,
+ "count": 869,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1490,10 +1490,10 @@
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.hint": {
-   "en": "Pinch to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one.",
-   "ar": "اقرص للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول وEnter للدخول.",
+   "en": "Pinch or double-tap to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one, + and − zoom, / searches.",
+   "ar": "اقرص أو انقر مرّتين للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول، وEnter للدخول، و+ و− للتكبير، و/ للبحث.",
    "kind": "text",
-   "hash": "3ef7a080f99b",
+   "hash": "0f8c0a9eefd4",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.introA": {
@@ -1588,6 +1588,13 @@
    "hash": "114518722149",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.next": {
+   "en": "Next",
+   "ar": "التالي",
+   "kind": "text",
+   "hash": "fec227498b7b",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.none": {
    "en": "No verified files here yet.",
    "ar": "لا ملفّات موثّقة هنا بعد.",
@@ -1608,6 +1615,13 @@
    "ar": "اختر بلداً",
    "kind": "text",
    "hash": "14ba2e8f3e65",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.prev": {
+   "en": "Previous",
+   "ar": "السابق",
+   "kind": "text",
+   "hash": "554dbaac2d20",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.regionButton": {
@@ -1640,6 +1654,34 @@
    "hash": "1dab42f126ae",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.search": {
+   "en": "Search",
+   "ar": "ابحث",
+   "kind": "text",
+   "hash": "03f341d0e648",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.searchClose": {
+   "en": "Close search",
+   "ar": "إغلاق البحث",
+   "kind": "text",
+   "hash": "d14a3debc8ef",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.searchNone": {
+   "en": "No results",
+   "ar": "لا نتائج",
+   "kind": "text",
+   "hash": "95cc7411fe2f",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.searchPlaceholder": {
+   "en": "Search a country or region…",
+   "ar": "ابحث عن دولة أو منطقة…",
+   "kind": "text",
+   "hash": "ed1e081a6689",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.section": {
    "en": "Map of orphans worldwide",
    "ar": "خارطة الأيتام في العالم",
@@ -1652,6 +1694,20 @@
    "ar": "مكفول",
    "kind": "text",
    "hash": "6d23172d24c3",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.tour": {
+   "en": "Explore",
+   "ar": "اكتشف",
+   "kind": "text",
+   "hash": "c26d08c34ae1",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.tourStop": {
+   "en": "Stop the tour",
+   "ar": "أوقف الجولة",
+   "kind": "text",
+   "hash": "6b9060716450",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.unavailable": {
@@ -1694,6 +1750,41 @@
    "ar": "خارطة العالم",
    "kind": "text",
    "hash": "d5e36efbecb4",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.zoom": {
+   "en": "Zoom",
+   "ar": "التكبير",
+   "kind": "text",
+   "hash": "8bc9106be572",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.zoomFit": {
+   "en": "Back to the frame",
+   "ar": "عودة إلى الإطار",
+   "kind": "text",
+   "hash": "3b1a4863add3",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.zoomIn": {
+   "en": "Zoom in",
+   "ar": "تكبير",
+   "kind": "text",
+   "hash": "a088bf03b07c",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.zoomOut": {
+   "en": "Zoom out",
+   "ar": "تصغير",
+   "kind": "text",
+   "hash": "804772e6ffe2",
+   "file": "src/components/map/WorldMap.tsx"
+  },
+  "components/map/WorldMap.zoomWorld": {
+   "en": "Whole world",
+   "ar": "العالم كاملاً",
+   "kind": "text",
+   "hash": "f9bdd7dca355",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/offices/OfficeChecklist.admin": {

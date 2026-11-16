@@ -65,6 +65,7 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/audit-path-verification.sql \
               supabase/tests/profile-trust-verification.sql \
               supabase/tests/child-exposure-verification.sql \
+              supabase/tests/reconcile-drizzle-verification.sql \
               supabase/tests/grants-verification.sql \
               supabase/tests/trust-accountability-verification.sql \
               supabase/tests/cohort-perf-verification.sql \

@@ -476,8 +476,14 @@ function HomePage() {
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.14} tile={104} />
           <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-primary/40" />
-          <div aria-hidden="true" className="blob top-1/3 -left-24 size-96 bg-bridge/40 [animation-delay:-6s]" />
-          <div aria-hidden="true" className="blob -bottom-24 right-1/3 size-72 bg-shore-thrive/40 [animation-delay:-12s]" />
+          <div
+            aria-hidden="true"
+            className="blob top-1/3 -left-24 size-96 bg-bridge/40 [animation-delay:-6s]"
+          />
+          <div
+            aria-hidden="true"
+            className="blob -bottom-24 right-1/3 size-72 bg-shore-thrive/40 [animation-delay:-12s]"
+          />
           <div className="relative mx-auto max-w-6xl px-4 pt-10 pb-10 text-center md:pt-14 md:pb-12">
             <div className="flex flex-col items-center">
               <KahataynMark className="h-16 w-auto md:h-20" title={c.logo(brand.name)} />
@@ -543,7 +549,10 @@ function HomePage() {
         </section>
 
         {/* ── اختر أثرك: المسارات الثلاثة بأسمائها من config/giving-tracks ── */}
-        <section className="reveal-scroll mx-auto max-w-6xl px-4 py-14 md:py-16" aria-labelledby="tracks-heading">
+        <section
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-14 md:py-16"
+          aria-labelledby="tracks-heading"
+        >
           <h2 id="tracks-heading" className="text-[1.75rem] leading-tight font-extrabold">
             {g.heading}
           </h2>
@@ -669,7 +678,10 @@ function HomePage() {
         </section>
 
         {/* ── الشطّان والمضيق ── */}
-        <section className="reveal-scroll mx-auto max-w-6xl px-4 py-16" aria-labelledby="crossing-heading">
+        <section
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          aria-labelledby="crossing-heading"
+        >
           <h2 id="crossing-heading" className="text-2xl font-extrabold">
             {c.crossingH}
           </h2>
@@ -717,7 +729,10 @@ function HomePage() {
         </section>
 
         {/* ── مراتب الوعي ── */}
-        <section className="reveal-scroll mx-auto max-w-6xl px-4 py-16" aria-labelledby="ladder-heading">
+        <section
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          aria-labelledby="ladder-heading"
+        >
           <h2 id="ladder-heading" className="text-2xl font-extrabold">
             {c.ladderH}
           </h2>
@@ -834,7 +849,10 @@ function HomePage() {
         )}
 
         {/* ── سلسلة التوثيق ── */}
-        <section className="reveal-scroll mx-auto max-w-6xl px-4 py-16" aria-labelledby="custody-heading">
+        <section
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          aria-labelledby="custody-heading"
+        >
           <h2 id="custody-heading" className="text-2xl font-extrabold">
             {c.custodyH}
           </h2>

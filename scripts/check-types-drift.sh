@@ -48,14 +48,16 @@ check Views "SELECT relname FROM pg_class WHERE relnamespace = 'public'::regname
 check Functions "SELECT proname FROM pg_proc WHERE pronamespace = 'public'::regnamespace" || rc=1
 check Enums "SELECT typname FROM pg_type WHERE typnamespace = 'public'::regnamespace AND typtype = 'e'" || rc=1
 
-# drizzle/ ليس طريق هجرة: ملفّاته الثلاثة الأولى نُقلت إلى
-# 20261108200000_port_drizzle_policies.sql. ملفٌّ جديدٌ فيه يعني أنّ أحداً طبّق
+# drizzle/ ليس طريق هجرة: 0000–0002 نُقلت إلى 20261108200000_port_drizzle_policies.sql،
+# و0003–0004 إلى 20261116100000_reconcile_live_drizzle.sql. ملفٌّ جديدٌ فيه يعني أنّ أحداً طبّق
 # تغييراً على الإنتاج من خارج السلسلة.
 if [[ -d drizzle/migrations ]]; then
   extra=$(find drizzle/migrations -maxdepth 1 -name '*.sql' \
     ! -name '0000_restrict_platform_settings_read.sql' \
     ! -name '0001_restrict_public_media_read.sql' \
-    ! -name '0002_restrict_lookup_reads.sql' | sort)
+    ! -name '0002_restrict_lookup_reads.sql' \
+    ! -name '0003_support_network_countries.sql' \
+    ! -name '0004_gate_enrollment_supervisor_lookups.sql' | sort)
   if [[ -n "$extra" ]]; then
     printf '  ✗ drizzle/migrations يحمل SQL لم يُنقل إلى supabase/migrations:\n'
     printf '      %s\n' $extra
