@@ -16,6 +16,7 @@
     "test:watch": "vitest",
     "test:db": "scripts/db-test.sh",
     "test:e2e": "node scripts/e2e-smoke.mjs",
+    "test:e2e:vision": "node scripts/e2e-vision.mjs",
     "i18n:extract": "node scripts/i18n-extract.mjs",
     "brand:sync": "node scripts/brand-sync.mjs"
   },

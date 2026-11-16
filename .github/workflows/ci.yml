@@ -107,3 +107,38 @@ jobs:
       # قاعدةً ولا يصحّ أن يضرب قاعدة الإنتاج. يُشغَّل يدوياً على نشرٍ قائم:
       #   BASE_URL=https://… node scripts/e2e-smoke.mjs
       # أو محلّياً على البناء: node scripts/serve-worker.mjs & node scripts/e2e-smoke.mjs
+
+  vision-e2e:
+    name: منصة الرؤية — المتصفّح بالأدوار الثلاثة
+    runs-on: ubuntu-latest
+    # منصة الرؤية والتوجهات تعمل كلّها في متصفّح الزائر، فلا تحتاج قاعدة:
+    # تُبنى، وتُخدَم كما في الإنتاج (serve-worker بالرؤوس الأمنية)، ثم تُمَرّ
+    # صفحاتها ورحلات الداعم والمشرف وصاحب القرار مع فحص الوصول داخل كلّ دور.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: تركيب الحزم من القفل
+        run: |
+          sed -i 's#https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/#https://registry.npmjs.org/#g' bun.lock
+          bun install --frozen-lockfile
+          git checkout -- bun.lock
+
+      - name: البناء
+        run: bun run build
+
+      - name: أدوات الاختبار (خارج package.json)
+        run: |
+          npm install --prefix "$RUNNER_TEMP/e2e" --no-save --no-package-lock playwright@1.63.0 axe-core@4.10.2
+          "$RUNNER_TEMP/e2e/node_modules/.bin/playwright" install --with-deps chromium
+
+      - name: الخدمة والاختبار
+        env:
+          NODE_PATH: ${{ runner.temp }}/e2e/node_modules
+        run: |
+          node scripts/serve-worker.mjs > serve.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:4173/vision && break; sleep 1; done
+          node scripts/e2e-vision.mjs || { tail -40 serve.log; exit 1; }
