@@ -95,7 +95,7 @@
   --gradient-primary: linear-gradient(
     135deg,
     var(--primary),
-    color-mix(in oklab, var(--primary) 70%, var(--bridge))
+    color-mix(in oklab, var(--primary) 84%, var(--background))
   );
 
   /* الألوان كلّها في src/config/brand.json — تُحقن من src/config/brand-colors.ts.
@@ -890,4 +890,10 @@ header.sticky {
     animation-timeline: view();
     animation-range: entry 0% cover 22%;
   }
+}
+
+/* تبديل المظهر: لحظةٌ بلا انتقالات فلا تتدرّج كلّ حدود الصفحة وخلفياتها. */
+.theme-switching,
+.theme-switching * {
+  transition: none !important;
 }

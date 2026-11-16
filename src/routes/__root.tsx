@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { onAuthEvent } from "@/lib/client-state";
 import { BRAND_CSS } from "@/config/brand-colors";
+import { readTheme } from "@/lib/theme";
 import { BRAND, brandFor } from "@/config/brand";
 import {
   defineCopy,
@@ -179,10 +180,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   // اللغة قبل أي رسم: الخادم يقرؤها من الكعكة فيخرج <html> باتجاهه الصحيح.
   // والترجمة المنشورة معها، فلا تُرسم الصفحة بالإنجليزية ثم تتبدّل.
   beforeLoad: async () => {
-    const ui = await loadUi(await readLocale());
+    const [ui, theme] = await Promise.all([readLocale().then(loadUi), readTheme()]);
     // قبل العناوين: دوالّ head تقرأ الترجمة من المخزن قبل أن يُرسم أي مكوّن.
     if (ui.messages) setMessages(ui.locale, ui.messages);
-    return { locale: ui.locale, ui };
+    return { locale: ui.locale, ui, theme };
   },
   head: ({ match }) => ({
     meta: [
@@ -225,9 +226,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
-  const { locale, ui } = Route.useRouteContext();
+  const { locale, ui, theme } = Route.useRouteContext();
   return (
-    <html lang={locale} dir={dirOf(locale)}>
+    <html
+      lang={locale}
+      dir={dirOf(locale)}
+      className={theme === "dark" ? "dark" : undefined}
+      style={{ colorScheme: theme }}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

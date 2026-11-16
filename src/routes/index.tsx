@@ -475,7 +475,7 @@ function HomePage() {
         {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.14} tile={104} />
-          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-primary/40" />
+          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-shore-need/45" />
           <div
             aria-hidden="true"
             className="blob top-1/3 -left-24 size-96 bg-bridge/40 [animation-delay:-6s]"
