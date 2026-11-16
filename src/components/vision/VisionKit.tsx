@@ -73,7 +73,7 @@ export function VisionShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
     <VisionStoreProvider>
-      <div className="min-h-dvh bg-ivory text-foreground">
+      <div className="theme-light min-h-dvh bg-ivory text-foreground">
         <SiteHeader />
         <main id="main" tabIndex={-1}>
           <nav
