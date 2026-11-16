@@ -1,5 +1,5 @@
 /**
- * حالة المنظومة الحيّة لصفحات التحوّل: محرّكٌ واحد (`vision-engine`) تقرأه
+ * حالة المنظومة الحيّة لصفحات منصة الرؤية والتوجهات: محرّكٌ واحد (`vision-engine`) تقرأه
  * المنصّات الثلاث وتكتب فيه. تُحفظ في متصفّح الزائر وتتزامن بين تبويباته،
  * فتبرّعٌ في «رحلة المال» يظهر فوراً في لوحة القرار المفتوحة في تبويبٍ آخر.
  * بيئةٌ تجريبية: لا يُرسل شيءٌ منها إلى خادمٍ أو قاعدة.
@@ -35,7 +35,30 @@ type Store = {
   state: VisionState;
   ready: boolean;
   dispatch: (a: DistributiveOmit<Action, "at">) => void;
+  persona: Persona | null;
+  setPersona: (p: Persona | null) => void;
 };
+
+/** من يتصفّح البيئة التجريبية: داعمٌ، أو مشرفٌ في التشغيل، أو صاحب القرار — بلا حساب. */
+export type Role = "supporter" | "supervisor" | "decider";
+export type Persona = { role: Role; name: string };
+const PERSONA_KEY = "vision-persona:v1";
+
+function readPersona(): Persona | null {
+  try {
+    const x = JSON.parse(localStorage.getItem(PERSONA_KEY) ?? "null") as Persona | null;
+    if (
+      x &&
+      ["supporter", "supervisor", "decider"].includes(x.role) &&
+      typeof x.name === "string"
+    ) {
+      return { role: x.role, name: x.name.slice(0, 40) };
+    }
+  } catch {
+    /* تجاهل */
+  }
+  return null;
+}
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 const Ctx = createContext<Store | null>(null);
@@ -43,6 +66,7 @@ const Ctx = createContext<Store | null>(null);
 export function VisionStoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<VisionState>(seed);
   const [ready, setReady] = useState(false);
+  const [persona, setPersonaState] = useState<Persona | null>(null);
 
   useEffect(() => {
     try {
@@ -51,8 +75,10 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
     } catch {
       /* تخزينٌ محجوب: نبدأ من البذرة */
     }
+    setPersonaState(readPersona());
     setReady(true);
     const onStorage = (e: StorageEvent) => {
+      if (e.key === PERSONA_KEY) return setPersonaState(readPersona());
       if (e.key !== KEY) return;
       try {
         setState(e.newValue ? revive(JSON.parse(e.newValue)) : seed());
@@ -78,7 +104,20 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const value = useMemo(() => ({ state, ready, dispatch }), [state, ready, dispatch]);
+  const setPersona = useCallback((p: Persona | null) => {
+    setPersonaState(p);
+    try {
+      if (p) localStorage.setItem(PERSONA_KEY, JSON.stringify(p));
+      else localStorage.removeItem(PERSONA_KEY);
+    } catch {
+      /* تجاهل */
+    }
+  }, []);
+
+  const value = useMemo(
+    () => ({ state, ready, dispatch, persona, setPersona }),
+    [state, ready, dispatch, persona, setPersona],
+  );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
@@ -325,9 +364,12 @@ export function Feed({
 export function DonateForm({
   className,
   defaultTarget = "tirana",
+  fixedDonor,
 }: {
   className?: string;
   defaultTarget?: string;
+  /** الداعم الحاليّ: يُكتب التبرّع باسمه ولا يُسأل عنه. */
+  fixedDonor?: string;
 }) {
   const { state, dispatch } = useVision();
   const c = useCopy(COPY);
@@ -343,7 +385,7 @@ export function DonateForm({
     const isGroup = target.startsWith("demo-g-");
     dispatch({
       type: "donate",
-      donor: donor || c.donorPh.replace(/^.*?: /, ""),
+      donor: fixedDonor || donor || c.donorPh.replace(/^.*?: /, ""),
       amount,
       method,
       target: { kind: isGroup ? "group" : "city", id: target },
@@ -368,16 +410,18 @@ export function DonateForm({
       </div>
       <p className="mt-1 text-sm text-muted-foreground">{c.formLead}</p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <label className="text-sm font-semibold text-wine-ink">
-          {c.donor}
-          <input
-            className={field}
-            value={donor}
-            maxLength={40}
-            placeholder={c.donorPh}
-            onChange={(e) => setDonor(e.target.value)}
-          />
-        </label>
+        {!fixedDonor && (
+          <label className="text-sm font-semibold text-wine-ink">
+            {c.donor}
+            <input
+              className={field}
+              value={donor}
+              maxLength={40}
+              placeholder={c.donorPh}
+              onChange={(e) => setDonor(e.target.value)}
+            />
+          </label>
+        )}
         <label className="text-sm font-semibold text-wine-ink">
           {c.amount}
           <input

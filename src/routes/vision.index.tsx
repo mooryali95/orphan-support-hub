@@ -21,7 +21,7 @@ export const Route = createFileRoute("/vision/")({
 
 const COPY = defineCopy("routes/vision.index", {
   ar: {
-    title: "التحوّل الاستراتيجي للأيتام",
+    title: "منصة الرؤية والتوجهات",
     lead: "رؤيةٌ من ثلاث طبقات، أولاها تعمل اليوم: التشغيل حيث يُبنى اليتيم، والدعم حيث يختار الداعم أثره، والقرار حيث تُرى المنظومة كلّها.",
     tagline: "رعايةٌ تبني الأهليّة",
     open: "افتح",
@@ -33,12 +33,13 @@ const COPY = defineCopy("routes/vision.index", {
     moneyH: "رحلة المال",
     moneyText: "أين يصل المال وكيف: من ضغطة الداعم إلى يد المشرف، بسجلٍّ لا يُمحى.",
     watch: "شاهد",
+    enter: "ادخل بدورك: داعم، مشرف، صاحب قرار",
     liveH: "نظامٌ يعمل، لا عرضٌ مسجَّل",
     liveLead:
       "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
   },
   en: {
-    title: "The strategic transformation for orphans",
+    title: "The Vision and Directions platform",
     lead: "A vision in three layers, the first live today: operations where the orphan is built, support where the supporter chooses an impact, and decision where the whole system is seen.",
     tagline: "Care that builds capability",
     open: "Open",
@@ -52,6 +53,7 @@ const COPY = defineCopy("routes/vision.index", {
     moneyText:
       "Where the money lands and how: from the supporter's tap to the supervisor's hands, with an indelible record.",
     watch: "Watch",
+    enter: "Enter by role: supporter, supervisor, decision-maker",
     liveH: "A working system, not a recording",
     liveLead:
       "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change — synced across tabs.",
@@ -104,6 +106,14 @@ function VisionHub() {
               </li>
             ))}
           </ul>
+          <Link
+            to="/vision/me"
+            className="vision-rise mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-gold px-7 font-bold text-wine-deep shadow-[0_12px_32px_-12px_rgb(201_161_96/0.7)] transition-transform hover:-translate-y-0.5 active:scale-[0.97]"
+            style={{ animationDelay: "420ms" }}
+          >
+            {c.enter}
+            <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+          </Link>
           <dl className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4">
             {(
               [

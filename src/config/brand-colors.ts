@@ -74,8 +74,9 @@ function block(mode: "light" | "dark") {
     .join("");
 }
 
-/** متغيّرات CSS للوضعين — تُحقن في <head> قبل أوّل رسم. */
-export const BRAND_CSS = `:root{${block("light")}}.dark{${block("dark")}}`;
+/** متغيّرات CSS للوضعين — تُحقن في <head> قبل أوّل رسم. و`.theme-light` يثبّت الفاتح
+ * لجزءٍ من الصفحة مهما كان المظهر (صفحات الشريك في /vision). */
+export const BRAND_CSS = `:root{${block("light")}}.dark{${block("dark")}}.theme-light{${block("light")}color-scheme:light}`;
 
 /** لون شريط المتصفّح على الجوال. */
 export const THEME_COLOR = COLORS.light.green;

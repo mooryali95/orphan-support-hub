@@ -121,3 +121,17 @@ describe("vision engine", () => {
     expect(revive(null).events).toEqual([]);
   });
 });
+
+describe("demo children", async () => {
+  const { childrenOf, stageOf } = await import("./vision-children");
+  it("derives stable pseudonymous files that follow the group", () => {
+    const s = seed();
+    const g = s.groups[0]!;
+    const a = childrenOf(g);
+    expect(a).toHaveLength(g.members);
+    expect(childrenOf(g)).toEqual(a);
+    expect(a.every((c) => c.code.startsWith("DEMO-"))).toBe(true);
+    const waiting = s.groups.find((x) => !isFunded(x))!;
+    expect(stageOf(waiting)).toBe("waiting");
+  });
+});

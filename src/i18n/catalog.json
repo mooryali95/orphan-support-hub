@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1145,
+ "count": 1218,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -405,10 +405,10 @@
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.vision": {
-   "en": "Strategic transformation",
-   "ar": "التحوّل الاستراتيجي",
+   "en": "Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "dc2ab0a5389a",
+   "hash": "e8b8e8936f8b",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteHeader.home": {
@@ -3473,6 +3473,13 @@
    "hash": "948a714654ef",
    "file": "src/components/vision/VisionKit.tsx"
   },
+  "components/vision/VisionKit.me": {
+   "en": "Enter by role",
+   "ar": "ادخل بدورك",
+   "kind": "text",
+   "hash": "7404da91485b",
+   "file": "src/components/vision/VisionKit.tsx"
+  },
   "components/vision/VisionKit.money": {
    "en": "Money journey",
    "ar": "رحلة المال",
@@ -3481,10 +3488,10 @@
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.nav": {
-   "en": "Strategic transformation",
-   "ar": "التحوّل الاستراتيجي",
+   "en": "Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "dc2ab0a5389a",
+   "hash": "e8b8e8936f8b",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.ops": {
@@ -6790,10 +6797,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.chip": {
-   "en": "Outlook and direction",
-   "ar": "التصورات والتوجهات",
+   "en": "Vision and directions",
+   "ar": "الرؤية والتوجهات",
    "kind": "text",
-   "hash": "08845142dbb1",
+   "hash": "b23d5d3a8f26",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.countryH": {
@@ -7187,17 +7194,17 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.tabShift": {
-   "en": "Transformation",
-   "ar": "التحوّل",
+   "en": "Indicator",
+   "ar": "المؤشّر",
    "kind": "text",
-   "hash": "92e9fe5a0232",
+   "hash": "bf1123b58bc7",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.title": {
-   "en": "Outlook and direction",
-   "ar": "التصورات والتوجهات",
+   "en": "Vision and directions",
+   "ar": "الرؤية والتوجهات",
    "kind": "text",
-   "hash": "08845142dbb1",
+   "hash": "b23d5d3a8f26",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.toOps": {
@@ -7234,6 +7241,13 @@
    "ar": "تبرّعٌ واحد يمرّ بالطبقات الثلاث ويعود قراراً — خطوةً بخطوة.",
    "kind": "text",
    "hash": "dc9cb4932110",
+   "file": "src/routes/vision.index.tsx"
+  },
+  "routes/vision.index.enter": {
+   "en": "Enter by role: supporter, supervisor, decision-maker",
+   "ar": "ادخل بدورك: داعم، مشرف، صاحب قرار",
+   "kind": "text",
+   "hash": "f16cb4ab65d3",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.lead": {
@@ -7307,10 +7321,10 @@
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.title": {
-   "en": "The strategic transformation for orphans",
-   "ar": "التحوّل الاستراتيجي للأيتام",
+   "en": "The Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "4766d9ae44c1",
+   "hash": "9db25298ce26",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.watch": {
@@ -7319,6 +7333,506 @@
    "kind": "text",
    "hash": "5d98851469ae",
    "file": "src/routes/vision.index.tsx"
+  },
+  "routes/vision.me.after": {
+   "en": "After",
+   "ar": "بعد",
+   "kind": "text",
+   "hash": "f7a9c74a7ec9",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.age": {
+   "en": "{0} years",
+   "ar": "{0} سنة",
+   "kind": "template",
+   "params": 1,
+   "hash": "f80ad8bdb9b7",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.approve": {
+   "en": "Approve",
+   "ar": "اعتمد",
+   "kind": "text",
+   "hash": "2db52612c0be",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.as": {
+   "en": "Browsing as: {0}",
+   "ar": "تتصفّح بدور: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "3a0dd7a39ba1",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.before": {
+   "en": "Before",
+   "ar": "قبل",
+   "kind": "text",
+   "hash": "fad11c557c72",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.decH": {
+   "en": "Indicators today",
+   "ar": "المؤشّرات اليوم",
+   "kind": "text",
+   "hash": "caf81f180e23",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.defaultName.decider": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.defaultName.supervisor": {
+   "en": "Supervisor “A. R.”",
+   "ar": "المشرف «أ. ر.»",
+   "kind": "text",
+   "hash": "7c710cdfa991",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.defaultName.supporter": {
+   "en": "Demo supporter",
+   "ar": "داعمٌ تجريبي",
+   "kind": "text",
+   "hash": "c15ec84adeef",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.file": {
+   "en": "Child file",
+   "ar": "ملف الطفل",
+   "kind": "text",
+   "hash": "a32ef1721fcc",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.filesH": {
+   "en": "Files of those you support",
+   "ar": "ملفات من تدعمهم",
+   "kind": "text",
+   "hash": "102fd34d9ff5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.filesLead": {
+   "en": "Pseudonym, age and stage — no photo, no place. Tap a file to see the journey.",
+   "ar": "أسماءٌ مستعارة وعمرٌ ومرحلة — بلا صورةٍ ولا مكان. اضغط ملفاً لترى رحلته.",
+   "kind": "text",
+   "hash": "65179fc23dbc",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.funding": {
+   "en": "Qualification funding",
+   "ar": "تمويل التأهيل",
+   "kind": "text",
+   "hash": "249e337c8e6d",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.gap": {
+   "en": "children in the gap",
+   "ar": "طفلاً في الفجوة",
+   "kind": "text",
+   "hash": "2b1e1a525f47",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.giveH": {
+   "en": "Donate in your name",
+   "ar": "تبرّع باسمك",
+   "kind": "text",
+   "hash": "fe5282553b62",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.groupOf": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.groups": {
+   "en": "Funded groups",
+   "ar": "مجموعات مموّلة",
+   "kind": "text",
+   "hash": "694eb838f309",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.hello": {
+   "en": "Welcome, {0}",
+   "ar": "أهلاً، {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "1e7ebe2648d7",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.journey": {
+   "en": "Journey",
+   "ar": "الرحلة",
+   "kind": "text",
+   "hash": "04f225ddd967",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.label": {
+   "en": "Demo sign-in",
+   "ar": "الدخول التجريبي",
+   "kind": "text",
+   "hash": "1f49c5ff6b17",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.lead": {
+   "en": "A complete sandbox with no account: pick a role and its interface opens; everything you do is kept in your browser.",
+   "ar": "بيئةٌ تجريبية كاملة بلا حساب: اختر دورك فتُفتح لك واجهته، ويُحفظ كلّ ما تفعله في متصفّحك.",
+   "kind": "text",
+   "hash": "932b017994d9",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.measure": {
+   "en": "Record measurement",
+   "ar": "سجّل القياس",
+   "kind": "text",
+   "hash": "708a442579dd",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.measured": {
+   "en": "In a measured journey",
+   "ar": "في رحلةٍ مقيسة",
+   "kind": "text",
+   "hash": "ab4cbd25ec20",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.myChildren": {
+   "en": "Children your impact reaches",
+   "ar": "أطفالٌ يصلهم أثرك",
+   "kind": "text",
+   "hash": "d71e041b4088",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.myGiving": {
+   "en": "You gave",
+   "ar": "ما قدّمت",
+   "kind": "text",
+   "hash": "a3fd65235ed0",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.myGroups": {
+   "en": "Groups your support reaches",
+   "ar": "مجموعات يصلها دعمك",
+   "kind": "text",
+   "hash": "59d1993e1b91",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.myMeasured": {
+   "en": "Measurements completed",
+   "ar": "قياساتٌ اكتملت",
+   "kind": "text",
+   "hash": "41b094ffcc03",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.needsFunding": {
+   "en": "Awaiting funding",
+   "ar": "تنتظر التمويل",
+   "kind": "text",
+   "hash": "d0f98d1a5330",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.noFiles": {
+   "en": "Your support hasn't reached a group yet. Start with a donation and its children's files appear here once allocated.",
+   "ar": "لم يصل دعمك إلى مجموعةٍ بعد. ابدأ بتبرّع، وستظهر ملفات أطفالها هنا فور تخصيصه.",
+   "kind": "text",
+   "hash": "0445a8e36be9",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.noReceipts": {
+   "en": "No receipts yet.",
+   "ar": "لا إيصالات بعد.",
+   "kind": "text",
+   "hash": "22a3dd45d550",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.noRecs": {
+   "en": "No open decisions right now.",
+   "ar": "لا قرارات مفتوحة الآن.",
+   "kind": "text",
+   "hash": "c6b5a357eeaf",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.notYet": {
+   "en": "Not measured yet",
+   "ar": "لم يُقَس بعد",
+   "kind": "text",
+   "hash": "2783e4c1eab5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.openBoard": {
+   "en": "Open the full decision board",
+   "ar": "افتح لوحة القرار كاملة",
+   "kind": "text",
+   "hash": "71748ead8e07",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.openOps": {
+   "en": "Open the full operations platform",
+   "ar": "افتح منصّة التشغيل كاملة",
+   "kind": "text",
+   "hash": "59cdd1a763a3",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.pending": {
+   "en": "Awaiting reconciliation",
+   "ar": "بانتظار المطابقة",
+   "kind": "text",
+   "hash": "814d0c21cdd5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.pick": {
+   "en": "Pick your role",
+   "ar": "اختر دورك",
+   "kind": "text",
+   "hash": "c9669c801894",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.privacy": {
+   "en": "A pseudonym. No photo, place or school — this is all a supporter sees.",
+   "ar": "اسمٌ مستعار. لا صورة ولا موقع ولا مدرسة — هذا كلّ ما يراه الداعم.",
+   "kind": "text",
+   "hash": "ffbdc8a818f4",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.recKind.campaign": {
+   "en": "Campaign",
+   "ar": "حملة",
+   "kind": "text",
+   "hash": "2f568f2bbc22",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.recKind.fundGroup": {
+   "en": "Fund a group",
+   "ar": "تمويل مجموعة",
+   "kind": "text",
+   "hash": "0eeaf5ebbdb4",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.recKind.newGroup": {
+   "en": "New group",
+   "ar": "مجموعة جديدة",
+   "kind": "text",
+   "hash": "11bc99c2ee83",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.recKind.redirect": {
+   "en": "Redirect surplus",
+   "ar": "إعادة توجيه فائض",
+   "kind": "text",
+   "hash": "6d839f635dde",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.receiptsH": {
+   "en": "My receipts",
+   "ar": "إيصالاتي",
+   "kind": "text",
+   "hash": "143dcb1dc2e5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.record": {
+   "en": "Record session",
+   "ar": "سجّل جلسة",
+   "kind": "text",
+   "hash": "20c2493e8724",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.recsH": {
+   "en": "Decisions awaiting you",
+   "ar": "قراراتٌ تنتظرك",
+   "kind": "text",
+   "hash": "6474d385d197",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.decider.cta": {
+   "en": "Enter as decision-maker",
+   "ar": "ادخل كصاحب قرار",
+   "kind": "text",
+   "hash": "2864819b54c8",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.decider.name": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.decider.text": {
+   "en": "See aggregate indicators and gaps, and approve decisions — no names, no files.",
+   "ar": "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات — بلا اسمٍ ولا ملف.",
+   "kind": "text",
+   "hash": "eb9883e6bf3a",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supervisor.cta": {
+   "en": "Enter as supervisor",
+   "ar": "ادخل كمشرف",
+   "kind": "text",
+   "hash": "ba82826b3cf4",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supervisor.name": {
+   "en": "Operations supervisor",
+   "ar": "مشرف في التشغيل",
+   "kind": "text",
+   "hash": "72a6cb322a21",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supervisor.text": {
+   "en": "Run the Tirana groups: record sessions and measurement, and see each child's file in your group.",
+   "ar": "تدير مجموعات تيرانا: تسجّل الجلسات والقياس، وترى ملف كلّ طفل في مجموعتك.",
+   "kind": "text",
+   "hash": "5bc3c7051715",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supporter.cta": {
+   "en": "Enter as supporter",
+   "ar": "ادخل كداعم",
+   "kind": "text",
+   "hash": "32b4704a3355",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supporter.name": {
+   "en": "Supporter",
+   "ar": "داعم",
+   "kind": "text",
+   "hash": "fefaf5ea7e57",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roles.supporter.text": {
+   "en": "Donate, then see the files of the children your support reaches under pseudonyms, your receipts and your impact.",
+   "ar": "تتبرّع، وترى ملفات الأطفال الذين يصلهم دعمك بأسماءٍ مستعارة، وإيصالاتك، وأثرك.",
+   "kind": "text",
+   "hash": "7d07915493bd",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.roster": {
+   "en": "Children",
+   "ar": "الأطفال",
+   "kind": "text",
+   "hash": "083c5f480b4f",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.sessions": {
+   "en": "Sessions",
+   "ar": "الجلسات",
+   "kind": "text",
+   "hash": "93aa50640145",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.stage.baseline": {
+   "en": "Baseline measurement",
+   "ar": "القياس القبلي",
+   "kind": "text",
+   "hash": "6e60d718f3ac",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.stage.measured": {
+   "en": "Measured",
+   "ar": "اكتمل القياس",
+   "kind": "text",
+   "hash": "d41d71d2502b",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.stage.ready": {
+   "en": "Ready for follow-up",
+   "ar": "جاهز للقياس البعدي",
+   "kind": "text",
+   "hash": "ec9aeb60b30a",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.stage.sessions": {
+   "en": "In sessions",
+   "ar": "في الجلسات",
+   "kind": "text",
+   "hash": "e7c5e4d56f11",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.stage.waiting": {
+   "en": "Awaiting funding",
+   "ar": "بانتظار التمويل",
+   "kind": "text",
+   "hash": "f0f899d153ce",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.steps.0": {
+   "en": "Group funded",
+   "ar": "تمويل المجموعة",
+   "kind": "text",
+   "hash": "695ad36bb533",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.steps.1": {
+   "en": "Baseline",
+   "ar": "القياس القبلي",
+   "kind": "text",
+   "hash": "ae1cb185a8ec",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.steps.2": {
+   "en": "Six sessions",
+   "ar": "الجلسات الست",
+   "kind": "text",
+   "hash": "c4f7ededce3a",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.steps.3": {
+   "en": "Follow-up measurement",
+   "ar": "القياس البعدي",
+   "kind": "text",
+   "hash": "c1a95a1d1142",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.supH": {
+   "en": "My groups",
+   "ar": "مجموعاتي",
+   "kind": "text",
+   "hash": "8f7244595fcb",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.supLead": {
+   "en": "Record each session after it meets, and the follow-up measurement after session six — it reaches the supporter and the board at once.",
+   "ar": "سجّل الجلسة بعد انعقادها، والقياس البعدي بعد الجلسة السادسة — يصل الداعمَ والقرارَ فوراً.",
+   "kind": "text",
+   "hash": "bc48f8ef7f58",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.switchRole": {
+   "en": "Switch role",
+   "ar": "تبديل الدور",
+   "kind": "text",
+   "hash": "7d69068847d9",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.title": {
+   "en": "Enter by role",
+   "ar": "ادخل بدورك",
+   "kind": "text",
+   "hash": "7404da91485b",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.trait": {
+   "en": "Maturity trait",
+   "ar": "سمة الرشد",
+   "kind": "text",
+   "hash": "b8776cfc59b4",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.waitingH": {
+   "en": "Groups waiting for your support",
+   "ar": "مجموعاتٌ تنتظر دعمك",
+   "kind": "text",
+   "hash": "52854af71ab3",
+   "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.me.yourName": {
+   "en": "Your name (pseudonym, optional)",
+   "ar": "اسمك (مستعار، اختياري)",
+   "kind": "text",
+   "hash": "f0e24e1ebd9f",
+   "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.operations.after": {
    "en": "After",

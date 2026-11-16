@@ -13,23 +13,25 @@ const COPY = defineCopy("components/vision/VisionKit", {
     concept: "تصوّر · بيانات توضيحية",
     conceptNote:
       "منصّتا التشغيل والقرار هنا افتراضيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
-    nav: "التحوّل الاستراتيجي",
+    nav: "منصة الرؤية والتوجهات",
     hub: "المنظومة",
     ops: "التشغيل",
     decision: "القرار",
     cycle: "الدورة",
     money: "رحلة المال",
+    me: "ادخل بدورك",
   },
   en: {
     concept: "Concept · illustrative data",
     conceptNote:
       "The operations and decision platforms here are virtual and run on a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
-    nav: "Strategic transformation",
+    nav: "Vision and Directions platform",
     hub: "System",
     ops: "Operations",
     decision: "Decision",
     cycle: "Cycle",
     money: "Money journey",
+    me: "Enter by role",
   },
 });
 
@@ -65,15 +67,16 @@ const TABS = [
   { to: "/vision/decision", key: "decision" },
   { to: "/vision/cycle", key: "cycle" },
   { to: "/vision/payments", key: "money" },
+  { to: "/vision/me", key: "me" },
 ] as const;
 
-/** غلاف صفحات التحوّل: الرأس، وشريط التنقّل بين الصفحات الخمس، والتنبيه. */
+/** غلاف صفحات منصة الرؤية والتوجهات: الرأس، وشريط التنقّل بين الصفحات الخمس، والتنبيه. */
 export function VisionShell({ children }: { children: ReactNode }) {
   const c = useCopy(COPY);
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
     <VisionStoreProvider>
-      <div className="min-h-dvh bg-ivory text-foreground">
+      <div className="theme-light min-h-dvh bg-ivory text-foreground">
         <SiteHeader />
         <main id="main" tabIndex={-1}>
           <nav
