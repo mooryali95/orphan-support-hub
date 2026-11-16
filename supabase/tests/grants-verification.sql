@@ -228,6 +228,7 @@ DECLARE _allowed TEXT[] := ARRAY[
     'orphan_qualification(uuid)',
     'orphan_trust(uuid)',
     'orphan_view(uuid)',
+    'public_operating_links()', -- مجاميع الدول المتّصلة بالتشغيل لمنصة الرؤية (بلا صفوف)
     'public_ui_locales()',
     'published_regions()',
     'published_ui_messages(text)',
