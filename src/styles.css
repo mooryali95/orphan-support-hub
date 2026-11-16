@@ -70,6 +70,15 @@
   --color-office-gap: var(--office-gap);
   --color-navy: var(--navy);
   --color-gold-line: var(--gold-line);
+  /* «التحوّل الاستراتيجي»: هويّة المنصّتين الشريكتين في العرض — نبيذيٌّ وذهبيّ
+     على عاجيّ، كما في فيلم المنظومة. تُستعمل في /vision وحدها. */
+  --color-wine: var(--wine);
+  --color-wine-deep: var(--wine-deep);
+  --color-wine-ink: var(--wine-ink);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-ink: var(--gold-ink);
+  --color-ivory: var(--ivory);
   --font-display: "Readex Pro", ui-sans-serif, sans-serif;
   --font-sans: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", "Times New Roman", serif;
@@ -608,6 +617,161 @@ header.sticky {
   }
   .map-pill {
     transition: none;
+  }
+}
+
+/* ── التحوّل الاستراتيجي (/vision): صعودٌ هادئ، وحلقاتٌ تُرسم، وخيوطٌ يسري فيها المال ── */
+.vision-rise {
+  animation: map-rise 560ms var(--ease-out) both;
+}
+.vision-bar {
+  transform-origin: left;
+  animation: map-grow 1100ms var(--ease-out) 150ms both;
+}
+:dir(rtl) .vision-bar,
+[dir="rtl"] .vision-bar {
+  transform-origin: right;
+}
+.vision-halo {
+  background:
+    radial-gradient(40% 50% at 50% 30%, rgb(201 161 96 / 0.18), transparent 70%),
+    radial-gradient(30% 40% at 85% 90%, rgb(201 161 96 / 0.08), transparent 70%);
+}
+.vision-ctl {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  color: var(--color-wine);
+  background: white;
+  box-shadow: 0 0 0 1px rgb(107 29 46 / 0.12);
+  transition:
+    scale 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 200ms;
+}
+.vision-ctl:active:not(:disabled) {
+  scale: 0.9;
+}
+.vision-ctl:disabled {
+  opacity: 0.35;
+}
+
+/* المدار: الحلقات تُرسم من الداخل إلى الخارج، والخيط يُرسم حين يبدأ دوره. */
+@keyframes cyc-draw {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+}
+.cyc-ring {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: cyc-draw 900ms var(--ease-out) var(--d, 0ms) both;
+}
+.cyc-thread {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  opacity: 0;
+  transition:
+    stroke-dashoffset 1400ms var(--ease-out),
+    opacity 400ms;
+}
+.cyc-thread.on {
+  stroke-dashoffset: 0;
+  opacity: 0.85;
+}
+.cyc-thread.dashed.on {
+  stroke-dasharray: 6 6;
+}
+@keyframes cyc-ping {
+  from {
+    opacity: 0.45;
+    scale: 0.6;
+  }
+  to {
+    opacity: 0;
+    scale: 1.9;
+  }
+}
+.cyc-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cyc-ping 1600ms var(--ease-out) infinite;
+}
+@keyframes cyc-heart {
+  50% {
+    scale: 1.04;
+  }
+}
+.cyc-heart {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cyc-heart 2400ms ease-in-out infinite;
+}
+.cyc-core {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.cyc-pop {
+  animation: map-in 600ms var(--ease-out) both;
+}
+.cyc-bead {
+  filter: drop-shadow(0 0 6px rgb(201 161 96 / 0.9));
+}
+
+/* نهر المال: خطٌّ ذهبيّ يسري فيه الضوء من البداية إلى الميدان. */
+@keyframes money-flow {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes money-flow-v {
+  to {
+    background-position: 0 200%;
+  }
+}
+.money-river {
+  background: linear-gradient(
+      90deg,
+      rgb(201 161 96 / 0.25),
+      var(--color-gold),
+      rgb(201 161 96 / 0.25)
+    )
+    0 0 / 200% 100%;
+  animation: money-flow 3s linear infinite;
+}
+.money-river-v {
+  background: linear-gradient(
+      180deg,
+      rgb(201 161 96 / 0.2),
+      var(--color-gold),
+      rgb(201 161 96 / 0.2)
+    )
+    0 0 / 100% 200%;
+  animation: money-flow-v 4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-rise,
+  .vision-bar,
+  .cyc-ring,
+  .cyc-core,
+  .cyc-pop,
+  .money-river,
+  .money-river-v {
+    animation: none;
+  }
+  .cyc-ping,
+  .cyc-heart {
+    animation: none;
+  }
+  .cyc-thread {
+    transition: none;
+  }
+  .cyc-bead {
+    display: none;
   }
 }
 

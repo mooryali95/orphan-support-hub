@@ -12,6 +12,7 @@ const COPY = defineCopy("components/SiteFooter", {
     orphans: "دليل الأيتام",
     how: "كيف تعمل الكفالة",
     orgs: "جهات الرعاية",
+    vision: "التحوّل الاستراتيجي",
     account: "الحساب",
     signIn: "تسجيل الدخول",
     dashboard: "لوحتي",
@@ -30,6 +31,7 @@ const COPY = defineCopy("components/SiteFooter", {
     orphans: "Children",
     how: "How sponsorship works",
     orgs: "Care organizations",
+    vision: "Strategic transformation",
     account: "Account",
     signIn: "Sign in",
     dashboard: "My dashboard",
@@ -87,6 +89,11 @@ export function SiteFooter() {
             <li>
               <Link to="/organizations" className="hover:text-foreground">
                 {c.orgs}
+              </Link>
+            </li>
+            <li>
+              <Link to="/vision" className="hover:text-foreground">
+                {c.vision}
               </Link>
             </li>
           </ul>
