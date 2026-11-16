@@ -31,6 +31,11 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
+import { Route as VisionIndexRouteImport } from './routes/vision.index'
+import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
+import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
+import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
+import { Route as VisionPaymentsRouteImport } from './routes/vision.payments'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
 import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
@@ -158,6 +163,31 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   path: '/orphans/$orphanId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisionIndexRoute = VisionIndexRouteImport.update({
+  id: '/vision/',
+  path: '/vision/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionCycleRoute = VisionCycleRouteImport.update({
+  id: '/vision/cycle',
+  path: '/vision/cycle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionDecisionRoute = VisionDecisionRouteImport.update({
+  id: '/vision/decision',
+  path: '/vision/decision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionOperationsRoute = VisionOperationsRouteImport.update({
+  id: '/vision/operations',
+  path: '/vision/operations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionPaymentsRoute = VisionPaymentsRouteImport.update({
+  id: '/vision/payments',
+  path: '/vision/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedOfficeOfficeIdRoute =
   AuthenticatedOfficeOfficeIdRouteImport.update({
     id: '/office/$officeId',
@@ -275,7 +305,12 @@ export interface FileRoutesByFullPath {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/vision/cycle': typeof VisionCycleRoute
+  '/vision/decision': typeof VisionDecisionRoute
+  '/vision/operations': typeof VisionOperationsRoute
+  '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/vision/': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -315,7 +350,12 @@ export interface FileRoutesByTo {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/vision/cycle': typeof VisionCycleRoute
+  '/vision/decision': typeof VisionDecisionRoute
+  '/vision/operations': typeof VisionOperationsRoute
+  '/vision/payments': typeof VisionPaymentsRoute
   '/orphans': typeof OrphansIndexRoute
+  '/vision': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -357,7 +397,12 @@ export interface FileRoutesById {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/vision/cycle': typeof VisionCycleRoute
+  '/vision/decision': typeof VisionDecisionRoute
+  '/vision/operations': typeof VisionOperationsRoute
+  '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/vision/': typeof VisionIndexRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -399,7 +444,12 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/vision/cycle'
+    | '/vision/decision'
+    | '/vision/operations'
+    | '/vision/payments'
     | '/orphans/'
+    | '/vision/'
     | '/office/$officeId'
     | '/settings/notifications'
     | '/translate/$locale'
@@ -439,7 +489,12 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/vision/cycle'
+    | '/vision/decision'
+    | '/vision/operations'
+    | '/vision/payments'
     | '/orphans'
+    | '/vision'
     | '/office/$officeId'
     | '/settings/notifications'
     | '/translate/$locale'
@@ -480,7 +535,12 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/vision/cycle'
+    | '/vision/decision'
+    | '/vision/operations'
+    | '/vision/payments'
     | '/orphans/'
+    | '/vision/'
     | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/translate/$locale'
@@ -515,7 +575,12 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
+  VisionCycleRoute: typeof VisionCycleRoute
+  VisionDecisionRoute: typeof VisionDecisionRoute
+  VisionOperationsRoute: typeof VisionOperationsRoute
+  VisionPaymentsRoute: typeof VisionPaymentsRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
+  VisionIndexRoute: typeof VisionIndexRoute
   ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
@@ -681,6 +746,41 @@ declare module '@tanstack/react-router' {
       path: '/orphans/$orphanId'
       fullPath: '/orphans/$orphanId'
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/': {
+      id: '/vision/'
+      path: '/vision'
+      fullPath: '/vision/'
+      preLoaderRoute: typeof VisionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/cycle': {
+      id: '/vision/cycle'
+      path: '/vision/cycle'
+      fullPath: '/vision/cycle'
+      preLoaderRoute: typeof VisionCycleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/decision': {
+      id: '/vision/decision'
+      path: '/vision/decision'
+      fullPath: '/vision/decision'
+      preLoaderRoute: typeof VisionDecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/operations': {
+      id: '/vision/operations'
+      path: '/vision/operations'
+      fullPath: '/vision/operations'
+      preLoaderRoute: typeof VisionOperationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/payments': {
+      id: '/vision/payments'
+      path: '/vision/payments'
+      fullPath: '/vision/payments'
+      preLoaderRoute: typeof VisionPaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/office/$officeId': {
@@ -863,7 +963,12 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
+  VisionCycleRoute: VisionCycleRoute,
+  VisionDecisionRoute: VisionDecisionRoute,
+  VisionOperationsRoute: VisionOperationsRoute,
+  VisionPaymentsRoute: VisionPaymentsRoute,
   OrphansIndexRoute: OrphansIndexRoute,
+  VisionIndexRoute: VisionIndexRoute,
   ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,

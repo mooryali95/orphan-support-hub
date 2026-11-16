@@ -20,6 +20,15 @@ const ROLES: Record<string, BrandColor> = {
   "shore-thrive": "thrive",
   /** «تحتاج مكتباً» على خارطة الشبكة: كهرمانيٌّ دافئ، بعيدٌ عن الأخضر والذهبي. */
   "office-gap": "amber",
+  /** هويّة المنصّتين الشريكتين في /vision (التشغيل والقرار): نبيذيٌّ وذهبيّ على عاجيّ — ثابتةٌ في الوضعين. */
+  wine: "partnerWine",
+  "wine-deep": "partnerWineDeep",
+  "wine-ink": "partnerWineInk",
+  gold: "partnerGold",
+  "gold-soft": "partnerGoldSoft",
+  /** الذهبيّ نصّاً على العاجيّ والأبيض: أغمق ليُقرأ (WCAG AA). */
+  "gold-ink": "partnerGoldInk",
+  ivory: "partnerIvory",
   navy: "greenDeep",
   graphite: "stone",
   "gold-line": "gold",

@@ -33,7 +33,14 @@
       "danger": "#B3412E",
       "amber": "#B4543A",
       "onPrimary": "#F7F4EE",
-      "onSecondary": "#13243D"
+      "onSecondary": "#13243D",
+      "partnerWine": "#6B1D2E",
+      "partnerWineDeep": "#2B0B14",
+      "partnerWineInk": "#4A1220",
+      "partnerGold": "#C9A160",
+      "partnerGoldSoft": "#EAD9B8",
+      "partnerIvory": "#F8F2E9",
+      "partnerGoldInk": "#7E5A1E"
     },
     "dark": {
       "green": "#9DBDF0",
@@ -62,7 +69,14 @@
       "danger": "#E8806A",
       "amber": "#E58A6A",
       "onPrimary": "#0D1522",
-      "onSecondary": "#EEF1F5"
+      "onSecondary": "#EEF1F5",
+      "partnerWine": "#6B1D2E",
+      "partnerWineDeep": "#2B0B14",
+      "partnerWineInk": "#4A1220",
+      "partnerGold": "#C9A160",
+      "partnerGoldSoft": "#EAD9B8",
+      "partnerIvory": "#F8F2E9",
+      "partnerGoldInk": "#7E5A1E"
     }
   }
 }
