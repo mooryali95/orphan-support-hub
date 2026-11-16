@@ -42,3 +42,4 @@ dist-ssr
 
 # المشروع يستخدم bun؛ قفل npm عارض يُربك التركيب
 package-lock.json
+supabase/release/*.chunks/
