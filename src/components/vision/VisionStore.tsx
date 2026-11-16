@@ -32,7 +32,9 @@ import {
   type VisionState,
 } from "@/lib/vision-engine";
 
-const KEY = "vision-engine:v1";
+export const KEY = "vision-engine:v1";
+/** حدثٌ في الصفحة نفسها: كاتبٌ من خارج React (الجولة) كتب في التخزين. */
+export const SYNC_EVENT = "vision-sync";
 
 type Store = {
   state: VisionState;
@@ -45,7 +47,7 @@ type Store = {
 /** من يتصفّح البيئة التجريبية: داعمٌ، أو مشرفٌ في التشغيل، أو صاحب القرار — بلا حساب. */
 export type Role = "supporter" | "supervisor" | "decider";
 export type Persona = { role: Role; name: string };
-const PERSONA_KEY = "vision-persona:v1";
+export const PERSONA_KEY = "vision-persona:v1";
 
 function readPersona(): Persona | null {
   try {
@@ -89,8 +91,21 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
         /* تجاهل */
       }
     };
+    const onSync = () => {
+      setPersonaState(readPersona());
+      try {
+        const raw = localStorage.getItem(KEY);
+        setState(raw ? revive(JSON.parse(raw)) : seed());
+      } catch {
+        /* تجاهل */
+      }
+    };
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    window.addEventListener(SYNC_EVENT, onSync);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(SYNC_EVENT, onSync);
+    };
   }, []);
 
   const dispatch = useCallback((a: DistributiveOmit<Action, "at">) => {

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Orbit, Wallet } from "lucide-react";
 
 import { ConceptBadge, Tally, useT, VisionShell } from "@/components/vision/VisionKit";
+import { WatchStory } from "@/components/vision/Story";
 import { DonateForm, Feed } from "@/components/vision/VisionStore";
 import { pageTitle } from "@/config/brand";
 import { LAYERS, SYSTEM } from "@/data/vision-demo";
@@ -106,14 +107,17 @@ function VisionHub() {
               </li>
             ))}
           </ul>
-          <Link
-            to="/vision/me"
-            className="vision-rise mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-gold px-7 font-bold text-wine-deep shadow-[0_12px_32px_-12px_rgb(201_161_96/0.7)] transition-transform hover:-translate-y-0.5 active:scale-[0.97]"
-            style={{ animationDelay: "420ms" }}
-          >
-            {c.enter}
-            <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
-          </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/vision/me"
+              className="vision-rise inline-flex min-h-12 items-center gap-2 rounded-full bg-gold px-7 font-bold text-wine-deep shadow-[0_12px_32px_-12px_rgb(201_161_96/0.7)] transition-transform hover:-translate-y-0.5 active:scale-[0.97]"
+              style={{ animationDelay: "420ms" }}
+            >
+              {c.enter}
+              <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+            </Link>
+            <WatchStory dark className="vision-rise" />
+          </div>
           <dl className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4">
             {(
               [

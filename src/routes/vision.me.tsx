@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { WatchStory } from "@/components/vision/Story";
 import { Bar, Eyebrow, Tally, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import {
   DonateForm,
@@ -717,7 +718,7 @@ function SupGroup({
   const c = useCopy(COPY);
   const st = stageOf(g);
   return (
-    <section className="rounded-3xl border border-wine/10 bg-white p-5">
+    <section id={g.id} className="scroll-mt-40 rounded-3xl border border-wine/10 bg-white p-5">
       <div className="flex flex-wrap items-center gap-3">
         <h3 className="text-lg font-bold text-wine">{title}</h3>
         <StageChip stage={st} />

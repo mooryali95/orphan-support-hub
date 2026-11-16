@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { StoryBar } from "@/components/vision/Story";
 import { LiveToasts, ResetSandbox, VisionStoreProvider } from "@/components/vision/VisionStore";
 import type { T } from "@/data/vision-demo";
 import { defineCopy, intlOf, useCopy, useLocale } from "@/lib/locale";
@@ -77,6 +78,7 @@ export function VisionShell({ children }: { children: ReactNode }) {
   return (
     <VisionStoreProvider>
       <LiveToasts />
+      <StoryBar />
       <div className="theme-light min-h-dvh bg-ivory text-foreground">
         <SiteHeader />
         <main id="main" tabIndex={-1}>
