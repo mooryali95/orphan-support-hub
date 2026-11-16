@@ -12,7 +12,7 @@ export const COLORS = { light: raw.colors.light, dark: raw.colors.dark } as cons
 
 /** الدور ← مفتاح اللون. الدور ثابت في الكود، واللون يتغيّر من الإعداد. */
 const ROLES: Record<string, BrandColor> = {
-  "shore-need": "greenSoft",
+  "shore-need": "slate",
   bridge: "gold",
   "bridge-ink": "goldInk",
   "bridge-bright": "goldBright",
