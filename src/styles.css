@@ -518,6 +518,16 @@ header.sticky {
 .map-grid {
   animation: map-in 1600ms var(--ease-out) 300ms both;
 }
+/* وتغيب أثناء الحركة: نقشٌ يُعاد رسمه في كل إطار يكلّف أكثر ممّا يضيف وهي
+   تتحرّك؛ فتنطفئ بسرعة وتعود حين تستقرّ الكاميرا. */
+.map-grid {
+  transition: opacity 260ms var(--ease-out);
+}
+[data-flying] .map-grid,
+[data-gesturing] .map-grid {
+  opacity: 0;
+  transition-duration: 90ms;
+}
 
 /* أدوات الكاميرا: أزرارٌ مستديرة، ومؤشّر مستوى ينزلق، وبوصلة تدور حين تُضغط. */
 .map-ctrl {
