@@ -3,7 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ResetSandbox, VisionStoreProvider } from "@/components/vision/VisionStore";
+import { LiveToasts, ResetSandbox, VisionStoreProvider } from "@/components/vision/VisionStore";
 import type { T } from "@/data/vision-demo";
 import { defineCopy, intlOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -76,12 +76,14 @@ export function VisionShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
     <VisionStoreProvider>
+      <LiveToasts />
       <div className="theme-light min-h-dvh bg-ivory text-foreground">
         <SiteHeader />
         <main id="main" tabIndex={-1}>
           <nav
             aria-label={c.nav}
             className="sticky top-16 z-30 border-b border-wine/10 bg-ivory/90 backdrop-blur"
+            style={{ viewTransitionName: "vision-nav" }}
           >
             <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none]">
               {TABS.map((tab) => {
@@ -90,12 +92,21 @@ export function VisionShell({ children }: { children: ReactNode }) {
                   <Link
                     key={tab.to}
                     to={tab.to}
+                    viewTransition
                     aria-current={on ? "page" : undefined}
                     className={cn(
-                      "min-h-9 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
-                      on ? "bg-wine text-ivory" : "text-wine-ink hover:bg-wine/5",
+                      "relative isolate min-h-9 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
+                      on ? "text-ivory" : "text-wine-ink hover:bg-wine/5",
                     )}
                   >
+                    {/* الحبّة النبيذية تنزلق من التبويب السابق إلى الحالي (View Transitions). */}
+                    {on && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 -z-10 rounded-full bg-wine shadow-[0_6px_16px_-8px_rgb(43_11_20/0.6)]"
+                        style={{ viewTransitionName: "vision-tab" }}
+                      />
+                    )}
                     {c[tab.key]}
                   </Link>
                 );
