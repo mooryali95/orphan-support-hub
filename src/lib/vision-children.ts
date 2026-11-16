@@ -63,3 +63,50 @@ export function childrenOf(g: GroupState): DemoChild[] {
     };
   });
 }
+
+/* ── الأثر: السمات الستّ ومستويات النموّ ─────────────────────────── */
+
+/** مستويات السمة على مقياسٍ من 25 (عتباتٌ توضيحية تُضبط مع منهج الرواد): البداية ← نامٍ ← متمكّن ← متميّز. */
+export type Level = "start" | "growing" | "capable" | "distinct";
+export const LEVELS: Level[] = ["start", "growing", "capable", "distinct"];
+export function levelOf(score: number): Level {
+  if (score >= 19) return "distinct";
+  if (score >= 17.5) return "capable";
+  if (score >= 16) return "growing";
+  return "start";
+}
+
+export type TraitScore = { key: string; before: number; after: number | null };
+
+/**
+ * سماتُ الطفل الستّ: متوسّط كلّ سمةٍ في التشغيل (TRAITS) مُزاحاً بانحراف
+ * الطفل عن مجموعته، والارتفاع بنسبة ارتفاعه هو — فتتّسق مع رقمه الواحد.
+ */
+export function traitsOf(
+  child: DemoChild,
+  base: ReadonlyArray<{ key: string; before: number; after: number }>,
+): TraitScore[] {
+  const h = hash(child.id);
+  const ratio = child.after === null ? 0 : (child.after - child.before) / 2;
+  return base.map((t, i) => {
+    const jitter = (((h >>> (i * 3)) % 9) - 4) / 10;
+    const before = +(t.before + (child.before - 17) * 0.6 + jitter).toFixed(1);
+    const after =
+      child.after === null ? null : +(before + Math.max(0, t.after - t.before) * ratio).toFixed(1);
+    return { key: t.key, before, after };
+  });
+}
+
+/** متوسّط سمات الطفل قبل وبعد، ومستواه في كلٍّ منهما. */
+export function growthOf(scores: TraitScore[]) {
+  const avg = (xs: number[]) => +(xs.reduce((a, b) => a + b, 0) / xs.length).toFixed(1);
+  const before = avg(scores.map((s) => s.before));
+  const after = scores.every((s) => s.after !== null) ? avg(scores.map((s) => s.after!)) : null;
+  return {
+    before,
+    after,
+    from: levelOf(before),
+    to: after === null ? null : levelOf(after),
+    leveledUp: after !== null && LEVELS.indexOf(levelOf(after)) > LEVELS.indexOf(levelOf(before)),
+  };
+}

@@ -34,6 +34,7 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
+import { Route as VisionImpactRouteImport } from './routes/vision.impact'
 import { Route as VisionMeRouteImport } from './routes/vision.me'
 import { Route as VisionNetworkRouteImport } from './routes/vision.network'
 import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
@@ -181,6 +182,11 @@ const VisionDecisionRoute = VisionDecisionRouteImport.update({
   path: '/vision/decision',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisionImpactRoute = VisionImpactRouteImport.update({
+  id: '/vision/impact',
+  path: '/vision/impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionMeRoute = VisionMeRouteImport.update({
   id: '/vision/me',
   path: '/vision/me',
@@ -325,6 +331,7 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/impact': typeof VisionImpactRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -373,6 +380,7 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/impact': typeof VisionImpactRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -423,6 +431,7 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/impact': typeof VisionImpactRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -473,6 +482,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/impact'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -521,6 +531,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/impact'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -570,6 +581,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/impact'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -613,6 +625,7 @@ export interface RootRouteChildren {
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   VisionCycleRoute: typeof VisionCycleRoute
   VisionDecisionRoute: typeof VisionDecisionRoute
+  VisionImpactRoute: typeof VisionImpactRoute
   VisionMeRoute: typeof VisionMeRoute
   VisionNetworkRoute: typeof VisionNetworkRoute
   VisionOperationsRoute: typeof VisionOperationsRoute
@@ -806,6 +819,13 @@ declare module '@tanstack/react-router' {
       path: '/vision/decision'
       fullPath: '/vision/decision'
       preLoaderRoute: typeof VisionDecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/impact': {
+      id: '/vision/impact'
+      path: '/vision/impact'
+      fullPath: '/vision/impact'
+      preLoaderRoute: typeof VisionImpactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vision/me': {
@@ -1025,6 +1045,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   VisionCycleRoute: VisionCycleRoute,
   VisionDecisionRoute: VisionDecisionRoute,
+  VisionImpactRoute: VisionImpactRoute,
   VisionMeRoute: VisionMeRoute,
   VisionNetworkRoute: VisionNetworkRoute,
   VisionOperationsRoute: VisionOperationsRoute,

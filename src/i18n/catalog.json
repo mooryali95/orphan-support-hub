@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1301,
+ "count": 1336,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3674,6 +3674,13 @@
    "ar": "المنظومة",
    "kind": "text",
    "hash": "948a714654ef",
+   "file": "src/components/vision/VisionKit.tsx"
+  },
+  "components/vision/VisionKit.impact": {
+   "en": "Impact",
+   "ar": "الأثر",
+   "kind": "text",
+   "hash": "820b53e7f292",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.me": {
@@ -7446,6 +7453,248 @@
    "params": 1,
    "hash": "013f7e5c44a1",
    "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.impact.after": {
+   "en": "After",
+   "ar": "بعد",
+   "kind": "text",
+   "hash": "f7a9c74a7ec9",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.allCountries": {
+   "en": "All countries",
+   "ar": "كلّ الدول",
+   "kind": "text",
+   "hash": "5f5fe6c9ae90",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.arrow": {
+   "en": "→",
+   "ar": "←",
+   "kind": "text",
+   "hash": "ece78120f49d",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.asSupervisor": {
+   "en": "Enter as supervisor",
+   "ar": "ادخل مشرفاً",
+   "kind": "text",
+   "hash": "9e253080e938",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.avgRise": {
+   "en": "Average rise",
+   "ar": "متوسّط الارتفاع",
+   "kind": "text",
+   "hash": "114ab5aa9359",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.before": {
+   "en": "Before",
+   "ar": "قبل",
+   "kind": "text",
+   "hash": "fad11c557c72",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.certified": {
+   "en": "Qualified group",
+   "ar": "مجموعةٌ متأهّلة",
+   "kind": "text",
+   "hash": "b73f67ab0e50",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.cityLine": {
+   "en": "{0} qualified · {1} waiting",
+   "ar": "{0} تأهّلوا · {1} ينتظرون",
+   "kind": "template",
+   "params": 2,
+   "hash": "d317766cf28c",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.dist": {
+   "en": "Level distribution: before → after",
+   "ar": "توزيع المستويات: قبل ← بعد",
+   "kind": "text",
+   "hash": "29178e6ef338",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.emptyH": {
+   "en": "No one has been measured in your sandbox yet",
+   "ar": "لم يُقَس أحدٌ بعد في بيئتك",
+   "kind": "text",
+   "hash": "beedd63781ef",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.emptyText": {
+   "en": "Impact appears after follow-up measurement. Watch the story, or enter as a supervisor and record a group's sessions and measurement.",
+   "ar": "الأثر يظهر بعد القياس البعدي. شاهد القصّة، أو ادخل مشرفاً وسجّل جلسات مجموعةٍ ثم قياسها.",
+   "kind": "text",
+   "hash": "dcf048d23936",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.fileOf": {
+   "en": "Child's growth",
+   "ar": "نموّ الطفل",
+   "kind": "text",
+   "hash": "48f4c20e2e9d",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.from": {
+   "en": "From “{0}” to “{1}”",
+   "ar": "من «{0}» إلى «{1}»",
+   "kind": "template",
+   "params": 2,
+   "hash": "97af244c7460",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.groupsDone": {
+   "en": "groups completed qualification",
+   "ar": "مجموعةً أتمّت تأهيلها",
+   "kind": "text",
+   "hash": "ed8a4b0352f9",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.groupsH": {
+   "en": "Groups that qualified",
+   "ar": "مجموعاتٌ تأهّلت",
+   "kind": "text",
+   "hash": "470bddaf5b55",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.groupsLead": {
+   "en": "Completed six sessions and were measured after — a qualification certificate for each group.",
+   "ar": "أتمّت الجلسات الستّ وقيست بعدها — شهادة تأهيلٍ لكلّ مجموعة.",
+   "kind": "text",
+   "hash": "4ed59bf96d02",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.kidsH": {
+   "en": "Stories of rising levels",
+   "ar": "قصص ارتفاع المستوى",
+   "kind": "text",
+   "hash": "a36ca973f2a7",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.kidsLead": {
+   "en": "Children who moved to a higher level — pseudonyms, with the six traits before and after.",
+   "ar": "أطفالٌ انتقلوا إلى مستوى أعلى — أسماءٌ مستعارة، والسمات الستّ قبل الرحلة وبعدها.",
+   "kind": "text",
+   "hash": "c0f77dcb0f34",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.kidsUp": {
+   "en": "children rose a level",
+   "ar": "طفلاً ارتفع مستواه",
+   "kind": "text",
+   "hash": "3aac0499085f",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.label": {
+   "en": "Impact",
+   "ar": "الأثر",
+   "kind": "text",
+   "hash": "820b53e7f292",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.lead": {
+   "en": "Impact at three scales: a child who rose a level, a group that completed qualification, and a country where qualification advances — all from measurement before and after the journey.",
+   "ar": "الأثر بثلاث درجات: طفلٌ ارتفع مستواه، ومجموعةٌ أتمّت تأهيلها، ودولةٌ يتقدّم فيها التأهيل — كلّه من القياس قبل الرحلة وبعدها.",
+   "kind": "text",
+   "hash": "631547e49dd7",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.level.capable": {
+   "en": "Capable",
+   "ar": "متمكّن",
+   "kind": "text",
+   "hash": "0a76524401dd",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.level.distinct": {
+   "en": "Distinguished",
+   "ar": "متميّز",
+   "kind": "text",
+   "hash": "5c7fa82a72fe",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.level.growing": {
+   "en": "Growing",
+   "ar": "نامٍ",
+   "kind": "text",
+   "hash": "26879b2035ff",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.level.start": {
+   "en": "Starting",
+   "ar": "في البداية",
+   "kind": "text",
+   "hash": "c02e7c9655d6",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.measuredIn": {
+   "en": "{0} in a measured journey",
+   "ar": "{0} في رحلةٍ مقيسة",
+   "kind": "template",
+   "params": 1,
+   "hash": "f3957111945a",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.members": {
+   "en": "{0} children",
+   "ar": "{0} أطفال",
+   "kind": "template",
+   "params": 1,
+   "hash": "b5b27761166e",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.placesH": {
+   "en": "Cities and countries",
+   "ar": "المدن والدول",
+   "kind": "text",
+   "hash": "b86732d86700",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.placesLead": {
+   "en": "How much of each place's need completed qualification, and the network's countries with what was measured.",
+   "ar": "كم من حاجة كلّ مكانٍ أتمّ التأهيل، ودول الشبكة بما قيس فيها.",
+   "kind": "text",
+   "hash": "5f911e065b6f",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.qualified": {
+   "en": "orphans completed the journey",
+   "ar": "يتيماً أتمّ رحلة التأهيل",
+   "kind": "text",
+   "hash": "e8eda26f7678",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.share": {
+   "en": "of Albania's need qualified",
+   "ar": "من حاجة ألبانيا تأهّل",
+   "kind": "text",
+   "hash": "e64f37a0cb96",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.title": {
+   "en": "What actually changed",
+   "ar": "ما الذي تغيّر فعلاً",
+   "kind": "text",
+   "hash": "a5eeb55cf0d4",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.traitsH": {
+   "en": "The six traits",
+   "ar": "السمات الستّ",
+   "kind": "text",
+   "hash": "33ba024f319c",
+   "file": "src/routes/vision.impact.tsx"
+  },
+  "routes/vision.impact.virtual": {
+   "en": "Virtual",
+   "ar": "افتراضي",
+   "kind": "text",
+   "hash": "b030223c1189",
+   "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.index.cycleH": {
    "en": "The orphan at the heart of the system",
