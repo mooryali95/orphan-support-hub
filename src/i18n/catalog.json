@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1373,
+ "count": 1381,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -4080,6 +4080,62 @@
    "kind": "text",
    "hash": "cffd204a68c1",
    "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionTeaser.decider": {
+   "en": "Decision-maker",
+   "ar": "صاحب قرار",
+   "kind": "text",
+   "hash": "7e8b270715ff",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.enter": {
+   "en": "Enter by role",
+   "ar": "ادخل بدورك",
+   "kind": "text",
+   "hash": "7404da91485b",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.h": {
+   "en": "The Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
+   "kind": "text",
+   "hash": "9db25298ce26",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.lead": {
+   "en": "Operations, support and decision in one system: a donation reaches a group, its sessions are held and measured, and the decision changes. Try it yourself — everything stays in your browser.",
+   "ar": "التشغيل والدعم والقرار في منظومةٍ واحدة: تبرّعٌ يصل مجموعة، فتُعقد جلساتها وتُقاس، فيتغيّر القرار. جرّبها بنفسك — كلّ شيءٍ يُحفظ في متصفّحك.",
+   "kind": "text",
+   "hash": "6b85fc1ba930",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.story": {
+   "en": "Watch the story",
+   "ar": "شاهد القصّة",
+   "kind": "text",
+   "hash": "1826af0e8e19",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.supervisor": {
+   "en": "Supervisor",
+   "ar": "مشرف",
+   "kind": "text",
+   "hash": "659186f1ea9d",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.supporter": {
+   "en": "Supporter",
+   "ar": "داعم",
+   "kind": "text",
+   "hash": "fefaf5ea7e57",
+   "file": "src/components/vision/VisionTeaser.tsx"
+  },
+  "components/vision/VisionTeaser.tag": {
+   "en": "Live demo · no account",
+   "ar": "تجربةٌ حيّة · بلا حساب",
+   "kind": "text",
+   "hash": "8d4def2fbed3",
+   "file": "src/components/vision/VisionTeaser.tsx"
   },
   "components/vision/WhatIf.after": {
    "en": "After the scenario",
