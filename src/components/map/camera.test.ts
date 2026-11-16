@@ -28,3 +28,38 @@ describe("كاميرا الخارطة", () => {
     expect(v.h).toBeGreaterThanOrEqual(20);
   });
 });
+
+import { lerpView, spring, zoomLevel } from "./camera";
+
+describe("نابض الكاميرا", () => {
+  it("يبدأ من صفر وينتهي عند واحد، بتجاوزٍ خفيف لا يزيد عن ٣٪", () => {
+    const s = spring();
+    expect(s.at(0)).toBeCloseTo(0, 6);
+    expect(s.at(s.duration + 1)).toBe(1);
+    let peak = 0;
+    for (let t = 0; t <= s.duration; t += 4) peak = Math.max(peak, s.at(t));
+    expect(peak).toBeGreaterThan(1);
+    expect(peak).toBeLessThan(1.03);
+  });
+
+  it("سريعٌ بما يكفي ليُحَسّ استجابةً لا رحلة", () => {
+    expect(spring().duration).toBeLessThan(700);
+  });
+});
+
+describe("الإطار بين إطارين", () => {
+  const a = { x: 0, y: 0, w: 100, h: 50 };
+  const b = { x: 40, y: 20, w: 25, h: 12.5 };
+  it("طرفاه هما الإطاران", () => {
+    expect(lerpView(a, b, 0)).toEqual(a);
+    const end = lerpView(a, b, 1);
+    expect(end.x).toBeCloseTo(b.x);
+    expect(end.w).toBeCloseTo(b.w);
+  });
+  it("العرض هندسيّ: في المنتصف ×٢ لا متوسّطٌ حسابي", () => {
+    expect(lerpView(a, b, 0.5).w).toBeCloseTo(50);
+  });
+  it("مستوى التكبير", () => {
+    expect(zoomLevel(b, a)).toBeCloseTo(4);
+  });
+});

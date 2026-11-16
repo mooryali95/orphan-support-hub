@@ -80,3 +80,41 @@ export function fit(
   }
   return { x: x + bw / 2 - w / 2, y: y + bh / 2 - h / 2, w, h };
 }
+
+/**
+ * نابضٌ للحركات القصيرة (التكبير بالأزرار، النقر المزدوج، «إعادة الضبط»
+ * القريبة): يندفع ثم يستقرّ بلمسة تجاوزٍ خفيفة لا تكاد تُرى — الإحساس
+ * الذي يجعل الكاميرا جسماً له وزن لا مؤشّراً ينزلق خطّياً. الحلّ التحليلي
+ * لنابضٍ مُخمَّدٍ جزئياً، فلا حالة تُحفظ بين الإطارات ولا خطأ يتراكم.
+ */
+export function spring(omega = 14, zeta = 0.86) {
+  const wd = omega * Math.sqrt(Math.max(1e-6, 1 - zeta * zeta));
+  // يستقرّ حين يقلّ الغلاف عن ٠٫١٪ من المسافة.
+  const settle = Math.log(1000) / (zeta * omega);
+  return {
+    duration: Math.round(settle * 1000),
+    at(ms: number) {
+      const t = ms / 1000;
+      if (t >= settle) return 1;
+      const e = Math.exp(-zeta * omega * t);
+      return 1 - e * (Math.cos(wd * t) + ((zeta * omega) / wd) * Math.sin(wd * t));
+    },
+  };
+}
+
+/**
+ * بين إطارين: المركز خطّياً، والعرض هندسياً — فكلّ خطوةٍ من التكبير تُحَسّ
+ * بالقدر نفسه (×٢ ثم ×٢ لا +١٠٠ ثم +١٠٠). وp قد يتجاوز ١ قليلاً مع النابض.
+ */
+export function lerpView(a: View, b: View, p: number): View {
+  const cx = a.x + a.w / 2 + (b.x + b.w / 2 - a.x - a.w / 2) * p;
+  const cy = a.y + a.h / 2 + (b.y + b.h / 2 - a.y - a.h / 2) * p;
+  const w = a.w * Math.pow(b.w / a.w, p);
+  const h = a.h * Math.pow(b.h / a.h, p);
+  return { x: cx - w / 2, y: cy - h / 2, w, h };
+}
+
+/** مستوى التكبير بالنسبة لإطار «الكلّ»: ١ = العالم كاملاً. */
+export function zoomLevel(v: View, outer: View): number {
+  return outer.w / v.w;
+}
