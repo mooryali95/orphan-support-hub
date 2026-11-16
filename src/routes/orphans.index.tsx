@@ -1,3 +1,4 @@
+import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Reveal } from "@/components/motion/Reveal";
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -615,8 +616,13 @@ function OrphansPage() {
         </p>
 
         {(DEMO_MODE ? sample.rows.length : rows.length) === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            <p>{t.empty}</p>
+          <div className="mt-10 rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center text-sm text-muted-foreground">
+            <KahataynMark
+              compact
+              tone="current"
+              className="mx-auto h-10 w-auto text-muted-foreground/30"
+            />
+            <p className="mt-4 text-base font-medium text-foreground">{t.empty}</p>
             {chips.length > 0 && (
               <p className="mt-3">
                 {t.tryA}{" "}
