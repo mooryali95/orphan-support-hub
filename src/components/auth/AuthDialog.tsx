@@ -1,9 +1,12 @@
-import { type ReactNode, useState } from "react";
+import { lazy, type ReactNode, Suspense, useState } from "react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { KahataynMark } from "@/components/brand/KahataynMark";
 import { defineCopy, useCopy } from "@/lib/locale";
-import { AuthPanel } from "./AuthPanel";
+
+// لوحة الدخول (البصمة والرموز وجوجل ومكتباتها) لا تُحمَّل إلا حين تُفتح النافذة:
+// الترويسة في كلّ صفحة، والنافذة نادراً ما تُفتح.
+const AuthPanel = lazy(() => import("./AuthPanel").then((m) => ({ default: m.AuthPanel })));
 
 const COPY = defineCopy("components/auth/AuthDialog", {
   ar: {
@@ -46,14 +49,24 @@ export function AuthDialog({
           <KahataynMark className="h-10 w-auto" />
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <DialogDescription className="sr-only">{hint}</DialogDescription>
-          <AuthPanel
-            title={title}
-            hint={hint}
-            onDone={() => {
-              setOpen(false);
-              onDone?.();
-            }}
-          />
+          <Suspense
+            fallback={
+              <div className="space-y-3" aria-busy="true">
+                <div className="h-6 w-2/3 animate-pulse rounded-lg bg-muted" />
+                <div className="h-11 animate-pulse rounded-xl bg-muted" />
+                <div className="h-11 animate-pulse rounded-xl bg-muted" />
+              </div>
+            }
+          >
+            <AuthPanel
+              title={title}
+              hint={hint}
+              onDone={() => {
+                setOpen(false);
+                onDone?.();
+              }}
+            />
+          </Suspense>
           <p className="text-center text-xs leading-5 text-muted-foreground">{c.consent}</p>
         </DialogContent>
       </Dialog>
