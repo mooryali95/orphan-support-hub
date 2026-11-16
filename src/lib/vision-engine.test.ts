@@ -135,3 +135,23 @@ describe("demo children", async () => {
     expect(stageOf(waiting)).toBe("waiting");
   });
 });
+
+describe("impact levels", async () => {
+  const { childrenOf, traitsOf, growthOf, levelOf } = await import("./vision-children");
+  const { TRAITS } = await import("@/data/vision-demo");
+  it("measured groups lift their children's six traits, and levels follow thresholds", () => {
+    const g = seed().groups.find((x) => x.after !== null)!;
+    const kid = childrenOf(g)[0]!;
+    const t = traitsOf(kid, TRAITS);
+    expect(t).toHaveLength(6);
+    expect(t.every((x) => x.after !== null && x.after >= x.before)).toBe(true);
+    const gr = growthOf(t);
+    expect(gr.after!).toBeGreaterThan(gr.before);
+    expect([levelOf(15.9), levelOf(16), levelOf(17.5), levelOf(19)]).toEqual([
+      "start",
+      "growing",
+      "capable",
+      "distinct",
+    ]);
+  });
+});

@@ -137,6 +137,12 @@ export function seed(): VisionState {
       });
     }
   }
+  // تاريخٌ قبل البيئة: ما أكمل دورته الستّ قِيس فعلاً (إلا تيرانا 1، تُقاس في الجولة).
+  for (const g of groups) {
+    if (g.id !== "demo-g-tirana-1" && g.funded > 0 && g.sessionsDone >= SESSIONS_PER_CYCLE) {
+      g.after = +(g.before + TRAIT_GAIN - (g.members % 3) * 0.2).toFixed(1);
+    }
+  }
   return {
     v: 1,
     seq: 0,
