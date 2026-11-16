@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Flag, Megaphone, Users } from "lucide-react";
+import { ArrowLeft, Flag, HandCoins, Megaphone, Users } from "lucide-react";
 
 import {
   Bar,
@@ -13,15 +13,9 @@ import {
   VisionShell,
 } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
-import {
-  ALBANIA,
-  ALBANIA_GROUPS,
-  type City,
-  investmentRank,
-  measuredPct,
-  REGIONS,
-  SYSTEM,
-} from "@/data/vision-demo";
+import { Feed, useMoney, usePlace, useVision } from "@/components/vision/VisionStore";
+import { ALBANIA, REGIONS, SYSTEM } from "@/data/vision-demo";
+import { fundingPct, ranked as rankCities, recommend, totals } from "@/lib/vision-engine";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
@@ -89,6 +83,35 @@ const COPY = defineCopy("routes/vision.decision", {
     toSupport: "الدعم",
     toOps: "التشغيل",
     seeCycle: "شاهد الدورة كاملة",
+    approve: "اعتمد القرار",
+    liveH: "ألبانيا الآن — يتحرّك مع كلّ تبرّعٍ وقياس",
+    liveRaised: "تبرّعاتٌ قُيّدت في حساب الندوة",
+    liveDonors: "داعمون",
+    liveFunding: "تمويل التأهيل في ألبانيا",
+    liveGap: "طفلاً في الفجوة",
+    noRecs: "لا توصيات مفتوحة الآن: كلّ ما اقترحته الأرقام اعتُمد. تبرّعٌ جديد أو قياسٌ يغيّرها.",
+    rec: {
+      campaign: {
+        h: (p: string) => `حملةٌ لـ${p}`,
+        why: (gap: number, pct: number, amt: string) =>
+          `أكبر فجوة: ${gap} طفلاً، والتمويل ${pct}%. هدف الحملة ${amt} — تظهر في منصّة الدعم باباً مستقلاً.`,
+      },
+      newGroup: {
+        h: (p: string) => `مجموعةٌ جديدة في ${p}`,
+        why: (gap: number, _p: number, amt: string) =>
+          `الرصيد الحرّ يكفي مجموعةً كاملة (${amt}) وما زال ${gap} طفلاً بلا مجموعة — تُفتح في التشغيل بمشرفٍ مؤهَّل.`,
+      },
+      redirect: {
+        h: (p: string, to: string) => `أعد توجيه فائض ${p} إلى ${to}`,
+        why: (_g: number, _p: number, amt: string, to: string) =>
+          `التمويل تجاوز الحاجة بـ ${amt}؛ يُوجَّه إلى ${to} حيث الفجوة.`,
+      },
+      fundGroup: {
+        h: (_p: string, g: string) => `أولويةٌ لتمويل ${g}`,
+        why: (_g: number, _p: number, amt: string) =>
+          `مجموعةٌ قائمة تنتظر ${amt} لتبدأ جلساتها — تُعرض أوّلاً للداعمين.`,
+      },
+    },
   },
   en: {
     label: "Layer three · Decision",
@@ -147,6 +170,36 @@ const COPY = defineCopy("routes/vision.decision", {
     toSupport: "Support",
     toOps: "Operations",
     seeCycle: "Watch the whole cycle",
+    approve: "Approve decision",
+    liveH: "Albania now — moves with every donation and measurement",
+    liveRaised: "Donations recorded in WAMY's account",
+    liveDonors: "Supporters",
+    liveFunding: "Qualification funding in Albania",
+    liveGap: "children in the gap",
+    noRecs:
+      "No open recommendations: everything the numbers proposed was approved. A new donation or measurement will change that.",
+    rec: {
+      campaign: {
+        h: (p: string) => `A campaign for ${p}`,
+        why: (gap: number, pct: number, amt: string) =>
+          `Largest gap: ${gap} children, funding at ${pct}%. Campaign target ${amt} — appears in the support platform as its own door.`,
+      },
+      newGroup: {
+        h: (p: string) => `A new group in ${p}`,
+        why: (gap: number, _p: number, amt: string) =>
+          `The free balance covers a full group (${amt}) and ${gap} children still have none — it opens in operations with a qualified supervisor.`,
+      },
+      redirect: {
+        h: (p: string, to: string) => `Redirect ${p}'s surplus to ${to}`,
+        why: (_g: number, _p: number, amt: string, to: string) =>
+          `Funding exceeded need by ${amt}; it goes to ${to}, where the gap is.`,
+      },
+      fundGroup: {
+        h: (_p: string, g: string) => `Priority funding for ${g}`,
+        why: (_g: number, _p: number, amt: string) =>
+          `An existing group needs ${amt} to start its sessions — shown first to supporters.`,
+      },
+    },
   },
 });
 
@@ -189,7 +242,10 @@ function DecisionPage() {
 function Shift() {
   const c = useCopy(COPY);
   const num = useNum();
-  const pct = measuredPct();
+  const money = useMoney();
+  const { state } = useVision();
+  const t = totals(state);
+  const pct = +((t.measured / SYSTEM.sponsored) * 100).toFixed(1);
   return (
     <div>
       <h2 className="text-2xl font-extrabold md:text-3xl">{c.shiftH}</h2>
@@ -215,7 +271,7 @@ function Shift() {
             />
           </div>
           <div className="mt-2 flex justify-between text-xs text-ivory/70">
-            <span>{c.measured(num(SYSTEM.measured))}</span>
+            <span>{c.measured(num(t.measured))}</span>
             <span className="tabular-nums">{num(pct, { maximumFractionDigits: 1 })}%</span>
           </div>
         </div>
@@ -237,6 +293,23 @@ function Shift() {
           ))}
         </dl>
       </div>
+      <h3 className="mt-8 text-sm font-bold text-gold-soft">{c.liveH}</h3>
+      <dl className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {(
+          [
+            [money(t.raised), c.liveRaised],
+            [num(t.donors), c.liveDonors],
+            [`${num(t.pct)}%`, c.liveFunding],
+            [num(t.gap), c.liveGap],
+          ] as const
+        ).map(([v, label]) => (
+          <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <dd className="font-serif text-2xl text-ivory tabular-nums">{v}</dd>
+            <dt className="mt-1 text-xs text-ivory/70">{label}</dt>
+          </div>
+        ))}
+      </dl>
+      <Feed limit={6} dark className="mt-4" />
     </div>
   );
 }
@@ -301,9 +374,11 @@ function useAlbania() {
 function AlbaniaMap({
   selected,
   onPick,
+  pct,
 }: {
   selected: string | null;
   onPick: (id: string) => void;
+  pct: Map<string, number>;
 }) {
   const tr = useT();
   const { data } = useAlbania();
@@ -341,7 +416,11 @@ function AlbaniaMap({
             onKeyDown={
               city ? (e) => (e.key === "Enter" || e.key === " ") && onPick(city.id) : undefined
             }
-            style={city ? { fillOpacity: 0.25 + Math.min(1, city.funded / 100) * 0.6 } : undefined}
+            style={
+              city
+                ? { fillOpacity: 0.25 + Math.min(1, (pct.get(city.id) ?? 0) / 100) * 0.6 }
+                : undefined
+            }
             className={cn(
               "transition-[fill,fill-opacity,stroke] duration-500 outline-none",
               city
@@ -359,8 +438,15 @@ function AlbaniaMap({
 function Country() {
   const c = useCopy(COPY);
   const tr = useT();
+  const { state } = useVision();
+  const t = totals(state);
   const [sel, setSel] = useState<string | null>("tirana");
-  const city = ALBANIA.find((x) => x.id === sel) ?? null;
+  const cities = state.cities.map((x) => ({
+    ...x,
+    pct: fundingPct(x),
+    groups: state.groups.filter((g) => g.city === x.id).length,
+  }));
+  const city = cities.find((x) => x.id === sel) ?? null;
   return (
     <div>
       <h2 className="text-2xl font-extrabold">{c.countryH}</h2>
@@ -369,12 +455,10 @@ function Country() {
         <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-bold">{c.needFunding}</h3>
-            <span className="text-xs text-gold-soft">
-              {c.groupsLine(ALBANIA_GROUPS.funded, ALBANIA_GROUPS.total)}
-            </span>
+            <span className="text-xs text-gold-soft">{c.groupsLine(t.fundedGroups, t.groups)}</span>
           </div>
           <ul className="mt-4 space-y-1">
-            {ALBANIA.map((x) => (
+            {cities.map((x) => (
               <li key={x.id}>
                 <button
                   type="button"
@@ -385,13 +469,11 @@ function Country() {
                     sel === x.id ? "bg-white/10" : "hover:bg-white/5",
                   )}
                 >
-                  <span
-                    className={cn("tabular-nums", x.funded > 100 ? "text-gold" : "text-ivory/70")}
-                  >
-                    {x.funded}%
+                  <span className={cn("tabular-nums", x.pct > 100 ? "text-gold" : "text-ivory/70")}>
+                    {x.pct}%
                   </span>
                   <span className="font-medium">{tr(x.name)}</span>
-                  <FundBar city={x} />
+                  <FundBar city={x} max={Math.max(...cities.map((y) => y.need), 1)} />
                 </button>
               </li>
             ))}
@@ -408,7 +490,11 @@ function Country() {
           </p>
         </section>
         <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-          <AlbaniaMap selected={sel} onPick={setSel} />
+          <AlbaniaMap
+            selected={sel}
+            onPick={setSel}
+            pct={new Map(cities.map((x) => [x.id, x.pct]))}
+          />
           <div aria-live="polite" className="mt-3 min-h-14 text-center">
             {city ? (
               <>
@@ -428,9 +514,8 @@ function Country() {
 }
 
 /** الحاجة شريطٌ خافت بطولها النسبي، والتمويل يملؤه بنسبته. */
-function FundBar({ city }: { city: City }) {
-  const maxNeed = Math.max(...ALBANIA.map((x) => x.need));
-  const w = (city.need / maxNeed) * 100;
+function FundBar({ city, max }: { city: { need: number; pct: number }; max: number }) {
+  const w = (city.need / max) * 100;
   return (
     <span className="relative block h-2 rounded-full" aria-hidden="true">
       <span
@@ -439,7 +524,7 @@ function FundBar({ city }: { city: City }) {
       />
       <span
         className="vision-bar absolute inset-y-0 start-0 rounded-full bg-gold"
-        style={{ width: `${w * Math.min(1, city.funded / 100)}%` }}
+        style={{ width: `${w * Math.min(1, city.pct / 100)}%` }}
       />
     </span>
   );
@@ -448,7 +533,8 @@ function FundBar({ city }: { city: City }) {
 function Invest() {
   const c = useCopy(COPY);
   const tr = useT();
-  const ranked = investmentRank();
+  const { state } = useVision();
+  const ranked = rankCities(state);
   const max = Math.max(1, ...ranked.map((x) => x.gap));
   return (
     <div>
@@ -479,33 +565,65 @@ function Invest() {
 
 function Decide() {
   const c = useCopy(COPY);
+  const place = usePlace();
+  const money = useMoney();
+  const { state, dispatch } = useVision();
+  const recs = recommend(state);
+  const META = {
+    campaign: [Megaphone, c.toSupport],
+    newGroup: [Users, c.toOps],
+    redirect: [Flag, c.toSupport],
+    fundGroup: [HandCoins, c.toSupport],
+  } as const;
   return (
     <div>
       <h2 className="text-2xl font-extrabold">{c.decideH}</h2>
       <p className="mt-1 text-sm text-ivory/70">{c.decideLead}</p>
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        {(
-          [
-            [Megaphone, c.campaign, c.campaignText, c.toSupport],
-            [Users, c.newGroup, c.newGroupText, c.toOps],
-          ] as const
-        ).map(([Icon, h, text, to]) => (
-          <article key={h} className="rounded-2xl border border-gold/30 bg-white/[0.04] p-6">
-            <p className="flex items-center gap-1.5 text-xs text-gold">
-              <Flag className="size-3.5" aria-hidden="true" />
-              {c.proposal}
-            </p>
-            <h3 className="mt-2 flex items-center gap-2 text-xl font-bold">
-              <Icon className="size-5 text-gold" aria-hidden="true" />
-              {h}
-            </h3>
-            <p className="mt-2 text-sm leading-7 text-ivory/75">{text}</p>
-            <p className="mt-4 inline-flex rounded-full bg-gold px-3 py-1 text-xs font-semibold text-wine-deep">
-              {c.goesTo}: {to}
-            </p>
-          </article>
-        ))}
-      </div>
+      {recs.length === 0 ? (
+        <p className="mt-6 rounded-2xl bg-white/[0.04] p-6 text-sm text-ivory/75">{c.noRecs}</p>
+      ) : (
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {recs.slice(0, 4).map((r) => {
+            const [Icon, to] = META[r.kind];
+            return (
+              <article
+                key={r.key}
+                className="vision-rise flex flex-col rounded-2xl border border-gold/30 bg-white/[0.04] p-6"
+              >
+                <p className="flex items-center gap-1.5 text-xs text-gold">
+                  <Flag className="size-3.5" aria-hidden="true" />
+                  {c.proposal}
+                </p>
+                <h3 className="mt-2 flex items-center gap-2 text-xl font-bold">
+                  <Icon className="size-5 text-gold" aria-hidden="true" />
+                  {c.rec[r.kind].h(place(r.city), place(r.group ?? ""))}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-7 text-ivory/75">
+                  {c.rec[r.kind].why(
+                    r.gap ?? 0,
+                    r.pct ?? 0,
+                    money(r.amount ?? 0),
+                    place(r.group ?? ""),
+                  )}
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-soft">
+                    {c.goesTo}: {to}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => dispatch({ type: "apply", key: r.key })}
+                    className="transition-transform active:scale-[0.97] ms-auto min-h-10 rounded-full bg-gold px-5 text-sm font-semibold text-wine-deep"
+                  >
+                    {c.approve}
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+      <Feed layer="decision" limit={5} dark className="mt-6" />
       <Link
         to="/vision/cycle"
         className="mt-6 inline-flex min-h-10 items-center gap-2 rounded-full bg-ivory px-5 font-semibold text-wine transition-transform active:scale-[0.97]"

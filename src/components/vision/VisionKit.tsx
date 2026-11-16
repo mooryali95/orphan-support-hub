@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ResetSandbox, VisionStoreProvider } from "@/components/vision/VisionStore";
 import type { T } from "@/data/vision-demo";
 import { defineCopy, intlOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -11,7 +12,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
   ar: {
     concept: "تصوّر · بيانات توضيحية",
     conceptNote:
-      "منصّتا التشغيل والقرار هنا افتراضيتان: الشكل الذي سيأخذه التكامل، بأسماءٍ مستعارة وأرقامٍ توضيحية. لا يُحصَّل مالٌ ولا يُكشف طفلٌ في هذه الصفحات.",
+      "منصّتا التشغيل والقرار هنا افتراضيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
     nav: "التحوّل الاستراتيجي",
     hub: "المنظومة",
     ops: "التشغيل",
@@ -22,7 +23,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
   en: {
     concept: "Concept · illustrative data",
     conceptNote:
-      "The operations and decision platforms here are virtual: the shape the integration will take, with pseudonyms and illustrative figures. No money is collected and no child is identified on these pages.",
+      "The operations and decision platforms here are virtual and run on a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
     nav: "Strategic transformation",
     hub: "System",
     ops: "Operations",
@@ -71,43 +72,48 @@ export function VisionShell({ children }: { children: ReactNode }) {
   const c = useCopy(COPY);
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <div className="min-h-dvh bg-ivory text-foreground">
-      <SiteHeader />
-      <main id="main" tabIndex={-1}>
-        <nav
-          aria-label={c.nav}
-          className="sticky top-16 z-30 border-b border-wine/10 bg-ivory/90 backdrop-blur"
-        >
-          <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none]">
-            {TABS.map((tab) => {
-              const on = path === tab.to || (tab.to !== "/vision" && path.startsWith(tab.to));
-              return (
-                <Link
-                  key={tab.to}
-                  to={tab.to}
-                  aria-current={on ? "page" : undefined}
-                  className={cn(
-                    "min-h-9 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
-                    on ? "bg-wine text-ivory" : "text-wine-ink hover:bg-wine/5",
-                  )}
-                >
-                  {c[tab.key]}
-                </Link>
-              );
-            })}
-            <ConceptBadge className="ms-auto shrink-0" />
-          </div>
-        </nav>
-        {children}
-        <aside
-          role="note"
-          className="mx-auto max-w-3xl px-4 pb-16 text-center text-sm leading-7 text-muted-foreground"
-        >
-          {c.conceptNote}
-        </aside>
-      </main>
-      <SiteFooter />
-    </div>
+    <VisionStoreProvider>
+      <div className="min-h-dvh bg-ivory text-foreground">
+        <SiteHeader />
+        <main id="main" tabIndex={-1}>
+          <nav
+            aria-label={c.nav}
+            className="sticky top-16 z-30 border-b border-wine/10 bg-ivory/90 backdrop-blur"
+          >
+            <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none]">
+              {TABS.map((tab) => {
+                const on = path === tab.to || (tab.to !== "/vision" && path.startsWith(tab.to));
+                return (
+                  <Link
+                    key={tab.to}
+                    to={tab.to}
+                    aria-current={on ? "page" : undefined}
+                    className={cn(
+                      "min-h-9 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
+                      on ? "bg-wine text-ivory" : "text-wine-ink hover:bg-wine/5",
+                    )}
+                  >
+                    {c[tab.key]}
+                  </Link>
+                );
+              })}
+              <ConceptBadge className="ms-auto shrink-0" />
+            </div>
+          </nav>
+          {children}
+          <aside
+            role="note"
+            className="mx-auto max-w-3xl px-4 pb-16 text-center text-sm leading-7 text-muted-foreground"
+          >
+            {c.conceptNote}
+            <span className="mt-2 block">
+              <ResetSandbox />
+            </span>
+          </aside>
+        </main>
+        <SiteFooter />
+      </div>
+    </VisionStoreProvider>
   );
 }
 

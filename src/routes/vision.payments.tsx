@@ -17,7 +17,9 @@ import {
 
 import { Eyebrow, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
+import { DonateForm, Feed, useMoney, usePlace, useVision } from "@/components/vision/VisionStore";
 import { feeSplit, MONEY, type MoneyStage } from "@/data/vision-demo";
+import { totals } from "@/lib/vision-engine";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +67,13 @@ const COPY = defineCopy("routes/vision.payments", {
       "فرقٌ في المبلغ لا يمرّ إلا بإقرارٍ وملاحظة — ثم الفاتورة والتفعيل",
     ],
     simH: "حاسبة المبلغ",
+    liveH: "جرّبها الآن",
+    ledgerH: "سجلّ حساب الندوة (تجريبي)",
+    ledgerEmpty: "لا تبرّعات بعد. أرسل تبرّعاً من النموذج وسيُقيَّد هنا بفاتورته.",
+    viaCard: "بطاقة عبر Creem",
+    viaBank: "تحويل بنكي",
+    confirm: "طابِق التحويل",
+    settledTag: "مُقيَّد",
     simLead: "كيف يُقرأ تبرّعٌ واحد في السجلّ.",
     amount: "المبلغ",
     sar: "ر.س",
@@ -125,6 +134,14 @@ const COPY = defineCopy("routes/vision.payments", {
       "A different amount passes only with an explicit note — then invoice and activation",
     ],
     simH: "Amount calculator",
+    liveH: "Try it now",
+    ledgerH: "WAMY account ledger (sandbox)",
+    ledgerEmpty:
+      "No donations yet. Send one from the form and it is recorded here with its invoice.",
+    viaCard: "Card via Creem",
+    viaBank: "Bank transfer",
+    confirm: "Reconcile transfer",
+    settledTag: "Recorded",
     simLead: "How one donation reads in the ledger.",
     amount: "Amount",
     sar: "SAR",
@@ -183,6 +200,14 @@ function PaymentsPage() {
           <Routes />
           <Simulator />
         </div>
+        <section className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]" aria-labelledby="live-h">
+          <h2 id="live-h" className="sr-only">
+            {c.liveH}
+          </h2>
+          <DonateForm />
+          <Ledger />
+        </section>
+        <Feed limit={10} className="mt-6" />
         <Stations />
         <Guards />
         <aside className="mx-auto mt-12 max-w-3xl rounded-3xl bg-[linear-gradient(135deg,var(--color-wine),var(--color-wine-deep))] p-6 text-ivory md:p-8">
@@ -304,7 +329,9 @@ function Simulator() {
   const c = useCopy(COPY);
   const num = useNum();
   const [amount, setAmount] = useState(5000);
-  const [pct, setPct] = useState(5);
+  const { state, dispatch } = useVision();
+  const pct = state.feePercent;
+  const setPct = (n: number) => dispatch({ type: "setFee", pct: n });
   const { fee, net } = feeSplit(amount, pct);
   const money = (n: number) => num(n, { maximumFractionDigits: 2 });
   return (
@@ -361,6 +388,77 @@ function Simulator() {
       </dl>
       <p className="mt-4 text-xs leading-6 text-ivory/65">{c.eurNote}</p>
       <p className="mt-2 text-xs leading-6 text-ivory/50">{c.providerNote}</p>
+    </section>
+  );
+}
+
+function Ledger() {
+  const c = useCopy(COPY);
+  const money = useMoney();
+  const place = usePlace();
+  const { state, dispatch } = useVision();
+  const t = totals(state);
+  return (
+    <section className="rounded-3xl border border-wine/10 bg-white p-5">
+      <h3 className="text-lg font-bold text-wine">{c.ledgerH}</h3>
+      <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
+        {(
+          [
+            [t.raised, c.gross],
+            [t.fees, c.fee],
+            [t.net, c.net],
+          ] as const
+        ).map(([v, k]) => (
+          <div key={k} className="rounded-xl bg-wine/[0.04] px-2 py-3">
+            <dd className="font-serif text-lg text-wine tabular-nums">{money(v)}</dd>
+            <dt className="text-xs text-muted-foreground">{k}</dt>
+          </div>
+        ))}
+      </dl>
+      {state.donations.length === 0 ? (
+        <p className="mt-4 text-sm text-muted-foreground">{c.ledgerEmpty}</p>
+      ) : (
+        <ul className="mt-4 max-h-80 space-y-2 overflow-y-auto">
+          {state.donations.slice(0, 20).map((d) => (
+            <li key={d.id} className="vision-rise rounded-xl border border-wine/10 p-3 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-semibold text-wine">
+                  {d.donor} · {place(d.target.id)}
+                </span>
+                <span className="font-serif tabular-nums">{money(d.amount)}</span>
+              </div>
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+                <span>
+                  {d.method === "card" ? c.viaCard : c.viaBank}
+                  {d.status === "settled" && (
+                    <>
+                      {" · "}
+                      <span dir="ltr" className="inline-block font-mono">
+                        {d.invoice}
+                      </span>
+                      {" · "}
+                      {c.net}: {money(d.net)}
+                    </>
+                  )}
+                </span>
+                {d.status === "pending" ? (
+                  <button
+                    type="button"
+                    onClick={() => dispatch({ type: "confirmTransfer", id: d.id })}
+                    className="transition-transform active:scale-[0.97] min-h-9 rounded-full bg-wine px-3 text-xs font-semibold text-ivory"
+                  >
+                    {c.confirm}
+                  </button>
+                ) : (
+                  <span className="rounded-full bg-gold-soft px-2 py-0.5 font-semibold text-wine-ink">
+                    {c.settledTag}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

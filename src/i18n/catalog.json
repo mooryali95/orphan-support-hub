@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1076,
+ "count": 1143,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3432,10 +3432,10 @@
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.conceptNote": {
-   "en": "The operations and decision platforms here are virtual: the shape the integration will take, with pseudonyms and illustrative figures. No money is collected and no child is identified on these pages.",
-   "ar": "منصّتا التشغيل والقرار هنا افتراضيتان: الشكل الذي سيأخذه التكامل، بأسماءٍ مستعارة وأرقامٍ توضيحية. لا يُحصَّل مالٌ ولا يُكشف طفلٌ في هذه الصفحات.",
+   "en": "The operations and decision platforms here are virtual and run on a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
+   "ar": "منصّتا التشغيل والقرار هنا افتراضيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
    "kind": "text",
-   "hash": "3c8f1017ea94",
+   "hash": "04f21ba3a077",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.cycle": {
@@ -3479,6 +3479,266 @@
    "kind": "text",
    "hash": "8c759b73ccd3",
    "file": "src/components/vision/VisionKit.tsx"
+  },
+  "components/vision/VisionStore.allocFull": {
+   "en": "{0} allocated to {1} — now fully funded",
+   "ar": "خُصِّص {0} لـ{1} — اكتمل تمويلها",
+   "kind": "template",
+   "params": 2,
+   "hash": "a787f4312fa9",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.allocGroup": {
+   "en": "{0} allocated to {1}",
+   "ar": "خُصِّص {0} لـ{1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "56311824c5b5",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.allocPool": {
+   "en": "{0} free balance for {1}, awaiting a decision",
+   "ar": "{0} رصيدٌ حرّ لـ{1} ينتظر قراراً",
+   "kind": "template",
+   "params": 2,
+   "hash": "6df188ebcf2d",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.amount": {
+   "en": "Amount (SAR)",
+   "ar": "المبلغ (ر.س)",
+   "kind": "text",
+   "hash": "d829eb855aa3",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.bank": {
+   "en": "Bank transfer",
+   "ar": "تحويل بنكي",
+   "kind": "text",
+   "hash": "e6c1813b0449",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.card": {
+   "en": "Card",
+   "ar": "بطاقة",
+   "kind": "text",
+   "hash": "d4a19ee45109",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.cycleDone": {
+   "en": "{0}: cycle complete — ready for follow-up measurement",
+   "ar": "{0}: اكتملت الدورة — جاهزة للقياس البعدي",
+   "kind": "template",
+   "params": 1,
+   "hash": "6b337490937c",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.decision.campaign": {
+   "en": "Decision: a campaign launched for {0}",
+   "ar": "قرار: أُطلقت حملةٌ لـ{0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "6fc5ae9a634b",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.decision.fundGroup": {
+   "en": "Decision: priority funding for {0}",
+   "ar": "قرار: أُولويةٌ لتمويل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "05cd147a461b",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.decision.newGroup": {
+   "en": "Decision: a new group opened in {0}",
+   "ar": "قرار: فُتحت مجموعةٌ جديدة في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "3d4b867ae71a",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.decision.redirect": {
+   "en": "Decision: {0}'s surplus redirected to {1}",
+   "ar": "قرار: أُعيد توجيه فائض {0} إلى {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "e98bd3dc3182",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.disbursed": {
+   "en": "Disbursed to the Albania office: €{0} for {1}",
+   "ar": "صرفٌ إلى مكتب ألبانيا: {0} € لـ{1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "b8fb06ed88ad",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.donation": {
+   "en": "{1} gave {0} to {2} (card)",
+   "ar": "{1} تبرّع بـ {0} لـ{2} (بطاقة)",
+   "kind": "template",
+   "params": 3,
+   "hash": "212276257297",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.done": {
+   "en": "Received — follow it on the decision and operations boards",
+   "ar": "وصل — تابِعه في لوحة القرار والتشغيل",
+   "kind": "text",
+   "hash": "22ae3d9a3705",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.donor": {
+   "en": "Supporter name (pseudonym)",
+   "ar": "اسم الداعم (مستعار)",
+   "kind": "text",
+   "hash": "8be75c4649f1",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.donorPh": {
+   "en": "e.g. a supporter from Riyadh",
+   "ar": "مثال: داعمٌ من الرياض",
+   "kind": "text",
+   "hash": "48093e491591",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.feedEmpty": {
+   "en": "No events yet. Try a donation from the money journey or the form.",
+   "ar": "لا أحداث بعد. جرّب تبرّعاً من «رحلة المال» أو من النموذج.",
+   "kind": "text",
+   "hash": "4162b02fb56b",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.feedH": {
+   "en": "Live system log",
+   "ar": "سجلّ المنظومة الحيّ",
+   "kind": "text",
+   "hash": "baaabcc3f9f5",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.formH": {
+   "en": "Test donation",
+   "ar": "تبرّعٌ تجريبي",
+   "kind": "text",
+   "hash": "936695c7c33d",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.formLead": {
+   "en": "It passes through the three layers as real money will — nothing is collected.",
+   "ar": "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي — ولا يُحصَّل شيء.",
+   "kind": "text",
+   "hash": "3461e7f788bb",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.give": {
+   "en": "Donate now",
+   "ar": "تبرّع الآن",
+   "kind": "text",
+   "hash": "591986f41f97",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.layer.decision": {
+   "en": "Decision",
+   "ar": "القرار",
+   "kind": "text",
+   "hash": "822a12677e2b",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.layer.operations": {
+   "en": "Operations",
+   "ar": "التشغيل",
+   "kind": "text",
+   "hash": "8c759b73ccd3",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.layer.support": {
+   "en": "Support",
+   "ar": "الدعم",
+   "kind": "text",
+   "hash": "ba3aaee9dae2",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.measuredDec": {
+   "en": "Now in a measured journey: {0}",
+   "ar": "في رحلة تأهيلٍ مقيسة الآن: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "674b95f3418c",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.measuredOps": {
+   "en": "{0}: trait {1} → {2}",
+   "ar": "{0}: السمة من {1} إلى {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "caa5eb35b17e",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.method": {
+   "en": "Payment method",
+   "ar": "طريقة الدفع",
+   "kind": "text",
+   "hash": "2d40b82d5b9f",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.pending": {
+   "en": "{1} declared a {0} transfer to {2} — awaiting reconciliation",
+   "ar": "{1} أعلن تحويلاً بـ {0} لـ{2} — بانتظار المطابقة",
+   "kind": "template",
+   "params": 3,
+   "hash": "9dfd5bf37fe2",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.reset": {
+   "en": "Reset the sandbox",
+   "ar": "إعادة البيئة إلى البداية",
+   "kind": "text",
+   "hash": "08aaac2a16f9",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.resetConfirm": {
+   "en": "All test donations and decisions in this browser will be cleared. Continue?",
+   "ar": "ستُمحى كلّ التبرعات والقرارات التجريبية في هذا المتصفّح. متابعة؟",
+   "kind": "text",
+   "hash": "28f4da012774",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.sandbox": {
+   "en": "Sandbox · no real money",
+   "ar": "بيئة تجريبية · لا مال حقيقي",
+   "kind": "text",
+   "hash": "59cd76b538e4",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.sar": {
+   "en": "SAR",
+   "ar": "ر.س",
+   "kind": "text",
+   "hash": "53241d57f1d0",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.session": {
+   "en": "{0}: session {1} of {2}",
+   "ar": "{0}: جلسة {1} من {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "1357b44b55c6",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.settled": {
+   "en": "{0} recorded in WAMY's account · net {1} · {2}",
+   "ar": "قُيِّد {0} في حساب الندوة · الصافي {1} · {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "67047486a2d5",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.target": {
+   "en": "Destination",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "cffd204a68c1",
+   "file": "src/components/vision/VisionStore.tsx"
   },
   "config/brand.description": {
    "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
@@ -6479,6 +6739,13 @@
    "hash": "b8776cfc59b4",
    "file": "src/routes/vision.cycle.tsx"
   },
+  "routes/vision.decision.approve": {
+   "en": "Approve decision",
+   "ar": "اعتمد القرار",
+   "kind": "text",
+   "hash": "c7e2d1eff23c",
+   "file": "src/routes/vision.decision.tsx"
+  },
   "routes/vision.decision.brand": {
    "en": "Orphan capability",
    "ar": "الأهلية للأيتام",
@@ -6609,6 +6876,41 @@
    "hash": "0e1c1eaad941",
    "file": "src/routes/vision.decision.tsx"
   },
+  "routes/vision.decision.liveDonors": {
+   "en": "Supporters",
+   "ar": "داعمون",
+   "kind": "text",
+   "hash": "6186fb736331",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.liveFunding": {
+   "en": "Qualification funding in Albania",
+   "ar": "تمويل التأهيل في ألبانيا",
+   "kind": "text",
+   "hash": "fdb449fa34de",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.liveGap": {
+   "en": "children in the gap",
+   "ar": "طفلاً في الفجوة",
+   "kind": "text",
+   "hash": "2b1e1a525f47",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.liveH": {
+   "en": "Albania now — moves with every donation and measurement",
+   "ar": "ألبانيا الآن — يتحرّك مع كلّ تبرّعٍ وقياس",
+   "kind": "text",
+   "hash": "a993ef3502b4",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.liveRaised": {
+   "en": "Donations recorded in WAMY's account",
+   "ar": "تبرّعاتٌ قُيّدت في حساب الندوة",
+   "kind": "text",
+   "hash": "df731196968d",
+   "file": "src/routes/vision.decision.tsx"
+  },
   "routes/vision.decision.measured": {
    "en": "In a measured journey: {0} (Albania)",
    "ar": "في رحلة تأهيلٍ مقيسة: {0} (ألبانيا)",
@@ -6652,6 +6954,13 @@
    "hash": "d5ee357c092e",
    "file": "src/routes/vision.decision.tsx"
   },
+  "routes/vision.decision.noRecs": {
+   "en": "No open recommendations: everything the numbers proposed was approved. A new donation or measurement will change that.",
+   "ar": "لا توصيات مفتوحة الآن: كلّ ما اقترحته الأرقام اعتُمد. تبرّعٌ جديد أو قياسٌ يغيّرها.",
+   "kind": "text",
+   "hash": "e8aab8908a6f",
+   "file": "src/routes/vision.decision.tsx"
+  },
   "routes/vision.decision.notYet": {
    "en": "Not started",
    "ar": "لم تبدأ",
@@ -6692,6 +7001,70 @@
    "ar": "قرارٌ مقترح",
    "kind": "text",
    "hash": "3355ec3d7acd",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.campaign.h": {
+   "en": "A campaign for {0}",
+   "ar": "حملةٌ لـ{0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "29e481281679",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.campaign.why": {
+   "en": "Largest gap: {0} children, funding at {1}%. Campaign target {2} — appears in the support platform as its own door.",
+   "ar": "أكبر فجوة: {0} طفلاً، والتمويل {1}%. هدف الحملة {2} — تظهر في منصّة الدعم باباً مستقلاً.",
+   "kind": "template",
+   "params": 3,
+   "hash": "8154aeb42c7e",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.fundGroup.h": {
+   "en": "Priority funding for {1}",
+   "ar": "أولويةٌ لتمويل {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "b3770ab7bd44",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.fundGroup.why": {
+   "en": "An existing group needs {2} to start its sessions — shown first to supporters.",
+   "ar": "مجموعةٌ قائمة تنتظر {2} لتبدأ جلساتها — تُعرض أوّلاً للداعمين.",
+   "kind": "template",
+   "params": 3,
+   "hash": "6832785a2461",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.newGroup.h": {
+   "en": "A new group in {0}",
+   "ar": "مجموعةٌ جديدة في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "b98a874ca6c9",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.newGroup.why": {
+   "en": "The free balance covers a full group ({2}) and {0} children still have none — it opens in operations with a qualified supervisor.",
+   "ar": "الرصيد الحرّ يكفي مجموعةً كاملة ({2}) وما زال {0} طفلاً بلا مجموعة — تُفتح في التشغيل بمشرفٍ مؤهَّل.",
+   "kind": "template",
+   "params": 3,
+   "hash": "fb6d75257334",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.redirect.h": {
+   "en": "Redirect {0}'s surplus to {1}",
+   "ar": "أعد توجيه فائض {0} إلى {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "d6be733e7f3c",
+   "file": "src/routes/vision.decision.tsx"
+  },
+  "routes/vision.decision.rec.redirect.why": {
+   "en": "Funding exceeded need by {2}; it goes to {3}, where the gap is.",
+   "ar": "التمويل تجاوز الحاجة بـ {2}؛ يُوجَّه إلى {3} حيث الفجوة.",
+   "kind": "template",
+   "params": 4,
+   "hash": "90f671dbf00d",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.region": {
@@ -6854,6 +7227,20 @@
    "ar": "رؤيةٌ من ثلاث طبقات، أولاها تعمل اليوم: التشغيل حيث يُبنى اليتيم، والدعم حيث يختار الداعم أثره، والقرار حيث تُرى المنظومة كلّها.",
    "kind": "text",
    "hash": "4ac0d9202efd",
+   "file": "src/routes/vision.index.tsx"
+  },
+  "routes/vision.index.liveH": {
+   "en": "A working system, not a recording",
+   "ar": "نظامٌ يعمل، لا عرضٌ مسجَّل",
+   "kind": "text",
+   "hash": "10723c6f18a7",
+   "file": "src/routes/vision.index.tsx"
+  },
+  "routes/vision.index.liveLead": {
+   "en": "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change — synced across tabs.",
+   "ar": "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
+   "kind": "text",
+   "hash": "3177a4085ea6",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.measured": {
@@ -7024,11 +7411,26 @@
    "hash": "354cd7c4a342",
    "file": "src/routes/vision.operations.tsx"
   },
+  "routes/vision.operations.fromDecision": {
+   "en": "By decision",
+   "ar": "بقرار",
+   "kind": "text",
+   "hash": "8d1ff1885d15",
+   "file": "src/routes/vision.operations.tsx"
+  },
   "routes/vision.operations.funded": {
    "en": "of them funded",
    "ar": "منها مموّلة",
    "kind": "text",
    "hash": "1fdf5348d821",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.fundedOf": {
+   "en": "Funded {0} of {1}",
+   "ar": "مموّل {0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "50b253988e5d",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.fundedTag": {
@@ -7066,12 +7468,42 @@
    "hash": "816ab52bc1a3",
    "file": "src/routes/vision.operations.tsx"
   },
+  "routes/vision.operations.measure": {
+   "en": "Record follow-up measurement",
+   "ar": "سجّل القياس البعدي",
+   "kind": "text",
+   "hash": "ea2f95210ffd",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.measuredTag": {
+   "en": "Measured: {0} → {1}",
+   "ar": "القياس: {0} ← {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "dfa30c0ee93a",
+   "file": "src/routes/vision.operations.tsx"
+  },
   "routes/vision.operations.members": {
    "en": "{0} members",
    "ar": "{0} أعضاء",
    "kind": "template",
    "params": 1,
    "hash": "c34df1510bf6",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.needLeft": {
+   "en": "{0} waiting",
+   "ar": "{0} ينتظرون",
+   "kind": "template",
+   "params": 1,
+   "hash": "4ef7e08021bd",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.opsFeed": {
+   "en": "What just reached operations",
+   "ar": "ما وصل التشغيلَ الآن",
+   "kind": "text",
+   "hash": "45bfac520193",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.path": {
@@ -7107,6 +7539,13 @@
    "ar": "تقرير رسمي · إدارة المنصة",
    "kind": "text",
    "hash": "11bf68eabe68",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.runSession": {
+   "en": "Record a session",
+   "ar": "سجّل جلسة",
+   "kind": "text",
+   "hash": "62c106c936ce",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.sessions": {
@@ -7206,6 +7645,13 @@
    "ar": "السمات بين القياسين",
    "kind": "text",
    "hash": "5623750f7dcd",
+   "file": "src/routes/vision.operations.tsx"
+  },
+  "routes/vision.operations.waitingNote": {
+   "en": "Sessions start once it is fully funded — donate to it from the money journey.",
+   "ar": "تبدأ جلساتها حين يكتمل تمويلها — تبرّع لها من رحلة المال.",
+   "kind": "text",
+   "hash": "e027d447bfa9",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.payments.acDonor": {
@@ -7369,6 +7815,13 @@
    "hash": "01e8f2a530d2",
    "file": "src/routes/vision.payments.tsx"
   },
+  "routes/vision.payments.confirm": {
+   "en": "Reconcile transfer",
+   "ar": "طابِق التحويل",
+   "kind": "text",
+   "hash": "cc8bad29ccca",
+   "file": "src/routes/vision.payments.tsx"
+  },
   "routes/vision.payments.eurNote": {
    "en": "Disbursed to the Albania office as the EUR equivalent on the day of transfer, recorded in its currency.",
    "ar": "يُصرف لمكتب ألبانيا بما يعادله باليورو بسعر يوم الصرف، ويُسجَّل الصرف بعملته.",
@@ -7502,11 +7955,32 @@
    "hash": "e7266d9da46c",
    "file": "src/routes/vision.payments.tsx"
   },
+  "routes/vision.payments.ledgerEmpty": {
+   "en": "No donations yet. Send one from the form and it is recorded here with its invoice.",
+   "ar": "لا تبرّعات بعد. أرسل تبرّعاً من النموذج وسيُقيَّد هنا بفاتورته.",
+   "kind": "text",
+   "hash": "17fc34aba60b",
+   "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.payments.ledgerH": {
+   "en": "WAMY account ledger (sandbox)",
+   "ar": "سجلّ حساب الندوة (تجريبي)",
+   "kind": "text",
+   "hash": "63ae3a6ce88b",
+   "file": "src/routes/vision.payments.tsx"
+  },
   "routes/vision.payments.live": {
    "en": "Live today",
    "ar": "يعمل اليوم",
    "kind": "text",
    "hash": "ff0bca421b5c",
+   "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.payments.liveH": {
+   "en": "Try it now",
+   "ar": "جرّبها الآن",
+   "kind": "text",
+   "hash": "4488cf41492c",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.net": {
@@ -7542,6 +8016,13 @@
    "ar": "ر.س",
    "kind": "text",
    "hash": "53241d57f1d0",
+   "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.payments.settledTag": {
+   "en": "Recorded",
+   "ar": "مُقيَّد",
+   "kind": "text",
+   "hash": "f533ea27211a",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.simH": {
@@ -7584,6 +8065,20 @@
    "ar": "التحصيل والفواتير والصرف والإثبات تعمل الآن في هذه المنصّة، والدفع بالبطاقة ينتظر موافقة Creem. ما يأتي مع التكامل: أن يتسلّم التشغيل (الرواد) الصرف آليًا ويعيد الأثر موقَّعًا، وأن تقرأ لوحة القرار المجاميع مباشرةً.",
    "kind": "text",
    "hash": "f85773fef9ad",
+   "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.payments.viaBank": {
+   "en": "Bank transfer",
+   "ar": "تحويل بنكي",
+   "kind": "text",
+   "hash": "e6c1813b0449",
+   "file": "src/routes/vision.payments.tsx"
+  },
+  "routes/vision.payments.viaCard": {
+   "en": "Card via Creem",
+   "ar": "بطاقة عبر Creem",
+   "kind": "text",
+   "hash": "796cb5eefc52",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.waiting": {

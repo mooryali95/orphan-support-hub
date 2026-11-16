@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, User } from "lucide-
 
 import { Bar, Eyebrow, Tally, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
+import { Feed } from "@/components/vision/VisionStore";
 import { ALBANIA_GROUPS, CYCLE } from "@/data/vision-demo";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -237,6 +238,9 @@ function CyclePage() {
           {i === last && <p className="vision-rise mt-6 font-semibold text-wine">{c.closing}</p>}
         </div>
       </section>
+      <div className="mx-auto max-w-3xl px-4 pb-12">
+        <Feed limit={8} />
+      </div>
     </VisionShell>
   );
 }

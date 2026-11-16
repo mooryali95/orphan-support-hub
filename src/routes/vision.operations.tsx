@@ -12,7 +12,9 @@ import {
   VisionShell,
 } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
-import { ALBANIA, GROUPS, ORPHAN_FILE, REPORT_DATE, SYSTEM, TRAITS } from "@/data/vision-demo";
+import { Feed, useMoney, useVision } from "@/components/vision/VisionStore";
+import { GROUPS, ORPHAN_FILE, REPORT_DATE, SYSTEM, TRAITS } from "@/data/vision-demo";
+import { groupCostOf, isFunded, SESSIONS_PER_CYCLE, totals } from "@/lib/vision-engine";
 import { copyOf, defineCopy, intlOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +53,14 @@ const COPY = defineCopy("routes/vision.operations", {
     concept: "المفهوم",
     fundedTag: "مموّلة",
     awaiting: "بانتظار تمويل",
+    runSession: "سجّل جلسة",
+    measure: "سجّل القياس البعدي",
+    measuredTag: (a: string, b: string) => `القياس: ${a} ← ${b}`,
+    fundedOf: (a: string, b: string) => `مموّل ${a} من ${b}`,
+    fromDecision: "بقرار",
+    waitingNote: "تبدأ جلساتها حين يكتمل تمويلها — تبرّع لها من رحلة المال.",
+    needLeft: (n: number) => `${n} ينتظرون`,
+    opsFeed: "ما وصل التشغيلَ الآن",
     fileH: "ملف تربوي شامل",
     fileLead: "دائرة رعاية تجمع المشرف والوليّ والمرجع الشرعي والكافل — كلٌّ يرى ما يحقّ له.",
     circle: "دائرة الرعاية",
@@ -96,6 +106,14 @@ const COPY = defineCopy("routes/vision.operations", {
     concept: "Concept",
     fundedTag: "Funded",
     awaiting: "Awaiting funding",
+    runSession: "Record a session",
+    measure: "Record follow-up measurement",
+    measuredTag: (a: string, b: string) => `Measured: ${a} → ${b}`,
+    fundedOf: (a: string, b: string) => `Funded ${a} of ${b}`,
+    fromDecision: "By decision",
+    waitingNote: "Sessions start once it is fully funded — donate to it from the money journey.",
+    needLeft: (n: number) => `${n} waiting`,
+    opsFeed: "What just reached operations",
     fileH: "A complete educational file",
     fileLead:
       "A care circle of supervisor, guardian, religious mentor and sponsor — each sees what they are entitled to.",
@@ -159,8 +177,8 @@ function OperationsPage() {
 function Command() {
   const c = useCopy(COPY);
   const tr = useT();
-  const groups = ALBANIA.reduce((a, x) => a + x.groups, 0);
-  const sessions = GROUPS.reduce((a, g) => a + g.sessionsDone, 0);
+  const { state } = useVision();
+  const t = totals(state);
   return (
     <div>
       <div className="rounded-2xl bg-[linear-gradient(135deg,var(--color-wine),var(--color-wine-deep))] p-6 text-ivory md:p-8">
@@ -171,9 +189,9 @@ function Command() {
       <dl className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
         {(
           [
-            [SYSTEM.measured, c.inJourney],
-            [groups, c.groups],
-            [sessions, c.sessions],
+            [t.measured, c.inJourney],
+            [t.groups, c.groups],
+            [t.sessions, c.sessions],
             [SYSTEM.supervisors, c.supervisors],
           ] as const
         ).map(([n, label]) => (
@@ -187,19 +205,23 @@ function Command() {
       </dl>
       <h3 className="mt-6 text-sm font-bold text-wine">{c.byCity}</h3>
       <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {ALBANIA.map((city) => (
+        {state.cities.map((city) => (
           <li
             key={city.id}
-            className="flex items-center justify-between rounded-xl bg-wine/[0.04] px-4 py-3 text-sm"
+            className="flex items-center justify-between gap-2 rounded-xl bg-wine/[0.04] px-4 py-3 text-sm"
           >
             <span className="font-medium">{tr(city.name)}</span>
+            <span className="text-xs text-muted-foreground">{c.needLeft(city.need)}</span>
             <span className="flex items-center gap-1.5 text-muted-foreground">
               <Users className="size-4" aria-hidden="true" />
-              <span className="tabular-nums">{city.groups}</span>
+              <span className="tabular-nums">
+                {state.groups.filter((g) => g.city === city.id).length}
+              </span>
             </span>
           </li>
         ))}
       </ul>
+      <Feed layer="operations" limit={6} className="mt-6" />
     </div>
   );
 }
@@ -207,55 +229,108 @@ function Command() {
 function Groups() {
   const c = useCopy(COPY);
   const tr = useT();
+  const money = useMoney();
+  const { state, dispatch } = useVision();
+  const detail = new Map(GROUPS.map((g) => [g.id, g]));
+  const list = [...state.groups].sort(
+    (a, b) =>
+      Number(isFunded(a)) - Number(isFunded(b)) ||
+      (a.after === null ? -1 : 1) - (b.after === null ? -1 : 1),
+  );
   return (
     <ul className="grid gap-3 md:grid-cols-2">
-      {GROUPS.map((g, i) => (
-        <li
-          key={g.id}
-          style={{ ["--i" as string]: i }}
-          className="stagger-in rounded-2xl border border-wine/10 bg-white p-5"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="font-bold text-wine">{tr(g.name)}</h3>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {tr(g.supervisor)} · {c.members(g.members)}
-              </p>
-            </div>
-            <span
-              className={cn(
-                "shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold",
-                g.funded ? "bg-gold-soft text-wine-ink" : "bg-wine/5 text-muted-foreground",
-              )}
-            >
-              {g.funded ? c.fundedTag : c.awaiting}
-            </span>
-          </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            {c.concept}: <span className="font-semibold text-foreground">«{tr(g.concept)}»</span>
-          </p>
-          <div
-            className="mt-2 flex gap-1"
-            aria-label={c.sessionsOf(g.sessionsDone, g.sessionsTotal)}
-            role="img"
+      {list.map((g, i) => {
+        const d = detail.get(g.id);
+        const funded = isFunded(g);
+        const cost = groupCostOf(g);
+        return (
+          <li
+            key={g.id}
+            style={{ ["--i" as string]: Math.min(i, 8) }}
+            className="stagger-in rounded-2xl border border-wine/10 bg-white p-5"
           >
-            {Array.from({ length: g.sessionsTotal }, (_, k) => (
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-bold text-wine">
+                  {tr(g.name)}
+                  {g.fromDecision && (
+                    <span className="ms-2 rounded-full bg-wine px-2 py-0.5 text-[11px] font-semibold text-ivory">
+                      {c.fromDecision}
+                    </span>
+                  )}
+                </h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {d ? `${tr(d.supervisor)} · ` : ""}
+                  {c.members(g.members)}
+                </p>
+              </div>
               <span
-                key={k}
                 className={cn(
-                  "h-1.5 flex-1 rounded-full",
-                  k < g.sessionsDone ? "bg-wine" : "bg-wine/10",
+                  "shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold",
+                  funded ? "bg-gold-soft text-wine-ink" : "bg-wine/5 text-muted-foreground",
                 )}
-              />
-            ))}
-          </div>
-          <p className="mt-1.5">
-            <span dir="ltr" className="inline-block font-serif text-lg text-wine tabular-nums">
-              {g.sessionsDone} / {g.sessionsTotal}
-            </span>
-          </p>
-        </li>
-      ))}
+              >
+                {funded ? c.fundedTag : c.awaiting}
+              </span>
+            </div>
+            {d && (
+              <p className="mt-4 text-xs text-muted-foreground">
+                {c.concept}:{" "}
+                <span className="font-semibold text-foreground">«{tr(d.concept)}»</span>
+              </p>
+            )}
+            {!funded && (
+              <div className="mt-3">
+                <Bar pct={(g.funded / cost) * 100} className="text-wine" />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {c.fundedOf(money(g.funded), money(cost))} · {c.waitingNote}
+                </p>
+              </div>
+            )}
+            <div
+              className="mt-3 flex gap-1"
+              aria-label={c.sessionsOf(g.sessionsDone, SESSIONS_PER_CYCLE)}
+              role="img"
+            >
+              {Array.from({ length: SESSIONS_PER_CYCLE }, (_, k) => (
+                <span
+                  key={k}
+                  className={cn(
+                    "h-1.5 flex-1 rounded-full transition-colors duration-500",
+                    k < g.sessionsDone ? "bg-wine" : "bg-wine/10",
+                  )}
+                />
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <span dir="ltr" className="inline-block font-serif text-lg text-wine tabular-nums">
+                {g.sessionsDone} / {SESSIONS_PER_CYCLE}
+              </span>
+              {g.after !== null ? (
+                <span className="rounded-full bg-gold-soft px-3 py-1 text-xs font-semibold text-wine-ink">
+                  {c.measuredTag(String(g.before.toFixed(1)), String(g.after.toFixed(1)))}
+                </span>
+              ) : funded && g.sessionsDone < SESSIONS_PER_CYCLE ? (
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: "session", group: g.id })}
+                  className="transition-transform active:scale-[0.97] min-h-9 rounded-full bg-wine px-4 text-sm font-semibold text-ivory"
+                >
+                  {c.runSession}
+                </button>
+              ) : funded ? (
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: "measure", group: g.id })}
+                  className="transition-transform active:scale-[0.97] min-h-9 rounded-full bg-gold px-4 text-sm font-semibold text-wine-deep"
+                >
+                  {c.measure}
+                </button>
+              ) : null}
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }

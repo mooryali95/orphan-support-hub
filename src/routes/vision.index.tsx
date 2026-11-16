@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Orbit, Wallet } from "lucide-react";
 
 import { ConceptBadge, Tally, useT, VisionShell } from "@/components/vision/VisionKit";
+import { DonateForm, Feed } from "@/components/vision/VisionStore";
 import { pageTitle } from "@/config/brand";
 import { LAYERS, SYSTEM } from "@/data/vision-demo";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
@@ -32,6 +33,9 @@ const COPY = defineCopy("routes/vision.index", {
     moneyH: "رحلة المال",
     moneyText: "أين يصل المال وكيف: من ضغطة الداعم إلى يد المشرف، بسجلٍّ لا يُمحى.",
     watch: "شاهد",
+    liveH: "نظامٌ يعمل، لا عرضٌ مسجَّل",
+    liveLead:
+      "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
   },
   en: {
     title: "The strategic transformation for orphans",
@@ -48,6 +52,9 @@ const COPY = defineCopy("routes/vision.index", {
     moneyText:
       "Where the money lands and how: from the supporter's tap to the supervisor's hands, with an indelible record.",
     watch: "Watch",
+    liveH: "A working system, not a recording",
+    liveLead:
+      "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change — synced across tabs.",
   },
 });
 
@@ -194,6 +201,14 @@ function VisionHub() {
           ))}
         </ol>
 
+        <div className="mt-10 text-center">
+          <h2 className="text-2xl font-extrabold text-wine md:text-3xl">{c.liveH}</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">{c.liveLead}</p>
+        </div>
+        <div className="mt-6 grid gap-5 lg:grid-cols-2">
+          <DonateForm />
+          <Feed limit={9} />
+        </div>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           {(
             [
