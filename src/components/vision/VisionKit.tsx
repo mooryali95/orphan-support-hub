@@ -19,6 +19,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
     decision: "القرار",
     cycle: "الدورة",
     money: "رحلة المال",
+    me: "ادخل بدورك",
   },
   en: {
     concept: "Concept · illustrative data",
@@ -30,6 +31,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
     decision: "Decision",
     cycle: "Cycle",
     money: "Money journey",
+    me: "Enter by role",
   },
 });
 
@@ -65,6 +67,7 @@ const TABS = [
   { to: "/vision/decision", key: "decision" },
   { to: "/vision/cycle", key: "cycle" },
   { to: "/vision/payments", key: "money" },
+  { to: "/vision/me", key: "me" },
 ] as const;
 
 /** غلاف صفحات منصة الرؤية والتوجهات: الرأس، وشريط التنقّل بين الصفحات الخمس، والتنبيه. */

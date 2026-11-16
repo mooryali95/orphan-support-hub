@@ -34,6 +34,7 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
+import { Route as VisionMeRouteImport } from './routes/vision.me'
 import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
 import { Route as VisionPaymentsRouteImport } from './routes/vision.payments'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
@@ -178,6 +179,11 @@ const VisionDecisionRoute = VisionDecisionRouteImport.update({
   path: '/vision/decision',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisionMeRoute = VisionMeRouteImport.update({
+  id: '/vision/me',
+  path: '/vision/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionOperationsRoute = VisionOperationsRouteImport.update({
   id: '/vision/operations',
   path: '/vision/operations',
@@ -307,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/me': typeof VisionMeRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -352,6 +359,7 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/me': typeof VisionMeRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans': typeof OrphansIndexRoute
@@ -399,6 +407,7 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/me': typeof VisionMeRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -446,6 +455,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/me'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
@@ -491,6 +501,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/me'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans'
@@ -537,6 +548,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/me'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
@@ -577,6 +589,7 @@ export interface RootRouteChildren {
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   VisionCycleRoute: typeof VisionCycleRoute
   VisionDecisionRoute: typeof VisionDecisionRoute
+  VisionMeRoute: typeof VisionMeRoute
   VisionOperationsRoute: typeof VisionOperationsRoute
   VisionPaymentsRoute: typeof VisionPaymentsRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
@@ -767,6 +780,13 @@ declare module '@tanstack/react-router' {
       path: '/vision/decision'
       fullPath: '/vision/decision'
       preLoaderRoute: typeof VisionDecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/me': {
+      id: '/vision/me'
+      path: '/vision/me'
+      fullPath: '/vision/me'
+      preLoaderRoute: typeof VisionMeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vision/operations': {
@@ -965,6 +985,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   VisionCycleRoute: VisionCycleRoute,
   VisionDecisionRoute: VisionDecisionRoute,
+  VisionMeRoute: VisionMeRoute,
   VisionOperationsRoute: VisionOperationsRoute,
   VisionPaymentsRoute: VisionPaymentsRoute,
   OrphansIndexRoute: OrphansIndexRoute,
