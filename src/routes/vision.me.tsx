@@ -18,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { ImpactCard } from "@/components/vision/ImpactCard";
 import { WatchStory } from "@/components/vision/Story";
 import { Bar, Eyebrow, Tally, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import {
@@ -477,26 +478,36 @@ function Supporter({ name }: { name: string }) {
           ) : (
             <ul className="mt-3 max-h-80 space-y-2 overflow-y-auto">
               {mine.map((d) => (
-                <li
-                  key={d.id}
-                  className="flex items-center justify-between gap-3 rounded-xl bg-wine/[0.04] px-3 py-2 text-sm"
-                >
-                  <span>
-                    <span className="block font-semibold">{place(d.target.id)}</span>
-                    <span
-                      dir="ltr"
-                      className="inline-block font-mono text-xs text-muted-foreground"
-                    >
-                      {d.invoice || c.pending}
+                <li key={d.id}>
+                  <Link
+                    to="/vision/receipt/$id"
+                    params={{ id: d.id }}
+                    className="flex items-center justify-between gap-3 rounded-xl bg-wine/[0.04] px-3 py-2 text-sm transition-colors hover:bg-wine/[0.08]"
+                  >
+                    <span>
+                      <span className="block font-semibold">{place(d.target.id)}</span>
+                      <span
+                        dir="ltr"
+                        className="inline-block font-mono text-xs text-muted-foreground"
+                      >
+                        {d.invoice || c.pending}
+                      </span>
                     </span>
-                  </span>
-                  <span className="font-serif tabular-nums">{money(d.amount)}</span>
+                    <span className="font-serif tabular-nums">{money(d.amount)}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
           )}
         </section>
       </div>
+      <ImpactCard
+        name={name}
+        given={settled.reduce((a, d) => a + d.amount, 0)}
+        groups={groups.length}
+        children={kids.length}
+        measured={groups.filter((g) => g.after !== null).length}
+      />
       <Feed limit={8} />
       <ChildSheet child={open} onClose={() => setOpen(null)} />
     </div>
