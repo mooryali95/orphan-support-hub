@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { brandFor } from "@/config/brand";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { LanguageSwitch } from "@/components/kit/LanguageSwitch";
+import { ThemeSwitch } from "@/components/kit/ThemeSwitch";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const ROUTES = ["/", "/orphans", "/support", "/traits", "/how-it-works", "/organizations"] as const;
@@ -50,16 +51,20 @@ export function SiteHeader() {
         {c.skip}
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label={`${brand.name} — ${c.home}`}>
+        <Link
+          to="/"
+          aria-label={`${brand.name} — ${c.home}`}
+          className="shrink-0 whitespace-nowrap"
+        >
           <KahataynLockup />
         </Link>
 
-        <nav className="hidden flex-1 items-center gap-1 md:flex">
+        <nav className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors xl:px-3 hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
               activeOptions={{ exact: item.to === "/" }}
             >
@@ -69,6 +74,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ms-auto flex items-center gap-2">
+          <ThemeSwitch />
           <LanguageSwitch className="hidden sm:inline-flex" />
           {user && <NotificationBell />}
           {user ? (
@@ -100,7 +106,7 @@ export function SiteHeader() {
             aria-label={c.menu}
             aria-expanded={open}
             aria-controls="site-mobile-nav"
-            className="inline-flex size-11 items-center justify-center rounded-lg border border-border md:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border xl:hidden"
           >
             <Menu className="size-4" />
           </button>
@@ -109,7 +115,7 @@ export function SiteHeader() {
 
       <div
         id="site-mobile-nav"
-        className={cn("border-t border-border/70 md:hidden", open ? "block" : "hidden")}
+        className={cn("border-t border-border/70 xl:hidden", open ? "block" : "hidden")}
       >
         <nav className="mx-auto flex max-w-6xl flex-col p-2">
           {NAV.map((item) => (

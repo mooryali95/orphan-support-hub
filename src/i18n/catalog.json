@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1143,
+ "count": 1145,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -887,6 +887,20 @@
    "kind": "text",
    "hash": "c2f38f84cdb5",
    "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/kit/ThemeSwitch.toDark": {
+   "en": "Dark appearance",
+   "ar": "المظهر الداكن",
+   "kind": "text",
+   "hash": "0297375936ab",
+   "file": "src/components/kit/ThemeSwitch.tsx"
+  },
+  "components/kit/ThemeSwitch.toLight": {
+   "en": "Light appearance",
+   "ar": "المظهر الفاتح",
+   "kind": "text",
+   "hash": "7618d94d5a45",
+   "file": "src/components/kit/ThemeSwitch.tsx"
   },
   "components/map/MapActions.browse": {
    "en": "Browse who is waiting here",

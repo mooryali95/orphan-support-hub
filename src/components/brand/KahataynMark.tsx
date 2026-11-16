@@ -40,8 +40,10 @@ export function KahataynMark({
   title?: string;
 }) {
   const solid = tone === "white" ? "#FFFFFF" : tone === "current" ? "currentColor" : null;
-  const green = solid ?? BRAND.green;
-  const gold = solid ?? BRAND.gold;
+  // بالألوان: متغيّرات الهوية فيتبع الشعارُ المظهرَ الداكن، والقيمة الثابتة احتياطٌ
+  // لما يُرسم خارج الصفحة (البريد والصور).
+  const green = solid ?? `var(--primary, ${BRAND.green})`;
+  const gold = solid ?? `var(--bridge, ${BRAND.gold})`;
   const mirror = "translate(200 0) scale(-1 1)";
 
   return (
