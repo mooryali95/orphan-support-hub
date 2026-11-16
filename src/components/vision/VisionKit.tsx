@@ -4,7 +4,12 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StoryBar } from "@/components/vision/Story";
-import { LiveToasts, ResetSandbox, VisionStoreProvider } from "@/components/vision/VisionStore";
+import {
+  LiveToasts,
+  ResetSandbox,
+  TimeControl,
+  VisionStoreProvider,
+} from "@/components/vision/VisionStore";
 import type { T } from "@/data/vision-demo";
 import { defineCopy, intlOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -119,7 +124,9 @@ export function VisionShell({ children }: { children: ReactNode }) {
                   </Link>
                 );
               })}
-              <ConceptBadge className="ms-auto shrink-0" />
+              <span className="ms-auto" />
+              <TimeControl />
+              <ConceptBadge className="shrink-0" />
             </div>
           </nav>
           {children}

@@ -155,3 +155,19 @@ describe("impact levels", async () => {
     ]);
   });
 });
+
+describe("time", () => {
+  it("a month brings recurring support, sessions and measurement, and a history point", () => {
+    const s0 = seed();
+    expect(s0.history).toHaveLength(6);
+    let s = reduce(s0, { type: "advanceMonth", at });
+    expect(s.month).toBe(1);
+    expect(s.history).toHaveLength(7);
+    expect(s.donations.length).toBe(3);
+    expect(totals(s).sessions).toBeGreaterThan(totals(s0).sessions);
+    // tirana-1 كان جاهزاً للقياس: يُقاس في الشهر الأوّل.
+    expect(s.groups.find((g) => g.id === "demo-g-tirana-1")!.after).not.toBeNull();
+    for (let i = 0; i < 4; i++) s = reduce(s, { type: "advanceMonth", at });
+    expect(s.history.at(-1)!.measured).toBeGreaterThan(s0.history.at(-1)!.measured);
+  });
+});

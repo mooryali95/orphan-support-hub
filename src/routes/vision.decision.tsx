@@ -13,6 +13,7 @@ import {
   VisionShell,
 } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
+import { Trend } from "@/components/vision/Trend";
 import { Feed, useMoney, usePlace, useVision } from "@/components/vision/VisionStore";
 import { ALBANIA, REGIONS, SYSTEM } from "@/data/vision-demo";
 import { fundingPct, ranked as rankCities, recommend, totals } from "@/lib/vision-engine";
@@ -85,6 +86,9 @@ const COPY = defineCopy("routes/vision.decision", {
     seeCycle: "شاهد الدورة كاملة",
     approve: "اعتمد القرار",
     liveH: "ألبانيا الآن — يتحرّك مع كلّ تبرّعٍ وقياس",
+    trendsH: "الاتجاه شهراً بشهر — «تقدّم شهراً» من الشريط أعلاه",
+    trendGap: "أطفالٌ في الفجوة",
+    trendMeasured: "في رحلةٍ مقيسة",
     liveRaised: "تبرّعاتٌ قُيّدت في حساب الندوة",
     liveDonors: "داعمون",
     liveFunding: "تمويل التأهيل في ألبانيا",
@@ -172,6 +176,9 @@ const COPY = defineCopy("routes/vision.decision", {
     seeCycle: "Watch the whole cycle",
     approve: "Approve decision",
     liveH: "Albania now — moves with every donation and measurement",
+    trendsH: "Month by month — use “Advance a month” in the bar above",
+    trendGap: "Children in the gap",
+    trendMeasured: "In a measured journey",
     liveRaised: "Donations recorded in WAMY's account",
     liveDonors: "Supporters",
     liveFunding: "Qualification funding in Albania",
@@ -309,6 +316,27 @@ function Shift() {
           </div>
         ))}
       </dl>
+      <h3 className="mt-8 text-sm font-bold text-gold-soft">{c.trendsH}</h3>
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <Trend
+          dark
+          title={c.liveFunding}
+          points={state.history.map((h) => ({ month: h.month, v: h.pct }))}
+          format={(v) => `${num(v)}%`}
+        />
+        <Trend
+          dark
+          title={c.trendGap}
+          points={state.history.map((h) => ({ month: h.month, v: h.gap }))}
+          format={(v) => num(v)}
+        />
+        <Trend
+          dark
+          title={c.trendMeasured}
+          points={state.history.map((h) => ({ month: h.month, v: h.measured }))}
+          format={(v) => num(v)}
+        />
+      </div>
       <Feed limit={6} dark className="mt-4" />
     </div>
   );

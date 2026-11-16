@@ -70,7 +70,8 @@ export type EventKind =
   | "session"
   | "cycleDone"
   | "measured"
-  | "decision";
+  | "decision"
+  | "month";
 
 export type VisionEvent = {
   id: string;
@@ -93,6 +94,17 @@ export type VisionState = {
   /** قراراتٌ طُبّقت (بمفتاح التوصية) فلا تتكرّر. */
   applied: string[];
   measured: number;
+  /** الشهر منذ بداية البيئة (0 = نوفمبر 2026)، وسجلّ لقطاتٍ شهرية للمنحنيات. */
+  month: number;
+  history: Snapshot[];
+};
+
+export type Snapshot = {
+  month: number;
+  pct: number;
+  gap: number;
+  measured: number;
+  fundedGroups: number;
 };
 
 const groupCost = (members: number) => members * COST_PER_ORPHAN;
@@ -143,7 +155,7 @@ export function seed(): VisionState {
       g.after = +(g.before + TRAIT_GAIN - (g.members % 3) * 0.2).toFixed(1);
     }
   }
-  return {
+  const base: VisionState = {
     v: 1,
     seq: 0,
     invoiceSeq: 0,
@@ -154,8 +166,38 @@ export function seed(): VisionState {
     events: [],
     applied: [],
     measured: SYSTEM.measured,
+    month: 0,
+    history: [],
+  };
+  // ستّة أشهرٍ سابقة تقريبية — منحنى يبدأ من مكانٍ معقول لا من نقطةٍ وحيدة.
+  const now = snapshot(base);
+  base.history = Array.from({ length: 6 }, (_, i) => {
+    const back = 5 - i;
+    return {
+      month: -back,
+      pct: Math.max(0, now.pct - back * 3),
+      gap: now.gap + back * 7,
+      measured: Math.max(0, now.measured - back * 9),
+      fundedGroups: Math.max(0, now.fundedGroups - Math.ceil(back / 2)),
+    };
+  });
+  return base;
+}
+
+export function snapshot(s: VisionState): Snapshot {
+  const t = totals(s);
+  return {
+    month: s.month,
+    pct: t.pct,
+    gap: t.gap,
+    measured: t.measured,
+    fundedGroups: t.fundedGroups,
   };
 }
+
+/** الداعمون الشهريون في البيئة: ثلاثة كفلاء ثابتون يدعمون أكبر فجوةٍ كلّ شهر. */
+export const MONTHLY_DONORS = ["كافلٌ شهري 1", "كافلٌ شهري 2", "كافلٌ شهري 3"];
+export const MONTHLY_AMOUNT = 1500;
 
 /* ── القراءة: ما تراه لوحة القرار ──────────────────────────────────── */
 
@@ -300,6 +342,7 @@ export type Action =
   | { type: "measure"; group: string; at: number }
   | { type: "apply"; key: string; at: number }
   | { type: "setFee"; pct: number }
+  | { type: "advanceMonth"; at: number }
   | { type: "reset" };
 
 function ev(s: VisionState, at: number, layer: Layer, kind: EventKind, args: VisionEvent["args"]) {
@@ -369,6 +412,43 @@ export function reduce(prev: VisionState, a: Action): VisionState {
   if (a.type === "reset") return seed();
   const s: VisionState = structuredClone(prev);
   switch (a.type) {
+    case "advanceMonth": {
+      let n: VisionState = s;
+      // 1) الكفلاء الشهريون يدعمون أكبر فجوة.
+      const top = ranked(n)[0];
+      if (top && top.gap > 0) {
+        for (const donor of MONTHLY_DONORS) {
+          n = reduce(n, {
+            type: "donate",
+            donor,
+            amount: MONTHLY_AMOUNT,
+            method: "card",
+            target: { kind: "city", id: top.id },
+            at: a.at,
+          });
+        }
+      }
+      // 2) التشغيل: كلّ مجموعةٍ مموّلة تعقد جلستين، وما أتمّ دورته يُقاس.
+      for (const g of n.groups) {
+        if (!isFunded(g) || g.after !== null) continue;
+        if (g.sessionsDone >= SESSIONS_PER_CYCLE) {
+          n = reduce(n, { type: "measure", group: g.id, at: a.at });
+        } else {
+          for (
+            let k = 0;
+            k < 2 && (n.groups.find((x) => x.id === g.id)?.sessionsDone ?? 6) < SESSIONS_PER_CYCLE;
+            k++
+          ) {
+            n = reduce(n, { type: "session", group: g.id, at: a.at });
+          }
+        }
+      }
+      n = n === s ? structuredClone(s) : n;
+      n.month = s.month + 1;
+      ev(n, a.at, "decision", "month", { month: n.month });
+      n.history = [...n.history, snapshot(n)].slice(-24);
+      return n;
+    }
     case "setFee":
       s.feePercent = Math.min(15, Math.max(0, a.pct));
       return s;
