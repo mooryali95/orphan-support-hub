@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1237,
+ "count": 1268,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3618,6 +3618,13 @@
    "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
    "hash": "e8b8e8936f8b",
+   "file": "src/components/vision/VisionKit.tsx"
+  },
+  "components/vision/VisionKit.network": {
+   "en": "Countries",
+   "ar": "الدول",
+   "kind": "text",
+   "hash": "7f0e3e766f4f",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.ops": {
@@ -7967,6 +7974,217 @@
    "kind": "text",
    "hash": "f0e24e1ebd9f",
    "file": "src/routes/vision.me.tsx"
+  },
+  "routes/vision.network.activity": {
+   "en": "Latest documented activity",
+   "ar": "آخر نشاطٍ موثّق",
+   "kind": "text",
+   "hash": "effe83f10f49",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.all": {
+   "en": "All",
+   "ar": "الكلّ",
+   "kind": "text",
+   "hash": "5d0d43bf584a",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.countries": {
+   "en": "countries",
+   "ar": "دولة",
+   "kind": "text",
+   "hash": "4811db5289b4",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.field": {
+   "en": "field activity",
+   "ar": "نشاط ميداني",
+   "kind": "text",
+   "hash": "d4bfc1a7dad1",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.fieldTag": {
+   "en": "Field activity",
+   "ar": "نشاط ميداني",
+   "kind": "text",
+   "hash": "b3a57410039a",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.funding": {
+   "en": "Funding",
+   "ar": "التمويل",
+   "kind": "text",
+   "hash": "3e7840573cc0",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.groups": {
+   "en": "supervised groups",
+   "ar": "مجموعة إشرافية",
+   "kind": "text",
+   "hash": "c6800e45dab3",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.hq": {
+   "en": "Headquarters",
+   "ar": "المقرّ الرئيسي",
+   "kind": "text",
+   "hash": "cd00a8cb56b7",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.inQual": {
+   "en": "orphans in qualification",
+   "ar": "يتيماً في التأهيل",
+   "kind": "text",
+   "hash": "b4f0997deae4",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.label": {
+   "en": "WAMY network",
+   "ar": "شبكة الندوة",
+   "kind": "text",
+   "hash": "a6e0350355f1",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.lead": {
+   "en": "Every country with a WAMY office or documented field activity gets a virtual board — and stays virtual until its operations platform is actually connected, when its real figures appear.",
+   "ar": "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ افتراضية — وتبقى افتراضية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
+   "kind": "text",
+   "hash": "9bdf09d16ae0",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.live": {
+   "en": "Real · connected to operations",
+   "ar": "حقيقي · متّصل بالتشغيل",
+   "kind": "text",
+   "hash": "19b63660eb93",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.measured": {
+   "en": "in a measured journey",
+   "ar": "في رحلةٍ مقيسة",
+   "kind": "text",
+   "hash": "fded523cf424",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.none": {
+   "en": "No country matches.",
+   "ar": "لا دولة تطابق البحث.",
+   "kind": "text",
+   "hash": "983eef462670",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.offices": {
+   "en": "confirmed offices",
+   "ar": "مكتب مؤكَّد",
+   "kind": "text",
+   "hash": "8026df19f5af",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.onlyField": {
+   "en": "Field",
+   "ar": "الميداني",
+   "kind": "text",
+   "hash": "072b3fce5697",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.onlyOffices": {
+   "en": "Offices",
+   "ar": "المكاتب",
+   "kind": "text",
+   "hash": "ee2bd75aec77",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.onlyReal": {
+   "en": "Real",
+   "ar": "الحقيقية",
+   "kind": "text",
+   "hash": "a7c6619df148",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.openBoard": {
+   "en": "Open this country's decision board",
+   "ar": "افتح لوحة القرار لهذه الدولة",
+   "kind": "text",
+   "hash": "15bd34b6ae9e",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.orphans": {
+   "en": "linked orphans",
+   "ar": "يتيماً مرتبطاً",
+   "kind": "text",
+   "hash": "d42f91ed2e84",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.real": {
+   "en": "actually connected",
+   "ar": "متّصلة فعلاً",
+   "kind": "text",
+   "hash": "5f12ae249783",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.realNote": {
+   "en": "These figures come from the connected operations platform, aggregated with no names.",
+   "ar": "هذه الأرقام من منصّة التشغيل المتّصلة، مجمّعةً بلا أسماء.",
+   "kind": "text",
+   "hash": "d474006d2282",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.sandbox": {
+   "en": "Your sandbox",
+   "ar": "بيئتك التجريبية",
+   "kind": "text",
+   "hash": "ac0dd4958043",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.search": {
+   "en": "Search a country or city",
+   "ar": "ابحث عن دولة أو مدينة",
+   "kind": "text",
+   "hash": "3270508024cd",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.source": {
+   "en": "Source",
+   "ar": "المصدر",
+   "kind": "text",
+   "hash": "055d731ad559",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.supervisors": {
+   "en": "supervisors",
+   "ar": "مشرفاً",
+   "kind": "text",
+   "hash": "eddd6100f5c9",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.synced": {
+   "en": "Last sync: {0}",
+   "ar": "آخر مزامنة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "ec940984768c",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.title": {
+   "en": "WAMY offices and activity",
+   "ar": "مكاتب الندوة ونشاطها",
+   "kind": "text",
+   "hash": "586d24c7fba1",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.virtual": {
+   "en": "Virtual",
+   "ar": "افتراضي",
+   "kind": "text",
+   "hash": "b030223c1189",
+   "file": "src/routes/vision.network.tsx"
+  },
+  "routes/vision.network.virtualNote": {
+   "en": "Operations figures here are virtual and show the board's shape; presence and activity come from documented public sources.",
+   "ar": "أرقام التشغيل هنا افتراضية توضّح شكل اللوحة؛ الحضور والنشاط من مصادر عامّة موثّقة.",
+   "kind": "text",
+   "hash": "647909f9dbe4",
+   "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.operations.after": {
    "en": "After",

@@ -21,6 +21,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
     cycle: "الدورة",
     money: "رحلة المال",
     me: "ادخل بدورك",
+    network: "الدول",
   },
   en: {
     concept: "Concept · illustrative data",
@@ -33,6 +34,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
     cycle: "Cycle",
     money: "Money journey",
     me: "Enter by role",
+    network: "Countries",
   },
 });
 
@@ -66,6 +68,7 @@ const TABS = [
   { to: "/vision", key: "hub" },
   { to: "/vision/operations", key: "ops" },
   { to: "/vision/decision", key: "decision" },
+  { to: "/vision/network", key: "network" },
   { to: "/vision/cycle", key: "cycle" },
   { to: "/vision/payments", key: "money" },
   { to: "/vision/me", key: "me" },

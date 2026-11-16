@@ -35,6 +35,7 @@ import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
 import { Route as VisionMeRouteImport } from './routes/vision.me'
+import { Route as VisionNetworkRouteImport } from './routes/vision.network'
 import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
 import { Route as VisionPaymentsRouteImport } from './routes/vision.payments'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
@@ -184,6 +185,11 @@ const VisionMeRoute = VisionMeRouteImport.update({
   path: '/vision/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisionNetworkRoute = VisionNetworkRouteImport.update({
+  id: '/vision/network',
+  path: '/vision/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionOperationsRoute = VisionOperationsRouteImport.update({
   id: '/vision/operations',
   path: '/vision/operations',
@@ -314,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/me': typeof VisionMeRoute
+  '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -360,6 +367,7 @@ export interface FileRoutesByTo {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/me': typeof VisionMeRoute
+  '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans': typeof OrphansIndexRoute
@@ -408,6 +416,7 @@ export interface FileRoutesById {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/me': typeof VisionMeRoute
+  '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -456,6 +465,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/me'
+    | '/vision/network'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/me'
+    | '/vision/network'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/me'
+    | '/vision/network'
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
@@ -590,6 +602,7 @@ export interface RootRouteChildren {
   VisionCycleRoute: typeof VisionCycleRoute
   VisionDecisionRoute: typeof VisionDecisionRoute
   VisionMeRoute: typeof VisionMeRoute
+  VisionNetworkRoute: typeof VisionNetworkRoute
   VisionOperationsRoute: typeof VisionOperationsRoute
   VisionPaymentsRoute: typeof VisionPaymentsRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
@@ -789,6 +802,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VisionMeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vision/network': {
+      id: '/vision/network'
+      path: '/vision/network'
+      fullPath: '/vision/network'
+      preLoaderRoute: typeof VisionNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vision/operations': {
       id: '/vision/operations'
       path: '/vision/operations'
@@ -986,6 +1006,7 @@ const rootRouteChildren: RootRouteChildren = {
   VisionCycleRoute: VisionCycleRoute,
   VisionDecisionRoute: VisionDecisionRoute,
   VisionMeRoute: VisionMeRoute,
+  VisionNetworkRoute: VisionNetworkRoute,
   VisionOperationsRoute: VisionOperationsRoute,
   VisionPaymentsRoute: VisionPaymentsRoute,
   OrphansIndexRoute: OrphansIndexRoute,
