@@ -196,3 +196,32 @@ describe("what if", async () => {
     expect(totals(n).gap).toBeLessThan(totals(s).gap);
   });
 });
+
+describe("role inbox", async () => {
+  const { relevantFor } = await import("@/components/vision/Inbox");
+  it("each role sees only what concerns it", () => {
+    let s = reduce(seed(), {
+      type: "donate",
+      donor: "أ",
+      amount: 6000,
+      method: "card",
+      target: { kind: "city", id: "tirana" },
+      at,
+    });
+    s = reduce(s, {
+      type: "donate",
+      donor: "ب",
+      amount: 6000,
+      method: "card",
+      target: { kind: "city", id: "berat" },
+      at,
+    });
+    const mine = relevantFor(s, { role: "supporter", name: "أ" });
+    expect(mine.length).toBeGreaterThan(0);
+    expect(mine.every((e) => !String(e.args["donor"] ?? "أ").includes("ب"))).toBe(true);
+    const dec = relevantFor(s, { role: "decider", name: "x" });
+    expect(dec.every((e) => e.layer === "decision")).toBe(true);
+    const sup = relevantFor(s, { role: "supervisor", name: "x" });
+    expect(sup.every((e) => e.layer === "operations")).toBe(true);
+  });
+});

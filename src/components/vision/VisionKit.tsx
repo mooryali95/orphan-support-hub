@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { Inbox } from "@/components/vision/Inbox";
 import { StoryBar } from "@/components/vision/Story";
 import {
   LiveToasts,
@@ -126,6 +127,7 @@ export function VisionShell({ children }: { children: ReactNode }) {
               })}
               <span className="ms-auto" />
               <TimeControl />
+              <Inbox />
               <ConceptBadge className="shrink-0" />
             </div>
           </nav>

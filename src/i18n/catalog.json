@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1364,
+ "count": 1373,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3514,6 +3514,71 @@
    "kind": "text",
    "hash": "86bbb57cdc34",
    "file": "src/components/vision/ImpactCard.tsx"
+  },
+  "components/vision/Inbox.alert": {
+   "en": "Alert: {0} funding at {1}% — below the 40% floor",
+   "ar": "إنذار: تمويل {0} عند {1}% — دون الحدّ (40%)",
+   "kind": "template",
+   "params": 2,
+   "hash": "5d5b57827412",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.empty": {
+   "en": "No notifications yet.",
+   "ar": "لا إشعارات بعد.",
+   "kind": "text",
+   "hash": "91f86e799334",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.h.all": {
+   "en": "Everything that happened",
+   "ar": "كلّ ما جرى",
+   "kind": "text",
+   "hash": "979238067b50",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.h.decider": {
+   "en": "What needs your attention",
+   "ar": "ما يحتاج نظرك",
+   "kind": "text",
+   "hash": "2444ec1a1a9d",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.h.supervisor": {
+   "en": "What reached your groups",
+   "ar": "ما وصل مجموعاتك",
+   "kind": "text",
+   "hash": "42b5d76faa88",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.h.supporter": {
+   "en": "What reached you",
+   "ar": "ما وصلك كداعم",
+   "kind": "text",
+   "hash": "e137dd6a315f",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.open": {
+   "en": "Notifications",
+   "ar": "الإشعارات",
+   "kind": "text",
+   "hash": "5818d8bb798c",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.readAll": {
+   "en": "Mark all read",
+   "ar": "تعليم الكلّ مقروءاً",
+   "kind": "text",
+   "hash": "d293f1867796",
+   "file": "src/components/vision/Inbox.tsx"
+  },
+  "components/vision/Inbox.unread": {
+   "en": "{0} unread",
+   "ar": "{0} غير مقروء",
+   "kind": "template",
+   "params": 1,
+   "hash": "a65a74821156",
+   "file": "src/components/vision/Inbox.tsx"
   },
   "components/vision/Story.again": {
    "en": "Replay",
