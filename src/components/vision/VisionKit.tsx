@@ -128,7 +128,6 @@ export function VisionShell({ children }: { children: ReactNode }) {
               <span className="ms-auto" />
               <TimeControl />
               <Inbox />
-              <ConceptBadge className="shrink-0" />
             </div>
           </nav>
           {children}
