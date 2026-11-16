@@ -42,7 +42,10 @@ export function SiteHeader() {
   const NAV = ROUTES.map((to, i) => ({ to, label: c.nav[i] }));
 
   return (
-    <header className="sticky top-0 z-50 bg-background/85 backdrop-blur">
+    <header
+      className="sticky top-0 z-50 bg-background/85 backdrop-blur"
+      style={{ viewTransitionName: "site-header" }}
+    >
       {/* رابط التخطّي أول ما يبلغه التبويب: يقفز بمستخدم لوحة المفاتيح فوق التنقّل. */}
       <a
         href="#main"

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1218,
+ "count": 1219,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3700,6 +3700,14 @@
    "ar": "طريقة الدفع",
    "kind": "text",
    "hash": "2d40b82d5b9f",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.moved": {
+   "en": "and {0} more moved across the layers",
+   "ar": "وتحرّك بعده {0} في الطبقات",
+   "kind": "template",
+   "params": 1,
+   "hash": "6f8357e6adb7",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.pending": {

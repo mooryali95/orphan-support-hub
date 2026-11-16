@@ -11,8 +11,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+
+import { toast } from "sonner";
 
 import { ALBANIA } from "@/data/vision-demo";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -135,6 +138,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedH: "سجلّ المنظومة الحيّ",
     feedEmpty: "لا أحداث بعد. جرّب تبرّعاً من «رحلة المال» أو من النموذج.",
     layer: { support: "الدعم", operations: "التشغيل", decision: "القرار" },
+    moved: (n: number) => `وتحرّك بعده ${n} في الطبقات`,
     donation: (amt: string, donor: string, place: string) =>
       `${donor} تبرّع بـ ${amt} لـ${place} (بطاقة)`,
     pending: (amt: string, donor: string, place: string) =>
@@ -176,6 +180,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedH: "Live system log",
     feedEmpty: "No events yet. Try a donation from the money journey or the form.",
     layer: { support: "Support", operations: "Operations", decision: "Decision" },
+    moved: (n: number) => `and ${n} more moved across the layers`,
     donation: (amt: string, donor: string, place: string) =>
       `${donor} gave ${amt} to ${place} (card)`,
     pending: (amt: string, donor: string, place: string) =>
@@ -286,6 +291,36 @@ const LAYER_DOT: Record<VisionEvent["layer"], string> = {
 };
 
 /** سجلّ الأحداث كما تكتبه المنظومة — الأحدث أوّلاً. */
+/**
+ * «زخم المنظومة»: كلّ فعلٍ — هنا أو في تبويبٍ آخر — يظهر إشعاراً واحداً
+ * بالحدث الذي أطلقه، ومعه عدد ما تحرّك بعده في الطبقات.
+ */
+export function LiveToasts() {
+  const { state, ready } = useVision();
+  const c = useCopy(COPY);
+  const text = useEventText();
+  const seen = useRef<string | null>(null);
+  useEffect(() => {
+    const top = state.events[0]?.id ?? null;
+    if (!ready) return;
+    if (seen.current === null) {
+      seen.current = top ?? "";
+      return;
+    }
+    if (!top || top === seen.current) return;
+    const i = state.events.findIndex((e) => e.id === seen.current);
+    // لم يكن قبلها حدث: الدفعة كلّها جديدة؛ وإن غاب المرئيّ عن السجلّ (قُصّ) نكتفي بالأحدث.
+    const batch = state.events.slice(0, seen.current === "" ? undefined : i < 0 ? 1 : i);
+    seen.current = top;
+    const first = batch[batch.length - 1];
+    if (!first) return;
+    toast(c.layer[first.layer], {
+      description: batch.length > 1 ? `${text(first)} · ${c.moved(batch.length - 1)}` : text(first),
+    });
+  }, [state.events, ready, c, text]);
+  return null;
+}
+
 export function Feed({
   limit = 8,
   layer,
