@@ -29,6 +29,7 @@ const PAGES = [
   "/vision/operations",
   "/vision/decision",
   "/vision/network",
+  "/vision/journey",
   "/vision/impact",
   "/vision/cycle",
   "/vision/payments",

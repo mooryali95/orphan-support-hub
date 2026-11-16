@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1381,
+ "count": 1447,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3748,6 +3748,13 @@
    "hash": "820b53e7f292",
    "file": "src/components/vision/VisionKit.tsx"
   },
+  "components/vision/VisionKit.journey": {
+   "en": "Full journey",
+   "ar": "الرحلة الكاملة",
+   "kind": "text",
+   "hash": "bb40ba5825f5",
+   "file": "src/components/vision/VisionKit.tsx"
+  },
   "components/vision/VisionKit.me": {
    "en": "Enter by role",
    "ar": "ادخل بدورك",
@@ -3955,6 +3962,22 @@
    "hash": "591986f41f97",
    "file": "src/components/vision/VisionStore.tsx"
   },
+  "components/vision/VisionStore.kitsDelivered": {
+   "en": "{0} kits delivered to {1} with proof — competencies and drive rose",
+   "ar": "سُلِّمت {0} حقيبة لـ{1} بإثبات — ارتفعت الكفايات والهمّة",
+   "kind": "template",
+   "params": 2,
+   "hash": "4451b7912446",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.kitsPledged": {
+   "en": "{0} learning kits for {1} — awaiting delivery",
+   "ar": "{0} حقيبة تعليمية لـ{1} — بانتظار التسليم",
+   "kind": "template",
+   "params": 2,
+   "hash": "3c671671eeab",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
   "components/vision/VisionStore.layer.decision": {
    "en": "Decision",
    "ar": "القرار",
@@ -4072,6 +4095,22 @@
    "kind": "template",
    "params": 3,
    "hash": "67047486a2d5",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.sponsorDelivered": {
+   "en": "{0}'s sponsorship delivered for month {1} with proof — resilience and awareness rose",
+   "ar": "سُلِّمت كفالة {0} للشهر {1} بإثبات — ارتفع الصمود والدراية",
+   "kind": "template",
+   "params": 2,
+   "hash": "81e2904af27e",
+   "file": "src/components/vision/VisionStore.tsx"
+  },
+  "components/vision/VisionStore.sponsored": {
+   "en": "Monthly sponsorship for {0}: {1} — reached the file in operations",
+   "ar": "كفالةٌ شهرية لـ{0}: {1} — وصلت ملفّه في التشغيل",
+   "kind": "template",
+   "params": 2,
+   "hash": "5937870dc6f5",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.target": {
@@ -8121,6 +8160,438 @@
    "kind": "text",
    "hash": "5d98851469ae",
    "file": "src/routes/vision.index.tsx"
+  },
+  "routes/vision.journey.again": {
+   "en": "New journey",
+   "ar": "رحلةٌ جديدة",
+   "kind": "text",
+   "hash": "ac9f9de76dd2",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.arrow": {
+   "en": "→",
+   "ar": "←",
+   "kind": "text",
+   "hash": "ece78120f49d",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.avg": {
+   "en": "Average",
+   "ar": "المتوسّط",
+   "kind": "text",
+   "hash": "96d2650bc58e",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.before": {
+   "en": "Before",
+   "ar": "قبل",
+   "kind": "text",
+   "hash": "fad11c557c72",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.bigH": {
+   "en": "The big picture on the decision platform",
+   "ar": "الصورة الكلية في منصة القرار",
+   "kind": "text",
+   "hash": "1837d4a874a1",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.bigLead": {
+   "en": "What moved in the decision-maker's indicators after this journey.",
+   "ar": "ما تحرّك في مؤشّرات صاحب القرار بعد هذه الرحلة.",
+   "kind": "text",
+   "hash": "27d21b9b4027",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.donor": {
+   "en": "Supporter",
+   "ar": "الداعم",
+   "kind": "text",
+   "hash": "47e67dc4b816",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.fee": {
+   "en": "Gateway fee",
+   "ar": "رسوم البوابة",
+   "kind": "text",
+   "hash": "fec565739686",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.invoice": {
+   "en": "Invoice",
+   "ar": "الفاتورة",
+   "kind": "text",
+   "hash": "87cbda25a8ab",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kFunding": {
+   "en": "Funding",
+   "ar": "نسبة التمويل",
+   "kind": "text",
+   "hash": "e28c20de40af",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kGap": {
+   "en": "Orphans awaiting qualification",
+   "ar": "أيتامٌ ينتظرون تأهيلاً",
+   "kind": "text",
+   "hash": "891397ed18c8",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kKits": {
+   "en": "Kits delivered",
+   "ar": "حقائب مسلَّمة",
+   "kind": "text",
+   "hash": "f482240af2b0",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kMeasured": {
+   "en": "Children measured",
+   "ar": "أطفالٌ مقيسون",
+   "kind": "text",
+   "hash": "9ab893586cb7",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kMonthly": {
+   "en": "Monthly sponsorships",
+   "ar": "كفالات شهرية",
+   "kind": "text",
+   "hash": "675a0373172e",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kRaised": {
+   "en": "Total support",
+   "ar": "إجمالي الدعم",
+   "kind": "text",
+   "hash": "b1f485e26771",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kSessions": {
+   "en": "Sessions run",
+   "ar": "جلساتٌ منفّذة",
+   "kind": "text",
+   "hash": "4cfbbfec90ff",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kSponsored": {
+   "en": "Children sponsored",
+   "ar": "أطفالٌ مكفولون",
+   "kind": "text",
+   "hash": "e56f33f3f65c",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kitsN": {
+   "en": "{0} kits",
+   "ar": "{0} حقيبة",
+   "kind": "template",
+   "params": 1,
+   "hash": "88d601882e36",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.kitsOf": {
+   "en": "{0} kits × {1}",
+   "ar": "{0} حقيبة × {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "f091f16a2824",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.label": {
+   "en": "The full journey",
+   "ar": "الرحلة الكاملة",
+   "kind": "text",
+   "hash": "6f2d3f2fd51b",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.lead": {
+   "en": "Pick a support track and watch its whole journey: payment and ledger, field operations, its effect on the six traits, then its place in the decision-maker's big picture — on your browser's own data.",
+   "ar": "اختر اتجاه الدعم وشاهد رحلته كاملة: الدفع والقيد، ثم التشغيل في الميدان، ثم أثره في السمات الستّ، ثم موقعه في الصورة الكلية لصاحب القرار — على بيانات متصفّحك نفسها.",
+   "kind": "text",
+   "hash": "a8d77bfd8ef8",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.measure": {
+   "en": "Follow-up measurement",
+   "ar": "القياس البعدي",
+   "kind": "text",
+   "hash": "c1a95a1d1142",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.month1": {
+   "en": "Month one",
+   "ar": "الشهر الأوّل",
+   "kind": "text",
+   "hash": "5bd288dc2e69",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.net": {
+   "en": "Net to WAMY's account",
+   "ar": "الصافي إلى حساب الندوة",
+   "kind": "text",
+   "hash": "80d007dc4947",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.next": {
+   "en": "Next step",
+   "ar": "الخطوة التالية",
+   "kind": "text",
+   "hash": "cbfb6042f27a",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.now": {
+   "en": "Now",
+   "ar": "الآن",
+   "kind": "text",
+   "hash": "f78c5cf576af",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.opsH": {
+   "en": "Field operations",
+   "ar": "التشغيل في الميدان",
+   "kind": "text",
+   "hash": "eafb4e8535a3",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.opsInkind": {
+   "en": "The kits are delivered to the group with proof attached.",
+   "ar": "تُسلَّم الحقائب للمجموعة ويُرفق إثبات التسليم.",
+   "kind": "text",
+   "hash": "57c071a8a027",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.opsQualify": {
+   "en": "The supervisor records six sessions, then follow-up measurement.",
+   "ar": "يسجّل المشرف الجلسات الستّ، ثم القياس البعدي.",
+   "kind": "text",
+   "hash": "d1038733311f",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.opsSponsor": {
+   "en": "The first month is delivered to the child with proof attached.",
+   "ar": "يُسلَّم مبلغ الشهر الأوّل للطفل ويُرفق إثبات التسليم.",
+   "kind": "text",
+   "hash": "47a9d26e15e1",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.pause": {
+   "en": "Pause",
+   "ar": "إيقاف",
+   "kind": "text",
+   "hash": "6dc24e7184ad",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.payH": {
+   "en": "Payment and ledger",
+   "ar": "الدفع والقيد المالي",
+   "kind": "text",
+   "hash": "5fcbf41c73ae",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.perMonth": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.pick": {
+   "en": "Pick a support track",
+   "ar": "اختر اتجاه الدعم",
+   "kind": "text",
+   "hash": "ff0dfceaa429",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.play": {
+   "en": "Play the journey",
+   "ar": "شغّل الرحلة",
+   "kind": "text",
+   "hash": "1ba819319892",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.proof": {
+   "en": "Proof of delivery",
+   "ar": "إثبات التسليم",
+   "kind": "text",
+   "hash": "f19505283a26",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.receipt": {
+   "en": "Open receipt",
+   "ar": "افتح الإيصال",
+   "kind": "text",
+   "hash": "4ecf618c68cf",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.session": {
+   "en": "Session {0}",
+   "ar": "جلسة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e3aa5fe9f936",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.settled": {
+   "en": "Settled",
+   "ar": "مُسوّى",
+   "kind": "text",
+   "hash": "c31ceffb00ce",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stageOf": {
+   "en": "Stage {0} of {1}",
+   "ar": "المرحلة {0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "6e91b26e00da",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stages.0": {
+   "en": "Support",
+   "ar": "الدعم",
+   "kind": "text",
+   "hash": "ba3aaee9dae2",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stages.1": {
+   "en": "Payment & ledger",
+   "ar": "الدفع والقيد",
+   "kind": "text",
+   "hash": "5ecab4eee1b1",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stages.2": {
+   "en": "Operations",
+   "ar": "التشغيل",
+   "kind": "text",
+   "hash": "8c759b73ccd3",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stages.3": {
+   "en": "Effect on traits",
+   "ar": "الأثر في السمات",
+   "kind": "text",
+   "hash": "76f5df95f570",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.stages.4": {
+   "en": "Big picture",
+   "ar": "الصورة الكلية",
+   "kind": "text",
+   "hash": "f43958676603",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.supportH": {
+   "en": "The pledge",
+   "ar": "نيّة الدعم",
+   "kind": "text",
+   "hash": "127e4848b0c3",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.title": {
+   "en": "From your support to the big picture",
+   "ar": "من دعمك إلى الصورة الكلية",
+   "kind": "text",
+   "hash": "4d19b3e77f51",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.to": {
+   "en": "Destination",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "cffd204a68c1",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.toDecision": {
+   "en": "Open the decision board",
+   "ar": "افتح لوحة القرار",
+   "kind": "text",
+   "hash": "bf4b57cc550c",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.toImpact": {
+   "en": "Open the impact page",
+   "ar": "افتح صفحة الأثر",
+   "kind": "text",
+   "hash": "0139391bf8b9",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.track.inkind": {
+   "en": "In-kind",
+   "ar": "الدعم العيني",
+   "kind": "text",
+   "hash": "4d00150a0287",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.track.qualify": {
+   "en": "Qualification",
+   "ar": "التأهيل",
+   "kind": "text",
+   "hash": "d0523f41e19c",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.track.sponsor": {
+   "en": "Sponsorship",
+   "ar": "الكفالة",
+   "kind": "text",
+   "hash": "620375b4096c",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.trackLead.inkind": {
+   "en": "Give learning kits delivered to a group with proof — competencies and drive rise.",
+   "ar": "تقدّم حقائب تعليمية تُسلَّم للمجموعة بإثبات، فترتفع كفاياتها وهمّتها.",
+   "kind": "text",
+   "hash": "e0bfe405186c",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.trackLead.qualify": {
+   "en": "Fund a full qualification journey for a waiting group: six sessions, then follow-up measurement.",
+   "ar": "تموّل رحلة تأهيلٍ كاملة لمجموعةٍ تنتظر: ستّ جلسات ثم قياسٌ بعدي.",
+   "kind": "text",
+   "hash": "e4afdf0765b4",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.trackLead.sponsor": {
+   "en": "Sponsor a child monthly, delivered with proof — resilience and awareness rise.",
+   "ar": "تكفل طفلاً بمبلغٍ شهري يصله بإثبات، فيرتفع صموده ودرايته.",
+   "kind": "text",
+   "hash": "7bb40d85e894",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.traitsH": {
+   "en": "Effect on the six traits",
+   "ar": "الأثر في السمات الستّ",
+   "kind": "text",
+   "hash": "1e67cb945430",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.traitsLead": {
+   "en": "{0}'s file — a pseudonym. Gold marks what this journey changed.",
+   "ar": "ملفّ {0} — اسمٌ مستعار. الذهبيّ ما تغيّر في هذه الرحلة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "adc22b883ead",
+   "file": "src/routes/vision.journey.tsx"
+  },
+  "routes/vision.journey.unavailable": {
+   "en": "No destination is available for this track in your sandbox now — start a fresh sandbox below.",
+   "ar": "لا توجد وجهةٌ متاحة لهذا الاتجاه في بيئتك الآن — ابدأ بيئةً جديدة من أسفل الصفحة.",
+   "kind": "text",
+   "hash": "ca1aec367140",
+   "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.me.after": {
    "en": "After",

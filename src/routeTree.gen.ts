@@ -35,6 +35,7 @@ import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
 import { Route as VisionImpactRouteImport } from './routes/vision.impact'
+import { Route as VisionJourneyRouteImport } from './routes/vision.journey'
 import { Route as VisionMeRouteImport } from './routes/vision.me'
 import { Route as VisionNetworkRouteImport } from './routes/vision.network'
 import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
@@ -187,6 +188,11 @@ const VisionImpactRoute = VisionImpactRouteImport.update({
   path: '/vision/impact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VisionJourneyRoute = VisionJourneyRouteImport.update({
+  id: '/vision/journey',
+  path: '/vision/journey',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionMeRoute = VisionMeRouteImport.update({
   id: '/vision/me',
   path: '/vision/me',
@@ -332,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/impact': typeof VisionImpactRoute
+  '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -381,6 +388,7 @@ export interface FileRoutesByTo {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/impact': typeof VisionImpactRoute
+  '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -432,6 +440,7 @@ export interface FileRoutesById {
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/impact': typeof VisionImpactRoute
+  '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
   '/vision/network': typeof VisionNetworkRoute
   '/vision/operations': typeof VisionOperationsRoute
@@ -483,6 +492,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/impact'
+    | '/vision/journey'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -532,6 +542,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/impact'
+    | '/vision/journey'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -582,6 +593,7 @@ export interface FileRouteTypes {
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/impact'
+    | '/vision/journey'
     | '/vision/me'
     | '/vision/network'
     | '/vision/operations'
@@ -626,6 +638,7 @@ export interface RootRouteChildren {
   VisionCycleRoute: typeof VisionCycleRoute
   VisionDecisionRoute: typeof VisionDecisionRoute
   VisionImpactRoute: typeof VisionImpactRoute
+  VisionJourneyRoute: typeof VisionJourneyRoute
   VisionMeRoute: typeof VisionMeRoute
   VisionNetworkRoute: typeof VisionNetworkRoute
   VisionOperationsRoute: typeof VisionOperationsRoute
@@ -826,6 +839,13 @@ declare module '@tanstack/react-router' {
       path: '/vision/impact'
       fullPath: '/vision/impact'
       preLoaderRoute: typeof VisionImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/journey': {
+      id: '/vision/journey'
+      path: '/vision/journey'
+      fullPath: '/vision/journey'
+      preLoaderRoute: typeof VisionJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vision/me': {
@@ -1046,6 +1066,7 @@ const rootRouteChildren: RootRouteChildren = {
   VisionCycleRoute: VisionCycleRoute,
   VisionDecisionRoute: VisionDecisionRoute,
   VisionImpactRoute: VisionImpactRoute,
+  VisionJourneyRoute: VisionJourneyRoute,
   VisionMeRoute: VisionMeRoute,
   VisionNetworkRoute: VisionNetworkRoute,
   VisionOperationsRoute: VisionOperationsRoute,
