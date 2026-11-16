@@ -171,3 +171,28 @@ describe("time", () => {
     expect(s.history.at(-1)!.measured).toBeGreaterThan(s0.history.at(-1)!.measured);
   });
 });
+
+describe("what if", async () => {
+  const { whatIf, planOf, DECISION_FUND } = await import("./vision-engine");
+  it("projects a budget without touching state, and applying it records a decision", () => {
+    const s = seed();
+    const snap = JSON.stringify(s);
+    const w = whatIf(s, { amount: 30_000, strategy: "even" });
+    expect(JSON.stringify(s)).toBe(snap);
+    expect(w.next.gap).toBeLessThan(w.now.gap);
+    expect(planOf(s, { amount: 30_000, strategy: "gap" })).toEqual([
+      { city: "tirana", amount: 30_000 },
+    ]);
+    const big = whatIf(s, { amount: 10_000_000, strategy: "even" });
+    expect(big.cities.every((c) => c.after <= Math.max(100, c.before))).toBe(true);
+    expect(big.unused).toBeGreaterThan(0);
+    if (w.monthsNow !== null && w.monthsNext !== null)
+      expect(w.monthsNext).toBeLessThanOrEqual(w.monthsNow);
+    const n = reduce(s, { type: "scenario", scenario: { amount: 30_000, strategy: "gap" }, at });
+    expect(n.donations.every((d) => d.donor === DECISION_FUND && d.status === "settled")).toBe(
+      true,
+    );
+    expect(n.events[0]!.kind).toBe("decision");
+    expect(totals(n).gap).toBeLessThan(totals(s).gap);
+  });
+});

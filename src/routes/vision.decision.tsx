@@ -14,6 +14,7 @@ import {
 } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
 import { Trend } from "@/components/vision/Trend";
+import { WhatIf } from "@/components/vision/WhatIf";
 import { Feed, useMoney, usePlace, useVision } from "@/components/vision/VisionStore";
 import { ALBANIA, REGIONS, SYSTEM } from "@/data/vision-demo";
 import { fundingPct, ranked as rankCities, recommend, totals } from "@/lib/vision-engine";
@@ -42,6 +43,7 @@ const COPY = defineCopy("routes/vision.decision", {
     tabRegions: "المناطق",
     tabCountry: "قراءة دولة",
     tabInvest: "أين نستثمر",
+    tabWhatIf: "ماذا لو",
     tabDecide: "القرار",
     shiftH: "رعايةٌ تبني الأهليّة، في رقمٍ واحد",
     shiftLead: "المؤشّر الأوّل للمنظومة: كم من الأيتام المكفولين انتقل إلى رحلة تأهيلٍ مقيسة.",
@@ -127,6 +129,7 @@ const COPY = defineCopy("routes/vision.decision", {
     tabRegions: "Regions",
     tabCountry: "Country reading",
     tabInvest: "Where to invest",
+    tabWhatIf: "What if",
     tabDecide: "Decision",
     shiftH: "Care that builds capability, in one number",
     shiftLead:
@@ -218,6 +221,7 @@ function DecisionPage() {
     { key: "regions", label: c.tabRegions },
     { key: "country", label: c.tabCountry },
     { key: "invest", label: c.tabInvest },
+    { key: "whatif", label: c.tabWhatIf },
     { key: "decide", label: c.tabDecide },
   ] as const;
   return (
@@ -238,6 +242,7 @@ function DecisionPage() {
             {tab === "regions" && <Regions />}
             {tab === "country" && <Country />}
             {tab === "invest" && <Invest />}
+            {tab === "whatif" && <WhatIf />}
             {tab === "decide" && <Decide />}
           </PlatformFrame>
         </div>
