@@ -12,6 +12,7 @@
 // ٣) فحص الوصول (axe، WCAG A/AA) داخل كلّ دور بعد الدخول — إن توفّر axe-core.
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
+import { gzipSync } from "node:zlib";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -33,6 +34,8 @@ const PAGES = [
   "/vision/payments",
   "/vision/me",
 ];
+// ميزانية الأداء: ما يُنزَّل من JS وCSS مضغوطاً لكلّ صفحة (اليوم نحو 340–350KB).
+const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 380);
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i];
 const failures = [];
 const fail = (where, msg) => failures.push(`${where}: ${msg}`);
@@ -96,6 +99,34 @@ for (const [lang, dir] of [
     ok(`${where}: ${PAGES.length} pages`);
     await ctx.close();
   }
+
+// ── الميزانية ───────────────────────────────────────────────────────
+{
+  // سياقٌ جديد لكلّ صفحة: بلا ذاكرةٍ مخبّأة، كأوّل زيارة.
+  for (const path of PAGES) {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    // الأجسام تُقرأ بعد الاستجابة؛ تُجمع الوعود وتُنتظر قبل الجمع.
+    const sizes = [];
+    page.on("response", (r) => {
+      if (!/\.(js|css)$/.test(new URL(r.url()).pathname)) return;
+      sizes.push(
+        r.body().then(
+          (b) => gzipSync(b).length,
+          () => 0,
+        ),
+      );
+    });
+    await page.goto(BASE + path, { waitUntil: "networkidle" });
+    await page.waitForTimeout(300);
+    const gz = (await Promise.all(sizes)).reduce((a, b) => a + b, 0);
+    const kb = Math.round(gz / 1024);
+    if (kb > BUDGET_KB) fail(`budget ${path}`, `${kb}KB gzip > ${BUDGET_KB}KB`);
+    console.log(`  · ${path}: ${kb}KB gzip`);
+    await ctx.close();
+  }
+  ok(`budget ≤ ${BUDGET_KB}KB gzip per page`);
+}
 
 // ── ٢ و٣) الأدوار ───────────────────────────────────────────────────
 {
