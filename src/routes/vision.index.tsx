@@ -21,7 +21,7 @@ export const Route = createFileRoute("/vision/")({
 
 const COPY = defineCopy("routes/vision.index", {
   ar: {
-    title: "التحوّل الاستراتيجي للأيتام",
+    title: "منصة الرؤية والتوجهات",
     lead: "رؤيةٌ من ثلاث طبقات، أولاها تعمل اليوم: التشغيل حيث يُبنى اليتيم، والدعم حيث يختار الداعم أثره، والقرار حيث تُرى المنظومة كلّها.",
     tagline: "رعايةٌ تبني الأهليّة",
     open: "افتح",
@@ -38,7 +38,7 @@ const COPY = defineCopy("routes/vision.index", {
       "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
   },
   en: {
-    title: "The strategic transformation for orphans",
+    title: "The Vision and Directions platform",
     lead: "A vision in three layers, the first live today: operations where the orphan is built, support where the supporter chooses an impact, and decision where the whole system is seen.",
     tagline: "Care that builds capability",
     open: "Open",

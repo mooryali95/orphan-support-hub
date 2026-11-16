@@ -405,10 +405,10 @@
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.vision": {
-   "en": "Strategic transformation",
-   "ar": "التحوّل الاستراتيجي",
+   "en": "Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "dc2ab0a5389a",
+   "hash": "e8b8e8936f8b",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteHeader.home": {
@@ -3481,10 +3481,10 @@
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.nav": {
-   "en": "Strategic transformation",
-   "ar": "التحوّل الاستراتيجي",
+   "en": "Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "dc2ab0a5389a",
+   "hash": "e8b8e8936f8b",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.ops": {
@@ -6790,10 +6790,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.chip": {
-   "en": "Outlook and direction",
-   "ar": "التصورات والتوجهات",
+   "en": "Vision and directions",
+   "ar": "الرؤية والتوجهات",
    "kind": "text",
-   "hash": "08845142dbb1",
+   "hash": "b23d5d3a8f26",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.countryH": {
@@ -7187,17 +7187,17 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.tabShift": {
-   "en": "Transformation",
-   "ar": "التحوّل",
+   "en": "Indicator",
+   "ar": "المؤشّر",
    "kind": "text",
-   "hash": "92e9fe5a0232",
+   "hash": "bf1123b58bc7",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.title": {
-   "en": "Outlook and direction",
-   "ar": "التصورات والتوجهات",
+   "en": "Vision and directions",
+   "ar": "الرؤية والتوجهات",
    "kind": "text",
-   "hash": "08845142dbb1",
+   "hash": "b23d5d3a8f26",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.toOps": {
@@ -7307,10 +7307,10 @@
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.title": {
-   "en": "The strategic transformation for orphans",
-   "ar": "التحوّل الاستراتيجي للأيتام",
+   "en": "The Vision and Directions platform",
+   "ar": "منصة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "4766d9ae44c1",
+   "hash": "9db25298ce26",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.watch": {
