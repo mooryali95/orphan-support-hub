@@ -389,16 +389,26 @@ const AWARENESS_LADDER = [
 /** «اختر أثرك» — الأيقونة والوجهة لكل مسار؛ الأسماء في config/giving-tracks. */
 const TRACK_DOOR: Record<
   GivingTrack,
-  { icon: LucideIcon; tone: string; kind?: "qualification" | "in_kind" }
+  { icon: LucideIcon; tone: string; glow: string; kind?: "qualification" | "in_kind" }
 > = {
   qualification: {
     icon: Sprout,
     tone: "bg-shore-thrive/12 text-shore-thrive",
+    glow: "from-shore-thrive/70 via-shore-thrive/25 to-transparent [--glow:var(--color-shore-thrive)]",
     kind: "qualification",
   },
   // الكفالة تبدأ من طفلٍ بعينه في الدليل؛ والمساران الآخران من «ادعم» بنوعهما.
-  monthly: { icon: HeartHandshake, tone: "bg-primary/10 text-primary" },
-  in_kind: { icon: Package, tone: "bg-bridge/15 text-bridge-ink", kind: "in_kind" },
+  monthly: {
+    icon: HeartHandshake,
+    tone: "bg-primary/10 text-primary",
+    glow: "from-primary/70 via-primary/25 to-transparent [--glow:var(--color-primary)]",
+  },
+  in_kind: {
+    icon: Package,
+    tone: "bg-bridge/15 text-bridge-ink",
+    glow: "from-bridge/80 via-bridge/30 to-transparent [--glow:var(--color-bridge)]",
+    kind: "in_kind",
+  },
 };
 
 /**
@@ -475,7 +485,7 @@ function HomePage() {
         {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="active" className="text-gold-line" opacity={0.14} tile={104} />
-          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-shore-need/45" />
+          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-chart-4/45" />
           <div
             aria-hidden="true"
             className="blob top-1/3 -left-24 size-96 bg-bridge/40 [animation-delay:-6s]"
@@ -567,10 +577,19 @@ function HomePage() {
                   {...(door.kind
                     ? { to: "/support" as const, search: { kind: door.kind } }
                     : { to: "/orphans" as const })}
-                  className="reveal group flex flex-col lift rounded-3xl border border-border bg-card p-6 shadow-soft hover:border-primary/40 active:scale-[0.99]"
+                  className="reveal group relative isolate flex flex-col overflow-hidden lift rounded-3xl border border-border bg-card p-6 shadow-soft hover:border-primary/40 active:scale-[0.99]"
                 >
+                  {/* توقيع المسار: خيطٌ بلونه أعلى البطاقة، ووهجٌ خافت يشتدّ عند المرور. */}
                   <span
-                    className={`flex size-12 items-center justify-center rounded-xl ${door.tone}`}
+                    aria-hidden="true"
+                    className={`absolute inset-x-6 top-0 h-px bg-gradient-to-l ${door.glow}`}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute -top-24 -z-10 size-56 rounded-full opacity-[0.07] blur-3xl transition-opacity duration-500 group-hover:opacity-[0.16] start-[-3rem] bg-[var(--glow)] ${door.glow.split(" ").at(-1)}`}
+                  />
+                  <span
+                    className={`flex size-12 items-center justify-center rounded-2xl ring-1 ring-current/10 transition-transform duration-300 ease-[var(--ease-out)] group-hover:-translate-y-0.5 ${door.tone}`}
                   >
                     <door.icon className="size-6" aria-hidden="true" />
                   </span>
