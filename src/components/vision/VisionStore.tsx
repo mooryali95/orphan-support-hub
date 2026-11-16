@@ -342,6 +342,9 @@ export function LiveToasts() {
     const first = batch.find((e) => e.kind === "month") ?? batch[batch.length - 1];
     if (!first) return;
     toast(c.layer[first.layer], {
+      // أسفل الشاشة: أعلاها شريط المنصّة بأدواته (الزمن والجرس) فلا يُغطّى.
+      position: "bottom-center",
+      duration: 3500,
       description: batch.length > 1 ? `${text(first)} · ${c.moved(batch.length - 1)}` : text(first),
     });
   }, [state.events, ready, c, text]);
