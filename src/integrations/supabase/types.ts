@@ -185,12 +185,14 @@ export type Database = {
           created_count: number
           errors: Json | null
           failed_count: number
+          finished_at: string | null
           id: string
           idempotency_key: string | null
           received_count: number
           request_digest: string | null
           result: Json
           source: string | null
+          state: string
           updated_count: number
         }
         Insert: {
@@ -199,12 +201,14 @@ export type Database = {
           created_count?: number
           errors?: Json | null
           failed_count?: number
+          finished_at?: string | null
           id?: string
           idempotency_key?: string | null
           received_count?: number
           request_digest?: string | null
           result?: Json
           source?: string | null
+          state?: string
           updated_count?: number
         }
         Update: {
@@ -213,17 +217,45 @@ export type Database = {
           created_count?: number
           errors?: Json | null
           failed_count?: number
+          finished_at?: string | null
           id?: string
           idempotency_key?: string | null
           received_count?: number
           request_digest?: string | null
           result?: Json
           source?: string | null
+          state?: string
           updated_count?: number
         }
         Relationships: [
           {
             foreignKeyName: "api_import_jobs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "api_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_request_nonces: {
+        Row: {
+          client_id: string
+          nonce: string
+          seen_at: string
+        }
+        Insert: {
+          client_id: string
+          nonce: string
+          seen_at?: string
+        }
+        Update: {
+          client_id?: string
+          nonce?: string
+          seen_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_request_nonces_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "api_clients"
@@ -260,6 +292,113 @@ export type Database = {
           meta?: Json | null
         }
         Relationships: []
+      }
+      care_org_documents: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          id: string
+          kind: string
+          mime_type: string | null
+          org_id: string
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          kind: string
+          mime_type?: string | null
+          org_id: string
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          org_id?: string
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_org_documents_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "care_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_org_kyc: {
+        Row: {
+          address: string
+          contact_email: string | null
+          contact_phone: string | null
+          country_code: string
+          decision_note: string | null
+          legal_name: string
+          legal_rep_name: string
+          legal_rep_title: string | null
+          org_id: string
+          registration_number: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          submitted_at: string
+        }
+        Insert: {
+          address: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_code: string
+          decision_note?: string | null
+          legal_name: string
+          legal_rep_name: string
+          legal_rep_title?: string | null
+          org_id: string
+          registration_number: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          address?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_code?: string
+          decision_note?: string | null
+          legal_name?: string
+          legal_rep_name?: string
+          legal_rep_title?: string | null
+          org_id?: string
+          registration_number?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_org_kyc_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "care_org_kyc_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: true
+            referencedRelation: "care_organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       care_organizations: {
         Row: {
@@ -334,6 +473,7 @@ export type Database = {
         Row: {
           code: string
           created_at: string
+          currency: string | null
           emergency_note: string | null
           in_network: boolean
           name_ar: string
@@ -344,6 +484,7 @@ export type Database = {
         Insert: {
           code: string
           created_at?: string
+          currency?: string | null
           emergency_note?: string | null
           in_network?: boolean
           name_ar: string
@@ -354,6 +495,7 @@ export type Database = {
         Update: {
           code?: string
           created_at?: string
+          currency?: string | null
           emergency_note?: string | null
           in_network?: boolean
           name_ar?: string
@@ -395,6 +537,8 @@ export type Database = {
           currency: string
           delivered_at: string | null
           delivery_note: string | null
+          delivery_proof_etag: string | null
+          delivery_proof_object: string | null
           delivery_proof_path: string | null
           id: string
           note: string | null
@@ -413,6 +557,8 @@ export type Database = {
           currency?: string
           delivered_at?: string | null
           delivery_note?: string | null
+          delivery_proof_etag?: string | null
+          delivery_proof_object?: string | null
           delivery_proof_path?: string | null
           id?: string
           note?: string | null
@@ -431,6 +577,8 @@ export type Database = {
           currency?: string
           delivered_at?: string | null
           delivery_note?: string | null
+          delivery_proof_etag?: string | null
+          delivery_proof_object?: string | null
           delivery_proof_path?: string | null
           id?: string
           note?: string | null
@@ -534,6 +682,41 @@ export type Database = {
         }
         Relationships: []
       }
+      donor_member_invites: {
+        Row: {
+          created_at: string
+          email: string
+          entity_id: string
+          expires_at: string
+          invited_by: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          entity_id: string
+          expires_at?: string
+          invited_by?: string | null
+          role: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          entity_id?: string
+          expires_at?: string
+          invited_by?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donor_member_invites_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "donor_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donor_members: {
         Row: {
           entity_id: string
@@ -562,12 +745,17 @@ export type Database = {
       }
       enrollment_roles: {
         Row: {
+          approval: string
+          approved_at: string | null
+          approved_by: string | null
           assigned_at: string
           assigned_by: string | null
           consent_at: string | null
           consent_document: string | null
+          decision_note: string | null
           ended_at: string | null
           enrollment_id: string
+          expires_at: string | null
           id: string
           note: string | null
           person_contact: string | null
@@ -576,12 +764,17 @@ export type Database = {
           role: Database["public"]["Enums"]["enrollment_role"]
         }
         Insert: {
+          approval: string
+          approved_at?: string | null
+          approved_by?: string | null
           assigned_at?: string
           assigned_by?: string | null
           consent_at?: string | null
           consent_document?: string | null
+          decision_note?: string | null
           ended_at?: string | null
           enrollment_id: string
+          expires_at?: string | null
           id?: string
           note?: string | null
           person_contact?: string | null
@@ -590,12 +783,17 @@ export type Database = {
           role: Database["public"]["Enums"]["enrollment_role"]
         }
         Update: {
+          approval?: string
+          approved_at?: string | null
+          approved_by?: string | null
           assigned_at?: string
           assigned_by?: string | null
           consent_at?: string | null
           consent_document?: string | null
+          decision_note?: string | null
           ended_at?: string | null
           enrollment_id?: string
+          expires_at?: string | null
           id?: string
           note?: string | null
           person_contact?: string | null
@@ -803,6 +1001,81 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_counters: {
+        Row: {
+          last_no: number
+          year: number
+        }
+        Insert: {
+          last_no: number
+          year: number
+        }
+        Update: {
+          last_no?: number
+          year?: number
+        }
+        Relationships: []
+      }
+      manual_transfer_reconciliations: {
+        Row: {
+          amount_mismatch: boolean
+          bank_reference: string
+          confirmed_at: string
+          confirmed_by: string | null
+          currency: string
+          expected_amount: number
+          id: string
+          note: string | null
+          payment_id: string
+          received_amount: number
+          sponsorship_id: string
+          value_date: string
+        }
+        Insert: {
+          amount_mismatch: boolean
+          bank_reference: string
+          confirmed_at?: string
+          confirmed_by?: string | null
+          currency: string
+          expected_amount: number
+          id?: string
+          note?: string | null
+          payment_id: string
+          received_amount: number
+          sponsorship_id: string
+          value_date: string
+        }
+        Update: {
+          amount_mismatch?: boolean
+          bank_reference?: string
+          confirmed_at?: string
+          confirmed_by?: string | null
+          currency?: string
+          expected_amount?: number
+          id?: string
+          note?: string | null
+          payment_id?: string
+          received_amount?: number
+          sponsorship_id?: string
+          value_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manual_transfer_reconciliations_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manual_transfer_reconciliations_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mirror_batches: {
         Row: {
           deleted: number
@@ -945,6 +1218,75 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "operating_platforms"
             referencedColumns: ["key"]
+          },
+        ]
+      }
+      money_issues: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          detail: Json
+          id: string
+          kind: string
+          orphan_id: string | null
+          provider: string | null
+          provider_event_id: string | null
+          provider_payment_id: string | null
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          sponsorship_id: string | null
+          status: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          detail?: Json
+          id?: string
+          kind: string
+          orphan_id?: string | null
+          provider?: string | null
+          provider_event_id?: string | null
+          provider_payment_id?: string | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          sponsorship_id?: string | null
+          status?: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          detail?: Json
+          id?: string
+          kind?: string
+          orphan_id?: string | null
+          provider?: string | null
+          provider_event_id?: string | null
+          provider_payment_id?: string | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          sponsorship_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "money_issues_orphan_id_fkey"
+            columns: ["orphan_id"]
+            isOneToOne: false
+            referencedRelation: "orphans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "money_issues_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorships"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1433,6 +1775,7 @@ export type Database = {
           monthly_amount: number
           notes: string | null
           orphan_id: string
+          text_reviewed: boolean
           title: string
         }
         Insert: {
@@ -1442,6 +1785,7 @@ export type Database = {
           monthly_amount?: number
           notes?: string | null
           orphan_id: string
+          text_reviewed?: boolean
           title: string
         }
         Update: {
@@ -1451,6 +1795,7 @@ export type Database = {
           monthly_amount?: number
           notes?: string | null
           orphan_id?: string
+          text_reviewed?: boolean
           title?: string
         }
         Relationships: [
@@ -1458,6 +1803,44 @@ export type Database = {
             foreignKeyName: "orphan_needs_orphan_id_fkey"
             columns: ["orphan_id"]
             isOneToOne: false
+            referencedRelation: "orphans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orphan_pending_edits: {
+        Row: {
+          changes: Json
+          created_at: string
+          orphan_id: string
+          previous: Json
+          requested_by: string | null
+          updated_at: string
+          via: string | null
+        }
+        Insert: {
+          changes: Json
+          created_at?: string
+          orphan_id: string
+          previous: Json
+          requested_by?: string | null
+          updated_at?: string
+          via?: string | null
+        }
+        Update: {
+          changes?: Json
+          created_at?: string
+          orphan_id?: string
+          previous?: Json
+          requested_by?: string | null
+          updated_at?: string
+          via?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orphan_pending_edits_orphan_id_fkey"
+            columns: ["orphan_id"]
+            isOneToOne: true
             referencedRelation: "orphans"
             referencedColumns: ["id"]
           },
@@ -1640,6 +2023,9 @@ export type Database = {
           currency: string
           display_name: string
           education_stage: string | null
+          exit_note: string | null
+          exit_reason: string | null
+          exited_at: string | null
           external_deleted_at: string | null
           external_ref: string | null
           external_source: string | null
@@ -1676,6 +2062,9 @@ export type Database = {
           currency?: string
           display_name: string
           education_stage?: string | null
+          exit_note?: string | null
+          exit_reason?: string | null
+          exited_at?: string | null
           external_deleted_at?: string | null
           external_ref?: string | null
           external_source?: string | null
@@ -1712,6 +2101,9 @@ export type Database = {
           currency?: string
           display_name?: string
           education_stage?: string | null
+          exit_note?: string | null
+          exit_reason?: string | null
+          exited_at?: string | null
           external_deleted_at?: string | null
           external_ref?: string | null
           external_source?: string | null
@@ -2350,6 +2742,47 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsor_exit_followups: {
+        Row: {
+          amount: number
+          currency: string
+          due_at: string
+          orphan_id: string | null
+          sent_at: string | null
+          sponsor_id: string
+          sponsorship_id: string
+          suggested_orphan: string | null
+        }
+        Insert: {
+          amount: number
+          currency: string
+          due_at: string
+          orphan_id?: string | null
+          sent_at?: string | null
+          sponsor_id: string
+          sponsorship_id: string
+          suggested_orphan?: string | null
+        }
+        Update: {
+          amount?: number
+          currency?: string
+          due_at?: string
+          orphan_id?: string | null
+          sent_at?: string | null
+          sponsor_id?: string
+          sponsorship_id?: string
+          suggested_orphan?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_exit_followups_sponsorship_id_fkey"
+            columns: ["sponsorship_id"]
+            isOneToOne: true
+            referencedRelation: "sponsorships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsorship_payments: {
         Row: {
           amount: number
@@ -2436,8 +2869,13 @@ export type Database = {
       sponsorships: {
         Row: {
           amount: number
+          cancel_effective_at: string | null
+          cancel_note: string | null
+          cancel_reason: string | null
+          cancel_requested_at: string | null
           created_at: string
           currency: string
+          end_reason: string | null
           ended_at: string | null
           enrollment_id: string | null
           exceeds_gap: boolean
@@ -2449,18 +2887,29 @@ export type Database = {
           message_status: string
           next_charge_at: string | null
           orphan_id: string
+          paused_until: string | null
           provider: string | null
+          provider_cancel_attempts: number
+          provider_cancel_error: string | null
+          provider_cancel_mode: string | null
+          provider_cancel_state: string | null
           provider_subscription_id: string | null
           sponsor_id: string
           started_at: string | null
           status: Database["public"]["Enums"]["sponsorship_status"]
+          status_changed_at: string | null
           type: Database["public"]["Enums"]["sponsorship_type"]
           updated_at: string
         }
         Insert: {
           amount: number
+          cancel_effective_at?: string | null
+          cancel_note?: string | null
+          cancel_reason?: string | null
+          cancel_requested_at?: string | null
           created_at?: string
           currency?: string
+          end_reason?: string | null
           ended_at?: string | null
           enrollment_id?: string | null
           exceeds_gap?: boolean
@@ -2472,18 +2921,29 @@ export type Database = {
           message_status?: string
           next_charge_at?: string | null
           orphan_id: string
+          paused_until?: string | null
           provider?: string | null
+          provider_cancel_attempts?: number
+          provider_cancel_error?: string | null
+          provider_cancel_mode?: string | null
+          provider_cancel_state?: string | null
           provider_subscription_id?: string | null
           sponsor_id: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["sponsorship_status"]
+          status_changed_at?: string | null
           type?: Database["public"]["Enums"]["sponsorship_type"]
           updated_at?: string
         }
         Update: {
           amount?: number
+          cancel_effective_at?: string | null
+          cancel_note?: string | null
+          cancel_reason?: string | null
+          cancel_requested_at?: string | null
           created_at?: string
           currency?: string
+          end_reason?: string | null
           ended_at?: string | null
           enrollment_id?: string | null
           exceeds_gap?: boolean
@@ -2495,11 +2955,17 @@ export type Database = {
           message_status?: string
           next_charge_at?: string | null
           orphan_id?: string
+          paused_until?: string | null
           provider?: string | null
+          provider_cancel_attempts?: number
+          provider_cancel_error?: string | null
+          provider_cancel_mode?: string | null
+          provider_cancel_state?: string | null
           provider_subscription_id?: string | null
           sponsor_id?: string
           started_at?: string | null
           status?: Database["public"]["Enums"]["sponsorship_status"]
+          status_changed_at?: string | null
           type?: Database["public"]["Enums"]["sponsorship_type"]
           updated_at?: string
         }
@@ -3128,10 +3594,16 @@ export type Database = {
       admin_apply_unlock: { Args: { _request: string }; Returns: Json }
       admin_approve_unlock: { Args: { _request: string }; Returns: Json }
       admin_approved_orgs: { Args: never; Returns: Json }
+      admin_archive_child: {
+        Args: { _note?: string; _orphan: string; _reason: string }
+        Returns: Json
+      }
       admin_assign_office_member: {
         Args: { _email: string; _office: string; _role: string }
         Returns: undefined
       }
+      admin_care_org_context: { Args: { _id: string }; Returns: Json }
+      admin_circle_role_context: { Args: { _id: string }; Returns: Json }
       admin_decision_context: {
         Args: { _id: string; _kind: string }
         Returns: Json
@@ -3141,8 +3613,13 @@ export type Database = {
         Args: { _code: string; _country: string; _dir: string; _name: string }
         Returns: undefined
       }
+      admin_export: { Args: { _dataset: string }; Returns: Json }
       admin_grant_payload: { Args: { _request: string }; Returns: Json }
       admin_integrity_queue: { Args: never; Returns: Json }
+      admin_list: {
+        Args: { _limit?: number; _list: string; _offset?: number; _q?: string }
+        Returns: Json
+      }
       admin_locale_reviewers: { Args: { _code: string }; Returns: Json }
       admin_mirror_status: { Args: never; Returns: Json }
       admin_offices_overview: { Args: never; Returns: Json }
@@ -3165,6 +3642,10 @@ export type Database = {
       admin_resolve_discrepancy: {
         Args: { _accept: boolean; _id: string; _reason: string }
         Returns: string
+      }
+      admin_resolve_money_issue: {
+        Args: { _issue: string; _note: string }
+        Returns: undefined
       }
       admin_review_office_report: {
         Args: { _publish: boolean; _report: string }
@@ -3201,6 +3682,7 @@ export type Database = {
       }
       admin_sources_overview: { Args: never; Returns: Json }
       admin_supervisors: { Args: never; Returns: Json }
+      admin_transfer_context: { Args: { _id: string }; Returns: Json }
       age_band_of: {
         Args: { _birth: string }
         Returns: Database["public"]["Enums"]["age_band"]
@@ -3218,6 +3700,20 @@ export type Database = {
         }
         Returns: undefined
       }
+      api_claim_nonce: {
+        Args: { _client: string; _nonce: string; _window_seconds?: number }
+        Returns: boolean
+      }
+      api_finish_import: {
+        Args: {
+          _created: number
+          _failed: number
+          _job: string
+          _result: Json
+          _updated: number
+        }
+        Returns: undefined
+      }
       api_orphan_cards: {
         Args: {
           _age_band?: string
@@ -3231,6 +3727,18 @@ export type Database = {
         }
         Returns: Json
       }
+      api_reserve_import: {
+        Args: {
+          _client: string
+          _digest: string
+          _key: string
+          _received: number
+          _source: string
+          _stale_minutes?: number
+        }
+        Returns: Json
+      }
+      apply_due_sponsorship_transitions: { Args: never; Returns: Json }
       assign_enrollment_role: {
         Args: {
           _enrollment: string
@@ -3242,6 +3750,21 @@ export type Database = {
         }
         Returns: string
       }
+      attach_care_org_document: {
+        Args: {
+          _file_name?: string
+          _kind: string
+          _mime?: string
+          _org: string
+          _path: string
+          _size?: number
+        }
+        Returns: string
+      }
+      awaits_manual_transfer: {
+        Args: { _sponsorship: string }
+        Returns: boolean
+      }
       brand_name: { Args: never; Returns: string }
       can_manage_orphan: { Args: { _orphan_id: string }; Returns: boolean }
       can_reach_office_folder: {
@@ -3251,6 +3774,8 @@ export type Database = {
       can_reach_orphan_folder: { Args: { _path: string }; Returns: boolean }
       can_see_qualification: { Args: { _orphan: string }; Returns: boolean }
       can_view_orphan_detail: { Args: { _orphan: string }; Returns: boolean }
+      can_view_orphan_photo: { Args: { _path: string }; Returns: boolean }
+      care_org_kyc_missing: { Args: { _org: string }; Returns: string[] }
       certify_supervisor: {
         Args: {
           _independence?: number
@@ -3269,6 +3794,20 @@ export type Database = {
         }
         Returns: Json
       }
+      child_exit_label: { Args: { _reason: string }; Returns: string }
+      child_exit_reasons: { Args: never; Returns: string[] }
+      child_exit_sentence: { Args: { _reason: string }; Returns: string }
+      circle_role_is_live: {
+        Args: {
+          _approval: string
+          _ended: string
+          _expires: string
+          _person: string
+        }
+        Returns: boolean
+      }
+      circle_role_renewal_window: { Args: never; Returns: string }
+      circle_role_withheld_scopes: { Args: never; Returns: string[] }
       claim_email_batch: {
         Args: {
           _lease_seconds?: number
@@ -3286,11 +3825,34 @@ export type Database = {
           unsubscribe_token: string
         }[]
       }
+      close_pending_payments: {
+        Args: { _reason: string; _sponsorship: string }
+        Returns: number
+      }
       cohort_is_safe: { Args: { _orphan: string }; Returns: boolean }
       cohort_min: { Args: never; Returns: number }
+      cohort_safety: {
+        Args: never
+        Returns: {
+          orphan_id: string
+          safe: boolean
+        }[]
+      }
       confirm_disbursement_delivery: {
         Args: { _disbursement: string; _note?: string; _proof_path: string }
         Returns: undefined
+      }
+      confirm_manual_transfer: {
+        Args: {
+          _accept_mismatch?: boolean
+          _bank_reference: string
+          _currency: string
+          _note?: string
+          _received_amount: number
+          _sponsorship: string
+          _value_date: string
+        }
+        Returns: Json
       }
       consent_statement: {
         Args: { _decision: string; _subject: string }
@@ -3336,6 +3898,15 @@ export type Database = {
         }
         Returns: string
       }
+      decide_enrollment_role: {
+        Args: {
+          _days?: number
+          _decision: string
+          _note?: string
+          _role: string
+        }
+        Returns: Json
+      }
       decide_orphan_access: {
         Args: {
           _days?: number
@@ -3353,6 +3924,10 @@ export type Database = {
         Args: { _email: string; _entity: string; _role: string }
         Returns: undefined
       }
+      end_enrollment_role: {
+        Args: { _note?: string; _role: string }
+        Returns: undefined
+      }
       enrollment_assessments: { Args: { _enrollment: string }; Returns: Json }
       enrollment_detail: { Args: { _enrollment: string }; Returns: Json }
       enrollment_has_consent: {
@@ -3365,7 +3940,12 @@ export type Database = {
         Returns: Json
       }
       enrollment_unit_progress: { Args: { _enrollment: string }; Returns: Json }
+      expire_stale_checkouts: {
+        Args: { _older_than?: string }
+        Returns: number
+      }
       geo_stats: { Args: never; Returns: Json }
+      get_orphan_intake: { Args: { _orphan: string }; Returns: Json }
       guardian_children_overview: { Args: never; Returns: Json }
       guardian_consent_enrollment: { Args: { _role: string }; Returns: string }
       guardian_orphans: { Args: never; Returns: Json }
@@ -3393,11 +3973,35 @@ export type Database = {
         }
         Returns: Json
       }
+      holds_live_circle_role: {
+        Args: {
+          _orphan: string
+          _roles?: Database["public"]["Enums"]["enrollment_role"][]
+        }
+        Returns: boolean
+      }
       import_orphan_record: {
         Args: { _client: string; _payload: Json }
         Returns: Json
       }
       in_orphan_circle: { Args: { _orphan: string }; Returns: boolean }
+      intake_country: {
+        Args: { _org: string; _requested: string }
+        Returns: {
+          code: string
+          currency: string
+          name_ar: string
+        }[]
+      }
+      intake_write_details: {
+        Args: {
+          _org: string
+          _orphan: string
+          _payload: Json
+          _replace_docs: boolean
+        }
+        Returns: undefined
+      }
       integrity_row_hash: {
         Args: {
           _actor: string
@@ -3477,6 +4081,20 @@ export type Database = {
       }
       mark_email_sent: { Args: { _ids: string[] }; Returns: number }
       mark_email_suppressed: { Args: { _id: string }; Returns: undefined }
+      mark_provider_cancel_result: {
+        Args: { _error?: string; _ok: boolean; _sponsorship: string }
+        Returns: undefined
+      }
+      mark_provider_payment: {
+        Args: {
+          _checkout_id: string
+          _payment_ref: string
+          _provider: string
+          _sponsorship: string
+          _status: string
+        }
+        Returns: Json
+      }
       mirror_apply: {
         Args: {
           _client: string
@@ -3516,6 +4134,8 @@ export type Database = {
         Returns: Json
       }
       my_access_requests: { Args: never; Returns: Json }
+      my_care_org_kyc: { Args: never; Returns: Json }
+      my_donor_invitations: { Args: never; Returns: Json }
       my_journey_feed: { Args: { _limit?: number }; Returns: Json }
       my_monthly_digest: { Args: never; Returns: Json }
       my_notification_prefs: { Args: never; Returns: Json }
@@ -3548,6 +4168,10 @@ export type Database = {
         }
         Returns: string
       }
+      notify_sponsorship_watchers: {
+        Args: { _body: string; _sponsorship: string; _title: string }
+        Returns: undefined
+      }
       office_dashboard: { Args: { _office: string }; Returns: Json }
       office_open_pledges: { Args: { _office: string }; Returns: Json }
       office_permission: {
@@ -3562,12 +4186,25 @@ export type Database = {
       orphan_filter_options: { Args: never; Returns: Json }
       orphan_funding_state: { Args: { _orphan: string }; Returns: Json }
       orphan_group: { Args: { _orphan: string }; Returns: Json }
+      orphan_in_my_org: {
+        Args: { _org: string; _orphan: string }
+        Returns: boolean
+      }
       orphan_is_locked: { Args: { _orphan: string }; Returns: boolean }
       orphan_journey: { Args: { _orphan: string }; Returns: Json }
       orphan_messages: { Args: { _orphan: string }; Returns: Json }
+      orphan_missing_publication_docs: {
+        Args: { _orphan: string }
+        Returns: string[]
+      }
+      orphan_object_is_frozen: {
+        Args: { _bucket: string; _name: string }
+        Returns: boolean
+      }
       orphan_profile: { Args: { _orphan: string }; Returns: Json }
       orphan_profile_completeness: { Args: { _orphan: string }; Returns: Json }
       orphan_program_plan: { Args: { _orphan: string }; Returns: Json }
+      orphan_progress_reports: { Args: { _orphan: string }; Returns: Json }
       orphan_qualification: { Args: { _orphan: string }; Returns: Json }
       orphan_reports: { Args: { _orphan: string }; Returns: Json }
       orphan_sponsor_ids: { Args: { _orphan: string }; Returns: string[] }
@@ -3575,7 +4212,12 @@ export type Database = {
       orphan_trust: { Args: { _orphan: string }; Returns: Json }
       orphan_view: { Args: { _orphan: string }; Returns: Json }
       owns_org: { Args: { _org_id: string }; Returns: boolean }
+      owns_org_folder: { Args: { _path: string }; Returns: boolean }
       payment_hold_state: { Args: never; Returns: Json }
+      photo_url_is_platform: {
+        Args: { _orphan: string; _url: string }
+        Returns: boolean
+      }
       pledge_in_office: {
         Args: { _office: string; _pledge: string }
         Returns: boolean
@@ -3594,12 +4236,38 @@ export type Database = {
       }
       program_curriculum: { Args: { _program: string }; Returns: Json }
       protected_admin_override: { Args: never; Returns: boolean }
+      provider_cancellations_due: {
+        Args: { _limit?: number }
+        Returns: {
+          attempts: number
+          mode: string
+          provider: string
+          provider_subscription_id: string
+          sponsorship_id: string
+        }[]
+      }
+      prune_intake_documents: {
+        Args: { _keep: string[]; _org: string; _orphan: string }
+        Returns: number
+      }
       prune_rate_limits: { Args: never; Returns: number }
+      public_edit_fields: { Args: never; Returns: string[] }
+      public_operating_links: { Args: never; Returns: Json }
+      public_platform_stats: { Args: never; Returns: Json }
       public_ui_locales: { Args: never; Returns: Json }
       published_regions: { Args: never; Returns: Json }
       published_ui_messages: { Args: { _locale: string }; Returns: Json }
       record_enrollment_consent: {
         Args: { _document: string; _role_id: string }
+        Returns: undefined
+      }
+      record_photo_consent: {
+        Args: {
+          _document?: string
+          _orphan: string
+          _photo_url?: string
+          _state: string
+        }
         Returns: undefined
       }
       record_pledge_delivery: {
@@ -3611,6 +4279,37 @@ export type Database = {
           _stage: string
         }
         Returns: undefined
+      }
+      record_provider_charge: {
+        Args: {
+          _amount: number
+          _checkout_id: string
+          _currency: string
+          _event_id: string
+          _paid_at: string
+          _payment_ref: string
+          _provider: string
+          _sponsorship: string
+          _subscription_id: string
+        }
+        Returns: Json
+      }
+      record_provider_failure: {
+        Args: {
+          _amount: number
+          _checkout_id: string
+          _currency: string
+          _event_id: string
+          _payment_ref: string
+          _provider: string
+          _reason: string
+          _sponsorship: string
+        }
+        Returns: Json
+      }
+      record_provider_subscription_state: {
+        Args: { _sponsorship: string; _state: string; _subscription_id: string }
+        Returns: Json
       }
       record_trait_assessment: {
         Args: {
@@ -3631,10 +4330,14 @@ export type Database = {
         }
         Returns: Json
       }
+      register_care_organization: { Args: { _payload: Json }; Returns: Json }
       register_donor_entity: {
         Args: { _country?: string; _name: string; _type?: string }
         Returns: string
       }
+      remove_care_org_document: { Args: { _doc: string }; Returns: undefined }
+      request_channel: { Args: never; Returns: string }
+      request_is_client: { Args: never; Returns: boolean }
       request_is_service: { Args: never; Returns: boolean }
       request_orphan_access:
         | { Args: { _orphan: string; _reason: string }; Returns: Json }
@@ -3643,6 +4346,10 @@ export type Database = {
             Returns: Json
           }
       resolve_country_code: { Args: { _text: string }; Returns: string }
+      respond_donor_invitation: {
+        Args: { _accept: boolean; _entity: string }
+        Returns: undefined
+      }
       review_organization: {
         Args: { _decision: string; _id: string; _reason?: string }
         Returns: undefined
@@ -3655,6 +4362,10 @@ export type Database = {
           _reason?: string
         }
         Returns: undefined
+      }
+      review_orphan_edit: {
+        Args: { _decision: string; _note?: string; _orphan: string }
+        Returns: Json
       }
       review_progress_report: {
         Args: { _decision: string; _id: string; _note?: string }
@@ -3684,6 +4395,7 @@ export type Database = {
         }
         Returns: string
       }
+      save_orphan_draft: { Args: { _payload: Json }; Returns: Json }
       save_orphan_profile_section: {
         Args: {
           _data?: Json
@@ -3697,6 +4409,7 @@ export type Database = {
         Args: { _budget?: number; _region?: string }
         Returns: Json
       }
+      send_due_exit_followups: { Args: never; Returns: number }
       set_enrollment_stage: {
         Args: { _enrollment: string; _stage: string }
         Returns: Database["public"]["Enums"]["qualification_stage"]
@@ -3710,10 +4423,42 @@ export type Database = {
         Returns: undefined
       }
       source_checklist: { Args: { _key: string }; Returns: Json }
+      sponsor_access_grace: { Args: never; Returns: string }
+      sponsor_cancel_sponsorship: {
+        Args: { _note?: string; _reason?: string; _sponsorship: string }
+        Returns: Json
+      }
+      sponsor_change_amount: {
+        Args: { _amount: number; _sponsorship: string }
+        Returns: Json
+      }
       sponsor_messages_for_review: { Args: never; Returns: Json }
+      sponsor_pause_sponsorship: {
+        Args: { _months: number; _sponsorship: string }
+        Returns: Json
+      }
       sponsor_qualification: { Args: { _orphan: string }; Returns: Json }
+      sponsor_resume_sponsorship: {
+        Args: { _sponsorship: string }
+        Returns: Json
+      }
       sponsors_orphan: { Args: { _orphan_id: string }; Returns: boolean }
+      sponsorship_child_name: {
+        Args: { _sponsorship: string }
+        Returns: string
+      }
+      sponsorship_ended_at: {
+        Args: {
+          _at: string
+          _s: Database["public"]["Tables"]["sponsorships"]["Row"]
+        }
+        Returns: boolean
+      }
       sponsorship_ledger: { Args: { _sponsorship: string }; Returns: Json }
+      sponsorship_paid_through: {
+        Args: { _sponsorship: string }
+        Returns: string
+      }
       stage_order: {
         Args: { _s: Database["public"]["Enums"]["qualification_stage"] }
         Returns: number
