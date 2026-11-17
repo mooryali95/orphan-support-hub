@@ -502,8 +502,9 @@ export const setPhotoConsent = createServerFn({ method: "POST" })
     const { error } = await db.rpc("record_photo_consent", {
       _orphan: data.orphanId,
       _state: data.consent,
-      _document: data.consentDocumentId ?? null,
-      _photo_url: data.photoUrl || null,
+      // تُحذف المعاملات الفارغة فيأخذ كلٌّ قيمته الافتراضية NULL في الدالة.
+      ...(data.consentDocumentId ? { _document: data.consentDocumentId } : {}),
+      ...(data.photoUrl ? { _photo_url: data.photoUrl } : {}),
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };

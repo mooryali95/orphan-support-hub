@@ -103,7 +103,9 @@ function markServerDisabled() {
 /* ── المراسم ──────────────────────────────────────────────────────── */
 
 /** المكتبة قد ترمي بدل أن تُرجع { error } (البصمة معطّلة فيها)؛ نوحّد الشكل. */
-async function guard<T extends { error: unknown }>(run: () => Promise<T>): Promise<T | { data: null; error: unknown }> {
+async function guard<T extends { error: unknown }>(
+  run: () => Promise<T>,
+): Promise<T | { data: null; error: unknown }> {
   try {
     return await run();
   } catch (error) {
