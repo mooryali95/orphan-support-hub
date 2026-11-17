@@ -102,6 +102,15 @@ function markServerDisabled() {
 
 /* ── المراسم ──────────────────────────────────────────────────────── */
 
+/** المكتبة قد ترمي بدل أن تُرجع { error } (البصمة معطّلة فيها)؛ نوحّد الشكل. */
+async function guard<T extends { error: unknown }>(run: () => Promise<T>): Promise<T | { data: null; error: unknown }> {
+  try {
+    return await run();
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export type PasskeyResult = { ok: true } | { ok: false; why: PasskeyFailure };
 
 type SignInOptions = { mediation?: CredentialMediationRequirement; signal?: AbortSignal };
@@ -112,7 +121,7 @@ type SignInOptions = { mediation?: CredentialMediationRequirement; signal?: Abor
  */
 export async function signInWithPasskey(options: SignInOptions = {}): Promise<PasskeyResult> {
   for (let attempt = 0; attempt < 2; attempt++) {
-    const { error } = await supabase.auth.signInWithPasskey({ options });
+    const { error } = await guard(() => supabase.auth.signInWithPasskey({ options }));
     if (!error) {
       rememberDevicePasskey();
       return { ok: true };
@@ -128,7 +137,7 @@ export async function signInWithPasskey(options: SignInOptions = {}): Promise<Pa
 
 /** تسجيل بصمة هذا الجهاز للحساب الحالي، باسمٍ ودودٍ بلغة الواجهة. */
 export async function addPasskey(locale = "ar"): Promise<PasskeyResult> {
-  const res = await supabase.auth.registerPasskey();
+  const res = await guard(() => supabase.auth.registerPasskey());
   if (res.error) {
     const why = classifyPasskeyError(res.error);
     if (why === "disabled") markServerDisabled();
@@ -155,19 +164,18 @@ export type PasskeyInfo = {
 };
 
 export async function listPasskeys(): Promise<PasskeyInfo[]> {
-  const { data, error } = await supabase.auth.passkey.list();
+  const { data, error } = await guard(() => supabase.auth.passkey.list());
   return error ? [] : ((data ?? []) as PasskeyInfo[]);
 }
 
 export async function renamePasskey(passkeyId: string, friendlyName: string) {
-  return supabase.auth.passkey.update({
-    passkeyId,
-    friendlyName: friendlyName.trim().slice(0, 120),
-  });
+  return guard(() =>
+    supabase.auth.passkey.update({ passkeyId, friendlyName: friendlyName.trim().slice(0, 120) }),
+  );
 }
 
 export async function removePasskey(passkeyId: string) {
-  const res = await supabase.auth.passkey.delete({ passkeyId });
+  const res = await guard(() => supabase.auth.passkey.delete({ passkeyId }));
   if (!res.error && (await listPasskeys()).length === 0) rememberDevicePasskey(false);
   return res;
 }

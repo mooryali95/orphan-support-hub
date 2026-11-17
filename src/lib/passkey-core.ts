@@ -33,6 +33,7 @@ export function classifyPasskeyError(err: unknown): PasskeyFailure {
   const text = `${code} ${name} ${String(e.message ?? "")}`;
 
   if (code === "passkey_disabled") return "disabled";
+  if (/experimental and disabled/i.test(String(e.message ?? ""))) return "disabled";
   if (code === "webauthn_challenge_expired" || code === "webauthn_challenge_not_found") {
     return "expired";
   }
