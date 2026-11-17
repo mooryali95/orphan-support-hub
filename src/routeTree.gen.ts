@@ -34,6 +34,7 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
+import { Route as VisionHallRouteImport } from './routes/vision.hall'
 import { Route as VisionImpactRouteImport } from './routes/vision.impact'
 import { Route as VisionJourneyRouteImport } from './routes/vision.journey'
 import { Route as VisionMeRouteImport } from './routes/vision.me'
@@ -181,6 +182,11 @@ const VisionCycleRoute = VisionCycleRouteImport.update({
 const VisionDecisionRoute = VisionDecisionRouteImport.update({
   id: '/vision/decision',
   path: '/vision/decision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionHallRoute = VisionHallRouteImport.update({
+  id: '/vision/hall',
+  path: '/vision/hall',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VisionImpactRoute = VisionImpactRouteImport.update({
@@ -337,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/hall': typeof VisionHallRoute
   '/vision/impact': typeof VisionImpactRoute
   '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
@@ -387,6 +394,7 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/hall': typeof VisionHallRoute
   '/vision/impact': typeof VisionImpactRoute
   '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
@@ -439,6 +447,7 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
+  '/vision/hall': typeof VisionHallRoute
   '/vision/impact': typeof VisionImpactRoute
   '/vision/journey': typeof VisionJourneyRoute
   '/vision/me': typeof VisionMeRoute
@@ -491,6 +500,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/hall'
     | '/vision/impact'
     | '/vision/journey'
     | '/vision/me'
@@ -541,6 +551,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/hall'
     | '/vision/impact'
     | '/vision/journey'
     | '/vision/me'
@@ -592,6 +603,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/vision/cycle'
     | '/vision/decision'
+    | '/vision/hall'
     | '/vision/impact'
     | '/vision/journey'
     | '/vision/me'
@@ -637,6 +649,7 @@ export interface RootRouteChildren {
   OrphansOrphanIdRoute: typeof OrphansOrphanIdRoute
   VisionCycleRoute: typeof VisionCycleRoute
   VisionDecisionRoute: typeof VisionDecisionRoute
+  VisionHallRoute: typeof VisionHallRoute
   VisionImpactRoute: typeof VisionImpactRoute
   VisionJourneyRoute: typeof VisionJourneyRoute
   VisionMeRoute: typeof VisionMeRoute
@@ -832,6 +845,13 @@ declare module '@tanstack/react-router' {
       path: '/vision/decision'
       fullPath: '/vision/decision'
       preLoaderRoute: typeof VisionDecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision/hall': {
+      id: '/vision/hall'
+      path: '/vision/hall'
+      fullPath: '/vision/hall'
+      preLoaderRoute: typeof VisionHallRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vision/impact': {
@@ -1065,6 +1085,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrphansOrphanIdRoute: OrphansOrphanIdRoute,
   VisionCycleRoute: VisionCycleRoute,
   VisionDecisionRoute: VisionDecisionRoute,
+  VisionHallRoute: VisionHallRoute,
   VisionImpactRoute: VisionImpactRoute,
   VisionJourneyRoute: VisionJourneyRoute,
   VisionMeRoute: VisionMeRoute,
