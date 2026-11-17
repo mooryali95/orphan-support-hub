@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
+import "@/components/hall/hall.css";
 import { BRAND, pageTitle } from "@/config/brand";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 
@@ -101,9 +102,12 @@ function HallPage() {
               <Link to="/vision/journey">الرحلة الكاملة</Link> بدلاً منها.
             </p>
           ) : (
-            <button id="enter" className="cta" type="button" disabled={state !== "ready"}>
-              {state === "ready" ? "ادخل القاعة" : "تُجهَّز القاعة…"}
-            </button>
+            <>
+              {state === "loading" && <Loader />}
+              <button id="enter" className="cta" type="button" disabled={state !== "ready"}>
+                {state === "ready" ? "ادخل القاعة" : "تُجهَّز القاعة…"}
+              </button>
+            </>
           )}
         </div>
       </section>
@@ -130,6 +134,23 @@ function HallPage() {
       <section id="impact" hidden aria-live="polite" />
       <div id="veil" />
       <div id="cursor" aria-hidden="true" />
+    </div>
+  );
+}
+
+/** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
+function Loader() {
+  const pts = Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2 - Math.PI / 2;
+    const r = i % 2 ? 26 : 44;
+    return `${50 + Math.cos(a) * r},${50 + Math.sin(a) * r}`;
+  }).join(" ");
+  return (
+    <div className="loader" role="status" aria-label="تُجهَّز القاعة">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <polygon points={pts} />
+        <circle cx="50" cy="50" r="12" />
+      </svg>
     </div>
   );
 }

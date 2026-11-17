@@ -1301,3 +1301,54 @@
     display: inline-flex;
   }
 }
+
+.hall .loader {
+  display: grid;
+  place-items: center;
+  margin-top: 22px;
+}
+.hall .loader svg {
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+}
+.hall .loader polygon,
+.hall .loader circle {
+  fill: none;
+  stroke: #e3c27e;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.hall .loader polygon {
+  stroke-dasharray: 520;
+  stroke-dashoffset: 520;
+  animation: hall-draw 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(233, 201, 131, 0.6));
+}
+.hall .loader circle {
+  opacity: 0.6;
+  transform-origin: 50px 50px;
+  animation: hall-breathe 2.4s ease-in-out infinite;
+}
+@keyframes hall-draw {
+  0% {
+    stroke-dashoffset: 520;
+  }
+  55% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -520;
+  }
+}
+@keyframes hall-breathe {
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+.hall .cta:disabled {
+  opacity: 0.55;
+  cursor: progress;
+  box-shadow: none;
+}

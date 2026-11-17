@@ -46,7 +46,7 @@ import {
   SYNC_EVENT,
 } from "@/lib/hall/engine-bridge";
 import { rankPriorities, rationale } from "@/lib/office-gap";
-import "./hall.css";
+import { buildArchitecture } from "./architecture.js";
 
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
@@ -395,26 +395,17 @@ export function mountHall(root, { brand, linked = [] }) {
   oculus.rotation.x = Math.PI / 2;
   oculus.position.y = 32.8;
   hall.add(oculus);
-  for (let i = 0; i < 14; i++) {
-    const a = (i / 14) * Math.PI * 2 + Math.PI / 14;
-    if (Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) < 0.35) continue;
-    const x = Math.sin(a) * 15.6,
-      z = Math.cos(a) * 15.6;
-    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.5, 11, 32), lacquer);
-    col.position.set(x, 5.5, z);
-    hall.add(col);
-    [0.25, 10.9].forEach((y) => {
-      const r = new THREE.Mesh(new THREE.TorusGeometry(0.53, 0.1, 16, 48), goldM);
-      r.rotation.x = Math.PI / 2;
-      r.position.set(x, y, z);
-      hall.add(r);
-    });
-    const b = ((i + 0.5) / 14) * Math.PI * 2 + Math.PI / 14;
-    const arch = new THREE.Mesh(new THREE.TorusGeometry(3.45, 0.08, 12, 64, Math.PI), goldM);
-    arch.position.set(Math.sin(b) * 15.4, 11, Math.cos(b) * 15.4);
-    arch.rotation.y = b + Math.PI / 2;
-    hall.add(arch);
-  }
+  const arch = buildArchitecture({
+    hall,
+    goldM,
+    lacquer,
+    LOW,
+    rnd: (() => {
+      let a = 7;
+      return () => (a = (a * 16807) % 2147483647) / 2147483647;
+    })(),
+  });
+  floor.material = arch.floorMaterial;
   const doors = [];
   [-1, 1].forEach((s) => {
     const pivot = new THREE.Group();
@@ -514,12 +505,16 @@ export function mountHall(root, { brand, linked = [] }) {
     });
   const screens = [];
   function makeScreen(angle, w, h) {
-    const cv = document.createElement("canvas");
-    cv.width = 1400;
-    cv.height = Math.round((1400 * h) / w);
+    const cv = document.createElement("canvas"),
+      dens = LOW ? 1.3 : 1.7;
+    cv.lw = 1400;
+    cv.lh = Math.round((1400 * h) / w);
+    cv.width = Math.round(cv.lw * dens);
+    cv.height = Math.round(cv.lh * dens);
+    cv.getContext("2d").scale(dens, dens);
     const tex = new THREE.CanvasTexture(cv);
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const g = new THREE.Group();
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
@@ -573,8 +568,8 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   function drawMap() {
     const { ctx, cv, tex } = scrMap,
-      w = cv.width,
-      h = cv.height,
+      w = cv.lw,
+      h = cv.lh,
       t = totals();
     bg(ctx, w, h);
     if (!PICKED) {
@@ -695,8 +690,8 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   function drawTracks() {
     const { ctx, cv, tex } = scrTracks,
-      w = cv.width;
-    bg(ctx, w, cv.height);
+      w = cv.lw;
+    bg(ctx, w, cv.lh);
     goldText(ctx, "اتجاهات الدعم الثلاثة", w - 80, 140, 68);
     [
       ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
@@ -717,8 +712,8 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   function drawImpactScreen() {
     const { ctx, cv, tex } = scrImpact,
-      w = cv.width,
-      h = cv.height;
+      w = cv.lw,
+      h = cv.lh;
     bg(ctx, w, h);
     goldText(ctx, "أثرك حتى الآن", w - 80, 140, 68);
     if (!S.history.length) {
@@ -2981,6 +2976,7 @@ export function mountHall(root, { brand, linked = [] }) {
       camera.setViewOffset(innerWidth, innerHeight, view.x, view.y, innerWidth, innerHeight);
     }
     dustMat.uniforms.uTime.value = time;
+    arch.update(time);
     rays.material.uniforms.uTime.value = time;
     screens.forEach((s) => {
       s.sheen.material.uniforms.uTime.value = time;
