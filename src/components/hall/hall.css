@@ -1352,3 +1352,73 @@
   cursor: progress;
   box-shadow: none;
 }
+
+.hall .gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+.hall .gate-actions .cta {
+  margin-top: 0;
+}
+.hall #soundBtn[aria-pressed="true"] {
+  border-color: #e3c27e;
+  color: #fff4d6;
+  background: rgba(212, 175, 106, 0.12);
+}
+/* film mode: letterbox bars and a centred caption */
+.hall::before,
+.hall::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: #000;
+  z-index: 7;
+  transition: height 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+.hall::before {
+  top: 0;
+}
+.hall::after {
+  bottom: 0;
+}
+.hall.film::before,
+.hall.film::after {
+  height: 9vh;
+}
+.hall #caption {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  bottom: calc(9vh + 18px);
+  transform: translateX(-50%);
+  width: min(900px, calc(100% - 32px));
+  margin: 0;
+  text-align: center;
+  font-family: var(--display);
+  font-size: clamp(20px, 2.6vw, 32px);
+  line-height: 1.6;
+  color: #f8ecd0;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.hall.film #panel,
+.hall.film #impact {
+  opacity: 0.92;
+}
+.hall.film #hallNav,
+.hall.film #hint {
+  display: none !important;
+}
+/* the bar (sound, exits) stays reachable above the gate */
+.hall #hud {
+  z-index: 9;
+}

@@ -47,6 +47,7 @@ import {
 } from "@/lib/hall/engine-bridge";
 import { rankPriorities, rationale } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
+import { createSound } from "./sound.js";
 
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
@@ -1662,8 +1663,129 @@ export function mountHall(root, { brand, linked = [] }) {
   });
   gsap.to(doorGlow, { intensity: 40, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
-  $("#enter")?.addEventListener("click", () => {
+  /* ── Direction: authored camera paths, optional sound, film mode ── */
+  const sound = createSound();
+  const soundBtn = $("#soundBtn");
+  soundBtn?.addEventListener("click", async () => {
+    const v = await sound.toggle();
+    soundBtn.setAttribute("aria-pressed", String(v));
+    soundBtn.textContent = v ? "الصوت يعمل" : "الصوت";
+  });
+  /** a camera move along a spline (position and look-at), driven by one GSAP tween */
+  function flyPath(points, targets, duration, ease = "power2.inOut") {
+    const pc = new THREE.CatmullRomCurve3(points, false, "centripetal"),
+      tc = new THREE.CatmullRomCurve3(targets, false, "centripetal");
+    const o = { t: 0 },
+      P = new THREE.Vector3(),
+      T = new THREE.Vector3();
+    return gsap.to(o, {
+      t: 1,
+      duration,
+      ease,
+      onUpdate: () => {
+        pc.getPoint(o.t, P);
+        tc.getPoint(o.t, T);
+        controls.setLookAt(P.x, P.y, P.z, T.x, T.y, T.z, false);
+      },
+    });
+  }
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  function hallPose(i) {
+    const g = VIEWS[(i + VIEWS.length) % VIEWS.length].group,
+      p = g.getWorldPosition(new THREE.Vector3()),
+      w = i === 1 ? 9 : 6;
+    const dir = new THREE.Vector3(p.x, 0, p.z).normalize();
+    const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
+    const d = Math.min(24, Math.max(10, (w / 2 + 0.7) / half));
+    const cam = p.clone().sub(dir.multiplyScalar(d));
+    cam.y = 5.2;
+    return { cam, target: p };
+  }
+  let FILM = false;
+  const caption = (t) => {
+    const c = $("#caption");
+    if (!c) return;
+    if (!t) return gsap.to(c, { autoAlpha: 0, duration: 0.5 });
+    gsap.to(c, {
+      autoAlpha: 0,
+      duration: 0.25,
+      onComplete: () => {
+        c.textContent = t;
+        gsap.fromTo(
+          c,
+          { autoAlpha: 0, y: 10, filter: "blur(6px)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.9,
+            ease: "expo.out",
+            clearProps: "filter",
+          },
+        );
+      },
+    });
+  };
+  function stopFilm() {
+    if (!FILM) return;
+    FILM = false;
+    root.classList.remove("film");
+    caption("");
+  }
+  on(
+    root,
+    "pointerdown",
+    (e) => {
+      if (FILM && !e.target.closest("#film")) stopFilm();
+    },
+    true,
+  );
+  async function film() {
+    FILM = true;
+    root.classList.add("film");
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const steps = [
+      [() => enterHall(), "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر", 5200],
+      [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
+      [
+        () => selectCountry("AL"),
+        "نختار ألبانيا: نشاطٌ ميداني للندوة، بأرقام محرّك منصة الرؤية",
+        4200,
+      ],
+      [
+        () => enterCountry(),
+        "ندخلها: لكلّ مدينةٍ عمودٌ بقدر حاجتها، والذهبيّ ما مُوِّل تأهيله",
+        7000,
+      ],
+      [
+        () => {
+          S.track = "qualify";
+          S.amount = 10000;
+          setStage("support");
+          selectCity("tirana");
+        },
+        "ندعم تيرانا بعشرة آلاف ريال تأهيلاً، فيظهر الأثر قبل الدفع",
+        5200,
+      ],
+      [() => pay(), "يتدفّق الدعم، ويرتفع عمود تيرانا بقدر ما موّل", 5200],
+      [() => {}, "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب", 14000],
+      [() => enterBig(), "وأخيراً الصورة الكلية في منصة القرار", 7000],
+    ];
+    for (const [act, text, ms] of steps) {
+      if (!FILM || disposed) return;
+      caption(text);
+      act();
+      await wait(ms);
+    }
+    stopFilm();
+  }
+  $("#film")?.addEventListener("click", () => film());
+
+  function enterHall() {
+    if (S.stage !== "gate") return;
+    sound.cue("door");
     const tl = gsap.timeline();
+    const end = hallPose(1);
     tl.to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" })
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
@@ -1673,28 +1795,41 @@ export function mountHall(root, { brand, linked = [] }) {
       .to(bloom, { intensity: 1.15, duration: 1.6, ease: "power2.out" }, 1.8)
       .to(doorGlow, { intensity: 0, duration: 1.6 }, 2.2)
       .add(() => {
-        controls.smoothTime = 1.4;
-        controls.setLookAt(0, 4.6, 7.5, 0, 5.8, -13, true);
-      }, 0.9)
+        // through the doorway on a gentle arc, settling on the map screen
+        flyPath(
+          [camera.position.clone(), V(0.9, 3.3, 24), V(-0.7, 3.9, 16.5), V(0.4, 4.6, 11), end.cam],
+          [
+            V(0, 4.5, 0),
+            V(0, 4.8, -2),
+            V(0, 5.4, -8),
+            end.target.clone().add(V(0, -0.4, 0)),
+            end.target,
+          ],
+          2.9,
+          "power2.inOut",
+        );
+      }, 0.8)
       .to(focus, { z: -13, duration: 2.5, ease: "power2.inOut" }, 0.9)
       .add(() => {
         controls.smoothTime = 0.55;
         setStage("hall");
-        hallView(1);
+        hallView(1, false);
         if (!PHONE())
           hint(
             PICKED
               ? "المس الكرة لتختار دولة، أو الشاشة لتعود إلى " + CO.ar
               : "المس الكرة لتفتح خريطة العالم وتختار دولتك",
           );
-      }, 3.6);
-  });
+      }, 3.8);
+  }
+  $("#enter")?.addEventListener("click", () => enterHall());
   focus.set(0, 4, 17.6);
 
   /* ── Into the country: push in, flash, rise ─────────────────────── */
   function enterCountry() {
     hint("");
     const fromWorld = S.stage === "world";
+    sound.cue("dive");
     buildCountry();
     const tl = gsap.timeline();
     if (fromWorld) {
@@ -1777,6 +1912,7 @@ export function mountHall(root, { brand, linked = [] }) {
 
   /* ── The world: the network in front of you, pick a country ────── */
   function enterWorld() {
+    sound.cue("whoosh");
     setStage("world");
     hint("");
     controls.enabled = true;
@@ -1809,6 +1945,7 @@ export function mountHall(root, { brand, linked = [] }) {
     renderWorld();
   }
   function selectCountry(code) {
+    sound.cue("tick");
     if (CO.code === code && S.stage === "world" && panel.querySelector(".co-card")) {
       /* already chosen */
     }
@@ -2192,6 +2329,7 @@ export function mountHall(root, { brand, linked = [] }) {
   }
 
   function pay() {
+    sound.cue("chime");
     const c = city(),
       o = pillars.find((x) => x.c.id === S.city);
     let p = project();
@@ -2218,8 +2356,10 @@ export function mountHall(root, { brand, linked = [] }) {
         donor: "داعم القاعة",
         at: Date.now(),
       });
-      saveEngine(ENGINE, store);
-      window.dispatchEvent(new Event(SYNC_EVENT));
+      if (!FILM) {
+        saveEngine(ENGINE, store);
+        window.dispatchEvent(new Event(SYNC_EVENT));
+      }
       const fresh = albaniaRegions(ENGINE, regionsFor(CO));
       CITIES.forEach((r) =>
         Object.assign(
@@ -2291,6 +2431,7 @@ export function mountHall(root, { brand, linked = [] }) {
   }
 
   function renderImpact() {
+    sound.cue("bell");
     const L = S.last,
       c = city(L.city),
       b = S.before,
@@ -2668,6 +2809,7 @@ export function mountHall(root, { brand, linked = [] }) {
 
   /* ── The big picture: crane up, the country flies into the globe ─ */
   function enterBig() {
+    sound.cue("rise");
     setStage("big");
     hideImpact();
     hint("");
@@ -2684,8 +2826,13 @@ export function mountHall(root, { brand, linked = [] }) {
     markArcs();
     const tl = gsap.timeline();
     tl.add(() => {
-      controls.smoothTime = 1.3;
-      controls.setLookAt(0, 8.6, 15.5, 0, 5.4, 0, true);
+      const c0 = camera.position.clone();
+      flyPath(
+        [c0, V(c0.x * 0.7, c0.y + 5, c0.z * 0.7 + 3), V(2.5, 11, 17), V(0, 8.6, 15.5)],
+        [V(0, 1.2, 0), V(0, 3, 0), V(0, 5, 0), V(0, 5.4, 0)],
+        2.6,
+        "power2.inOut",
+      );
     })
       .to(focus, { x: 0, y: 5.4, z: 0, duration: 1.6, ease: "power2.inOut" }, 0)
       .to(globe.scale, { x: 1, y: 1, z: 1, duration: 1.8, ease: "expo.out" }, 0.3)
@@ -2844,6 +2991,7 @@ export function mountHall(root, { brand, linked = [] }) {
   $("#hallNav")?.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    sound.cue("tick");
     if (b.dataset.v) hallView(+b.dataset.v);
     else hallView(hallAt + +b.dataset.d);
   });
@@ -3082,6 +3230,7 @@ export function mountHall(root, { brand, linked = [] }) {
   frame();
   window.__hall = { S, enterWorld: () => enterWorld(), co: () => CO.code }; // for automated checks
   return () => {
+    sound.dispose();
     disposed = true;
     cancelAnimationFrame(raf);
     listeners.forEach((off) => off());

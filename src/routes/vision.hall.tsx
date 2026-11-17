@@ -75,6 +75,9 @@ function HallPage() {
           <li data-s="big">الصورة الكلية</li>
         </ol>
         <nav className="exits" aria-label="روابط">
+          <button id="soundBtn" type="button" className="chip" aria-pressed="false">
+            الصوت
+          </button>
           <Link to="/vision/journey" className="chip">
             النسخة المبسّطة
           </Link>
@@ -104,15 +107,21 @@ function HallPage() {
           ) : (
             <>
               {state === "loading" && <Loader />}
-              <button id="enter" className="cta" type="button" disabled={state !== "ready"}>
-                {state === "ready" ? "ادخل القاعة" : "تُجهَّز القاعة…"}
-              </button>
+              <div className="gate-actions">
+                <button id="enter" className="cta" type="button" disabled={state !== "ready"}>
+                  {state === "ready" ? "ادخل القاعة" : "تُجهَّز القاعة…"}
+                </button>
+                <button id="film" className="ghost" type="button" disabled={state !== "ready"}>
+                  شاهد كفيلم
+                </button>
+              </div>
             </>
           )}
         </div>
       </section>
 
       <div id="hint" />
+      <p id="caption" aria-live="polite" />
       <nav id="hallNav" aria-label="شاشات القاعة">
         <button type="button" data-d="-1" aria-label="الشاشة السابقة">
           ‹
