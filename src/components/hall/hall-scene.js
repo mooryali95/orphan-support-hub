@@ -37,12 +37,21 @@ import {
   project as projectOf,
   apply as applyTo,
 } from "@/lib/hall/model";
+import {
+  albaniaRegions,
+  levelFacts,
+  loadEngine,
+  payEngine,
+  saveEngine,
+  SYNC_EVENT,
+} from "@/lib/hall/engine-bridge";
+import { rankPriorities, rationale } from "@/lib/office-gap";
 import "./hall.css";
 
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
 
-export function mountHall(root, { brand }) {
+export function mountHall(root, { brand, linked = [] }) {
   const $ = (s, r = root) => r.querySelector(s);
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -70,8 +79,19 @@ export function mountHall(root, { brand }) {
   };
 
   /* ── State: the network view, the chosen country and its regions ── */
-  const VIEW = { all: false };
-  const shown = (c) => VIEW.all || c.st !== "unconfirmed";
+  const VIEW = { all: false, layer: "network" };
+  /* the site map's "needs an office" layer, and operating platforms that are really linked */
+  const PRI = new Map(rankPriorities().map((p) => [p.code, p]));
+  const TIER = { high: "أولوية عالية", medium: "أولوية متوسطة", data: "تحتاج بيانات" };
+  const LINKED = new Set();
+  Promise.resolve(linked)
+    .then((codes) => {
+      (codes || []).forEach((c) => LINKED.add(c));
+      if (S.stage === "world") renderWorld();
+    })
+    .catch(() => {});
+  const shown = (c) =>
+    VIEW.all || c.st !== "unconfirmed" || (VIEW.layer === "gap" && PRI.has(c.code));
   let CO = byCode("AL");
   let PICKED = false; // nothing chosen until the visitor picks a country on the globe
   const CITY_CACHE = {};
@@ -85,8 +105,20 @@ export function mountHall(root, { brand }) {
     last: null,
     before: null,
   };
+  const store = (() => {
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
+  })();
+  let ENGINE = loadEngine(store);
+  const isEngine = () => CO.code === "AL";
   function initCities() {
-    if (!CITY_CACHE[CO.code]) CITY_CACHE[CO.code] = regionsFor(CO);
+    if (isEngine()) {
+      ENGINE = loadEngine(store);
+      CITY_CACHE.AL = albaniaRegions(ENGINE, regionsFor(CO));
+    } else if (!CITY_CACHE[CO.code]) CITY_CACHE[CO.code] = regionsFor(CO);
     CITIES = CITY_CACHE[CO.code];
     S.city = [...CITIES].sort((a, b) => gapOf(b) - gapOf(a))[0].id;
   }
@@ -1271,7 +1303,15 @@ export function mountHall(root, { brand }) {
   );
   globe.add(spark);
   function markArcs() {
-    gDots.forEach(({ c, m }) => (m.visible = shown(c)));
+    const AMBER = new THREE.Color(0xf0a060).multiplyScalar(1.8);
+    gDots.forEach(({ c, m }) => {
+      m.visible = shown(c);
+      if (!m.userData.base) m.userData.base = m.material.color.clone();
+      const pri = VIEW.layer === "gap" && PRI.get(c.code);
+      m.material.color
+        .copy(pri ? AMBER : m.userData.base)
+        .multiplyScalar(VIEW.layer === "gap" && !pri ? 0.35 : 1);
+    });
     arcs.forEach((a) => {
       a.line.visible = shown(a.c);
     });
@@ -1847,7 +1887,8 @@ export function mountHall(root, { brand }) {
         <div><dt>نسبة التمويل</dt><dd class="num">${sim.funded}%</dd></div>
         <div><dt>مشرفون</dt><dd class="num">${sim.supervisors}</dd></div>
       </div>
-      <p class="note">أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.</p>
+      ${PRI.has(CO.code) ? `<p class="co-act"><b>${TIER[PRI.get(CO.code).tier]} لفتح مكتب:</b> ${rationale(PRI.get(CO.code), "ar")}</p>` : ""}
+      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">محرّك الرؤية</span> مدن ${CO.ar} ومجموعاتها وأطفالها من محرّك منصة الرؤية، ودعمك هنا يظهر هناك.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${CO.ar}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
     </article>`;
   }
@@ -1871,9 +1912,26 @@ export function mountHall(root, { brand }) {
       <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>نشاطاً ميدانياً</span></div>
       ${VIEW.all ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>غير مؤكَّد</span></div>` : ""}
     </div>
+    <div class="layers" role="group" aria-label="الطبقة"><button type="button" data-layer="network" aria-pressed="${VIEW.layer === "network"}">الشبكة</button><button type="button" data-layer="gap" aria-pressed="${VIEW.layer === "gap"}">تحتاج مكتباً</button></div>
+    ${
+      VIEW.layer === "gap"
+        ? `<p class="sub">كطبقة «تحتاج مكتباً» في خريطة الموقع: دولٌ للندوة فيها نشاطٌ ميداني أو حضورٌ غير مؤكَّد، مرتّبةً بتقدير أيتامها وثقة مصدره.</p>${[
+            "high",
+            "medium",
+            "data",
+          ]
+            .map((t) => {
+              const list = [...PRI.values()].filter((p) => p.tier === t);
+              return list.length
+                ? `<div class="sect">${TIER[t]}</div><div class="co-list">${list.map((p) => `<button type="button" data-co="${p.code}" aria-pressed="${PICKED && p.code === CO.code}"><i class="dot gap-${t}"></i>${(byCode(p.code) || { ar: p.code }).ar}</button>`).join("")}</div>`
+                : "";
+            })
+            .join("")}`
+        : ""
+    }
     <div class="row" style="margin-top:12px"><button class="ghost" type="button" id="toggleAll" aria-pressed="${VIEW.all}">${VIEW.all ? "اعرض المؤكَّد فقط" : "اعرض النموذج الكامل · 34 موقعاً"}</button></div>
 
-    ${groups
+    ${(VIEW.layer === "gap" ? [] : groups)
       .map(
         ([st, name]) =>
           `<div class="sect">${name}</div><div class="co-list">${COUNTRIES.filter(
@@ -1894,6 +1952,16 @@ export function mountHall(root, { brand }) {
         .forEach((b) => b.addEventListener("click", () => selectCountry(b.dataset.co)));
       $("#enterCo")?.addEventListener("click", enterCountry);
       $("#toHall")?.addEventListener("click", backToHall);
+      panel.querySelectorAll("[data-layer]").forEach((b) =>
+        b.addEventListener("click", () => {
+          VIEW.layer = b.dataset.layer;
+          if (!shown(CO)) PICKED = false;
+          markLand();
+          markArcs();
+          refreshLabels();
+          renderWorld();
+        }),
+      );
       $("#toggleAll")?.addEventListener("click", () => {
         VIEW.all = !VIEW.all;
         if (!shown(CO)) PICKED = false;
@@ -2130,8 +2198,8 @@ export function mountHall(root, { brand }) {
 
   function pay() {
     const c = city(),
-      p = project(),
       o = pillars.find((x) => x.c.id === S.city);
+    let p = project();
     if (!p.kids) return;
     S.before = { ...c, totals: totals() };
     $("#pay").disabled = true;
@@ -2144,7 +2212,31 @@ export function mountHall(root, { brand }) {
     flow.curve = new THREE.QuadraticBezierCurve3(start, mid, end);
     const fillFrom = o.fillH;
     o.baseH = fillFrom;
-    applyTo(p, c);
+    let facts = null;
+    if (isEngine()) {
+      const s0 = ENGINE;
+      ENGINE = payEngine(s0, {
+        track: p.track,
+        amount: S.amount,
+        kids: p.kids,
+        city: c.id,
+        donor: "داعم القاعة",
+        at: Date.now(),
+      });
+      saveEngine(ENGINE, store);
+      window.dispatchEvent(new Event(SYNC_EVENT));
+      const fresh = albaniaRegions(ENGINE, regionsFor(CO));
+      CITIES.forEach((r) =>
+        Object.assign(
+          r,
+          fresh.find((x) => x.id === r.id),
+        ),
+      );
+      // the engine charges the gateway fee, so read back how many it actually funded
+      if (p.track === "qualify")
+        p = { ...p, kids: c.qualified - S.before.qualified, gap1: gapOf(c) };
+      facts = levelFacts(s0, ENGINE, c.id);
+    } else applyTo(p, c);
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
       .to(bloom, { intensity: 2.1, duration: 0.9, ease: "power2.in" }, 0.6)
@@ -2190,7 +2282,7 @@ export function mountHall(root, { brand }) {
           place: c.ar,
           levels: "",
         });
-        S.last = { ...p, city: c.id, amount: S.amount };
+        S.last = { ...p, city: c.id, amount: S.amount, facts, engine: isEngine() };
         drawMap();
         drawImpactScreen();
         refreshLabels();
@@ -2335,14 +2427,14 @@ export function mountHall(root, { brand }) {
         lv1 = [1, 4, 2, 1];
       levels =
         level(
-          "١",
+          "1",
           "البلد",
           CO.ar,
           big("مموّلٌ تأهيلهم", T0.pct, T1.pct, "%", "up") + big("ينتظرون التأهيل", T0.gap, T1.gap),
           `اقترب ${CO.ar} من سدّ حاجته؛ بإيقاع اليوم تُسدّ الفجوة خلال <b class="num">${Math.ceil(T1.gap / pace())}</b> شهراً.`,
         ) +
         level(
-          "٢",
+          "2",
           reg,
           c.ar,
           big(`ينتظرون في ${c.ar}`, gapOf(b), gapOf(c)) +
@@ -2356,7 +2448,7 @@ export function mountHall(root, { brand }) {
           `دعمك وحده موّل <b class="num">${Math.round((L.kids / Math.max(1, gapOf(b))) * 100)}%</b> ممّا كانت ${c.ar} تنتظره.`,
         ) +
         level(
-          "٣",
+          "3",
           "المجموعة",
           `${gName}${nGroups > 1 ? ` و<span class="num">${nGroups - 1}</span> غيرها` : ""}`,
           big("جلساتٌ منفّذة", 0, 6, "", "up") +
@@ -2365,7 +2457,7 @@ export function mountHall(root, { brand }) {
           `ثمانية أطفال في كلّ مجموعة؛ انتقل <b class="num">4</b> من <span class="num">8</span> إلى مستوىً أعلى.`,
         ) +
         level(
-          "٤",
+          "4",
           "الطالب",
           `${kid.name} · <span class="num">${kid.age}</span> سنة`,
           bars(
@@ -2380,14 +2472,14 @@ export function mountHall(root, { brand }) {
     } else if (L.track === "sponsor") {
       levels =
         level(
-          "١",
+          "1",
           "البلد",
           CO.ar,
           big("مكفولون في البلد", T0.sponsored, T1.sponsored, "", "up"),
           `كفالاتٌ شهرية جديدة تصل بإثبات تسليم كلّ شهر.`,
         ) +
         level(
-          "٢",
+          "2",
           reg,
           c.ar,
           big(`مكفولون في ${c.ar}`, b.sponsored, c.sponsored, "", "up") +
@@ -2395,14 +2487,14 @@ export function mountHall(root, { brand }) {
           `تقلّص عدد من أتمّوا التأهيل ولا كفيل لهم.`,
         ) +
         level(
-          "٣",
+          "3",
           "المجموعة",
           gName,
           big("مكفولون من 8", 2, Math.min(8, 2 + L.kids), "", "up"),
           `الكفالة تُثبّت الطفل في مجموعته ومتابعته الشهرية.`,
         ) +
         level(
-          "٤",
+          "4",
           "الفرد",
           `${kid.name} · <span class="num">${kid.age}</span> سنة`,
           bars([
@@ -2416,33 +2508,60 @@ export function mountHall(root, { brand }) {
     } else {
       levels =
         level(
-          "١",
+          "1",
           "البلد",
           CO.ar,
           big("مكسوّون هذا الموسم", T0.clothed, T1.clothed, "", "up"),
           `تُسدّ حاجة الموسم في ${CO.ar} بقدر دعمك.`,
         ) +
         level(
-          "٢",
+          "2",
           reg,
           c.ar,
           big("ينتظرون الكسوة", b.need - b.clothed, c.need - c.clothed),
           `<b class="num">${Math.round((L.kids / Math.max(1, b.need - b.clothed)) * 100)}%</b> من حاجة ${c.ar} سُدّت بدعمك.`,
         ) +
         level(
-          "٣",
+          "3",
           "المجموعة",
           `<span class="num">${nGroups}</span> ${nGroups > 2 ? "مجموعات" : nGroups === 2 ? "مجموعتان" : "مجموعة"} في ${c.ar}`,
           big("مكسوّون من 8 في المجموعة", 0, Math.min(8, L.kids), "", "up"),
           `تُسلَّم الكسوة للمجموعة كاملةً في يومٍ واحد بإثبات.`,
         ) +
         level(
-          "٤",
+          "4",
           "الفرد",
           `${kid.name} · <span class="num">${kid.age}</span> سنة`,
           `<div class="kv"><div><dt>قبل</dt><dd>بلا كسوة الموسم</dd></div><div><dt>الآن</dt><dd>كسوةٌ كاملة مسلَّمة</dd></div></div>`,
           `ثوبٌ وحذاءٌ ومعطفٌ للشتاء، بلا صورةٍ ولا مكانٍ للطفل.`,
         );
+    }
+    if (L.facts) {
+      const f = L.facts,
+        LV = { start: "في البداية", growing: "نامٍ", capable: "متمكّن", distinct: "متميّز" };
+      const count = (arr) =>
+        ["start", "growing", "capable", "distinct"].map((k) => arr.filter((x) => x === k).length);
+      const [c0, c1] = [count(f.group.levels[0]), count(f.group.levels[1])];
+      const moved = JSON.stringify(c0) !== JSON.stringify(c1);
+      const g3 = level(
+        "3",
+        "المجموعة",
+        f.group.name,
+        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>محرّك منصة الرؤية</dd></div></div>
+         <div class="levels"><span>الآن</span>${lvBar(c0)}${moved ? `<span>بعد القياس</span>${lvBar(c1)}` : ""}</div>${legend}`,
+        moved
+          ? "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها."
+          : "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
+      );
+      const g4 = level(
+        "4",
+        L.track === "qualify" ? "الطالب" : "الفرد",
+        `${f.child.name} · <span class="num">${f.child.age}</span> سنة`,
+        bars(f.child.traits.map(([n, a, z]) => [n, a, z ?? a])),
+        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>، وملفّه في صفحة الأثر بمنصة الرؤية.`,
+      );
+      const parts = levels.split('<article class="lvl">');
+      levels = parts.slice(0, 3).join('<article class="lvl">') + g3 + g4;
     }
     S.history[S.history.length - 1].levels = levels;
     const TABS = [
@@ -2450,7 +2569,7 @@ export function mountHall(root, { brand }) {
       ["ما تمّ", done],
       [
         "الأثر بالمستويات",
-        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p>${levels}`,
+        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">محرّك الرؤية</span> الأرقام من محرّك منصة الرؤية بعد قيد دعمك فيه.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
       ],
       ["التفاصيل", details],
     ];
@@ -2804,7 +2923,7 @@ export function mountHall(root, { brand }) {
     <h2>اتجاهات الدعم الثلاثة</h2>
     <p class="sub">كلّ اتجاه يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
     <div class="tracks" style="margin-top:14px"><div class="tcell"><b>تأهيل</b><small>رحلة طفل · <span class="num">600</span> ر.س</small></div><div class="tcell"><b>كفالة</b><small>شهر · <span class="num">300</span> ر.س</small></div><div class="tcell"><b>كسوة</b><small>يتيم · <span class="num">300</span> ر.س</small></div></div>
-    ${rows.map(([lv, a, b2, c]) => `<article class="lvl"><header><span class="ic">${["١", "٢", "٣", "٤"][rows.findIndex((x) => x[0] === lv)]}</span><div><small>المستوى</small><b>${lv}</b></div></header><dl class="kv kv3"><div><dt>تأهيل</dt><dd>${a}</dd></div><div><dt>كفالة</dt><dd>${b2}</dd></div><div><dt>كسوة</dt><dd>${c}</dd></div></dl></article>`).join("")}
+    ${rows.map(([lv, a, b2, c]) => `<article class="lvl"><header><span class="ic">${["1", "2", "3", "4"][rows.findIndex((x) => x[0] === lv)]}</span><div><small>المستوى</small><b>${lv}</b></div></header><dl class="kv kv3"><div><dt>تأهيل</dt><dd>${a}</dd></div><div><dt>كفالة</dt><dd>${b2}</dd></div><div><dt>كسوة</dt><dd>${c}</dd></div></dl></article>`).join("")}
     <div class="row"><button class="cta" type="button" id="goWorld">اختر دولةً وادعم</button><button class="ghost" type="button" id="closeP">إغلاق</button></div>`);
     onPanel(() => {
       $("#goWorld")?.addEventListener("click", enterWorld);

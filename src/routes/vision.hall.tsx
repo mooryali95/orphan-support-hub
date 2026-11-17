@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { BRAND, pageTitle } from "@/config/brand";
+import { getOperatingLinks } from "@/lib/vision-links.functions";
 
 /**
  * قاعة الأثر — رحلة الداعم ثلاثية الأبعاد: القاعة، ثم خريطة العالم، ثم الدولة،
@@ -39,7 +40,13 @@ function HallPage() {
     import("@/components/hall/hall-scene.js")
       .then(({ mountHall }) => {
         if (cancelled) return;
-        dispose = mountHall(root, { brand: BRAND.name });
+        dispose = mountHall(root, {
+          brand: BRAND.name,
+          // الدول المتّصلة منصّة تشغيلها فعلاً تظهر «حقيقية»؛ غيرها يبقى افتراضياً.
+          linked: getOperatingLinks()
+            .then((links) => links.map((l) => l.country))
+            .catch(() => []),
+        });
         setState("ready");
       })
       .catch(() => setState("unsupported"));
@@ -66,9 +73,14 @@ function HallPage() {
           <li data-s="impact">الأثر</li>
           <li data-s="big">الصورة الكلية</li>
         </ol>
-        <Link to="/vision" className="chip">
-          خروج إلى منصة الرؤية
-        </Link>
+        <nav className="exits" aria-label="روابط">
+          <Link to="/vision/journey" className="chip">
+            النسخة المبسّطة
+          </Link>
+          <Link to="/vision" className="chip">
+            خروج إلى منصة الرؤية
+          </Link>
+        </nav>
       </header>
 
       <section id="gate">
