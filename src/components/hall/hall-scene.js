@@ -3087,7 +3087,27 @@ export function mountHall(root, { brand, linked = [] }) {
   resize();
   const clock = new THREE.Clock();
   canvas.addEventListener("pointerdown", () => (idle = 0));
-  const perf = { n: 0, t: 0, stepped: false };
+  const perf = { n: 0, t: 0, stepped: false, tier: LOW ? "منخفضة (جوال)" : "عالية" };
+  /* ?perf — a small meter for real-device testing: frames per second, draw calls, quality tier */
+  const meter = new URLSearchParams(location.search).has("perf")
+    ? document.createElement("output")
+    : null;
+  const meterStat = { frames: 0, since: performance.now() };
+  if (meter) {
+    renderer.info.autoReset = false; // count every pass of the frame, not only the last
+    meter.className = "perf";
+    root.appendChild(meter);
+  }
+  function tickMeter() {
+    meterStat.frames++;
+    const now = performance.now();
+    if (now - meterStat.since < 1000) return;
+    const fps = Math.round((meterStat.frames * 1000) / (now - meterStat.since));
+    const i = renderer.info.render;
+    meter.textContent = `${fps} fps · ${i.calls} draw · ${Math.round(i.triangles / 1000)}k tri · ${perf.tier} · dpr ${renderer.getPixelRatio().toFixed(2)}`;
+    meterStat.frames = 0;
+    meterStat.since = now;
+  }
   function adapt(dt) {
     if (perf.stepped || S.stage === "gate") return;
     perf.n++;
@@ -3097,6 +3117,7 @@ export function mountHall(root, { brand, linked = [] }) {
     perf.stepped = true;
     if (ms > 28) {
       // under ~35fps: drop depth of field and render at a lower resolution
+      perf.tier = "مخفَّضة تلقائياً";
       renderer.setPixelRatio(1);
       composer.setSize(innerWidth, innerHeight);
       if (dof) dof.blendMode.opacity.value = 0;
@@ -3188,7 +3209,9 @@ export function mountHall(root, { brand, linked = [] }) {
         m.scale.setScalar(PICKED && c === CO ? 1.8 + Math.sin(time * 4) * 0.5 : 1),
       );
     }
+    if (meter) renderer.info.reset();
     composer.render(dt);
+    if (meter) tickMeter();
     for (const l of labels) {
       if (!l.when()) {
         l.el.style.opacity = 0;
