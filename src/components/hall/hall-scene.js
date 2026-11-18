@@ -21,6 +21,7 @@ import {
   DepthOfFieldEffect,
   BlendFunction,
 } from "postprocessing";
+import { N8AOPostPass } from "n8ao";
 
 import { LAND_DOTS } from "@/data/hall-geo";
 import {
@@ -186,6 +187,20 @@ export function mountHall(root, { brand, linked = [] }) {
 
   const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
   composer.addPass(new RenderPass(scene, camera));
+  /* contact depth: ambient occlusion where columns meet the land and beads sit on it */
+  const ao = LOW ? null : new N8AOPostPass(scene, camera, innerWidth, innerHeight);
+  if (ao) {
+    Object.assign(ao.configuration, {
+      aoRadius: 1.6,
+      distanceFalloff: 0.6,
+      intensity: 2.6,
+      color: new THREE.Color(0x14060a),
+      gammaCorrection: false,
+      halfRes: true,
+    });
+    ao.setQualityMode("Medium");
+    composer.addPass(ao);
+  }
   const bloom = new BloomEffect({
     luminanceThreshold: 0.72,
     luminanceSmoothing: 0.25,
@@ -774,7 +789,14 @@ export function mountHall(root, { brand, linked = [] }) {
   const country = new THREE.Group();
   country.visible = false;
   scene.add(country);
-  const R = 6.3;
+  /* shapes are normalised to their bounding box, so a squarish country (Egypt, Saudi Arabia)
+     reaches ~1.4 at its corners: scale each country by its farthest point to stay on the plinth */
+  let R = 6.3;
+  const fitR = (co) => {
+    let m = 0;
+    for (const ring of co.rings) for (const [x, y] of ring) m = Math.max(m, Math.hypot(x, y));
+    return Math.min(6.3, 6.9 / Math.max(m, 1e-6));
+  };
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
@@ -801,6 +823,7 @@ export function mountHall(root, { brand, linked = [] }) {
   };
   function buildLand() {
     clearGroup(landGroup);
+    R = fitR(CO);
     const shapes = CO.rings.map(
       (r) => new THREE.Shape(r.map(([x, y]) => new THREE.Vector2(x * R, y * R))),
     );
@@ -850,7 +873,7 @@ export function mountHall(root, { brand, linked = [] }) {
       float w = sin(c.x*90.0 + uTime*0.7 + sin(c.y*40.0+uTime*0.3)*2.0) * sin(c.y*70.0 - uTime*0.5);
       float glint = smoothstep(0.88, 1.0, w) * (1.0 - smoothstep(0.35, 0.5, r));
       vec3 base = mix(vec3(0.03,0.016,0.016), vec3(0.075,0.04,0.035), 1.0 - r*1.6);
-      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.35, 1.0); }`,
+      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.1, 1.0); }`,
     }),
   );
   sea.rotation.x = -Math.PI / 2;
@@ -1101,6 +1124,7 @@ export function mountHall(root, { brand, linked = [] }) {
   function buildCountry() {
     if (builtCode === CO.code) return;
     builtCode = CO.code;
+    R = fitR(CO);
     initCities();
     pillars.forEach((o) => {
       clearGroup(o.g);
@@ -1121,8 +1145,8 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   const DOTS = 100;
   const dots = new THREE.InstancedMesh(
-    new THREE.SphereGeometry(0.055, 12, 12),
-    new THREE.MeshBasicMaterial({ toneMapped: false }),
+    new THREE.SphereGeometry(0.064, 16, 16),
+    new THREE.MeshStandardMaterial({ metalness: 0.75, roughness: 0.26, envMapIntensity: 1.5 }),
     DOTS,
   );
   dots.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -1173,9 +1197,9 @@ export function mountHall(root, { brand, linked = [] }) {
   const DROPS = { list: [], t0: 0 };
   const LANT = 24;
   const lanterns = new THREE.InstancedMesh(
-    new THREE.SphereGeometry(0.06, 14, 14),
+    new THREE.SphereGeometry(0.036, 16, 16),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(3),
+      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(1.5),
       toneMapped: false,
     }),
     LANT,
@@ -1666,8 +1690,27 @@ export function mountHall(root, { brand, linked = [] }) {
   /* ── DOM choreography ───────────────────────────────────────────── */
   const ORDER = ["hall", "world", "country", "support", "impact", "big"];
   let idle = 0;
+  let legendRect = null,
+    legendAt = 0;
+  const legendBox = () => {
+    if (!root.classList.contains("in-country") || !legend) return null;
+    const now = performance.now();
+    if (now - legendAt > 500) {
+      legendRect = legend.getBoundingClientRect();
+      legendAt = now;
+    }
+    return legendRect;
+  };
+  /* on wide screens the glass covers the right third: shift the framing so the model sits in the open space */
+  function frameForPanel() {
+    const wide = innerWidth > 760 && !root.classList.contains("focus");
+    // the impact moment has glass on both sides, so it stays centred
+    const inCo = ["country", "support"].includes(S.stage);
+    controls.setFocalOffset(wide && inCo ? -1.6 : 0, 0, 0, true);
+  }
   function setStage(s) {
     S.stage = s;
+    queueMicrotask(frameForPanel);
     root.classList.toggle(
       "in-country",
       ["country", "support", "impact", "impactPending"].includes(s),
@@ -1842,6 +1885,7 @@ export function mountHall(root, { brand, linked = [] }) {
   const focusBtn = $("#focusBtn");
   focusBtn?.addEventListener("click", () => {
     const v = root.classList.toggle("focus");
+    frameForPanel();
     focusBtn.setAttribute("aria-pressed", String(v));
     focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
   });
@@ -2060,9 +2104,9 @@ export function mountHall(root, { brand, linked = [] }) {
         landGroup.scale.set(1, 0.001, 1);
         plinth.scale.set(0.2, 1, 0.2);
         plinthRing.scale.set(0.2, 0.2, 0.2);
-        controls.setLookAt(10, 16, 18, 0, 1.2, 0, false);
+        controls.setLookAt(6.5, 16, 12.5, 0, 0.8, 0, false);
         controls.smoothTime = 1.6;
-        controls.setLookAt(8, 10.5, 15.5, 0, 1.2, 0, true);
+        controls.setLookAt(5.4, 12.6, 10.2, 0, 0.8, 0, true);
         focus.set(0, 1.5, 0);
         controls.enabled = true;
         setStage("country");
@@ -2606,6 +2650,23 @@ export function mountHall(root, { brand, linked = [] }) {
         p = { ...p, kids: c.qualified - S.before.qualified, gap1: gapOf(c) };
       facts = levelFacts(s0, ENGINE, c.id);
     } else applyTo(p, c);
+    root.classList.add("watching");
+    controls.setFocalOffset(0, 0, 0, true);
+    {
+      const at = o.g.getWorldPosition(new THREE.Vector3()),
+        h = H(c.need),
+        d = camera.position.clone().sub(at).setY(0).normalize();
+      controls.smoothTime = 1.1;
+      controls.setLookAt(
+        at.x + d.x * 6.4,
+        at.y + h * 0.55 + 3.4,
+        at.z + d.z * 6.4,
+        at.x,
+        at.y + h * 0.45,
+        at.z,
+        true,
+      );
+    }
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
       .to(bloom, { intensity: 2.1, duration: 0.9, ease: "power2.in" }, 0.6)
@@ -2659,9 +2720,10 @@ export function mountHall(root, { brand, linked = [] }) {
         S.stage = "impactPending";
       }, 1.8)
       .add(() => {
+        root.classList.remove("watching");
         setStage("impact");
         renderImpact();
-      }, 2.6);
+      }, 3.6);
     void fillFrom;
   }
 
@@ -3144,7 +3206,7 @@ export function mountHall(root, { brand, linked = [] }) {
           o.rise = 0;
           layoutPillar(o);
         });
-        controls.setLookAt(8, 10.5, 15.5, 0, 1.2, 0, true);
+        controls.setLookAt(5.4, 12.6, 10.2, 0, 0.8, 0, true);
         focus.set(0, 1.5, 0);
       })
       .to(landGroup.scale, { y: 1, duration: 1, ease: "back.out(1.6)" })
@@ -3460,6 +3522,7 @@ export function mountHall(root, { brand, linked = [] }) {
       for (let k = DROPS.list.length; k < 64; k++) falling.setMatrixAt(k, zero);
       falling.instanceMatrix.needsUpdate = true;
     }
+    inlay.visible = !country.visible;
     const beamOn =
       country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage)
         ? 1
@@ -3507,8 +3570,11 @@ export function mountHall(root, { brand, linked = [] }) {
         l.el.style.opacity = 0;
         continue;
       }
-      const sy = ((1 - p.y) / 2) * innerHeight;
-      if (sy < 84) {
+      const sy = ((1 - p.y) / 2) * innerHeight,
+        sx = ((p.x + 1) / 2) * innerWidth;
+      // names never slide under the colour key
+      const lr = legendBox();
+      if (sy < 84 || (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)) {
         l.el.style.opacity = 0;
         continue;
       }
