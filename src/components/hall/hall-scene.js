@@ -789,7 +789,14 @@ export function mountHall(root, { brand, linked = [] }) {
   const country = new THREE.Group();
   country.visible = false;
   scene.add(country);
-  const R = 6.3;
+  /* shapes are normalised to their bounding box, so a squarish country (Egypt, Saudi Arabia)
+     reaches ~1.4 at its corners: scale each country by its farthest point to stay on the plinth */
+  let R = 6.3;
+  const fitR = (co) => {
+    let m = 0;
+    for (const ring of co.rings) for (const [x, y] of ring) m = Math.max(m, Math.hypot(x, y));
+    return Math.min(6.3, 6.9 / Math.max(m, 1e-6));
+  };
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
@@ -816,6 +823,7 @@ export function mountHall(root, { brand, linked = [] }) {
   };
   function buildLand() {
     clearGroup(landGroup);
+    R = fitR(CO);
     const shapes = CO.rings.map(
       (r) => new THREE.Shape(r.map(([x, y]) => new THREE.Vector2(x * R, y * R))),
     );
@@ -1116,6 +1124,7 @@ export function mountHall(root, { brand, linked = [] }) {
   function buildCountry() {
     if (builtCode === CO.code) return;
     builtCode = CO.code;
+    R = fitR(CO);
     initCities();
     pillars.forEach((o) => {
       clearGroup(o.g);
@@ -2075,9 +2084,9 @@ export function mountHall(root, { brand, linked = [] }) {
         landGroup.scale.set(1, 0.001, 1);
         plinth.scale.set(0.2, 1, 0.2);
         plinthRing.scale.set(0.2, 0.2, 0.2);
-        controls.setLookAt(7.5, 13, 13, 0, 1.2, 0, false);
+        controls.setLookAt(6.5, 16, 12.5, 0, 0.8, 0, false);
         controls.smoothTime = 1.6;
-        controls.setLookAt(6.2, 8.6, 11.4, 0, 1.2, 0, true);
+        controls.setLookAt(5.4, 12.6, 10.2, 0, 0.8, 0, true);
         focus.set(0, 1.5, 0);
         controls.enabled = true;
         setStage("country");
@@ -3176,7 +3185,7 @@ export function mountHall(root, { brand, linked = [] }) {
           o.rise = 0;
           layoutPillar(o);
         });
-        controls.setLookAt(6.2, 8.6, 11.4, 0, 1.2, 0, true);
+        controls.setLookAt(5.4, 12.6, 10.2, 0, 0.8, 0, true);
         focus.set(0, 1.5, 0);
       })
       .to(landGroup.scale, { y: 1, duration: 1, ease: "back.out(1.6)" })
