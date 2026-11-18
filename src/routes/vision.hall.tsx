@@ -3,6 +3,13 @@ import { useEffect, useRef, useState } from "react";
 
 import "@/components/hall/hall.css";
 import { BRAND, pageTitle } from "@/config/brand";
+import {
+  MARK_CALLIGRAPHY,
+  MARK_CENTER,
+  MARK_CRESCENT,
+  MARK_DISC,
+  MARK_VIEWBOX,
+} from "@/components/hall/hall-mark";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 
 /**
@@ -90,6 +97,7 @@ function HallPage() {
 
       <section id="gate">
         <div>
+          <HallMark />
           <div className="eyebrow">رحلة الداعم</div>
           <h1>ادخل قاعة الأثر</h1>
           <p>
@@ -151,6 +159,64 @@ function HallPage() {
 }
 
 /** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
+/**
+ * the partner mark (no wordmark), from the approved vector file, drawn in four movements:
+ * a gold line traces the outline → the disc fills → the crescent settles → the hand is written.
+ */
+function HallMark() {
+  const { x, y } = MARK_CENTER;
+  return (
+    <svg className="mark" viewBox={MARK_VIEWBOX} role="img" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="markInk" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style={{ stopColor: "var(--ivory)" }} />
+          <stop offset="1" style={{ stopColor: "var(--champagne)" }} />
+        </linearGradient>
+        <linearGradient id="markGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style={{ stopColor: "var(--champagne)" }} />
+          <stop offset="1" style={{ stopColor: "var(--gold)" }} />
+        </linearGradient>
+        <linearGradient id="markSheen" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0.35" stopColor="white" stopOpacity="0" />
+          <stop offset="0.5" stopColor="white" stopOpacity="0.8" />
+          <stop offset="0.65" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="markFeather" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.94" stopColor="white" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        {/* the hand is written by a feathered band travelling down-left along the stroke */}
+        <mask id="markWrite" maskUnits="userSpaceOnUse" x="100" y="20" width="400" height="400">
+          <g transform={`rotate(45 ${x} ${y})`}>
+            <rect
+              className="m-wipe"
+              x={x - 600}
+              y={y - 1200}
+              width="1200"
+              height="1200"
+              fill="url(#markFeather)"
+            />
+          </g>
+        </mask>
+        <clipPath id="markInkClip">
+          <path d={MARK_CALLIGRAPHY} clipRule="evenodd" />
+        </clipPath>
+      </defs>
+      <circle className="m-glow" cx={x} cy={y + 6} r="150" />
+      <path className="m-disc" d={MARK_DISC} />
+      <path className="m-crescent" d={MARK_CRESCENT} />
+      <path className="m-line" d={MARK_DISC} pathLength={1} />
+      <path className="m-line m-line-2" d={MARK_CRESCENT} pathLength={1} />
+      <g className="m-ink" mask="url(#markWrite)">
+        <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill="url(#markInk)" />
+      </g>
+      <g clipPath="url(#markInkClip)">
+        <rect className="m-sheen" x="-160" y="40" width="300" height="360" fill="url(#markSheen)" />
+      </g>
+    </svg>
+  );
+}
+
 function Loader() {
   const pts = Array.from({ length: 16 }, (_, i) => {
     const a = (i / 16) * Math.PI * 2 - Math.PI / 2;

@@ -1907,16 +1907,7 @@ export function mountHall(root, { brand, linked = [] }) {
   /* ── Gate: title words, then doors, then the dolly ──────────────── */
   const words = $("#gate h1").textContent.trim().split(/\s+/);
   $("#gate h1").innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(" ");
-  gsap.from("#gate .eyebrow, #gate h1 .w, #gate p, .country-pick button, #enter", {
-    autoAlpha: 0,
-    y: 30,
-    filter: "blur(10px)",
-    duration: 1.2,
-    stagger: 0.09,
-    ease: "expo.out",
-    delay: 0.2,
-    clearProps: "filter",
-  });
+  // the words rise in CSS (hall.css, g-rise) on wall-clock time, after the mark has been written
   gsap.to(doorGlow, { intensity: 40, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
   /* ── Direction: authored camera paths, optional sound, film mode ── */
@@ -2049,7 +2040,23 @@ export function mountHall(root, { brand, linked = [] }) {
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
-    tl.to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" })
+    // the mark is the door: its text steps back, then it swells past the viewer and the hall appears through it
+    const mark = $("#gate .mark");
+    if (mark) mark.style.animation = "none"; // the idle float would override gsap's transform
+    tl.to("#gate > div > :not(.mark)", { autoAlpha: 0, y: 12, duration: 0.45, ease: "power2.in" })
+      .to(
+        "#gate .mark",
+        {
+          scale: 9,
+          rotate: -8,
+          autoAlpha: 0,
+          duration: 1.5,
+          ease: "power3.in",
+          transformOrigin: "50% 45%",
+        },
+        0.15,
+      )
+      .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 0.75)
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
       .to(doors[0].pivot.rotation, { y: 1.85, duration: 2.6, ease: "power3.inOut" }, 0.4)
