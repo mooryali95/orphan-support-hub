@@ -936,6 +936,13 @@ export function mountHall(root, { brand, linked = [] }) {
     envMapIntensity: 1.5,
   });
   let pillars = [];
+  /* three supports, three visual languages, one palette */
+  const TRACK_COL = { qualify: 0xd4af6a, sponsor: 0xf2b4a2, kiswa: 0xeef0f7 };
+  const DIAL = [
+    [0.36, 0.44, "qualify", "qualified"],
+    [0.5, 0.58, "sponsor", "sponsored"],
+    [0.64, 0.72, "kiswa", "clothed"],
+  ];
   function makePillar(c) {
     const g = new THREE.Group();
     g.position.set(c.nx * R, 0.62, -c.ny * R);
@@ -976,8 +983,41 @@ export function mountHall(root, { brand, linked = [] }) {
     );
     const cap = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.03, 12, 48), goldM);
     cap.rotation.x = Math.PI / 2;
+    const dialG = new THREE.Group();
+    dialG.position.y = 0.26;
+    const dial = DIAL.map(([r0, r1, t, key]) => {
+      const flat = (m) => ((m.rotation.x = -Math.PI / 2), m);
+      dialG.add(
+        flat(
+          new THREE.Mesh(
+            new THREE.RingGeometry(r0, r1, 72),
+            new THREE.MeshBasicMaterial({
+              color: TRACK_COL[t],
+              transparent: true,
+              opacity: 0.13,
+              side: THREE.DoubleSide,
+              depthWrite: false,
+            }),
+          ),
+        ),
+      );
+      const arc = flat(
+        new THREE.Mesh(
+          new THREE.RingGeometry(r0, r1, 72, 1, Math.PI / 2, 0.001),
+          new THREE.MeshBasicMaterial({
+            color: new THREE.Color(TRACK_COL[t]).multiplyScalar(1.7),
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            toneMapped: false,
+          }),
+        ),
+      );
+      dialG.add(arc);
+      return { arc, r0, r1, key, shown: 0 };
+    });
     const halo = new THREE.Mesh(
-      new THREE.RingGeometry(0.32, 0.46, 64),
+      new THREE.RingGeometry(0.8, 0.92, 64),
       new THREE.MeshBasicMaterial({
         color: 0xffd98f,
         transparent: true,
@@ -990,7 +1030,7 @@ export function mountHall(root, { brand, linked = [] }) {
     );
     halo.rotation.x = -Math.PI / 2;
     halo.position.y = 0.02;
-    g.add(glass, fill, delta, baseRing, ghost, cap, halo);
+    g.add(glass, fill, delta, baseRing, ghost, cap, halo, dialG);
     country.add(g);
     glass.userData.city = fill.userData.city = c.id;
     const o = {
@@ -1003,6 +1043,7 @@ export function mountHall(root, { brand, linked = [] }) {
       ghost,
       cap,
       halo,
+      dial,
       fillH: H(c.qualified),
       baseH: H(c.qualified),
       ghostH: 0,
@@ -1039,6 +1080,23 @@ export function mountHall(root, { brand, linked = [] }) {
     o.cap.position.y = total;
     o.cap.visible = o.rise > 0.02;
   }
+  /** each arc's length is that support's coverage of the city's need; it eases toward the truth */
+  function stepDial(o, dt) {
+    for (const d of o.dial) {
+      const target = Math.min(1, o.c[d.key] / Math.max(1, o.c.need));
+      if (Math.abs(d.shown - target) < 0.002) continue;
+      d.shown += (target - d.shown) * Math.min(1, dt * 2.5);
+      d.arc.geometry.dispose();
+      d.arc.geometry = new THREE.RingGeometry(
+        d.r0,
+        d.r1,
+        72,
+        1,
+        Math.PI / 2,
+        Math.max(0.001, d.shown * Math.PI * 2),
+      );
+    }
+  }
   let builtCode = null;
   function buildCountry() {
     if (builtCode === CO.code) return;
@@ -1072,9 +1130,70 @@ export function mountHall(root, { brand, linked = [] }) {
   const tmpM = new THREE.Matrix4();
   const COL = {
     done: new THREE.Color(0xd4af6a),
-    lit: new THREE.Color(0xfff0c8).multiplyScalar(3),
     wait: new THREE.Color(0x5a2f38),
+    lit: {
+      qualify: new THREE.Color(0xfff0c8).multiplyScalar(3),
+      sponsor: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(2.6),
+      kiswa: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(2.6),
+    },
   };
+  const ringsI = new THREE.InstancedMesh(
+    new THREE.TorusGeometry(0.085, 0.012, 6, 24),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(1.8),
+      toneMapped: false,
+    }),
+    DOTS,
+  );
+  const giftsI = new THREE.InstancedMesh(
+    new THREE.OctahedronGeometry(0.045, 0),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(1.9),
+      toneMapped: false,
+    }),
+    DOTS,
+  );
+  ringsI.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  giftsI.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  country.add(ringsI, giftsI);
+  const qX = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2),
+    qI = new THREE.Quaternion(),
+    vP = new THREE.Vector3(),
+    vS = new THREE.Vector3(),
+    zero = new THREE.Matrix4().makeScale(0, 0, 0);
+  /** clothing gifts falling onto children, and sponsorship lanterns orbiting the column */
+  const DROPS = { list: [], t0: 0 };
+  const LANT = 24;
+  const lanterns = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.06, 14, 14),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(3),
+      toneMapped: false,
+    }),
+    LANT,
+  );
+  lanterns.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  const orbit = new THREE.Mesh(
+    new THREE.TorusGeometry(0.64, 0.006, 6, 96),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(1.4),
+      transparent: true,
+      opacity: 0.45,
+      toneMapped: false,
+    }),
+  );
+  orbit.rotation.x = Math.PI / 2;
+  const falling = new THREE.InstancedMesh(
+    new THREE.BoxGeometry(0.075, 0.075, 0.075),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(2.2),
+      toneMapped: false,
+    }),
+    64,
+  );
+  falling.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  country.add(lanterns, orbit, falling);
+  const LG = { from: 0, t: 1 };
   let dotsShown = 0;
   function layoutDots(time = 0) {
     const o = pillars.find((p) => p.c.id === S.city),
@@ -1083,6 +1202,7 @@ export function mountHall(root, { brand, linked = [] }) {
     const base =
       S.track === "qualify" ? c.qualified : S.track === "kiswa" ? c.clothed : c.sponsored;
     const target = S.stage === "support" ? pr.lit : 0;
+    const dropping = new Set(DROPS.list.filter((d) => d.t < 1).map((d) => d.i));
     dotsShown += (target - dotsShown) * 0.12; // ripple outward as the amount changes
     for (let i = 0; i < DOTS; i++) {
       if (i >= c.need) {
@@ -1094,7 +1214,7 @@ export function mountHall(root, { brand, linked = [] }) {
         inRing = i - 3 * ring * ring,
         per = 6 * ring + 3;
       const a = (inRing / per) * Math.PI * 2 + ring * 0.4,
-        r = 0.58 + ring * 0.2;
+        r = 1.02 + ring * 0.2;
       const lit = i >= base && i < base + Math.round(dotsShown);
       const bob = lit && !RM ? Math.sin(time * 4 + i) * 0.05 + 0.08 : 0;
       tmpM.makeTranslation(
@@ -1103,8 +1223,26 @@ export function mountHall(root, { brand, linked = [] }) {
         o.g.position.z + Math.sin(a) * r,
       );
       dots.setMatrixAt(i, tmpM);
-      dots.setColorAt(i, i < base ? COL.done : lit ? COL.lit : COL.wait);
+      dots.setColorAt(i, lit ? COL.lit[S.track] : i < c.qualified ? COL.done : COL.wait);
+      vP.setFromMatrixPosition(tmpM);
+      if (i < c.sponsored) ringsI.setMatrixAt(i, tmpM.compose(vP, qX, vS.set(1, 1, 1)));
+      else ringsI.setMatrixAt(i, zero);
+      if (i < c.clothed && !dropping.has(i))
+        giftsI.setMatrixAt(
+          i,
+          tmpM.compose(
+            vP.clone().add(vS.set(0, 0.11, 0)),
+            qI.setFromAxisAngle(vS.set(0, 1, 0), time + i),
+            vS.set(1, 1.3, 1),
+          ),
+        );
+      else giftsI.setMatrixAt(i, zero);
     }
+    for (let i = c.need; i < DOTS; i++) {
+      ringsI.setMatrixAt(i, zero);
+      giftsI.setMatrixAt(i, zero);
+    }
+    ringsI.instanceMatrix.needsUpdate = giftsI.instanceMatrix.needsUpdate = true;
     dots.instanceMatrix.needsUpdate = true;
     if (dots.instanceColor) dots.instanceColor.needsUpdate = true;
   }
@@ -2328,6 +2466,50 @@ export function mountHall(root, { brand, linked = [] }) {
     });
   }
 
+  /** qualification: six session rings climb the new gold; sponsorship: lanterns join the orbit; clothing: gifts fall onto the children */
+  function arrive(p, o, c) {
+    if (p.track === "qualify") {
+      const b0 = o.baseH,
+        b1 = H(c.qualified);
+      for (let k = 0; k < 6; k++) {
+        const r = new THREE.Mesh(
+          new THREE.TorusGeometry(0.3, 0.014, 8, 48),
+          new THREE.MeshBasicMaterial({
+            color: new THREE.Color(TRACK_COL.qualify).multiplyScalar(2.4),
+            transparent: true,
+            toneMapped: false,
+          }),
+        );
+        r.rotation.x = Math.PI / 2;
+        r.position.set(0, b0 + ((b1 - b0) * (k + 0.5)) / 6, 0);
+        r.scale.setScalar(0.001);
+        o.g.add(r);
+        gsap
+          .timeline({
+            delay: 0.25 + k * 0.22,
+            onComplete: () => {
+              o.g.remove(r);
+              r.geometry.dispose();
+            },
+          })
+          .to(r.scale, { x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(2)" })
+          .to(r.material, { opacity: 0, duration: 1.2, ease: "power2.in" }, 2.4);
+      }
+    } else if (p.track === "sponsor") {
+      LG.from = Math.max(0, c.sponsored - p.kids);
+      LG.t = 0;
+      gsap.to(LG, { t: 1, duration: 1.8, ease: "expo.out" });
+    } else {
+      const from = Math.max(0, c.clothed - p.kids);
+      DROPS.list = [];
+      DROPS.t0 = performance.now();
+      for (let i = from; i < Math.min(c.clothed, from + 64); i++) {
+        dots.getMatrixAt(i, tmpM);
+        vP.setFromMatrixPosition(tmpM);
+        DROPS.list.push({ i, x: vP.x, y: vP.y + 0.11, z: vP.z, t: 0 });
+      }
+    }
+  }
   function pay() {
     sound.cue("chime");
     const c = city(),
@@ -2401,6 +2583,7 @@ export function mountHall(root, { brand, linked = [] }) {
         1.7,
       )
       .to(bloom, { intensity: 1.15, duration: 1.4 }, 2.3)
+      .add(() => arrive(p, o, c), 1.7)
       .add(() => {
         const label = {
           qualify: `تأهّل ${p.kids} طفلاً في ${c.ar}`,
@@ -3174,7 +3357,55 @@ export function mountHall(root, { brand, linked = [] }) {
       o.halo.material.opacity = (sel ? 0.7 : 0) + o.pulse * 0.5;
       if (sel) o.halo.rotation.z += dt;
     });
-    if (country.visible && (S.stage === "support" || S.stage === "impactPending")) layoutDots(time);
+    const inCountry =
+      country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage);
+    if (country.visible) pillars.forEach((o) => stepDial(o, dt));
+    if (inCountry) layoutDots(time);
+    lanterns.visible = orbit.visible = falling.visible = inCountry;
+    if (inCountry) {
+      const o = pillars.find((p) => p.c.id === S.city);
+      const n = Math.min(LANT, o.c.sponsored),
+        hL = Math.max(0.7, H(o.c.need) * 0.55),
+        base = o.g.position;
+      orbit.position.set(base.x, base.y + hL, base.z);
+      for (let i = 0; i < LANT; i++) {
+        if (i >= n) {
+          lanterns.setMatrixAt(i, zero);
+          continue;
+        }
+        const grow = i >= LG.from ? LG.t : 1,
+          a = time * 0.5 + (i / Math.max(1, n)) * Math.PI * 2;
+        const beat = 1 + 0.35 * Math.max(0, Math.sin(time * 2.4 + i * 0.9)) ** 3;
+        vP.set(
+          base.x + Math.cos(a) * 0.64 * grow,
+          base.y + hL + (1 - grow) * 2.4 + Math.sin(time * 2 + i) * 0.03,
+          base.z + Math.sin(a) * 0.64 * grow,
+        );
+        lanterns.setMatrixAt(
+          i,
+          tmpM.compose(vP, qI.identity(), vS.setScalar(beat * (0.4 + 0.6 * grow))),
+        );
+      }
+      lanterns.instanceMatrix.needsUpdate = true;
+      const now = performance.now();
+      DROPS.list.forEach((d, k) => {
+        d.t = Math.min(1, Math.max(0, (now - DROPS.t0 - k * 45) / 1100));
+        const e = d.t * d.t;
+        vP.set(d.x, 4.6 - (4.6 - d.y) * e, d.z);
+        falling.setMatrixAt(
+          k,
+          d.t >= 1
+            ? zero
+            : tmpM.compose(
+                vP,
+                qI.setFromAxisAngle(vS.set(0.3, 1, 0.2).normalize(), d.t * 9 + k),
+                vS.setScalar(1),
+              ),
+        );
+      });
+      for (let k = DROPS.list.length; k < 64; k++) falling.setMatrixAt(k, zero);
+      falling.instanceMatrix.needsUpdate = true;
+    }
     const beamOn =
       country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage)
         ? 1
