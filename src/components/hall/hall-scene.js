@@ -1690,8 +1690,27 @@ export function mountHall(root, { brand, linked = [] }) {
   /* ── DOM choreography ───────────────────────────────────────────── */
   const ORDER = ["hall", "world", "country", "support", "impact", "big"];
   let idle = 0;
+  let legendRect = null,
+    legendAt = 0;
+  const legendBox = () => {
+    if (!root.classList.contains("in-country") || !legend) return null;
+    const now = performance.now();
+    if (now - legendAt > 500) {
+      legendRect = legend.getBoundingClientRect();
+      legendAt = now;
+    }
+    return legendRect;
+  };
+  /* on wide screens the glass covers the right third: shift the framing so the model sits in the open space */
+  function frameForPanel() {
+    const wide = innerWidth > 760 && !root.classList.contains("focus");
+    // the impact moment has glass on both sides, so it stays centred
+    const inCo = ["country", "support"].includes(S.stage);
+    controls.setFocalOffset(wide && inCo ? -1.6 : 0, 0, 0, true);
+  }
   function setStage(s) {
     S.stage = s;
+    queueMicrotask(frameForPanel);
     root.classList.toggle(
       "in-country",
       ["country", "support", "impact", "impactPending"].includes(s),
@@ -1866,6 +1885,7 @@ export function mountHall(root, { brand, linked = [] }) {
   const focusBtn = $("#focusBtn");
   focusBtn?.addEventListener("click", () => {
     const v = root.classList.toggle("focus");
+    frameForPanel();
     focusBtn.setAttribute("aria-pressed", String(v));
     focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
   });
@@ -2631,6 +2651,7 @@ export function mountHall(root, { brand, linked = [] }) {
       facts = levelFacts(s0, ENGINE, c.id);
     } else applyTo(p, c);
     root.classList.add("watching");
+    controls.setFocalOffset(0, 0, 0, true);
     {
       const at = o.g.getWorldPosition(new THREE.Vector3()),
         h = H(c.need),
@@ -3549,8 +3570,11 @@ export function mountHall(root, { brand, linked = [] }) {
         l.el.style.opacity = 0;
         continue;
       }
-      const sy = ((1 - p.y) / 2) * innerHeight;
-      if (sy < 84) {
+      const sy = ((1 - p.y) / 2) * innerHeight,
+        sx = ((p.x + 1) / 2) * innerWidth;
+      // names never slide under the colour key
+      const lr = legendBox();
+      if (sy < 84 || (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)) {
         l.el.style.opacity = 0;
         continue;
       }
