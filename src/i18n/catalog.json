@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1470,
+ "count": 1480,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3311,6 +3311,34 @@
    "hash": "7c73674ea30f",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
+  "components/support/Follow.follow": {
+   "en": "Follow",
+   "ar": "تابِع",
+   "kind": "text",
+   "hash": "233065dca937",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.following": {
+   "en": "Following",
+   "ar": "تتابعه",
+   "kind": "text",
+   "hash": "d39a483fb6a0",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.hint": {
+   "en": "Saved in your browser only, so you can come back to them.",
+   "ar": "محفوظون في متصفّحك وحده لتعود إليهم.",
+   "kind": "text",
+   "hash": "6bcaa5182f0b",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.title": {
+   "en": "You follow",
+   "ar": "تتابعهم",
+   "kind": "text",
+   "hash": "fac664045854",
+   "file": "src/components/support/Follow.tsx"
+  },
   "components/support/PendingPaymentBar.close": {
    "en": "Hide the reminder",
    "ar": "إخفاء التذكير",
@@ -5950,11 +5978,39 @@
    "hash": "fff7cee8ae60",
    "file": "src/routes/_authenticated/office.$officeId.tsx"
   },
+  "routes/organizations.cta": {
+   "en": "Sponsor a child",
+   "ar": "اكفل طفلاً",
+   "kind": "text",
+   "hash": "0e7a12799adb",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.ctaText": {
+   "en": "Your sponsorship reaches the child through their organization, and you get back a delivery document and an impact report.",
+   "ar": "تصل كفالتك الطفلَ عبر جهته، ويعود إليك تسليمها بمستندٍ وتقريرِ أثر.",
+   "kind": "text",
+   "hash": "6ba83317437c",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.ctaTitle": {
+   "en": "Every sponsorship here passes through an approved organization",
+   "ar": "كلّ كفالةٍ هنا تمرّ عبر جهةٍ معتمدة",
+   "kind": "text",
+   "hash": "5fa6ab30a2af",
+   "file": "src/routes/organizations.tsx"
+  },
   "routes/organizations.empty": {
    "en": "No approved organizations yet.",
    "ar": "لا توجد جهات معتمدة بعد.",
    "kind": "text",
    "hash": "7912015dd21b",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.how": {
+   "en": "How sponsorship works",
+   "ar": "كيف تعمل الكفالة",
+   "kind": "text",
+   "hash": "8b29dbb7f872",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.lead": {
@@ -6109,6 +6165,20 @@
    "ar": "لا توجد نتائج مطابقة.",
    "kind": "text",
    "hash": "5e0d8c8ebe4d",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.emptyCta": {
+   "en": "Suggest for me",
+   "ar": "اقترح لي",
+   "kind": "text",
+   "hash": "694a80d34407",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.emptyGo": {
+   "en": "Or go to «Support», where we suggest children who are waiting, or support a place.",
+   "ar": "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
+   "kind": "text",
+   "hash": "b9a05e9e0a6f",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.everyone": {

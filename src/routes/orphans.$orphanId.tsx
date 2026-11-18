@@ -40,6 +40,7 @@ import { useGivingCopy } from "@/config/giving-tracks";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
 import { amountPresets } from "@/lib/amount-presets";
 import { Name } from "@/components/kit/Name";
+import { FollowButton } from "@/components/support/Follow";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
@@ -393,6 +394,10 @@ function OrphanDetail() {
                   <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">
                     <Name>{orphan.display_name}</Name>
                   </h1>
+                  <FollowButton
+                    child={{ id: orphan.id, name: orphan.display_name }}
+                    className="ms-auto"
+                  />
                   {detail?.real_name && (
                     <span className="text-sm text-muted-foreground">
                       (<Name>{detail.real_name}</Name>)

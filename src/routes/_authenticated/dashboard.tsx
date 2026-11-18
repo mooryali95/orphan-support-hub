@@ -202,6 +202,14 @@ function DashboardPage() {
         </p>
       )}
 
+      {/* من يليهم: الترشيح قريبٌ من الأعلى بعد ما يحتاج إجراءك، فيُرى دون تمرير
+          طويل؛ ويبقى بعد الخلاصة فلا يسبق الاطمئنان على من تكفلهم. */}
+      {ready && (
+        <div className="mt-10">
+          <SuggestionsPanel />
+        </div>
+      )}
+
       {/* 3. الكفالات، و«رحلتي» بجوارها مختصرةً بالأحدث. */}
       <div className="reveal-scroll mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <section aria-labelledby="my-sponsorships">
@@ -330,12 +338,6 @@ function DashboardPage() {
         <FollowedChildren />
         <MyPledges />
         <PaymentLookup />
-      </div>
-
-      {/* الترشيح بعد الكفالات لا قبلها: اللوحة تُفتح للاطمئنان على من
-          تكفلهم، ثم يُعرض من يليهم. */}
-      <div className="mt-12 border-t border-border pt-8">
-        <SuggestionsPanel />
       </div>
     </DashboardShell>
   );
