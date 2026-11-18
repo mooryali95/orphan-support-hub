@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1448,
+ "count": 1447,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3732,13 +3732,6 @@
    "ar": "القرار",
    "kind": "text",
    "hash": "822a12677e2b",
-   "file": "src/components/vision/VisionKit.tsx"
-  },
-  "components/vision/VisionKit.hall": {
-   "en": "Impact hall",
-   "ar": "قاعة الأثر",
-   "kind": "text",
-   "hash": "a615c42d5729",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.hub": {
