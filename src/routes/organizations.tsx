@@ -1,9 +1,10 @@
 import { EmptyState } from "@/components/kit/EmptyState";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Button } from "@/components/ui/button";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
@@ -13,11 +14,20 @@ const COPY = defineCopy("routes/organizations", {
     title: "جهات الرعاية المعتمدة",
     lead: "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
     empty: "لا توجد جهات معتمدة بعد.",
+    ctaTitle: "كلّ كفالةٍ هنا تمرّ عبر جهةٍ معتمدة",
+    ctaText: "تصل كفالتك الطفلَ عبر جهته، ويعود إليك تسليمها بمستندٍ وتقريرِ أثر.",
+    cta: "اكفل طفلاً",
+    how: "كيف تعمل الكفالة",
   },
   en: {
     title: "Approved care organizations",
     lead: "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
     empty: "No approved organizations yet.",
+    ctaTitle: "Every sponsorship here passes through an approved organization",
+    ctaText:
+      "Your sponsorship reaches the child through their organization, and you get back a delivery document and an impact report.",
+    cta: "Sponsor a child",
+    how: "How sponsorship works",
   },
 });
 
@@ -81,6 +91,19 @@ function OrganizationsPage() {
               ))}
             </div>
           )}
+          {/* not a dead end: the trust this page builds leads straight to giving */}
+          <section className="mt-12 rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
+            <h2 className="text-xl font-bold">{c.ctaTitle}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">{c.ctaText}</p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link to="/orphans">{c.cta}</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/how-it-works">{c.how}</Link>
+              </Button>
+            </div>
+          </section>
         </div>
       </main>
       <SiteFooter />

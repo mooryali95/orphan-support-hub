@@ -21,6 +21,8 @@ const COPY = defineCopy("components/OrphanCard", {
     complete: "اكتمل احتياجه الشهري",
     surplus: "فائض",
     remaining: "متبقٍّ شهرياً",
+    cta: (name: string) => `اكفل ${name}`,
+    ctaFull: "اطّلع على ملفه",
     coverage: (name: string) => `تغطية احتياج ${name} الشهري`,
     of: "من",
   },
@@ -41,6 +43,8 @@ const COPY = defineCopy("components/OrphanCard", {
     complete: "Monthly need covered",
     surplus: "surplus",
     remaining: "still needed monthly",
+    cta: (name: string) => `Sponsor ${name}`,
+    ctaFull: "See the profile",
     coverage: (name: string) => `Coverage of ${name}'s monthly need`,
     of: "of",
   },
@@ -173,6 +177,20 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
             {formatMoney(orphan.monthly_need, orphan.currency, locale)}
           </p>
         </div>
+        {/* the direct action: straight to the sponsorship form on the profile */}
+        <Link
+          to="/orphans/$orphanId"
+          params={{ orphanId: orphan.id }}
+          hash="sponsor-form"
+          className={
+            "relative z-10 mt-auto inline-flex min-h-11 items-center justify-center rounded-xl text-sm font-bold transition-colors " +
+            (gap > 0
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "border border-border text-foreground hover:bg-secondary")
+          }
+        >
+          {gap > 0 ? c.cta(isolate(orphan.display_name)) : c.ctaFull}
+        </Link>
       </div>
     </article>
   );

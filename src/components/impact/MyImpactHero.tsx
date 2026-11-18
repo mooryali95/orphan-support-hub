@@ -16,7 +16,16 @@ const W = 400,
   CY = H / 2 - 6,
   MAX = 8;
 
-export function MyImpactHero({ impact, loading }: { impact: MyImpact; loading: boolean }) {
+export function MyImpactHero({
+  impact,
+  loading,
+  anotherTo = "/orphans",
+}: {
+  impact: MyImpact;
+  loading: boolean;
+  /** where «اكفل طفلاً آخر» leads; the client demo keeps the visitor inside /try */
+  anotherTo?: "/orphans" | "/try";
+}) {
   const shown = impact.children.slice(0, MAX);
   const more = impact.children.length - shown.length;
   const pos = shown.map((_, i) => {
@@ -71,7 +80,7 @@ export function MyImpactHero({ impact, loading }: { impact: MyImpact; loading: b
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/orphans">اكفل طفلاً آخر</Link>
+              <Link to={anotherTo}>اكفل طفلاً آخر</Link>
             </Button>
           </div>
         </div>

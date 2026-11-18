@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
+import { PartnerLockup } from "@/components/brand/PartnerMark";
 import { BrandPattern } from "@/components/brand/BrandPattern";
 import { brandFor } from "@/config/brand";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -55,7 +56,11 @@ export function SiteFooter() {
       <BrandPattern density="watermark" className="text-gold-line" opacity={0.1} tile={84} />
       <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
         <div className="md:col-span-2">
-          <KahataynLockup />
+          <div className="flex flex-wrap items-center gap-4">
+            <KahataynLockup />
+            <span aria-hidden="true" className="h-8 w-px bg-border" />
+            <PartnerLockup />
+          </div>
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{c.about}</p>
           {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
           <blockquote className="mt-4 text-sm text-shore-need">

@@ -1060,3 +1060,19 @@ html {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent) transparent;
 }
+
+/* «جرّب المنصّة»: كلّ كتلةٍ تصعد هادئةً عند فتح الصفحة؛ والحالة الساكنة هي الأخيرة. */
+.try-rise {
+  animation: try-rise 0.7s var(--ease-out) both;
+}
+@keyframes try-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .try-rise {
+    animation: none;
+  }
+}

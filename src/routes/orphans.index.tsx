@@ -1,6 +1,7 @@
 import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Reveal } from "@/components/motion/Reveal";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { FollowedStrip } from "@/components/support/Follow";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
@@ -136,6 +137,8 @@ const COPY = defineCopy("routes/orphans.index", {
     empty: "لا توجد نتائج مطابقة.",
     tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
     restart: "ابدأ من جديد",
+    emptyGo: "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
+    emptyCta: "اقترح لي",
     pagesLabel: "صفحات الدليل",
     prev: "السابق",
     next: "التالي",
@@ -193,6 +196,8 @@ const COPY = defineCopy("routes/orphans.index", {
     empty: "No matching results.",
     tryA: "Try removing one of the filters above, or",
     restart: "start over",
+    emptyGo: "Or go to «Support», where we suggest children who are waiting, or support a place.",
+    emptyCta: "Suggest for me",
     pagesLabel: "Directory pages",
     prev: "Previous",
     next: "Next",
@@ -377,6 +382,7 @@ function OrphansPage() {
       <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-extrabold">{t.title}</h1>
         {DEMO_MODE && <DemoNotice />}
+        <FollowedStrip className="mt-4" />
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
           {DEMO_MODE
             ? locale === "ar"
@@ -636,6 +642,13 @@ function OrphansPage() {
                 .
               </p>
             )}
+            <p className="mx-auto mt-4 max-w-md leading-7">{t.emptyGo}</p>
+            <Link
+              to="/support"
+              className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+            >
+              {t.emptyCta}
+            </Link>
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

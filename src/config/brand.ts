@@ -17,6 +17,8 @@ export const BRAND = {
   slogan: raw.slogan,
   themeColor: THEME_COLOR,
   description: raw.descriptionTemplate.replace("{name}", raw.name),
+  /** the partner whose logo and colours the support platform carries (see brand.json `partner`) */
+  partner: raw.partner,
 } as const;
 
 // نصوص الهوية في الفهرس: تُترجم لكل لغةٍ مفعّلة كبقية الواجهة.

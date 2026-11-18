@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1447,
+ "count": 1480,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -241,6 +241,21 @@
    "kind": "template",
    "params": 1,
    "hash": "bd44f223a252",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.cta": {
+   "en": "Sponsor {0}",
+   "ar": "اكفل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cb9ef4bca4b1",
+   "file": "src/components/OrphanCard.tsx"
+  },
+  "components/OrphanCard.ctaFull": {
+   "en": "See the profile",
+   "ar": "اطّلع على ملفه",
+   "kind": "text",
+   "hash": "431da3889a8e",
    "file": "src/components/OrphanCard.tsx"
   },
   "components/OrphanCard.female": {
@@ -3296,6 +3311,92 @@
    "hash": "7c73674ea30f",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
+  "components/support/Follow.follow": {
+   "en": "Follow",
+   "ar": "تابِع",
+   "kind": "text",
+   "hash": "233065dca937",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.following": {
+   "en": "Following",
+   "ar": "تتابعه",
+   "kind": "text",
+   "hash": "d39a483fb6a0",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.hint": {
+   "en": "Saved in your browser only, so you can come back to them.",
+   "ar": "محفوظون في متصفّحك وحده لتعود إليهم.",
+   "kind": "text",
+   "hash": "6bcaa5182f0b",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/Follow.title": {
+   "en": "You follow",
+   "ar": "تتابعهم",
+   "kind": "text",
+   "hash": "fac664045854",
+   "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/PendingPaymentBar.close": {
+   "en": "Hide the reminder",
+   "ar": "إخفاء التذكير",
+   "kind": "text",
+   "hash": "78d79386eff6",
+   "file": "src/components/support/PendingPaymentBar.tsx"
+  },
+  "components/support/PendingPaymentBar.go": {
+   "en": "Complete payment",
+   "ar": "أكمل الدفع",
+   "kind": "text",
+   "hash": "d04de1db3990",
+   "file": "src/components/support/PendingPaymentBar.tsx"
+  },
+  "components/support/PendingPaymentBar.many": {
+   "en": "{0} sponsorships are waiting for payment to begin.",
+   "ar": "{0} كفالات تنتظر إتمام الدفع لتبدأ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "fa7290e09ead",
+   "file": "src/components/support/PendingPaymentBar.tsx"
+  },
+  "components/support/PendingPaymentBar.one": {
+   "en": "{0}'s sponsorship is waiting for payment to begin.",
+   "ar": "كفالة {0} تنتظر إتمام الدفع لتبدأ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "37ce8defaed1",
+   "file": "src/components/support/PendingPaymentBar.tsx"
+  },
+  "components/support/SupportPicks.eyebrow": {
+   "en": "Start here",
+   "ar": "ابدأ من هنا",
+   "kind": "text",
+   "hash": "b0b71dce8207",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.orMap": {
+   "en": "Or choose a place on the map to support qualification or in-kind help",
+   "ar": "أو اختر مكاناً على الخريطة لتدعم تأهيلاً أو عيناً",
+   "kind": "text",
+   "hash": "1dca227ef865",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.text": {
+   "en": "Pick a child and sponsor monthly or give once; the suggested amount completes their need.",
+   "ar": "اختر طفلاً واكفله شهرياً أو ادعمه مرّةً واحدة؛ المبلغ المقترح يُكمل حاجته.",
+   "kind": "text",
+   "hash": "8df74dfeeb92",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.title": {
+   "en": "Children who have waited longest",
+   "ar": "أطفالٌ ينتظرون منذ أطول مدة",
+   "kind": "text",
+   "hash": "a2aedb07e925",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
   "components/support/SupportSheet.amount": {
    "en": "Monthly amount",
    "ar": "المبلغ الشهري",
@@ -5877,11 +5978,39 @@
    "hash": "fff7cee8ae60",
    "file": "src/routes/_authenticated/office.$officeId.tsx"
   },
+  "routes/organizations.cta": {
+   "en": "Sponsor a child",
+   "ar": "اكفل طفلاً",
+   "kind": "text",
+   "hash": "0e7a12799adb",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.ctaText": {
+   "en": "Your sponsorship reaches the child through their organization, and you get back a delivery document and an impact report.",
+   "ar": "تصل كفالتك الطفلَ عبر جهته، ويعود إليك تسليمها بمستندٍ وتقريرِ أثر.",
+   "kind": "text",
+   "hash": "6ba83317437c",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.ctaTitle": {
+   "en": "Every sponsorship here passes through an approved organization",
+   "ar": "كلّ كفالةٍ هنا تمرّ عبر جهةٍ معتمدة",
+   "kind": "text",
+   "hash": "5fa6ab30a2af",
+   "file": "src/routes/organizations.tsx"
+  },
   "routes/organizations.empty": {
    "en": "No approved organizations yet.",
    "ar": "لا توجد جهات معتمدة بعد.",
    "kind": "text",
    "hash": "7912015dd21b",
+   "file": "src/routes/organizations.tsx"
+  },
+  "routes/organizations.how": {
+   "en": "How sponsorship works",
+   "ar": "كيف تعمل الكفالة",
+   "kind": "text",
+   "hash": "8b29dbb7f872",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.lead": {
@@ -6036,6 +6165,20 @@
    "ar": "لا توجد نتائج مطابقة.",
    "kind": "text",
    "hash": "5e0d8c8ebe4d",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.emptyCta": {
+   "en": "Suggest for me",
+   "ar": "اقترح لي",
+   "kind": "text",
+   "hash": "694a80d34407",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.emptyGo": {
+   "en": "Or go to «Support», where we suggest children who are waiting, or support a place.",
+   "ar": "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
+   "kind": "text",
+   "hash": "b9a05e9e0a6f",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.everyone": {
@@ -6342,6 +6485,13 @@
    "hash": "86df5d63ad43",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.cadence": {
+   "en": "Type of giving",
+   "ar": "نوع العطاء",
+   "kind": "text",
+   "hash": "ce0558465050",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.continueTo": {
    "en": "Continue — {0} for {1}",
    "ar": "تابع — {0} لـ{1}",
@@ -6422,6 +6572,30 @@
    "hash": "69db3056f6b0",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.impactFull": {
+   "en": "Covers {0}'s full monthly need",
+   "ar": "يُكمل حاجة {0} الشهرية كاملةً",
+   "kind": "template",
+   "params": 1,
+   "hash": "c1b646c25e43",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.impactOnce": {
+   "en": "A one-time gift that reaches {0} with a delivery receipt",
+   "ar": "عطاءٌ لمرّة واحدة يصل {0} بمستندٍ يثبت تسليمه",
+   "kind": "template",
+   "params": 1,
+   "hash": "ec707d356fc3",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.impactPart": {
+   "en": "Covers {0}% of {1}'s monthly need",
+   "ar": "يغطّي {0}% من حاجة {1} الشهرية",
+   "kind": "template",
+   "params": 2,
+   "hash": "c71db2dc986e",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.kindLabel": {
    "en": "Type of support",
    "ar": "نوع الدعم",
@@ -6476,6 +6650,13 @@
    "ar": "كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل",
    "kind": "text",
    "hash": "ae4265290310",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.monthly": {
+   "en": "Monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "cbf038957590",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.monthlyNeed": {
@@ -6534,11 +6715,33 @@
    "hash": "0449250457f2",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.once": {
+   "en": "One time",
+   "ar": "مرّة واحدة",
+   "kind": "text",
+   "hash": "fdea365c011d",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.org": {
    "en": "Care organization",
    "ar": "جهة الرعاية",
    "kind": "text",
    "hash": "9f40182b18b8",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.payLater": {
+   "en": "Your sponsorship is recorded; complete the payment from «My impact» whenever you like.",
+   "ar": "سُجّلت كفالتك؛ أكمل الدفع من «أثري» متى شئت.",
+   "kind": "text",
+   "hash": "182a021764a2",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.proof": {
+   "en": "{0} of {1} approved children have been fully sponsored through the platform so far.",
+   "ar": "كُفل {0} من {1} طفلاً معتمداً عبر المنصّة حتى اليوم.",
+   "kind": "template",
+   "params": 2,
+   "hash": "14bbc9202dd4",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.remainingMonthly": {
@@ -6569,6 +6772,13 @@
    "hash": "285dac5c7eb4",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.signInHint": {
+   "en": "You stay here; once signed in your sponsorship is recorded with the same amount and you go on to payment.",
+   "ar": "تبقى هنا؛ بعد الدخول تُسجَّل كفالتك بالمبلغ نفسه وتنتقل إلى الدفع.",
+   "kind": "text",
+   "hash": "e460bd80c088",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.sponsorOf": {
    "en": "Sponsor {0}",
    "ar": "كفالة {0}",
@@ -6584,12 +6794,26 @@
    "hash": "dcc47440740d",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.startOnce": {
+   "en": "Give now",
+   "ar": "ادعم الآن",
+   "kind": "text",
+   "hash": "f429a89a1ce4",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.support": {
    "en": "Support {0}",
    "ar": "ادعم {0}",
    "kind": "template",
    "params": 1,
    "hash": "8520e0afe7c7",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.toPayment": {
+   "en": "Recording your sponsorship and moving to payment…",
+   "ar": "تُسجَّل كفالتك وتنتقل إلى الدفع…",
+   "kind": "text",
+   "hash": "7e4617d04bf8",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.unavailable": {
@@ -6612,6 +6836,13 @@
    "kind": "text",
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/support.another": {
+   "en": "Sponsor a child",
+   "ar": "اكفل طفلاً",
+   "kind": "text",
+   "hash": "0e7a12799adb",
+   "file": "src/routes/support.tsx"
   },
   "routes/support.children.one": {
    "en": "{0} child",
@@ -6984,6 +7215,13 @@
    "ar": "شكراً لك",
    "kind": "text",
    "hash": "4df92abf4974",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.toImpact": {
+   "en": "To my impact",
+   "ar": "إلى أثري",
+   "kind": "text",
+   "hash": "d4ab7b7281ac",
    "file": "src/routes/support.tsx"
   },
   "routes/traits.cta": {

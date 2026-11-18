@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupportPicks } from "@/components/support/SupportPicks";
 import { formatMoney } from "@/lib/format";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
@@ -110,6 +111,8 @@ const COPY = defineCopy("routes/support", {
     signIn: "سجّل الدخول لإتمام الدعم",
     signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
+    toImpact: "إلى أثري",
+    another: "اكفل طفلاً",
   },
   en: {
     section: "Support",
@@ -172,6 +175,8 @@ const COPY = defineCopy("routes/support", {
     signInHint: "You stay here; after signing in, your support is recorded with the same amount.",
     pledgeNote:
       "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
+    toImpact: "To my impact",
+    another: "Sponsor a child",
   },
 });
 
@@ -324,59 +329,67 @@ function SupportPage() {
   async function confirm() {
     if (!kind || !targetType || !target) return;
     setBusy(true);
-    const res = await submit({
-      data: {
-        kind,
-        targetType,
-        target,
-        amount,
-        country: activeCountry || undefined,
-        note: note || undefined,
-        currency,
-        elapsed: Math.min(86_400, Math.round((Date.now() - openedAt.current) / 1000)),
-      },
-    });
-    setBusy(false);
-    setResult(
-      res.ok
-        ? {
-            ok: true,
-            text: t.pledged,
-          }
-        : { ok: false, text: res.error ?? t.failed },
-    );
+    try {
+      const res = await submit({
+        data: {
+          kind,
+          targetType,
+          target,
+          amount,
+          country: activeCountry || undefined,
+          note: note || undefined,
+          currency,
+          elapsed: Math.min(86_400, Math.round((Date.now() - openedAt.current) / 1000)),
+        },
+      });
+      setResult(
+        res.ok
+          ? {
+              ok: true,
+              text: t.pledged,
+            }
+          : { ok: false, text: res.error ?? t.failed },
+      );
+    } catch {
+      setResult({ ok: false, text: t.failed });
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
+      {!orphan && <SupportPicks />}
       {!orphan && (
-        <WorldMap
-          stats={stats}
-          demo={demo}
-          status={status}
-          selection={selection}
-          onSelect={onSelect}
-          layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
-          cardCompact
-          supportable={supportable}
-          className="h-[calc(100dvh-4rem)]"
-          intro={{
-            title: t.mapTitle,
-            text: t.mapText,
-          }}
-          // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
-          action={(ctx) => (
-            <SupportSheet
-              ctx={ctx}
-              catalog={catalog}
-              stats={stats}
-              signedIn={!!user}
-              presetKind={presetKind}
-              openedAt={openedAt.current}
-            />
-          )}
-        />
+        <div id="support-map" className="scroll-mt-16">
+          <WorldMap
+            stats={stats}
+            demo={demo}
+            status={status}
+            selection={selection}
+            onSelect={onSelect}
+            layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
+            cardCompact
+            supportable={supportable}
+            className="h-[calc(100dvh-4rem)]"
+            intro={{
+              title: t.mapTitle,
+              text: t.mapText,
+            }}
+            // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
+            action={(ctx) => (
+              <SupportSheet
+                ctx={ctx}
+                catalog={catalog}
+                stats={stats}
+                signedIn={!!user}
+                presetKind={presetKind}
+                openedAt={openedAt.current}
+              />
+            )}
+          />
+        </div>
       )}
       {orphan && (
         <main
@@ -435,9 +448,17 @@ function SupportPage() {
               <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
                 {result.text}
               </p>
-              <Button asChild size="lg" className="celebrate-text mt-6">
-                <Link to="/workspaces">{t.portals}</Link>
-              </Button>
+              <p className="celebrate-text mx-auto mt-3 max-w-sm text-xs leading-6 text-muted-foreground">
+                {t.pledgeNote}
+              </p>
+              <div className="celebrate-text mt-6 flex flex-wrap justify-center gap-3">
+                <Button asChild size="lg">
+                  <Link to="/dashboard">{t.toImpact}</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link to="/orphans">{t.another}</Link>
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="mt-8 space-y-8">
@@ -578,6 +599,8 @@ function SupportPage() {
                       <AuthDialog
                         title={t.signIn}
                         hint={t.signInHint}
+                        // after signing in the support is recorded as promised, with no second click
+                        onDone={() => void confirm()}
                         trigger={(open) => (
                           <Button size="lg" onClick={open}>
                             {t.signIn}
