@@ -21,6 +21,7 @@ import {
   DepthOfFieldEffect,
   BlendFunction,
 } from "postprocessing";
+import { N8AOPostPass } from "n8ao";
 
 import { LAND_DOTS } from "@/data/hall-geo";
 import {
@@ -186,6 +187,20 @@ export function mountHall(root, { brand, linked = [] }) {
 
   const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
   composer.addPass(new RenderPass(scene, camera));
+  /* contact depth: ambient occlusion where columns meet the land and beads sit on it */
+  const ao = LOW ? null : new N8AOPostPass(scene, camera, innerWidth, innerHeight);
+  if (ao) {
+    Object.assign(ao.configuration, {
+      aoRadius: 1.6,
+      distanceFalloff: 0.6,
+      intensity: 2.6,
+      color: new THREE.Color(0x14060a),
+      gammaCorrection: false,
+      halfRes: true,
+    });
+    ao.setQualityMode("Medium");
+    composer.addPass(ao);
+  }
   const bloom = new BloomEffect({
     luminanceThreshold: 0.72,
     luminanceSmoothing: 0.25,
@@ -850,7 +865,7 @@ export function mountHall(root, { brand, linked = [] }) {
       float w = sin(c.x*90.0 + uTime*0.7 + sin(c.y*40.0+uTime*0.3)*2.0) * sin(c.y*70.0 - uTime*0.5);
       float glint = smoothstep(0.88, 1.0, w) * (1.0 - smoothstep(0.35, 0.5, r));
       vec3 base = mix(vec3(0.03,0.016,0.016), vec3(0.075,0.04,0.035), 1.0 - r*1.6);
-      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.35, 1.0); }`,
+      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.1, 1.0); }`,
     }),
   );
   sea.rotation.x = -Math.PI / 2;
@@ -1173,9 +1188,9 @@ export function mountHall(root, { brand, linked = [] }) {
   const DROPS = { list: [], t0: 0 };
   const LANT = 24;
   const lanterns = new THREE.InstancedMesh(
-    new THREE.SphereGeometry(0.06, 14, 14),
+    new THREE.SphereGeometry(0.036, 16, 16),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(3),
+      color: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(1.5),
       toneMapped: false,
     }),
     LANT,
@@ -2606,6 +2621,22 @@ export function mountHall(root, { brand, linked = [] }) {
         p = { ...p, kids: c.qualified - S.before.qualified, gap1: gapOf(c) };
       facts = levelFacts(s0, ENGINE, c.id);
     } else applyTo(p, c);
+    root.classList.add("watching");
+    {
+      const at = o.g.getWorldPosition(new THREE.Vector3()),
+        h = H(c.need),
+        d = camera.position.clone().sub(at).setY(0).normalize();
+      controls.smoothTime = 1.1;
+      controls.setLookAt(
+        at.x + d.x * 6.4,
+        at.y + h * 0.55 + 3.4,
+        at.z + d.z * 6.4,
+        at.x,
+        at.y + h * 0.45,
+        at.z,
+        true,
+      );
+    }
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
       .to(bloom, { intensity: 2.1, duration: 0.9, ease: "power2.in" }, 0.6)
@@ -2659,9 +2690,10 @@ export function mountHall(root, { brand, linked = [] }) {
         S.stage = "impactPending";
       }, 1.8)
       .add(() => {
+        root.classList.remove("watching");
         setStage("impact");
         renderImpact();
-      }, 2.6);
+      }, 3.6);
     void fillFrom;
   }
 
