@@ -50,7 +50,14 @@ function TryImpact() {
         أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.
       </p>
 
-      <MyImpactHero impact={impact} loading={gifts === null} anotherTo="/try" />
+      <MyImpactHero
+        impact={impact}
+        loading={gifts === null}
+        anotherTo="/try"
+        hallSearch={
+          gifts?.[0] ? { try: 1, child: gifts[0].childId, cadence: gifts[0].cadence } : { try: 1 }
+        }
+      />
 
       <section aria-labelledby="try-gifts" className="mt-10">
         <h2 id="try-gifts" className="text-xl font-bold">

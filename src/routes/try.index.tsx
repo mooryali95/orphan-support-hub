@@ -61,6 +61,13 @@ function TryHome() {
             </p>
           </div>
           <Link
+            to="/hall"
+            search={{ try: 1 }}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground hover:bg-primary/90"
+          >
+            ابدأ من الخريطة ثلاثية الأبعاد
+          </Link>
+          <Link
             to="/try/impact"
             className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary hover:underline"
           >

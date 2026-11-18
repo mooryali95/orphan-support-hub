@@ -15,6 +15,9 @@ export type TryChild = {
   need: number;
   funded: number;
   waitingDays: number;
+  /** where the child stands in the impact hall: country code and the hall's region id */
+  co: string;
+  region: string;
   /** what the monthly sponsorship covers for this child, in plain words */
   covers: string;
 };
@@ -24,6 +27,8 @@ export const TRY_CURRENCY = "EUR";
 export const TRY_CHILDREN: TryChild[] = [
   {
     id: "try-01",
+    co: "AL",
+    region: "tirana",
     code: "DEMO-TRY-01",
     name: "سارة",
     country: "ألبانيا",
@@ -36,6 +41,8 @@ export const TRY_CHILDREN: TryChild[] = [
   },
   {
     id: "try-02",
+    co: "SN",
+    region: "SN-r1",
     code: "DEMO-TRY-02",
     name: "يوسف",
     country: "السنغال",
@@ -48,6 +55,8 @@ export const TRY_CHILDREN: TryChild[] = [
   },
   {
     id: "try-03",
+    co: "EG",
+    region: "EG-r1",
     code: "DEMO-TRY-03",
     name: "مريم",
     country: "مصر",
@@ -60,6 +69,8 @@ export const TRY_CHILDREN: TryChild[] = [
   },
   {
     id: "try-04",
+    co: "KE",
+    region: "KE-r1",
     code: "DEMO-TRY-04",
     name: "عمر",
     country: "كينيا",
@@ -72,6 +83,8 @@ export const TRY_CHILDREN: TryChild[] = [
   },
   {
     id: "try-05",
+    co: "BA",
+    region: "BA-r1",
     code: "DEMO-TRY-05",
     name: "ليان",
     country: "البوسنة والهرسك",
@@ -84,6 +97,8 @@ export const TRY_CHILDREN: TryChild[] = [
   },
   {
     id: "try-06",
+    co: "ID",
+    region: "ID-r1",
     code: "DEMO-TRY-06",
     name: "آدم",
     country: "إندونيسيا",
@@ -192,3 +207,7 @@ export function giftsAsSponsorships(gifts: TryGift[], now: Date = new Date()): M
     ];
   });
 }
+
+/** the demo children standing in one region of the hall (the hall lists them under that column) */
+export const tryChildrenIn = (co: string, region: string) =>
+  TRY_CHILDREN.filter((c) => c.co === co && c.region === region);

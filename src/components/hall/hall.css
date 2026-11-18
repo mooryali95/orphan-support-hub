@@ -1769,3 +1769,54 @@
     filter: none;
   }
 }
+
+/* demo mode: the children standing in the chosen region */
+.hall .kids {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.hall .kids li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(215, 180, 106, 0.25);
+  background: rgba(243, 227, 181, 0.05);
+}
+.hall .kids li > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.hall .kids small {
+  color: var(--mist);
+  font-size: 12px;
+}
+.hall .kids .cta {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.hall .linkish {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  font: inherit;
+}
+.hall .kids li.mine {
+  border-color: rgba(92, 201, 164, 0.45);
+  background: rgba(92, 201, 164, 0.08);
+}
+.hall .kids .ghost {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 13px;
+  text-decoration: none;
+}

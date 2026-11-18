@@ -13,6 +13,10 @@ import {
   MARK_VIEWBOX,
 } from "@/components/hall/hall-mark";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
+import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
+
+/** ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there */
+type HallSearch = { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
 
 /**
  * قاعة الأثر — رحلة الداعم ثلاثية الأبعاد: القاعة، ثم خريطة العالم، ثم الدولة،
@@ -20,6 +24,13 @@ import { getOperatingLinks } from "@/lib/vision-links.functions";
  * الصفحة فقط (three.js والمعالجة السينمائية)، فلا يثقل بقية المنصّة.
  */
 export const Route = createFileRoute("/hall")({
+  validateSearch: (raw: Record<string, unknown>): HallSearch => ({
+    ...(raw["try"] === 1 || raw["try"] === "1" ? { try: 1 as const } : {}),
+    ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
+    ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
+      ? { cadence: raw["cadence"] }
+      : {}),
+  }),
   head: ({ match }) => ({
     meta: [
       { title: pageTitle("قاعة الأثر", false, match.context.locale ?? "ar") },
@@ -35,6 +46,8 @@ export const Route = createFileRoute("/hall")({
 
 function HallPage() {
   const ref = useRef<HTMLDivElement>(null);
+  const search = Route.useSearch();
+  const trying = search.try === 1;
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
 
   useEffect(() => {
@@ -56,6 +69,7 @@ function HallPage() {
           linked: getOperatingLinks()
             .then((links) => links.map((l) => l.country))
             .catch(() => []),
+          demo: trying ? demoFor(search.child, search.cadence) : null,
         });
         setState("ready");
       })
@@ -91,9 +105,15 @@ function HallPage() {
           <Link to="/vision/journey" className="chip">
             النسخة المبسّطة
           </Link>
-          <Link to="/dashboard" className="chip">
-            إلى أثري
-          </Link>
+          {trying ? (
+            <Link to="/try/impact" className="chip">
+              إلى أثري (التجربة)
+            </Link>
+          ) : (
+            <Link to="/dashboard" className="chip">
+              إلى أثري
+            </Link>
+          )}
         </nav>
       </header>
 
@@ -273,4 +293,24 @@ function Loader() {
       </svg>
     </div>
   );
+}
+
+/** the demo children by hall region, and (after a simulated gift) the moment to replay */
+function demoFor(childId: string | undefined, cadence: "monthly" | "one_time" | undefined) {
+  const child = childId ? tryChild(childId) : undefined;
+  // the visitor's simulated gifts (browser only): those children read «في كفالتك» in the hall
+  const mine = new Set(loadGifts().map((g) => g.childId));
+  return {
+    kids: TRY_CHILDREN.map((c) => ({
+      id: c.id,
+      name: c.name,
+      co: c.co,
+      region: c.region,
+      gap: gapOf(c),
+      mine: mine.has(c.id),
+    })),
+    focus: child
+      ? { co: child.co, region: child.region, name: child.name, cadence: cadence ?? "monthly" }
+      : null,
+  };
 }
