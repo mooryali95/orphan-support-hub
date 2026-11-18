@@ -1574,7 +1574,48 @@ export function mountHall(root, { brand, linked = [] }) {
     l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
   });
   let TOP3 = new Set();
+  /* the chosen city's name, laid in gold leaf on the land at the foot of its column */
+  const engraveCv = document.createElement("canvas");
+  engraveCv.width = 1024;
+  engraveCv.height = 256;
+  const engraveTex = new THREE.CanvasTexture(engraveCv);
+  engraveTex.colorSpace = THREE.SRGBColorSpace;
+  engraveTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const engrave = new THREE.Group();
+  const engraveM = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.6, 0.65),
+    new THREE.MeshBasicMaterial({ map: engraveTex, transparent: true, depthWrite: false }),
+  );
+  engraveM.rotation.x = -Math.PI / 2;
+  engraveM.position.z = 1.05;
+  engrave.add(engraveM);
+  country.add(engrave);
+  let engraved = "";
+  function engraveCity() {
+    const o = pillars.find((p) => p.c.id === S.city);
+    if (!o) return;
+    engrave.position.set(o.g.position.x, 0.68, o.g.position.z);
+    if (engraved === o.c.ar) return;
+    engraved = o.c.ar;
+    const x = engraveCv.getContext("2d");
+    x.clearRect(0, 0, 1024, 256);
+    x.direction = "rtl";
+    x.textAlign = "center";
+    x.textBaseline = "middle";
+    x.font = `700 132px "${DISPLAY}", serif`;
+    const g = x.createLinearGradient(0, 40, 0, 220);
+    g.addColorStop(0, "#fbe9bf");
+    g.addColorStop(0.55, "#d4af6a");
+    g.addColorStop(1, "#8a6a32");
+    x.shadowColor = "rgba(0,0,0,0.65)";
+    x.shadowOffsetY = 4;
+    x.shadowBlur = 10;
+    x.fillStyle = g;
+    x.fillText(o.c.ar, 512, 128);
+    engraveTex.needsUpdate = true;
+  }
   function refreshLabels() {
+    engraveCity();
     TOP3 = new Set(
       [...CITIES]
         .sort((a, b) => gapOf(b) - gapOf(a))
@@ -3520,6 +3561,16 @@ export function mountHall(root, { brand, linked = [] }) {
       falling.instanceMatrix.needsUpdate = true;
     }
     inlay.visible = !country.visible;
+    engrave.visible = country.visible && S.stage !== "big";
+    if (engrave.visible) {
+      const az = Math.atan2(
+        camera.position.x - engrave.position.x,
+        camera.position.z - engrave.position.z,
+      );
+      let d = az - engrave.rotation.y;
+      d = Math.atan2(Math.sin(d), Math.cos(d));
+      engrave.rotation.y += d * Math.min(1, dt * 2);
+    }
     const beamOn =
       country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage)
         ? 1
