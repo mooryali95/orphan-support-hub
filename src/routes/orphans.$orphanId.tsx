@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
-import { getPublicOrphan } from "@/lib/orphans.functions";
+import { getPlatformStats, getPublicOrphan } from "@/lib/orphans.functions";
 import { getOrphanQualification } from "@/lib/qualification.functions";
 import { QualificationPanel } from "@/components/qualification/QualificationPanel";
 import { createSponsorship, type SuggestedOrphan } from "@/lib/sponsorships.functions";
@@ -38,6 +38,7 @@ import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
+import { amountPresets } from "@/lib/amount-presets";
 import { Name } from "@/components/kit/Name";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
@@ -74,6 +75,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "أرغب أن تكون كفالتي دون ذكر اسمي",
     start: "ابدأ الكفالة",
     startOnce: "ادعم الآن",
+    proof: (n: number, total: number) =>
+      `كُفل ${n} من ${total} طفلاً معتمداً عبر المنصّة حتى اليوم.`,
     signIn: "سجّل الدخول للكفالة",
     signInHint: "تبقى هنا؛ بعد الدخول تُسجَّل كفالتك بالمبلغ نفسه وتنتقل إلى الدفع.",
     toPayment: "تُسجَّل كفالتك وتنتقل إلى الدفع…",
@@ -146,6 +149,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     anonymous: "I'd like my sponsorship to stay anonymous",
     start: "Start sponsoring",
     startOnce: "Give now",
+    proof: (n: number, total: number) =>
+      `${n} of ${total} approved children have been fully sponsored through the platform so far.`,
     signIn: "Sign in to sponsor",
     signInHint:
       "You stay here; once signed in your sponsorship is recorded with the same amount and you go on to payment.",
@@ -236,6 +241,13 @@ function OrphanDetail() {
   const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
   const pay = useServerFn(startCheckout);
+  // إثباتٌ اجتماعي صادق: من أرقام المنصّة الحقيقية فقط، ويُخفى إن غابت.
+  const fetchStats = useServerFn(getPlatformStats);
+  const { data: stats } = useQuery({
+    queryKey: ["platform-stats"],
+    queryFn: () => fetchStats(),
+    staleTime: 10 * 60_000,
+  });
 
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const remaining = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
@@ -600,7 +612,7 @@ function OrphanDetail() {
                           {t.fullRest}
                         </button>
                       )}
-                      {[25, 50, 100].map((v) => (
+                      {amountPresets(Number(orphan.monthly_need), remaining).map((v) => (
                         <button
                           key={v}
                           type="button"
@@ -706,6 +718,11 @@ function OrphanDetail() {
                     />
                   )}
 
+                  {stats && stats.totalOrphans > 0 && stats.fullySponsored > 0 && (
+                    <p className="text-center text-xs leading-6 text-muted-foreground">
+                      {t.proof(stats.fullySponsored, stats.totalOrphans)}
+                    </p>
+                  )}
                   <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
                     <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
                     {t.activates}

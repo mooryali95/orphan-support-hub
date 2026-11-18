@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1465,
+ "count": 1470,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3341,6 +3341,34 @@
    "hash": "37ce8defaed1",
    "file": "src/components/support/PendingPaymentBar.tsx"
   },
+  "components/support/SupportPicks.eyebrow": {
+   "en": "Start here",
+   "ar": "ابدأ من هنا",
+   "kind": "text",
+   "hash": "b0b71dce8207",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.orMap": {
+   "en": "Or choose a place on the map to support qualification or in-kind help",
+   "ar": "أو اختر مكاناً على الخريطة لتدعم تأهيلاً أو عيناً",
+   "kind": "text",
+   "hash": "1dca227ef865",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.text": {
+   "en": "Pick a child and sponsor monthly or give once; the suggested amount completes their need.",
+   "ar": "اختر طفلاً واكفله شهرياً أو ادعمه مرّةً واحدة؛ المبلغ المقترح يُكمل حاجته.",
+   "kind": "text",
+   "hash": "8df74dfeeb92",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportPicks.title": {
+   "en": "Children who have waited longest",
+   "ar": "أطفالٌ ينتظرون منذ أطول مدة",
+   "kind": "text",
+   "hash": "a2aedb07e925",
+   "file": "src/components/support/SupportPicks.tsx"
+  },
   "components/support/SupportSheet.amount": {
    "en": "Monthly amount",
    "ar": "المبلغ الشهري",
@@ -6636,6 +6664,14 @@
    "ar": "سُجّلت كفالتك؛ أكمل الدفع من «أثري» متى شئت.",
    "kind": "text",
    "hash": "182a021764a2",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.proof": {
+   "en": "{0} of {1} approved children have been fully sponsored through the platform so far.",
+   "ar": "كُفل {0} من {1} طفلاً معتمداً عبر المنصّة حتى اليوم.",
+   "kind": "template",
+   "params": 2,
+   "hash": "14bbc9202dd4",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.remainingMonthly": {

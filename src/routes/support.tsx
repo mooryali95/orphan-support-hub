@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupportPicks } from "@/components/support/SupportPicks";
 import { formatMoney } from "@/lib/format";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
@@ -354,33 +355,36 @@ function SupportPage() {
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
+      {!orphan && <SupportPicks />}
       {!orphan && (
-        <WorldMap
-          stats={stats}
-          demo={demo}
-          status={status}
-          selection={selection}
-          onSelect={onSelect}
-          layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
-          cardCompact
-          supportable={supportable}
-          className="h-[calc(100dvh-4rem)]"
-          intro={{
-            title: t.mapTitle,
-            text: t.mapText,
-          }}
-          // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
-          action={(ctx) => (
-            <SupportSheet
-              ctx={ctx}
-              catalog={catalog}
-              stats={stats}
-              signedIn={!!user}
-              presetKind={presetKind}
-              openedAt={openedAt.current}
-            />
-          )}
-        />
+        <div id="support-map" className="scroll-mt-16">
+          <WorldMap
+            stats={stats}
+            demo={demo}
+            status={status}
+            selection={selection}
+            onSelect={onSelect}
+            layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
+            cardCompact
+            supportable={supportable}
+            className="h-[calc(100dvh-4rem)]"
+            intro={{
+              title: t.mapTitle,
+              text: t.mapText,
+            }}
+            // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
+            action={(ctx) => (
+              <SupportSheet
+                ctx={ctx}
+                catalog={catalog}
+                stats={stats}
+                signedIn={!!user}
+                presetKind={presetKind}
+                openedAt={openedAt.current}
+              />
+            )}
+          />
+        </div>
       )}
       {orphan && (
         <main
