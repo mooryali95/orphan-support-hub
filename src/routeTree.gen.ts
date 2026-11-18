@@ -19,6 +19,7 @@ import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TraitsRouteImport } from './routes/traits'
+import { Route as TryRouteImport } from './routes/try'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -32,6 +33,10 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as OrphansIndexRouteImport } from './routes/orphans.index'
 import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
+import { Route as TryIndexRouteImport } from './routes/try.index'
+import { Route as TryChildIdRouteImport } from './routes/try.$childId'
+import { Route as TryImpactRouteImport } from './routes/try.impact'
+import { Route as TryPayRouteImport } from './routes/try.pay'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
@@ -110,6 +115,11 @@ const TraitsRoute = TraitsRouteImport.update({
   path: '/traits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TryRoute = TryRouteImport.update({
+  id: '/try',
+  path: '/try',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
@@ -174,6 +184,26 @@ const OrphansOrphanIdRoute = OrphansOrphanIdRouteImport.update({
   id: '/orphans/$orphanId',
   path: '/orphans/$orphanId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TryIndexRoute = TryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TryRoute,
+} as any)
+const TryChildIdRoute = TryChildIdRouteImport.update({
+  id: '/$childId',
+  path: '/$childId',
+  getParentRoute: () => TryRoute,
+} as any)
+const TryImpactRoute = TryImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
+  getParentRoute: () => TryRoute,
+} as any)
+const TryPayRoute = TryPayRouteImport.update({
+  id: '/pay',
+  path: '/pay',
+  getParentRoute: () => TryRoute,
 } as any)
 const VisionIndexRoute = VisionIndexRouteImport.update({
   id: '/vision/',
@@ -336,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
+  '/try': typeof TryRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -348,6 +379,9 @@ export interface FileRoutesByFullPath {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/try/$childId': typeof TryChildIdRoute
+  '/try/impact': typeof TryImpactRoute
+  '/try/pay': typeof TryPayRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -358,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/try/': typeof TryIndexRoute
   '/vision/': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -400,6 +435,9 @@ export interface FileRoutesByTo {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/try/$childId': typeof TryChildIdRoute
+  '/try/impact': typeof TryImpactRoute
+  '/try/pay': typeof TryPayRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -410,6 +448,7 @@ export interface FileRoutesByTo {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans': typeof OrphansIndexRoute
+  '/try': typeof TryIndexRoute
   '/vision': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -442,6 +481,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
+  '/try': typeof TryRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -454,6 +494,9 @@ export interface FileRoutesById {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
+  '/try/$childId': typeof TryChildIdRoute
+  '/try/impact': typeof TryImpactRoute
+  '/try/pay': typeof TryPayRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -464,6 +507,7 @@ export interface FileRoutesById {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/orphans/': typeof OrphansIndexRoute
+  '/try/': typeof TryIndexRoute
   '/vision/': typeof VisionIndexRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -496,6 +540,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/traits'
+    | '/try'
     | '/unsubscribe'
     | '/account'
     | '/admin'
@@ -508,6 +553,9 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/try/$childId'
+    | '/try/impact'
+    | '/try/pay'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -518,6 +566,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
+    | '/try/'
     | '/vision/'
     | '/office/$officeId'
     | '/settings/notifications'
@@ -560,6 +609,9 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/try/$childId'
+    | '/try/impact'
+    | '/try/pay'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -570,6 +622,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans'
+    | '/try'
     | '/vision'
     | '/office/$officeId'
     | '/settings/notifications'
@@ -601,6 +654,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/support'
     | '/traits'
+    | '/try'
     | '/unsubscribe'
     | '/_authenticated/account'
     | '/_authenticated/admin'
@@ -613,6 +667,9 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/orphans/$orphanId'
+    | '/try/$childId'
+    | '/try/impact'
+    | '/try/pay'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -623,6 +680,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/orphans/'
+    | '/try/'
     | '/vision/'
     | '/_authenticated/office/$officeId'
     | '/_authenticated/settings/notifications'
@@ -655,6 +713,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SupportRoute: typeof SupportRoute
   TraitsRoute: typeof TraitsRoute
+  TryRoute: typeof TryRouteWithChildren
   UnsubscribeRoute: typeof UnsubscribeRoute
   LegalFaqRoute: typeof LegalFaqRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
@@ -755,6 +814,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TraitsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/try': {
+      id: '/try'
+      path: '/try'
+      fullPath: '/try'
+      preLoaderRoute: typeof TryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unsubscribe': {
       id: '/unsubscribe'
       path: '/unsubscribe'
@@ -845,6 +911,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/orphans/$orphanId'
       preLoaderRoute: typeof OrphansOrphanIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/try/': {
+      id: '/try/'
+      path: '/'
+      fullPath: '/try/'
+      preLoaderRoute: typeof TryIndexRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/$childId': {
+      id: '/try/$childId'
+      path: '/$childId'
+      fullPath: '/try/$childId'
+      preLoaderRoute: typeof TryChildIdRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/impact': {
+      id: '/try/impact'
+      path: '/impact'
+      fullPath: '/try/impact'
+      preLoaderRoute: typeof TryImpactRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/pay': {
+      id: '/try/pay'
+      path: '/pay'
+      fullPath: '/try/pay'
+      preLoaderRoute: typeof TryPayRouteImport
+      parentRoute: typeof TryRoute
     }
     '/vision/': {
       id: '/vision/'
@@ -1088,6 +1182,22 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface TryRouteChildren {
+  TryChildIdRoute: typeof TryChildIdRoute
+  TryImpactRoute: typeof TryImpactRoute
+  TryPayRoute: typeof TryPayRoute
+  TryIndexRoute: typeof TryIndexRoute
+}
+
+const TryRouteChildren: TryRouteChildren = {
+  TryChildIdRoute: TryChildIdRoute,
+  TryImpactRoute: TryImpactRoute,
+  TryPayRoute: TryPayRoute,
+  TryIndexRoute: TryIndexRoute,
+}
+
+const TryRouteWithChildren = TryRoute._addFileChildren(TryRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1099,6 +1209,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SupportRoute: SupportRoute,
   TraitsRoute: TraitsRoute,
+  TryRoute: TryRouteWithChildren,
   UnsubscribeRoute: UnsubscribeRoute,
   LegalFaqRoute: LegalFaqRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
