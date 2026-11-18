@@ -28,6 +28,7 @@ import {
   COUNTRIES,
   byCode,
   fnv,
+  fitScale,
   regionsFor,
   gapOf,
   STATUS,
@@ -792,11 +793,7 @@ export function mountHall(root, { brand, linked = [] }) {
   /* shapes are normalised to their bounding box, so a squarish country (Egypt, Saudi Arabia)
      reaches ~1.4 at its corners: scale each country by its farthest point to stay on the plinth */
   let R = 6.3;
-  const fitR = (co) => {
-    let m = 0;
-    for (const ring of co.rings) for (const [x, y] of ring) m = Math.max(m, Math.hypot(x, y));
-    return Math.min(6.3, 6.9 / Math.max(m, 1e-6));
-  };
+  const fitR = fitScale;
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
@@ -3605,7 +3602,17 @@ export function mountHall(root, { brand, linked = [] }) {
   drawImpactScreen();
   layoutDots();
   frame();
-  window.__hall = { S, enterWorld: () => enterWorld(), co: () => CO.code }; // for automated checks
+  window.__hall = {
+    S,
+    enterWorld: () => enterWorld(),
+    co: () => CO.code,
+    codes: () => COUNTRIES.map((c) => c.code),
+    /** for automated checks: pick a country on the globe and enter it */
+    visit: (code) => {
+      selectCountry(code);
+      enterCountry();
+    },
+  }; // for automated checks
   return () => {
     sound.dispose();
     disposed = true;
