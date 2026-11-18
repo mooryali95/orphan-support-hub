@@ -108,6 +108,8 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
     last: null,
     before: null,
   };
+  /* the fourth dimension: months from today (negative = the past, positive = today's pace onward) */
+  const TIME = { m: 0, shown: 0, snap: null, play: null };
   const store = (() => {
     try {
       return window.localStorage;
@@ -1749,6 +1751,11 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
     controls.setFocalOffset(wide && inCo ? -1.6 : 0, 0, 0, true);
   }
   function setStage(s) {
+    if (s !== "country") {
+      TIME.play?.kill();
+      if (TIME.snap) setTime(0); // support and payment always work on today's numbers
+    }
+    root.classList.toggle("at-country", s === "country");
     S.stage = s;
     queueMicrotask(frameForPanel);
     root.classList.toggle(
@@ -2478,7 +2485,102 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
     hint(PHONE() ? "" : "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته");
     refreshLabels();
     layoutDots();
+    if (TIME.m) setTime(TIME.m);
   }
+  /* ── The fourth dimension: the country a year ago, today, and a year on at today's pace ──
+     The past is reconstructed: each region reached today's numbers at its own steady rate. The
+     future projects the country's monthly pace, shared by need. Both are labelled as estimates;
+     support and payment always run on today's numbers (setStage restores them). */
+  const tlRange = $("#tlRange"),
+    tlOut = $("#tlOut"),
+    tlPlay = $("#tlPlay");
+  const monthsAr = (n) =>
+    n === 1 ? "شهر" : n === 2 ? "شهرين" : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
+  const timeLabel = (m) =>
+    m === 0
+      ? "اليوم"
+      : Math.abs(m) === 12
+        ? m < 0
+          ? "قبل سنة"
+          : "بعد سنة"
+        : m < 0
+          ? `قبل ${monthsAr(-m)}`
+          : `بعد ${monthsAr(m)}`;
+  function setTime(m) {
+    const shown = Math.round(m);
+    if (!TIME.snap && m !== 0)
+      TIME.snap = CITIES.map((c) => ({ c, q: c.qualified, k: c.clothed, s: c.sponsored }));
+    if (TIME.snap) {
+      const need = TIME.snap.reduce((a, x) => a + x.c.need, 0) || 1,
+        monthly = Math.max(6, Math.round(need / 18));
+      for (const { c, q, k, s } of TIME.snap) {
+        const back = 0.045 + (fnv(c.id) % 30) / 1000, // each region started at its own time
+          share = c.need / need;
+        const at = (v, rate) =>
+          m <= 0
+            ? Math.round(v * Math.max(0, 1 + m * back))
+            : Math.min(c.need, Math.round(v + monthly * share * rate * m));
+        c.qualified = m === 0 ? q : at(q, 1);
+        c.sponsored = m === 0 ? s : at(s, 0.45);
+        c.clothed = m === 0 ? k : at(k, 0.7);
+      }
+      pillars.forEach((o) => (o.fillH = o.baseH = H(o.c.qualified)));
+      if (m === 0) TIME.snap = null;
+    }
+    TIME.m = m;
+    if (tlRange) {
+      tlRange.value = String(shown);
+      tlRange.setAttribute("aria-valuetext", timeLabel(shown));
+    }
+    if (tlOut)
+      tlOut.innerHTML =
+        timeLabel(shown) +
+        (shown > 0
+          ? "<small>تقديرٌ بإيقاع اليوم</small>"
+          : shown < 0
+            ? "<small>استرجاعٌ تقريبي</small>"
+            : "");
+    root.classList.toggle("in-past", shown < 0);
+    root.classList.toggle("in-future", shown > 0);
+    if (S.stage === "country") {
+      const t = totals(),
+        nums = panel.querySelectorAll(".kpis .num");
+      [fmt(t.need), `${t.pct}%`, fmt(t.gap)].forEach(
+        (v, i) => nums[i] && (nums[i].textContent = v),
+      );
+      const head = panel.querySelector("h2");
+      if (head) head.textContent = `${CO.ar} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
+      const list = panel.querySelector("ul.cities");
+      if (list && TIME.shown !== shown) {
+        list.innerHTML = cityRows();
+        list
+          .querySelectorAll("[data-city]")
+          .forEach((b) => b.addEventListener("click", () => selectCity(b.dataset.city)));
+      }
+      layoutDots();
+      refreshLabels();
+    }
+    TIME.shown = shown;
+  }
+  if (tlRange)
+    on(tlRange, "input", () => {
+      TIME.play?.kill();
+      setTime(Number(tlRange.value));
+    });
+  if (tlPlay)
+    on(tlPlay, "click", () => {
+      TIME.play?.kill();
+      const p = { m: -12 };
+      setTime(-12);
+      TIME.play = gsap.to(p, {
+        m: 0,
+        duration: 6,
+        ease: "power1.inOut",
+        onUpdate: () => setTime(p.m),
+        onComplete: () => setTime(0),
+      });
+    });
+
   /* ── demo mode: the hall's regions lead to the children standing in them (/try) ── */
   function demoKidsHtml(c) {
     if (!demo) return "";
