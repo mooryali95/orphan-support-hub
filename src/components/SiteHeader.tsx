@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
+import { PartnerLockup } from "@/components/brand/PartnerMark";
 import { useAuth } from "@/hooks/useAuth";
 import { PendingPaymentBar } from "@/components/support/PendingPaymentBar";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -62,6 +63,10 @@ export function SiteHeader() {
         >
           <KahataynLockup />
         </Link>
+        {/* the partner beside the product: a hairline, then its mark (name on wide screens) */}
+        <span aria-hidden="true" className="hidden h-8 w-px bg-border sm:block" />
+        <PartnerLockup className="hidden shrink-0 2xl:inline-flex" />
+        <PartnerLockup compact className="shrink-0 2xl:hidden" />
 
         <nav className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((item) => (
