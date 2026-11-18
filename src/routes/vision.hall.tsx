@@ -97,7 +97,7 @@ function HallPage() {
 
       <section id="gate">
         <div>
-          <HallMark />
+          <MarkStage />
           <div className="eyebrow">رحلة الداعم</div>
           <h1>ادخل قاعة الأثر</h1>
           <p>
@@ -160,33 +160,58 @@ function HallPage() {
 
 /** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
 /**
- * the partner mark (no wordmark), from the approved vector file, drawn in four movements:
- * a gold line traces the outline → the disc fills → the crescent settles → the hand is written.
+ * the partner mark (no wordmark), from the approved vector file. The alef's slot already cuts the
+ * disc on a diagonal, so the disc is a two-leaf door: two copies, each clipped to one side of the
+ * alef line, swing apart on entry while the hāʾ rises out toward the viewer and light floods through.
+ * Before that, the mark is drawn in four movements: a gold line traces the outline → the disc fills →
+ * the crescent settles → the hand is written.
  */
-function HallMark() {
-  const { x, y } = MARK_CENTER;
+function MarkStage() {
   return (
-    <svg className="mark" viewBox={MARK_VIEWBOX} role="img" aria-hidden="true" focusable="false">
+    <div className="mark" aria-hidden="true">
+      <div className="mark-flood" />
+      <div className="leaf leaf-a">
+        <MarkSvg id="a" layer="disc" />
+      </div>
+      <div className="leaf leaf-b">
+        <MarkSvg id="b" layer="disc" />
+      </div>
+      {/* the alef's slot, which ignites before the leaves part */}
+      <svg className="mark-slot" viewBox={MARK_VIEWBOX} focusable="false">
+        <line x1="368" y1="58" x2="145" y2="388" pathLength={1} />
+      </svg>
+      <div className="mark-ink">
+        <MarkSvg id="i" layer="ink" />
+      </div>
+    </div>
+  );
+}
+
+function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
+  const { x, y } = MARK_CENTER;
+  const u = (n: string) => `mark-${id}-${n}`;
+  return (
+    <svg viewBox={MARK_VIEWBOX} focusable="false">
       <defs>
-        <linearGradient id="markInk" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={u("ink")} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" style={{ stopColor: "var(--ivory)" }} />
           <stop offset="1" style={{ stopColor: "var(--champagne)" }} />
         </linearGradient>
-        <linearGradient id="markGold" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={u("gold")} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" style={{ stopColor: "var(--champagne)" }} />
           <stop offset="1" style={{ stopColor: "var(--gold)" }} />
         </linearGradient>
-        <linearGradient id="markSheen" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={u("sheen")} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0.35" stopColor="white" stopOpacity="0" />
           <stop offset="0.5" stopColor="white" stopOpacity="0.8" />
           <stop offset="0.65" stopColor="white" stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="markFeather" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={u("feather")} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0.94" stopColor="white" />
           <stop offset="1" stopColor="white" stopOpacity="0" />
         </linearGradient>
         {/* the hand is written by a feathered band travelling down-left along the stroke */}
-        <mask id="markWrite" maskUnits="userSpaceOnUse" x="100" y="20" width="400" height="400">
+        <mask id={u("write")} maskUnits="userSpaceOnUse" x="100" y="20" width="400" height="400">
           <g transform={`rotate(45 ${x} ${y})`}>
             <rect
               className="m-wipe"
@@ -194,25 +219,44 @@ function HallMark() {
               y={y - 1200}
               width="1200"
               height="1200"
-              fill="url(#markFeather)"
+              fill={`url(#${u("feather")})`}
             />
           </g>
         </mask>
-        <clipPath id="markInkClip">
+        <clipPath id={u("clip")}>
           <path d={MARK_CALLIGRAPHY} clipRule="evenodd" />
         </clipPath>
       </defs>
-      <circle className="m-glow" cx={x} cy={y + 6} r="150" />
-      <path className="m-disc" d={MARK_DISC} />
-      <path className="m-crescent" d={MARK_CRESCENT} />
-      <path className="m-line" d={MARK_DISC} pathLength={1} />
-      <path className="m-line m-line-2" d={MARK_CRESCENT} pathLength={1} />
-      <g className="m-ink" mask="url(#markWrite)">
-        <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill="url(#markInk)" />
-      </g>
-      <g clipPath="url(#markInkClip)">
-        <rect className="m-sheen" x="-160" y="40" width="300" height="360" fill="url(#markSheen)" />
-      </g>
+      {layer === "disc" ? (
+        <>
+          <circle className="m-glow" cx={x} cy={y + 6} r="150" />
+          <path className="m-disc" d={MARK_DISC} />
+          <path className="m-crescent" d={MARK_CRESCENT} />
+          <path className="m-line" d={MARK_DISC} pathLength={1} stroke={`url(#${u("gold")})`} />
+          <path
+            className="m-line m-line-2"
+            d={MARK_CRESCENT}
+            pathLength={1}
+            stroke={`url(#${u("gold")})`}
+          />
+        </>
+      ) : (
+        <>
+          <g className="m-ink" mask={`url(#${u("write")})`}>
+            <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={`url(#${u("ink")})`} />
+          </g>
+          <g clipPath={`url(#${u("clip")})`}>
+            <rect
+              className="m-sheen"
+              x="-160"
+              y="40"
+              width="300"
+              height="360"
+              fill={`url(#${u("sheen")})`}
+            />
+          </g>
+        </>
+      )}
     </svg>
   );
 }

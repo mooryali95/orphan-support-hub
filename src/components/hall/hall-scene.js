@@ -453,6 +453,7 @@ export function mountHall(root, { brand, linked = [] }) {
     knob.position.set(-s * 2.4, 4, 0.22);
     pivot.add(knob);
     hall.add(pivot);
+    pivot.visible = false; // the partner mark is the door now (see enterHall); the leaves stay for film framing
     doors.push({ pivot, s });
   });
   const portal = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.13, 16, 64, Math.PI), goldM);
@@ -1904,7 +1905,7 @@ export function mountHall(root, { brand, linked = [] }) {
     });
   }
 
-  /* ── Gate: title words, then doors, then the dolly ──────────────── */
+  /* ── Gate: the partner mark is drawn, the words rise, then the mark opens like a door ── */
   const words = $("#gate h1").textContent.trim().split(/\s+/);
   $("#gate h1").innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(" ");
   // the words rise in CSS (hall.css, g-rise) on wall-clock time, after the mark has been written
@@ -2040,27 +2041,67 @@ export function mountHall(root, { brand, linked = [] }) {
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
-    // the mark is the door: its text steps back, then it swells past the viewer and the hall appears through it
+    // the alef is the key and the disc the door: the slot ignites, the hāʾ rises out toward the viewer,
+    // the disc parts along the alef line as two leaves, light floods through, and the camera goes in
     const mark = $("#gate .mark");
     if (mark) mark.style.animation = "none"; // the idle float would override gsap's transform
+    const P3 = { transformPerspective: 900 };
+    if (window.__HALL_TEST) window.__hallGate = tl; // automated checks pause and seek it
     tl.to("#gate > div > :not(.mark)", { autoAlpha: 0, y: 12, duration: 0.45, ease: "power2.in" })
+      .to("#gate .mark", { scale: 1.08, duration: 0.6, ease: "power2.out" }, 0)
+      .fromTo(
+        "#gate .mark-slot line",
+        { strokeDasharray: 1, strokeDashoffset: 1 },
+        { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" },
+        0.05,
+      )
+      .to("#gate .mark-slot", { opacity: 1, duration: 0.25 }, 0.05)
       .to(
-        "#gate .mark",
+        "#gate .mark-ink",
+        { ...P3, yPercent: -8, scale: 1.2, z: 60, duration: 0.7, ease: "power2.out" },
+        0.3,
+      )
+      .to("#gate .mark-ink", { autoAlpha: 0, scale: 1.7, duration: 0.6, ease: "power2.in" }, 0.95)
+      .to(
+        "#gate .leaf-a",
         {
-          scale: 9,
-          rotate: -8,
+          ...P3,
+          xPercent: -42,
+          yPercent: -30,
+          rotateY: -68,
+          rotateZ: -10,
           autoAlpha: 0,
           duration: 1.5,
-          ease: "power3.in",
-          transformOrigin: "50% 45%",
+          ease: "power3.inOut",
+          transformOrigin: "0% 30%",
         },
-        0.15,
+        0.55,
       )
-      .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 0.75)
+      .to(
+        "#gate .leaf-b",
+        {
+          ...P3,
+          xPercent: 36,
+          yPercent: 24,
+          rotateY: 68,
+          rotateZ: 8,
+          autoAlpha: 0,
+          duration: 1.5,
+          ease: "power3.inOut",
+          transformOrigin: "100% 70%",
+        },
+        0.55,
+      )
+      .to("#gate .mark-slot", { opacity: 0, duration: 0.4 }, 0.75)
+      .fromTo(
+        "#gate .mark-flood",
+        { opacity: 0, scale: 0.2 },
+        { opacity: 1, scale: 28, duration: 1.2, ease: "power2.in" },
+        0.6,
+      )
+      .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 1.35)
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
-      .to(doors[0].pivot.rotation, { y: 1.85, duration: 2.6, ease: "power3.inOut" }, 0.4)
-      .to(doors[1].pivot.rotation, { y: -1.85, duration: 2.6, ease: "power3.inOut" }, 0.4)
       .to(bloom, { intensity: 2.2, duration: 1.2, ease: "power2.in" }, 0.6)
       .to(bloom, { intensity: 1.15, duration: 1.6, ease: "power2.out" }, 1.8)
       .to(doorGlow, { intensity: 0, duration: 1.6 }, 2.2)

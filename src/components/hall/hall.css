@@ -1577,16 +1577,59 @@
 }
 
 /* ── The mark: the partner's sign is the door into the hall ──
-   a gold line traces the outline → the disc fills → the crescent settles → the hand is written →
-   a sheen passes. Every final state is the resting style, so reduced motion shows the finished mark. */
+   drawn: a gold line traces the outline → the disc fills → the crescent settles → the hand is written →
+   a sheen passes. On entry (hall-scene.js, enterHall) the alef's slot ignites, the hāʾ rises out, and
+   the disc parts along the alef line as two leaves. Final states are resting styles (reduced motion). */
 #gate .mark {
-  display: block;
+  position: relative;
   width: min(260px, 32vh);
-  height: auto;
+  aspect-ratio: 304 / 330;
   margin: 0 auto 22px;
-  overflow: visible;
-  filter: drop-shadow(0 22px 48px rgba(0, 0, 0, 0.6));
   animation: m-float 7s ease-in-out 4s infinite;
+}
+.mark > div,
+.mark > svg {
+  position: absolute;
+  inset: 0;
+}
+.mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.mark .leaf {
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.6));
+  will-change: transform;
+}
+/* the alef line runs from (73.4%, 0) to (0, 100%) of the mark: each leaf keeps one side of it */
+.mark .leaf-a {
+  clip-path: polygon(-30% -20%, 88.1% -20%, -14.7% 120%, -30% 120%);
+}
+.mark .leaf-b {
+  clip-path: polygon(88.1% -20%, 130% -20%, 130% 120%, -14.7% 120%);
+}
+.mark .mark-slot {
+  opacity: 0;
+}
+.mark .mark-slot line {
+  stroke: var(--champagne);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 16px var(--gold));
+}
+.mark .mark-flood {
+  left: 56.6%;
+  top: 23.6%;
+  right: auto;
+  bottom: auto;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7e2 0%, rgba(243, 227, 181, 0.85) 35%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
 }
 .mark .m-disc {
   fill: var(--wine);
@@ -1600,7 +1643,6 @@
 }
 .mark .m-line {
   fill: none;
-  stroke: url(#markGold);
   stroke-width: 1.4;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -1618,6 +1660,9 @@
   opacity: 0.08;
   filter: blur(14px);
   animation: m-breathe 5s ease-in-out 4s infinite;
+}
+.mark .mark-ink {
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
 }
 .mark .m-wipe {
   transform: translateY(260px);
