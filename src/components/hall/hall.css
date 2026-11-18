@@ -1451,7 +1451,7 @@
 }
 #impact {
   width: min(500px, calc(100vw - min(372px, 31vw) - 64px));
-  max-height: min(46vh, calc(100% - 120px));
+  max-height: min(58vh, calc(100% - 120px));
 }
 #panel,
 #impact {
@@ -1554,5 +1554,16 @@
   }
   .hall #focusBtn {
     display: inline-flex;
+  }
+}
+/* inside a country the bottom belongs to the impact glass: guidance moves under the steps */
+@media (min-width: 761px) {
+  .hall.in-country #hint {
+    top: calc(env(safe-area-inset-top, 0px) + 76px);
+    bottom: auto;
+    left: calc(50% - min(372px, 31vw) / 2 + 80px);
+    max-width: calc(100vw - min(372px, 31vw) - 300px);
+    white-space: normal;
+    text-align: center;
   }
 }
