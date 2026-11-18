@@ -20,11 +20,14 @@ export function MyImpactHero({
   impact,
   loading,
   anotherTo = "/orphans",
+  hallSearch,
 }: {
   impact: MyImpact;
   loading: boolean;
   /** where «اكفل طفلاً آخر» leads; the client demo keeps the visitor inside /try */
   anotherTo?: "/orphans" | "/try";
+  /** the demo opens the hall in demo mode, on the visitor's latest gift */
+  hallSearch?: { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
 }) {
   const shown = impact.children.slice(0, MAX);
   const more = impact.children.length - shown.length;
@@ -74,7 +77,7 @@ export function MyImpactHero({
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg" className="impact-cta">
-              <Link to="/hall">
+              <Link to="/hall" search={hallSearch ?? {}}>
                 <Sparkles className="size-4" aria-hidden="true" />
                 الوضع الغامر
               </Link>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { byCode, regionsFor } from "./hall/model";
 import { myImpact } from "./my-impact";
 import {
   addGift,
@@ -59,5 +60,16 @@ describe("وضع التجربة", () => {
     expect(sara.covered).toBe(1);
     expect(sara.months).toBeGreaterThanOrEqual(3);
     expect(m.children.find((c) => c.name === "مريم")).toMatchObject({ months: 1, share: 0 });
+  });
+
+  it("كلّ طفلٍ في التجربة يقف في دولةٍ ومنطقةٍ موجودتين في القاعة", () => {
+    for (const c of TRY_CHILDREN) {
+      const co = byCode(c.co);
+      expect(co, c.co).toBeTruthy();
+      expect(
+        regionsFor(co!).some((r) => r.id === c.region),
+        `${c.co} ${c.region}`,
+      ).toBe(true);
+    }
   });
 });

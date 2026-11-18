@@ -54,7 +54,7 @@ import { createSound } from "./sound.js";
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
 
-export function mountHall(root, { brand, linked = [] }) {
+export function mountHall(root, { brand, linked = [], demo = null }) {
   const $ = (s, r = root) => r.querySelector(s);
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2125,6 +2125,10 @@ export function mountHall(root, { brand, linked = [] }) {
         controls.smoothTime = 0.55;
         setStage("hall");
         hallView(1, false);
+        if (demo?.focus) {
+          gsap.delayedCall(0.8, demoFocus);
+          return;
+        }
         if (!PHONE())
           hint(
             PICKED
@@ -2457,6 +2461,7 @@ export function mountHall(root, { brand, linked = [] }) {
       <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
       <div class="kpi"><b class="num" data-count="${t.gap}">0</b><span>ينتظرون</span></div>
     </div>
+    ${demoKidsHtml(c)}
     <div class="sect">${CO.code === "AL" ? "المدن" : "المناطق"} · الأكبر فجوةً أوّلاً</div>
     <ul class="cities">${cityRows()}</ul>
     <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`);
@@ -2473,6 +2478,51 @@ export function mountHall(root, { brand, linked = [] }) {
     hint(PHONE() ? "" : "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته");
     refreshLabels();
     layoutDots();
+  }
+  /* ── demo mode: the hall's regions lead to the children standing in them (/try) ── */
+  function demoKidsHtml(c) {
+    if (!demo) return "";
+    const here = demo.kids.filter((k) => k.co === CO.code && k.region === c.id);
+    if (here.length)
+      return `<div class="sect">أطفالٌ في ${c.ar} · ينتظرون كافلاً</div>
+      <ul class="kids">${here
+        .map((k) =>
+          k.mine
+            ? `<li class="mine"><span><b>${k.name}</b><small>في كفالتك · تصله كلّ شهرٍ بمستند</small></span><a class="ghost" href="/try/impact">أثري</a></li>`
+            : `<li><span><b>${k.name}</b><small>يتبقّى <span class="num">${fmt(k.gap)}</span> € شهرياً</small></span><a class="cta" href="/try/${k.id}?from=hall">اكفل ${k.name}</a></li>`,
+        )
+        .join("")}</ul>`;
+    const elsewhere = demo.kids.filter((k) => k.co === CO.code);
+    if (!elsewhere.length) return "";
+    const r = CITIES.find((x) => x.id === elsewhere[0].region);
+    return r
+      ? `<p class="sub">في هذه الدولة أطفالٌ ينتظرون في <button type="button" class="linkish" data-city="${r.id}">${r.ar}</button>.</p>`
+      : "";
+  }
+  /** after the simulated payment the visitor returns here: the hall flies to that region and plays the arrival */
+  function demoFocus() {
+    const f = demo?.focus;
+    if (!f || !byCode(f.co)) return;
+    selectCountry(f.co);
+    gsap.delayedCall(1.2, () => {
+      enterCountry();
+      gsap.delayedCall(4.2, () => {
+        const c = CITIES.find((x) => x.id === f.region);
+        const o = c && pillars.find((p) => p.c.id === c.id);
+        if (!c || !o) return;
+        selectCity(c.id);
+        gsap.delayedCall(1.4, () => {
+          if (f.cadence === "monthly") c.sponsored = Math.min(c.need, c.sponsored + 1);
+          refreshLabels();
+          arrive({ track: f.cadence === "monthly" ? "sponsor" : "kiswa", kids: 1 }, o, c);
+          hint(
+            f.cadence === "monthly"
+              ? `كفالتك لـ${f.name} انضمّت إلى مدار ${c.ar}: فانوسٌ زمرّدي جديد حول العمود`
+              : `عطاؤك لـ${f.name} وصل ${c.ar}: هديةٌ لؤلؤية نزلت على الأطفال`,
+          );
+        });
+      });
+    });
   }
   function selectCity(id) {
     S.city = id;
