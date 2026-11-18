@@ -8,12 +8,14 @@ export function niceRound(n: number): number {
   return Math.max(step, Math.round(n / step) * step);
 }
 
-/** up to three distinct amounts (≥ 5), excluding the gap itself, which has its own «fill» button */
+/** up to three distinct amounts (≥ 5) within the gap, excluding the gap itself, which has its own «fill» button */
 export function amountPresets(need: number, gap: number): number[] {
   const base = need > 0 ? need : 100;
   const out: number[] = [];
   for (const k of [0.25, 0.5, 1]) {
     const v = niceRound(base * k);
+    // above the gap a monthly amount would trigger the excess prompt by itself
+    if (gap > 0 && v > gap) continue;
     if (v >= 5 && v !== Math.round(gap) && !out.includes(v)) out.push(v);
   }
   return out;

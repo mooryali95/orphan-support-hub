@@ -176,20 +176,28 @@ export function SupportSheet({
 
   async function confirm() {
     setBusy(true);
-    const res = await submit({
-      data: {
-        kind,
-        targetType: target.type,
-        target: target.value,
-        amount,
-        country: ctx.code,
-        note: note || undefined,
-        currency,
-        elapsed: Math.min(86_400, Math.round((Date.now() - openedAt) / 1000)),
-      },
-    });
-    setBusy(false);
-    setResult(res.ok ? { ok: true, text: t.pledged } : { ok: false, text: res.error ?? t.failed });
+    try {
+      const res = await submit({
+        data: {
+          kind,
+          targetType: target.type,
+          target: target.value,
+          amount,
+          country: ctx.code,
+          note: note || undefined,
+          currency,
+          elapsed: Math.min(86_400, Math.round((Date.now() - openedAt) / 1000)),
+        },
+      });
+      setResult(
+        res.ok ? { ok: true, text: t.pledged } : { ok: false, text: res.error ?? t.failed },
+      );
+    } catch {
+      // now also runs straight after the in-place sign-in: a failure must show, not freeze the button
+      setResult({ ok: false, text: t.failed });
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (result?.ok) {

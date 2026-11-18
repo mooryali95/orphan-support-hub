@@ -137,7 +137,8 @@ export const createSponsorship = createServerFn({ method: "POST" })
 
     // التجاوز يحتاج إقراراً صريحاً. وليس منعاً: الطلب يعود بالمتبقّي
     // وباقتراحات، ثم يُعاد بـ`confirmExcess` إن أصرّ الكافل.
-    if (!data.confirmExcess) {
+    // a one-time gift is not a share of the monthly need, so the monthly gap does not bound it
+    if (!data.confirmExcess && data.type === "monthly") {
       // بجلسة الكافل نفسها لا بمفتاح الخدمة: الدالّتان ممنوحتان للمسجَّل.
       const db = withM5(supabase);
       const { data: raw } = await db.rpc("orphan_funding_state", { _orphan: data.orphanId });

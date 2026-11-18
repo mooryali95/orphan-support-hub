@@ -304,6 +304,8 @@ function OrphanDetail() {
 
   /** afterAuth: called from the in-page sign-in, before `user` has refreshed in this render */
   async function onSponsor(confirmExcess = false, afterAuth = false) {
+    // the draft only bridges a full-page sign-in (OAuth); signed in here, it has served its purpose
+    if (afterAuth) clearDraft(orphanId);
     if (!user && !afterAuth) {
       saveDraft({
         orphanId,

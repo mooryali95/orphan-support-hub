@@ -329,27 +329,32 @@ function SupportPage() {
   async function confirm() {
     if (!kind || !targetType || !target) return;
     setBusy(true);
-    const res = await submit({
-      data: {
-        kind,
-        targetType,
-        target,
-        amount,
-        country: activeCountry || undefined,
-        note: note || undefined,
-        currency,
-        elapsed: Math.min(86_400, Math.round((Date.now() - openedAt.current) / 1000)),
-      },
-    });
-    setBusy(false);
-    setResult(
-      res.ok
-        ? {
-            ok: true,
-            text: t.pledged,
-          }
-        : { ok: false, text: res.error ?? t.failed },
-    );
+    try {
+      const res = await submit({
+        data: {
+          kind,
+          targetType,
+          target,
+          amount,
+          country: activeCountry || undefined,
+          note: note || undefined,
+          currency,
+          elapsed: Math.min(86_400, Math.round((Date.now() - openedAt.current) / 1000)),
+        },
+      });
+      setResult(
+        res.ok
+          ? {
+              ok: true,
+              text: t.pledged,
+            }
+          : { ok: false, text: res.error ?? t.failed },
+      );
+    } catch {
+      setResult({ ok: false, text: t.failed });
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (

@@ -11,8 +11,11 @@ describe("المبالغ المقترحة من الحاجة", () => {
     expect(niceRound(0)).toBe(0);
   });
   it("ربع الحاجة ونصفها وكاملها، بلا تكرار ولا المتبقّي نفسه", () => {
-    expect(amountPresets(120, 60)).toEqual([30, 120]);
+    expect(amountPresets(120, 60)).toEqual([30]);
     expect(amountPresets(3000, 0)).toEqual([750, 1500, 3000]);
+    // a small gap keeps only amounts within it, so a preset never trips the excess prompt
+    expect(amountPresets(200, 30)).toEqual([]);
+    expect(amountPresets(400, 250)).toEqual([100, 200]);
     expect(amountPresets(0, 0)).toEqual([25, 50, 100]);
   });
 });
