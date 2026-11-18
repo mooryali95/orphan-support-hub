@@ -1583,18 +1583,19 @@ export function mountHall(root, { brand, linked = [] }) {
   engraveTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const engrave = new THREE.Group();
   const engraveM = new THREE.Mesh(
-    new THREE.PlaneGeometry(2.6, 0.65),
+    new THREE.PlaneGeometry(3.6, 0.9),
     new THREE.MeshBasicMaterial({ map: engraveTex, transparent: true, depthWrite: false }),
   );
   engraveM.rotation.x = -Math.PI / 2;
-  engraveM.position.z = 1.05;
+  engraveM.position.z = 2.5; // beyond the outer ring of children
+  engraveM.renderOrder = 2;
   engrave.add(engraveM);
   country.add(engrave);
   let engraved = "";
   function engraveCity() {
     const o = pillars.find((p) => p.c.id === S.city);
     if (!o) return;
-    engrave.position.set(o.g.position.x, 0.68, o.g.position.z);
+    engrave.position.set(o.g.position.x, 0.86, o.g.position.z); // above the stepped tiers
     if (engraved === o.c.ar) return;
     engraved = o.c.ar;
     const x = engraveCv.getContext("2d");
