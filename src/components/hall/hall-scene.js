@@ -901,7 +901,7 @@ export function mountHall(root, { brand, linked = [] }) {
       side: THREE.DoubleSide,
       uniforms: { uO: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.84,0.55), a*uO*0.22); }`,
+      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.84,0.55), a*uO*0.09); }`,
     }),
   );
   beam.position.y = 5.1;
@@ -3405,7 +3405,8 @@ export function mountHall(root, { brand, linked = [] }) {
       o.fill.material.opacity = o.dim;
       o.glass.material.opacity = 0.16 * o.dim;
       o.dial.forEach((d) => (d.arc.material.opacity = o.dim));
-      o.cap.visible = o.rise > 0.02;
+      o.dial[0].arc.parent.visible = sel || S.stage === "big";
+      o.cap.visible = o.rise > 0.02 && (sel || S.stage === "big");
       o.pulse = Math.max(0, o.pulse - dt * 0.8);
       o.halo.material.opacity = (sel ? 0.7 : 0) + o.pulse * 0.5;
       if (sel) o.halo.rotation.z += dt;
@@ -3465,7 +3466,7 @@ export function mountHall(root, { brand, linked = [] }) {
         : 0;
     beam.material.uniforms.uO.value +=
       (beamOn - beam.material.uniforms.uO.value) * Math.min(1, dt * 2);
-    beamLight.intensity = beam.material.uniforms.uO.value * 60;
+    beamLight.intensity = beam.material.uniforms.uO.value * 45;
     sea.material.uniforms.uTime.value = time;
     if (flow.t >= 0 && flow.curve) {
       const pos = streamGeo.attributes.position.array;
