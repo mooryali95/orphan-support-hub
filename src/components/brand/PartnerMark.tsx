@@ -1,15 +1,10 @@
 import { BRAND } from "@/config/brand";
-import {
-  MARK_BACKING,
-  MARK_CALLIGRAPHY,
-  MARK_COLORS,
-  MARK_CRESCENT,
-  MARK_DISC,
-  MARK_VIEWBOX,
-} from "@/components/hall/hall-mark";
 import { cn } from "@/lib/utils";
 
-/** the partner's mark, still, from the approved vector file (no wordmark) */
+/**
+ * the partner's mark, still: a static file (public/brand/partner-mark.svg, generated from the
+ * approved vector shapes in hall-mark.ts) so the header carries no path data in every page's JS.
+ */
 export function PartnerMark({
   className,
   title,
@@ -18,19 +13,14 @@ export function PartnerMark({
   title?: string | undefined;
 }) {
   return (
-    <svg
-      viewBox={MARK_VIEWBOX}
+    <img
+      src="/brand/partner-mark.svg"
+      alt={title ?? ""}
+      width={30}
+      height={33}
+      decoding="async"
       className={cn("h-8 w-auto", className)}
-      role={title ? "img" : undefined}
-      aria-label={title}
-      aria-hidden={title ? undefined : true}
-      focusable="false"
-    >
-      <path d={MARK_BACKING} fill={MARK_COLORS.paper} />
-      <path d={MARK_DISC} fill={MARK_COLORS.disc} />
-      <path d={MARK_CRESCENT} fill={MARK_COLORS.crescent} />
-      <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={MARK_COLORS.paper} />
-    </svg>
+    />
   );
 }
 
