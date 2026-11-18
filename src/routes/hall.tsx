@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import "@/components/hall/hall.css";
 import { BRAND, pageTitle } from "@/config/brand";
 import {
+  MARK_BACKING,
   MARK_CALLIGRAPHY,
   MARK_CENTER,
+  MARK_COLORS,
   MARK_CRESCENT,
   MARK_DISC,
   MARK_VIEWBOX,
@@ -193,10 +195,6 @@ function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
   return (
     <svg viewBox={MARK_VIEWBOX} focusable="false">
       <defs>
-        <linearGradient id={u("ink")} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" style={{ stopColor: "var(--ivory)" }} />
-          <stop offset="1" style={{ stopColor: "var(--champagne)" }} />
-        </linearGradient>
         <linearGradient id={u("gold")} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" style={{ stopColor: "var(--champagne)" }} />
           <stop offset="1" style={{ stopColor: "var(--gold)" }} />
@@ -229,9 +227,9 @@ function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
       </defs>
       {layer === "disc" ? (
         <>
-          <circle className="m-glow" cx={x} cy={y + 6} r="150" />
-          <path className="m-disc" d={MARK_DISC} />
-          <path className="m-crescent" d={MARK_CRESCENT} />
+          <path className="m-paper" d={MARK_BACKING} fill={MARK_COLORS.paper} />
+          <path className="m-disc" d={MARK_DISC} fill={MARK_COLORS.disc} />
+          <path className="m-crescent" d={MARK_CRESCENT} fill={MARK_COLORS.crescent} />
           <path className="m-line" d={MARK_DISC} pathLength={1} stroke={`url(#${u("gold")})`} />
           <path
             className="m-line m-line-2"
@@ -243,7 +241,7 @@ function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
       ) : (
         <>
           <g className="m-ink" mask={`url(#${u("write")})`}>
-            <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={`url(#${u("ink")})`} />
+            <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={MARK_COLORS.paper} />
           </g>
           <g clipPath={`url(#${u("clip")})`}>
             <rect
