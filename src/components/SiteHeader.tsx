@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { useAuth } from "@/hooks/useAuth";
+import { PendingPaymentBar } from "@/components/support/PendingPaymentBar";
 import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
 import { brandFor } from "@/config/brand";
@@ -81,9 +82,15 @@ export function SiteHeader() {
           <LanguageSwitch className="hidden sm:inline-flex" />
           {user && <NotificationBell />}
           {user ? (
-            <Button asChild>
-              <Link to="/workspaces">{c.portals}</Link>
-            </Button>
+            <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link to="/workspaces">{c.portals}</Link>
+              </Button>
+              {/* the way to give stays in reach after signing in */}
+              <Button asChild>
+                <Link to="/orphans">{c.sponsor}</Link>
+              </Button>
+            </>
           ) : (
             <>
               <AuthDialog
@@ -154,6 +161,7 @@ export function SiteHeader() {
         </nav>
       </div>
       <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
+      {user && <PendingPaymentBar />}
     </header>
   );
 }

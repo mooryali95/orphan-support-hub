@@ -18,6 +18,8 @@ import { getPublicOrphan } from "@/lib/orphans.functions";
 import { getOrphanQualification } from "@/lib/qualification.functions";
 import { QualificationPanel } from "@/components/qualification/QualificationPanel";
 import { createSponsorship, type SuggestedOrphan } from "@/lib/sponsorships.functions";
+import { startCheckout } from "@/lib/payments.functions";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
@@ -71,7 +73,17 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     messagePh: "كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل",
     anonymous: "أرغب أن تكون كفالتي دون ذكر اسمي",
     start: "ابدأ الكفالة",
+    startOnce: "ادعم الآن",
     signIn: "سجّل الدخول للكفالة",
+    signInHint: "تبقى هنا؛ بعد الدخول تُسجَّل كفالتك بالمبلغ نفسه وتنتقل إلى الدفع.",
+    toPayment: "تُسجَّل كفالتك وتنتقل إلى الدفع…",
+    payLater: "سُجّلت كفالتك؛ أكمل الدفع من «أثري» متى شئت.",
+    cadence: "نوع العطاء",
+    monthly: "شهرياً",
+    once: "مرّة واحدة",
+    impactFull: (name: string) => `يُكمل حاجة ${name} الشهرية كاملةً`,
+    impactPart: (pct: number, name: string) => `يغطّي ${pct}% من حاجة ${name} الشهرية`,
+    impactOnce: (name: string) => `عطاءٌ لمرّة واحدة يصل ${name} بمستندٍ يثبت تسليمه`,
     restored: "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
     activates:
       "الكفالة تبدأ بعد تأكيد الدفع، ويمكنك إنهاؤها متى شئت من لوحتك فتنتهي بعد آخر شهرٍ مدفوع.",
@@ -133,7 +145,19 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     messagePh: "A word of encouragement — the care organization reviews it before it arrives",
     anonymous: "I'd like my sponsorship to stay anonymous",
     start: "Start sponsoring",
+    startOnce: "Give now",
     signIn: "Sign in to sponsor",
+    signInHint:
+      "You stay here; once signed in your sponsorship is recorded with the same amount and you go on to payment.",
+    toPayment: "Recording your sponsorship and moving to payment…",
+    payLater:
+      "Your sponsorship is recorded; complete the payment from «My impact» whenever you like.",
+    cadence: "Type of giving",
+    monthly: "Monthly",
+    once: "One time",
+    impactFull: (name: string) => `Covers ${name}'s full monthly need`,
+    impactPart: (pct: number, name: string) => `Covers ${pct}% of ${name}'s monthly need`,
+    impactOnce: (name: string) => `A one-time gift that reaches ${name} with a delivery receipt`,
     restored: "We kept what you chose before signing in: the amount and your message.",
     activates:
       "The sponsorship starts once payment is confirmed, and you can end it from your dashboard at any time — it stops after the last paid month.",
@@ -211,6 +235,7 @@ function OrphanDetail() {
   });
   const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
+  const pay = useServerFn(startCheckout);
 
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const remaining = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
@@ -236,6 +261,8 @@ function OrphanDetail() {
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
   const [anonymous, setAnonymous] = useState(false);
+  // الشهري هو الأصل، والعطاء لمرّة واحدة بابٌ أخفّ لأوّل خطوة (الخادم يقبل النوعين).
+  const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
   const [mode, setMode] = useState<"monthly" | SupportKind>("monthly");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -262,8 +289,9 @@ function OrphanDetail() {
     suggestions: SuggestedOrphan[];
   } | null>(null);
 
-  async function onSponsor(confirmExcess = false) {
-    if (!user) {
+  /** afterAuth: called from the in-page sign-in, before `user` has refreshed in this render */
+  async function onSponsor(confirmExcess = false, afterAuth = false) {
+    if (!user && !afterAuth) {
       saveDraft({
         orphanId,
         name: orphan.display_name,
@@ -286,7 +314,7 @@ function OrphanDetail() {
         data: {
           orphanId,
           amount: value,
-          type: "monthly",
+          type: cadence,
           isAnonymous: anonymous,
           message: message.trim() || undefined,
           confirmExcess,
@@ -306,7 +334,19 @@ function OrphanDetail() {
         return;
       }
       setExcessOffer(null);
-      toast.success(t.created);
+      clearDraft(orphanId);
+      // الدفع مباشرةً بعد «ابدأ»: لا يُترك الداعم يبحث عن «أكمل الدفع» في لوحته.
+      toast.success(t.toPayment);
+      try {
+        const checkout = await pay({ data: { sponsorshipId: res.sponsorshipId } });
+        if (checkout.ok) {
+          window.location.href = checkout.checkoutUrl;
+          return;
+        }
+      } catch {
+        /* falls through to «أثري», where the payment waits at the top */
+      }
+      toast.message(t.payLater);
       navigate({ to: "/dashboard" });
     } catch {
       toast.error(t.unexpected);
@@ -518,6 +558,29 @@ function OrphanDetail() {
                       {t.restored}
                     </p>
                   )}
+                  <div
+                    role="radiogroup"
+                    aria-label={t.cadence}
+                    className="grid grid-cols-2 gap-1 rounded-xl bg-secondary p-1"
+                  >
+                    {(["monthly", "one_time"] as const).map((k) => (
+                      <button
+                        key={k}
+                        type="button"
+                        role="radio"
+                        aria-checked={cadence === k}
+                        onClick={() => setCadence(k)}
+                        className={cn(
+                          "min-h-11 rounded-lg text-sm font-bold transition-colors",
+                          cadence === k
+                            ? "bg-card text-foreground shadow-soft"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {k === "monthly" ? t.monthly : t.once}
+                      </button>
+                    ))}
+                  </div>
                   <div>
                     <Label htmlFor="amount">{t.amount(orphan.currency)}</Label>
                     <Input
@@ -570,6 +633,24 @@ function OrphanDetail() {
                     {t.anonymous}
                   </label>
 
+                  <ImpactLine
+                    text={
+                      cadence === "one_time"
+                        ? t.impactOnce(orphan.display_name)
+                        : Number(amount) >= remaining && remaining > 0
+                          ? t.impactFull(orphan.display_name)
+                          : Number(amount) > 0 && Number(orphan.monthly_need) > 0
+                            ? t.impactPart(
+                                Math.min(
+                                  100,
+                                  Math.round((Number(amount) / Number(orphan.monthly_need)) * 100),
+                                ),
+                                orphan.display_name,
+                              )
+                            : null
+                    }
+                  />
+
                   {excessOffer && (
                     <ExcessSuggestion
                       gap={excessOffer.gap}
@@ -585,15 +666,45 @@ function OrphanDetail() {
                     />
                   )}
 
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    onClick={() => void onSponsor()}
-                    disabled={pending}
-                  >
-                    {pending && <Loader2 className="size-4 animate-spin" />}
-                    {user ? t.start : t.signIn}
-                  </Button>
+                  {user ? (
+                    <Button
+                      className="w-full"
+                      size="lg"
+                      onClick={() => void onSponsor()}
+                      disabled={pending}
+                    >
+                      {pending && <Loader2 className="size-4 animate-spin" />}
+                      {cadence === "one_time" ? t.startOnce : t.start}
+                    </Button>
+                  ) : (
+                    // الدخول في الصفحة نفسها، ثم تُسجَّل الكفالة وينتقل إلى الدفع دون نقرةٍ ثانية.
+                    <AuthDialog
+                      title={t.signIn}
+                      hint={t.signInHint}
+                      onDone={() => void onSponsor(false, true)}
+                      trigger={(open) => (
+                        <Button
+                          className="w-full"
+                          size="lg"
+                          disabled={pending}
+                          onClick={() => {
+                            saveDraft({
+                              orphanId,
+                              name: orphan.display_name,
+                              amount,
+                              message,
+                              anonymous,
+                              currency: orphan.currency,
+                            });
+                            open();
+                          }}
+                        >
+                          {pending && <Loader2 className="size-4 animate-spin" />}
+                          {t.signIn}
+                        </Button>
+                      )}
+                    />
+                  )}
 
                   <p className="flex items-start gap-2 text-xs leading-6 text-muted-foreground">
                     <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" />
@@ -653,5 +764,19 @@ function OrphanDetail() {
 
       <SiteFooter />
     </div>
+  );
+}
+
+/** the impact of this amount, shown before paying */
+function ImpactLine({ text }: { text: string | null }) {
+  if (!text) return null;
+  return (
+    <p
+      aria-live="polite"
+      className="flex items-center gap-2 rounded-xl bg-bridge/8 px-3 py-2 text-sm font-medium leading-7 text-bridge-ink"
+    >
+      <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-bridge" />
+      {text}
+    </p>
   );
 }

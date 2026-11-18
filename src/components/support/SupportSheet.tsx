@@ -319,6 +319,8 @@ export function SupportSheet({
         <AuthDialog
           title={t.signIn}
           hint={t.signInHint}
+          // after signing in the support is recorded as promised, with no second click
+          onDone={() => void confirm()}
           trigger={(open) => (
             <Button size="lg" className="w-full" onClick={open}>
               {t.signIn}

@@ -110,6 +110,8 @@ const COPY = defineCopy("routes/support", {
     signIn: "سجّل الدخول لإتمام الدعم",
     signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
+    toImpact: "إلى أثري",
+    another: "اكفل طفلاً",
   },
   en: {
     section: "Support",
@@ -172,6 +174,8 @@ const COPY = defineCopy("routes/support", {
     signInHint: "You stay here; after signing in, your support is recorded with the same amount.",
     pledgeNote:
       "This is recorded as a pledge for now; nothing is charged until online payment collection opens.",
+    toImpact: "To my impact",
+    another: "Sponsor a child",
   },
 });
 
@@ -435,9 +439,17 @@ function SupportPage() {
               <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
                 {result.text}
               </p>
-              <Button asChild size="lg" className="celebrate-text mt-6">
-                <Link to="/workspaces">{t.portals}</Link>
-              </Button>
+              <p className="celebrate-text mx-auto mt-3 max-w-sm text-xs leading-6 text-muted-foreground">
+                {t.pledgeNote}
+              </p>
+              <div className="celebrate-text mt-6 flex flex-wrap justify-center gap-3">
+                <Button asChild size="lg">
+                  <Link to="/dashboard">{t.toImpact}</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link to="/orphans">{t.another}</Link>
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="mt-8 space-y-8">
@@ -578,6 +590,8 @@ function SupportPage() {
                       <AuthDialog
                         title={t.signIn}
                         hint={t.signInHint}
+                        // after signing in the support is recorded as promised, with no second click
+                        onDone={() => void confirm()}
                         trigger={(open) => (
                           <Button size="lg" onClick={open}>
                             {t.signIn}
