@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { apply, byCode, COUNTRIES, gapOf, inRing, project, regionsFor, totals } from "./model";
+import {
+  apply,
+  byCode,
+  COUNTRIES,
+  fitScale,
+  gapOf,
+  inRing,
+  PLINTH_FIT,
+  project,
+  reach,
+  regionsFor,
+  totals,
+} from "./model";
 
 describe("قاعة الأثر — الشبكة", () => {
   it("كخريطة الشبكة: مقرّ و19 مكتباً و7 أنشطة ميدانية، و8 غير مؤكَّدة", () => {
@@ -67,5 +79,20 @@ describe("قاعة الأثر — حساب الأثر", () => {
     const t = totals(rs);
     expect(t.gap).toBe(t.need - t.q);
     expect(t.pct).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe("every country fits its plinth", () => {
+  it.each(COUNTRIES.map((c) => [c.code, c] as const))("%s stays on the plinth", (_code, c) => {
+    const k = fitScale(c);
+    expect(k).toBeGreaterThan(0);
+    expect(reach(c) * k).toBeLessThanOrEqual(PLINTH_FIT + 1e-9);
+    // its regions (columns) stand on the land, inside the plinth too
+    for (const r of regionsFor(c))
+      expect(Math.hypot(r.nx, r.ny) * k).toBeLessThanOrEqual(PLINTH_FIT);
+  });
+  it("square countries shrink, slim ones keep the full scale", () => {
+    expect(fitScale(byCode("EG")!)).toBeLessThan(6.3);
+    expect(fitScale(byCode("AL")!)).toBeCloseTo(6.3, 1);
   });
 });

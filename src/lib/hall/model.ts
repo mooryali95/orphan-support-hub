@@ -107,6 +107,18 @@ export const COUNTRIES: HallCountry[] = WAMY_COUNTRIES.flatMap((c) => {
 
 export const byCode = (code: string) => COUNTRIES.find((c) => c.code === code);
 
+/** Plinth radius the country model must stay inside, in scene units. */
+export const PLINTH_FIT = 6.9;
+/** Farthest point of a country's outline from its centre (shapes are normalised to their bounding box). */
+export function reach(co: Pick<HallCountry, "rings">) {
+  let m = 0;
+  for (const ring of co.rings) for (const [x, y] of ring) m = Math.max(m, Math.hypot(x, y));
+  return m;
+}
+/** Scene scale for a country: squarish shapes (Egypt, Saudi Arabia) shrink so their corners stay on the plinth. */
+export const fitScale = (co: Pick<HallCountry, "rings">) =>
+  Math.min(6.3, PLINTH_FIT / Math.max(reach(co), 1e-6));
+
 /** مواقع مدن ألبانيا (خطّ الطول، خطّ العرض)؛ أرقامها من vision-demo. */
 const ALB_LL: Record<string, Pt> = {
   shkoder: [19.51, 42.07],
