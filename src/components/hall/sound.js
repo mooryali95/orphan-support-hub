@@ -115,6 +115,25 @@ export function createSound() {
       [0, 4, 7, 9, 12, 16].forEach((st, i) =>
         tone(523.25 * 2 ** (st / 12), { at: i * 0.11, dur: 2.4, gain: 0.07 }),
       ),
+    // ثلاث نغماتٍ للأثر: صعودٌ للتأهيل، نبضٌ دافئ للكفالة، بريقٌ ناعم للكسوة
+    qualify: () =>
+      [0, 4, 7, 12].forEach((st, i) =>
+        tone(392 * 2 ** (st / 12), { at: 0.2 + i * 0.22, dur: 2, gain: 0.06 }),
+      ),
+    sponsor: () =>
+      [0, 0.62, 1.24].forEach((at) => {
+        tone(130.8, { at, dur: 0.5, gain: 0.16 });
+        tone(196, { at: at + 0.12, dur: 0.6, gain: 0.07 });
+      }),
+    kiswa: () =>
+      [24, 19, 28, 24, 31].forEach((st, i) =>
+        tone(261.6 * 2 ** (st / 12), {
+          at: 0.1 + i * 0.09,
+          dur: 1.4,
+          gain: 0.035,
+          type: "triangle",
+        }),
+      ),
     bell: () =>
       [1, 2.76, 5.4].forEach((m, i) => tone(392 * m, { dur: 3.2 - i, gain: 0.06 / (i + 1) })),
     rise: () => {

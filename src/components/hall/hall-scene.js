@@ -187,9 +187,9 @@ export function mountHall(root, { brand, linked = [] }) {
   const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new BloomEffect({
-    luminanceThreshold: 0.62,
+    luminanceThreshold: 0.72,
     luminanceSmoothing: 0.25,
-    intensity: 1.15,
+    intensity: 0.95,
     mipmapBlur: true,
     radius: 0.72,
   });
@@ -320,7 +320,7 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   const inlay = new THREE.Group();
   inlay.position.y = 0.012;
-  inlay.add(star(9, 5, 0.42), star(6, 3, 0.3));
+  inlay.add(star(9, 5, 0.14), star(6, 3, 0.09));
   hall.add(inlay);
   [9.6, 15.2].forEach((r) => {
     const g = new THREE.Mesh(
@@ -778,14 +778,14 @@ export function mountHall(root, { brand, linked = [] }) {
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
-    color: 0x4a1020,
+    color: 0x380b16,
     roughness: 0.38,
     metalness: 0.2,
     clearcoat: 1,
     clearcoatRoughness: 0.18,
     envMapIntensity: 0.6,
   });
-  const tierM = [0x541526, 0x5e1a2c, 0x6b1d2f].map(
+  const tierM = [0x40101b, 0x491420, 0x531927].map(
     (c) =>
       new THREE.MeshPhysicalMaterial({
         color: c,
@@ -937,7 +937,7 @@ export function mountHall(root, { brand, linked = [] }) {
   });
   let pillars = [];
   /* three supports, three visual languages, one palette */
-  const TRACK_COL = { qualify: 0xd4af6a, sponsor: 0xf2b4a2, kiswa: 0xeef0f7 };
+  const TRACK_COL = { qualify: 0xd4af6a, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
   const DIAL = [
     [0.36, 0.44, "qualify", "qualified"],
     [0.5, 0.58, "sponsor", "sponsored"],
@@ -1147,9 +1147,17 @@ export function mountHall(root, { brand, linked = [] }) {
   );
   const giftsI = new THREE.InstancedMesh(
     new THREE.OctahedronGeometry(0.045, 0),
-    new THREE.MeshBasicMaterial({
-      color: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(1.9),
-      toneMapped: false,
+    new THREE.MeshPhysicalMaterial({
+      color: 0xf4f0e8,
+      roughness: 0.22,
+      metalness: 0.05,
+      iridescence: 1,
+      iridescenceIOR: 1.6,
+      sheen: 1,
+      sheenColor: new THREE.Color(0xe6dcff),
+      clearcoat: 1,
+      emissive: 0x2c2a30,
+      envMapIntensity: 1.6,
     }),
     DOTS,
   );
@@ -1185,9 +1193,17 @@ export function mountHall(root, { brand, linked = [] }) {
   orbit.rotation.x = Math.PI / 2;
   const falling = new THREE.InstancedMesh(
     new THREE.BoxGeometry(0.075, 0.075, 0.075),
-    new THREE.MeshBasicMaterial({
-      color: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(2.2),
-      toneMapped: false,
+    new THREE.MeshPhysicalMaterial({
+      color: 0xf4f0e8,
+      roughness: 0.22,
+      metalness: 0.05,
+      iridescence: 1,
+      iridescenceIOR: 1.6,
+      sheen: 1,
+      sheenColor: new THREE.Color(0xe6dcff),
+      clearcoat: 1,
+      emissive: 0x2c2a30,
+      envMapIntensity: 1.6,
     }),
     64,
   );
@@ -1536,12 +1552,28 @@ export function mountHall(root, { brand, linked = [] }) {
     l.globe = c;
     l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
   });
+  let TOP3 = new Set();
   function refreshLabels() {
+    TOP3 = new Set(
+      [...CITIES]
+        .sort((a, b) => gapOf(b) - gapOf(a))
+        .slice(0, 3)
+        .map((c) => c.id),
+    );
+    renderLegend();
     labels.forEach((l) => l.globe && l.el.classList.toggle("hot", PICKED && l.globe === CO));
     pillars.forEach((o) => {
       o.label.el.classList.toggle("hot", o.c.id === S.city);
       o.label.el.innerHTML = `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
     });
+  }
+  const legend = $("#legend");
+  function renderLegend() {
+    const c = CITIES.find((x) => x.id === S.city);
+    if (!legend || !c) return;
+    const row = (t, n, w) =>
+      `<li class="lg-${t}"><i aria-hidden="true"></i>${w}<b class="num">${fmt(n)}</b><small>/ <span class="num">${fmt(c.need)}</span></small></li>`;
+    legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, "تأهّلوا")}${row("sponsor", c.sponsored, "مكفولون")}${row("kiswa", c.clothed, "مكسوّون")}</ul>`;
   }
   const cur = $("#cursor");
   on(window, "pointermove", (e) => {
@@ -1636,6 +1668,10 @@ export function mountHall(root, { brand, linked = [] }) {
   let idle = 0;
   function setStage(s) {
     S.stage = s;
+    root.classList.toggle(
+      "in-country",
+      ["country", "support", "impact", "impactPending"].includes(s),
+    );
     idle = 0;
     root.classList.toggle("in-hall", s === "hall");
     root.querySelectorAll("#steps li").forEach((li) => {
@@ -1803,6 +1839,12 @@ export function mountHall(root, { brand, linked = [] }) {
 
   /* ── Direction: authored camera paths, optional sound, film mode ── */
   const sound = createSound();
+  const focusBtn = $("#focusBtn");
+  focusBtn?.addEventListener("click", () => {
+    const v = root.classList.toggle("focus");
+    focusBtn.setAttribute("aria-pressed", String(v));
+    focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
+  });
   const soundBtn = $("#soundBtn");
   soundBtn?.addEventListener("click", async () => {
     const v = await sound.toggle();
@@ -2467,7 +2509,17 @@ export function mountHall(root, { brand, linked = [] }) {
   }
 
   /** qualification: six session rings climb the new gold; sponsorship: lanterns join the orbit; clothing: gifts fall onto the children */
+  const SAY = {
+    qualify: (k) => `انظر إلى العمود: صعد الذهب، والحلقات الذهبية جلسات ${k} طفلاً`,
+    sponsor: (k) => `انظر حول العمود: ${k} فوانيس زمرّدية انضمّت إلى مدار الكفالة`,
+    kiswa: (k) => `انظر إلى الأطفال: ${k} هديةً لؤلؤية نزلت عليهم`,
+  };
   function arrive(p, o, c) {
+    sound.cue(p.track);
+    renderLegend();
+    hint(SAY[p.track](fmt(p.kids)));
+    const live = $("#srLive");
+    if (live) live.textContent = SAY[p.track](fmt(p.kids));
     if (p.track === "qualify") {
       const b0 = o.baseH,
         b1 = H(c.qualified);
@@ -3352,6 +3404,7 @@ export function mountHall(root, { brand, linked = [] }) {
       o.dim += ((focusMode && !sel ? 0.28 : 1) - o.dim) * Math.min(1, dt * 3);
       o.fill.material.opacity = o.dim;
       o.glass.material.opacity = 0.16 * o.dim;
+      o.dial.forEach((d) => (d.arc.material.opacity = o.dim));
       o.cap.visible = o.rise > 0.02;
       o.pulse = Math.max(0, o.pulse - dt * 0.8);
       o.halo.material.opacity = (sel ? 0.7 : 0) + o.pulse * 0.5;
@@ -3374,7 +3427,7 @@ export function mountHall(root, { brand, linked = [] }) {
           continue;
         }
         const grow = i >= LG.from ? LG.t : 1,
-          a = time * 0.5 + (i / Math.max(1, n)) * Math.PI * 2;
+          a = (RM ? 0 : time * 0.5) + (i / Math.max(1, n)) * Math.PI * 2;
         const beat = 1 + 0.35 * Math.max(0, Math.sin(time * 2.4 + i * 0.9)) ** 3;
         vP.set(
           base.x + Math.cos(a) * 0.64 * grow,
@@ -3389,7 +3442,7 @@ export function mountHall(root, { brand, linked = [] }) {
       lanterns.instanceMatrix.needsUpdate = true;
       const now = performance.now();
       DROPS.list.forEach((d, k) => {
-        d.t = Math.min(1, Math.max(0, (now - DROPS.t0 - k * 45) / 1100));
+        d.t = RM ? 1 : Math.min(1, Math.max(0, (now - DROPS.t0 - k * 45) / 1100));
         const e = d.t * d.t;
         vP.set(d.x, 4.6 - (4.6 - d.y) * e, d.z);
         falling.setMatrixAt(
@@ -3458,9 +3511,12 @@ export function mountHall(root, { brand, linked = [] }) {
         l.el.style.opacity = 0;
         continue;
       }
-      const fm =
-        l.city && ["support", "impact", "impactPending"].includes(S.stage) && l.city !== S.city;
-      l.el.style.opacity = fm ? 0.22 : 1;
+      // declutter: in the country only the chosen city and the three widest gaps keep a name
+      const quiet =
+        l.city &&
+        l.city !== S.city &&
+        (["support", "impact", "impactPending"].includes(S.stage) || !TOP3.has(l.city));
+      l.el.style.opacity = quiet ? 0 : 1;
       l.el.style.transform = `translate(${((p.x + 1) / 2) * innerWidth}px, ${((1 - p.y) / 2) * innerHeight}px) translate(-50%, -100%)`;
     }
     raf = requestAnimationFrame(frame);

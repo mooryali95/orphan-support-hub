@@ -67,14 +67,15 @@ function HallPage() {
           {BRAND.name} · قاعة الأثر<small>منصة الرؤية والتوجهات</small>
         </div>
         <ol id="steps" aria-label="مراحل الرحلة">
-          <li data-s="hall">القاعة</li>
           <li data-s="world">العالم</li>
           <li data-s="country">الدولة</li>
           <li data-s="support">الدعم</li>
           <li data-s="impact">الأثر</li>
-          <li data-s="big">الصورة الكلية</li>
         </ol>
         <nav className="exits" aria-label="روابط">
+          <button id="focusBtn" type="button" className="chip" aria-pressed="false">
+            عرض المجسّم
+          </button>
           <button id="soundBtn" type="button" className="chip" aria-pressed="false">
             الصوت
           </button>
@@ -121,6 +122,8 @@ function HallPage() {
       </section>
 
       <div id="hint" />
+      <aside id="legend" aria-label="مفتاح الأثر" />
+      <p id="srLive" className="sr-only" aria-live="polite" />
       <p id="caption" aria-live="polite" />
       <nav id="hallNav" aria-label="شاشات القاعة">
         <button type="button" data-d="-1" aria-label="الشاشة السابقة">

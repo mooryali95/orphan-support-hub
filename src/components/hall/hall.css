@@ -1438,3 +1438,121 @@
   direction: ltr;
   pointer-events: none;
 }
+
+/* ── v4: quiet luxury — narrower glass, a colour key, a focus mode ── */
+.hall {
+  --mist: rgba(246, 239, 226, 0.8);
+  --t-qualify: #d4af6a;
+  --t-sponsor: #5cc9a4;
+  --t-kiswa: #eef0f7;
+}
+#panel {
+  width: min(372px, 31vw);
+}
+#impact {
+  width: min(500px, calc(100vw - min(372px, 31vw) - 64px));
+  max-height: min(46vh, calc(100% - 120px));
+}
+#panel,
+#impact {
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.4s ease;
+}
+.hall.focus #panel {
+  transform: translateX(calc(100% + 32px));
+  opacity: 0;
+  pointer-events: none;
+}
+.hall.focus #impact {
+  transform: translateY(calc(100% + 32px));
+  opacity: 0;
+  pointer-events: none;
+}
+.lbl {
+  background: rgba(13, 7, 9, 0.82);
+}
+#legend {
+  position: fixed;
+  z-index: 5;
+  top: calc(env(safe-area-inset-top, 0px) + 84px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  min-width: 170px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(13, 7, 9, 0.7);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 12px;
+  color: var(--ivory);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease;
+}
+.hall.in-country #legend:not(:empty) {
+  opacity: 1;
+  visibility: visible;
+}
+#legend p {
+  margin: 0 0 6px;
+  color: var(--gold);
+  font-weight: 700;
+}
+#legend ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 5px;
+}
+#legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#legend li b {
+  margin-inline-start: auto;
+}
+#legend li small {
+  color: var(--mist);
+}
+#legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.lg-qualify i {
+  background: var(--t-qualify);
+  box-shadow: 0 0 8px var(--t-qualify);
+}
+.lg-sponsor i {
+  background: var(--t-sponsor);
+  box-shadow: 0 0 8px var(--t-sponsor);
+}
+.lg-kiswa i {
+  background: radial-gradient(circle at 35% 35%, #fff, var(--t-kiswa) 55%, #c9c2e0);
+}
+.hall .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  #legend {
+    top: calc(env(safe-area-inset-top, 0px) + 64px);
+    left: 12px;
+    min-width: 0;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .hall.focus #panel {
+    transform: translateY(calc(100% + 32px));
+  }
+  .hall #focusBtn {
+    display: inline-flex;
+  }
+}
