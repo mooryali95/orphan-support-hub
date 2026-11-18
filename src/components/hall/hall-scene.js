@@ -1121,8 +1121,8 @@ export function mountHall(root, { brand, linked = [] }) {
   }
   const DOTS = 100;
   const dots = new THREE.InstancedMesh(
-    new THREE.SphereGeometry(0.055, 12, 12),
-    new THREE.MeshBasicMaterial({ toneMapped: false }),
+    new THREE.SphereGeometry(0.064, 16, 16),
+    new THREE.MeshStandardMaterial({ metalness: 0.75, roughness: 0.26, envMapIntensity: 1.5 }),
     DOTS,
   );
   dots.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -2060,9 +2060,9 @@ export function mountHall(root, { brand, linked = [] }) {
         landGroup.scale.set(1, 0.001, 1);
         plinth.scale.set(0.2, 1, 0.2);
         plinthRing.scale.set(0.2, 0.2, 0.2);
-        controls.setLookAt(10, 16, 18, 0, 1.2, 0, false);
+        controls.setLookAt(7.5, 13, 13, 0, 1.2, 0, false);
         controls.smoothTime = 1.6;
-        controls.setLookAt(8, 10.5, 15.5, 0, 1.2, 0, true);
+        controls.setLookAt(6.2, 8.6, 11.4, 0, 1.2, 0, true);
         focus.set(0, 1.5, 0);
         controls.enabled = true;
         setStage("country");
@@ -3144,7 +3144,7 @@ export function mountHall(root, { brand, linked = [] }) {
           o.rise = 0;
           layoutPillar(o);
         });
-        controls.setLookAt(8, 10.5, 15.5, 0, 1.2, 0, true);
+        controls.setLookAt(6.2, 8.6, 11.4, 0, 1.2, 0, true);
         focus.set(0, 1.5, 0);
       })
       .to(landGroup.scale, { y: 1, duration: 1, ease: "back.out(1.6)" })
@@ -3460,6 +3460,7 @@ export function mountHall(root, { brand, linked = [] }) {
       for (let k = DROPS.list.length; k < 64; k++) falling.setMatrixAt(k, zero);
       falling.instanceMatrix.needsUpdate = true;
     }
+    inlay.visible = !country.visible;
     const beamOn =
       country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage)
         ? 1
