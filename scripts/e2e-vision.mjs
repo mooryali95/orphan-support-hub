@@ -29,6 +29,8 @@ const PAGES = [
   "/vision/operations",
   "/vision/decision",
   "/vision/network",
+  "/vision/journey",
+  "/vision/hall",
   "/vision/impact",
   "/vision/cycle",
   "/vision/payments",
@@ -36,6 +38,8 @@ const PAGES = [
 ];
 // ميزانية الأداء: ما يُنزَّل من JS وCSS مضغوطاً لكلّ صفحة (اليوم نحو 340–350KB).
 const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 380);
+// قاعة الأثر تحمّل three.js والمعالجة السينمائية كسولاً عند فتحها وحدها.
+const PAGE_BUDGET_KB = { "/vision/hall": Number(process.env.HALL_BUDGET_KB ?? 900) };
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i];
 const failures = [];
 const fail = (where, msg) => failures.push(`${where}: ${msg}`);
@@ -121,7 +125,8 @@ for (const [lang, dir] of [
     await page.waitForTimeout(300);
     const gz = (await Promise.all(sizes)).reduce((a, b) => a + b, 0);
     const kb = Math.round(gz / 1024);
-    if (kb > BUDGET_KB) fail(`budget ${path}`, `${kb}KB gzip > ${BUDGET_KB}KB`);
+    const limit = PAGE_BUDGET_KB[path] ?? BUDGET_KB;
+    if (kb > limit) fail(`budget ${path}`, `${kb}KB gzip > ${limit}KB`);
     console.log(`  · ${path}: ${kb}KB gzip`);
     await ctx.close();
   }

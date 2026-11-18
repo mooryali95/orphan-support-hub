@@ -225,3 +225,29 @@ describe("role inbox", async () => {
     expect(sup.every((e) => e.layer === "operations")).toBe(true);
   });
 });
+
+describe("three tracks", () => {
+  it("sponsorship records a monthly charge, delivery lifts the child's traits", () => {
+    const g = seed().groups.find(isFunded)!;
+    const child = `${g.id}-c1`;
+    let s = reduce(seed(), { type: "sponsor", donor: "ك", child, group: g.id, monthly: 300, at });
+    expect(s.sponsorships).toHaveLength(1);
+    expect(s.donations[0]!.track).toBe("sponsorship");
+    expect(totals(s).sponsorshipMonthly).toBe(300);
+    s = reduce(s, { type: "deliverSponsorship", child, at });
+    expect(s.sponsorships[0]!.months).toBe(1);
+    expect(s.boosts[child]!["sumud"]).toBeGreaterThan(0);
+    expect(reduce(s, { type: "deliverSponsorship", child: "nope", at })).toBe(s);
+  });
+
+  it("in-kind kits wait for delivery, then lift every child in the group", () => {
+    const g = seed().groups[0]!;
+    let s = reduce(seed(), { type: "inkind", donor: "ع", group: g.id, count: 12, at });
+    expect(s.donations[0]!.amount).toBe(12 * 300);
+    expect(totals(s).kitsPending).toBe(12);
+    s = reduce(s, { type: "deliverKits", group: g.id, at });
+    expect(totals(s).kitsDelivered).toBe(12);
+    expect(Object.keys(s.boosts)).toHaveLength(g.members);
+    expect(reduce(s, { type: "deliverKits", group: g.id, at })).toBe(s);
+  });
+});

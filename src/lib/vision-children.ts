@@ -110,3 +110,14 @@ export function growthOf(scores: TraitScore[]) {
     leveledUp: after !== null && LEVELS.indexOf(levelOf(after)) > LEVELS.indexOf(levelOf(before)),
   };
 }
+
+/** السمات «الآن»: بعد القياس (إن وُجد) مضافاً إليها أثر الكفالة والدعم العيني. */
+export function nowTraits(
+  scores: TraitScore[],
+  boosts: Record<string, number> | undefined,
+): Array<TraitScore & { now: number; lift: number }> {
+  return scores.map((t) => {
+    const lift = boosts?.[t.key] ?? 0;
+    return { ...t, lift, now: +((t.after ?? t.before) + lift).toFixed(1) };
+  });
+}

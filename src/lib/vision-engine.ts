@@ -48,6 +48,27 @@ export type GroupState = {
   fromDecision?: boolean;
 };
 
+export type Track = "qualification" | "sponsorship" | "inkind";
+
+/** كفالةٌ شهرية لطفلٍ بعينه، وكم شهراً سُلِّمت. */
+export type Sponsorship = {
+  child: string;
+  group: string;
+  donor: string;
+  monthly: number;
+  months: number;
+};
+/** حقائب/أجهزة لمجموعة، وهل سُلِّمت بإثبات. */
+export type Kits = { group: string; donor: string; count: number; delivered: boolean };
+
+/** سعر الحقيبة التعليمية (حقيبة + جهاز لوحي) في البيئة. */
+export const KIT_PRICE = 300;
+/** أثر كلّ مسارٍ في السمات (على مقياس 25) عند التسليم — توضيحيٌّ يُضبط مع منهج الرواد. */
+export const TRACK_BOOST: Record<"sponsorship" | "inkind", Record<string, number>> = {
+  sponsorship: { sumud: 0.6, dirayah: 0.3, himmah: 0.2 },
+  inkind: { kifayat: 0.8, himmah: 0.4 },
+};
+
 export type Donation = {
   id: string;
   at: number;
@@ -56,7 +77,9 @@ export type Donation = {
   fee: number;
   net: number;
   method: Method;
-  target: { kind: "city" | "group"; id: string };
+  target: { kind: "city" | "group" | "child"; id: string };
+  /** مسار الدعم: تأهيل (افتراضي)، أو كفالةٌ شهرية لطفل، أو تبرّعٌ عيني لمجموعة. */
+  track?: Track;
   invoice: string;
   status: "pending" | "settled";
 };
@@ -71,7 +94,10 @@ export type EventKind =
   | "cycleDone"
   | "measured"
   | "decision"
-  | "month";
+  | "month"
+  | "sponsored"
+  | "kitsPledged"
+  | "delivered";
 
 export type VisionEvent = {
   id: string;
@@ -97,6 +123,10 @@ export type VisionState = {
   /** الشهر منذ بداية البيئة (0 = نوفمبر 2026)، وسجلّ لقطاتٍ شهرية للمنحنيات. */
   month: number;
   history: Snapshot[];
+  sponsorships: Sponsorship[];
+  kits: Kits[];
+  /** ارتفاعات السمات لكلّ طفل من الكفالة والعيني (معرّف الطفل ← مفتاح السمة ← قيمة). */
+  boosts: Record<string, Record<string, number>>;
 };
 
 export type Snapshot = {
@@ -168,6 +198,9 @@ export function seed(): VisionState {
     measured: SYSTEM.measured,
     month: 0,
     history: [],
+    sponsorships: [],
+    kits: [],
+    boosts: {},
   };
   // ستّة أشهرٍ سابقة تقريبية — منحنى يبدأ من مكانٍ معقول لا من نقطةٍ وحيدة.
   const now = snapshot(base);
@@ -245,6 +278,10 @@ export function totals(s: VisionState) {
     pending: s.donations.filter((d) => d.status === "pending").reduce((a, d) => a + d.amount, 0),
     donors: new Set(settled.map((d) => d.donor)).size,
     measured: s.measured,
+    sponsored: (s.sponsorships ?? []).length,
+    sponsorshipMonthly: (s.sponsorships ?? []).reduce((a, x) => a + x.monthly, 0),
+    kitsDelivered: (s.kits ?? []).filter((k) => k.delivered).reduce((a, k) => a + k.count, 0),
+    kitsPending: (s.kits ?? []).filter((k) => !k.delivered).reduce((a, k) => a + k.count, 0),
   };
 }
 
@@ -343,6 +380,10 @@ export type Action =
   | { type: "apply"; key: string; at: number }
   | { type: "setFee"; pct: number }
   | { type: "advanceMonth"; at: number }
+  | { type: "sponsor"; donor: string; child: string; group: string; monthly: number; at: number }
+  | { type: "deliverSponsorship"; child: string; at: number }
+  | { type: "inkind"; donor: string; group: string; count: number; at: number }
+  | { type: "deliverKits"; group: string; at: number }
   | { type: "scenario"; scenario: Scenario; at: number }
   | { type: "reset" };
 
@@ -409,10 +450,117 @@ function settle(s: VisionState, d: Donation, at: number) {
   allocate(s, d, at);
 }
 
+/** قيدٌ مباشر لدعمٍ بلا تخصيصٍ لمجموعة (الكفالة والعيني): بطاقةٌ تُقيَّد فوراً بفاتورتها. */
+function recordDirect(
+  s: VisionState,
+  at: number,
+  donor: string,
+  amount: number,
+  target: Donation["target"],
+  track: Track,
+) {
+  const fee = Math.round(amount * s.feePercent) / 100;
+  s.seq += 1;
+  const d: Donation = {
+    id: `demo-d-${s.seq}`,
+    at,
+    donor: donor.trim().slice(0, 40) || "—",
+    amount,
+    fee,
+    net: +(amount - fee).toFixed(2),
+    method: "card",
+    target,
+    track,
+    invoice: "",
+    status: "settled",
+  };
+  s.invoiceSeq += 1;
+  d.invoice = `DEMO-INV-2026-${String(s.invoiceSeq).padStart(4, "0")}`;
+  s.donations.unshift(d);
+  ev(s, at, "support", "donation", {
+    amount,
+    donor: d.donor,
+    target: target.id,
+    method: "card",
+    id: d.id,
+  });
+  ev(s, at, "support", "settled", { amount, fee, net: d.net, invoice: d.invoice, method: "card" });
+  return d;
+}
+
+function boost(s: VisionState, child: string, by: Record<string, number>) {
+  const cur = { ...(s.boosts[child] ?? {}) };
+  for (const [k, v] of Object.entries(by)) cur[k] = +Math.min(4, (cur[k] ?? 0) + v).toFixed(1);
+  s.boosts = { ...s.boosts, [child]: cur };
+}
+
 export function reduce(prev: VisionState, a: Action): VisionState {
   if (a.type === "reset") return seed();
   const s: VisionState = structuredClone(prev);
   switch (a.type) {
+    case "sponsor": {
+      const monthly = Math.round(a.monthly);
+      if (!(monthly >= 50 && monthly <= 10_000) || !s.groups.some((g) => g.id === a.group))
+        return prev;
+      const d = recordDirect(
+        s,
+        a.at,
+        a.donor,
+        monthly,
+        { kind: "child", id: a.child },
+        "sponsorship",
+      );
+      s.sponsorships = [
+        ...s.sponsorships.filter((x) => x.child !== a.child),
+        { child: a.child, group: a.group, donor: d.donor, monthly, months: 0 },
+      ];
+      ev(s, a.at, "operations", "sponsored", {
+        child: a.child,
+        group: a.group,
+        monthly,
+        invoice: d.invoice,
+      });
+      return s;
+    }
+    case "deliverSponsorship": {
+      const sp = s.sponsorships.find((x) => x.child === a.child);
+      if (!sp) return prev;
+      s.sponsorships = s.sponsorships.map((x) =>
+        x.child === a.child ? { ...x, months: x.months + 1 } : x,
+      );
+      boost(s, a.child, TRACK_BOOST.sponsorship);
+      ev(s, a.at, "operations", "delivered", {
+        kind: "sponsorship",
+        child: a.child,
+        group: sp.group,
+        month: sp.months + 1,
+      });
+      return s;
+    }
+    case "inkind": {
+      const count = Math.round(a.count);
+      if (!(count >= 1 && count <= 500) || !s.groups.some((g) => g.id === a.group)) return prev;
+      const d = recordDirect(
+        s,
+        a.at,
+        a.donor,
+        count * KIT_PRICE,
+        { kind: "group", id: a.group },
+        "inkind",
+      );
+      s.kits = [...s.kits, { group: a.group, donor: d.donor, count, delivered: false }];
+      ev(s, a.at, "operations", "kitsPledged", { group: a.group, count, invoice: d.invoice });
+      return s;
+    }
+    case "deliverKits": {
+      const k = s.kits.find((x) => x.group === a.group && !x.delivered);
+      const g = s.groups.find((x) => x.id === a.group);
+      if (!k || !g) return prev;
+      s.kits = s.kits.map((x) => (x === k ? { ...x, delivered: true } : x));
+      for (let i = 1; i <= g.members; i++) boost(s, `${g.id}-c${i}`, TRACK_BOOST.inkind);
+      ev(s, a.at, "operations", "delivered", { kind: "inkind", group: a.group, count: k.count });
+      return s;
+    }
     case "scenario":
       return applyScenario(prev, a.scenario, a.at);
     case "advanceMonth": {

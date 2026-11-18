@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 
 import { ALBANIA } from "@/data/vision-demo";
+import { childrenOf } from "@/lib/vision-children";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import {
@@ -155,6 +156,13 @@ const COPY = defineCopy("components/vision/VisionStore", {
     layer: { support: "الدعم", operations: "التشغيل", decision: "القرار" },
     moved: (n: number) => `وتحرّك بعده ${n} في الطبقات`,
     month: (m: string) => `بدأ شهرٌ جديد: ${m} — كفلاءٌ شهريون، وجلسات، وقياس`,
+    sponsored: (child: string, m: string) =>
+      `كفالةٌ شهرية لـ${child}: ${m} — وصلت ملفّه في التشغيل`,
+    sponsorDelivered: (child: string, n: string) =>
+      `سُلِّمت كفالة ${child} للشهر ${n} بإثبات — ارتفع الصمود والدراية`,
+    kitsPledged: (n: string, g: string) => `${n} حقيبة تعليمية لـ${g} — بانتظار التسليم`,
+    kitsDelivered: (n: string, g: string) =>
+      `سُلِّمت ${n} حقيبة لـ${g} بإثبات — ارتفعت الكفايات والهمّة`,
     advance: "تقدّم شهراً",
     now: "الآن",
     donation: (amt: string, donor: string, place: string) =>
@@ -201,6 +209,13 @@ const COPY = defineCopy("components/vision/VisionStore", {
     layer: { support: "Support", operations: "Operations", decision: "Decision" },
     moved: (n: number) => `and ${n} more moved across the layers`,
     month: (m: string) => `A new month began: ${m} — recurring sponsors, sessions and measurement`,
+    sponsored: (child: string, m: string) =>
+      `Monthly sponsorship for ${child}: ${m} — reached the file in operations`,
+    sponsorDelivered: (child: string, n: string) =>
+      `${child}'s sponsorship delivered for month ${n} with proof — resilience and awareness rose`,
+    kitsPledged: (n: string, g: string) => `${n} learning kits for ${g} — awaiting delivery`,
+    kitsDelivered: (n: string, g: string) =>
+      `${n} kits delivered to ${g} with proof — competencies and drive rose`,
     advance: "Advance a month",
     now: "Now",
     donation: (amt: string, donor: string, place: string) =>
@@ -253,6 +268,12 @@ export function usePlace() {
   const { state } = useVision();
   const locale = useLocale();
   return (id: string) => {
+    const kid = /^(.*)-c(\d+)$/.exec(id);
+    if (kid) {
+      const grp = state.groups.find((x) => x.id === kid[1]);
+      const k = grp ? childrenOf(grp)[Number(kid[2]) - 1] : undefined;
+      if (k) return locale === "ar" ? k.pseudonym.ar : k.pseudonym.en;
+    }
     const g = state.groups.find((x) => x.id === id);
     const c = state.cities.find((x) => x.id === id) ?? ALBANIA.find((x) => x.id === id);
     const n = g?.name ?? c?.name;
@@ -301,6 +322,14 @@ export function useEventText() {
           : c.measuredDec(num(n("measured")));
       case "month":
         return c.month(monthLabel(n("month"), locale));
+      case "sponsored":
+        return c.sponsored(place(s("child")), money(n("monthly")));
+      case "kitsPledged":
+        return c.kitsPledged(num(n("count")), place(s("group")));
+      case "delivered":
+        return s("kind") === "inkind"
+          ? c.kitsDelivered(num(n("count")), place(s("group")))
+          : c.sponsorDelivered(place(s("child")), num(n("month")));
       case "decision":
         return (c.decision[s("kind")] ?? c.decision["campaign"]!)(
           place(s("city")),
