@@ -944,3 +944,119 @@ header.sticky {
     opacity: 0;
   }
 }
+
+/* «كوكبة أثرك» (MyImpactHero): الأشعّة تُرسم من المركز، ثم تظهر الجواهر، ثم تمتلئ
+   حصّتك ذهباً، والمركز يتنفّس. الحالة الأخيرة هي النمط الساكن، فتقليل الحركة يُظهرها مكتملة. */
+.impact-hero {
+  background:
+    radial-gradient(
+      ellipse 60% 70% at 72% 50%,
+      color-mix(in oklab, var(--bridge) 9%, transparent),
+      transparent 70%
+    ),
+    var(--card);
+}
+.impact-orbit {
+  stroke-dasharray: 2 5;
+  opacity: 0.8;
+}
+.impact-ray {
+  stroke-width: 0.8;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.45;
+  animation: impact-draw 0.9s var(--ease-out) both;
+}
+.impact-gem {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: impact-gem 0.7s var(--ease-out) both;
+}
+.impact-share {
+  animation: impact-fill 1.2s var(--ease-out) both;
+}
+.impact-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: impact-pulse 4s ease-in-out 1.6s infinite;
+}
+.impact-cta {
+  background-image: linear-gradient(
+    135deg,
+    var(--primary),
+    color-mix(in oklab, var(--primary) 70%, var(--bridge))
+  );
+}
+@keyframes impact-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes impact-gem {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes impact-fill {
+  from {
+    stroke-dasharray: 0 1;
+  }
+}
+@keyframes impact-pulse {
+  50% {
+    transform: scale(1.18);
+    opacity: 0.7;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .impact-ray,
+  .impact-gem,
+  .impact-share,
+  .impact-pulse {
+    animation: none;
+  }
+}
+
+/* ── لمسات الفخامة في الوضعين (بلا تغيير ألوان الهوية) ──
+   ظلالٌ طبقية هادئة بلون الحبر لا بلون الأزرق، وفي الداكن حافةٌ زجاجية خفيفة أعلى كلّ سطح
+   وظلٌّ أعمق؛ وتحديد النصّ ذهبيّ، وأشرطة تمرير رفيعة بلون الخطّ. */
+:root,
+.theme-light {
+  --shadow-soft:
+    0 1px 1px color-mix(in oklab, var(--foreground) 4%, transparent),
+    0 2px 6px -2px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 18px 40px -20px color-mix(in oklab, var(--foreground) 22%, transparent);
+  --shadow-lift:
+    0 2px 4px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 10px 20px -8px color-mix(in oklab, var(--foreground) 10%, transparent),
+    0 32px 64px -24px color-mix(in oklab, var(--foreground) 28%, transparent);
+  --surface-edge: transparent;
+}
+.dark:not(.theme-light),
+.dark :not(.theme-light) {
+  --shadow-soft:
+    inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 2px 8px -2px rgb(0 0 0 / 0.5), 0 24px 48px -24px rgb(0 0 0 / 0.7);
+  --shadow-lift:
+    inset 0 1px 0 color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 4px 12px -4px rgb(0 0 0 / 0.55), 0 36px 72px -28px rgb(0 0 0 / 0.8);
+}
+.dark .impact-hero {
+  border-color: color-mix(in oklab, var(--bridge) 22%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 60% 70% at 72% 50%,
+      color-mix(in oklab, var(--bridge) 12%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(180deg, color-mix(in oklab, var(--foreground) 3%, var(--card)), var(--card));
+}
+::selection {
+  background: color-mix(in oklab, var(--bridge) 32%, transparent);
+  color: var(--foreground);
+}
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent) transparent;
+}

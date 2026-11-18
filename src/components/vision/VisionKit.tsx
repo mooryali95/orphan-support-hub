@@ -29,7 +29,6 @@ const COPY = defineCopy("components/vision/VisionKit", {
     me: "ادخل بدورك",
     network: "الدول",
     journey: "الرحلة الكاملة",
-    hall: "قاعة الأثر",
     impact: "الأثر",
   },
   en: {
@@ -45,7 +44,6 @@ const COPY = defineCopy("components/vision/VisionKit", {
     me: "Enter by role",
     network: "Countries",
     journey: "Full journey",
-    hall: "Impact hall",
     impact: "Impact",
   },
 });
@@ -82,7 +80,6 @@ const TABS = [
   { to: "/vision/decision", key: "decision" },
   { to: "/vision/network", key: "network" },
   { to: "/vision/journey", key: "journey" },
-  { to: "/vision/hall", key: "hall" },
   { to: "/vision/impact", key: "impact" },
   { to: "/vision/cycle", key: "cycle" },
   { to: "/vision/payments", key: "money" },

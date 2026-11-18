@@ -32,6 +32,8 @@ import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Name } from "@/components/kit/Name";
+import { MyImpactHero } from "@/components/impact/MyImpactHero";
+import { myImpact } from "@/lib/my-impact";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
@@ -102,7 +104,7 @@ function DashboardPage() {
   const ready = !isLoading && !listFailed;
 
   return (
-    <DashboardShell title="كفالاتي" description="متابعة كفالاتك الشهرية وحالة كل ملف.">
+    <DashboardShell title="أثري" description="أثر كفالاتك، ومتابعة كلّ كفالة وحالة كلّ ملف.">
       {payment === "done" && (
         <CelebrateOverlay
           title="بدأت كفالتك"
@@ -111,6 +113,9 @@ function DashboardPage() {
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
       )}
+
+      {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
+      {!listFailed && <MyImpactHero impact={myImpact(sponsorships)} loading={isLoading} />}
 
       {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}
       {!listFailed && (

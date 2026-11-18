@@ -1,0 +1,69 @@
+/**
+ * «أثري» — الصورة الشخصية للداعم من كفالاته هو وحدها. لا يقرأ إلا ما في بطاقة
+ * الكفالة المسموح بها (الاسم المعروض، الرمز، الحاجة الشهرية، الممول منها)؛ فلا صور
+ * ولا أماكن — تلك خلف بوابة الوصول إلى الطفل.
+ */
+import type { MySponsorship } from "@/lib/sponsorships.functions";
+
+export type ImpactChild = {
+  id: string;
+  name: string;
+  /** months this donor's care has run, whole months since it started */
+  months: number;
+  /** share of the child's monthly need this donor covers, 0..1 */
+  share: number;
+  /** share of the need covered by everyone, 0..1 */
+  covered: number;
+  active: boolean;
+  amount: number;
+  currency: string;
+};
+
+export type MyImpact = {
+  children: ImpactChild[];
+  /** children with a running (active or paused) sponsorship */
+  inCare: number;
+  /** total months of care across all sponsorships */
+  months: number;
+  /** average share of their needs this donor covers, over children in care, 0..1 */
+  share: number;
+};
+
+const DAY = 86_400_000;
+
+/** whole months between two dates (30.44-day months), never negative */
+export function monthsBetween(from: string | null, to: Date): number {
+  if (!from) return 0;
+  const t = Date.parse(from);
+  if (Number.isNaN(t)) return 0;
+  return Math.max(0, Math.floor((to.getTime() - t) / (30.44 * DAY)));
+}
+
+const clamp01 = (n: number) => (Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0);
+
+export function myImpact(list: MySponsorship[], now: Date = new Date()): MyImpact {
+  const children: ImpactChild[] = [];
+  for (const s of list) {
+    if (!s.orphan || s.status === "pending_payment") continue;
+    const need = Number(s.orphan.monthly_need) || 0;
+    const end = s.ended_at ? new Date(s.ended_at) : now;
+    const running = s.status === "active" || s.status === "paused";
+    children.push({
+      id: s.id,
+      name: s.orphan.display_name,
+      months: s.type === "one_time" ? 1 : monthsBetween(s.started_at ?? s.created_at, end),
+      share: need > 0 && s.type !== "one_time" ? clamp01(s.amount / need) : 0,
+      covered: need > 0 ? clamp01(Number(s.orphan.funded_monthly) / need) : 0,
+      active: running,
+      amount: s.amount,
+      currency: s.currency,
+    });
+  }
+  const inCare = children.filter((c) => c.active);
+  return {
+    children,
+    inCare: inCare.length,
+    months: children.reduce((a, c) => a + c.months, 0),
+    share: inCare.length ? inCare.reduce((a, c) => a + c.share, 0) / inCare.length : 0,
+  };
+}

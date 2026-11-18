@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as HallRouteImport } from './routes/hall'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -77,6 +78,11 @@ const AuthRoute = AuthRouteImport.update({
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HallRoute = HallRouteImport.update({
+  id: '/hall',
+  path: '/hall',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
+  '/hall': typeof HallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -375,6 +382,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
+  '/hall': typeof HallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -428,6 +436,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
+  '/hall': typeof HallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -481,6 +490,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/developers'
+    | '/hall'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -532,6 +542,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/developers'
+    | '/hall'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -584,6 +595,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/developers'
+    | '/hall'
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
@@ -637,6 +649,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   DevelopersRoute: typeof DevelopersRoute
+  HallRoute: typeof HallRoute
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -698,6 +711,13 @@ declare module '@tanstack/react-router' {
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hall': {
+      id: '/hall'
+      path: '/hall'
+      fullPath: '/hall'
+      preLoaderRoute: typeof HallRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -1073,6 +1093,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   DevelopersRoute: DevelopersRoute,
+  HallRoute: HallRoute,
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

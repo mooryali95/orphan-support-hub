@@ -21,7 +21,7 @@ let errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 page.on("console", (m) => m.type() === "error" && errors.push(m.text().slice(0, 200)));
 
-await page.goto(BASE + "/vision/hall", { waitUntil: "networkidle" });
+await page.goto(BASE + "/hall", { waitUntil: "networkidle" });
 await page.waitForSelector("#enter:not([disabled])", { timeout: 60000 });
 await page.click("#enter", { force: true });
 await page.waitForTimeout(4000);
