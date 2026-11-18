@@ -1,5 +1,4 @@
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { KahataynMark } from "@/components/brand/KahataynMark";
 import { cn } from "@/lib/utils";
 
 /**
@@ -43,20 +42,25 @@ export function MuralImage({
 }) {
   if (!photoUrl) {
     return (
+      // no photo: a quiet wine field with the child's initial in the display face, so each card is
+      // personal rather than a repeated mark, and the pattern stays a whisper in champagne
       <div
         className={cn(
-          "surface-crossing relative flex items-center justify-center overflow-hidden",
+          "mural-placeholder relative flex items-center justify-center overflow-hidden",
           className,
         )}
       >
         <BrandPattern
           density={register === "need" ? "dense" : "active"}
           className="text-gold-line"
-          opacity={0.28}
+          opacity={0.1}
           tile={72}
         />
-        <span className="relative w-[38%] max-w-24 opacity-90">
-          <KahataynMark compact />
+        <span
+          aria-hidden="true"
+          className="relative font-display text-[clamp(2.5rem,6vw,4rem)] leading-none font-bold text-[color:var(--bridge-bright)]"
+        >
+          {displayName.trim().charAt(0)}
         </span>
       </div>
     );

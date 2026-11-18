@@ -79,7 +79,8 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-ink: var(--gold-ink);
   --color-ivory: var(--ivory);
-  --font-display: "Readex Pro", ui-sans-serif, sans-serif;
+  /* display: the classical Arabic face of the hall, so the hand of the logo is felt on every page */
+  --font-display: "Amiri", "Readex Pro", serif;
   --font-sans: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", "Times New Roman", serif;
 }
@@ -235,16 +236,18 @@
 }
 
 /* الشريط الثلاثي: توقيع الهوية على حواف الأسطح الرسمية */
+/* the brand rule: a champagne hairline that fades at both ends, as the hall's gold line does */
 @utility brand-rule {
   background-image: linear-gradient(
     to left,
-    var(--shore-thrive) 0%,
-    var(--shore-thrive) 40%,
-    var(--bridge) 40%,
-    var(--bridge) 60%,
-    var(--shore-thrive) 60%,
-    var(--shore-thrive) 100%
+    transparent 0%,
+    color-mix(in oklab, var(--bridge) 70%, transparent) 18%,
+    var(--bridge) 50%,
+    color-mix(in oklab, var(--bridge) 70%, transparent) 82%,
+    transparent 100%
   );
+  transform: scaleY(0.34);
+  transform-origin: top;
 }
 
 /* ظهورٌ هادئ عند الدخول: صعودٌ قصير وشفافية، مرّةً واحدة. يُعطَّل مع
@@ -1075,4 +1078,13 @@ html {
   .try-rise {
     animation: none;
   }
+}
+
+/* card placeholder: the logo's wine, deepening downwards, in both modes */
+.mural-placeholder {
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--logo) 88%, white) 0%,
+    var(--logo-deep) 100%
+  );
 }

@@ -485,15 +485,15 @@ function HomePage() {
       <main id="main" tabIndex={-1}>
         {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
-          <BrandPattern density="active" className="text-gold-line" opacity={0.14} tile={104} />
-          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-chart-4/45" />
+          <BrandPattern density="active" className="text-gold-line" opacity={0.08} tile={104} />
+          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-primary/10" />
           <div
             aria-hidden="true"
-            className="blob top-1/3 -left-24 size-96 bg-bridge/40 [animation-delay:-6s]"
+            className="blob top-1/3 -left-24 size-96 bg-bridge/12 [animation-delay:-6s]"
           />
           <div
             aria-hidden="true"
-            className="blob -bottom-24 right-1/3 size-72 bg-shore-thrive/40 [animation-delay:-12s]"
+            className="blob -bottom-24 right-1/3 size-72 bg-primary/8 [animation-delay:-12s]"
           />
           <div className="relative mx-auto max-w-6xl px-4 pt-10 pb-10 text-center md:pt-14 md:pb-12">
             <div className="flex flex-col items-center">

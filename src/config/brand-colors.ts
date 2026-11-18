@@ -22,6 +22,9 @@ const ROLES: Record<string, BrandColor> = {
   "office-gap": "amber",
   /** هويّة المنصّتين الشريكتين في /vision (التشغيل والقرار): نبيذيٌّ وذهبيّ على عاجيّ — ثابتةٌ في الوضعين. */
   wine: "partnerWine",
+  /** the partner logo's own wine and its deeper crescent: same in both modes */
+  logo: "logo",
+  "logo-deep": "logoDeep",
   "wine-deep": "partnerWineDeep",
   "wine-ink": "partnerWineInk",
   gold: "partnerGold",
