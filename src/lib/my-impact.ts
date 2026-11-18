@@ -15,6 +15,8 @@ export type ImpactChild = {
   /** share of the need covered by everyone, 0..1 */
   covered: number;
   active: boolean;
+  /** whole months from when this care began until now (for the time rail) */
+  since: number;
   amount: number;
   currency: string;
 };
@@ -55,10 +57,32 @@ export function myImpact(list: MySponsorship[], now: Date = new Date()): MyImpac
       share: need > 0 && s.type !== "one_time" ? clamp01(s.amount / need) : 0,
       covered: need > 0 ? clamp01(Number(s.orphan.funded_monthly) / need) : 0,
       active: running,
+      since: monthsBetween(s.started_at ?? s.created_at, now),
       amount: s.amount,
       currency: s.currency,
     });
   }
+  const inCare = children.filter((c) => c.active);
+  return {
+    children,
+    inCare: inCare.length,
+    months: children.reduce((a, c) => a + c.months, 0),
+    share: inCare.length ? inCare.reduce((a, c) => a + c.share, 0) / inCare.length : 0,
+  };
+}
+
+/** how far back the time rail reaches: the oldest care, at least a month */
+export const impactSpan = (m: MyImpact) => Math.max(1, ...m.children.map((c) => c.since));
+
+/**
+ * the picture as it stood `back` whole months ago: only care begun by then, each with the
+ * months it had run by then (a care that has since ended keeps its months, never more).
+ */
+export function impactAt(m: MyImpact, back: number): MyImpact {
+  if (back <= 0) return m;
+  const children = m.children
+    .filter((c) => c.since > back)
+    .map((c) => ({ ...c, months: Math.min(c.months, c.since - back) }));
   const inCare = children.filter((c) => c.active);
   return {
     children,

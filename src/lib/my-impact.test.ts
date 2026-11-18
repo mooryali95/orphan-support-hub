@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { monthsBetween, myImpact } from "./my-impact";
+import { impactAt, impactSpan, monthsBetween, myImpact } from "./my-impact";
 import type { MySponsorship } from "./sponsorships.functions";
 
 const now = new Date("2026-11-18T00:00:00Z");
@@ -62,7 +62,20 @@ describe("أثري", () => {
   it("لا يقرأ من الطفل إلا بطاقة الكفالة المسموح بها", () => {
     const keys = Object.keys(myImpact([base], now).children[0]!).sort();
     expect(keys).toEqual(
-      ["active", "amount", "covered", "currency", "id", "months", "name", "share"].sort(),
+      ["active", "amount", "covered", "currency", "id", "months", "name", "share", "since"].sort(),
     );
+  });
+
+  it("شريط الزمن: قبل أشهرٍ يظهر ما بدأ وقتها فقط، بأشهره حتى وقتها", () => {
+    const m = myImpact(
+      [base, { ...base, id: "s2", started_at: "2026-08-20T00:00:00Z", amount: 30 }],
+      now,
+    );
+    expect(impactSpan(m)).toBe(9);
+    expect(impactAt(m, 0)).toBe(m);
+    const back = impactAt(m, 5);
+    expect(back.inCare).toBe(1);
+    expect(back.children[0]).toMatchObject({ id: "s1", months: 4 });
+    expect(impactAt(m, 9).children).toEqual([]);
   });
 });
