@@ -36,6 +36,13 @@
       "when": 1794761770987,
       "tag": "0004_gate_enrollment_supervisor_lookups",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795055932176,
+      "tag": "0005_restore_supervisor_approval_check",
+      "breakpoints": true
     }
   ]
 }
