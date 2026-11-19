@@ -5,14 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import "@/components/hall/hall.css";
 import { BRAND } from "@/config/brand";
 import {
-  MARK_BACKING,
-  MARK_CALLIGRAPHY,
-  MARK_CENTER,
-  MARK_COLORS,
-  MARK_CRESCENT,
-  MARK_DISC,
-  MARK_VIEWBOX,
-} from "@/components/hall/hall-mark";
+  MARK2_CRESCENT,
+  MARK2_RING,
+  MARK2_SLOTS,
+  MARK2_VIEWBOX,
+} from "@/components/brand/KahataynMark";
 import { isTrial } from "@/config/platform";
 import { geoQuery } from "@/lib/geo";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
@@ -134,6 +131,7 @@ function HallPage() {
               </div>
             </>
           )}
+          <GatePartner />
         </div>
       </section>
 
@@ -191,105 +189,118 @@ function HallPage() {
   );
 }
 
-/** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
 /**
- * the partner mark (no wordmark), from the approved vector file. The alef's slot already cuts the
- * disc on a diagonal, so the disc is a two-leaf door: two copies, each clipped to one side of the
- * alef line, swing apart on entry while the hāʾ rises out toward the viewer and light floods through.
- * Before that, the mark is drawn in four movements: a gold line traces the outline → the disc fills →
- * the crescent settles → the hand is written.
+ * the product mark «الإصبعان» is the door into the hall. The disc is drawn as two leaves that meet
+ * on the line between its two slots; each leaf's mask cuts its own slot, so on entry (hall-scene.js,
+ * enterHall) the two slots can draw together into one opening and the leaves part along it.
+ * Before that the mark draws itself (hall.css): a hairline traces the rim → the disc fills → the
+ * crescent settles → the ring is drawn → the two fingers rise as light, and then breathe.
  */
 function MarkStage() {
+  const { k, w, a, b } = MARK2_SLOTS;
+  const skew = `matrix(1 0 ${k} 1 0 0)`;
+  const mid = (a.x + w + b.x) / 2; // the line between the two fingers, where the leaves meet
+  const top = -150; // the slots are open at the rim: their bands start above it
+  const slot = (s: { x: number; end: number }, cls: string, fill?: string) => (
+    <rect className={`k-slot ${cls}`} x={s.x} y={top} width={w} height={s.end - top} fill={fill} />
+  );
+  const box = { maskUnits: "userSpaceOnUse", x: -700, y: -700, width: 1400, height: 1400 } as const;
+  // the disc is a plain circle here and the masks cut the slots (the same shape as the mark's
+  // own path), so the slots are free to move; `edge` is the leaf's door edge once they have met
+  const art = (edge: number) => (
+    <>
+      <g mask={`url(#k2-cut-${edge < mid ? "a" : "b"})`}>
+        <circle className="k-disc" r="100" />
+        <path className="k-ring" d={MARK2_RING} />
+        <path className="k-crescent" d={MARK2_CRESCENT} />
+      </g>
+      <g clipPath="url(#k2-rim)">
+        <line
+          className="k-edge"
+          x1={edge}
+          y1={-110}
+          x2={edge}
+          y2={130}
+          pathLength={1}
+          transform={skew}
+        />
+      </g>
+    </>
+  );
   return (
     <div className="mark" aria-hidden="true">
       <div className="mark-flood" />
-      <div className="leaf leaf-a">
-        <MarkSvg id="a" layer="disc" />
-      </div>
-      <div className="leaf leaf-b">
-        <MarkSvg id="b" layer="disc" />
-      </div>
-      {/* the alef's slot, which ignites before the leaves part */}
-      <svg className="mark-slot" viewBox={MARK_VIEWBOX} focusable="false">
-        <line x1="368" y1="58" x2="145" y2="388" pathLength={1} />
+      <svg className="mark-art" viewBox={MARK2_VIEWBOX} focusable="false">
+        <defs>
+          <clipPath id="k2-rim">
+            <circle r="99.6" />
+          </clipPath>
+          <filter id="k2-soft" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" />
+          </filter>
+          {/* the leaves overlap on the meeting line, so no seam shows while the door is closed */}
+          <mask id="k2-cut-a" {...box}>
+            <g transform={skew}>
+              <rect x={-900} y={-900} width={900 + mid + 1.5} height={1800} fill="white" />
+              {slot(a, "k-slot-a", "black")}
+            </g>
+          </mask>
+          <mask id="k2-cut-b" {...box}>
+            <g transform={skew}>
+              <rect x={mid - 1.5} y={-900} width={900} height={1800} fill="white" />
+              {slot(b, "k-slot-b", "black")}
+            </g>
+          </mask>
+        </defs>
+        {/* the light behind the door: the two fingers at rest, the whole opening on entry */}
+        <circle className="k-lume" r="98.6" />
+        <g clipPath="url(#k2-rim)">
+          <g transform={skew}>
+            <rect className="k-finger" x={a.x - 0.4} y={-92} width={w + 0.8} height={a.end + 92} />
+            <rect
+              className="k-finger k-finger-b"
+              x={b.x - 0.4}
+              y={-76}
+              width={w + 0.8}
+              height={b.end + 76}
+            />
+          </g>
+        </g>
+        <g className="k-door">
+          <g className="k-leaf k-leaf-a">{art(mid - w)}</g>
+          <g className="k-leaf k-leaf-b">{art(mid + w)}</g>
+        </g>
+        {/* the breath of light through the two fingers */}
+        <g className="k-glow" filter="url(#k2-soft)">
+          <g clipPath="url(#k2-rim)">
+            <g transform={skew}>
+              {slot(a, "k-slot-a")}
+              {slot(b, "k-slot-b")}
+            </g>
+          </g>
+        </g>
+        {/* the drawing lines: the rim, the crescent, the ring (they fade once the mark stands) */}
+        <circle className="k-trace" r="99.3" pathLength={1} transform="rotate(-56)" />
+        <path className="k-trace k-trace-2" d={MARK2_CRESCENT} pathLength={1} />
+        <circle className="k-trace k-trace-ring" r="90" pathLength={1} transform="rotate(-29)" />
       </svg>
-      <div className="mark-ink">
-        <MarkSvg id="i" layer="ink" />
-      </div>
     </div>
   );
 }
 
-function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
-  const { x, y } = MARK_CENTER;
-  const u = (n: string) => `mark-${id}-${n}`;
+/** the partnership stays on the gate, quietly: the partner's mark as approved, never animated */
+function GatePartner() {
+  const p = BRAND.partner;
   return (
-    <svg viewBox={MARK_VIEWBOX} focusable="false">
-      <defs>
-        <linearGradient id={u("gold")} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" style={{ stopColor: "var(--champagne)" }} />
-          <stop offset="1" style={{ stopColor: "var(--gold)" }} />
-        </linearGradient>
-        <linearGradient id={u("sheen")} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0.35" stopColor="white" stopOpacity="0" />
-          <stop offset="0.5" stopColor="white" stopOpacity="0.8" />
-          <stop offset="0.65" stopColor="white" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id={u("feather")} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.94" stopColor="white" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-        </linearGradient>
-        {/* the hand is written by a feathered band travelling down-left along the stroke */}
-        <mask id={u("write")} maskUnits="userSpaceOnUse" x="100" y="20" width="400" height="400">
-          <g transform={`rotate(45 ${x} ${y})`}>
-            <rect
-              className="m-wipe"
-              x={x - 600}
-              y={y - 1200}
-              width="1200"
-              height="1200"
-              fill={`url(#${u("feather")})`}
-            />
-          </g>
-        </mask>
-        <clipPath id={u("clip")}>
-          <path d={MARK_CALLIGRAPHY} clipRule="evenodd" />
-        </clipPath>
-      </defs>
-      {layer === "disc" ? (
-        <>
-          <path className="m-paper" d={MARK_BACKING} fill={MARK_COLORS.paper} />
-          <path className="m-disc" d={MARK_DISC} fill={MARK_COLORS.disc} />
-          <path className="m-crescent" d={MARK_CRESCENT} fill={MARK_COLORS.crescent} />
-          <path className="m-line" d={MARK_DISC} pathLength={1} stroke={`url(#${u("gold")})`} />
-          <path
-            className="m-line m-line-2"
-            d={MARK_CRESCENT}
-            pathLength={1}
-            stroke={`url(#${u("gold")})`}
-          />
-        </>
-      ) : (
-        <>
-          <g className="m-ink" mask={`url(#${u("write")})`}>
-            <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={MARK_COLORS.paper} />
-          </g>
-          <g clipPath={`url(#${u("clip")})`}>
-            <rect
-              className="m-sheen"
-              x="-160"
-              y="40"
-              width="300"
-              height="360"
-              fill={`url(#${u("sheen")})`}
-            />
-          </g>
-        </>
-      )}
-    </svg>
+    <p className="gate-partner">
+      <span>{p.with}</span>
+      <img src="/brand/partner-mark.svg" alt="" width={24} height={26} decoding="async" />
+      <span className="gate-partner-name">{p.name}</span>
+    </p>
   );
 }
 
+/** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
 function Loader() {
   const pts = Array.from({ length: 16 }, (_, i) => {
     const a = (i / 16) * Math.PI * 2 - Math.PI / 2;

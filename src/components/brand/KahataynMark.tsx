@@ -31,6 +31,21 @@ const RING =
 const CRESCENT =
   "M88.04 -57.21 94.54 -67.22C98.6 -61.51 102.15 -55.42 105.13 -49.02C113.01 -32.12 116.7 -13.57 115.89 5.06C115.08 23.69 109.78 41.85 100.46 58L90.93 52.5C99.37 37.88 104.16 21.44 104.9 4.58C105.64 -12.28 102.3 -29.08 95.16 -44.37C93.09 -48.83 90.71 -53.12 88.04 -57.21Z";
 
+/** the same shapes for the hall's gate, where the mark is the door (src/routes/hall.lazy.tsx) */
+export const MARK2_VIEWBOX = "-102 -102 220 204";
+export const MARK2_RING = RING;
+export const MARK2_CRESCENT = CRESCENT;
+/**
+ * the two slots of DISC, read from its path: in the frame x' = x + k·y (the slot angle) each slot
+ * is a plain band from `x` to `x + w`, open at the rim and closed by a level edge at y = `end`.
+ */
+export const MARK2_SLOTS = {
+  k: -0.64936,
+  w: 19.08,
+  a: { x: -6.35, end: 26 },
+  b: { x: 25.85, end: -6 },
+} as const;
+
 type Tone = "color" | "white" | "current";
 
 export function KahataynMark({

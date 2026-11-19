@@ -1954,7 +1954,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
 
-  /* ── Gate: the partner mark is drawn, the words rise, then the mark opens like a door ── */
+  /* ── Gate: the two-fingers mark is drawn, the words rise, then the mark opens like a door ── */
   const words = $("#gate h1").textContent.trim().split(/\s+/);
   $("#gate h1").innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(" ");
   // the words rise in CSS (hall.css, g-rise) on wall-clock time, after the mark has been written
@@ -2095,65 +2095,74 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
-    // the alef is the key and the disc the door: the slot ignites, the hāʾ rises out toward the viewer,
-    // the disc parts along the alef line as two leaves, light floods through, and the camera goes in
+    // the two fingers are the key and the disc the door: the two slots fill with light and draw
+    // together into one opening, the seam runs down to the rim, the disc parts along it as two
+    // leaves, the light behind floods through, and the camera goes in
     const mark = $("#gate .mark");
-    if (mark) mark.style.animation = "none"; // the idle float would override gsap's transform
-    const P3 = { transformPerspective: 900 };
+    if (mark) {
+      // the idle float would override gsap's transform: stop it where it is, and settle from there
+      const lift = new DOMMatrixReadOnly(getComputedStyle(mark).transform).m42;
+      mark.style.animation = "none";
+      gsap.set(mark, { y: lift });
+    }
+    const glow = $("#gate .k-glow");
+    if (glow) {
+      // the idle breath hands over to the timeline from wherever it is
+      const at = getComputedStyle(glow).opacity;
+      glow.style.animation = "none";
+      glow.style.opacity = at;
+    }
     if (window.__HALL_TEST) window.__hallGate = tl; // automated checks pause and seek it
+    // slot geometry in the slot's own frame (KahataynMark MARK2_SLOTS): the bands meet on MID
+    const MID = 19.29;
+    const W = 19.08;
+    const N = { x: 0.8387, y: 0.5446 }; // across the slot: the way the leaves part
+    const PART = 132;
     tl.to("#gate > div > :not(.mark)", { autoAlpha: 0, y: 12, duration: 0.45, ease: "power2.in" })
-      .to("#gate .mark", { scale: 1.08, duration: 0.6, ease: "power2.out" }, 0)
-      .fromTo(
-        "#gate .mark-slot line",
-        { strokeDasharray: 1, strokeDashoffset: 1 },
-        { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" },
-        0.05,
-      )
-      .to("#gate .mark-slot", { opacity: 1, duration: 0.25 }, 0.05)
-      .to(
-        "#gate .mark-ink",
-        { ...P3, yPercent: -8, scale: 1.2, z: 60, duration: 0.7, ease: "power2.out" },
-        0.3,
-      )
-      .to("#gate .mark-ink", { autoAlpha: 0, scale: 1.7, duration: 0.6, ease: "power2.in" }, 0.95)
-      .to(
-        "#gate .leaf-a",
-        {
-          ...P3,
-          xPercent: -42,
-          yPercent: -30,
-          rotateY: -68,
-          rotateZ: -10,
-          autoAlpha: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
-          transformOrigin: "0% 30%",
-        },
-        0.55,
-      )
-      .to(
-        "#gate .leaf-b",
-        {
-          ...P3,
-          xPercent: 36,
-          yPercent: 24,
-          rotateY: 68,
-          rotateZ: 8,
-          autoAlpha: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
-          transformOrigin: "100% 70%",
-        },
-        0.55,
-      )
-      .to("#gate .mark-slot", { opacity: 0, duration: 0.4 }, 0.75)
+      .to("#gate .mark", { scale: 1.05, y: 0, duration: 1, ease: "power2.out" }, 0)
+      .to("#gate .k-glow", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0)
+      .set("#gate .k-lume", { opacity: 1 }, 0.05)
       .fromTo(
         "#gate .mark-flood",
-        { opacity: 0, scale: 0.2 },
-        { opacity: 1, scale: 28, duration: 1.2, ease: "power2.in" },
-        0.6,
+        { opacity: 0, scale: 0.66 },
+        { opacity: 0.32, scale: 0.86, duration: 0.8, ease: "power2.inOut" },
+        0.15,
       )
-      .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 1.35)
+      // side by side → joined: the two fingers come level and close into one opening
+      .to(
+        "#gate .k-slot-a",
+        { attr: { x: MID - W, width: W + 5 }, duration: 0.62, ease: "power3.inOut" },
+        0.32,
+      )
+      .to(
+        "#gate .k-slot-b",
+        { attr: { x: MID - 5, width: W + 5, height: 176 }, duration: 0.62, ease: "power3.inOut" },
+        0.32,
+      )
+      // a champagne hairline runs down each door edge, ahead of the opening
+      .to("#gate .k-edge", { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, 0.7)
+      // the one opening runs down to the rim, and the door is two leaves
+      .to("#gate .k-slot", { attr: { height: 290 }, duration: 0.34, ease: "power2.in" }, 0.94)
+      .to("#gate .k-glow", { opacity: 0, duration: 0.4, ease: "power1.in" }, 0.96)
+      .to(
+        "#gate .mark-flood",
+        { opacity: 1, scale: 1.02, duration: 0.34, ease: "power1.out" },
+        0.95,
+      )
+      .to(
+        "#gate .k-leaf-a",
+        { x: -N.x * PART, y: -N.y * PART, duration: 1.0, ease: "power3.inOut" },
+        1.08,
+      )
+      .to(
+        "#gate .k-leaf-b",
+        { x: N.x * PART, y: N.y * PART, duration: 1.0, ease: "power3.inOut" },
+        1.08,
+      )
+      .to("#gate .mark", { scale: 2.3, duration: 1.0, ease: "power2.in" }, 1.1)
+      .to("#gate .mark-flood", { scale: 15, duration: 0.62, ease: "power2.in" }, 1.24)
+      .to("#gate .k-leaf", { opacity: 0, duration: 0.34, ease: "power1.in" }, 1.52)
+      .to("#gate", { autoAlpha: 0, duration: 0.8, ease: "power2.inOut" }, 1.72)
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
       .to(bloom, { intensity: 1.8, duration: 1.2, ease: "power2.in" }, 0.6)

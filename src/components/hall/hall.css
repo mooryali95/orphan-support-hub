@@ -1584,101 +1584,120 @@
   transition: opacity 0.6s ease;
 }
 
-/* ── The mark: the partner's sign is the door into the hall ──
-   drawn: a gold line traces the outline → the disc fills → the crescent settles → the hand is written →
-   a sheen passes. On entry (hall-scene.js, enterHall) the alef's slot ignites, the hāʾ rises out, and
-   the disc parts along the alef line as two leaves. Final states are resting styles (reduced motion). */
+/* ── The mark: «الإصبعان» is the door into the hall ──
+   drawn: a champagne hairline traces the rim → the disc fills → the crescent settles → the ring is
+   drawn in white → the two fingers rise as light, then breathe. On entry (hall-scene.js, enterHall)
+   the two fingers draw together into one opening and the disc parts along it as two leaves.
+   Final states are the resting styles (reduced motion shows the finished mark at once). */
 #gate .mark {
   position: relative;
   width: min(260px, 32vh);
-  aspect-ratio: 304 / 330;
-  margin: 0 auto 22px;
+  aspect-ratio: 220 / 204;
+  margin: 0 auto 24px;
+  /* the middle of the opening the two fingers make: the camera goes through here */
+  transform-origin: 52.5% 54.3%;
   animation: m-float 7s ease-in-out 4s infinite;
 }
-.mark > div,
-.mark > svg {
+.mark .mark-art {
   position: absolute;
   inset: 0;
-}
-.mark svg {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
-.mark .leaf {
-  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.6));
-  will-change: transform;
-}
-/* the alef line runs from (73.4%, 0) to (0, 100%) of the mark: each leaf keeps one side of it */
-.mark .leaf-a {
-  /* overlaps leaf b by ~1% so no hairline seam shows while the door is closed */
-  clip-path: polygon(-30% -20%, 89.4% -20%, -13.4% 120%, -30% 120%);
-}
-.mark .leaf-b {
-  clip-path: polygon(88.1% -20%, 130% -20%, 130% 120%, -14.7% 120%);
-}
-.mark .mark-slot {
-  opacity: 0;
-}
-.mark .mark-slot line {
-  stroke: var(--champagne);
-  stroke-width: 3;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 16px var(--gold));
-}
+/* the light behind the door, centred on the disc: a white core the size of the disc, soft beyond */
 .mark .mark-flood {
-  left: 56.6%;
-  top: 23.6%;
-  right: auto;
-  bottom: auto;
-  width: 40px;
-  height: 40px;
-  margin: -20px 0 0 -20px;
+  position: absolute;
+  left: 46.36%;
+  top: 50%;
+  width: 146%;
+  aspect-ratio: 1;
+  margin: -73% 0 0 -73%;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff7e2 0%, rgba(243, 227, 181, 0.85) 35%, transparent 70%);
+  background: radial-gradient(
+    circle closest-side,
+    #fffdf9 0%,
+    #fffdf9 61%,
+    rgba(255, 249, 240, 0.5) 76%,
+    rgba(255, 246, 234, 0) 100%
+  );
   opacity: 0;
   pointer-events: none;
 }
-/* the approved colours come from the markup (MARK_COLORS); here only how they arrive */
-.mark .m-disc,
-.mark .m-paper {
-  animation: m-fill 1s ease 1.3s both;
+/* the two leaves arrive as one disc (a group fade, so their overlap never shows) */
+.mark .k-door {
+  animation: m-fill 1s ease 0.9s both;
 }
-.mark .m-crescent {
+.mark .k-disc {
+  fill: #6b1f30;
+}
+.mark .k-crescent {
+  fill: #5e1a28;
   transform-box: fill-box;
   transform-origin: center;
-  animation: m-settle 1s cubic-bezier(0.16, 1, 0.3, 1) 1.7s both;
+  animation: m-settle 1s cubic-bezier(0.16, 1, 0.3, 1) 1.3s both;
 }
-.mark .m-line {
+.mark .k-ring {
+  fill: #fff;
+  opacity: 0.9;
+  animation: m-ring 0.4s ease 2.2s both;
+}
+.mark .k-lume {
+  fill: #fffdf9;
+  opacity: 0;
+}
+/* the two fingers: light rising through the slots, the second a breath after the first */
+.mark .k-finger {
+  fill: #fffdf9;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: m-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.9s both;
+}
+.mark .k-finger-b {
+  animation-delay: 2.08s;
+}
+.mark .k-glow {
+  fill: #fffdf9;
+  opacity: 0.34;
+  pointer-events: none;
+  animation:
+    m-glow-in 1.2s ease 2.2s both,
+    m-breathe 5.6s ease-in-out 3.4s infinite;
+}
+/* the door edge of each leaf: a champagne hairline, lit when the two fingers have met */
+.mark .k-edge {
+  stroke: #cdae76;
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.mark .k-trace {
   fill: none;
-  stroke-width: 1.4;
+  stroke: #cdae76;
+  stroke-width: 0.9;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   opacity: 0;
-  animation: m-trace 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.15s both;
+  animation: m-trace 2.1s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
 }
-.mark .m-line-2 {
-  animation-delay: 0.55s;
+.mark .k-trace-2 {
+  animation-delay: 0.45s;
 }
-.mark .mark-ink {
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
-}
-.mark .m-wipe {
-  transform: translateY(260px);
-  animation: m-write 1.6s cubic-bezier(0.55, 0.05, 0.25, 1) 2.1s both;
-}
-.mark .m-sheen {
-  transform: translateX(460px);
-  animation: m-sheen 1.5s cubic-bezier(0.4, 0, 0.2, 1) 3.6s both;
+/* the ring is drawn by a white line of its own width, which the true ring then replaces */
+.mark .k-trace-ring {
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-dasharray: 0.9047 1;
+  animation: m-trace-ring 1.6s cubic-bezier(0.65, 0, 0.35, 1) 1.2s both;
 }
 @keyframes m-trace {
   0% {
     stroke-dashoffset: 1;
     opacity: 1;
   }
-  60% {
+  62% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
@@ -1687,44 +1706,106 @@
     opacity: 0;
   }
 }
+@keyframes m-trace-ring {
+  0% {
+    stroke-dashoffset: 0.9047;
+    opacity: 0.9;
+  }
+  70% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+  88% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
 @keyframes m-fill {
   from {
-    fill-opacity: 0;
+    opacity: 0;
   }
   to {
-    fill-opacity: 1;
+    opacity: 1;
+  }
+}
+@keyframes m-ring {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
   }
 }
 @keyframes m-settle {
   from {
     opacity: 0;
-    transform: translate(-16px, 14px);
+    transform: translate(-14px, 12px);
   }
   to {
     opacity: 1;
     transform: translate(0, 0);
   }
 }
-@keyframes m-write {
+@keyframes m-rise {
   from {
-    transform: translateY(-230px);
+    transform: scaleY(0);
   }
   to {
-    transform: translateY(260px);
+    transform: scaleY(1);
   }
 }
-@keyframes m-sheen {
+@keyframes m-glow-in {
   from {
-    transform: translateX(0);
+    opacity: 0;
   }
   to {
-    transform: translateX(460px);
+    opacity: 0.34;
+  }
+}
+@keyframes m-breathe {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.8;
   }
 }
 @keyframes m-float {
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
   }
+}
+/* the partnership, quietly, under the gate copy: the partner's mark as approved, on its own paper */
+.hall #gate .gate-partner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 22px auto 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--mist);
+  animation-delay: 3.1s;
+}
+.hall #gate .gate-partner::before,
+.hall #gate .gate-partner::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: rgba(205, 174, 118, 0.45);
+}
+.hall #gate .gate-partner img {
+  width: auto;
+  height: 26px;
+}
+.hall #gate .gate-partner-name {
+  color: #fff;
+  font-weight: 600;
 }
 #gate h1 {
   font-size: clamp(30px, 5.4vw, 58px);
@@ -1749,6 +1830,7 @@
 #gate h1 .w,
 #gate p,
 #gate .gate-actions,
+#gate .gate-partner,
 #gate .loader {
   animation: g-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) 2.5s both;
 }
