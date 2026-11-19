@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
+import { GoLiveReadiness } from "@/components/admin/GoLiveReadiness";
 import { DispatchHealthPanel } from "@/components/admin/DispatchHealthPanel";
 import { OpsHealthPanel } from "@/components/admin/OpsHealthPanel";
 import { AwaitingTransfers } from "@/components/admin/AwaitingTransfers";
@@ -223,6 +224,7 @@ function AdminPage() {
 
       {tab === "overview" && (
         <div className="mt-8 space-y-10">
+          <GoLiveReadiness published={o.orphans.published} />
           <section>
             <h2 className="text-sm font-bold">الرحلة</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
