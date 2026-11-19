@@ -4,15 +4,22 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
-import { addGift, TRY_CURRENCY, tryChild } from "@/lib/try-demo";
+import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { addGift, cleanDedication, TRY_CURRENCY, tryChild } from "@/lib/try-demo";
 
-type Search = { child: string; amount: number; cadence: "monthly" | "one_time" };
+type Search = {
+  child: string;
+  amount: number;
+  cadence: "monthly" | "one_time";
+  for?: string | undefined;
+};
 
 export const Route = createFileRoute("/try/pay")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
     child: typeof raw["child"] === "string" ? raw["child"] : "",
     amount: Math.max(5, Math.min(100_000, Number(raw["amount"]) || 0)),
     cadence: raw["cadence"] === "one_time" ? "one_time" : "monthly",
+    ...(cleanDedication(raw["for"]) ? { for: cleanDedication(raw["for"]) } : {}),
   }),
   component: TryPay,
 });
@@ -22,7 +29,7 @@ export const Route = createFileRoute("/try/pay")({
  * المتصفّح وحده ثم ينتقل إلى «أثري» التجربة.
  */
 function TryPay() {
-  const { child: id, amount, cadence } = Route.useSearch();
+  const { child: id, amount, cadence, for: dedication } = Route.useSearch();
   const child = tryChild(id);
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
@@ -41,7 +48,7 @@ function TryPay() {
   function pay() {
     setBusy(true);
     window.setTimeout(() => {
-      addGift({ childId: child!.id, amount, cadence });
+      addGift({ childId: child!.id, amount, cadence, ...(dedication ? { dedication } : {}) });
       void navigate({ to: "/try/impact", search: { done: child!.id } });
     }, 1400);
   }
@@ -63,6 +70,12 @@ function TryPay() {
               {cadence === "monthly" ? "كفالة شهرية" : "عطاءٌ لمرّة واحدة"}
             </dd>
           </div>
+          {dedication && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">صدقةٌ جارية عن</dt>
+              <dd className="font-bold">{dedication}</dd>
+            </div>
+          )}
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">رسوم بوابة الدفع (تقريبية)</dt>
             <dd className="tabular-nums">{formatMoney(fee, TRY_CURRENCY, "ar")}</dd>
@@ -116,7 +129,8 @@ function TryPay() {
             </div>
           </div>
         </div>
-        <Button size="lg" className="mt-6 w-full" disabled={busy} onClick={pay}>
+        <KafalaPromise className="mt-6" />
+        <Button size="lg" className="mt-3 w-full" disabled={busy} onClick={pay}>
           {busy ? (
             <>
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />

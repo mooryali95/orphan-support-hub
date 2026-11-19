@@ -9,9 +9,28 @@ import { cn } from "@/lib/utils";
  */
 const LEAVES = 12;
 
-export function CelebrateMark({ className }: { className?: string }) {
+export function CelebrateMark({ className, grand }: { className?: string; grand?: boolean }) {
   return (
     <div className={cn("relative z-0 mx-auto size-28", className)} aria-hidden="true">
+      {/* the grand moment (a sponsorship begins): a second, wider wave of champagne leaves */}
+      {grand &&
+        Array.from({ length: LEAVES * 2 }, (_, i) => (
+          <span
+            key={`w${i}`}
+            className="celebrate-leaf celebrate-leaf-far absolute start-1/2 top-1/2 z-10"
+            style={{
+              ["--a" as string]: `${(360 / (LEAVES * 2)) * i + 7}deg`,
+              ["--d" as string]: `${420 + i * 22}ms`,
+            }}
+          >
+            <svg
+              viewBox="0 0 10 16"
+              className={cn("size-2.5", i % 2 ? "fill-bridge" : "fill-bridge/60")}
+            >
+              <path d="M5 0C9 4 9 11 5 16 1 11 1 4 5 0Z" />
+            </svg>
+          </span>
+        ))}
       {Array.from({ length: LEAVES }, (_, i) => (
         <span
           key={i}
@@ -52,11 +71,14 @@ export function CelebrateOverlay({
   text,
   action,
   onClose,
+  grand,
 }: {
   title: string;
   text?: ReactNode;
   action: string;
   onClose: () => void;
+  /** the rare, larger moment: a wider burst and a warmer card */
+  grand?: boolean;
 }) {
   const btn = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -74,7 +96,7 @@ export function CelebrateOverlay({
       className="fixed inset-0 z-[60] grid place-items-center bg-foreground/25 p-4 backdrop-blur-[3px] map-rise"
     >
       <div className="w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-[0_24px_64px_-16px_rgb(0_0_0/0.35)]">
-        <CelebrateMark />
+        <CelebrateMark {...(grand ? { grand } : {})} />
         <h2
           id="celebrate-title"
           className="celebrate-text mt-6 font-serif text-3xl font-bold text-primary"
@@ -82,7 +104,7 @@ export function CelebrateOverlay({
           {title}
         </h2>
         {text && (
-          <p className="celebrate-text mt-2 text-sm leading-7 text-muted-foreground">{text}</p>
+          <div className="celebrate-text mt-2 text-sm leading-7 text-muted-foreground">{text}</div>
         )}
         <button
           ref={btn}

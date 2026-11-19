@@ -4,6 +4,8 @@ import { byCode, regionsFor } from "./hall/model";
 import { myImpact } from "./my-impact";
 import {
   addGift,
+  cleanDedication,
+  coverageAfter,
   giftsAsSponsorships,
   loadGifts,
   resetGifts,
@@ -71,5 +73,28 @@ describe("وضع التجربة", () => {
         `${c.co} ${c.region}`,
       ).toBe(true);
     }
+  });
+
+  it("الإهداء يُحفظ كما كُتب، قصيراً وسطراً واحداً، والفارغ لا يُحفظ", () => {
+    const s = mem();
+    addGift(
+      { childId: "try-01", amount: 80, cadence: "monthly", dedication: "  والدي \n رحمه الله " },
+      s,
+      now,
+    );
+    addGift({ childId: "try-02", amount: 30, cadence: "monthly", dedication: "   " }, s, now);
+    const [second, first] = loadGifts(s);
+    expect(first!.dedication).toBe("والدي رحمه الله");
+    expect(second).not.toHaveProperty("dedication");
+    expect(cleanDedication("x".repeat(90))).toHaveLength(40);
+    expect(cleanDedication(7)).toBeUndefined();
+  });
+
+  it("التغطية بعد العطاء: الشهرية ترفعها حتى الاكتمال، والمرّة الواحدة لا تغيّرها", () => {
+    const sara = TRY_CHILDREN[0]!; // need 120, funded 40
+    expect(coverageAfter(sara, 0, "monthly")).toBe(33);
+    expect(coverageAfter(sara, 40, "monthly")).toBe(67);
+    expect(coverageAfter(sara, 500, "monthly")).toBe(100);
+    expect(coverageAfter(sara, 80, "one_time")).toBe(33);
   });
 });

@@ -124,6 +124,15 @@ export type TryGift = {
   amount: number;
   cadence: "monthly" | "one_time";
   at: string;
+  /** whom the donor gives it on behalf of («صدقة جارية عن…»), as they typed it */
+  dedication?: string;
+};
+
+/** a dedication as typed: trimmed, single line, short; empty means none */
+export const cleanDedication = (v: unknown): string | undefined => {
+  if (typeof v !== "string") return undefined;
+  const t = v.replace(/\s+/g, " ").trim().slice(0, 40);
+  return t || undefined;
 };
 
 const KEY = "try-demo:v1";
@@ -152,7 +161,15 @@ export function addGift(
   store: Store | null = safe(),
   now: Date = new Date(),
 ): TryGift {
-  const g: TryGift = { ...gift, id: `gift-${now.getTime()}`, at: now.toISOString() };
+  const dedication = cleanDedication(gift.dedication);
+  const g: TryGift = {
+    childId: gift.childId,
+    amount: gift.amount,
+    cadence: gift.cadence,
+    id: `gift-${now.getTime()}`,
+    at: now.toISOString(),
+    ...(dedication ? { dedication } : {}),
+  };
   try {
     store?.setItem(KEY, JSON.stringify([g, ...loadGifts(store)].slice(0, 20)));
   } catch {
@@ -211,3 +228,14 @@ export function giftsAsSponsorships(gifts: TryGift[], now: Date = new Date()): M
 /** the demo children standing in one region of the hall (the hall lists them under that column) */
 export const tryChildrenIn = (co: string, region: string) =>
   TRY_CHILDREN.filter((c) => c.co === co && c.region === region);
+
+/** how full the child's monthly need stands once this amount is added (monthly only), 0..100 */
+export const coverageAfter = (
+  c: Pick<TryChild, "need" | "funded">,
+  amount: number,
+  cadence: TryGift["cadence"],
+) =>
+  Math.min(
+    100,
+    Math.round(((c.funded + (cadence === "monthly" ? Math.max(0, amount) : 0)) / c.need) * 100),
+  );

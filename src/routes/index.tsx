@@ -1,4 +1,3 @@
-import { VisionTeaser } from "@/components/vision/VisionTeaser";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -650,7 +649,6 @@ function HomePage() {
         </section>
 
         {/* ── منصة الرؤية والتوجهات: تجربةٌ حيّة بلا حساب ── */}
-        <VisionTeaser />
 
         {/* ── الخارطة تحت الهيرو: «الشبكة» افتراضياً ── */}
         <section
