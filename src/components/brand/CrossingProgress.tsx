@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 /**
  * شريط «العبور» — تمويل الملف مقروءاً بلغة الهوية.
  *
- * المسار الفارغ أزرق باهت: الشاطئ الأول، ما لم يُغطَّ بعد من الاحتياج.
- * المُعبَّأ ذهبي: الجسر، أي ما أنجزته الكفالات فعلاً.
+ * المسار الفارغ محايد: ما لم يُغطَّ بعد من الاحتياج.
+ * المُعبَّأ بلون الهوية الرئيس (نبيذيّ الشعار): ما أنجزته الكفالات فعلاً.
  * وعند الاكتمال يتحوّل الشريط كله أخضر: بلغ الملف مرحلة العمران.
  */
 export function CrossingProgress({
@@ -23,7 +23,7 @@ export function CrossingProgress({
     <div
       className={cn(
         "h-2 w-full overflow-hidden rounded-full",
-        arrived ? "bg-shore-thrive/25" : "bg-shore-need/15",
+        arrived ? "bg-shore-thrive/25" : "bg-foreground/10",
         className,
       )}
       role="progressbar"
@@ -35,9 +35,7 @@ export function CrossingProgress({
       <div
         className={cn(
           "h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
-          arrived
-            ? "bg-shore-thrive"
-            : "bg-[linear-gradient(to_left,var(--color-bridge),color-mix(in_oklch,var(--color-bridge)_72%,white))]",
+          arrived ? "bg-shore-thrive" : "bg-primary",
         )}
         style={{ width: `${clamped}%` }}
       />

@@ -24,7 +24,7 @@ const buttonVariants = cva(
         default: "h-11 px-5 py-2",
         // على اللمس تتّسع مساحة النقر إلى ٤٤px دون أن يكبر الزرّ.
         sm: "h-9 rounded-full px-3.5 text-sm pointer-coarse:after:absolute pointer-coarse:after:-inset-1 pointer-coarse:after:content-['']",
-        lg: "h-12 rounded-md px-8 text-base",
+        lg: "h-12 px-8 text-base",
         icon: "h-10 w-10 pointer-coarse:after:absolute pointer-coarse:after:-inset-0.5 pointer-coarse:after:content-['']",
       },
     },
