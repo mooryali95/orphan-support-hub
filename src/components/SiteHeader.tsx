@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { sponsorEntry } from "@/config/platform";
 import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { PartnerLockup } from "@/components/brand/PartnerMark";
@@ -97,7 +98,7 @@ export function SiteHeader() {
               </Button>
               {/* the way to give stays in reach after signing in */}
               <Button asChild>
-                <Link to="/orphans">{c.sponsor}</Link>
+                <Link to={sponsorEntry()}>{c.sponsor}</Link>
               </Button>
             </>
           ) : (
@@ -115,7 +116,7 @@ export function SiteHeader() {
                 )}
               />
               <Button asChild>
-                <Link to="/orphans">{c.sponsor}</Link>
+                <Link to={sponsorEntry()}>{c.sponsor}</Link>
               </Button>
             </>
           )}

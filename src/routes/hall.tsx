@@ -13,6 +13,7 @@ import {
   MARK_DISC,
   MARK_VIEWBOX,
 } from "@/components/hall/hall-mark";
+import { isTrial } from "@/config/platform";
 import { geoQuery } from "@/lib/geo";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
@@ -50,7 +51,8 @@ function HallPage() {
   const ref = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
   const queryClient = useQueryClient();
-  const trying = search.try === 1;
+  // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
+  const trying = search.try === 1 || isTrial();
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
 
   useEffect(() => {

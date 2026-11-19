@@ -26,6 +26,7 @@ import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
+import { isTrial, showTrialLink } from "@/config/platform";
 import { BRAND, brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
@@ -514,8 +515,22 @@ function HomePage() {
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
               {c.lead}
             </p>
+            {/* وضع المنصّة (src/config/platform.ts): في التجربة تبدأ الرحلة من /try؛ وبعد الاعتماد من الدليل. */}
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
+              {isTrial() && (
+                <Button asChild size="lg">
+                  <Link to="/try">
+                    <FlaskConical className="size-4" aria-hidden="true" />
+                    {c.tryIt}
+                  </Link>
+                </Button>
+              )}
+              <Button
+                asChild
+                size="lg"
+                variant={isTrial() ? "outline" : "default"}
+                className={isTrial() ? "bg-background/70" : undefined}
+              >
                 <Link to="/orphans">
                   {c.browse}
                   <ArrowLeft className="size-4 ltr:-scale-x-100" />
@@ -525,13 +540,15 @@ function HomePage() {
                 <Link to="/support">{c.supportNow}</Link>
               </Button>
             </div>
-            <Link
-              to="/try"
-              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
-            >
-              <FlaskConical className="size-4" aria-hidden="true" />
-              {c.tryIt}
-            </Link>
+            {showTrialLink() && (
+              <Link
+                to="/try"
+                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
+              >
+                <FlaskConical className="size-4" aria-hidden="true" />
+                {c.tryIt}
+              </Link>
+            )}
 
             {/* شريط الدليل: أرقامٌ حقيقية فقط — بيانات الندوة البحثية وأعداد المنصّة الحيّة. */}
             <section aria-labelledby="proof-heading" className="mx-auto mt-10 max-w-4xl">
