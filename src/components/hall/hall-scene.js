@@ -70,15 +70,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   if (RM) gsap.globalTimeline.timeScale(20);
   if (window.__HALL_TEST) gsap.ticker.lagSmoothing(0); // automated runs in a software renderer
 
-  /* ── Colour grade: lacquer wine, gold leaf, champagne, ivory, 3000K lamps ── */
+  /* ── Colour grade: the partner mark's world — wine, white, and champagne only as a thin line.
+     Wine is the hero surface, ivory/white draws the forms (as the mark's ring and hand do),
+     champagne is satin metal trim and the "qualified" data colour; lamps are warm white, not amber. ── */
   const G = {
     night: 0x14060b,
     lacquer: 0x4a1220,
     wine: 0x6b1f30,
-    gold: 0xd9bd86,
-    champagne: 0xf3e6c8,
-    ivory: 0xf6efe2,
-    lamp: 0xffd6a0,
+    champagne: 0xcdae76,
+    ivory: 0xf3ebe0,
+    lamp: 0xffe6cc,
   };
 
   /* ── State: the network view, the chosen country and its regions ── */
@@ -165,7 +166,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const m = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
         new THREE.MeshBasicMaterial({
-          color: new THREE.Color(0xffc988).multiplyScalar(k),
+          color: new THREE.Color(0xffdcbe).multiplyScalar(k),
           side: THREE.DoubleSide,
         }),
       );
@@ -212,10 +213,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ao.setQualityMode("Medium");
     composer.addPass(ao);
   }
+  const BLOOM = 0.9; // resting bloom; the gate, country and payment beats rise from it and return
   const bloom = new BloomEffect({
-    luminanceThreshold: 0.72,
-    luminanceSmoothing: 0.25,
-    intensity: 0.95,
+    luminanceThreshold: 0.8, // whites draw the forms now: only true light sources should bloom
+    luminanceSmoothing: 0.2,
+    intensity: BLOOM,
     mipmapBlur: true,
     radius: 0.72,
   });
@@ -237,22 +239,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   });
   const vignette = new VignetteEffect({ darkness: 0.62, offset: 0.3 });
   const grain = new NoiseEffect({ blendFunction: BlendFunction.SOFT_LIGHT, premultiply: false });
-  grain.blendMode.opacity.value = 0.22;
+  grain.blendMode.opacity.value = 0.14;
   const grade = [
     new BrightnessContrastEffect({ contrast: 0.08, brightness: -0.01 }),
-    new HueSaturationEffect({ saturation: -0.08 }),
+    new HueSaturationEffect({ saturation: -0.04 }),
   ];
   composer.addPass(new EffectPass(camera, ...grade, ca, vignette, grain));
   composer.addPass(new EffectPass(camera, new SMAAEffect()));
 
-  /* ── Materials: gold leaf, lacquer, smoked glass ─────────────────── */
-  const goldM = new THREE.MeshPhysicalMaterial({
-    color: G.gold,
+  /* ── Materials: satin champagne trim, white enamel, wine lacquer, glass ─────────────────── */
+  // champagne is brushed, never mirror foil: it is the thin line, not a surface
+  const champM = new THREE.MeshPhysicalMaterial({
+    color: G.champagne,
     metalness: 1,
-    roughness: 0.2,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.2,
-    envMapIntensity: 1.4,
+    roughness: 0.36,
+    envMapIntensity: 1,
+  });
+  // white enamel: the mark's ring and hand, as form (frames, the broken rings, the meridian)
+  const ivoryM = new THREE.MeshPhysicalMaterial({
+    color: G.ivory,
+    metalness: 0,
+    roughness: 0.42,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.25,
+    envMapIntensity: 0.45,
   });
   const lacquer = new THREE.MeshPhysicalMaterial({
     color: G.lacquer,
@@ -262,16 +272,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     clearcoatRoughness: 0.12,
     envMapIntensity: 0.55,
   });
-  const goldLine = (o = 0.5) =>
+  // hairlines are drawn in white, as the mark's ring is
+  const inkLine = (o = 0.5) =>
     new THREE.LineBasicMaterial({
-      color: 0xe9c983,
+      color: G.ivory,
       transparent: true,
       opacity: o,
       toneMapped: false,
     });
 
   /* ── Lights: 3000K lamps, one key over the centre ───────────────── */
-  scene.add(new THREE.HemisphereLight(0xffe0b0, 0x14060a, 0.35));
+  scene.add(new THREE.HemisphereLight(0xffeada, 0x14060a, 0.35));
   const key = new THREE.SpotLight(G.lamp, 1400, 40, 0.55, 0.6, 2);
   key.position.set(0, 22, 4);
   key.target.position.set(0, 0, 0);
@@ -285,18 +296,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     lamps.push(l);
     const bulb = new THREE.Mesh(
       new THREE.SphereGeometry(0.16, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xffe2b0, toneMapped: false }),
+      new THREE.MeshBasicMaterial({ color: 0xfff0e0, toneMapped: false }),
     );
-    bulb.material.color.multiplyScalar(2.6);
+    bulb.material.color.multiplyScalar(2.2);
     bulb.scale.setScalar(0.7);
     bulb.position.copy(l.position);
     scene.add(bulb);
     const cage = new THREE.Mesh(
       new THREE.OctahedronGeometry(0.42, 0),
       new THREE.MeshPhysicalMaterial({
-        color: G.gold,
+        color: G.champagne,
         metalness: 1,
-        roughness: 0.3,
+        roughness: 0.4,
         wireframe: true,
       }),
     );
@@ -342,21 +353,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         new THREE.Vector3(Math.sin(b) * r, 0, Math.cos(b) * r),
       );
     }
-    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), goldLine(o));
+    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), inkLine(o));
   }
   const inlay = new THREE.Group();
   inlay.position.y = 0.012;
-  inlay.add(star(9, 5, 0.14), star(6, 3, 0.09));
+  inlay.add(star(9, 5, 0.08), star(6, 3, 0.05));
   hall.add(inlay);
-  [9.6, 15.2].forEach((r) => {
+  /* the floor carries the mark's geometry as form, not as a copy: a white ring that is broken
+     where the visitor walks in — the way the alef crosses the mark's ring — and one champagne hairline */
+  const GAP = 0.34; // half-width of the break, in radians, centred on the door (+z)
+  [
+    [9.6, 0.06, G.ivory, 0.5, GAP],
+    [15.2, 0.04, G.champagne, 0.5, 0],
+  ].forEach(([r, w, color, opacity, gap]) => {
     const g = new THREE.Mesh(
-      new THREE.RingGeometry(r, r + 0.05, 160),
-      new THREE.MeshBasicMaterial({
-        color: 0xe9c983,
-        transparent: true,
-        opacity: 0.55,
-        toneMapped: false,
-      }),
+      new THREE.RingGeometry(r, r + w, 160, 1, -Math.PI / 2 + gap, Math.PI * 2 - gap * 2),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity, toneMapped: false }),
     );
     g.rotation.x = -Math.PI / 2;
     g.position.y = 0.014;
@@ -369,8 +381,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const x = c.getContext("2d");
     x.fillStyle = "#1a090e";
     x.fillRect(0, 0, 256, 256);
-    x.strokeStyle = "rgba(212,175,106,0.2)";
-    x.lineWidth = 1.6;
+    x.strokeStyle = "rgba(243,235,224,0.09)";
+    x.lineWidth = 1.4;
     const st = (cx, cy, r) => {
       x.beginPath();
       for (let i = 0; i <= 16; i++) {
@@ -416,15 +428,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   hall.add(crown);
   const oculus = new THREE.Mesh(
     new THREE.CircleGeometry(2.2, 64),
-    new THREE.MeshBasicMaterial({ color: 0xffe9c0, toneMapped: false }),
+    new THREE.MeshBasicMaterial({ color: 0xfff3e6, toneMapped: false }),
   );
-  oculus.material.color.multiplyScalar(2.2);
+  oculus.material.color.multiplyScalar(2);
   oculus.rotation.x = Math.PI / 2;
   oculus.position.y = 32.8;
   hall.add(oculus);
   const arch = buildArchitecture({
     hall,
-    goldM,
+    champM,
     lacquer,
     LOW,
     rnd: (() => {
@@ -450,30 +462,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     pivot.add(leaf);
     const trim = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(2.5, 7.8, 0.24)),
-      goldLine(0.95),
+      inkLine(0.95),
     );
     trim.position.copy(leaf.position);
     pivot.add(trim);
     for (let k = 0; k < 3; k++) {
-      const p = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.03, 8, 6), goldM);
+      const p = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.03, 8, 6), champM);
       p.position.set(-s * 1.35, 2 + k * 2, 0.13);
       pivot.add(p);
     }
-    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), goldM);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), champM);
     knob.position.set(-s * 2.4, 4, 0.22);
     pivot.add(knob);
     hall.add(pivot);
     pivot.visible = false; // the partner mark is the door now (see enterHall); the leaves stay for film framing
     doors.push({ pivot, s });
   });
-  const portal = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.13, 16, 64, Math.PI), goldM);
+  const portal = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.1, 16, 64, Math.PI), ivoryM);
   portal.position.set(0, 8, 17.65);
   hall.add(portal);
-  const doorGlow = new THREE.PointLight(0xffc98a, 0, 14, 2);
+  const doorGlow = new THREE.PointLight(0xffe2c8, 0, 14, 2);
   doorGlow.position.set(0, 4, 15);
   scene.add(doorGlow);
 
-  // gold dust (shader: soft round motes that twinkle)
+  // dust in the lamplight (shader: soft round motes that twinkle)
   const DN = LOW ? 500 : 1200,
     dp = new Float32Array(DN * 3),
     ds = new Float32Array(DN);
@@ -495,7 +507,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     void main(){ vec3 p = position; p.y = mod(p.y + uTime*0.12*(0.3+seed), 15.0); p.x += sin(uTime*0.3+seed*20.0)*0.3;
       vec4 mv = modelViewMatrix*vec4(p,1.0); gl_Position = projectionMatrix*mv;
       vA = 0.35 + 0.65*abs(sin(uTime*(0.6+seed)+seed*30.0)); gl_PointSize = (18.0+30.0*seed)*uPx/(-mv.z); }`,
-    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5,0.0,d); gl_FragColor = vec4(vec3(1.0,0.86,0.6)*1.6, a*vA*0.55); }`,
+    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5,0.0,d); gl_FragColor = vec4(vec3(1.0,0.93,0.84)*1.3, a*vA*0.5); }`,
   });
   scene.add(new THREE.Points(dustGeo, dustMat));
 
@@ -511,7 +523,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV; void main(){ vUv=uv; vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
       fragmentShader: `uniform float uTime; uniform float uI; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
     void main(){ float edge = pow(1.0-abs(dot(vN,vV)),1.5); float stripes = 0.6+0.4*sin(vUv.x*60.0+uTime*0.4); float fall = smoothstep(0.0,1.0,vUv.y);
-      gl_FragColor = vec4(vec3(1.0,0.85,0.55), (1.0-edge)*stripes*fall*uI); }`,
+      gl_FragColor = vec4(vec3(1.0,0.93,0.84), (1.0-edge)*stripes*fall*uI); }`,
     }),
   );
   rays.position.y = 15.5;
@@ -529,7 +541,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       fragmentShader: `uniform float uTime; uniform float uHover; varying vec2 vUv;
     void main(){ float x = vUv.x + vUv.y*0.35; float band = smoothstep(0.08,0.0,abs(fract(x*0.5 - uTime*0.08)-0.5));
       float rim = smoothstep(0.03,0.0,min(min(vUv.x,1.0-vUv.x),min(vUv.y,1.0-vUv.y)));
-      gl_FragColor = vec4(vec3(1.0,0.88,0.6), band*0.07 + rim*(0.12+0.35*uHover)); }`,
+      gl_FragColor = vec4(vec3(1.0,0.92,0.82), band*0.06 + rim*(0.05+0.35*uHover)); }`,
     });
   const screens = [];
   function makeScreen(angle, w, h) {
@@ -550,8 +562,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     );
     const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sheenMat());
     sheen.position.z = 0.01;
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.42, h + 0.42, 0.14), goldM);
-    frame.position.z = -0.09;
+    // a slim white enamel frame on a wine board, as the mark's ring sits inside its disc
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.14, h + 0.14, 0.1), ivoryM);
+    frame.position.z = -0.07;
     const back = new THREE.Mesh(new THREE.BoxGeometry(w + 0.9, h + 0.9, 0.1), lacquer);
     back.position.z = -0.2;
     g.add(back, frame, m, sheen);
@@ -571,10 +584,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     gr.addColorStop(1, "#2a0a13");
     ctx.fillStyle = gr;
     ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = "rgba(212,175,106,.3)";
+    ctx.strokeStyle = "rgba(205,174,118,.38)";
     ctx.lineWidth = 2;
-    ctx.strokeRect(30, 30, w - 60, h - 60);
-    ctx.strokeRect(40, 40, w - 80, h - 80);
+    ctx.strokeRect(34, 34, w - 68, h - 68);
   }
   function text(ctx, s, x, y, size, color, weight = 500, fam = BODY, align = "right") {
     ctx.direction = "rtl";
@@ -633,7 +645,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         w - 80,
         h - 120,
         38,
-        "#e9c983",
+        "#cdae76",
         700,
       );
       tex.needsUpdate = true;
@@ -659,7 +671,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
     };
     ctx.save();
-    ctx.shadowColor = "rgba(212,175,106,.55)";
+    ctx.shadowColor = "rgba(255,255,255,.28)";
     ctx.shadowBlur = 30;
     path();
     const lg = ctx.createLinearGradient(0, oy - 300, 0, oy + 300);
@@ -669,7 +681,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ctx.fill();
     ctx.restore();
     path();
-    ctx.strokeStyle = "#d4af6a";
+    ctx.strokeStyle = "#cdae76";
     ctx.lineWidth = 3;
     ctx.stroke();
     CITIES.forEach((c) => {
@@ -685,7 +697,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ctx.moveTo(X, Y);
       ctx.arc(X, Y, r, -Math.PI / 2, -Math.PI / 2 + f * Math.PI * 2);
       ctx.closePath();
-      ctx.fillStyle = "#d4af6a";
+      ctx.fillStyle = "#cdae76";
       ctx.fill();
       const L =
         {
@@ -700,7 +712,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
     const lx = w - 80;
     let ly = 330;
-    text(ctx, "أكبر الفجوات", lx, ly, 34, "#d4af6a", 700);
+    text(ctx, "أكبر الفجوات", lx, ly, 34, "#cdae76", 700);
     ly += 20;
     [...CITIES]
       .sort((a, b) => gapOf(b) - gapOf(a))
@@ -711,10 +723,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         text(ctx, `${gapOf(c)} ينتظرون`, lx - 330, ly, 30, "rgba(246,239,226,.7)");
         ctx.fillStyle = "rgba(246,239,226,.12)";
         ctx.fillRect(lx - 440, ly + 16, 440, 6);
-        ctx.fillStyle = "#d4af6a";
+        ctx.fillStyle = "#cdae76";
         ctx.fillRect(lx - 440 * (c.qualified / c.need), ly + 16, 440 * (c.qualified / c.need), 6);
       });
-    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 90, 38, "#e9c983", 700);
+    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 90, 38, "#cdae76", 700);
     tex.needsUpdate = true;
   }
   function drawTracks() {
@@ -728,13 +740,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
     ].forEach(([a, b, c], i) => {
       const y = 300 + i * 200;
-      ctx.fillStyle = "#d4af6a";
+      ctx.fillStyle = "#cdae76";
       ctx.beginPath();
       ctx.arc(w - 115, y - 20, 30, 0, Math.PI * 2);
       ctx.fill();
       text(ctx, String(i + 1), w - 115, y - 6, 36, "#2b0e15", 700, DISPLAY, "center");
       text(ctx, a, w - 170, y, 54, "#f6efe2", 700, DISPLAY);
-      text(ctx, b, w - 400, y, 34, "#e9c983", 600);
+      text(ctx, b, w - 400, y, 34, "#cdae76", 600);
       text(ctx, c, w - 170, y + 62, 34, "rgba(246,239,226,.72)");
     });
     tex.needsUpdate = true;
@@ -766,8 +778,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ctx.textAlign = "right";
       ctx.font = `700 96px "${DISPLAY}", serif`;
       const g = ctx.createLinearGradient(0, 200, 0, 300);
-      g.addColorStop(0, "#fbe9bf");
-      g.addColorStop(1, "#a9823f");
+      g.addColorStop(0, "#ffffff");
+      g.addColorStop(1, "#ecdcb6");
       ctx.fillStyle = g;
       ctx.fillText(v, x, 300);
       text(ctx, l, x, 350, 32, "rgba(246,239,226,.75)", 600);
@@ -780,9 +792,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ].forEach(([t, l], i) => {
       const x = w - 80 - i * 400,
         v = by(t);
-      text(ctx, `${v} ${l}`, x, 430, 34, v ? "#e9c983" : "rgba(246,239,226,.35)", 700);
+      text(ctx, `${v} ${l}`, x, 430, 34, v ? "#cdae76" : "rgba(246,239,226,.35)", 700);
     });
-    ctx.strokeStyle = "rgba(212,175,106,.3)";
+    ctx.strokeStyle = "rgba(205,174,118,.38)";
     ctx.beginPath();
     ctx.moveTo(80, 470);
     ctx.lineTo(w - 80, 470);
@@ -794,11 +806,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         text(ctx, r.title, w - 80, y, 36, i ? "rgba(246,239,226,.8)" : "#f6efe2", 600);
         text(ctx, r.line, 80 + 520, y, 28, "rgba(246,239,226,.55)", 500, BODY, "right");
       });
-    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 32, "#e9c983", 700);
+    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 32, "#cdae76", 700);
     tex.needsUpdate = true;
   }
 
-  /* ── The chosen country, carved in lacquer and gold ─────────────── */
+  /* ── The chosen country, carved in wine lacquer and outlined in white ─────────────── */
   const country = new THREE.Group();
   country.visible = false;
   scene.add(country);
@@ -809,14 +821,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
-    color: 0x380b16,
+    color: 0x3e0d19,
     roughness: 0.38,
     metalness: 0.2,
     clearcoat: 1,
     clearcoatRoughness: 0.18,
     envMapIntensity: 0.6,
   });
-  const tierM = [0x40101b, 0x491420, 0x531927].map(
+  const tierM = [0x47121e, 0x551826, 0x631c2d].map(
     (c) =>
       new THREE.MeshPhysicalMaterial({
         color: c,
@@ -846,7 +858,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     geo.rotateX(-Math.PI / 2);
     landGroup.add(
       new THREE.Mesh(geo, landM),
-      new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), goldLine(0.95)),
+      new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), inkLine(0.7)),
     );
     const main = CO.rings[0],
       cx = main.reduce((a, p) => a + p[0], 0) / main.length,
@@ -866,7 +878,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const t = new THREE.Group();
       t.add(
         new THREE.Mesh(g, tierM[i]),
-        new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), goldLine(0.42 - i * 0.08)),
+        new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), inkLine(0.3 - i * 0.07)),
       );
       t.position.y = 0.58 + i * 0.075;
       landGroup.add(t);
@@ -881,8 +893,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     void main(){ vec2 c = vUv-0.5; float r = length(c);
       float w = sin(c.x*90.0 + uTime*0.7 + sin(c.y*40.0+uTime*0.3)*2.0) * sin(c.y*70.0 - uTime*0.5);
       float glint = smoothstep(0.88, 1.0, w) * (1.0 - smoothstep(0.35, 0.5, r));
-      vec3 base = mix(vec3(0.03,0.016,0.016), vec3(0.075,0.04,0.035), 1.0 - r*1.6);
-      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.1, 1.0); }`,
+      vec3 base = mix(vec3(0.03,0.008,0.014), vec3(0.1,0.026,0.042), 1.0 - r*1.6);
+      gl_FragColor = vec4(base + glint*vec3(1.0,0.92,0.86)*0.08, 1.0); }`,
     }),
   );
   sea.rotation.x = -Math.PI / 2;
@@ -910,16 +922,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const x = bandCv.getContext("2d");
     x.fillStyle = "#2a0b13";
     x.fillRect(0, 0, 4096, 128);
-    x.strokeStyle = "rgba(212,175,106,.6)";
+    x.strokeStyle = "rgba(205,174,118,.55)";
     x.lineWidth = 2;
     x.strokeRect(0, 10, 4096, 108);
     x.direction = "rtl";
     x.textAlign = "center";
     x.font = `600 50px "${DISPLAY}", serif`;
-    const gr = x.createLinearGradient(0, 30, 0, 100);
-    gr.addColorStop(0, "#fbe9bf");
-    gr.addColorStop(1, "#a9823f");
-    x.fillStyle = gr;
+    x.fillStyle = "#f6efe2"; // the hand is written in white, as in the mark
     for (let i = 0; i < 3; i++)
       x.fillText(`${CO.ar} · ${STATUS[CO.st]} · قاعة الأثر`, (4096 * (i + 0.5)) / 3, 84);
     bandTex.needsUpdate = true;
@@ -933,20 +942,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       side: THREE.DoubleSide,
       uniforms: { uO: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.84,0.55), a*uO*0.09); }`,
+      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.93,0.84), a*uO*0.08); }`,
     }),
   );
   beam.position.y = 5.1;
   country.add(beam);
-  const beamLight = new THREE.SpotLight(0xffd59a, 0, 14, 0.22, 0.7, 2);
+  const beamLight = new THREE.SpotLight(0xffe6cc, 0, 14, 0.22, 0.7, 2);
   beamLight.position.set(0, 10, 0);
   country.add(beamLight, beamLight.target);
   const plinth = new THREE.Mesh(new THREE.CylinderGeometry(7.4, 7.8, 0.5, 128), lacquer);
   plinth.position.y = -0.27;
   country.add(plinth);
-  const plinthRing = new THREE.Mesh(new THREE.TorusGeometry(7.45, 0.05, 12, 160), goldM);
-  plinthRing.rotation.x = Math.PI / 2;
+  /* the plinth's rim is the mark's ring: white, and broken once (never a closed gold hoop);
+     a champagne hairline below it is the only metal on the plinth */
+  const RIM_GAP = 0.62;
+  const plinthRing = new THREE.Mesh(
+    new THREE.TorusGeometry(7.45, 0.045, 12, 160, Math.PI * 2 - RIM_GAP),
+    ivoryM,
+  );
+  plinthRing.rotation.set(Math.PI / 2, 0, Math.PI * 0.25 + RIM_GAP / 2); // the break sits to the north-east
   country.add(plinthRing);
+  const plinthLine = new THREE.Mesh(new THREE.TorusGeometry(7.83, 0.018, 8, 160), champM);
+  plinthLine.rotation.x = Math.PI / 2;
+  plinthLine.position.y = -0.05;
+  country.add(plinthLine);
   const H = (n) => n * 0.06;
   const glassM = new THREE.MeshPhysicalMaterial({
     color: 0xfff4e0,
@@ -960,16 +979,19 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     envMapIntensity: 1.2,
   });
   const fillM = new THREE.MeshPhysicalMaterial({
-    color: G.gold,
+    color: G.champagne,
     metalness: 1,
-    roughness: 0.18,
-    emissive: 0x7a5414,
+    roughness: 0.3,
+    emissive: 0x6a5632,
     emissiveIntensity: 0.55,
-    envMapIntensity: 1.5,
+    envMapIntensity: 1.2,
   });
   let pillars = [];
-  /* three supports, three visual languages, one palette */
-  const TRACK_COL = { qualify: 0xd4af6a, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
+  /* three supports, three visual languages: each differs in FORM as well as colour (solid bead /
+     ring around the bead / faceted gem; inner / middle / outer dial arc), so the key survives
+     colour-blindness. Champagne = qualified, emerald = sponsored (the one hue outside the mark,
+     kept as a data colour), pearl = clothed. hall.css --t-* must match. */
+  const TRACK_COL = { qualify: 0xcdae76, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
   const DIAL = [
     [0.36, 0.44, "qualify", "qualified"],
     [0.5, 0.58, "sponsor", "sponsored"],
@@ -987,7 +1009,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const delta = new THREE.Mesh(
       new THREE.CylinderGeometry(0.185, 0.185, 1, 48),
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0xfff0c8).multiplyScalar(2.2),
+        color: new THREE.Color(0xfff6ea).multiplyScalar(2), // what this gift added reads white
         toneMapped: false,
         transparent: true,
       }),
@@ -1005,7 +1027,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const ghost = new THREE.Mesh(
       new THREE.CylinderGeometry(0.2, 0.2, 1, 48),
       new THREE.MeshBasicMaterial({
-        color: 0xffe7b0,
+        color: 0xfff1e0,
         transparent: true,
         opacity: 0,
         depthWrite: false,
@@ -1013,7 +1035,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         toneMapped: false,
       }),
     );
-    const cap = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.03, 12, 48), goldM);
+    const cap = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.022, 12, 48), ivoryM);
     cap.rotation.x = Math.PI / 2;
     const dialG = new THREE.Group();
     dialG.position.y = 0.26;
@@ -1051,7 +1073,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const halo = new THREE.Mesh(
       new THREE.RingGeometry(0.8, 0.92, 64),
       new THREE.MeshBasicMaterial({
-        color: 0xffd98f,
+        color: 0xf6e8d6,
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -1162,10 +1184,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   country.add(dots);
   const tmpM = new THREE.Matrix4();
   const COL = {
-    done: new THREE.Color(0xd4af6a),
+    done: new THREE.Color(TRACK_COL.qualify),
     wait: new THREE.Color(0x5a2f38),
     lit: {
-      qualify: new THREE.Color(0xfff0c8).multiplyScalar(3),
+      qualify: new THREE.Color(0xfff6ea).multiplyScalar(2.6),
       sponsor: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(2.6),
       kiswa: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(2.6),
     },
@@ -1187,7 +1209,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       iridescence: 1,
       iridescenceIOR: 1.6,
       sheen: 1,
-      sheenColor: new THREE.Color(0xe6dcff),
+      sheenColor: new THREE.Color(0xf3e6ee),
       clearcoat: 1,
       emissive: 0x2c2a30,
       envMapIntensity: 1.6,
@@ -1233,7 +1255,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       iridescence: 1,
       iridescenceIOR: 1.6,
       sheen: 1,
-      sheenColor: new THREE.Color(0xe6dcff),
+      sheenColor: new THREE.Color(0xf3e6ee),
       clearcoat: 1,
       emissive: 0x2c2a30,
       envMapIntensity: 1.6,
@@ -1309,18 +1331,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const col = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.55, 1.05, 48), lacquer);
     col.position.y = 0.5;
     pedestal.add(col);
-    const cup = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.04, 16, 96), goldM);
+    const cup = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.04, 16, 96), champM);
     cup.rotation.x = Math.PI / 2;
     cup.position.y = 0.92;
     pedestal.add(cup);
     const meridian = new THREE.Mesh(
       new THREE.TorusGeometry(1.5, 0.03, 12, 128, Math.PI * 1.25),
-      goldM,
+      ivoryM, // a broken white ring around the wine disc: the mark, as a stand
     );
     meridian.position.y = 2.2;
     meridian.rotation.set(0, 0, -Math.PI * 0.62);
     pedestal.add(meridian);
-    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.1, 0.12, 64), goldM);
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.1, 0.12, 64), champM);
     foot.position.y = 0.06;
     pedestal.add(foot);
   }
@@ -1328,9 +1350,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const globeCore = new THREE.Mesh(
     new THREE.SphereGeometry(GR, 96, 64),
     new THREE.MeshPhysicalMaterial({
-      color: 0x0f0407,
+      color: 0x4a1220, // the globe is the mark's wine disc, not a black ball
       roughness: 0.45,
-      metalness: 0.25,
+      metalness: 0.15,
       clearcoat: 0.8,
       clearcoatRoughness: 0.2,
       envMapIntensity: 0.45,
@@ -1345,7 +1367,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
       vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition-w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
-      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float f = pow(max(0.0, 0.72 + dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(1.0,0.78,0.45)*1.4, f*0.9); }`,
+      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float f = pow(max(0.0, 0.72 + dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(1.0,0.84,0.82), f*0.36); }`,
     }),
   );
   globe.add(atmo);
@@ -1362,15 +1384,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const pts = [];
     for (let lon = -180; lon <= 180; lon += 3) pts.push(ll(lat, lon, GR * 1.003));
     globe.add(
-      new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), goldLine(lat ? 0.05 : 0.18)),
+      new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), inkLine(lat ? 0.05 : 0.18)),
     );
   }
   for (let lon = -180; lon < 180; lon += 30) {
     const pts = [];
     for (let lat = -90; lat <= 90; lat += 3) pts.push(ll(lat, lon, GR * 1.003));
-    globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), goldLine(0.05)));
+    globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), inkLine(0.05)));
   }
-  /* the world: Natural Earth land (world-atlas 50m) sampled to gold dots, embedded */
+  /* the world: Natural Earth land (world-atlas 50m) sampled to ivory dots, embedded */
   const LAND = LAND_DOTS;
   const landDots = (() => {
     const bin = atob(LAND),
@@ -1408,7 +1430,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         gl_PointSize = s * 5.2 * uScale * uPx * 5.2 / (-mv.z); }`,
       fragmentShader: `varying float vA; varying float vHot;
       void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5, 0.15, d);
-        vec3 col = vHot > 1.5 ? vec3(1.0,0.95,0.82)*2.4 : (vHot > 0.5 ? vec3(1.0,0.8,0.45)*1.05 : vec3(0.82,0.64,0.4)*0.55);
+        vec3 col = vHot > 1.5 ? vec3(1.0,0.97,0.92)*2.2 : (vHot > 0.5 ? vec3(1.0,0.95,0.9) : vec3(0.86,0.7,0.68)*0.5);
         gl_FragColor = vec4(col, a*vA*(vHot > 0.5 ? 1.0 : 0.85)); }`,
     });
     const p = new THREE.Points(g, m);
@@ -1438,7 +1460,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   const hq = byCode("SA"),
     arcs = [];
-  const MARK = { hq: 0xffe0a0, office: 0xe9c983, field: 0xfff4e0, unconfirmed: 0x8a7766 };
+  // champagne marks the headquarters only; offices and field sites are white (solid / ring)
+  const MARK = { hq: 0xdcc08c, office: 0xf6efe2, field: 0xf6efe2, unconfirmed: 0x8a7376 };
   const gDots = COUNTRIES.map((c) => {
     const geo =
       c.st === "hq"
@@ -1471,7 +1494,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const curve = new THREE.QuadraticBezierCurve3(a, mid, b),
         geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(64));
       geo.setDrawRange(0, 0);
-      const line = new THREE.Line(geo, goldLine(0.22));
+      const line = new THREE.Line(geo, inkLine(0.22));
       globe.add(line);
       arcs.push({ geo, line, c, curve });
     }
@@ -1480,7 +1503,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const spark = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 16, 16),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xfff2c8).multiplyScalar(6),
+      color: new THREE.Color(0xfff6ea).multiplyScalar(5),
       toneMapped: false,
     }),
   );
@@ -1501,7 +1524,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     arcs.forEach((a) => {
       const on = PICKED && a.c === CO;
       a.line.material.opacity = on ? 1 : a.c.st === "unconfirmed" ? 0.1 : 0.22;
-      a.line.material.color.set(0xe9c983).multiplyScalar(on ? 2.6 : 1);
+      a.line.material.color.set(on ? G.champagne : G.ivory).multiplyScalar(on ? 2.6 : 1);
     });
     globe.userData.selCurve = (PICKED && arcs.find((a) => a.c === CO)?.curve) || null;
     spark.visible = !!globe.userData.selCurve;
@@ -1523,7 +1546,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const stream = new THREE.Points(
     streamGeo,
     new THREE.PointsMaterial({
-      color: new THREE.Color(0xffe0a0).multiplyScalar(3),
+      color: new THREE.Color(0xfff1dc).multiplyScalar(2.6),
       size: 0.14,
       transparent: true,
       opacity: 0,
@@ -1542,7 +1565,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const shock = new THREE.Mesh(
     new THREE.RingGeometry(0.5, 0.6, 96),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xffd98f).multiplyScalar(3),
+      color: new THREE.Color(0xfbead2).multiplyScalar(2.6),
       transparent: true,
       opacity: 0,
       side: THREE.DoubleSide,
@@ -1586,7 +1609,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
   });
   let TOP3 = new Set();
-  /* the chosen city's name, laid in gold leaf on the land at the foot of its column */
+  /* the chosen city's name, written in white on the wine land at the foot of its column */
   const engraveCv = document.createElement("canvas");
   engraveCv.width = 1024;
   engraveCv.height = 256;
@@ -1616,14 +1639,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.textAlign = "center";
     x.textBaseline = "middle";
     x.font = `700 132px "${DISPLAY}", serif`;
-    const g = x.createLinearGradient(0, 40, 0, 220);
-    g.addColorStop(0, "#fbe9bf");
-    g.addColorStop(0.55, "#d4af6a");
-    g.addColorStop(1, "#8a6a32");
     x.shadowColor = "rgba(0,0,0,0.65)";
     x.shadowOffsetY = 4;
     x.shadowBlur = 10;
-    x.fillStyle = g;
+    x.fillStyle = "#f6efe2";
     x.fillText(o.c.ar, 512, 128);
     engraveTex.needsUpdate = true;
   }
@@ -2137,8 +2156,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 1.35)
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
-      .to(bloom, { intensity: 2.2, duration: 1.2, ease: "power2.in" }, 0.6)
-      .to(bloom, { intensity: 1.15, duration: 1.6, ease: "power2.out" }, 1.8)
+      .to(bloom, { intensity: 1.8, duration: 1.2, ease: "power2.in" }, 0.6)
+      .to(bloom, { intensity: BLOOM, duration: 1.6, ease: "power2.out" }, 1.8)
       .to(doorGlow, { intensity: 0, duration: 1.6 }, 2.2)
       .add(() => {
         // through the doorway on a gentle arc, settling on the map screen
@@ -2218,7 +2237,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     tl.add(() => {}, 0)
       .to(ca.offset, { x: 0.004, y: 0.003, duration: 1.1, ease: "power2.in" }, 0)
-      .to(bloom, { intensity: 3.4, duration: 1.1, ease: "power3.in" }, 0.15)
+      .to(bloom, { intensity: 2.6, duration: 1.1, ease: "power3.in" }, 0.15)
       .to("#veil", { opacity: 0.92, duration: 0.45, ease: "power2.in" }, 0.9)
       .add(() => {
         country.visible = true;
@@ -2239,7 +2258,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       })
       .to("#veil", { opacity: 0, duration: 1.2, ease: "power2.out" })
       .to(ca.offset, { x: 0.0004, y: 0.0003, duration: 1.2, ease: "power2.out" }, "<")
-      .to(bloom, { intensity: 1.15, duration: 1.4, ease: "power2.out" }, "<")
+      .to(bloom, { intensity: BLOOM, duration: 1.4, ease: "power2.out" }, "<")
       .to(plinth.scale, { x: 1, z: 1, duration: 1.2, ease: "expo.out" }, "<")
       .to(plinthRing.scale, { x: 1, y: 1, z: 1, duration: 1.2, ease: "expo.out" }, "<")
       .to(landGroup.scale, { y: 1, duration: 1.1, ease: "back.out(1.6)" }, "<0.35")
@@ -2338,7 +2357,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
     };
     x.save();
-    x.shadowColor = "rgba(233,201,131,.55)";
+    x.shadowColor = "rgba(255,255,255,.28)";
     x.shadowBlur = 26;
     path();
     const g = x.createLinearGradient(0, oy - s, 0, oy + s);
@@ -2348,7 +2367,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.fill();
     x.restore();
     path();
-    x.strokeStyle = "#e3c27e";
+    x.strokeStyle = "#f6efe2";
     x.lineWidth = 2;
     x.stroke();
     regionsFor(co).forEach((c) => {
@@ -2967,7 +2986,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
-      .to(bloom, { intensity: 2.1, duration: 0.9, ease: "power2.in" }, 0.6)
+      .to(bloom, { intensity: 1.7, duration: 0.9, ease: "power2.in" }, 0.6)
       .add(() => {
         shock.position.set(o.g.position.x, 0.66, o.g.position.z);
         shock.scale.setScalar(0.5);
@@ -2993,7 +3012,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         { emissiveIntensity: 0.55, duration: 2, ease: "power2.out" },
         1.7,
       )
-      .to(bloom, { intensity: 1.15, duration: 1.4 }, 2.3)
+      .to(bloom, { intensity: BLOOM, duration: 1.4 }, 2.3)
       .add(() => arrive(p, o, c), 1.7)
       .add(() => {
         const label = {
@@ -3318,9 +3337,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       reveal(pane, 0);
       const cells = pane.querySelectorAll(".timeline i");
       gsap.to(cells, {
-        backgroundColor: "#d4af6a",
+        backgroundColor: "#cdae76",
         color: "#2b0e15",
-        borderColor: "#d4af6a",
+        borderColor: "#cdae76",
         duration: 0.25,
         stagger: 0.18,
         ease: "power2.out",
@@ -3441,9 +3460,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           0.5,
         );
       }, 0.45)
-      .to(bloom, { intensity: 2.4, duration: 0.5, ease: "power2.in" }, 1.6)
+      .to(bloom, { intensity: 1.9, duration: 0.5, ease: "power2.in" }, 1.6)
       .add(() => (country.visible = false), 1.95)
-      .to(bloom, { intensity: 1.2, duration: 1.2, ease: "power2.out" }, 2.0)
+      .to(bloom, { intensity: BLOOM, duration: 1.2, ease: "power2.out" }, 2.0)
       .add(
         () =>
           arcs.forEach((a, i) => {
@@ -3729,6 +3748,20 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       bloom.resolution.scale = 0.35;
     }
   }
+  const placed = [],
+    RANK = { hq: 1, office: 2, field: 3, unconfirmed: 4 };
+  const rankOf = (l) => (!l.globe ? 9 : PICKED && l.globe === CO ? 0 : RANK[l.globe.st] || 5);
+  let ordered = null,
+    orderedFor = "";
+  /** labels in priority order (stable within a rank), re-sorted only when the choice changes */
+  function labelOrder() {
+    const key = labels.length + (PICKED ? CO.code : "");
+    if (key !== orderedFor) {
+      orderedFor = key;
+      ordered = [...labels].sort((a, b) => rankOf(a) - rankOf(b));
+    }
+    return ordered;
+  }
   function frame() {
     if (disposed) return;
     const dt = Math.min(window.__DTCAP || 0.05, clock.getDelta()),
@@ -3878,7 +3911,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (meter) renderer.info.reset();
     composer.render(dt);
     if (meter) tickMeter();
-    for (const l of labels) {
+    placed.length = 0;
+    for (const l of labelOrder()) {
       if (!l.when()) {
         l.el.style.opacity = 0;
         continue;
@@ -3904,6 +3938,23 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         l.city &&
         l.city !== S.city &&
         (["support", "impact", "impactPending"].includes(S.stage) || !TOP3.has(l.city));
+      // globe names never stack (West Africa): the chosen country, then the headquarters, then
+      // offices, then field sites keep theirs; a crowded-out country stays reachable by its dot
+      // and by the panel list
+      if (l.globe) {
+        const w = (l.w ||= l.el.offsetWidth) || 60,
+          x0 = sx - w / 2 - 3,
+          x1 = sx + w / 2 + 3,
+          y0 = sy - 25,
+          y1 = sy + 1;
+        const hitLabel = placed.some((r) => x0 < r[1] && x1 > r[0] && y0 < r[3] && y1 > r[2]);
+        l.el.style.pointerEvents = hitLabel ? "none" : "";
+        if (hitLabel) {
+          l.el.style.opacity = 0;
+          continue;
+        }
+        placed.push([x0, x1, y0, y1]);
+      }
       l.el.style.opacity = quiet ? 0 : 1;
       l.el.style.transform = `translate(${((p.x + 1) / 2) * innerWidth}px, ${((1 - p.y) / 2) * innerHeight}px) translate(-50%, -100%)`;
     }

@@ -1442,7 +1442,7 @@
 /* ── v4: quiet luxury — narrower glass, a colour key, a focus mode ── */
 .hall {
   --mist: rgba(246, 239, 226, 0.8);
-  --t-qualify: #dcc79a;
+  --t-qualify: #cdae76;
   --t-sponsor: #5cc9a4;
   --t-kiswa: #eef0f7;
 }
@@ -1526,12 +1526,16 @@
   background: var(--t-qualify);
   box-shadow: 0 0 8px var(--t-qualify);
 }
+/* the key repeats the scene's forms, not only its colours: bead, ring, gem */
 .lg-sponsor i {
-  background: var(--t-sponsor);
+  box-sizing: border-box;
+  border: 2px solid var(--t-sponsor);
   box-shadow: 0 0 8px var(--t-sponsor);
 }
 .lg-kiswa i {
-  background: radial-gradient(circle at 35% 35%, #fff, var(--t-kiswa) 55%, #c9c2e0);
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.86);
+  background: linear-gradient(135deg, #fff, var(--t-kiswa));
 }
 .hall .sr-only {
   position: absolute;
