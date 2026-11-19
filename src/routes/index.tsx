@@ -25,6 +25,7 @@ import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
+import { PartnerPlate } from "@/components/brand/PartnerPlate";
 import { isTrial, showTrialLink } from "@/config/platform";
 import { BRAND, brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -488,66 +489,62 @@ function HomePage() {
       <main id="main" tabIndex={-1}>
         {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
-          <BrandPattern density="active" className="text-gold-line" opacity={0.08} tile={104} />
-          <div aria-hidden="true" className="blob -top-24 -right-16 size-80 bg-primary/10" />
-          <div
-            aria-hidden="true"
-            className="blob top-1/3 -left-24 size-96 bg-bridge/12 [animation-delay:-6s]"
-          />
-          <div
-            aria-hidden="true"
-            className="blob -bottom-24 right-1/3 size-72 bg-primary/8 [animation-delay:-12s]"
-          />
+          <BrandPattern density="watermark" className="text-gold-line" opacity={0.12} tile={132} />
           <div className="relative mx-auto max-w-6xl px-4 pt-10 pb-10 text-center md:pt-14 md:pb-12">
-            <div className="flex flex-col items-center">
-              <KahataynMark className="h-16 w-auto md:h-20" title={c.logo(brand.name)} />
-              <p className="mt-3 font-serif text-2xl font-bold text-primary md:text-3xl">
-                {brand.name}
-              </p>
-              <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
-            </div>
-            <h1 className="mx-auto mt-7 max-w-4xl text-[2rem] leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
-              {c.h1a}
-              <br />
-              {c.h1b}
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
-              {c.lead}
-            </p>
-            {/* وضع المنصّة (src/config/platform.ts): في التجربة تبدأ الرحلة من /try؛ وبعد الاعتماد من الدليل. */}
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              {isTrial() && (
-                <Button asChild size="lg">
-                  <Link to="/try">
+            <div className="lg:grid lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-14 lg:text-start">
+              <div>
+                <div className="flex flex-col items-center lg:items-start">
+                  <KahataynMark className="h-16 w-auto md:h-20" title={c.logo(brand.name)} />
+                  <p className="mt-3 font-serif text-2xl font-bold text-primary md:text-3xl">
+                    {brand.name}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
+                </div>
+                <h1 className="mx-auto mt-7 max-w-4xl text-[2rem] lg:mx-0 leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
+                  {c.h1a}
+                  <br />
+                  {c.h1b}
+                </h1>
+                <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg lg:mx-0">
+                  {c.lead}
+                </p>
+                {/* وضع المنصّة (src/config/platform.ts): في التجربة تبدأ الرحلة من /try؛ وبعد الاعتماد من الدليل. */}
+                <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+                  {isTrial() && (
+                    <Button asChild size="lg">
+                      <Link to="/try">
+                        <FlaskConical className="size-4" aria-hidden="true" />
+                        {c.tryIt}
+                      </Link>
+                    </Button>
+                  )}
+                  <Button
+                    asChild
+                    size="lg"
+                    variant={isTrial() ? "outline" : "default"}
+                    className={isTrial() ? "bg-background/70" : undefined}
+                  >
+                    <Link to="/orphans">
+                      {c.browse}
+                      <ArrowLeft className="size-4 ltr:-scale-x-100" />
+                    </Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="bg-background/70">
+                    <Link to="/support">{c.supportNow}</Link>
+                  </Button>
+                </div>
+                {showTrialLink() && (
+                  <Link
+                    to="/try"
+                    className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
+                  >
                     <FlaskConical className="size-4" aria-hidden="true" />
                     {c.tryIt}
                   </Link>
-                </Button>
-              )}
-              <Button
-                asChild
-                size="lg"
-                variant={isTrial() ? "outline" : "default"}
-                className={isTrial() ? "bg-background/70" : undefined}
-              >
-                <Link to="/orphans">
-                  {c.browse}
-                  <ArrowLeft className="size-4 ltr:-scale-x-100" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-background/70">
-                <Link to="/support">{c.supportNow}</Link>
-              </Button>
+                )}
+              </div>
+              <PartnerPlate className="mx-auto mt-10 w-full max-w-xs lg:mx-0 lg:mt-0 lg:max-w-sm lg:justify-self-end" />
             </div>
-            {showTrialLink() && (
-              <Link
-                to="/try"
-                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
-              >
-                <FlaskConical className="size-4" aria-hidden="true" />
-                {c.tryIt}
-              </Link>
-            )}
 
             {/* شريط الدليل: أرقامٌ حقيقية فقط — بيانات الندوة البحثية وأعداد المنصّة الحيّة. */}
             <section aria-labelledby="proof-heading" className="mx-auto mt-10 max-w-4xl">

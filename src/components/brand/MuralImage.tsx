@@ -1,4 +1,4 @@
-import { BrandPattern } from "@/components/brand/BrandPattern";
+import { BrandHalo } from "@/components/brand/BrandPattern";
 import { cn } from "@/lib/utils";
 
 /**
@@ -43,19 +43,14 @@ export function MuralImage({
   if (!photoUrl) {
     return (
       // no photo: a quiet wine field with the child's initial in the display face, so each card is
-      // personal rather than a repeated mark, and the pattern stays a whisper in champagne
+      // personal rather than a repeated mark, over one large halo drawn from the logo's ring and crescent
       <div
         className={cn(
           "mural-placeholder relative flex items-center justify-center overflow-hidden",
           className,
         )}
       >
-        <BrandPattern
-          density={register === "need" ? "dense" : "active"}
-          className="text-gold-line"
-          opacity={0.1}
-          tile={72}
-        />
+        <BrandHalo className="-end-[18%] -bottom-[55%] h-[190%] text-[color:var(--bridge-bright)] opacity-25" />
         <span
           aria-hidden="true"
           className="relative font-display text-[clamp(2.5rem,6vw,4rem)] leading-none font-bold text-[color:var(--bridge-bright)]"

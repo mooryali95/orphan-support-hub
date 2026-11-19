@@ -98,8 +98,8 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
         <Badge
           className={
             full
-              ? "bg-shore-thrive absolute end-3 top-3 text-white"
-              : "bg-shore-need absolute end-3 top-3 text-white"
+              ? "bg-shore-thrive absolute end-3 top-3 text-primary-foreground"
+              : "bg-shore-need absolute end-3 top-3 text-primary-foreground"
           }
         >
           {full ? c.full : c.needs}
