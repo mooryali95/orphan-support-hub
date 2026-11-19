@@ -23,7 +23,7 @@ type HallSearch = { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
 
 /**
  * قاعة الأثر — رحلة الداعم ثلاثية الأبعاد: القاعة، ثم خريطة العالم، ثم الدولة،
- * ثم الدعم والأثر بمستوياته، ثم الصورة الكلية. المشهد يُحمَّل كسولاً عند فتح
+ * ثم الدعم والأثر بمستوياته، ثم خلاصة أثر الداعم وطريقه إلى «أثري». المشهد يُحمَّل كسولاً عند فتح
  * الصفحة فقط (three.js والمعالجة السينمائية)، فلا يثقل بقية المنصّة.
  */
 export const Route = createFileRoute("/hall")({
@@ -93,13 +93,15 @@ function HallPage() {
   }, []);
 
   return (
-    <div ref={ref} className="hall" dir="rtl" lang="ar" data-state={state}>
+    <div ref={ref} className="hall" dir="rtl" lang="ar" data-state={state} data-stage="gate">
       <canvas id="gl" aria-label="قاعة الأثر ثلاثية الأبعاد" />
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">
         <div className="brand">
-          {BRAND.name} · قاعة الأثر<small>منصة الرؤية والتوجهات</small>
+          <span className="brand-name">{BRAND.name}</span>
+          <span className="brand-sep">·</span>
+          <span className="brand-hall">قاعة الأثر</span>
         </div>
         <ol id="steps" aria-label="مراحل الرحلة">
           <li data-s="world">العالم</li>
@@ -114,15 +116,12 @@ function HallPage() {
           <button id="soundBtn" type="button" className="chip" aria-pressed="false">
             الصوت
           </button>
-          <Link to="/vision/journey" className="chip">
-            النسخة المبسّطة
-          </Link>
           {trying ? (
-            <Link to="/try/impact" className="chip">
-              إلى أثري (التجربة)
+            <Link to="/try/impact" className="chip exit">
+              إلى أثري<span className="exit-note"> (التجربة)</span>
             </Link>
           ) : (
-            <Link to="/dashboard" className="chip">
+            <Link to="/dashboard" className="chip exit">
               إلى أثري
             </Link>
           )}
@@ -137,15 +136,15 @@ function HallPage() {
           <p>
             تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره
             فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي
-            بالصورة الكلية لمنصة القرار.
+            بخلاصة ما حرّكه دعمك أنت.
           </p>
           <p className="gate-net">
             المقرّ في الرياض و26 موقعاً للندوة حول العالم، تختار منها على الكرة.
           </p>
           {state === "unsupported" ? (
             <p className="gate-net">
-              متصفّحك لا يدعم الرسم ثلاثي الأبعاد. جرّب{" "}
-              <Link to="/vision/journey">الرحلة الكاملة</Link> بدلاً منها.
+              متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في{" "}
+              {trying ? <Link to="/try/impact">أثري</Link> : <Link to="/dashboard">أثري</Link>}.
             </p>
           ) : (
             <>
@@ -203,7 +202,7 @@ function HallPage() {
           الخريطة
         </button>
         <button type="button" data-v="2">
-          الاتجاهات
+          أنواع الدعم
         </button>
         <button type="button" data-d="1" aria-label="الشاشة التالية">
           ›
@@ -332,11 +331,31 @@ function Loader() {
   );
 }
 
-/** the demo children by hall region, and (after a simulated gift) the moment to replay */
+/** remembers which simulated gift the hall has already replayed (this browser only) */
+const REPLAYED_KEY = "hall-replayed:v1";
+
+/**
+ * the arrival is replayed once per gift: the link back from «أثري» always carries the latest
+ * gift's child, and replaying it on every entry took the visitor out of the hall they had opened.
+ */
+function firstReplay(token: string): boolean {
+  try {
+    if (window.localStorage.getItem(REPLAYED_KEY) === token) return false;
+    window.localStorage.setItem(REPLAYED_KEY, token);
+    return true;
+  } catch {
+    return true; // storage blocked: the replay still plays, and any touch cancels it
+  }
+}
+
+/** the demo children by hall region, and (right after a simulated gift) the moment to replay */
 function demoFor(childId: string | undefined, cadence: "monthly" | "one_time" | undefined) {
-  const child = childId ? tryChild(childId) : undefined;
+  const gifts = loadGifts();
+  const gift = childId ? gifts.find((g) => g.childId === childId) : undefined;
+  // only a gift this visitor really made is replayed, and only the first time they arrive with it
+  const child = gift && firstReplay(gift.id) ? tryChild(gift.childId) : undefined;
   // the visitor's simulated gifts (browser only): those children read «في كفالتك» in the hall
-  const mine = new Set(loadGifts().map((g) => g.childId));
+  const mine = new Set(gifts.map((g) => g.childId));
   return {
     kids: TRY_CHILDREN.map((c) => ({
       id: c.id,

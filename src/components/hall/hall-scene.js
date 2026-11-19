@@ -1,6 +1,6 @@
 // قاعة الأثر — المشهد ثلاثي الأبعاد (three.js) وطبقة الواجهة فوقه.
 // المنطق والبيانات في `@/lib/hall/model` (مختبَر)؛ هنا العرض والحركة فقط.
-// يُحمَّل كسولاً من `src/routes/vision.hall.tsx` فلا يثقل بقية الصفحات.
+// يُحمَّل كسولاً من `src/routes/hall.tsx` فلا يثقل بقية الصفحات.
 import * as THREE from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 import CameraControls from "camera-controls";
@@ -47,7 +47,7 @@ import {
   saveEngine,
   SYNC_EVENT,
 } from "@/lib/hall/engine-bridge";
-import { rankPriorities, rationale } from "@/lib/office-gap";
+import { rankPriorities } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
 import { createSound } from "./sound.js";
 
@@ -72,11 +72,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── Colour grade: lacquer wine, gold leaf, champagne, ivory, 3000K lamps ── */
   const G = {
-    night: 0x0b0608,
-    lacquer: 0x3a0f1a,
-    wine: 0x6b1d2f,
-    gold: 0xd4af6a,
-    champagne: 0xf3e3b5,
+    night: 0x14060b,
+    lacquer: 0x4a1220,
+    wine: 0x6b1f30,
+    gold: 0xd9bd86,
+    champagne: 0xf3e6c8,
     ivory: 0xf6efe2,
     lamp: 0xffd6a0,
   };
@@ -160,7 +160,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   // warm studio for reflections: a dark room lit by lamp-coloured panels (no grey from a white box)
   {
     const env = new THREE.Scene();
-    env.background = new THREE.Color(0x0b0608);
+    env.background = new THREE.Color(G.night);
     const panel = (w, h, pos, rot, k) => {
       const m = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
@@ -567,8 +567,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     scrImpact = makeScreen(Math.PI + 0.82, 6, 4.4);
   function bg(ctx, w, h) {
     const gr = ctx.createRadialGradient(w * 0.6, h * 0.3, 50, w * 0.5, h * 0.5, w * 0.8);
-    gr.addColorStop(0, "#3d1321");
-    gr.addColorStop(1, "#110609");
+    gr.addColorStop(0, "#6b1f30");
+    gr.addColorStop(1, "#2a0a13");
     ctx.fillStyle = gr;
     ctx.fillRect(0, 0, w, h);
     ctx.strokeStyle = "rgba(212,175,106,.3)";
@@ -587,10 +587,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ctx.direction = "rtl";
     ctx.textAlign = "right";
     ctx.font = `700 ${size}px "${DISPLAY}", serif`;
+    // headings on the wall screens are white, as on the glass: champagne only warms their foot
     const g = ctx.createLinearGradient(0, y - size, 0, y);
-    g.addColorStop(0, "#fbe9bf");
-    g.addColorStop(0.6, "#d4af6a");
-    g.addColorStop(1, "#8f6c33");
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(0.7, "#fbf4e6");
+    g.addColorStop(1, "#ecdcb6");
     ctx.fillStyle = g;
     ctx.fillText(s, x, y);
   }
@@ -620,8 +621,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         ctx.textAlign = "right";
         ctx.font = `700 140px "${DISPLAY}", serif`;
         const g = ctx.createLinearGradient(0, 300, 0, 440);
-        g.addColorStop(0, "#fbe9bf");
-        g.addColorStop(1, "#a9823f");
+        g.addColorStop(0, "#ffffff");
+        g.addColorStop(1, "#ecdcb6");
         ctx.fillStyle = g;
         ctx.fillText(v, x, 450);
         text(ctx, l, x, 520, 36, "rgba(246,239,226,.8)", 600);
@@ -720,7 +721,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const { ctx, cv, tex } = scrTracks,
       w = cv.lw;
     bg(ctx, w, cv.lh);
-    goldText(ctx, "اتجاهات الدعم الثلاثة", w - 80, 140, 68);
+    goldText(ctx, "أنواع الدعم الثلاثة", w - 80, 140, 68);
     [
       ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
       ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
@@ -920,7 +921,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     gr.addColorStop(1, "#a9823f");
     x.fillStyle = gr;
     for (let i = 0; i < 3; i++)
-      x.fillText(`${CO.ar} · ${STATUS[CO.st]} · منصة الرؤية والتوجهات`, (4096 * (i + 0.5)) / 3, 84);
+      x.fillText(`${CO.ar} · ${STATUS[CO.st]} · قاعة الأثر`, (4096 * (i + 0.5)) / 3, 84);
     bandTex.needsUpdate = true;
   }
   const beam = new THREE.Mesh(
@@ -1720,7 +1721,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     impact = $("#impact");
   const view = { x: 0, y: 0, tx: 0, ty: 0 };
   function frameView() {
-    view.ty = PHONE() && panel.classList.contains("on") ? panel.offsetHeight / 2 : 0;
+    const open = panel.classList.contains("on") && !root.classList.contains("focus");
+    view.ty = PHONE() && open ? panel.offsetHeight / 2 : 0;
     if (PHONE()) {
       view.tx = 0;
       return;
@@ -1742,6 +1744,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   let idle = 0;
   let legendRect = null,
     legendAt = 0;
+  const hud = $("#hud");
+  let hudB = 56,
+    hudAt = -1e9;
+  /* the bar's lower edge (it is shorter on phones), re-measured now and then */
+  const hudBottom = () => {
+    const now = performance.now();
+    if (hud && now - hudAt > 1000) {
+      hudB = hud.offsetHeight || 56;
+      hudAt = now;
+    }
+    return hudB;
+  };
   const legendBox = () => {
     if (!root.classList.contains("in-country") || !legend) return null;
     const now = performance.now();
@@ -1765,6 +1779,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     root.classList.toggle("at-country", s === "country");
     S.stage = s;
+    root.dataset.stage = s; // the bar shows only what belongs to the stage (hall.css)
     queueMicrotask(frameForPanel);
     root.classList.toggle(
       "in-country",
@@ -1932,6 +1947,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   focusBtn?.addEventListener("click", () => {
     const v = root.classList.toggle("focus");
     frameForPanel();
+    frameView();
     focusBtn.setAttribute("aria-pressed", String(v));
     focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
   });
@@ -1996,9 +2012,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       },
     });
   };
+  let filmRun = 0; // a stopped film never resumes: a later run cannot wake an earlier loop
   function stopFilm() {
     if (!FILM) return;
     FILM = false;
+    filmRun++;
     root.classList.remove("film");
     caption("");
   }
@@ -2011,6 +2029,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     true,
   );
   async function film() {
+    if (FILM || S.stage !== "gate") return;
+    const run = ++filmRun;
     FILM = true;
     root.classList.add("film");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -2019,7 +2039,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
       [
         () => selectCountry("AL"),
-        "نختار ألبانيا: نشاطٌ ميداني للندوة، بأرقام محرّك منصة الرؤية",
+        "نختار ألبانيا: نشاطٌ ميداني للندوة، بمدنها ومجموعاتها وأطفالها",
         4200,
       ],
       [
@@ -2039,10 +2059,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
       [() => pay(), "يتدفّق الدعم، ويرتفع عمود تيرانا بقدر ما موّل", 5200],
       [() => {}, "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب", 14000],
-      [() => enterBig(), "وأخيراً الصورة الكلية في منصة القرار", 7000],
+      [() => enterBig(), "وأخيراً أثرك أنت: ما حرّكه دعمك، قبله وبعده", 7000],
     ];
     for (const [act, text, ms] of steps) {
-      if (!FILM || disposed) return;
+      if (!FILM || run !== filmRun || disposed) return;
       caption(text);
       act();
       await wait(ms);
@@ -2140,8 +2160,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         controls.smoothTime = 0.55;
         setStage("hall");
         hallView(1, false);
-        if (demo?.focus) {
-          gsap.delayedCall(0.8, demoFocus);
+        if (demo?.focus && !FILM) {
+          replayStep(0.8, demoFocus);
           return;
         }
         if (!PHONE())
@@ -2242,6 +2262,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── The world: the network in front of you, pick a country ────── */
   function enterWorld() {
+    cancelReplay();
     sound.cue("whoosh");
     setStage("world");
     hint("");
@@ -2341,7 +2362,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const sim = CO.sim;
     return `<article class="co-card">
       <div class="co-head"><div><h3>${CO.ar}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${CO.ar}"></canvas></div>
-      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها. تظهر في النموذج الكامل للإدارة، وأرقامها افتراضية.</p>`}
+      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها، وأرقامها افتراضية.</p>`}
       ${CO.act ? `<p class="co-act">${CO.act}<small> · من البحث العامّ</small></p>` : ""}
       <div class="kv">
         <div><dt>مجموعات تأهيل</dt><dd class="num">${sim.groups}</dd></div>
@@ -2349,8 +2370,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         <div><dt>نسبة التمويل</dt><dd class="num">${sim.funded}%</dd></div>
         <div><dt>مشرفون</dt><dd class="num">${sim.supervisors}</dd></div>
       </div>
-      ${PRI.has(CO.code) ? `<p class="co-act"><b>${TIER[PRI.get(CO.code).tier]} لفتح مكتب:</b> ${rationale(PRI.get(CO.code), "ar")}</p>` : ""}
-      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">محرّك الرؤية</span> مدن ${CO.ar} ومجموعاتها وأطفالها من محرّك منصة الرؤية، ودعمك هنا يظهر هناك.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
+      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">تجريبي</span> مدن ${CO.ar} ومجموعاتها وأطفالها بياناتٌ تجريبية، ودعمك هنا يُقيَّد عليها.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${CO.ar}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
     </article>`;
   }
@@ -2367,14 +2387,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     showPanel(`
     <h2>شبكة الندوة حول العالم</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>اختر دولة</h3><p class="co-line">المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `كخريطة الشبكة في الموقع: المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور.`} كلّها تعمل هنا افتراضياً حتى تتّصل منصّة تشغيلها.</p>
+    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`} أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة.</p>
     <div class="kpis ${VIEW.all ? "k4" : ""}">
       <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>مقرّ رئيسي</span></div>
       <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>مكتباً مؤكَّداً</span></div>
       <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>نشاطاً ميدانياً</span></div>
       ${VIEW.all ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>غير مؤكَّد</span></div>` : ""}
     </div>
-    <div class="layers" role="group" aria-label="الطبقة"><button type="button" data-layer="network" aria-pressed="${VIEW.layer === "network"}">الشبكة</button><button type="button" data-layer="gap" aria-pressed="${VIEW.layer === "gap"}">تحتاج مكتباً</button></div>
     ${
       VIEW.layer === "gap"
         ? `<p class="sub">كطبقة «تحتاج مكتباً» في خريطة الموقع: دولٌ للندوة فيها نشاطٌ ميداني أو حضورٌ غير مؤكَّد، مرتّبةً بتقدير أيتامها وثقة مصدره.</p>${[
@@ -2391,7 +2410,6 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
             .join("")}`
         : ""
     }
-    <div class="row" style="margin-top:12px"><button class="ghost" type="button" id="toggleAll" aria-pressed="${VIEW.all}">${VIEW.all ? "اعرض المؤكَّد فقط" : "اعرض النموذج الكامل · 34 موقعاً"}</button></div>
 
     ${(VIEW.layer === "gap" ? [] : groups)
       .map(
@@ -2628,18 +2646,33 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       : "";
   }
   /** after the simulated payment the visitor returns here: the hall flies to that region and plays the arrival */
+  /* the replay is the only thing that moves the visitor without being asked, so it plays once and
+     stops the moment they act: a touch, a key, or a stage they opened themselves cancels the rest */
+  let REPLAY = null;
+  function replayStep(delay, fn) {
+    REPLAY = gsap.delayedCall(delay, () => {
+      REPLAY = null;
+      fn();
+    });
+  }
+  function cancelReplay() {
+    REPLAY?.kill();
+    REPLAY = null;
+  }
+  on(root, "pointerdown", cancelReplay, true);
+  on(root, "keydown", cancelReplay, true);
   function demoFocus() {
     const f = demo?.focus;
     if (!f || !byCode(f.co)) return;
     selectCountry(f.co);
-    gsap.delayedCall(1.2, () => {
+    replayStep(1.2, () => {
       enterCountry();
-      gsap.delayedCall(4.2, () => {
+      replayStep(4.2, () => {
         const c = CITIES.find((x) => x.id === f.region);
         const o = c && pillars.find((p) => p.c.id === c.id);
         if (!c || !o) return;
         selectCity(c.id);
-        gsap.delayedCall(1.4, () => {
+        replayStep(1.4, () => {
           if (f.cadence === "monthly") c.sponsored = Math.min(c.need, c.sponsored + 1);
           refreshLabels();
           arrive({ track: f.cadence === "monthly" ? "sponsor" : "kiswa", kids: 1 }, o, c);
@@ -2983,6 +3016,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         drawImpactScreen();
         refreshLabels();
         S.stage = "impactPending";
+        root.dataset.stage = "impactPending";
       }, 1.8)
       .add(() => {
         root.classList.remove("watching");
@@ -3245,7 +3279,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         "3",
         "المجموعة",
         f.group.name,
-        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>محرّك منصة الرؤية</dd></div></div>
+        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>بيانات تجريبية</dd></div></div>
          <div class="levels"><span>الآن</span>${lvBar(c0)}${moved ? `<span>بعد القياس</span>${lvBar(c1)}` : ""}</div>${legend}`,
         moved
           ? "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها."
@@ -3256,7 +3290,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         L.track === "qualify" ? "الطالب" : "الفرد",
         `${f.child.name} · <span class="num">${f.child.age}</span> سنة`,
         bars(f.child.traits.map(([n, a, z]) => [n, a, z ?? a])),
-        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>، وملفّه في صفحة الأثر بمنصة الرؤية.`,
+        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>.`,
       );
       const parts = levels.split('<article class="lvl">');
       levels = parts.slice(0, 3).join('<article class="lvl">') + g3 + g4;
@@ -3267,7 +3301,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ["ما تمّ", done],
       [
         "الأثر بالمستويات",
-        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">محرّك الرؤية</span> الأرقام من محرّك منصة الرؤية بعد قيد دعمك فيه.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
+        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">تجريبي</span> أرقامٌ تجريبية، محسوبةٌ بعد قيد دعمك عليها.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
       ],
       ["التفاصيل", details],
     ];
@@ -3358,7 +3392,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً"}</span></div>
       <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>رقم الفاتورة</span></div>
     </div>
-    <div class="row"><button class="cta" type="button" id="toBig">الصورة الكلية</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
+    <div class="row"><button class="cta" type="button" id="toBig">خلاصة أثرك</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
     onPanel(() => {
       $("#toBig")?.addEventListener("click", enterBig);
       $("#again")?.addEventListener("click", () => {
@@ -3369,7 +3403,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
 
-  /* ── The big picture: crane up, the country flies into the globe ─ */
+  /* ── The close: crane up, the country flies back into the globe, and the donor reads their impact ─ */
   function enterBig() {
     sound.cue("rise");
     setStage("big");
@@ -3432,24 +3466,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       months0 = Math.ceil(b.gap / PACE);
     const cmp = (l0, v0, l1, v1, suf = "") =>
       `<div class="compare"><div><small>${l0}</small><b class="num">${fmt(v0)}${suf}</b></div><span>←</span><div class="after"><small>${l1}</small><b class="num" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div>`;
+    const kidsWord =
+      L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً";
+    const place = city(L.city)?.ar;
+    /* the donor's close: what THEIR support moved, a warm line, and the way to «أثري» */
     showPanel(`
-    <h2>الصورة الكلية</h2>
-    <p class="sub">منصة الرؤية والتوجهات · المقرّ في الرياض و<span class="num">${COUNTRIES.filter(shown).length - 1}</span> موقعاً للندوة. الخطوط الذهبية من المقرّ، والأسطع إلى ${CO.ar} حيث وصل دعمك.</p>
-    <div class="kpis">
-      <div class="kpi"><b class="num" data-count="${COUNTRIES.filter(shown).length - 1}">0</b><span>موقعاً حول العالم</span></div>
-      <div class="kpi"><b class="num" data-count="19">0</b><span>مكتباً مؤكَّداً</span></div>
-      <div class="kpi"><b class="num" data-count="7">0</b><span>نشاطاً ميدانياً</span></div>
+    <h2>أثر دعمك</h2>
+    <p class="sub">دعمك وصل ${place ? `${place} في ` : ""}${CO.ar}. هذا ما تغيّر به، قبله وبعده.</p>
+    <div class="kpis k2">
+      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
+      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${kidsWord}</span></div>
     </div>
     <div class="sect">ما حرّكه دعمك في ${CO.ar}</div>
     ${cmp("نسبة التمويل قبل", b.pct, "الآن", t.pct, "%")}
     ${cmp("ينتظرون التأهيل قبل", b.gap, "الآن", t.gap)}
     ${L.track === "kiswa" ? cmp("مكسوّون قبل", b.clothed, "الآن", t.clothed) : ""}
     ${L.track === "sponsor" ? cmp("مكفولون قبل", b.sponsored, "الآن", t.sponsored) : ""}
-    <div class="sect">التوجّه</div>
-    <p class="sub">بإيقاع اليوم (<span class="num">${PACE}</span> طفلاً شهرياً) تُسدّ فجوة ${CO.ar} خلال <b class="num">${months}</b> شهراً${months < months0 ? ` بدل <span class="num">${months0}</span>` : ""}.</p>
-    <p class="sub">أقرب أثرٍ لدعمك القادم: <b>${[...CITIES].sort((a, b2) => gapOf(b2) - gapOf(a))[0].ar}</b> — أكبر فجوةٍ الآن.</p>
-    <div class="row"><button class="cta" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>`);
+    ${months < months0 ? `<p class="sub">وبدعمك اقتربت ${CO.ar} من سدّ حاجتها: <b class="num">${months}</b> شهراً بدل <span class="num">${months0}</span> بإيقاع اليوم.</p>` : ""}
+    <p class="warm">وراء كلّ رقمٍ هنا طفلٌ اقترب ممّا ينتظره، بفضل الله ثم بعطائك. جزاك الله خيراً.</p>
+    ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
+    <div class="row"><button class="ghost" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>
+    <div class="row pin"><button class="cta" type="button" id="toMine">إلى أثري</button></div>`);
     onPanel(() => {
+      // the page owns the route to «أثري» (the demo's or the donor's dashboard): follow its link
+      $("#toMine")?.addEventListener("click", () => $("#hud a.exit")?.click());
       $("#again2")?.addEventListener("click", backToCountry);
       $("#otherCo2")?.addEventListener("click", enterWorld);
       $("#hallBack")?.addEventListener("click", backToHall);
@@ -3522,7 +3562,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     gsap.to(focus, { x: 0, y: 6, z: -13, duration: 1.4 });
     drawImpactScreen();
     drawMap();
+    const left = S.stage;
     setTimeout(() => {
+      // the visitor may have gone elsewhere meanwhile (the globe is touchable): do not pull them back
+      if (disposed || S.stage !== left) return;
       setStage("hall");
       hallView(S.history.length ? 0 : 1);
       hint(PHONE() ? "" : "اسحب يميناً ويساراً بين الشاشات · المس شاشة الأثر لتفاصيله");
@@ -3531,7 +3574,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── The hall: turn to each screen (swipe, arrows or dots) ─────── */
   const VIEWS = [scrImpact, scrMap, scrTracks],
-    VIEW_NAMES = ["الأثر", "الخريطة", "الاتجاهات"];
+    VIEW_NAMES = ["الأثر", "الخريطة", "أنواع الدعم"];
   let hallAt = 1;
   function hallView(i, smooth = true) {
     hallAt = (i + VIEWS.length) % VIEWS.length;
@@ -3625,8 +3668,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
     ];
     showPanel(`
-    <h2>اتجاهات الدعم الثلاثة</h2>
-    <p class="sub">كلّ اتجاه يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
+    <h2>أنواع الدعم الثلاثة</h2>
+    <p class="sub">كلّ نوعٍ يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
     <div class="tracks" style="margin-top:14px"><div class="tcell"><b>تأهيل</b><small>رحلة طفل · <span class="num">600</span> ر.س</small></div><div class="tcell"><b>كفالة</b><small>شهر · <span class="num">300</span> ر.س</small></div><div class="tcell"><b>كسوة</b><small>يتيم · <span class="num">300</span> ر.س</small></div></div>
     ${rows.map(([lv, a, b2, c]) => `<article class="lvl"><header><span class="ic">${["1", "2", "3", "4"][rows.findIndex((x) => x[0] === lv)]}</span><div><small>المستوى</small><b>${lv}</b></div></header><dl class="kv kv3"><div><dt>تأهيل</dt><dd>${a}</dd></div><div><dt>كفالة</dt><dd>${b2}</dd></div><div><dt>كسوة</dt><dd>${c}</dd></div></dl></article>`).join("")}
     <div class="row"><button class="cta" type="button" id="goWorld">اختر دولةً وادعم</button><button class="ghost" type="button" id="closeP">إغلاق</button></div>`);
@@ -3847,9 +3890,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       }
       const sy = ((1 - p.y) / 2) * innerHeight,
         sx = ((p.x + 1) / 2) * innerWidth;
-      // names never slide under the colour key
+      // names never slide under the bar or the colour key
       const lr = legendBox();
-      if (sy < 84 || (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)) {
+      if (
+        sy < hudBottom() + 30 ||
+        (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)
+      ) {
         l.el.style.opacity = 0;
         continue;
       }
@@ -3886,6 +3932,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     rerender: () => S.stage === "country" && renderCountry(),
     enterWorld: () => enterWorld(),
     co: () => CO.code,
+    /** whether the after-payment replay still has a step waiting */
+    replaying: () => !!REPLAY,
     codes: () => COUNTRIES.map((c) => c.code),
     /** for automated checks: pick a country on the globe and enter it */
     visit: (code) => {
