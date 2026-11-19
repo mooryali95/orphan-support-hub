@@ -1,0 +1,347 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+
+import "@/components/hall/hall.css";
+import { BRAND } from "@/config/brand";
+import {
+  MARK_BACKING,
+  MARK_CALLIGRAPHY,
+  MARK_CENTER,
+  MARK_COLORS,
+  MARK_CRESCENT,
+  MARK_DISC,
+  MARK_VIEWBOX,
+} from "@/components/hall/hall-mark";
+import { isTrial } from "@/config/platform";
+import { geoQuery } from "@/lib/geo";
+import { getOperatingLinks } from "@/lib/vision-links.functions";
+import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
+
+/** ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there */
+
+export const Route = createLazyFileRoute("/hall")({ component: HallPage });
+
+function HallPage() {
+  const ref = useRef<HTMLDivElement>(null);
+  const search = Route.useSearch();
+  const queryClient = useQueryClient();
+  // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
+  const trying = search.try === 1 || isTrial();
+  const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const gl = document.createElement("canvas").getContext("webgl2");
+    if (!gl) {
+      setState("unsupported");
+      return;
+    }
+    let dispose: (() => void) | null = null;
+    let cancelled = false;
+    import("@/components/hall/hall-scene.js")
+      .then(({ mountHall }) => {
+        if (cancelled) return;
+        dispose = mountHall(root, {
+          brand: BRAND.name,
+          // الدول المتّصلة منصّة تشغيلها فعلاً تظهر «حقيقية»؛ غيرها يبقى افتراضياً.
+          linked: getOperatingLinks()
+            .then((links) => links.map((l) => l.country))
+            .catch(() => []),
+          demo: trying ? demoFor(search.child, search.cadence) : null,
+          // عدّ الدليل الحقيقي بالدولة (geo_stats)، بالحماية نفسها التي يعرضها الدليل.
+          live: trying
+            ? null
+            : queryClient
+                .fetchQuery(geoQuery)
+                .then((g) => (g.available ? g.countries : []))
+                .catch(() => []),
+        });
+        setState("ready");
+      })
+      .catch(() => setState("unsupported"));
+    return () => {
+      cancelled = true;
+      dispose?.();
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className="hall" dir="rtl" lang="ar" data-state={state} data-stage="gate">
+      <canvas id="gl" aria-label="قاعة الأثر ثلاثية الأبعاد" />
+      <div id="labels" aria-hidden="true" />
+
+      <header id="hud">
+        <div className="brand">
+          <span className="brand-name">{BRAND.name}</span>
+          <span className="brand-sep">·</span>
+          <span className="brand-hall">قاعة الأثر</span>
+        </div>
+        <ol id="steps" aria-label="مراحل الرحلة">
+          <li data-s="world">العالم</li>
+          <li data-s="country">الدولة</li>
+          <li data-s="support">الدعم</li>
+          <li data-s="impact">الأثر</li>
+        </ol>
+        <nav className="exits" aria-label="روابط">
+          <button id="focusBtn" type="button" className="chip" aria-pressed="false">
+            عرض المجسّم
+          </button>
+          <button id="soundBtn" type="button" className="chip" aria-pressed="false">
+            الصوت
+          </button>
+          {trying ? (
+            <Link to="/try/impact" className="chip exit">
+              إلى أثري<span className="exit-note"> (التجربة)</span>
+            </Link>
+          ) : (
+            <Link to="/dashboard" className="chip exit">
+              إلى أثري
+            </Link>
+          )}
+        </nav>
+      </header>
+
+      <section id="gate">
+        <div>
+          <MarkStage />
+          <div className="eyebrow">رحلة الداعم</div>
+          <h1>ادخل قاعة الأثر</h1>
+          <p>
+            تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره
+            فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي
+            بخلاصة ما حرّكه دعمك أنت.
+          </p>
+          <p className="gate-net">
+            المقرّ في الرياض و26 موقعاً للندوة حول العالم، تختار منها على الكرة.
+          </p>
+          {state === "unsupported" ? (
+            <p className="gate-net">
+              متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في{" "}
+              {trying ? <Link to="/try/impact">أثري</Link> : <Link to="/dashboard">أثري</Link>}.
+            </p>
+          ) : (
+            <>
+              {state === "loading" && <Loader />}
+              <div className="gate-actions">
+                <button id="enter" className="cta" type="button" disabled={state !== "ready"}>
+                  {state === "ready" ? "ادخل القاعة" : "تُجهَّز القاعة…"}
+                </button>
+                <button id="film" className="ghost" type="button" disabled={state !== "ready"}>
+                  شاهد كفيلم
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      <div id="hint" />
+      <aside id="legend" aria-label="مفتاح الأثر" />
+      <div id="timeline" role="group" aria-label="الزمن: الدولة قبل سنة واليوم وبعد سنة">
+        <button id="tlPlay" type="button" className="chip">
+          شاهد السنة تمرّ
+        </button>
+        <div className="tl-track">
+          <input
+            id="tlRange"
+            type="range"
+            min={-12}
+            max={12}
+            step={1}
+            defaultValue={0}
+            aria-label="الشهر"
+            aria-valuetext="اليوم"
+          />
+          <div className="tl-ticks" aria-hidden="true">
+            <span>قبل سنة</span>
+            <span>اليوم</span>
+            <span>بعد سنة</span>
+          </div>
+        </div>
+        <output id="tlOut" htmlFor="tlRange">
+          اليوم
+        </output>
+      </div>
+      <p id="srLive" className="sr-only" aria-live="polite" />
+      <p id="caption" aria-live="polite" />
+      <nav id="hallNav" aria-label="شاشات القاعة">
+        <button type="button" data-d="-1" aria-label="الشاشة السابقة">
+          ‹
+        </button>
+        <button type="button" data-v="0">
+          الأثر
+        </button>
+        <button type="button" data-v="1" aria-current="true">
+          الخريطة
+        </button>
+        <button type="button" data-v="2">
+          أنواع الدعم
+        </button>
+        <button type="button" data-d="1" aria-label="الشاشة التالية">
+          ›
+        </button>
+      </nav>
+      <aside id="panel" aria-live="polite" />
+      <section id="impact" hidden aria-live="polite" />
+      <div id="veil" />
+      <div id="cursor" aria-hidden="true" />
+    </div>
+  );
+}
+
+/** نجمةٌ ثمانية تُرسم بالذهب حتى يجهز المشهد. */
+/**
+ * the partner mark (no wordmark), from the approved vector file. The alef's slot already cuts the
+ * disc on a diagonal, so the disc is a two-leaf door: two copies, each clipped to one side of the
+ * alef line, swing apart on entry while the hāʾ rises out toward the viewer and light floods through.
+ * Before that, the mark is drawn in four movements: a gold line traces the outline → the disc fills →
+ * the crescent settles → the hand is written.
+ */
+function MarkStage() {
+  return (
+    <div className="mark" aria-hidden="true">
+      <div className="mark-flood" />
+      <div className="leaf leaf-a">
+        <MarkSvg id="a" layer="disc" />
+      </div>
+      <div className="leaf leaf-b">
+        <MarkSvg id="b" layer="disc" />
+      </div>
+      {/* the alef's slot, which ignites before the leaves part */}
+      <svg className="mark-slot" viewBox={MARK_VIEWBOX} focusable="false">
+        <line x1="368" y1="58" x2="145" y2="388" pathLength={1} />
+      </svg>
+      <div className="mark-ink">
+        <MarkSvg id="i" layer="ink" />
+      </div>
+    </div>
+  );
+}
+
+function MarkSvg({ id, layer }: { id: string; layer: "disc" | "ink" }) {
+  const { x, y } = MARK_CENTER;
+  const u = (n: string) => `mark-${id}-${n}`;
+  return (
+    <svg viewBox={MARK_VIEWBOX} focusable="false">
+      <defs>
+        <linearGradient id={u("gold")} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style={{ stopColor: "var(--champagne)" }} />
+          <stop offset="1" style={{ stopColor: "var(--gold)" }} />
+        </linearGradient>
+        <linearGradient id={u("sheen")} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0.35" stopColor="white" stopOpacity="0" />
+          <stop offset="0.5" stopColor="white" stopOpacity="0.8" />
+          <stop offset="0.65" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={u("feather")} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.94" stopColor="white" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        {/* the hand is written by a feathered band travelling down-left along the stroke */}
+        <mask id={u("write")} maskUnits="userSpaceOnUse" x="100" y="20" width="400" height="400">
+          <g transform={`rotate(45 ${x} ${y})`}>
+            <rect
+              className="m-wipe"
+              x={x - 600}
+              y={y - 1200}
+              width="1200"
+              height="1200"
+              fill={`url(#${u("feather")})`}
+            />
+          </g>
+        </mask>
+        <clipPath id={u("clip")}>
+          <path d={MARK_CALLIGRAPHY} clipRule="evenodd" />
+        </clipPath>
+      </defs>
+      {layer === "disc" ? (
+        <>
+          <path className="m-paper" d={MARK_BACKING} fill={MARK_COLORS.paper} />
+          <path className="m-disc" d={MARK_DISC} fill={MARK_COLORS.disc} />
+          <path className="m-crescent" d={MARK_CRESCENT} fill={MARK_COLORS.crescent} />
+          <path className="m-line" d={MARK_DISC} pathLength={1} stroke={`url(#${u("gold")})`} />
+          <path
+            className="m-line m-line-2"
+            d={MARK_CRESCENT}
+            pathLength={1}
+            stroke={`url(#${u("gold")})`}
+          />
+        </>
+      ) : (
+        <>
+          <g className="m-ink" mask={`url(#${u("write")})`}>
+            <path d={MARK_CALLIGRAPHY} fillRule="evenodd" fill={MARK_COLORS.paper} />
+          </g>
+          <g clipPath={`url(#${u("clip")})`}>
+            <rect
+              className="m-sheen"
+              x="-160"
+              y="40"
+              width="300"
+              height="360"
+              fill={`url(#${u("sheen")})`}
+            />
+          </g>
+        </>
+      )}
+    </svg>
+  );
+}
+
+function Loader() {
+  const pts = Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2 - Math.PI / 2;
+    const r = i % 2 ? 26 : 44;
+    return `${50 + Math.cos(a) * r},${50 + Math.sin(a) * r}`;
+  }).join(" ");
+  return (
+    <div className="loader" role="status" aria-label="تُجهَّز القاعة">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <polygon points={pts} />
+        <circle cx="50" cy="50" r="12" />
+      </svg>
+    </div>
+  );
+}
+
+/** remembers which simulated gift the hall has already replayed (this browser only) */
+const REPLAYED_KEY = "hall-replayed:v1";
+
+/**
+ * the arrival is replayed once per gift: the link back from «أثري» always carries the latest
+ * gift's child, and replaying it on every entry took the visitor out of the hall they had opened.
+ */
+function firstReplay(token: string): boolean {
+  try {
+    if (window.localStorage.getItem(REPLAYED_KEY) === token) return false;
+    window.localStorage.setItem(REPLAYED_KEY, token);
+    return true;
+  } catch {
+    return true; // storage blocked: the replay still plays, and any touch cancels it
+  }
+}
+
+/** the demo children by hall region, and (right after a simulated gift) the moment to replay */
+function demoFor(childId: string | undefined, cadence: "monthly" | "one_time" | undefined) {
+  const gifts = loadGifts();
+  const gift = childId ? gifts.find((g) => g.childId === childId) : undefined;
+  // only a gift this visitor really made is replayed, and only the first time they arrive with it
+  const child = gift && firstReplay(gift.id) ? tryChild(gift.childId) : undefined;
+  // the visitor's simulated gifts (browser only): those children read «في كفالتك» in the hall
+  const mine = new Set(gifts.map((g) => g.childId));
+  return {
+    kids: TRY_CHILDREN.map((c) => ({
+      id: c.id,
+      name: c.name,
+      co: c.co,
+      region: c.region,
+      gap: gapOf(c),
+      mine: mine.has(c.id),
+    })),
+    focus: child
+      ? { co: child.co, region: child.region, name: child.name, cadence: cadence ?? "monthly" }
+      : null,
+  };
+}

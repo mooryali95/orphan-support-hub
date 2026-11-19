@@ -17,10 +17,13 @@ export function CelebrateMark({ className, grand }: { className?: string; grand?
         Array.from({ length: LEAVES * 2 }, (_, i) => (
           <span
             key={`w${i}`}
-            className="celebrate-leaf celebrate-leaf-far absolute start-1/2 top-1/2 z-10"
+            className="celebrate-leaf absolute start-1/2 top-1/2 z-10"
             style={{
               ["--a" as string]: `${(360 / (LEAVES * 2)) * i + 7}deg`,
               ["--d" as string]: `${420 + i * 22}ms`,
+              ["--r0" as string]: "-60px",
+              ["--r1" as string]: "-150px",
+              animationDuration: "1500ms",
             }}
           >
             <svg

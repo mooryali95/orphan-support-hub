@@ -803,14 +803,14 @@ header.sticky {
 @keyframes celebrate-leaf {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-40px) scale(0.4);
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--r0, -40px)) scale(0.4);
   }
   25% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-92px) scale(1.1);
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--r1, -92px)) scale(1.1);
   }
 }
 .celebrate-ring {
@@ -823,22 +823,6 @@ header.sticky {
 .celebrate-leaf {
   transform: translate(-50%, -50%);
   animation: celebrate-leaf 1100ms var(--ease-out) calc(300ms + var(--d, 0ms)) both;
-}
-@keyframes celebrate-leaf-far {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-60px) scale(0.4);
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-150px) scale(1);
-  }
-}
-.celebrate-leaf-far {
-  animation: celebrate-leaf-far 1500ms var(--ease-out) calc(300ms + var(--d, 0ms)) both;
 }
 .celebrate-text {
   animation: map-rise 450ms var(--ease-out) 550ms both;
