@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,6 +13,7 @@ import {
   MARK_DISC,
   MARK_VIEWBOX,
 } from "@/components/hall/hall-mark";
+import { geoQuery } from "@/lib/geo";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
 
@@ -47,6 +49,7 @@ export const Route = createFileRoute("/hall")({
 function HallPage() {
   const ref = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
+  const queryClient = useQueryClient();
   const trying = search.try === 1;
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
 
@@ -70,6 +73,13 @@ function HallPage() {
             .then((links) => links.map((l) => l.country))
             .catch(() => []),
           demo: trying ? demoFor(search.child, search.cadence) : null,
+          // عدّ الدليل الحقيقي بالدولة (geo_stats)، بالحماية نفسها التي يعرضها الدليل.
+          live: trying
+            ? null
+            : queryClient
+                .fetchQuery(geoQuery)
+                .then((g) => (g.available ? g.countries : []))
+                .catch(() => []),
         });
         setState("ready");
       })

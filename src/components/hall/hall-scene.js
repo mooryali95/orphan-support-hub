@@ -54,7 +54,7 @@ import { createSound } from "./sound.js";
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
 
-export function mountHall(root, { brand, linked = [], demo = null }) {
+export function mountHall(root, { brand, linked = [], demo = null, live = null }) {
   const $ = (s, r = root) => r.querySelector(s);
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -91,6 +91,14 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
     .then((codes) => {
       (codes || []).forEach((c) => LINKED.add(c));
       if (S.stage === "world") renderWorld();
+    })
+    .catch(() => {});
+  /* the real directory, by country: aggregate counts only (small cohorts stay hidden there) */
+  const LIVE = new Map();
+  Promise.resolve(live)
+    .then((rows) => {
+      (rows || []).forEach((r) => r.code && LIVE.set(r.code, r));
+      if (S.stage === "country" && !demo) renderCountry();
     })
     .catch(() => {});
   const shown = (c) =>
@@ -2468,7 +2476,7 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
       <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
       <div class="kpi"><b class="num" data-count="${t.gap}">0</b><span>ينتظرون</span></div>
     </div>
-    ${demoKidsHtml(c)}
+    ${demo ? demoKidsHtml(c) : liveHtml()}
     <div class="sect">${CO.code === "AL" ? "المدن" : "المناطق"} · الأكبر فجوةً أوّلاً</div>
     <ul class="cities">${cityRows()}</ul>
     <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`);
@@ -2582,6 +2590,24 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
     });
 
   /* ── demo mode: the hall's regions lead to the children standing in them (/try) ── */
+  /** outside the demo, the country's real children in the directory: counts and a way in */
+  function liveHtml() {
+    const r = LIVE.get(CO.code);
+    if (!r) return "";
+    const href = `/orphans?country=${encodeURIComponent(r.value)}`;
+    const counted = !r.small && r.total != null && r.total > 0;
+    const waiting = counted && r.sponsored != null ? Math.max(0, r.total - r.sponsored) : null;
+    return `<div class="sect">في الدليل الآن</div>
+      <ul class="kids"><li><span><b>${
+        counted
+          ? `<span class="num">${fmt(r.total)}</span> ${r.total <= 10 ? "أطفال" : "طفلاً"} في ${CO.ar}`
+          : `أطفال ${CO.ar}`
+      }</b><small>${
+        waiting != null
+          ? `<span class="num">${fmt(waiting)}</span> منهم ينتظرون كافلاً`
+          : "الأعداد الصغيرة تُحجب حمايةً للأطفال"
+      }</small></span><a class="cta" href="${href}">تصفّحهم</a></li></ul>`;
+  }
   function demoKidsHtml(c) {
     if (!demo) return "";
     const here = demo.kids.filter((k) => k.co === CO.code && k.region === c.id);
@@ -3856,6 +3882,8 @@ export function mountHall(root, { brand, linked = [], demo = null }) {
   frame();
   window.__hall = {
     S,
+    live: LIVE,
+    rerender: () => S.stage === "country" && renderCountry(),
     enterWorld: () => enterWorld(),
     co: () => CO.code,
     codes: () => COUNTRIES.map((c) => c.code),
