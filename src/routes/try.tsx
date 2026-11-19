@@ -3,6 +3,7 @@ import { FlaskConical, RotateCcw } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { pageTitle } from "@/config/brand";
 import { resetGifts } from "@/lib/try-demo";
 
@@ -40,9 +41,7 @@ function TryLayout() {
               الأطفال هنا افتراضيون بأسماءٍ مستعارة، والدفع محاكاة: لا يُخصم أي مبلغ ولا يُرسل شيء.
             </span>
           </span>
-          <Link to="/try" className="font-bold text-primary hover:underline">
-            بداية التجربة
-          </Link>
+          <TryJourneyGuide />
           <button
             type="button"
             onClick={() => resetGifts()}
