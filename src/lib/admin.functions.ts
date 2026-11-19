@@ -237,3 +237,17 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
     const list = (rows ?? []) as Record<string, unknown>[];
     return { ok: true as const, csv: toCsv(list), count: list.length };
   });
+
+/**
+ * هل بوابة الدفع مهيّأة؟ لجاهزية الاعتماد في لوحة الإدارة: نعم/لا فقط، بلا اسمٍ ولا قيمة.
+ * الإدارة وحدها: يُسأل `admin_overview` (يرفض غيرها) قبل الجواب.
+ */
+export const getPaymentsReady = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { withPayments } = await import("@/integrations/supabase/types.extra");
+    const { error } = await withPayments(context.supabase).rpc("admin_overview");
+    if (error) return { allowed: false as const, ready: null };
+    const { featureReady } = await import("@/lib/env.server");
+    return { allowed: true as const, ready: featureReady("payments") };
+  });
