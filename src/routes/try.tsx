@@ -35,12 +35,13 @@ function TryLayout() {
             <FlaskConical className="size-4" aria-hidden="true" />
             وضع التجربة
           </span>
-          <span className="flex-1 leading-6 text-foreground">
+          <span className="order-last basis-full leading-6 text-foreground sm:order-none sm:flex-1 sm:basis-auto">
             <span className="sm:hidden">بياناتٌ افتراضية، ولا يُخصم شيء.</span>
             <span className="hidden sm:inline">
               الأطفال هنا افتراضيون بأسماءٍ مستعارة، والدفع محاكاة: لا يُخصم أي مبلغ ولا يُرسل شيء.
             </span>
           </span>
+          <span className="flex-1 sm:hidden" />
           <TryJourneyGuide />
           <button
             type="button"

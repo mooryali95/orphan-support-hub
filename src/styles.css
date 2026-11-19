@@ -99,7 +99,7 @@
   --gradient-primary: linear-gradient(
     135deg,
     var(--primary),
-    color-mix(in oklab, var(--primary) 84%, var(--background))
+    color-mix(in oklab, var(--primary) 86%, var(--foreground))
   );
 
   /* الألوان كلّها في src/config/brand.json — تُحقن من src/config/brand-colors.ts.
@@ -199,24 +199,20 @@
   font-family: var(--font-serif);
 }
 
-/* «العبور»: من الشاطئ الأول (أزرق) عبر الجسر (ذهبي) إلى العمران (أخضر).
-   RTL، فيبدأ الأزرق يميناً حيث تبدأ القراءة. */
+/* سطح أعلى الصفحة الأولى. */
 @utility surface-crossing {
+  /* a clean neutral field with one faint wine light from where reading begins, and a breath
+     of champagne low on the far side; no slate, no green */
   background-image:
     radial-gradient(
-      115% 95% at 100% -10%,
-      color-mix(in oklch, var(--color-shore-need) 30%, transparent) 0%,
-      transparent 62%
+      90% 80% at 100% -10%,
+      color-mix(in oklch, var(--logo) 7%, transparent) 0%,
+      transparent 60%
     ),
     radial-gradient(
-      70% 65% at 52% 48%,
-      color-mix(in oklch, var(--color-bridge) 20%, transparent) 0%,
-      transparent 62%
-    ),
-    radial-gradient(
-      115% 95% at -8% 108%,
-      color-mix(in oklch, var(--color-shore-thrive) 30%, transparent) 0%,
-      transparent 62%
+      80% 70% at -5% 105%,
+      color-mix(in oklch, var(--color-bridge) 9%, transparent) 0%,
+      transparent 60%
     );
 }
 
@@ -803,14 +799,14 @@ header.sticky {
 @keyframes celebrate-leaf {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-40px) scale(0.4);
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--r0, -40px)) scale(0.4);
   }
   25% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-92px) scale(1.1);
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--r1, -92px)) scale(1.1);
   }
 }
 .celebrate-ring {

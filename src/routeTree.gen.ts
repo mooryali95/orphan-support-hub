@@ -89,7 +89,7 @@ const HallRoute = HallRouteImport.update({
   id: '/hall',
   path: '/hall',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/hall.lazy').then((d) => d.Route))
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',

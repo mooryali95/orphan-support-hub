@@ -65,13 +65,16 @@ export function SiteHeader() {
           <KahataynLockup />
         </Link>
         {/* the partner beside the product: a hairline, then its mark (name on wide screens) */}
-        {/* only where the header has room: mark alone on tablets, full name on very wide screens */}
+        {/* the mark at every width from tablets up (the longer English nav has no room for it between xl and 2xl); its full name joins on very wide screens */}
         <span
           aria-hidden="true"
           className="hidden h-8 w-px bg-border sm:block xl:hidden 2xl:block"
         />
         <PartnerLockup className="hidden shrink-0 2xl:inline-flex" />
-        <PartnerLockup compact className="hidden shrink-0 sm:inline-flex xl:hidden" />
+        <PartnerLockup
+          compact
+          className="hidden shrink-0 sm:inline-flex 2xl:hidden ltr:xl:hidden ltr:2xl:hidden"
+        />
 
         <nav className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((item) => (

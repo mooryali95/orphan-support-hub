@@ -1,6 +1,6 @@
 // قاعة الأثر — المشهد ثلاثي الأبعاد (three.js) وطبقة الواجهة فوقه.
 // المنطق والبيانات في `@/lib/hall/model` (مختبَر)؛ هنا العرض والحركة فقط.
-// يُحمَّل كسولاً من `src/routes/vision.hall.tsx` فلا يثقل بقية الصفحات.
+// يُحمَّل كسولاً من `src/routes/hall.tsx` فلا يثقل بقية الصفحات.
 import * as THREE from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 import CameraControls from "camera-controls";
@@ -47,7 +47,7 @@ import {
   saveEngine,
   SYNC_EVENT,
 } from "@/lib/hall/engine-bridge";
-import { rankPriorities, rationale } from "@/lib/office-gap";
+import { rankPriorities } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
 import { createSound } from "./sound.js";
 
@@ -70,15 +70,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   if (RM) gsap.globalTimeline.timeScale(20);
   if (window.__HALL_TEST) gsap.ticker.lagSmoothing(0); // automated runs in a software renderer
 
-  /* ── Colour grade: lacquer wine, gold leaf, champagne, ivory, 3000K lamps ── */
+  /* ── Colour grade: the partner mark's world — wine, white, and champagne only as a thin line.
+     Wine is the hero surface, ivory/white draws the forms (as the mark's ring and hand do),
+     champagne is satin metal trim and the "qualified" data colour; lamps are warm white, not amber. ── */
   const G = {
-    night: 0x0b0608,
-    lacquer: 0x3a0f1a,
-    wine: 0x6b1d2f,
-    gold: 0xd4af6a,
-    champagne: 0xf3e3b5,
-    ivory: 0xf6efe2,
-    lamp: 0xffd6a0,
+    night: 0x14060b,
+    lacquer: 0x4a1220,
+    wine: 0x6b1f30,
+    champagne: 0xcdae76,
+    ivory: 0xf3ebe0,
+    lamp: 0xffe6cc,
   };
 
   /* ── State: the network view, the chosen country and its regions ── */
@@ -160,12 +161,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   // warm studio for reflections: a dark room lit by lamp-coloured panels (no grey from a white box)
   {
     const env = new THREE.Scene();
-    env.background = new THREE.Color(0x0b0608);
+    env.background = new THREE.Color(G.night);
     const panel = (w, h, pos, rot, k) => {
       const m = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
         new THREE.MeshBasicMaterial({
-          color: new THREE.Color(0xffc988).multiplyScalar(k),
+          color: new THREE.Color(0xffdcbe).multiplyScalar(k),
           side: THREE.DoubleSide,
         }),
       );
@@ -212,10 +213,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ao.setQualityMode("Medium");
     composer.addPass(ao);
   }
+  const BLOOM = 0.9; // resting bloom; the gate, country and payment beats rise from it and return
   const bloom = new BloomEffect({
-    luminanceThreshold: 0.72,
-    luminanceSmoothing: 0.25,
-    intensity: 0.95,
+    luminanceThreshold: 0.8, // whites draw the forms now: only true light sources should bloom
+    luminanceSmoothing: 0.2,
+    intensity: BLOOM,
     mipmapBlur: true,
     radius: 0.72,
   });
@@ -237,22 +239,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   });
   const vignette = new VignetteEffect({ darkness: 0.62, offset: 0.3 });
   const grain = new NoiseEffect({ blendFunction: BlendFunction.SOFT_LIGHT, premultiply: false });
-  grain.blendMode.opacity.value = 0.22;
+  grain.blendMode.opacity.value = 0.14;
   const grade = [
     new BrightnessContrastEffect({ contrast: 0.08, brightness: -0.01 }),
-    new HueSaturationEffect({ saturation: -0.08 }),
+    new HueSaturationEffect({ saturation: -0.04 }),
   ];
   composer.addPass(new EffectPass(camera, ...grade, ca, vignette, grain));
   composer.addPass(new EffectPass(camera, new SMAAEffect()));
 
-  /* ── Materials: gold leaf, lacquer, smoked glass ─────────────────── */
-  const goldM = new THREE.MeshPhysicalMaterial({
-    color: G.gold,
+  /* ── Materials: satin champagne trim, white enamel, wine lacquer, glass ─────────────────── */
+  // champagne is brushed, never mirror foil: it is the thin line, not a surface
+  const champM = new THREE.MeshPhysicalMaterial({
+    color: G.champagne,
     metalness: 1,
-    roughness: 0.2,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.2,
-    envMapIntensity: 1.4,
+    roughness: 0.36,
+    envMapIntensity: 1,
+  });
+  // white enamel: the mark's ring and hand, as form (frames, the broken rings, the meridian)
+  const ivoryM = new THREE.MeshPhysicalMaterial({
+    color: G.ivory,
+    metalness: 0,
+    roughness: 0.42,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.25,
+    envMapIntensity: 0.45,
   });
   const lacquer = new THREE.MeshPhysicalMaterial({
     color: G.lacquer,
@@ -262,16 +272,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     clearcoatRoughness: 0.12,
     envMapIntensity: 0.55,
   });
-  const goldLine = (o = 0.5) =>
+  // hairlines are drawn in white, as the mark's ring is
+  const inkLine = (o = 0.5) =>
     new THREE.LineBasicMaterial({
-      color: 0xe9c983,
+      color: G.ivory,
       transparent: true,
       opacity: o,
       toneMapped: false,
     });
 
   /* ── Lights: 3000K lamps, one key over the centre ───────────────── */
-  scene.add(new THREE.HemisphereLight(0xffe0b0, 0x14060a, 0.35));
+  scene.add(new THREE.HemisphereLight(0xffeada, 0x14060a, 0.35));
   const key = new THREE.SpotLight(G.lamp, 1400, 40, 0.55, 0.6, 2);
   key.position.set(0, 22, 4);
   key.target.position.set(0, 0, 0);
@@ -285,18 +296,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     lamps.push(l);
     const bulb = new THREE.Mesh(
       new THREE.SphereGeometry(0.16, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xffe2b0, toneMapped: false }),
+      new THREE.MeshBasicMaterial({ color: 0xfff0e0, toneMapped: false }),
     );
-    bulb.material.color.multiplyScalar(2.6);
+    bulb.material.color.multiplyScalar(2.2);
     bulb.scale.setScalar(0.7);
     bulb.position.copy(l.position);
     scene.add(bulb);
     const cage = new THREE.Mesh(
       new THREE.OctahedronGeometry(0.42, 0),
       new THREE.MeshPhysicalMaterial({
-        color: G.gold,
+        color: G.champagne,
         metalness: 1,
-        roughness: 0.3,
+        roughness: 0.4,
         wireframe: true,
       }),
     );
@@ -342,21 +353,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         new THREE.Vector3(Math.sin(b) * r, 0, Math.cos(b) * r),
       );
     }
-    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), goldLine(o));
+    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), inkLine(o));
   }
   const inlay = new THREE.Group();
   inlay.position.y = 0.012;
-  inlay.add(star(9, 5, 0.14), star(6, 3, 0.09));
+  inlay.add(star(9, 5, 0.08), star(6, 3, 0.05));
   hall.add(inlay);
-  [9.6, 15.2].forEach((r) => {
+  /* the floor carries the mark's geometry as form, not as a copy: a white ring that is broken
+     where the visitor walks in — the way the alef crosses the mark's ring — and one champagne hairline */
+  const GAP = 0.34; // half-width of the break, in radians, centred on the door (+z)
+  [
+    [9.6, 0.06, G.ivory, 0.5, GAP],
+    [15.2, 0.04, G.champagne, 0.5, 0],
+  ].forEach(([r, w, color, opacity, gap]) => {
     const g = new THREE.Mesh(
-      new THREE.RingGeometry(r, r + 0.05, 160),
-      new THREE.MeshBasicMaterial({
-        color: 0xe9c983,
-        transparent: true,
-        opacity: 0.55,
-        toneMapped: false,
-      }),
+      new THREE.RingGeometry(r, r + w, 160, 1, -Math.PI / 2 + gap, Math.PI * 2 - gap * 2),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity, toneMapped: false }),
     );
     g.rotation.x = -Math.PI / 2;
     g.position.y = 0.014;
@@ -369,8 +381,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const x = c.getContext("2d");
     x.fillStyle = "#1a090e";
     x.fillRect(0, 0, 256, 256);
-    x.strokeStyle = "rgba(212,175,106,0.2)";
-    x.lineWidth = 1.6;
+    x.strokeStyle = "rgba(243,235,224,0.09)";
+    x.lineWidth = 1.4;
     const st = (cx, cy, r) => {
       x.beginPath();
       for (let i = 0; i <= 16; i++) {
@@ -416,15 +428,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   hall.add(crown);
   const oculus = new THREE.Mesh(
     new THREE.CircleGeometry(2.2, 64),
-    new THREE.MeshBasicMaterial({ color: 0xffe9c0, toneMapped: false }),
+    new THREE.MeshBasicMaterial({ color: 0xfff3e6, toneMapped: false }),
   );
-  oculus.material.color.multiplyScalar(2.2);
+  oculus.material.color.multiplyScalar(2);
   oculus.rotation.x = Math.PI / 2;
   oculus.position.y = 32.8;
   hall.add(oculus);
   const arch = buildArchitecture({
     hall,
-    goldM,
+    champM,
     lacquer,
     LOW,
     rnd: (() => {
@@ -450,30 +462,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     pivot.add(leaf);
     const trim = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(2.5, 7.8, 0.24)),
-      goldLine(0.95),
+      inkLine(0.95),
     );
     trim.position.copy(leaf.position);
     pivot.add(trim);
     for (let k = 0; k < 3; k++) {
-      const p = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.03, 8, 6), goldM);
+      const p = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.03, 8, 6), champM);
       p.position.set(-s * 1.35, 2 + k * 2, 0.13);
       pivot.add(p);
     }
-    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), goldM);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 24), champM);
     knob.position.set(-s * 2.4, 4, 0.22);
     pivot.add(knob);
     hall.add(pivot);
     pivot.visible = false; // the partner mark is the door now (see enterHall); the leaves stay for film framing
     doors.push({ pivot, s });
   });
-  const portal = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.13, 16, 64, Math.PI), goldM);
+  const portal = new THREE.Mesh(new THREE.TorusGeometry(2.8, 0.1, 16, 64, Math.PI), ivoryM);
   portal.position.set(0, 8, 17.65);
   hall.add(portal);
-  const doorGlow = new THREE.PointLight(0xffc98a, 0, 14, 2);
+  const doorGlow = new THREE.PointLight(0xffe2c8, 0, 14, 2);
   doorGlow.position.set(0, 4, 15);
   scene.add(doorGlow);
 
-  // gold dust (shader: soft round motes that twinkle)
+  // dust in the lamplight (shader: soft round motes that twinkle)
   const DN = LOW ? 500 : 1200,
     dp = new Float32Array(DN * 3),
     ds = new Float32Array(DN);
@@ -495,7 +507,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     void main(){ vec3 p = position; p.y = mod(p.y + uTime*0.12*(0.3+seed), 15.0); p.x += sin(uTime*0.3+seed*20.0)*0.3;
       vec4 mv = modelViewMatrix*vec4(p,1.0); gl_Position = projectionMatrix*mv;
       vA = 0.35 + 0.65*abs(sin(uTime*(0.6+seed)+seed*30.0)); gl_PointSize = (18.0+30.0*seed)*uPx/(-mv.z); }`,
-    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5,0.0,d); gl_FragColor = vec4(vec3(1.0,0.86,0.6)*1.6, a*vA*0.55); }`,
+    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5,0.0,d); gl_FragColor = vec4(vec3(1.0,0.93,0.84)*1.3, a*vA*0.5); }`,
   });
   scene.add(new THREE.Points(dustGeo, dustMat));
 
@@ -511,7 +523,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV; void main(){ vUv=uv; vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
       fragmentShader: `uniform float uTime; uniform float uI; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
     void main(){ float edge = pow(1.0-abs(dot(vN,vV)),1.5); float stripes = 0.6+0.4*sin(vUv.x*60.0+uTime*0.4); float fall = smoothstep(0.0,1.0,vUv.y);
-      gl_FragColor = vec4(vec3(1.0,0.85,0.55), (1.0-edge)*stripes*fall*uI); }`,
+      gl_FragColor = vec4(vec3(1.0,0.93,0.84), (1.0-edge)*stripes*fall*uI); }`,
     }),
   );
   rays.position.y = 15.5;
@@ -529,7 +541,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       fragmentShader: `uniform float uTime; uniform float uHover; varying vec2 vUv;
     void main(){ float x = vUv.x + vUv.y*0.35; float band = smoothstep(0.08,0.0,abs(fract(x*0.5 - uTime*0.08)-0.5));
       float rim = smoothstep(0.03,0.0,min(min(vUv.x,1.0-vUv.x),min(vUv.y,1.0-vUv.y)));
-      gl_FragColor = vec4(vec3(1.0,0.88,0.6), band*0.07 + rim*(0.12+0.35*uHover)); }`,
+      gl_FragColor = vec4(vec3(1.0,0.92,0.82), band*0.06 + rim*(0.05+0.35*uHover)); }`,
     });
   const screens = [];
   function makeScreen(angle, w, h) {
@@ -550,8 +562,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     );
     const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sheenMat());
     sheen.position.z = 0.01;
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.42, h + 0.42, 0.14), goldM);
-    frame.position.z = -0.09;
+    // a slim white enamel frame on a wine board, as the mark's ring sits inside its disc
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.14, h + 0.14, 0.1), ivoryM);
+    frame.position.z = -0.07;
     const back = new THREE.Mesh(new THREE.BoxGeometry(w + 0.9, h + 0.9, 0.1), lacquer);
     back.position.z = -0.2;
     g.add(back, frame, m, sheen);
@@ -567,14 +580,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     scrImpact = makeScreen(Math.PI + 0.82, 6, 4.4);
   function bg(ctx, w, h) {
     const gr = ctx.createRadialGradient(w * 0.6, h * 0.3, 50, w * 0.5, h * 0.5, w * 0.8);
-    gr.addColorStop(0, "#3d1321");
-    gr.addColorStop(1, "#110609");
+    gr.addColorStop(0, "#6b1f30");
+    gr.addColorStop(1, "#2a0a13");
     ctx.fillStyle = gr;
     ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = "rgba(212,175,106,.3)";
+    ctx.strokeStyle = "rgba(205,174,118,.38)";
     ctx.lineWidth = 2;
-    ctx.strokeRect(30, 30, w - 60, h - 60);
-    ctx.strokeRect(40, 40, w - 80, h - 80);
+    ctx.strokeRect(34, 34, w - 68, h - 68);
   }
   function text(ctx, s, x, y, size, color, weight = 500, fam = BODY, align = "right") {
     ctx.direction = "rtl";
@@ -587,10 +599,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ctx.direction = "rtl";
     ctx.textAlign = "right";
     ctx.font = `700 ${size}px "${DISPLAY}", serif`;
+    // headings on the wall screens are white, as on the glass: champagne only warms their foot
     const g = ctx.createLinearGradient(0, y - size, 0, y);
-    g.addColorStop(0, "#fbe9bf");
-    g.addColorStop(0.6, "#d4af6a");
-    g.addColorStop(1, "#8f6c33");
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(0.7, "#fbf4e6");
+    g.addColorStop(1, "#ecdcb6");
     ctx.fillStyle = g;
     ctx.fillText(s, x, y);
   }
@@ -620,8 +633,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         ctx.textAlign = "right";
         ctx.font = `700 140px "${DISPLAY}", serif`;
         const g = ctx.createLinearGradient(0, 300, 0, 440);
-        g.addColorStop(0, "#fbe9bf");
-        g.addColorStop(1, "#a9823f");
+        g.addColorStop(0, "#ffffff");
+        g.addColorStop(1, "#ecdcb6");
         ctx.fillStyle = g;
         ctx.fillText(v, x, 450);
         text(ctx, l, x, 520, 36, "rgba(246,239,226,.8)", 600);
@@ -632,7 +645,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         w - 80,
         h - 120,
         38,
-        "#e9c983",
+        "#cdae76",
         700,
       );
       tex.needsUpdate = true;
@@ -658,7 +671,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
     };
     ctx.save();
-    ctx.shadowColor = "rgba(212,175,106,.55)";
+    ctx.shadowColor = "rgba(255,255,255,.28)";
     ctx.shadowBlur = 30;
     path();
     const lg = ctx.createLinearGradient(0, oy - 300, 0, oy + 300);
@@ -668,7 +681,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ctx.fill();
     ctx.restore();
     path();
-    ctx.strokeStyle = "#d4af6a";
+    ctx.strokeStyle = "#cdae76";
     ctx.lineWidth = 3;
     ctx.stroke();
     CITIES.forEach((c) => {
@@ -684,7 +697,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ctx.moveTo(X, Y);
       ctx.arc(X, Y, r, -Math.PI / 2, -Math.PI / 2 + f * Math.PI * 2);
       ctx.closePath();
-      ctx.fillStyle = "#d4af6a";
+      ctx.fillStyle = "#cdae76";
       ctx.fill();
       const L =
         {
@@ -699,7 +712,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
     const lx = w - 80;
     let ly = 330;
-    text(ctx, "أكبر الفجوات", lx, ly, 34, "#d4af6a", 700);
+    text(ctx, "أكبر الفجوات", lx, ly, 34, "#cdae76", 700);
     ly += 20;
     [...CITIES]
       .sort((a, b) => gapOf(b) - gapOf(a))
@@ -710,30 +723,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         text(ctx, `${gapOf(c)} ينتظرون`, lx - 330, ly, 30, "rgba(246,239,226,.7)");
         ctx.fillStyle = "rgba(246,239,226,.12)";
         ctx.fillRect(lx - 440, ly + 16, 440, 6);
-        ctx.fillStyle = "#d4af6a";
+        ctx.fillStyle = "#cdae76";
         ctx.fillRect(lx - 440 * (c.qualified / c.need), ly + 16, 440 * (c.qualified / c.need), 6);
       });
-    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 90, 38, "#e9c983", 700);
+    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 90, 38, "#cdae76", 700);
     tex.needsUpdate = true;
   }
   function drawTracks() {
     const { ctx, cv, tex } = scrTracks,
       w = cv.lw;
     bg(ctx, w, cv.lh);
-    goldText(ctx, "اتجاهات الدعم الثلاثة", w - 80, 140, 68);
+    goldText(ctx, "أنواع الدعم الثلاثة", w - 80, 140, 68);
     [
       ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
       ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
       ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
     ].forEach(([a, b, c], i) => {
       const y = 300 + i * 200;
-      ctx.fillStyle = "#d4af6a";
+      ctx.fillStyle = "#cdae76";
       ctx.beginPath();
       ctx.arc(w - 115, y - 20, 30, 0, Math.PI * 2);
       ctx.fill();
       text(ctx, String(i + 1), w - 115, y - 6, 36, "#2b0e15", 700, DISPLAY, "center");
       text(ctx, a, w - 170, y, 54, "#f6efe2", 700, DISPLAY);
-      text(ctx, b, w - 400, y, 34, "#e9c983", 600);
+      text(ctx, b, w - 400, y, 34, "#cdae76", 600);
       text(ctx, c, w - 170, y + 62, 34, "rgba(246,239,226,.72)");
     });
     tex.needsUpdate = true;
@@ -765,8 +778,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ctx.textAlign = "right";
       ctx.font = `700 96px "${DISPLAY}", serif`;
       const g = ctx.createLinearGradient(0, 200, 0, 300);
-      g.addColorStop(0, "#fbe9bf");
-      g.addColorStop(1, "#a9823f");
+      g.addColorStop(0, "#ffffff");
+      g.addColorStop(1, "#ecdcb6");
       ctx.fillStyle = g;
       ctx.fillText(v, x, 300);
       text(ctx, l, x, 350, 32, "rgba(246,239,226,.75)", 600);
@@ -779,9 +792,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ].forEach(([t, l], i) => {
       const x = w - 80 - i * 400,
         v = by(t);
-      text(ctx, `${v} ${l}`, x, 430, 34, v ? "#e9c983" : "rgba(246,239,226,.35)", 700);
+      text(ctx, `${v} ${l}`, x, 430, 34, v ? "#cdae76" : "rgba(246,239,226,.35)", 700);
     });
-    ctx.strokeStyle = "rgba(212,175,106,.3)";
+    ctx.strokeStyle = "rgba(205,174,118,.38)";
     ctx.beginPath();
     ctx.moveTo(80, 470);
     ctx.lineTo(w - 80, 470);
@@ -793,11 +806,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         text(ctx, r.title, w - 80, y, 36, i ? "rgba(246,239,226,.8)" : "#f6efe2", 600);
         text(ctx, r.line, 80 + 520, y, 28, "rgba(246,239,226,.55)", 500, BODY, "right");
       });
-    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 32, "#e9c983", 700);
+    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 32, "#cdae76", 700);
     tex.needsUpdate = true;
   }
 
-  /* ── The chosen country, carved in lacquer and gold ─────────────── */
+  /* ── The chosen country, carved in wine lacquer and outlined in white ─────────────── */
   const country = new THREE.Group();
   country.visible = false;
   scene.add(country);
@@ -808,14 +821,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const landGroup = new THREE.Group();
   country.add(landGroup);
   const landM = new THREE.MeshPhysicalMaterial({
-    color: 0x380b16,
+    color: 0x3e0d19,
     roughness: 0.38,
     metalness: 0.2,
     clearcoat: 1,
     clearcoatRoughness: 0.18,
     envMapIntensity: 0.6,
   });
-  const tierM = [0x40101b, 0x491420, 0x531927].map(
+  const tierM = [0x47121e, 0x551826, 0x631c2d].map(
     (c) =>
       new THREE.MeshPhysicalMaterial({
         color: c,
@@ -845,7 +858,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     geo.rotateX(-Math.PI / 2);
     landGroup.add(
       new THREE.Mesh(geo, landM),
-      new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), goldLine(0.95)),
+      new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), inkLine(0.7)),
     );
     const main = CO.rings[0],
       cx = main.reduce((a, p) => a + p[0], 0) / main.length,
@@ -865,7 +878,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const t = new THREE.Group();
       t.add(
         new THREE.Mesh(g, tierM[i]),
-        new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), goldLine(0.42 - i * 0.08)),
+        new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), inkLine(0.3 - i * 0.07)),
       );
       t.position.y = 0.58 + i * 0.075;
       landGroup.add(t);
@@ -880,8 +893,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     void main(){ vec2 c = vUv-0.5; float r = length(c);
       float w = sin(c.x*90.0 + uTime*0.7 + sin(c.y*40.0+uTime*0.3)*2.0) * sin(c.y*70.0 - uTime*0.5);
       float glint = smoothstep(0.88, 1.0, w) * (1.0 - smoothstep(0.35, 0.5, r));
-      vec3 base = mix(vec3(0.03,0.016,0.016), vec3(0.075,0.04,0.035), 1.0 - r*1.6);
-      gl_FragColor = vec4(base + glint*vec3(1.0,0.8,0.45)*0.1, 1.0); }`,
+      vec3 base = mix(vec3(0.03,0.008,0.014), vec3(0.1,0.026,0.042), 1.0 - r*1.6);
+      gl_FragColor = vec4(base + glint*vec3(1.0,0.92,0.86)*0.08, 1.0); }`,
     }),
   );
   sea.rotation.x = -Math.PI / 2;
@@ -909,18 +922,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const x = bandCv.getContext("2d");
     x.fillStyle = "#2a0b13";
     x.fillRect(0, 0, 4096, 128);
-    x.strokeStyle = "rgba(212,175,106,.6)";
+    x.strokeStyle = "rgba(205,174,118,.55)";
     x.lineWidth = 2;
     x.strokeRect(0, 10, 4096, 108);
     x.direction = "rtl";
     x.textAlign = "center";
     x.font = `600 50px "${DISPLAY}", serif`;
-    const gr = x.createLinearGradient(0, 30, 0, 100);
-    gr.addColorStop(0, "#fbe9bf");
-    gr.addColorStop(1, "#a9823f");
-    x.fillStyle = gr;
+    x.fillStyle = "#f6efe2"; // the hand is written in white, as in the mark
     for (let i = 0; i < 3; i++)
-      x.fillText(`${CO.ar} · ${STATUS[CO.st]} · منصة الرؤية والتوجهات`, (4096 * (i + 0.5)) / 3, 84);
+      x.fillText(`${CO.ar} · ${STATUS[CO.st]} · قاعة الأثر`, (4096 * (i + 0.5)) / 3, 84);
     bandTex.needsUpdate = true;
   }
   const beam = new THREE.Mesh(
@@ -932,20 +942,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       side: THREE.DoubleSide,
       uniforms: { uO: { value: 0 } },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.84,0.55), a*uO*0.09); }`,
+      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.93,0.84), a*uO*0.08); }`,
     }),
   );
   beam.position.y = 5.1;
   country.add(beam);
-  const beamLight = new THREE.SpotLight(0xffd59a, 0, 14, 0.22, 0.7, 2);
+  const beamLight = new THREE.SpotLight(0xffe6cc, 0, 14, 0.22, 0.7, 2);
   beamLight.position.set(0, 10, 0);
   country.add(beamLight, beamLight.target);
   const plinth = new THREE.Mesh(new THREE.CylinderGeometry(7.4, 7.8, 0.5, 128), lacquer);
   plinth.position.y = -0.27;
   country.add(plinth);
-  const plinthRing = new THREE.Mesh(new THREE.TorusGeometry(7.45, 0.05, 12, 160), goldM);
-  plinthRing.rotation.x = Math.PI / 2;
+  /* the plinth's rim is the mark's ring: white, and broken once (never a closed gold hoop);
+     a champagne hairline below it is the only metal on the plinth */
+  const RIM_GAP = 0.62;
+  const plinthRing = new THREE.Mesh(
+    new THREE.TorusGeometry(7.45, 0.045, 12, 160, Math.PI * 2 - RIM_GAP),
+    ivoryM,
+  );
+  plinthRing.rotation.set(Math.PI / 2, 0, Math.PI * 0.25 + RIM_GAP / 2); // the break sits to the north-east
   country.add(plinthRing);
+  const plinthLine = new THREE.Mesh(new THREE.TorusGeometry(7.83, 0.018, 8, 160), champM);
+  plinthLine.rotation.x = Math.PI / 2;
+  plinthLine.position.y = -0.05;
+  country.add(plinthLine);
   const H = (n) => n * 0.06;
   const glassM = new THREE.MeshPhysicalMaterial({
     color: 0xfff4e0,
@@ -959,16 +979,19 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     envMapIntensity: 1.2,
   });
   const fillM = new THREE.MeshPhysicalMaterial({
-    color: G.gold,
+    color: G.champagne,
     metalness: 1,
-    roughness: 0.18,
-    emissive: 0x7a5414,
+    roughness: 0.3,
+    emissive: 0x6a5632,
     emissiveIntensity: 0.55,
-    envMapIntensity: 1.5,
+    envMapIntensity: 1.2,
   });
   let pillars = [];
-  /* three supports, three visual languages, one palette */
-  const TRACK_COL = { qualify: 0xd4af6a, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
+  /* three supports, three visual languages: each differs in FORM as well as colour (solid bead /
+     ring around the bead / faceted gem; inner / middle / outer dial arc), so the key survives
+     colour-blindness. Champagne = qualified, emerald = sponsored (the one hue outside the mark,
+     kept as a data colour), pearl = clothed. hall.css --t-* must match. */
+  const TRACK_COL = { qualify: 0xcdae76, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
   const DIAL = [
     [0.36, 0.44, "qualify", "qualified"],
     [0.5, 0.58, "sponsor", "sponsored"],
@@ -986,7 +1009,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const delta = new THREE.Mesh(
       new THREE.CylinderGeometry(0.185, 0.185, 1, 48),
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0xfff0c8).multiplyScalar(2.2),
+        color: new THREE.Color(0xfff6ea).multiplyScalar(2), // what this gift added reads white
         toneMapped: false,
         transparent: true,
       }),
@@ -1004,7 +1027,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const ghost = new THREE.Mesh(
       new THREE.CylinderGeometry(0.2, 0.2, 1, 48),
       new THREE.MeshBasicMaterial({
-        color: 0xffe7b0,
+        color: 0xfff1e0,
         transparent: true,
         opacity: 0,
         depthWrite: false,
@@ -1012,7 +1035,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         toneMapped: false,
       }),
     );
-    const cap = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.03, 12, 48), goldM);
+    const cap = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.022, 12, 48), ivoryM);
     cap.rotation.x = Math.PI / 2;
     const dialG = new THREE.Group();
     dialG.position.y = 0.26;
@@ -1050,7 +1073,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const halo = new THREE.Mesh(
       new THREE.RingGeometry(0.8, 0.92, 64),
       new THREE.MeshBasicMaterial({
-        color: 0xffd98f,
+        color: 0xf6e8d6,
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -1161,10 +1184,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   country.add(dots);
   const tmpM = new THREE.Matrix4();
   const COL = {
-    done: new THREE.Color(0xd4af6a),
+    done: new THREE.Color(TRACK_COL.qualify),
     wait: new THREE.Color(0x5a2f38),
     lit: {
-      qualify: new THREE.Color(0xfff0c8).multiplyScalar(3),
+      qualify: new THREE.Color(0xfff6ea).multiplyScalar(2.6),
       sponsor: new THREE.Color(TRACK_COL.sponsor).multiplyScalar(2.6),
       kiswa: new THREE.Color(TRACK_COL.kiswa).multiplyScalar(2.6),
     },
@@ -1186,7 +1209,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       iridescence: 1,
       iridescenceIOR: 1.6,
       sheen: 1,
-      sheenColor: new THREE.Color(0xe6dcff),
+      sheenColor: new THREE.Color(0xf3e6ee),
       clearcoat: 1,
       emissive: 0x2c2a30,
       envMapIntensity: 1.6,
@@ -1232,7 +1255,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       iridescence: 1,
       iridescenceIOR: 1.6,
       sheen: 1,
-      sheenColor: new THREE.Color(0xe6dcff),
+      sheenColor: new THREE.Color(0xf3e6ee),
       clearcoat: 1,
       emissive: 0x2c2a30,
       envMapIntensity: 1.6,
@@ -1308,18 +1331,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const col = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.55, 1.05, 48), lacquer);
     col.position.y = 0.5;
     pedestal.add(col);
-    const cup = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.04, 16, 96), goldM);
+    const cup = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.04, 16, 96), champM);
     cup.rotation.x = Math.PI / 2;
     cup.position.y = 0.92;
     pedestal.add(cup);
     const meridian = new THREE.Mesh(
       new THREE.TorusGeometry(1.5, 0.03, 12, 128, Math.PI * 1.25),
-      goldM,
+      ivoryM, // a broken white ring around the wine disc: the mark, as a stand
     );
     meridian.position.y = 2.2;
     meridian.rotation.set(0, 0, -Math.PI * 0.62);
     pedestal.add(meridian);
-    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.1, 0.12, 64), goldM);
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.1, 0.12, 64), champM);
     foot.position.y = 0.06;
     pedestal.add(foot);
   }
@@ -1327,9 +1350,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const globeCore = new THREE.Mesh(
     new THREE.SphereGeometry(GR, 96, 64),
     new THREE.MeshPhysicalMaterial({
-      color: 0x0f0407,
+      color: 0x4a1220, // the globe is the mark's wine disc, not a black ball
       roughness: 0.45,
-      metalness: 0.25,
+      metalness: 0.15,
       clearcoat: 0.8,
       clearcoatRoughness: 0.2,
       envMapIntensity: 0.45,
@@ -1344,7 +1367,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
       vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition-w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
-      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float f = pow(max(0.0, 0.72 + dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(1.0,0.78,0.45)*1.4, f*0.9); }`,
+      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float f = pow(max(0.0, 0.72 + dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(1.0,0.84,0.82), f*0.36); }`,
     }),
   );
   globe.add(atmo);
@@ -1361,15 +1384,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const pts = [];
     for (let lon = -180; lon <= 180; lon += 3) pts.push(ll(lat, lon, GR * 1.003));
     globe.add(
-      new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), goldLine(lat ? 0.05 : 0.18)),
+      new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), inkLine(lat ? 0.05 : 0.18)),
     );
   }
   for (let lon = -180; lon < 180; lon += 30) {
     const pts = [];
     for (let lat = -90; lat <= 90; lat += 3) pts.push(ll(lat, lon, GR * 1.003));
-    globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), goldLine(0.05)));
+    globe.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), inkLine(0.05)));
   }
-  /* the world: Natural Earth land (world-atlas 50m) sampled to gold dots, embedded */
+  /* the world: Natural Earth land (world-atlas 50m) sampled to ivory dots, embedded */
   const LAND = LAND_DOTS;
   const landDots = (() => {
     const bin = atob(LAND),
@@ -1407,7 +1430,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         gl_PointSize = s * 5.2 * uScale * uPx * 5.2 / (-mv.z); }`,
       fragmentShader: `varying float vA; varying float vHot;
       void main(){ float d = length(gl_PointCoord-0.5); float a = smoothstep(0.5, 0.15, d);
-        vec3 col = vHot > 1.5 ? vec3(1.0,0.95,0.82)*2.4 : (vHot > 0.5 ? vec3(1.0,0.8,0.45)*1.05 : vec3(0.82,0.64,0.4)*0.55);
+        vec3 col = vHot > 1.5 ? vec3(1.0,0.97,0.92)*2.2 : (vHot > 0.5 ? vec3(1.0,0.95,0.9) : vec3(0.86,0.7,0.68)*0.5);
         gl_FragColor = vec4(col, a*vA*(vHot > 0.5 ? 1.0 : 0.85)); }`,
     });
     const p = new THREE.Points(g, m);
@@ -1437,7 +1460,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   const hq = byCode("SA"),
     arcs = [];
-  const MARK = { hq: 0xffe0a0, office: 0xe9c983, field: 0xfff4e0, unconfirmed: 0x8a7766 };
+  // champagne marks the headquarters only; offices and field sites are white (solid / ring)
+  const MARK = { hq: 0xdcc08c, office: 0xf6efe2, field: 0xf6efe2, unconfirmed: 0x8a7376 };
   const gDots = COUNTRIES.map((c) => {
     const geo =
       c.st === "hq"
@@ -1470,7 +1494,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const curve = new THREE.QuadraticBezierCurve3(a, mid, b),
         geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(64));
       geo.setDrawRange(0, 0);
-      const line = new THREE.Line(geo, goldLine(0.22));
+      const line = new THREE.Line(geo, inkLine(0.22));
       globe.add(line);
       arcs.push({ geo, line, c, curve });
     }
@@ -1479,7 +1503,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const spark = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 16, 16),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xfff2c8).multiplyScalar(6),
+      color: new THREE.Color(0xfff6ea).multiplyScalar(5),
       toneMapped: false,
     }),
   );
@@ -1500,7 +1524,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     arcs.forEach((a) => {
       const on = PICKED && a.c === CO;
       a.line.material.opacity = on ? 1 : a.c.st === "unconfirmed" ? 0.1 : 0.22;
-      a.line.material.color.set(0xe9c983).multiplyScalar(on ? 2.6 : 1);
+      a.line.material.color.set(on ? G.champagne : G.ivory).multiplyScalar(on ? 2.6 : 1);
     });
     globe.userData.selCurve = (PICKED && arcs.find((a) => a.c === CO)?.curve) || null;
     spark.visible = !!globe.userData.selCurve;
@@ -1522,7 +1546,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const stream = new THREE.Points(
     streamGeo,
     new THREE.PointsMaterial({
-      color: new THREE.Color(0xffe0a0).multiplyScalar(3),
+      color: new THREE.Color(0xfff1dc).multiplyScalar(2.6),
       size: 0.14,
       transparent: true,
       opacity: 0,
@@ -1541,7 +1565,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const shock = new THREE.Mesh(
     new THREE.RingGeometry(0.5, 0.6, 96),
     new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xffd98f).multiplyScalar(3),
+      color: new THREE.Color(0xfbead2).multiplyScalar(2.6),
       transparent: true,
       opacity: 0,
       side: THREE.DoubleSide,
@@ -1585,7 +1609,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
   });
   let TOP3 = new Set();
-  /* the chosen city's name, laid in gold leaf on the land at the foot of its column */
+  /* the chosen city's name, written in white on the wine land at the foot of its column */
   const engraveCv = document.createElement("canvas");
   engraveCv.width = 1024;
   engraveCv.height = 256;
@@ -1615,14 +1639,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.textAlign = "center";
     x.textBaseline = "middle";
     x.font = `700 132px "${DISPLAY}", serif`;
-    const g = x.createLinearGradient(0, 40, 0, 220);
-    g.addColorStop(0, "#fbe9bf");
-    g.addColorStop(0.55, "#d4af6a");
-    g.addColorStop(1, "#8a6a32");
     x.shadowColor = "rgba(0,0,0,0.65)";
     x.shadowOffsetY = 4;
     x.shadowBlur = 10;
-    x.fillStyle = g;
+    x.fillStyle = "#f6efe2";
     x.fillText(o.c.ar, 512, 128);
     engraveTex.needsUpdate = true;
   }
@@ -1720,7 +1740,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     impact = $("#impact");
   const view = { x: 0, y: 0, tx: 0, ty: 0 };
   function frameView() {
-    view.ty = PHONE() && panel.classList.contains("on") ? panel.offsetHeight / 2 : 0;
+    const open = panel.classList.contains("on") && !root.classList.contains("focus");
+    view.ty = PHONE() && open ? panel.offsetHeight / 2 : 0;
     if (PHONE()) {
       view.tx = 0;
       return;
@@ -1742,6 +1763,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   let idle = 0;
   let legendRect = null,
     legendAt = 0;
+  const hud = $("#hud");
+  let hudB = 56,
+    hudAt = -1e9;
+  /* the bar's lower edge (it is shorter on phones), re-measured now and then */
+  const hudBottom = () => {
+    const now = performance.now();
+    if (hud && now - hudAt > 1000) {
+      hudB = hud.offsetHeight || 56;
+      hudAt = now;
+    }
+    return hudB;
+  };
   const legendBox = () => {
     if (!root.classList.contains("in-country") || !legend) return null;
     const now = performance.now();
@@ -1765,6 +1798,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     root.classList.toggle("at-country", s === "country");
     S.stage = s;
+    root.dataset.stage = s; // the bar shows only what belongs to the stage (hall.css)
     queueMicrotask(frameForPanel);
     root.classList.toggle(
       "in-country",
@@ -1920,7 +1954,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
 
-  /* ── Gate: the partner mark is drawn, the words rise, then the mark opens like a door ── */
+  /* ── Gate: the two-fingers mark is drawn, the words rise, then the mark opens like a door ── */
   const words = $("#gate h1").textContent.trim().split(/\s+/);
   $("#gate h1").innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(" ");
   // the words rise in CSS (hall.css, g-rise) on wall-clock time, after the mark has been written
@@ -1932,6 +1966,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   focusBtn?.addEventListener("click", () => {
     const v = root.classList.toggle("focus");
     frameForPanel();
+    frameView();
     focusBtn.setAttribute("aria-pressed", String(v));
     focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
   });
@@ -1996,9 +2031,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       },
     });
   };
+  let filmRun = 0; // a stopped film never resumes: a later run cannot wake an earlier loop
   function stopFilm() {
     if (!FILM) return;
     FILM = false;
+    filmRun++;
     root.classList.remove("film");
     caption("");
   }
@@ -2011,6 +2048,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     true,
   );
   async function film() {
+    if (FILM || S.stage !== "gate") return;
+    const run = ++filmRun;
     FILM = true;
     root.classList.add("film");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -2019,7 +2058,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
       [
         () => selectCountry("AL"),
-        "نختار ألبانيا: نشاطٌ ميداني للندوة، بأرقام محرّك منصة الرؤية",
+        "نختار ألبانيا: نشاطٌ ميداني للندوة، بمدنها ومجموعاتها وأطفالها",
         4200,
       ],
       [
@@ -2039,10 +2078,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
       [() => pay(), "يتدفّق الدعم، ويرتفع عمود تيرانا بقدر ما موّل", 5200],
       [() => {}, "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب", 14000],
-      [() => enterBig(), "وأخيراً الصورة الكلية في منصة القرار", 7000],
+      [() => enterBig(), "وأخيراً أثرك أنت: ما حرّكه دعمك، قبله وبعده", 7000],
     ];
     for (const [act, text, ms] of steps) {
-      if (!FILM || disposed) return;
+      if (!FILM || run !== filmRun || disposed) return;
       caption(text);
       act();
       await wait(ms);
@@ -2056,69 +2095,78 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
-    // the alef is the key and the disc the door: the slot ignites, the hāʾ rises out toward the viewer,
-    // the disc parts along the alef line as two leaves, light floods through, and the camera goes in
+    // the two fingers are the key and the disc the door: the two slots fill with light and draw
+    // together into one opening, the seam runs down to the rim, the disc parts along it as two
+    // leaves, the light behind floods through, and the camera goes in
     const mark = $("#gate .mark");
-    if (mark) mark.style.animation = "none"; // the idle float would override gsap's transform
-    const P3 = { transformPerspective: 900 };
+    if (mark) {
+      // the idle float would override gsap's transform: stop it where it is, and settle from there
+      const lift = new DOMMatrixReadOnly(getComputedStyle(mark).transform).m42;
+      mark.style.animation = "none";
+      gsap.set(mark, { y: lift });
+    }
+    const glow = $("#gate .k-glow");
+    if (glow) {
+      // the idle breath hands over to the timeline from wherever it is
+      const at = getComputedStyle(glow).opacity;
+      glow.style.animation = "none";
+      glow.style.opacity = at;
+    }
     if (window.__HALL_TEST) window.__hallGate = tl; // automated checks pause and seek it
+    // slot geometry in the slot's own frame (KahataynMark MARK2_SLOTS): the bands meet on MID
+    const MID = 19.29;
+    const W = 19.08;
+    const N = { x: 0.8387, y: 0.5446 }; // across the slot: the way the leaves part
+    const PART = 132;
     tl.to("#gate > div > :not(.mark)", { autoAlpha: 0, y: 12, duration: 0.45, ease: "power2.in" })
-      .to("#gate .mark", { scale: 1.08, duration: 0.6, ease: "power2.out" }, 0)
-      .fromTo(
-        "#gate .mark-slot line",
-        { strokeDasharray: 1, strokeDashoffset: 1 },
-        { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" },
-        0.05,
-      )
-      .to("#gate .mark-slot", { opacity: 1, duration: 0.25 }, 0.05)
-      .to(
-        "#gate .mark-ink",
-        { ...P3, yPercent: -8, scale: 1.2, z: 60, duration: 0.7, ease: "power2.out" },
-        0.3,
-      )
-      .to("#gate .mark-ink", { autoAlpha: 0, scale: 1.7, duration: 0.6, ease: "power2.in" }, 0.95)
-      .to(
-        "#gate .leaf-a",
-        {
-          ...P3,
-          xPercent: -42,
-          yPercent: -30,
-          rotateY: -68,
-          rotateZ: -10,
-          autoAlpha: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
-          transformOrigin: "0% 30%",
-        },
-        0.55,
-      )
-      .to(
-        "#gate .leaf-b",
-        {
-          ...P3,
-          xPercent: 36,
-          yPercent: 24,
-          rotateY: 68,
-          rotateZ: 8,
-          autoAlpha: 0,
-          duration: 1.5,
-          ease: "power3.inOut",
-          transformOrigin: "100% 70%",
-        },
-        0.55,
-      )
-      .to("#gate .mark-slot", { opacity: 0, duration: 0.4 }, 0.75)
+      .to("#gate .mark", { scale: 1.05, y: 0, duration: 1, ease: "power2.out" }, 0)
+      .to("#gate .k-glow", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0)
+      .set("#gate .k-lume", { opacity: 1 }, 0.05)
       .fromTo(
         "#gate .mark-flood",
-        { opacity: 0, scale: 0.2 },
-        { opacity: 1, scale: 28, duration: 1.2, ease: "power2.in" },
-        0.6,
+        { opacity: 0, scale: 0.66 },
+        { opacity: 0.32, scale: 0.86, duration: 0.8, ease: "power2.inOut" },
+        0.15,
       )
-      .to("#gate", { autoAlpha: 0, duration: 0.9, ease: "power2.inOut" }, 1.35)
+      // side by side → joined: the two fingers come level and close into one opening
+      .to(
+        "#gate .k-slot-a",
+        { attr: { x: MID - W, width: W + 5 }, duration: 0.62, ease: "power3.inOut" },
+        0.32,
+      )
+      .to(
+        "#gate .k-slot-b",
+        { attr: { x: MID - 5, width: W + 5, height: 176 }, duration: 0.62, ease: "power3.inOut" },
+        0.32,
+      )
+      // a champagne hairline runs down each door edge, ahead of the opening
+      .to("#gate .k-edge", { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, 0.7)
+      // the one opening runs down to the rim, and the door is two leaves
+      .to("#gate .k-slot", { attr: { height: 290 }, duration: 0.34, ease: "power2.in" }, 0.94)
+      .to("#gate .k-glow", { opacity: 0, duration: 0.4, ease: "power1.in" }, 0.96)
+      .to(
+        "#gate .mark-flood",
+        { opacity: 1, scale: 1.02, duration: 0.34, ease: "power1.out" },
+        0.95,
+      )
+      .to(
+        "#gate .k-leaf-a",
+        { x: -N.x * PART, y: -N.y * PART, duration: 1.0, ease: "power3.inOut" },
+        1.08,
+      )
+      .to(
+        "#gate .k-leaf-b",
+        { x: N.x * PART, y: N.y * PART, duration: 1.0, ease: "power3.inOut" },
+        1.08,
+      )
+      .to("#gate .mark", { scale: 2.3, duration: 1.0, ease: "power2.in" }, 1.1)
+      .to("#gate .mark-flood", { scale: 15, duration: 0.62, ease: "power2.in" }, 1.24)
+      .to("#gate .k-leaf", { opacity: 0, duration: 0.34, ease: "power1.in" }, 1.52)
+      .to("#gate", { autoAlpha: 0, duration: 0.8, ease: "power2.inOut" }, 1.72)
       .add(() => $("#gate").classList.add("gone"))
       .to(doorGlow, { intensity: 260, duration: 0.8, ease: "power2.in" }, 0.2)
-      .to(bloom, { intensity: 2.2, duration: 1.2, ease: "power2.in" }, 0.6)
-      .to(bloom, { intensity: 1.15, duration: 1.6, ease: "power2.out" }, 1.8)
+      .to(bloom, { intensity: 1.8, duration: 1.2, ease: "power2.in" }, 0.6)
+      .to(bloom, { intensity: BLOOM, duration: 1.6, ease: "power2.out" }, 1.8)
       .to(doorGlow, { intensity: 0, duration: 1.6 }, 2.2)
       .add(() => {
         // through the doorway on a gentle arc, settling on the map screen
@@ -2140,8 +2188,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         controls.smoothTime = 0.55;
         setStage("hall");
         hallView(1, false);
-        if (demo?.focus) {
-          gsap.delayedCall(0.8, demoFocus);
+        if (demo?.focus && !FILM) {
+          replayStep(0.8, demoFocus);
           return;
         }
         if (!PHONE())
@@ -2198,7 +2246,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     tl.add(() => {}, 0)
       .to(ca.offset, { x: 0.004, y: 0.003, duration: 1.1, ease: "power2.in" }, 0)
-      .to(bloom, { intensity: 3.4, duration: 1.1, ease: "power3.in" }, 0.15)
+      .to(bloom, { intensity: 2.6, duration: 1.1, ease: "power3.in" }, 0.15)
       .to("#veil", { opacity: 0.92, duration: 0.45, ease: "power2.in" }, 0.9)
       .add(() => {
         country.visible = true;
@@ -2219,7 +2267,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       })
       .to("#veil", { opacity: 0, duration: 1.2, ease: "power2.out" })
       .to(ca.offset, { x: 0.0004, y: 0.0003, duration: 1.2, ease: "power2.out" }, "<")
-      .to(bloom, { intensity: 1.15, duration: 1.4, ease: "power2.out" }, "<")
+      .to(bloom, { intensity: BLOOM, duration: 1.4, ease: "power2.out" }, "<")
       .to(plinth.scale, { x: 1, z: 1, duration: 1.2, ease: "expo.out" }, "<")
       .to(plinthRing.scale, { x: 1, y: 1, z: 1, duration: 1.2, ease: "expo.out" }, "<")
       .to(landGroup.scale, { y: 1, duration: 1.1, ease: "back.out(1.6)" }, "<0.35")
@@ -2242,6 +2290,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── The world: the network in front of you, pick a country ────── */
   function enterWorld() {
+    cancelReplay();
     sound.cue("whoosh");
     setStage("world");
     hint("");
@@ -2317,7 +2366,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
     };
     x.save();
-    x.shadowColor = "rgba(233,201,131,.55)";
+    x.shadowColor = "rgba(255,255,255,.28)";
     x.shadowBlur = 26;
     path();
     const g = x.createLinearGradient(0, oy - s, 0, oy + s);
@@ -2327,7 +2376,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.fill();
     x.restore();
     path();
-    x.strokeStyle = "#e3c27e";
+    x.strokeStyle = "#f6efe2";
     x.lineWidth = 2;
     x.stroke();
     regionsFor(co).forEach((c) => {
@@ -2341,7 +2390,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const sim = CO.sim;
     return `<article class="co-card">
       <div class="co-head"><div><h3>${CO.ar}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${CO.ar}"></canvas></div>
-      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها. تظهر في النموذج الكامل للإدارة، وأرقامها افتراضية.</p>`}
+      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها، وأرقامها افتراضية.</p>`}
       ${CO.act ? `<p class="co-act">${CO.act}<small> · من البحث العامّ</small></p>` : ""}
       <div class="kv">
         <div><dt>مجموعات تأهيل</dt><dd class="num">${sim.groups}</dd></div>
@@ -2349,8 +2398,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         <div><dt>نسبة التمويل</dt><dd class="num">${sim.funded}%</dd></div>
         <div><dt>مشرفون</dt><dd class="num">${sim.supervisors}</dd></div>
       </div>
-      ${PRI.has(CO.code) ? `<p class="co-act"><b>${TIER[PRI.get(CO.code).tier]} لفتح مكتب:</b> ${rationale(PRI.get(CO.code), "ar")}</p>` : ""}
-      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">محرّك الرؤية</span> مدن ${CO.ar} ومجموعاتها وأطفالها من محرّك منصة الرؤية، ودعمك هنا يظهر هناك.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
+      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">تجريبي</span> مدن ${CO.ar} ومجموعاتها وأطفالها بياناتٌ تجريبية، ودعمك هنا يُقيَّد عليها.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${CO.ar}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
     </article>`;
   }
@@ -2367,14 +2415,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     showPanel(`
     <h2>شبكة الندوة حول العالم</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>اختر دولة</h3><p class="co-line">المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `كخريطة الشبكة في الموقع: المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور.`} كلّها تعمل هنا افتراضياً حتى تتّصل منصّة تشغيلها.</p>
+    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`} أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة.</p>
     <div class="kpis ${VIEW.all ? "k4" : ""}">
       <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>مقرّ رئيسي</span></div>
       <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>مكتباً مؤكَّداً</span></div>
       <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>نشاطاً ميدانياً</span></div>
       ${VIEW.all ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>غير مؤكَّد</span></div>` : ""}
     </div>
-    <div class="layers" role="group" aria-label="الطبقة"><button type="button" data-layer="network" aria-pressed="${VIEW.layer === "network"}">الشبكة</button><button type="button" data-layer="gap" aria-pressed="${VIEW.layer === "gap"}">تحتاج مكتباً</button></div>
     ${
       VIEW.layer === "gap"
         ? `<p class="sub">كطبقة «تحتاج مكتباً» في خريطة الموقع: دولٌ للندوة فيها نشاطٌ ميداني أو حضورٌ غير مؤكَّد، مرتّبةً بتقدير أيتامها وثقة مصدره.</p>${[
@@ -2391,7 +2438,6 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
             .join("")}`
         : ""
     }
-    <div class="row" style="margin-top:12px"><button class="ghost" type="button" id="toggleAll" aria-pressed="${VIEW.all}">${VIEW.all ? "اعرض المؤكَّد فقط" : "اعرض النموذج الكامل · 34 موقعاً"}</button></div>
 
     ${(VIEW.layer === "gap" ? [] : groups)
       .map(
@@ -2628,18 +2674,33 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       : "";
   }
   /** after the simulated payment the visitor returns here: the hall flies to that region and plays the arrival */
+  /* the replay is the only thing that moves the visitor without being asked, so it plays once and
+     stops the moment they act: a touch, a key, or a stage they opened themselves cancels the rest */
+  let REPLAY = null;
+  function replayStep(delay, fn) {
+    REPLAY = gsap.delayedCall(delay, () => {
+      REPLAY = null;
+      fn();
+    });
+  }
+  function cancelReplay() {
+    REPLAY?.kill();
+    REPLAY = null;
+  }
+  on(root, "pointerdown", cancelReplay, true);
+  on(root, "keydown", cancelReplay, true);
   function demoFocus() {
     const f = demo?.focus;
     if (!f || !byCode(f.co)) return;
     selectCountry(f.co);
-    gsap.delayedCall(1.2, () => {
+    replayStep(1.2, () => {
       enterCountry();
-      gsap.delayedCall(4.2, () => {
+      replayStep(4.2, () => {
         const c = CITIES.find((x) => x.id === f.region);
         const o = c && pillars.find((p) => p.c.id === c.id);
         if (!c || !o) return;
         selectCity(c.id);
-        gsap.delayedCall(1.4, () => {
+        replayStep(1.4, () => {
           if (f.cadence === "monthly") c.sponsored = Math.min(c.need, c.sponsored + 1);
           refreshLabels();
           arrive({ track: f.cadence === "monthly" ? "sponsor" : "kiswa", kids: 1 }, o, c);
@@ -2934,7 +2995,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
-      .to(bloom, { intensity: 2.1, duration: 0.9, ease: "power2.in" }, 0.6)
+      .to(bloom, { intensity: 1.7, duration: 0.9, ease: "power2.in" }, 0.6)
       .add(() => {
         shock.position.set(o.g.position.x, 0.66, o.g.position.z);
         shock.scale.setScalar(0.5);
@@ -2960,7 +3021,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         { emissiveIntensity: 0.55, duration: 2, ease: "power2.out" },
         1.7,
       )
-      .to(bloom, { intensity: 1.15, duration: 1.4 }, 2.3)
+      .to(bloom, { intensity: BLOOM, duration: 1.4 }, 2.3)
       .add(() => arrive(p, o, c), 1.7)
       .add(() => {
         const label = {
@@ -2983,6 +3044,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         drawImpactScreen();
         refreshLabels();
         S.stage = "impactPending";
+        root.dataset.stage = "impactPending";
       }, 1.8)
       .add(() => {
         root.classList.remove("watching");
@@ -3245,7 +3307,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         "3",
         "المجموعة",
         f.group.name,
-        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>محرّك منصة الرؤية</dd></div></div>
+        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>بيانات تجريبية</dd></div></div>
          <div class="levels"><span>الآن</span>${lvBar(c0)}${moved ? `<span>بعد القياس</span>${lvBar(c1)}` : ""}</div>${legend}`,
         moved
           ? "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها."
@@ -3256,7 +3318,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         L.track === "qualify" ? "الطالب" : "الفرد",
         `${f.child.name} · <span class="num">${f.child.age}</span> سنة`,
         bars(f.child.traits.map(([n, a, z]) => [n, a, z ?? a])),
-        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>، وملفّه في صفحة الأثر بمنصة الرؤية.`,
+        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>.`,
       );
       const parts = levels.split('<article class="lvl">');
       levels = parts.slice(0, 3).join('<article class="lvl">') + g3 + g4;
@@ -3267,7 +3329,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ["ما تمّ", done],
       [
         "الأثر بالمستويات",
-        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">محرّك الرؤية</span> الأرقام من محرّك منصة الرؤية بعد قيد دعمك فيه.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
+        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">تجريبي</span> أرقامٌ تجريبية، محسوبةٌ بعد قيد دعمك عليها.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
       ],
       ["التفاصيل", details],
     ];
@@ -3284,9 +3346,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       reveal(pane, 0);
       const cells = pane.querySelectorAll(".timeline i");
       gsap.to(cells, {
-        backgroundColor: "#d4af6a",
+        backgroundColor: "#cdae76",
         color: "#2b0e15",
-        borderColor: "#d4af6a",
+        borderColor: "#cdae76",
         duration: 0.25,
         stagger: 0.18,
         ease: "power2.out",
@@ -3358,7 +3420,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً"}</span></div>
       <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>رقم الفاتورة</span></div>
     </div>
-    <div class="row"><button class="cta" type="button" id="toBig">الصورة الكلية</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
+    <div class="row"><button class="cta" type="button" id="toBig">خلاصة أثرك</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
     onPanel(() => {
       $("#toBig")?.addEventListener("click", enterBig);
       $("#again")?.addEventListener("click", () => {
@@ -3369,7 +3431,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
 
-  /* ── The big picture: crane up, the country flies into the globe ─ */
+  /* ── The close: crane up, the country flies back into the globe, and the donor reads their impact ─ */
   function enterBig() {
     sound.cue("rise");
     setStage("big");
@@ -3407,9 +3469,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           0.5,
         );
       }, 0.45)
-      .to(bloom, { intensity: 2.4, duration: 0.5, ease: "power2.in" }, 1.6)
+      .to(bloom, { intensity: 1.9, duration: 0.5, ease: "power2.in" }, 1.6)
       .add(() => (country.visible = false), 1.95)
-      .to(bloom, { intensity: 1.2, duration: 1.2, ease: "power2.out" }, 2.0)
+      .to(bloom, { intensity: BLOOM, duration: 1.2, ease: "power2.out" }, 2.0)
       .add(
         () =>
           arcs.forEach((a, i) => {
@@ -3432,24 +3494,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       months0 = Math.ceil(b.gap / PACE);
     const cmp = (l0, v0, l1, v1, suf = "") =>
       `<div class="compare"><div><small>${l0}</small><b class="num">${fmt(v0)}${suf}</b></div><span>←</span><div class="after"><small>${l1}</small><b class="num" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div>`;
+    const kidsWord =
+      L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً";
+    const place = city(L.city)?.ar;
+    /* the donor's close: what THEIR support moved, a warm line, and the way to «أثري» */
     showPanel(`
-    <h2>الصورة الكلية</h2>
-    <p class="sub">منصة الرؤية والتوجهات · المقرّ في الرياض و<span class="num">${COUNTRIES.filter(shown).length - 1}</span> موقعاً للندوة. الخطوط الذهبية من المقرّ، والأسطع إلى ${CO.ar} حيث وصل دعمك.</p>
-    <div class="kpis">
-      <div class="kpi"><b class="num" data-count="${COUNTRIES.filter(shown).length - 1}">0</b><span>موقعاً حول العالم</span></div>
-      <div class="kpi"><b class="num" data-count="19">0</b><span>مكتباً مؤكَّداً</span></div>
-      <div class="kpi"><b class="num" data-count="7">0</b><span>نشاطاً ميدانياً</span></div>
+    <h2>أثر دعمك</h2>
+    <p class="sub">دعمك وصل ${place ? `${place} في ` : ""}${CO.ar}. هذا ما تغيّر به، قبله وبعده.</p>
+    <div class="kpis k2">
+      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
+      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${kidsWord}</span></div>
     </div>
     <div class="sect">ما حرّكه دعمك في ${CO.ar}</div>
     ${cmp("نسبة التمويل قبل", b.pct, "الآن", t.pct, "%")}
     ${cmp("ينتظرون التأهيل قبل", b.gap, "الآن", t.gap)}
     ${L.track === "kiswa" ? cmp("مكسوّون قبل", b.clothed, "الآن", t.clothed) : ""}
     ${L.track === "sponsor" ? cmp("مكفولون قبل", b.sponsored, "الآن", t.sponsored) : ""}
-    <div class="sect">التوجّه</div>
-    <p class="sub">بإيقاع اليوم (<span class="num">${PACE}</span> طفلاً شهرياً) تُسدّ فجوة ${CO.ar} خلال <b class="num">${months}</b> شهراً${months < months0 ? ` بدل <span class="num">${months0}</span>` : ""}.</p>
-    <p class="sub">أقرب أثرٍ لدعمك القادم: <b>${[...CITIES].sort((a, b2) => gapOf(b2) - gapOf(a))[0].ar}</b> — أكبر فجوةٍ الآن.</p>
-    <div class="row"><button class="cta" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>`);
+    ${months < months0 ? `<p class="sub">وبدعمك اقتربت ${CO.ar} من سدّ حاجتها: <b class="num">${months}</b> شهراً بدل <span class="num">${months0}</span> بإيقاع اليوم.</p>` : ""}
+    <p class="warm">وراء كلّ رقمٍ هنا طفلٌ اقترب ممّا ينتظره، بفضل الله ثم بعطائك. جزاك الله خيراً.</p>
+    ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
+    <div class="row"><button class="ghost" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>
+    <div class="row pin"><button class="cta" type="button" id="toMine">إلى أثري</button></div>`);
     onPanel(() => {
+      // the page owns the route to «أثري» (the demo's or the donor's dashboard): follow its link
+      $("#toMine")?.addEventListener("click", () => $("#hud a.exit")?.click());
       $("#again2")?.addEventListener("click", backToCountry);
       $("#otherCo2")?.addEventListener("click", enterWorld);
       $("#hallBack")?.addEventListener("click", backToHall);
@@ -3522,7 +3590,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     gsap.to(focus, { x: 0, y: 6, z: -13, duration: 1.4 });
     drawImpactScreen();
     drawMap();
+    const left = S.stage;
     setTimeout(() => {
+      // the visitor may have gone elsewhere meanwhile (the globe is touchable): do not pull them back
+      if (disposed || S.stage !== left) return;
       setStage("hall");
       hallView(S.history.length ? 0 : 1);
       hint(PHONE() ? "" : "اسحب يميناً ويساراً بين الشاشات · المس شاشة الأثر لتفاصيله");
@@ -3531,7 +3602,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── The hall: turn to each screen (swipe, arrows or dots) ─────── */
   const VIEWS = [scrImpact, scrMap, scrTracks],
-    VIEW_NAMES = ["الأثر", "الخريطة", "الاتجاهات"];
+    VIEW_NAMES = ["الأثر", "الخريطة", "أنواع الدعم"];
   let hallAt = 1;
   function hallView(i, smooth = true) {
     hallAt = (i + VIEWS.length) % VIEWS.length;
@@ -3625,8 +3696,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
     ];
     showPanel(`
-    <h2>اتجاهات الدعم الثلاثة</h2>
-    <p class="sub">كلّ اتجاه يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
+    <h2>أنواع الدعم الثلاثة</h2>
+    <p class="sub">كلّ نوعٍ يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
     <div class="tracks" style="margin-top:14px"><div class="tcell"><b>تأهيل</b><small>رحلة طفل · <span class="num">600</span> ر.س</small></div><div class="tcell"><b>كفالة</b><small>شهر · <span class="num">300</span> ر.س</small></div><div class="tcell"><b>كسوة</b><small>يتيم · <span class="num">300</span> ر.س</small></div></div>
     ${rows.map(([lv, a, b2, c]) => `<article class="lvl"><header><span class="ic">${["1", "2", "3", "4"][rows.findIndex((x) => x[0] === lv)]}</span><div><small>المستوى</small><b>${lv}</b></div></header><dl class="kv kv3"><div><dt>تأهيل</dt><dd>${a}</dd></div><div><dt>كفالة</dt><dd>${b2}</dd></div><div><dt>كسوة</dt><dd>${c}</dd></div></dl></article>`).join("")}
     <div class="row"><button class="cta" type="button" id="goWorld">اختر دولةً وادعم</button><button class="ghost" type="button" id="closeP">إغلاق</button></div>`);
@@ -3685,6 +3756,20 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (dof) dof.blendMode.opacity.value = 0;
       bloom.resolution.scale = 0.35;
     }
+  }
+  const placed = [],
+    RANK = { hq: 1, office: 2, field: 3, unconfirmed: 4 };
+  const rankOf = (l) => (!l.globe ? 9 : PICKED && l.globe === CO ? 0 : RANK[l.globe.st] || 5);
+  let ordered = null,
+    orderedFor = "";
+  /** labels in priority order (stable within a rank), re-sorted only when the choice changes */
+  function labelOrder() {
+    const key = labels.length + (PICKED ? CO.code : "");
+    if (key !== orderedFor) {
+      orderedFor = key;
+      ordered = [...labels].sort((a, b) => rankOf(a) - rankOf(b));
+    }
+    return ordered;
   }
   function frame() {
     if (disposed) return;
@@ -3835,7 +3920,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (meter) renderer.info.reset();
     composer.render(dt);
     if (meter) tickMeter();
-    for (const l of labels) {
+    placed.length = 0;
+    for (const l of labelOrder()) {
       if (!l.when()) {
         l.el.style.opacity = 0;
         continue;
@@ -3847,9 +3933,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       }
       const sy = ((1 - p.y) / 2) * innerHeight,
         sx = ((p.x + 1) / 2) * innerWidth;
-      // names never slide under the colour key
+      // names never slide under the bar or the colour key
       const lr = legendBox();
-      if (sy < 84 || (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)) {
+      if (
+        sy < hudBottom() + 30 ||
+        (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)
+      ) {
         l.el.style.opacity = 0;
         continue;
       }
@@ -3858,6 +3947,23 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         l.city &&
         l.city !== S.city &&
         (["support", "impact", "impactPending"].includes(S.stage) || !TOP3.has(l.city));
+      // globe names never stack (West Africa): the chosen country, then the headquarters, then
+      // offices, then field sites keep theirs; a crowded-out country stays reachable by its dot
+      // and by the panel list
+      if (l.globe) {
+        const w = (l.w ||= l.el.offsetWidth) || 60,
+          x0 = sx - w / 2 - 3,
+          x1 = sx + w / 2 + 3,
+          y0 = sy - 25,
+          y1 = sy + 1;
+        const hitLabel = placed.some((r) => x0 < r[1] && x1 > r[0] && y0 < r[3] && y1 > r[2]);
+        l.el.style.pointerEvents = hitLabel ? "none" : "";
+        if (hitLabel) {
+          l.el.style.opacity = 0;
+          continue;
+        }
+        placed.push([x0, x1, y0, y1]);
+      }
       l.el.style.opacity = quiet ? 0 : 1;
       l.el.style.transform = `translate(${((p.x + 1) / 2) * innerWidth}px, ${((1 - p.y) / 2) * innerHeight}px) translate(-50%, -100%)`;
     }
@@ -3886,6 +3992,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     rerender: () => S.stage === "country" && renderCountry(),
     enterWorld: () => enterWorld(),
     co: () => CO.code,
+    /** whether the after-payment replay still has a step waiting */
+    replaying: () => !!REPLAY,
     codes: () => COUNTRIES.map((c) => c.code),
     /** for automated checks: pick a country on the globe and enter it */
     visit: (code) => {

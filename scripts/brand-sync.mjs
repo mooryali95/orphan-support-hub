@@ -26,10 +26,10 @@ try {
 const mark = readFileSync("public/favicon.svg", "utf8")
   .replace(/^<svg[^>]*>/, "")
   .replace(/<\/svg>\s*$/, "")
-  .replace(/#0F4D3F/g, "#FFFFFF");
+  .replace(/fill="#[0-9A-Fa-f]{6}"/g, 'fill="#FFFFFF"');
 const html = `<html><head><link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=block" rel="stylesheet"></head>
 <body style="margin:0;background:transparent;display:flex;align-items:center;gap:14px;height:100vh;padding:0 12px;direction:rtl">
-<svg viewBox="18 60 164 132" style="height:64px">${mark}</svg>
+<svg viewBox="-102 -102 220 204" style="height:64px">${mark}</svg>
 <span style="font-family:Amiri;font-weight:700;font-size:46px;color:#fff;line-height:1;white-space:nowrap">${name}</span></body></html>`;
 if (chromium) {
   const browser = await chromium.launch();

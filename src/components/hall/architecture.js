@@ -55,9 +55,9 @@ function marble(rnd) {
         x.arc(rnd() * w, rnd() * h, 2 + rnd() * 18, 0, Math.PI * 2);
         x.fill();
       }
-      veins(x, w, h, "rgba(233,201,131,0.10)", 26, 2.4);
+      veins(x, w, h, "rgba(243,235,224,0.08)", 26, 2.4);
       veins(x, w, h, "rgba(246,239,226,0.07)", 18, 1.2);
-      veins(x, w, h, "rgba(255,226,170,0.22)", 8, 0.7);
+      veins(x, w, h, "rgba(205,174,118,0.16)", 8, 0.7);
     },
     { repeat: [3, 3] },
   );
@@ -169,7 +169,7 @@ function columnGeometry() {
   );
 }
 
-export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random }) {
+export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.random }) {
   const group = new THREE.Group();
   hall.add(group);
 
@@ -206,10 +206,11 @@ export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random
   const colGeo = columnGeometry();
   const archGeo = archGeometry(2 * RING * Math.sin(Math.PI / COUNT) - 0.9, 0.42);
   const trimGeo = new THREE.EdgesGeometry(archGeo, 25);
+  // the arches are outlined in white, as the mark's ring is drawn on its wine disc
   const trimM = new THREE.LineBasicMaterial({
-    color: 0xe9c983,
+    color: 0xf3ebe0,
     transparent: true,
-    opacity: 0.85,
+    opacity: 0.5,
     toneMapped: false,
   });
   const angle = (i) => (i / COUNT) * Math.PI * 2 + Math.PI / COUNT;
@@ -223,7 +224,7 @@ export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random
     col.position.set(x, 0, z);
     group.add(col);
     for (const y of [0.42, 10.3]) {
-      const r = new THREE.Mesh(new THREE.TorusGeometry(y < 1 ? 0.6 : 0.56, 0.06, 12, 64), goldM);
+      const r = new THREE.Mesh(new THREE.TorusGeometry(y < 1 ? 0.6 : 0.56, 0.04, 12, 64), champM);
       r.rotation.x = Math.PI / 2;
       r.position.set(x, y, z);
       group.add(r);
@@ -243,15 +244,15 @@ export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random
     group.add(arch);
   }
 
-  /* حزام المقرنصات: ثلاث طبقاتٍ متعاقبة من خلايا مذهّبة ونبيذية */
+  /* حزام المقرنصات: ثلاث طبقاتٍ من خلايا نبيذية، وخيطٌ واحد من الشمبانيا في الطبقة السفلى */
   const cellGeo = new THREE.ConeGeometry(0.36, 0.62, 4, 1);
   cellGeo.rotateX(Math.PI);
   const cellM = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0.9,
-    roughness: 0.32,
+    metalness: 0.35,
+    roughness: 0.4,
     clearcoat: 0.6,
-    envMapIntensity: 1.2,
+    envMapIntensity: 0.8,
   });
   const tiers = [
     [17.55, 13.25, 0],
@@ -265,28 +266,29 @@ export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random
     sc = new THREE.Vector3(1, 1, 0.7),
     pos = new THREE.Vector3(),
     up = new THREE.Vector3(0, 1, 0);
-  const goldC = new THREE.Color(0xd4af6a),
-    wineC = new THREE.Color(0x5a1828);
+  const champC = new THREE.Color(0xcdae76),
+    wineC = new THREE.Color(0x6b1f30),
+    deepC = new THREE.Color(0x3a0f1a);
   let k = 0;
-  tiers.forEach(([r, y, off]) => {
+  tiers.forEach(([r, y, off], tier) => {
     for (let i = 0; i < per; i++) {
       const a = ((i + off) / per) * Math.PI * 2;
       pos.set(Math.sin(a) * r, y, Math.cos(a) * r);
       q.setFromAxisAngle(up, a + Math.PI / 4);
       m.compose(pos, q, sc);
       cells.setMatrixAt(k, m);
-      cells.setColorAt(k, (i + Math.round(off * 2)) % 2 ? goldC : wineC);
+      cells.setColorAt(k, (i + Math.round(off * 2)) % 2 ? (tier ? deepC : champC) : wineC);
       k++;
     }
   });
   group.add(cells);
 
-  /* المشربيات بين الأعمدة، ونورٌ دافئ من خلفها */
+  /* المشربيات بين الأعمدة: خطوطٌ عاجية على نورٍ ورديّ نبيذي خافت (أبيضُ على نبيذي، لا نحاسٌ ولا برتقالي) */
   const lat = lattice();
   const screenM = new THREE.MeshStandardMaterial({
-    color: 0x9a7444,
-    metalness: 0.85,
-    roughness: 0.38,
+    color: 0xd9cdbf,
+    metalness: 0.15,
+    roughness: 0.5,
     alphaMap: lat,
     transparent: true,
     alphaTest: 0.4,
@@ -301,7 +303,7 @@ export function buildArchitecture({ hall, goldM, lacquer, LOW, rnd = Math.random
     fragmentShader: `uniform float uTime; varying vec2 vUv;
       void main(){ vec2 c = vUv - vec2(0.5, 0.42); float d = length(c * vec2(1.0, 0.7));
         float a = smoothstep(0.55, 0.0, d) * (0.85 + 0.15 * sin(uTime * 0.8 + vUv.y * 3.0));
-        gl_FragColor = vec4(vec3(1.0, 0.6, 0.28) * 0.85, a * 0.24); }`,
+        gl_FragColor = vec4(vec3(0.95, 0.46, 0.44) * 0.7, a * 0.2); }`,
   });
   for (let i = 0; i < COUNT; i++) {
     const b = angle(i) + Math.PI / COUNT;

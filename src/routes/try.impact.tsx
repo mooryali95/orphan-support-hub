@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
+import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
 import { formatMoney, formatDate } from "@/lib/format";
 import { myImpact } from "@/lib/my-impact";
@@ -33,14 +34,25 @@ function TryImpact() {
     return () => window.removeEventListener(TRY_EVENT, read);
   }, []);
   const doneChild = done ? tryChild(done) : undefined;
+  const doneGift = done ? gifts?.find((g) => g.childId === done) : undefined;
   const impact = myImpact(giftsAsSponsorships(gifts ?? []));
 
   return (
     <>
       {doneChild && (
         <CelebrateOverlay
-          title={`بدأ عطاؤك لـ${doneChild.name}`}
-          text="في المنصّة الحقيقية يتأكّد الدفع خلال دقائق، ثم ترى كل شهر متى حُوِّل المبلغ للجهة ومتى وصل الطفلَ بمستند. هذه صورتك الآن:"
+          grand
+          title={`من اليوم، ${doneChild.name} لا ينتظر وحده`}
+          text={
+            <>
+              {doneGift?.dedication && (
+                <span className="mb-2 block font-bold text-bridge-ink">
+                  صدقةٌ جارية عن {doneGift.dedication}، تقبّلها الله.
+                </span>
+              )}
+              بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.
+            </>
+          }
           action="شاهد أثرك"
           onClose={() => void navigate({ to: "/try/impact", search: {}, replace: true })}
         />
@@ -90,12 +102,21 @@ function TryImpact() {
                   <span className="w-full text-xs text-muted-foreground sm:w-auto">
                     {formatDate(g.at)} · الحالة: نشطة (محاكاة)
                   </span>
+                  {g.dedication && (
+                    <span className="w-full text-xs font-bold text-bridge-ink">
+                      صدقةٌ جارية عن {g.dedication}
+                    </span>
+                  )}
                 </li>
               );
             })}
           </ul>
         )}
       </section>
+
+      {gifts && gifts.length > 0 && (
+        <TryShareCard {...(gifts[0]?.dedication ? { dedication: gifts[0].dedication } : {})} />
+      )}
     </>
   );
 }

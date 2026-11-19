@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1481,
+ "count": 1480,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -417,13 +417,6 @@
    "ar": "الشفافية",
    "kind": "text",
    "hash": "895b92cfad4a",
-   "file": "src/components/SiteFooter.tsx"
-  },
-  "components/SiteFooter.vision": {
-   "en": "Vision and Directions platform",
-   "ar": "منصة الرؤية والتوجهات",
-   "kind": "text",
-   "hash": "e8b8e8936f8b",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteHeader.home": {

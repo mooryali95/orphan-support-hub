@@ -1,15 +1,15 @@
 /* قاعة الأثر — كلّ القواعد داخل .hall فلا تتسرّب إلى بقية الموقع. */
 /* Layout: full-bleed WebGL hall; glass side panel (bottom sheet on phones); one impact screen. Single dark world by design. */
 .hall {
-  --night: #0d0709; /* hall darkness */
-  --wine: #6b1d2f; /* partner wine */
-  --wine-deep: #2b0e15;
-  --gold: #d7b46a; /* gilded light */
-  --gold-soft: rgba(215, 180, 106, 0.18);
+  --night: #18070c; /* hall darkness */
+  --wine: #6b1f30; /* partner wine */
+  --wine-deep: #5e1a28;
+  --gold: #e8d8b2; /* gilded light */
+  --gold-soft: rgba(232, 216, 178, 0.18);
   --ivory: #f6efe2;
   --mist: rgba(246, 239, 226, 0.66);
-  --glass: rgba(26, 10, 14, 0.72);
-  --line: rgba(215, 180, 106, 0.26);
+  --glass: rgba(52, 14, 24, 0.72);
+  --line: rgba(232, 216, 178, 0.26);
   --good: #9bc59d;
   --display: "Amiri", "Times New Roman", serif;
   --body: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
@@ -69,7 +69,7 @@
   justify-content: space-between;
   padding: calc(env(safe-area-inset-top, 0px) + 14px) max(16px, env(safe-area-inset-right, 0px))
     14px max(16px, env(safe-area-inset-left, 0px));
-  background: linear-gradient(to bottom, rgba(13, 7, 9, 0.85), transparent);
+  background: linear-gradient(to bottom, rgba(24, 7, 12, 0.85), transparent);
   pointer-events: none;
 }
 #hud > * {
@@ -132,7 +132,7 @@
   text-align: center;
   padding-inline: max(16px, env(safe-area-inset-left, 0px))
     max(16px, env(safe-area-inset-right, 0px));
-  background: radial-gradient(ellipse at 50% 60%, rgba(13, 7, 9, 0.15), rgba(13, 7, 9, 0.8) 70%);
+  background: radial-gradient(ellipse at 50% 60%, rgba(24, 7, 12, 0.15), rgba(24, 7, 12, 0.8) 70%);
   transition: opacity 0.9s ease;
 }
 #gate.gone {
@@ -151,7 +151,7 @@
   margin: 6px 0 0;
   line-height: 1.1;
   text-wrap: balance;
-  background: linear-gradient(180deg, #f8e7bd, var(--gold) 60%, #9c7a3c);
+  background: linear-gradient(180deg, #f8e7bd, var(--gold) 60%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -171,7 +171,7 @@
 }
 .country-pick button {
   border: 1px solid var(--line);
-  background: rgba(43, 14, 21, 0.6);
+  background: rgba(61, 16, 28, 0.6);
   border-radius: 999px;
   padding: 8px 16px;
   font-size: 14px;
@@ -198,14 +198,14 @@
   color: var(--wine-deep);
   font-weight: 700;
   font-size: 17px;
-  box-shadow: 0 10px 40px rgba(215, 180, 106, 0.35);
+  box-shadow: 0 10px 40px rgba(232, 216, 178, 0.35);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 .cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 50px rgba(215, 180, 106, 0.5);
+  box-shadow: 0 14px 50px rgba(232, 216, 178, 0.5);
 }
 .ghost {
   min-height: 44px;
@@ -333,7 +333,7 @@
 }
 .cities button[aria-pressed="true"] {
   border-color: var(--gold);
-  background: rgba(215, 180, 106, 0.08);
+  background: rgba(232, 216, 178, 0.08);
 }
 .cities .bar {
   grid-column: 1 / -1;
@@ -382,7 +382,7 @@
 }
 .tracks button[aria-pressed="true"] {
   border-color: var(--gold);
-  background: linear-gradient(180deg, rgba(215, 180, 106, 0.18), rgba(215, 180, 106, 0.04));
+  background: linear-gradient(180deg, rgba(232, 216, 178, 0.18), rgba(232, 216, 178, 0.04));
 }
 .tracks button[aria-pressed="true"] b {
   color: var(--gold);
@@ -423,7 +423,7 @@
 .hall select {
   width: 100%;
   margin-top: 8px;
-  background: rgba(13, 7, 9, 0.6);
+  background: rgba(24, 7, 12, 0.6);
   color: var(--ivory);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -444,13 +444,13 @@
   left: max(16px, env(safe-area-inset-left, 0px));
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   width: min(560px, calc(100vw - min(400px, 36vw) - 64px));
-  background: linear-gradient(160deg, rgba(43, 14, 21, 0.9), rgba(13, 7, 9, 0.88));
+  background: linear-gradient(160deg, rgba(61, 16, 28, 0.9), rgba(24, 7, 12, 0.88));
   border: 1px solid var(--gold);
   border-radius: 24px;
   padding: 20px 22px;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    inset 0 0 40px rgba(215, 180, 106, 0.06);
+    inset 0 0 40px rgba(232, 216, 178, 0.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition:
@@ -662,7 +662,7 @@
   padding: 3px 9px;
   border-radius: 999px;
   white-space: nowrap;
-  background: rgba(13, 7, 9, 0.66);
+  background: rgba(24, 7, 12, 0.66);
   border: 1px solid var(--line);
   color: var(--ivory);
   transition: opacity 0.3s;
@@ -728,14 +728,14 @@
 }
 #gate h1 .w {
   display: inline-block;
-  background: linear-gradient(180deg, #f8e7bd, #d4af6a 60%, #9c7a3c);
+  background: linear-gradient(180deg, #f8e7bd, #dcc79a 60%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   padding-block: 0.08em;
 }
 .gate-net {
-  color: #e3c27e !important;
+  color: #e8d8b2 !important;
   font-size: 13px;
   margin-top: 10px !important;
 }
@@ -745,13 +745,13 @@
   z-index: 2;
   margin-inline: -16px;
   padding: 12px 16px;
-  background: linear-gradient(to top, rgba(20, 8, 12, 0.96) 70%, rgba(20, 8, 12, 0));
+  background: linear-gradient(to top, rgba(52, 14, 24, 0.96) 70%, rgba(52, 14, 24, 0));
 }
 .lvl {
   margin-top: 12px;
   border-radius: 16px;
   padding: 12px 14px;
-  border: 1px solid rgba(212, 175, 106, 0.18);
+  border: 1px solid rgba(232, 216, 178, 0.18);
   background: linear-gradient(160deg, rgba(243, 227, 181, 0.05), transparent);
 }
 .lvl header {
@@ -767,13 +767,13 @@
   display: grid;
   place-items: center;
   font-family: var(--display);
-  color: #2b0e15;
-  background: linear-gradient(180deg, #f3e3b5, #c99d55);
+  color: #5e1a28;
+  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
 }
 .lvl header small {
   display: block;
   font-size: 11px;
-  color: #e3c27e;
+  color: #e8d8b2;
   letter-spacing: 0.06em;
 }
 .lvl header b {
@@ -803,7 +803,7 @@
     inset 0 1px 0 rgba(255, 236, 190, 0.08);
 }
 #panel h2 {
-  background: linear-gradient(180deg, #fbe9bf, #d4af6a 65%, #9c7a3c);
+  background: linear-gradient(180deg, #fbe9bf, #dcc79a 65%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -817,7 +817,7 @@
   height: 34px;
   margin: -17px 0 0 -17px;
   border-radius: 50%;
-  border: 1px solid rgba(233, 201, 131, 0.7);
+  border: 1px solid rgba(232, 216, 178, 0.7);
   pointer-events: none;
   opacity: 0;
   transition:
@@ -831,21 +831,21 @@
   width: 64px;
   height: 64px;
   margin: -32px 0 0 -32px;
-  background: rgba(233, 201, 131, 0.12);
+  background: rgba(232, 216, 178, 0.12);
 }
 #veil {
-  background: radial-gradient(circle at 50% 50%, #fff7e2, #e9c983 70%);
+  background: radial-gradient(circle at 50% 50%, #fff7e2, #e8d8b2 70%);
 }
 
 /* ── v3: one glass, one gold, one rhythm ── */
 .hall {
-  --glass: rgba(20, 8, 12, 0.74);
+  --glass: rgba(52, 14, 24, 0.74);
   --champagne: #f3e3b5;
   --hair: linear-gradient(
     160deg,
     rgba(243, 227, 181, 0.6),
-    rgba(212, 175, 106, 0.06) 38%,
-    rgba(212, 175, 106, 0.06) 62%,
+    rgba(232, 216, 178, 0.06) 38%,
+    rgba(232, 216, 178, 0.06) 62%,
     rgba(243, 227, 181, 0.38)
   );
 }
@@ -863,18 +863,18 @@
 }
 .kpi {
   background: linear-gradient(180deg, rgba(243, 227, 181, 0.05), transparent);
-  border-color: rgba(212, 175, 106, 0.18);
+  border-color: rgba(232, 216, 178, 0.18);
 }
 .kpi b,
 .amount,
 .compare .after b {
-  background: linear-gradient(180deg, #fff4d6, #e3c27e 55%, #b38a45);
+  background: linear-gradient(180deg, #fff4d6, #e8d8b2 55%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .sect {
-  color: #e3c27e;
+  color: #e8d8b2;
   font-size: 11.5px;
   letter-spacing: 0.08em;
 }
@@ -887,7 +887,7 @@
 .story-tabs button {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(212, 175, 106, 0.2);
+  border: 1px solid rgba(232, 216, 178, 0.2);
   background: transparent;
   border-radius: 12px;
   padding: 9px 6px;
@@ -895,19 +895,19 @@
   color: var(--mist);
 }
 .story-tabs button .num {
-  color: #e3c27e;
+  color: #e8d8b2;
   margin-inline-end: 2px;
 }
 .story-tabs button[aria-selected="true"] {
   color: var(--ivory);
   border-color: rgba(243, 227, 181, 0.6);
-  background: rgba(212, 175, 106, 0.08);
+  background: rgba(232, 216, 178, 0.08);
 }
 .story-tabs .prog {
   position: absolute;
   inset: auto 0 0 0;
   height: 2px;
-  background: linear-gradient(90deg, #f3e3b5, #d4af6a);
+  background: linear-gradient(90deg, #f3e3b5, #dcc79a);
   transform: scaleX(0);
   transform-origin: right;
 }
@@ -929,7 +929,7 @@
   margin: 12px 0 0;
 }
 .kv div {
-  border: 1px solid rgba(212, 175, 106, 0.16);
+  border: 1px solid rgba(232, 216, 178, 0.16);
   border-radius: 12px;
   padding: 9px 12px;
 }
@@ -948,7 +948,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid rgba(212, 175, 106, 0.14);
+  border-bottom: 1px solid rgba(232, 216, 178, 0.14);
   padding: 10px 0;
 }
 .delta-row small {
@@ -967,20 +967,20 @@
   font-weight: 500;
   color: rgba(246, 239, 226, 0.55);
   text-decoration: line-through;
-  text-decoration-color: rgba(212, 175, 106, 0.45);
+  text-decoration-color: rgba(232, 216, 178, 0.45);
   text-decoration-thickness: 1px;
 }
 .dv .now {
   font-family: var(--display);
   font-size: 34px;
   font-weight: 500;
-  background: linear-gradient(180deg, #fff4d6, #e3c27e 55%, #b38a45);
+  background: linear-gradient(180deg, #fff4d6, #e8d8b2 55%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .dv .arrow {
-  color: rgba(212, 175, 106, 0.7);
+  color: rgba(232, 216, 178, 0.7);
 }
 .chip-d {
   font-size: 13px;
@@ -1030,14 +1030,14 @@
   border-color: rgba(243, 227, 181, 0.6);
 }
 .lbl.g:hover {
-  border-color: #e3c27e;
+  border-color: #e8d8b2;
   color: #fff4d6;
 }
 .kpis.k4 {
   grid-template-columns: repeat(4, 1fr);
 }
 #toggleAll[aria-pressed="true"] {
-  border-color: #e3c27e;
+  border-color: #e8d8b2;
   color: #fff4d6;
 }
 .kpis.k4 .kpi b {
@@ -1049,7 +1049,7 @@
   padding: 16px;
   border: 1px solid transparent;
   background:
-    linear-gradient(160deg, rgba(60, 18, 30, 0.6), rgba(20, 8, 12, 0.6)) padding-box,
+    linear-gradient(160deg, rgba(60, 18, 30, 0.6), rgba(52, 14, 24, 0.6)) padding-box,
     var(--hair) border-box;
 }
 #hallNav {
@@ -1064,7 +1064,7 @@
   padding: 6px;
   border-radius: 999px;
   background: var(--glass);
-  border: 1px solid rgba(212, 175, 106, 0.3);
+  border: 1px solid rgba(232, 216, 178, 0.3);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -1083,23 +1083,23 @@
 }
 #hallNav button[data-d] {
   font-size: 22px;
-  color: #e3c27e;
+  color: #e8d8b2;
   padding: 0 10px;
 }
 #hallNav button[aria-current="true"] {
-  background: linear-gradient(180deg, #f3e3b5, #d4af6a);
-  color: #2b0e15;
+  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
+  color: #5e1a28;
   font-weight: 700;
 }
 .tcell {
-  border: 1px solid rgba(212, 175, 106, 0.25);
+  border: 1px solid rgba(232, 216, 178, 0.25);
   border-radius: 14px;
   padding: 10px 6px;
   text-align: center;
 }
 .tcell b {
   display: block;
-  color: #e3c27e;
+  color: #e8d8b2;
 }
 .tcell small {
   color: var(--mist);
@@ -1117,7 +1117,7 @@
   font-family: var(--display);
   font-size: 22px;
   margin: 0;
-  color: #e3c27e;
+  color: #e8d8b2;
 }
 @media (max-width: 760px) {
   .kv.kv3 {
@@ -1134,7 +1134,7 @@
   font-family: var(--display);
   font-size: 24px;
   margin: 0;
-  color: #e3c27e;
+  color: #e8d8b2;
 }
 .co-head {
   display: grid;
@@ -1148,7 +1148,7 @@
   margin: 0;
   font-weight: 700;
   line-height: 1.2;
-  background: linear-gradient(180deg, #fbe9bf, #d4af6a 65%, #9c7a3c);
+  background: linear-gradient(180deg, #fbe9bf, #dcc79a 65%, #cdb88a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1164,8 +1164,8 @@
   font-size: 11.5px;
   padding: 3px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(212, 175, 106, 0.4);
-  color: #e3c27e;
+  border: 1px solid rgba(232, 216, 178, 0.4);
+  color: #e8d8b2;
 }
 .st.unconfirmed {
   border-style: dashed;
@@ -1189,7 +1189,7 @@
   line-height: 1.9;
 }
 .co-act small {
-  color: rgba(212, 175, 106, 0.75);
+  color: rgba(232, 216, 178, 0.75);
 }
 .co-list {
   display: flex;
@@ -1201,7 +1201,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid rgba(212, 175, 106, 0.18);
+  border: 1px solid rgba(232, 216, 178, 0.18);
   background: transparent;
   border-radius: 999px;
   padding: 6px 12px;
@@ -1211,15 +1211,15 @@
   border-color: rgba(243, 227, 181, 0.5);
 }
 .co-list button[aria-pressed="true"] {
-  border-color: #e3c27e;
+  border-color: #e8d8b2;
   color: #fff4d6;
-  background: rgba(212, 175, 106, 0.12);
+  background: rgba(232, 216, 178, 0.12);
 }
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #e9c983;
+  background: #e8d8b2;
   display: inline-block;
 }
 .dot.hq {
@@ -1248,7 +1248,7 @@
   margin-top: 14px;
   padding: 4px;
   border-radius: 999px;
-  border: 1px solid rgba(212, 175, 106, 0.25);
+  border: 1px solid rgba(232, 216, 178, 0.25);
 }
 .hall .layers button {
   border: 0;
@@ -1259,8 +1259,8 @@
   color: var(--mist);
 }
 .hall .layers button[aria-pressed="true"] {
-  background: linear-gradient(180deg, #f3e3b5, #d4af6a);
-  color: #2b0e15;
+  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
+  color: #5e1a28;
   font-weight: 700;
 }
 .hall .dot.gap-high {
@@ -1280,8 +1280,8 @@
   padding: 1px 8px;
   margin-inline-end: 6px;
   border-radius: 999px;
-  border: 1px solid rgba(212, 175, 106, 0.45);
-  color: #e3c27e;
+  border: 1px solid rgba(232, 216, 178, 0.45);
+  color: #e8d8b2;
 }
 .hall .src.real {
   border-color: rgba(155, 197, 157, 0.6);
@@ -1315,7 +1315,7 @@
 .hall .loader polygon,
 .hall .loader circle {
   fill: none;
-  stroke: #e3c27e;
+  stroke: #e8d8b2;
   stroke-width: 1.6;
   stroke-linejoin: round;
 }
@@ -1323,7 +1323,7 @@
   stroke-dasharray: 520;
   stroke-dashoffset: 520;
   animation: hall-draw 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 0 6px rgba(233, 201, 131, 0.6));
+  filter: drop-shadow(0 0 6px rgba(232, 216, 178, 0.6));
 }
 .hall .loader circle {
   opacity: 0.6;
@@ -1365,9 +1365,9 @@
   margin-top: 0;
 }
 .hall #soundBtn[aria-pressed="true"] {
-  border-color: #e3c27e;
+  border-color: #e8d8b2;
   color: #fff4d6;
-  background: rgba(212, 175, 106, 0.12);
+  background: rgba(232, 216, 178, 0.12);
 }
 /* film mode: letterbox bars and a centred caption */
 .hall::before,
@@ -1442,7 +1442,7 @@
 /* ── v4: quiet luxury — narrower glass, a colour key, a focus mode ── */
 .hall {
   --mist: rgba(246, 239, 226, 0.8);
-  --t-qualify: #d4af6a;
+  --t-qualify: #cdae76;
   --t-sponsor: #5cc9a4;
   --t-kiswa: #eef0f7;
 }
@@ -1470,7 +1470,7 @@
   pointer-events: none;
 }
 .lbl {
-  background: rgba(13, 7, 9, 0.82);
+  background: rgba(24, 7, 12, 0.82);
 }
 #legend {
   position: fixed;
@@ -1480,7 +1480,7 @@
   min-width: 170px;
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(13, 7, 9, 0.7);
+  background: rgba(24, 7, 12, 0.7);
   border: 1px solid var(--line);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -1526,12 +1526,16 @@
   background: var(--t-qualify);
   box-shadow: 0 0 8px var(--t-qualify);
 }
+/* the key repeats the scene's forms, not only its colours: bead, ring, gem */
 .lg-sponsor i {
-  background: var(--t-sponsor);
+  box-sizing: border-box;
+  border: 2px solid var(--t-sponsor);
   box-shadow: 0 0 8px var(--t-sponsor);
 }
 .lg-kiswa i {
-  background: radial-gradient(circle at 35% 35%, #fff, var(--t-kiswa) 55%, #c9c2e0);
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.86);
+  background: linear-gradient(135deg, #fff, var(--t-kiswa));
 }
 .hall .sr-only {
   position: absolute;
@@ -1580,101 +1584,120 @@
   transition: opacity 0.6s ease;
 }
 
-/* ── The mark: the partner's sign is the door into the hall ──
-   drawn: a gold line traces the outline → the disc fills → the crescent settles → the hand is written →
-   a sheen passes. On entry (hall-scene.js, enterHall) the alef's slot ignites, the hāʾ rises out, and
-   the disc parts along the alef line as two leaves. Final states are resting styles (reduced motion). */
+/* ── The mark: «الإصبعان» is the door into the hall ──
+   drawn: a champagne hairline traces the rim → the disc fills → the crescent settles → the ring is
+   drawn in white → the two fingers rise as light, then breathe. On entry (hall-scene.js, enterHall)
+   the two fingers draw together into one opening and the disc parts along it as two leaves.
+   Final states are the resting styles (reduced motion shows the finished mark at once). */
 #gate .mark {
   position: relative;
   width: min(260px, 32vh);
-  aspect-ratio: 304 / 330;
-  margin: 0 auto 22px;
+  aspect-ratio: 220 / 204;
+  margin: 0 auto 24px;
+  /* the middle of the opening the two fingers make: the camera goes through here */
+  transform-origin: 52.5% 54.3%;
   animation: m-float 7s ease-in-out 4s infinite;
 }
-.mark > div,
-.mark > svg {
+.mark .mark-art {
   position: absolute;
   inset: 0;
-}
-.mark svg {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
-.mark .leaf {
-  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.6));
-  will-change: transform;
-}
-/* the alef line runs from (73.4%, 0) to (0, 100%) of the mark: each leaf keeps one side of it */
-.mark .leaf-a {
-  /* overlaps leaf b by ~1% so no hairline seam shows while the door is closed */
-  clip-path: polygon(-30% -20%, 89.4% -20%, -13.4% 120%, -30% 120%);
-}
-.mark .leaf-b {
-  clip-path: polygon(88.1% -20%, 130% -20%, 130% 120%, -14.7% 120%);
-}
-.mark .mark-slot {
-  opacity: 0;
-}
-.mark .mark-slot line {
-  stroke: var(--champagne);
-  stroke-width: 3;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 6px var(--gold)) drop-shadow(0 0 16px var(--gold));
-}
+/* the light behind the door, centred on the disc: a white core the size of the disc, soft beyond */
 .mark .mark-flood {
-  left: 56.6%;
-  top: 23.6%;
-  right: auto;
-  bottom: auto;
-  width: 40px;
-  height: 40px;
-  margin: -20px 0 0 -20px;
+  position: absolute;
+  left: 46.36%;
+  top: 50%;
+  width: 146%;
+  aspect-ratio: 1;
+  margin: -73% 0 0 -73%;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff7e2 0%, rgba(243, 227, 181, 0.85) 35%, transparent 70%);
+  background: radial-gradient(
+    circle closest-side,
+    #fffdf9 0%,
+    #fffdf9 61%,
+    rgba(255, 249, 240, 0.5) 76%,
+    rgba(255, 246, 234, 0) 100%
+  );
   opacity: 0;
   pointer-events: none;
 }
-/* the approved colours come from the markup (MARK_COLORS); here only how they arrive */
-.mark .m-disc,
-.mark .m-paper {
-  animation: m-fill 1s ease 1.3s both;
+/* the two leaves arrive as one disc (a group fade, so their overlap never shows) */
+.mark .k-door {
+  animation: m-fill 1s ease 0.9s both;
 }
-.mark .m-crescent {
+.mark .k-disc {
+  fill: #6b1f30;
+}
+.mark .k-crescent {
+  fill: #5e1a28;
   transform-box: fill-box;
   transform-origin: center;
-  animation: m-settle 1s cubic-bezier(0.16, 1, 0.3, 1) 1.7s both;
+  animation: m-settle 1s cubic-bezier(0.16, 1, 0.3, 1) 1.3s both;
 }
-.mark .m-line {
+.mark .k-ring {
+  fill: #fff;
+  opacity: 0.9;
+  animation: m-ring 0.4s ease 2.2s both;
+}
+.mark .k-lume {
+  fill: #fffdf9;
+  opacity: 0;
+}
+/* the two fingers: light rising through the slots, the second a breath after the first */
+.mark .k-finger {
+  fill: #fffdf9;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: m-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.9s both;
+}
+.mark .k-finger-b {
+  animation-delay: 2.08s;
+}
+.mark .k-glow {
+  fill: #fffdf9;
+  opacity: 0.34;
+  pointer-events: none;
+  animation:
+    m-glow-in 1.2s ease 2.2s both,
+    m-breathe 5.6s ease-in-out 3.4s infinite;
+}
+/* the door edge of each leaf: a champagne hairline, lit when the two fingers have met */
+.mark .k-edge {
+  stroke: #cdae76;
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.mark .k-trace {
   fill: none;
-  stroke-width: 1.4;
+  stroke: #cdae76;
+  stroke-width: 0.9;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   opacity: 0;
-  animation: m-trace 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.15s both;
+  animation: m-trace 2.1s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
 }
-.mark .m-line-2 {
-  animation-delay: 0.55s;
+.mark .k-trace-2 {
+  animation-delay: 0.45s;
 }
-.mark .mark-ink {
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
-}
-.mark .m-wipe {
-  transform: translateY(260px);
-  animation: m-write 1.6s cubic-bezier(0.55, 0.05, 0.25, 1) 2.1s both;
-}
-.mark .m-sheen {
-  transform: translateX(460px);
-  animation: m-sheen 1.5s cubic-bezier(0.4, 0, 0.2, 1) 3.6s both;
+/* the ring is drawn by a white line of its own width, which the true ring then replaces */
+.mark .k-trace-ring {
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-dasharray: 0.9047 1;
+  animation: m-trace-ring 1.6s cubic-bezier(0.65, 0, 0.35, 1) 1.2s both;
 }
 @keyframes m-trace {
   0% {
     stroke-dashoffset: 1;
     opacity: 1;
   }
-  60% {
+  62% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
@@ -1683,44 +1706,106 @@
     opacity: 0;
   }
 }
+@keyframes m-trace-ring {
+  0% {
+    stroke-dashoffset: 0.9047;
+    opacity: 0.9;
+  }
+  70% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+  88% {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
 @keyframes m-fill {
   from {
-    fill-opacity: 0;
+    opacity: 0;
   }
   to {
-    fill-opacity: 1;
+    opacity: 1;
+  }
+}
+@keyframes m-ring {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
   }
 }
 @keyframes m-settle {
   from {
     opacity: 0;
-    transform: translate(-16px, 14px);
+    transform: translate(-14px, 12px);
   }
   to {
     opacity: 1;
     transform: translate(0, 0);
   }
 }
-@keyframes m-write {
+@keyframes m-rise {
   from {
-    transform: translateY(-230px);
+    transform: scaleY(0);
   }
   to {
-    transform: translateY(260px);
+    transform: scaleY(1);
   }
 }
-@keyframes m-sheen {
+@keyframes m-glow-in {
   from {
-    transform: translateX(0);
+    opacity: 0;
   }
   to {
-    transform: translateX(460px);
+    opacity: 0.34;
+  }
+}
+@keyframes m-breathe {
+  0%,
+  100% {
+    opacity: 0.34;
+  }
+  50% {
+    opacity: 0.8;
   }
 }
 @keyframes m-float {
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
   }
+}
+/* the partnership, quietly, under the gate copy: the partner's mark as approved, on its own paper */
+.hall #gate .gate-partner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 22px auto 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--mist);
+  animation-delay: 3.1s;
+}
+.hall #gate .gate-partner::before,
+.hall #gate .gate-partner::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: rgba(205, 174, 118, 0.45);
+}
+.hall #gate .gate-partner img {
+  width: auto;
+  height: 26px;
+}
+.hall #gate .gate-partner-name {
+  color: #fff;
+  font-weight: 600;
 }
 #gate h1 {
   font-size: clamp(30px, 5.4vw, 58px);
@@ -1735,9 +1820,9 @@
 #gate {
   background: radial-gradient(
     circle at 50% 42%,
-    rgba(13, 7, 9, 0.5),
-    rgba(13, 7, 9, 0.9) 46%,
-    rgba(13, 7, 9, 0.97) 75%
+    rgba(24, 7, 12, 0.5),
+    rgba(24, 7, 12, 0.9) 46%,
+    rgba(24, 7, 12, 0.97) 75%
   );
 }
 /* the words rise once the hand has been written (wall-clock CSS, so slow devices never wait longer) */
@@ -1745,6 +1830,7 @@
 #gate h1 .w,
 #gate p,
 #gate .gate-actions,
+#gate .gate-partner,
 #gate .loader {
   animation: g-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) 2.5s both;
 }
@@ -1788,7 +1874,7 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(215, 180, 106, 0.25);
+  border: 1px solid rgba(232, 216, 178, 0.25);
   background: rgba(243, 227, 181, 0.05);
 }
 .hall .kids li > span {
@@ -1918,5 +2004,322 @@
   #tlOut {
     min-width: 64px;
     font-size: 15px;
+  }
+}
+
+/* ── v7: the logo's identity — wine and white, champagne only as a hairline ──
+   Surfaces are deep wine (the logo's #6b1f30 / #5e1a28, darkened), headings and numbers are
+   white or ivory, and champagne is kept for rules, the active step and small highlights.
+   The primary button is white with the logo's wine as ink: 11:1 on white, and the one
+   bright thing on a wine surface. */
+.hall {
+  --wine-logo: #6b1f30;
+  --wine-ink: #5e1a28;
+  --white: #ffffff;
+  --glass: rgba(58, 15, 26, 0.9);
+  --line: rgba(255, 255, 255, 0.16);
+  --hair: linear-gradient(
+    160deg,
+    rgba(232, 216, 178, 0.55),
+    rgba(255, 255, 255, 0.08) 38%,
+    rgba(255, 255, 255, 0.08) 62%,
+    rgba(232, 216, 178, 0.3)
+  );
+}
+#hud {
+  background: linear-gradient(to bottom, rgba(36, 9, 16, 0.92), rgba(36, 9, 16, 0));
+}
+.hall .brand {
+  color: var(--white);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.hall .brand-sep {
+  color: var(--gold);
+}
+.hall #steps li.on {
+  background: var(--champagne);
+  color: var(--wine-ink);
+}
+.hall #steps li.done {
+  color: var(--ivory);
+}
+.hall .chip {
+  color: var(--ivory);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(58, 15, 26, 0.55);
+  min-height: 32px;
+  align-items: center;
+  text-decoration: none;
+}
+.hall .chip.exit {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--wine-logo);
+  font-weight: 700;
+}
+.hall .chip[aria-pressed="true"],
+.hall #soundBtn[aria-pressed="true"] {
+  border-color: var(--champagne);
+  color: var(--white);
+  background: rgba(232, 216, 178, 0.14);
+}
+/* «عرض المجسّم» only where there are panels to step aside */
+.hall[data-stage="gate"] #focusBtn,
+.hall[data-stage="hall"] #focusBtn {
+  display: none;
+}
+#gate .eyebrow {
+  color: var(--champagne);
+}
+.hall #gate h1 {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--white);
+}
+.hall #gate h1 .w {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--white);
+}
+.hall .gate-net {
+  color: var(--champagne) !important;
+}
+.hall .cta {
+  background: var(--white);
+  color: var(--wine-logo);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.35);
+}
+.hall .cta:hover {
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
+}
+.hall .ghost {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: var(--white);
+}
+.hall .ghost:hover {
+  border-color: var(--white);
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.08);
+}
+.hall #panel h2,
+.hall #impact h3,
+.hall .co-head h3 {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--white);
+}
+.hall .kpi b,
+.hall .amount,
+.hall .compare .after b,
+.hall .dv .now {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--white);
+}
+.hall .kpi {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.hall .kpis.k2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.hall .sect {
+  color: var(--champagne);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hall .sect::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(232, 216, 178, 0.28);
+}
+.hall .warm {
+  margin: 16px 0 0;
+  padding-inline-start: 12px;
+  border-inline-start: 2px solid var(--champagne);
+  font-family: var(--display);
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--ivory);
+}
+.hall #hallNav button[aria-current="true"],
+.hall .layers button[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--wine-logo);
+}
+.hall #hallNav button[data-d] {
+  color: var(--ivory);
+}
+.hall .lvl .ic {
+  background: var(--champagne);
+  color: var(--wine-ink);
+}
+.hall .lbl.hot {
+  border-color: var(--white);
+  color: var(--white);
+}
+.hall #tlOut {
+  color: var(--white);
+}
+.hall #legend p {
+  color: var(--champagne);
+}
+#veil {
+  background: radial-gradient(circle at 50% 50%, #ffffff, #f1e2e5 70%);
+}
+/* the model view really hides the glass: gsap leaves inline transforms on it after its entrance,
+   which used to beat these rules, so the panels came back the moment «عرض المجسّم» was pressed */
+.hall.focus #panel {
+  transform: translateX(calc(100% + 32px)) !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+.hall.focus #impact {
+  transform: translateY(calc(100% + 32px)) !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* ── v7 phones: one clean bar; what does not fit is hidden, never stacked on the scene ── */
+@media (max-width: 760px) {
+  .hall #hud {
+    gap: 8px;
+    padding: calc(env(safe-area-inset-top, 0px) + 8px) max(12px, env(safe-area-inset-right, 0px))
+      8px max(12px, env(safe-area-inset-left, 0px));
+    min-height: calc(env(safe-area-inset-top, 0px) + 52px);
+    flex-wrap: nowrap;
+    background: linear-gradient(to bottom, rgba(36, 9, 16, 0.96) 70%, rgba(36, 9, 16, 0));
+  }
+  /* the bar names the hall; the platform's name returns on wider screens */
+  .hall .brand {
+    font-size: 17px;
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+  .hall .brand-name,
+  .hall .brand-sep {
+    display: none;
+  }
+  .hall .brand-hall {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hall #steps {
+    flex: none;
+  }
+  .hall #steps li {
+    padding: 5px 11px;
+  }
+  .hall .exits {
+    flex: none;
+    gap: 6px;
+    margin-inline-start: auto;
+  }
+  .hall .exits .chip {
+    display: none;
+    font-size: 12px;
+    padding: 0 12px;
+    min-height: 36px;
+  }
+  .hall .exits #focusBtn,
+  .hall .exits .chip.exit {
+    display: inline-flex;
+  }
+  .hall[data-stage="gate"] .exits #focusBtn,
+  .hall[data-stage="hall"] .exits #focusBtn {
+    display: none;
+  }
+  .hall .exit-note {
+    display: none;
+  }
+  .hall.focus #panel {
+    transform: translateY(calc(100% + 32px)) !important;
+  }
+  /* the gate starts below the bar and fits the screen: the mark and the copy never meet it */
+  .hall #gate {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 56px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    overflow-y: auto;
+  }
+  .hall #gate .mark {
+    width: min(170px, 22vh);
+    margin-bottom: 10px;
+  }
+  .hall #gate h1 {
+    font-size: clamp(28px, 8.4vw, 40px);
+    margin-top: 2px;
+  }
+  .hall #gate p {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .hall #gate .cta {
+    margin-top: 0;
+  }
+  .hall .gate-actions {
+    margin-top: 16px;
+  }
+  .hall #timeline {
+    top: calc(env(safe-area-inset-top, 0px) + 58px);
+  }
+  .hall #legend {
+    top: calc(env(safe-area-inset-top, 0px) + 58px);
+  }
+  .hall.at-country #legend {
+    top: calc(env(safe-area-inset-top, 0px) + 138px);
+  }
+}
+@media (max-width: 760px) and (max-height: 720px) {
+  .hall #gate .mark {
+    width: min(120px, 18vh);
+    margin-bottom: 6px;
+  }
+  .hall #gate .gate-net {
+    display: none;
+  }
+  .hall #gate p {
+    font-size: 13px;
+    line-height: 1.65;
+    margin-top: 8px;
+  }
+  .hall .gate-actions {
+    margin-top: 12px;
+  }
+  .hall .cta {
+    min-height: 46px;
+  }
+}
+@media (max-width: 360px) {
+  .hall .brand {
+    display: none;
+  }
+}
+.hall #hallNav button {
+  white-space: nowrap;
+}
+.hall .row.pin {
+  background: linear-gradient(to top, rgba(58, 15, 26, 0.98) 70%, rgba(58, 15, 26, 0));
+}
+@media (max-width: 760px) {
+  .hall #hallNav {
+    gap: 2px;
+    max-width: calc(100vw - 24px);
+  }
+  .hall #hallNav button {
+    font-size: 13px;
+    padding: 0 12px;
+  }
+  .hall #hallNav button[data-d] {
+    padding: 0 6px;
   }
 }
