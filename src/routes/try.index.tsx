@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, HeartHandshake, Receipt, Sparkles } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
+import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { tryChildrenByWait } from "@/lib/try-demo";
 
 export const Route = createFileRoute("/try/")({ component: TryHome });
@@ -28,6 +29,9 @@ function TryHome() {
         <p className="mx-auto mt-4 max-w-xl leading-8 text-muted-foreground">
           اختر طفلاً، واكفله، ثم شاهد أثر كفالتك يتشكّل أمامك. كل ما هنا افتراضي، فجرّب بلا قلق.
         </p>
+        <div className="mt-6 flex justify-center">
+          <TryJourneyGuide variant="hero" />
+        </div>
       </section>
 
       <ol className="mt-10 grid gap-3 sm:grid-cols-3">

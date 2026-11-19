@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Building2,
   ArrowLeft,
+  FlaskConical,
   FileCheck2,
   Stamp,
   LineChart,
@@ -128,6 +129,7 @@ const COPY = defineCopy("routes/index", {
     h1b: "بل نبني نظم عمران",
     lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
     supportNow: "ادعم الآن",
+    tryIt: "جرّب الرحلة كاملة بلا حساب",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
     hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
@@ -256,6 +258,7 @@ const COPY = defineCopy("routes/index", {
     h1b: "we build systems for thriving",
     lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
     supportNow: "Support now",
+    tryIt: "Try the whole journey, no account",
     browse: "Browse children's files",
     hadithMeaning:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
@@ -522,6 +525,13 @@ function HomePage() {
                 <Link to="/support">{c.supportNow}</Link>
               </Button>
             </div>
+            <Link
+              to="/try"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
+            >
+              <FlaskConical className="size-4" aria-hidden="true" />
+              {c.tryIt}
+            </Link>
 
             {/* شريط الدليل: أرقامٌ حقيقية فقط — بيانات الندوة البحثية وأعداد المنصّة الحيّة. */}
             <section aria-labelledby="proof-heading" className="mx-auto mt-10 max-w-4xl">

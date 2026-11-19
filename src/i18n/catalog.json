@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1480,
+ "count": 1481,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -5772,6 +5772,13 @@
    "kind": "template",
    "params": 1,
    "hash": "2f72217ca79b",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.tryIt": {
+   "en": "Try the whole journey, no account",
+   "ar": "جرّب الرحلة كاملة بلا حساب",
+   "kind": "text",
+   "hash": "acbf0d126ed6",
    "file": "src/routes/index.tsx"
   },
   "routes/office.addMetric": {
