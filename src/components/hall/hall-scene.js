@@ -2063,7 +2063,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
       [
         () => enterCountry(),
-        "ندخلها: لكلّ مدينةٍ عمودٌ بقدر حاجتها، والذهبيّ ما مُوِّل تأهيله",
+        "ندخلها: لكلّ مدينةٍ عمودٌ بقدر حاجتها، والمملوء منه ما مُوِّل تأهيله",
         7000,
       ],
       [
@@ -2516,7 +2516,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     hideImpact();
     showPanel(`
     <h2>${CO.ar} · الحال الآن</h2>
-    <p class="sub">${STATUS[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والذهبيّ فيه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
+    <p class="sub">${STATUS[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والمملوء منه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
     <div class="kpis">
       <div class="kpi"><b class="num" data-count="${t.need}">0</b><span>يتيماً في الحاجة</span></div>
       <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
@@ -2880,7 +2880,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /** qualification: six session rings climb the new gold; sponsorship: lanterns join the orbit; clothing: gifts fall onto the children */
   const SAY = {
-    qualify: (k) => `انظر إلى العمود: صعد الذهب، والحلقات الذهبية جلسات ${k} طفلاً`,
+    qualify: (k) => `انظر إلى العمود: ارتفع ما امتلأ منه، والحلقات المضيئة جلسات ${k} طفلاً`,
     sponsor: (k) => `انظر حول العمود: ${k} فوانيس زمرّدية انضمّت إلى مدار الكفالة`,
     kiswa: (k) => `انظر إلى الأطفال: ${k} هديةً لؤلؤية نزلت عليهم`,
   };
