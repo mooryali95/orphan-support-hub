@@ -153,6 +153,31 @@ function HallPage() {
 
       <div id="hint" />
       <aside id="legend" aria-label="مفتاح الأثر" />
+      <div id="timeline" role="group" aria-label="الزمن: الدولة قبل سنة واليوم وبعد سنة">
+        <button id="tlPlay" type="button" className="chip">
+          شاهد السنة تمرّ
+        </button>
+        <div className="tl-track">
+          <input
+            id="tlRange"
+            type="range"
+            min={-12}
+            max={12}
+            step={1}
+            defaultValue={0}
+            aria-label="الشهر"
+            aria-valuetext="اليوم"
+          />
+          <div className="tl-ticks" aria-hidden="true">
+            <span>قبل سنة</span>
+            <span>اليوم</span>
+            <span>بعد سنة</span>
+          </div>
+        </div>
+        <output id="tlOut" htmlFor="tlRange">
+          اليوم
+        </output>
+      </div>
       <p id="srLive" className="sr-only" aria-live="polite" />
       <p id="caption" aria-live="polite" />
       <nav id="hallNav" aria-label="شاشات القاعة">

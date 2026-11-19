@@ -1,15 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { Play, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { MyImpact } from "@/lib/my-impact";
+import { impactAt, impactSpan, type MyImpact } from "@/lib/my-impact";
 
 /**
  * «كوكبة أثرك»: الداعم في المركز، وكلّ طفلٍ يكفله جوهرةٌ على مدار. حول كلّ طفل
  * حلقتان: ما غطّاه الجميع من حاجته الشهرية (خافتة)، وحصّتك أنت منها (بلون الهوية).
  * الألوان من رموز الهوية فقط، فتعمل في الوضعين الفاتح والداكن.
  */
+const monthsAgo = (n: number) =>
+  n === 0
+    ? "اليوم"
+    : n === 1
+      ? "قبل شهر"
+      : n === 2
+        ? "قبل شهرين"
+        : n <= 10
+          ? `قبل ${n} أشهر`
+          : `قبل ${n} شهراً`;
+
 const W = 400,
   H = 250,
   CX = W / 2,
@@ -29,8 +41,34 @@ export function MyImpactHero({
   /** the demo opens the hall in demo mode, on the visitor's latest gift */
   hallSearch?: { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
 }) {
-  const shown = impact.children.slice(0, MAX);
-  const more = impact.children.length - shown.length;
+  /* the time rail: how many whole months back the picture stands (0 = today) */
+  const span = impactSpan(impact);
+  const [back, setBack] = useState(0);
+  const timer = useRef<number | null>(null);
+  const stop = () => {
+    if (timer.current !== null) window.clearInterval(timer.current);
+    timer.current = null;
+  };
+  useEffect(() => stop, []);
+  const play = () => {
+    stop();
+    let b = span;
+    setBack(b);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return setBack(0);
+    timer.current = window.setInterval(
+      () => {
+        b -= 1;
+        setBack(Math.max(0, b));
+        if (b <= 0) stop();
+      },
+      Math.max(160, Math.min(700, 4200 / span)),
+    );
+  };
+  const view = impactAt(impact, Math.min(back, span));
+  const shown = view.children.slice(0, MAX);
+  const more = view.children.length - shown.length;
+  const rail = !loading && impact.children.length > 0 && span > 1;
   const pos = shown.map((_, i) => {
     const a = -Math.PI / 2 + (i / Math.max(1, shown.length)) * Math.PI * 2;
     return { x: CX + Math.cos(a) * 150, y: CY + Math.sin(a) * 86 };
@@ -55,9 +93,9 @@ export function MyImpactHero({
 
           <dl className="mt-6 grid grid-cols-3 gap-3">
             {[
-              ["في رعايتك", String(impact.inCare), "طفلاً"],
-              ["أشهر الرعاية", String(impact.months), "شهراً"],
-              ["حصّتك", pct(impact.share), "من حاجتهم"],
+              ["في رعايتك", String(view.inCare), "طفلاً"],
+              ["أشهر الرعاية", String(view.months), "شهراً"],
+              ["حصّتك", pct(view.share), "من حاجتهم"],
             ].map(([label, value, unit]) => (
               <div key={label} className="rounded-2xl border border-border/70 bg-background/60 p-3">
                 <dt className="text-xs text-muted-foreground">{label}</dt>
@@ -206,7 +244,38 @@ export function MyImpactHero({
               );
             })}
           </svg>
-          {!loading && shown.length === 0 && (
+          {rail && (
+            <div className="mt-3 flex min-w-0 items-center gap-2 sm:gap-3">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={play}
+                aria-label="شاهد أثرك يتكوّن منذ البداية"
+              >
+                <Play className="size-3.5" aria-hidden="true" />
+                منذ البداية
+              </Button>
+              <input
+                type="range"
+                min={0}
+                max={span}
+                step={1}
+                value={span - Math.min(back, span)}
+                onChange={(e) => {
+                  stop();
+                  setBack(span - Number(e.target.value));
+                }}
+                aria-label="مسار أثرك عبر الأشهر"
+                aria-valuetext={monthsAgo(back)}
+                className="min-h-11 w-full min-w-0 flex-1 cursor-pointer rounded-full accent-[var(--bridge)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+              <output className="w-16 shrink-0 text-center text-sm font-bold text-bridge-ink tabular-nums">
+                {monthsAgo(Math.min(back, span))}
+              </output>
+            </div>
+          )}
+          {!loading && shown.length === 0 && back === 0 && (
             <figcaption className="absolute inset-x-0 bottom-2 text-center text-sm text-muted-foreground">
               حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.
             </figcaption>
