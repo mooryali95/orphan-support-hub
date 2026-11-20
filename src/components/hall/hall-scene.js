@@ -343,21 +343,20 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   );
   floor.rotation.x = -Math.PI / 2;
   hall.add(floor);
-  function star(r, k, o) {
-    const pts = [];
-    for (let i = 0; i < 16; i++) {
-      const a = (i / 16) * Math.PI * 2,
-        b = ((i + k) / 16) * Math.PI * 2;
-      pts.push(
-        new THREE.Vector3(Math.sin(a) * r, 0, Math.cos(a) * r),
-        new THREE.Vector3(Math.sin(b) * r, 0, Math.cos(b) * r),
-      );
+  /* a hairline ring broken once, as the mark's ring is: the only ornament the hall repeats */
+  function brokenRing(r, o, gap = 0.34, at = 0) {
+    const pts = [],
+      n = 160;
+    for (let i = 0; i <= n; i++) {
+      const a = at + gap + (i / n) * (Math.PI * 2 - gap * 2);
+      pts.push(new THREE.Vector3(Math.sin(a) * r, 0, Math.cos(a) * r));
     }
-    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), inkLine(o));
+    return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), inkLine(o));
   }
   const inlay = new THREE.Group();
   inlay.position.y = 0.012;
-  inlay.add(star(9, 5, 0.08), star(6, 3, 0.05));
+  // two inner hairlines echo the outer ring's break at the door; the walk in stays clear
+  inlay.add(brokenRing(6.4, 0.14), brokenRing(3.6, 0.1));
   hall.add(inlay);
   /* the floor carries the mark's geometry as form, not as a copy: a white ring that is broken
      where the visitor walks in — the way the alef crosses the mark's ring — and one champagne hairline */
@@ -383,22 +382,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.fillRect(0, 0, 256, 256);
     x.strokeStyle = "rgba(243,235,224,0.09)";
     x.lineWidth = 1.4;
-    const st = (cx, cy, r) => {
-      x.beginPath();
-      for (let i = 0; i <= 16; i++) {
-        const a = (i / 16) * Math.PI * 2,
-          rr = i % 2 ? r * 0.55 : r;
-        x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
-      }
-      x.stroke();
-    };
     [
       [128, 128],
       [0, 0],
       [256, 0],
       [0, 256],
       [256, 256],
-    ].forEach(([a, b]) => st(a, b, 70));
+    ].forEach(([a, b]) => {
+      x.beginPath();
+      x.arc(a, b, 128, 0, Math.PI * 2);
+      x.stroke();
+    });
     const t = new THREE.CanvasTexture(c);
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
     t.repeat.set(18, 3);
@@ -423,7 +417,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   );
   dome.position.y = 15;
   hall.add(dome);
-  const crown = star(5, 5, 0.85);
+  const crown = brokenRing(5, 0.85, 0.3);
   crown.position.y = 30.5;
   hall.add(crown);
   const oculus = new THREE.Mesh(
@@ -941,8 +935,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       uniforms: { uO: { value: 0 } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `uniform float uO; varying vec2 vUv; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)); gl_FragColor = vec4(vec3(1.0,0.93,0.84), a*uO*0.08); }`,
+      vertexShader: `varying vec2 vUv; varying float vF; void main(){ vUv = uv; vec4 mv = modelViewMatrix*vec4(position,1.0);
+        vF = abs(dot(normalize(normalMatrix*normal), normalize(-mv.xyz))); gl_Position = projectionMatrix*mv; }`,
+      // the shaft dissolves at its silhouette and toward the ground: light in air, not a grey slab
+      fragmentShader: `uniform float uO; varying vec2 vUv; varying float vF; void main(){ float a = smoothstep(0.0, 1.0, vUv.y) * (1.0 - smoothstep(0.85, 1.0, vUv.y)) * vF * vF * vF; gl_FragColor = vec4(vec3(1.0,0.93,0.84), a*uO*0.11); }`,
     }),
   );
   beam.position.y = 5.1;
@@ -1008,10 +1004,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     fill.material.transparent = true;
     const delta = new THREE.Mesh(
       new THREE.CylinderGeometry(0.185, 0.185, 1, 48),
-      new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0xfff6ea).multiplyScalar(2), // what this gift added reads white
-        toneMapped: false,
-        transparent: true,
+      // what this gift added reads white — white enamel with form, not a blown-out tube: it
+      // arrives as light (see pay) and cools into the same enamel as the mark's ring
+      new THREE.MeshPhysicalMaterial({
+        color: G.ivory,
+        emissive: 0xfff1e0,
+        emissiveIntensity: 0.32,
+        roughness: 0.36,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.2,
+        envMapIntensity: 0.5,
       }),
     );
     const baseRing = new THREE.Mesh(
@@ -1350,12 +1352,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const globeCore = new THREE.Mesh(
     new THREE.SphereGeometry(GR, 96, 64),
     new THREE.MeshPhysicalMaterial({
-      color: 0x4a1220, // the globe is the mark's wine disc, not a black ball
-      roughness: 0.45,
-      metalness: 0.15,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.2,
-      envMapIntensity: 0.45,
+      color: 0x56122a, // the mark's wine disc: a cooler wine, so the warm lamps cannot brown it
+      emissive: 0x1c040c, // the shadow side stays wine instead of falling to brown-black
+      roughness: 0.5,
+      metalness: 0,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.42, // lamps read as a soft sheen, not eight hard dots
+      envMapIntensity: 0.4,
     }),
   );
   globe.add(globeCore);
@@ -1366,8 +1369,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
+      // the shell is 1.18x the globe, so its limb sits at 0.53: the halo hugs the limb and is
+      // gone before the shell's own edge (no milky disc around the world)
       vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition-w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
-      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float f = pow(max(0.0, 0.72 + dot(vN, vV)), 3.0); gl_FragColor = vec4(vec3(1.0,0.84,0.82), f*0.36); }`,
+      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float d = clamp(-dot(vN, vV) / 0.53, 0.0, 1.0); float f = d*d*d*d*d; gl_FragColor = vec4(vec3(0.95,0.56,0.6), f*0.26); }`,
     }),
   );
   globe.add(atmo);
@@ -1996,15 +2001,21 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   const V = (x, y, z) => new THREE.Vector3(x, y, z);
   function hallPose(i) {
-    const g = VIEWS[(i + VIEWS.length) % VIEWS.length].group,
+    const at = (i + VIEWS.length) % VIEWS.length,
+      g = VIEWS[at].group,
       p = g.getWorldPosition(new THREE.Vector3()),
-      w = i === 1 ? 9 : 6;
+      w = at === 1 ? 9 : 6;
     const dir = new THREE.Vector3(p.x, 0, p.z).normalize();
     const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
-    const d = Math.min(24, Math.max(10, (w / 2 + 0.7) / half));
+    /* the first view is the room, not a slide: on a wide screen the camera stands back so the
+       arches frame the map and the globe on its stand sits in front of it (the thing to touch);
+       the side screens stay close, as reading views. A narrow screen already stands back. */
+    const wide = at === 1 && camera.aspect > 1.15;
+    const d = wide ? 18.4 : Math.min(24, Math.max(10, (w / 2 + 0.7) / half));
     const cam = p.clone().sub(dir.multiplyScalar(d));
-    cam.y = 5.2;
-    return { cam, target: p };
+    cam.y = wide ? 4.9 : 5.2;
+    const target = wide ? p.clone().setY(3.9) : p;
+    return { cam, target, focus: wide ? V(0, 4, -10.6) : p }; // between the globe and the map
   }
   let FILM = false;
   const caption = (t) => {
@@ -2245,9 +2256,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         }, 0);
     }
     tl.add(() => {}, 0)
-      .to(ca.offset, { x: 0.004, y: 0.003, duration: 1.1, ease: "power2.in" }, 0)
-      .to(bloom, { intensity: 2.6, duration: 1.1, ease: "power3.in" }, 0.15)
-      .to("#veil", { opacity: 0.92, duration: 0.45, ease: "power2.in" }, 0.9)
+      .to(ca.offset, { x: 0.0016, y: 0.0012, duration: 1.1, ease: "power2.in" }, 0)
+      .to(bloom, { intensity: 1.9, duration: 1.1, ease: "power3.in" }, 0.15)
+      .to("#veil", { opacity: 1, duration: 0.5, ease: "power2.in" }, 0.85)
       .add(() => {
         country.visible = true;
         screens.forEach((s) => (s.group.visible = false));
@@ -2995,14 +3006,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     const tl = gsap.timeline();
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
-      .to(bloom, { intensity: 1.7, duration: 0.9, ease: "power2.in" }, 0.6)
+      /* the arrival is quiet: one slow ring crosses the land, and the added part of the column
+         comes in as light and cools into white enamel — no flash, no burst */
+      .to(bloom, { intensity: 1.35, duration: 0.9, ease: "power2.in" }, 0.6)
       .add(() => {
         shock.position.set(o.g.position.x, 0.66, o.g.position.z);
         shock.scale.setScalar(0.5);
-        shock.material.opacity = 1;
+        shock.material.opacity = 0.55;
       }, 1.7)
-      .to(shock.scale, { x: 14, y: 14, z: 14, duration: 1.6, ease: "expo.out" }, 1.7)
-      .to(shock.material, { opacity: 0, duration: 1.6, ease: "power2.out" }, 1.7)
+      .to(shock.scale, { x: 10, y: 10, z: 10, duration: 2.6, ease: "power3.out" }, 1.7)
+      .to(shock.material, { opacity: 0, duration: 2.6, ease: "power1.out" }, 1.7)
+      .fromTo(
+        o.delta.material,
+        { emissiveIntensity: 1.9 },
+        { emissiveIntensity: 0.32, duration: 3.4, ease: "power2.out" },
+        1.7,
+      )
       .to(
         o,
         {
@@ -3606,17 +3625,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   let hallAt = 1;
   function hallView(i, smooth = true) {
     hallAt = (i + VIEWS.length) % VIEWS.length;
-    const g = VIEWS[hallAt].group,
-      p = g.getWorldPosition(new THREE.Vector3()),
-      w = hallAt === 1 ? 9 : 6;
-    const dir = new THREE.Vector3(p.x, 0, p.z).normalize();
-    const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
-    const d = Math.min(24, Math.max(10, (w / 2 + 0.7) / half));
-    const cam = p.clone().sub(dir.multiplyScalar(d));
-    cam.y = 5.2;
+    const { cam, target, focus: f } = hallPose(hallAt);
     controls.smoothTime = 0.9;
-    controls.setLookAt(cam.x, cam.y, cam.z, p.x, p.y, p.z, smooth);
-    gsap.to(focus, { x: p.x, y: p.y, z: p.z, duration: 1 });
+    controls.setLookAt(cam.x, cam.y, cam.z, target.x, target.y, target.z, smooth);
+    gsap.to(focus, { x: f.x, y: f.y, z: f.z, duration: 1.2, ease: "power2.inOut" });
     root
       .querySelectorAll("#hallNav [data-v]")
       .forEach((b) => b.setAttribute("aria-current", +b.dataset.v === hallAt ? "true" : "false"));
@@ -3921,52 +3933,64 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     composer.render(dt);
     if (meter) tickMeter();
     placed.length = 0;
-    for (const l of labelOrder()) {
-      if (!l.when()) {
-        l.el.style.opacity = 0;
-        continue;
-      }
-      const p = l.getPos().clone().project(camera);
-      if (p.z > 1) {
-        l.el.style.opacity = 0;
-        continue;
-      }
-      const sy = ((1 - p.y) / 2) * innerHeight,
-        sx = ((p.x + 1) / 2) * innerWidth;
-      // names never slide under the bar or the colour key
-      const lr = legendBox();
-      if (
-        sy < hudBottom() + 30 ||
-        (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)
-      ) {
-        l.el.style.opacity = 0;
-        continue;
-      }
-      // declutter: in the country only the chosen city and the three widest gaps keep a name
-      const quiet =
-        l.city &&
-        l.city !== S.city &&
-        (["support", "impact", "impactPending"].includes(S.stage) || !TOP3.has(l.city));
-      // globe names never stack (West Africa): the chosen country, then the headquarters, then
-      // offices, then field sites keep theirs; a crowded-out country stays reachable by its dot
-      // and by the panel list
-      if (l.globe) {
-        const w = (l.w ||= l.el.offsetWidth) || 60,
-          x0 = sx - w / 2 - 3,
-          x1 = sx + w / 2 + 3,
-          y0 = sy - 25,
-          y1 = sy + 1;
-        const hitLabel = placed.some((r) => x0 < r[1] && x1 > r[0] && y0 < r[3] && y1 > r[2]);
-        l.el.style.pointerEvents = hitLabel ? "none" : "";
-        if (hitLabel) {
+    /* hysteresis: among globe names, the chosen country first, then every name that was already
+       showing (in rank order), then the newcomers — and a newcomer needs a clear margin to come
+       in. A name that is up stays up while the globe turns; two neighbours no longer swap. */
+    const order = labelOrder();
+    for (let pass = 0; pass < 2; pass++)
+      for (const l of order) {
+        const kept = !l.globe || l.on || (PICKED && l.globe === CO);
+        if (kept === (pass === 1)) continue;
+        if (!l.when()) {
           l.el.style.opacity = 0;
+          l.on = false;
           continue;
         }
-        placed.push([x0, x1, y0, y1]);
+        const p = l.getPos().clone().project(camera);
+        if (p.z > 1) {
+          l.el.style.opacity = 0;
+          l.on = false;
+          continue;
+        }
+        const sy = ((1 - p.y) / 2) * innerHeight,
+          sx = ((p.x + 1) / 2) * innerWidth;
+        // names never slide under the bar or the colour key
+        const lr = legendBox();
+        if (
+          sy < hudBottom() + 30 ||
+          (lr && sx > lr.left - 8 && sx < lr.right + 70 && sy < lr.bottom + 34)
+        ) {
+          l.el.style.opacity = 0;
+          l.on = false;
+          continue;
+        }
+        // declutter: in the country only the chosen city and the three widest gaps keep a name
+        const quiet =
+          l.city &&
+          l.city !== S.city &&
+          (["support", "impact", "impactPending"].includes(S.stage) || !TOP3.has(l.city));
+        // globe names never stack (West Africa): the chosen country, then the headquarters, then
+        // offices, then field sites keep theirs; a crowded-out country stays reachable by its dot
+        // and by the panel list
+        if (l.globe) {
+          const w = (l.w ||= l.el.offsetWidth) || 60,
+            pad = l.on ? 3 : 12,
+            x0 = sx - w / 2 - pad,
+            x1 = sx + w / 2 + pad,
+            y0 = sy - 25 - (pad - 3),
+            y1 = sy + 1 + (pad - 3);
+          const hitLabel = placed.some((r) => x0 < r[1] && x1 > r[0] && y0 < r[3] && y1 > r[2]);
+          l.el.style.pointerEvents = hitLabel ? "none" : "";
+          l.on = !hitLabel;
+          if (hitLabel) {
+            l.el.style.opacity = 0;
+            continue;
+          }
+          placed.push([sx - w / 2 - 3, sx + w / 2 + 3, sy - 25, sy + 1]);
+        }
+        l.el.style.opacity = quiet ? 0 : 1;
+        l.el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -100%)`;
       }
-      l.el.style.opacity = quiet ? 0 : 1;
-      l.el.style.transform = `translate(${((p.x + 1) / 2) * innerWidth}px, ${((1 - p.y) / 2) * innerHeight}px) translate(-50%, -100%)`;
-    }
     raf = requestAnimationFrame(frame);
   }
   Promise.all(
