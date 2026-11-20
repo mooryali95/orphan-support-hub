@@ -32,6 +32,7 @@ import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Name } from "@/components/kit/Name";
+import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
 
@@ -116,6 +117,10 @@ function DashboardPage() {
 
       {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
       {!listFailed && <MyImpactHero impact={myImpact(sponsorships)} loading={isLoading} />}
+      {/* المحطّات: لمن له كفالةٌ واحدة على الأقل، بما تحقّق فعلاً. */}
+      {!listFailed && !isLoading && sponsorships.length > 0 && (
+        <MilestonesCard impact={myImpact(sponsorships)} className="mt-6" />
+      )}
 
       {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}
       {!listFailed && (

@@ -31,7 +31,6 @@ import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
 import { useMapStats } from "@/components/map/useMapStats";
 import { geoQuery } from "@/lib/geo";
-import { NetworkSection } from "@/components/map/NetworkSection";
 import { kindCounts, networkPaint } from "@/components/map/network-layer";
 
 // دول الشبكة الظاهرة للزوّار — نفسها قائمة دعم التأهيل (countries.in_network).
@@ -633,16 +632,6 @@ function HomePage() {
             className="h-[min(78dvh,760px)] min-h-[30rem]"
           />
         </section>
-        <NetworkSection
-          onPick={(code) => {
-            void navigate({
-              search: { c: code, layer: "needs" },
-              resetScroll: false,
-              viewTransition: false,
-            });
-            document.getElementById("map")?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
-        />
 
         {/* ── الأرقام ── */}
         <section className="reveal-scroll border-t border-border/70 bg-secondary/30">

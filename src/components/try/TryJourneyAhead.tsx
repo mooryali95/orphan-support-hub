@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, FastForward, FileCheck2, MessageSquareText, Send } from "lucide-react";
+import { ArrowLeft, FastForward, FileCheck2, MessageSquareText, Send } from "lucide-react";
 
+import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { Button } from "@/components/ui/button";
-import { milestones, nextMilestone } from "@/lib/milestones";
 import type { MyImpact } from "@/lib/my-impact";
 import { monthStory, nextTryChild, tryChild, type TryGift } from "@/lib/try-demo";
 import { cn } from "@/lib/utils";
@@ -29,8 +29,6 @@ export function TryJourneyAhead({
 }) {
   const monthly = gifts.find((g) => g.cadence === "monthly");
   const child = monthly ? tryChild(monthly.childId) : undefined;
-  const list = milestones(impact);
-  const next = nextMilestone(list);
   const suggestion = nextTryChild(gifts);
 
   return (
@@ -99,45 +97,7 @@ export function TryJourneyAhead({
           )}
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-          <h3 className="font-bold">محطّاتك</h3>
-          <ul className="mt-3 grid grid-cols-2 gap-2">
-            {list.map((m) => (
-              <li
-                key={m.key}
-                className={cn(
-                  "flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-sm",
-                  m.done
-                    ? "border-primary/25 bg-primary/8 font-bold text-primary"
-                    : m === next
-                      ? "border-bridge/50 text-foreground"
-                      : "border-border text-muted-foreground",
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "grid size-5 shrink-0 place-items-center rounded-full",
-                    m.done ? "bg-primary text-primary-foreground" : "border border-current",
-                  )}
-                >
-                  {m.done && <Check className="size-3" />}
-                </span>
-                {m.title}
-                <span className="sr-only">{m.done ? ": تحقّقت" : ": لم تتحقّق بعد"}</span>
-              </li>
-            ))}
-          </ul>
-          <p aria-live="polite" className="mt-3 text-sm leading-6 text-muted-foreground">
-            {next ? (
-              <>
-                القادمة: <b className="text-foreground">{next.title}</b>. {next.hint}
-              </>
-            ) : (
-              "تحقّقت محطّاتك كلّها. جزاك الله خيراً."
-            )}
-          </p>
-        </div>
+        <MilestonesCard impact={impact} />
       </div>
 
       {suggestion && (
