@@ -49,11 +49,17 @@ function marble(rnd) {
       g.addColorStop(1, "#140709");
       x.fillStyle = g;
       x.fillRect(0, 0, w, h);
-      for (let i = 0; i < 2600; i++) {
-        x.fillStyle = `rgba(${rnd() > 0.5 ? "90,30,42" : "10,4,6"},${0.05 + rnd() * 0.08})`;
-        x.beginPath();
-        x.arc(rnd() * w, rnd() * h, 2 + rnd() * 18, 0, Math.PI * 2);
-        x.fill();
+      // soft clouding, not speckles: large faint blooms that never read as dots up close
+      for (let i = 0; i < 420; i++) {
+        const cx = rnd() * w,
+          cy = rnd() * h,
+          r = 40 + rnd() * 120;
+        const c = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+        const rgb = rnd() > 0.5 ? "96,30,44" : "10,4,6";
+        c.addColorStop(0, `rgba(${rgb},${0.05 + rnd() * 0.06})`);
+        c.addColorStop(1, `rgba(${rgb},0)`);
+        x.fillStyle = c;
+        x.fillRect(cx - r, cy - r, r * 2, r * 2);
       }
       veins(x, w, h, "rgba(243,235,224,0.08)", 26, 2.4);
       veins(x, w, h, "rgba(246,239,226,0.07)", 18, 1.2);
@@ -74,42 +80,33 @@ function marble(rnd) {
   return { map, rough };
 }
 
-/* مشربية: شبكة نجومٍ ثمانية مفرَّغة، تُرسم بقناة شفافية. */
+/* مشربية: حلقاتٌ متداخلة (حلقة الشعار مكرَّرةً كنسيج) بخطٍّ رفيع، تُرسم بقناة شفافية. */
 function lattice() {
   return canvasTex(
-    512,
-    512,
+    256,
+    256,
     (x, w) => {
       x.clearRect(0, 0, w, w);
       x.strokeStyle = "#ffffff";
-      x.lineWidth = 9;
-      x.lineJoin = "round";
-      const star = (cx, cy, r) => {
-        x.beginPath();
-        for (let i = 0; i <= 16; i++) {
-          const a = (i / 16) * Math.PI * 2 + Math.PI / 8,
-            rr = i % 2 ? r * 0.62 : r;
-          x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
-        }
-        x.stroke();
-      };
+      x.lineWidth = 7;
       const s = w / 2;
       for (const [cx, cy] of [
         [0, 0],
-        [s, 0],
         [w, 0],
-        [0, s],
-        [s, s],
-        [w, s],
         [0, w],
-        [s, w],
         [w, w],
-      ])
-        star(cx, cy, s * 0.46);
-      x.lineWidth = 6;
-      x.strokeRect(3, 3, w - 6, w - 6);
+        [s, s],
+        [s, 0],
+        [s, w],
+        [0, s],
+        [w, s],
+      ]) {
+        x.beginPath();
+        x.arc(cx, cy, s, 0, Math.PI * 2);
+        x.stroke();
+      }
     },
-    { repeat: [3, 5], srgb: false },
+    { repeat: [6, 8], srgb: false },
   );
 }
 
@@ -244,56 +241,64 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
     group.add(arch);
   }
 
-  /* حزام المقرنصات: ثلاث طبقاتٍ من خلايا نبيذية، وخيطٌ واحد من الشمبانيا في الطبقة السفلى */
+  /* حزام المقرنصات: ثلاث طبقاتٍ متراصّة من خلايا نبيذية تغمق صعوداً (بلا رقعة شطرنج)،
+     وخيطٌ واحد من الشمبانيا تحتها هو المعدن الوحيد */
   const cellGeo = new THREE.ConeGeometry(0.36, 0.62, 4, 1);
   cellGeo.rotateX(Math.PI);
+  cellGeo.rotateY(Math.PI / 4); // faces square to the wall, so neighbours meet edge to edge
   const cellM = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0.35,
-    roughness: 0.4,
-    clearcoat: 0.6,
-    envMapIntensity: 0.8,
+    metalness: 0.1,
+    roughness: 0.38,
+    clearcoat: 0.8,
+    clearcoatRoughness: 0.2,
+    envMapIntensity: 0.6,
   });
   const tiers = [
-    [17.55, 13.25, 0],
-    [17.05, 13.85, 0.5],
-    [16.55, 14.45, 0],
+    [17.55, 13.25, 0, 0x6b1f30],
+    [17.05, 13.85, 0.5, 0x561626],
+    [16.55, 14.45, 0, 0x43111d],
   ];
   const per = LOW ? 48 : 72;
   const cells = new THREE.InstancedMesh(cellGeo, cellM, per * tiers.length);
   const m = new THREE.Matrix4(),
     q = new THREE.Quaternion(),
-    sc = new THREE.Vector3(1, 1, 0.7),
+    sc = new THREE.Vector3(1, 1, 0.8),
     pos = new THREE.Vector3(),
-    up = new THREE.Vector3(0, 1, 0);
-  const champC = new THREE.Color(0xcdae76),
-    wineC = new THREE.Color(0x6b1f30),
-    deepC = new THREE.Color(0x3a0f1a);
+    up = new THREE.Vector3(0, 1, 0),
+    tint = new THREE.Color();
+  const HALF = 0.36 * Math.SQRT1_2; // half-width of a cell's square mouth
   let k = 0;
-  tiers.forEach(([r, y, off], tier) => {
+  tiers.forEach(([r, y, off, color]) => {
+    sc.x = (Math.PI * r) / per / HALF; // each cell spans its share of the circle: no gaps
+    tint.setHex(color);
     for (let i = 0; i < per; i++) {
       const a = ((i + off) / per) * Math.PI * 2;
       pos.set(Math.sin(a) * r, y, Math.cos(a) * r);
-      q.setFromAxisAngle(up, a + Math.PI / 4);
+      q.setFromAxisAngle(up, a);
       m.compose(pos, q, sc);
       cells.setMatrixAt(k, m);
-      cells.setColorAt(k, (i + Math.round(off * 2)) % 2 ? (tier ? deepC : champC) : wineC);
+      cells.setColorAt(k, tint);
       k++;
     }
   });
   group.add(cells);
+  const cornice = new THREE.Mesh(new THREE.TorusGeometry(17.62, 0.03, 8, 160), champM);
+  cornice.rotation.x = Math.PI / 2;
+  cornice.position.y = 12.9;
+  group.add(cornice);
 
-  /* المشربيات بين الأعمدة: خطوطٌ عاجية على نورٍ ورديّ نبيذي خافت (أبيضُ على نبيذي، لا نحاسٌ ولا برتقالي) */
+  /* المشربيات بين الأعمدة: خطوطٌ بيضاء رفيعة على أرضيةٍ نبيذية (كحلقة الشعار على قرصه). الخطّ
+     والأرضية غير متأثّرين بالمصابيح، فلا يميل اللون إلى الرمادي أو البنفسجي تحت الضوء الدافئ */
   const lat = lattice();
-  const screenM = new THREE.MeshStandardMaterial({
-    color: 0xd9cdbf,
-    metalness: 0.15,
-    roughness: 0.5,
+  const screenM = new THREE.MeshBasicMaterial({
+    color: 0x7d6d69, // ivory held back: a drawn line, not a light source (stays under the bloom)
     alphaMap: lat,
     transparent: true,
     alphaTest: 0.4,
     side: THREE.DoubleSide,
   });
+  const groundM = new THREE.MeshBasicMaterial({ color: 0x24080f });
   const glowM = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
@@ -303,7 +308,7 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
     fragmentShader: `uniform float uTime; varying vec2 vUv;
       void main(){ vec2 c = vUv - vec2(0.5, 0.42); float d = length(c * vec2(1.0, 0.7));
         float a = smoothstep(0.55, 0.0, d) * (0.85 + 0.15 * sin(uTime * 0.8 + vUv.y * 3.0));
-        gl_FragColor = vec4(vec3(0.95, 0.46, 0.44) * 0.7, a * 0.2); }`,
+        gl_FragColor = vec4(vec3(0.84, 0.2, 0.3) * 0.7, a * 0.17); }`,
   });
   for (let i = 0; i < COUNT; i++) {
     const b = angle(i) + Math.PI / COUNT;
@@ -316,7 +321,10 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(w + 0.6, 7.8), glowM);
     glow.position.set(Math.sin(b) * (r + 0.15), 5.6, Math.cos(b) * (r + 0.15));
     glow.lookAt(0, 5.6, 0);
-    group.add(glow, panel);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(w + 0.6, 7.8), groundM);
+    ground.position.set(Math.sin(b) * (r + 0.22), 5.6, Math.cos(b) * (r + 0.22));
+    ground.lookAt(0, 5.6, 0);
+    group.add(ground, glow, panel);
   }
 
   return {

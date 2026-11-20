@@ -4,8 +4,8 @@
   --night: #18070c; /* hall darkness */
   --wine: #6b1f30; /* partner wine */
   --wine-deep: #5e1a28;
-  --gold: #e8d8b2; /* gilded light */
-  --gold-soft: rgba(232, 216, 178, 0.18);
+  --champagne: #e8d8b2; /* pale champagne: thin lines and small accents only, always flat */
+  --champagne-soft: rgba(232, 216, 178, 0.18);
   --ivory: #f6efe2;
   --mist: rgba(246, 239, 226, 0.66);
   --glass: rgba(52, 14, 24, 0.72);
@@ -48,7 +48,7 @@
 .hall button:focus-visible,
 .hall input:focus-visible,
 .hall select:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--champagne);
   outline-offset: 2px;
 }
 .num {
@@ -78,7 +78,7 @@
 .brand {
   font-family: var(--display);
   font-size: 20px;
-  color: var(--gold);
+  color: var(--champagne);
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
@@ -106,16 +106,16 @@
 }
 #steps li.on {
   color: var(--night);
-  background: var(--gold);
+  background: var(--champagne);
   font-weight: 700;
 }
 #steps li.done {
-  color: var(--gold);
+  color: var(--champagne);
   border-color: var(--line);
 }
 .chip {
   font-size: 11px;
-  color: var(--gold);
+  color: var(--champagne);
   border: 1px solid var(--line);
   padding: 5px 10px;
   border-radius: 999px;
@@ -140,7 +140,7 @@
   pointer-events: none;
 }
 #gate .eyebrow {
-  color: var(--gold);
+  color: var(--champagne);
   font-size: 13px;
   letter-spacing: 0.08em;
 }
@@ -151,7 +151,7 @@
   margin: 6px 0 0;
   line-height: 1.1;
   text-wrap: balance;
-  background: linear-gradient(180deg, #f8e7bd, var(--gold) 60%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -177,9 +177,9 @@
   font-size: 14px;
 }
 .country-pick button[aria-pressed="true"] {
-  border-color: var(--gold);
-  color: var(--gold);
-  box-shadow: 0 0 0 4px var(--gold-soft);
+  border-color: var(--champagne);
+  color: var(--champagne);
+  box-shadow: 0 0 0 4px var(--champagne-soft);
 }
 .country-pick button:disabled {
   opacity: 0.45;
@@ -194,7 +194,7 @@
   padding: 0 30px;
   border-radius: 999px;
   border: 0;
-  background: linear-gradient(180deg, #e8c983, var(--gold));
+  background: var(--champagne);
   color: var(--wine-deep);
   font-weight: 700;
   font-size: 17px;
@@ -216,8 +216,8 @@
   color: var(--ivory);
 }
 .ghost:hover {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--champagne);
+  color: var(--champagne);
 }
 
 /* Hint */
@@ -242,7 +242,7 @@
 }
 @keyframes breathe {
   50% {
-    box-shadow: 0 0 0 8px var(--gold-soft);
+    box-shadow: 0 0 0 8px var(--champagne-soft);
   }
 }
 
@@ -296,7 +296,7 @@
   display: block;
   font-family: var(--display);
   font-size: 24px;
-  color: var(--gold);
+  color: var(--champagne);
   font-weight: 500;
 }
 .kpi span {
@@ -306,7 +306,7 @@
 .sect {
   margin-top: 20px;
   font-size: 12px;
-  color: var(--gold);
+  color: var(--champagne);
   letter-spacing: 0.04em;
 }
 .cities {
@@ -332,7 +332,7 @@
   border-color: var(--line);
 }
 .cities button[aria-pressed="true"] {
-  border-color: var(--gold);
+  border-color: var(--champagne);
   background: rgba(232, 216, 178, 0.08);
 }
 .cities .bar {
@@ -345,7 +345,7 @@
 .cities .bar i {
   display: block;
   height: 100%;
-  background: var(--gold);
+  background: var(--champagne);
   border-radius: 4px;
   transition: width 0.8s ease;
 }
@@ -381,17 +381,17 @@
   font-size: 11px;
 }
 .tracks button[aria-pressed="true"] {
-  border-color: var(--gold);
+  border-color: var(--champagne);
   background: linear-gradient(180deg, rgba(232, 216, 178, 0.18), rgba(232, 216, 178, 0.04));
 }
 .tracks button[aria-pressed="true"] b {
-  color: var(--gold);
+  color: var(--champagne);
 }
 .amount {
   margin-top: 10px;
   font-family: var(--display);
   font-size: 40px;
-  color: var(--gold);
+  color: var(--champagne);
 }
 .amount small {
   font-size: 16px;
@@ -400,7 +400,7 @@
 }
 .hall input[type="range"] {
   width: 100%;
-  accent-color: var(--gold);
+  accent-color: var(--champagne);
   margin-top: 6px;
 }
 .presets {
@@ -417,8 +417,8 @@
   font-size: 13px;
 }
 .presets button[aria-pressed="true"] {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--champagne);
+  color: var(--champagne);
 }
 .hall select {
   width: 100%;
@@ -445,7 +445,7 @@
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   width: min(560px, calc(100vw - min(400px, 36vw) - 64px));
   background: linear-gradient(160deg, rgba(61, 16, 28, 0.9), rgba(24, 7, 12, 0.88));
-  border: 1px solid var(--gold);
+  border: 1px solid var(--champagne);
   border-radius: 24px;
   padding: 20px 22px;
   box-shadow:
@@ -462,7 +462,7 @@
 }
 #impact .eyebrow {
   font-size: 12px;
-  color: var(--gold);
+  color: var(--champagne);
   letter-spacing: 0.06em;
 }
 #impact h3 {
@@ -493,7 +493,7 @@
   place-items: center;
   font-family: var(--display);
   color: var(--wine-deep);
-  background: var(--gold);
+  background: var(--champagne);
   font-size: 15px;
 }
 .chain b {
@@ -512,7 +512,7 @@
 @keyframes flash {
   0% {
     color: #fff6dc;
-    text-shadow: 0 0 18px var(--gold);
+    text-shadow: 0 0 18px var(--champagne);
   }
   100% {
     text-shadow: none;
@@ -547,7 +547,7 @@
   background: rgba(246, 239, 226, 0.35);
 }
 .trait .track .now {
-  background: var(--gold);
+  background: var(--champagne);
   transition: width 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .trait em {
@@ -557,7 +557,7 @@
   text-align: end;
 }
 .trait em b {
-  color: var(--gold);
+  color: var(--champagne);
 }
 .levels {
   display: grid;
@@ -615,9 +615,9 @@
     color 0.3s;
 }
 .timeline i.on {
-  background: var(--gold);
+  background: var(--champagne);
   color: var(--wine-deep);
-  border-color: var(--gold);
+  border-color: var(--champagne);
 }
 .compare {
   display: grid;
@@ -639,7 +639,7 @@
   font-weight: 500;
 }
 .compare .after b {
-  color: var(--gold);
+  color: var(--champagne);
 }
 .compare small {
   color: var(--mist);
@@ -668,8 +668,8 @@
   transition: opacity 0.3s;
 }
 .lbl.hot {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--champagne);
+  color: var(--champagne);
   font-weight: 700;
 }
 .lbl small {
@@ -728,7 +728,7 @@
 }
 #gate h1 .w {
   display: inline-block;
-  background: linear-gradient(180deg, #f8e7bd, #dcc79a 60%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -768,7 +768,7 @@
   place-items: center;
   font-family: var(--display);
   color: #5e1a28;
-  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
+  background: var(--champagne);
 }
 .lvl header small {
   display: block;
@@ -803,7 +803,7 @@
     inset 0 1px 0 rgba(255, 236, 190, 0.08);
 }
 #panel h2 {
-  background: linear-gradient(180deg, #fbe9bf, #dcc79a 65%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -834,10 +834,10 @@
   background: rgba(232, 216, 178, 0.12);
 }
 #veil {
-  background: radial-gradient(circle at 50% 50%, #fff7e2, #e8d8b2 70%);
+  background: #f6efe2;
 }
 
-/* ── v3: one glass, one gold, one rhythm ── */
+/* ── v3: one glass, one champagne, one rhythm ── */
 .hall {
   --glass: rgba(52, 14, 24, 0.74);
   --champagne: #f3e3b5;
@@ -868,7 +868,7 @@
 .kpi b,
 .amount,
 .compare .after b {
-  background: linear-gradient(180deg, #fff4d6, #e8d8b2 55%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -907,7 +907,7 @@
   position: absolute;
   inset: auto 0 0 0;
   height: 2px;
-  background: linear-gradient(90deg, #f3e3b5, #dcc79a);
+  background: var(--champagne);
   transform: scaleX(0);
   transform-origin: right;
 }
@@ -974,7 +974,7 @@
   font-family: var(--display);
   font-size: 34px;
   font-weight: 500;
-  background: linear-gradient(180deg, #fff4d6, #e8d8b2 55%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1087,7 +1087,7 @@
   padding: 0 10px;
 }
 #hallNav button[aria-current="true"] {
-  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
+  background: var(--champagne);
   color: #5e1a28;
   font-weight: 700;
 }
@@ -1148,7 +1148,7 @@
   margin: 0;
   font-weight: 700;
   line-height: 1.2;
-  background: linear-gradient(180deg, #fbe9bf, #dcc79a 65%, #cdb88a);
+  background: var(--champagne);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1259,7 +1259,7 @@
   color: var(--mist);
 }
 .hall .layers button[aria-pressed="true"] {
-  background: linear-gradient(180deg, #f3e3b5, #dcc79a);
+  background: var(--champagne);
   color: #5e1a28;
   font-weight: 700;
 }
@@ -1496,7 +1496,7 @@
 }
 #legend p {
   margin: 0 0 6px;
-  color: var(--gold);
+  color: var(--champagne);
   font-weight: 700;
 }
 #legend ul {
@@ -1894,7 +1894,7 @@
   white-space: nowrap;
 }
 .hall .linkish {
-  color: var(--gold);
+  color: var(--champagne);
   text-decoration: underline;
   text-underline-offset: 3px;
   padding: 0;
@@ -1953,7 +1953,7 @@
 #tlRange {
   width: 100%;
   min-height: 28px;
-  accent-color: var(--gold);
+  accent-color: var(--champagne);
   cursor: pointer;
 }
 .tl-ticks {
@@ -1969,7 +1969,7 @@
   font-family: "Amiri", serif;
   font-size: 18px;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--champagne);
   text-align: center;
   line-height: 1.2;
 }
@@ -1979,7 +1979,7 @@
   font-weight: 400;
   color: var(--mist);
 }
-/* the projected year reads as a projection: the gold calms */
+/* the projected year reads as a projection: the champagne calms */
 .hall.in-future #tlOut {
   color: var(--ivory);
 }
@@ -2037,7 +2037,7 @@
   min-width: 0;
 }
 .hall .brand-sep {
-  color: var(--gold);
+  color: var(--champagne);
 }
 .hall #steps li.on {
   background: var(--champagne);
@@ -2173,8 +2173,9 @@
 .hall #legend p {
   color: var(--champagne);
 }
+/* between stages the view dips into the mark's wine, never a white flash */
 #veil {
-  background: radial-gradient(circle at 50% 50%, #ffffff, #f1e2e5 70%);
+  background: radial-gradient(circle at 50% 50%, #5e1a28, #2a0a14 75%);
 }
 /* the model view really hides the glass: gsap leaves inline transforms on it after its entrance,
    which used to beat these rules, so the panels came back the moment «عرض المجسّم» was pressed */
