@@ -22,11 +22,19 @@ const monthsAgo = (n: number) =>
           ? `قبل ${n} أشهر`
           : `قبل ${n} شهراً`;
 
-const W = 400,
-  H = 250,
+/* the drawing is nearly square so it stays legible on a phone (about 0.9x at 390px) */
+const W = 360,
+  H = 312,
   CX = W / 2,
-  CY = H / 2 - 6,
+  CY = 154,
+  RX = 122,
+  RY = 92,
   MAX = 8;
+/** the break in the centre ring and in the orbit sits up and to the right, as the mark's does */
+const BREAK = -57;
+
+const monthsWord = (n: number) =>
+  n === 1 ? "شهر" : n === 2 ? "شهران" : n <= 10 ? "أشهر" : "شهراً";
 
 export function MyImpactHero({
   impact,
@@ -71,50 +79,67 @@ export function MyImpactHero({
   const rail = !loading && impact.children.length > 0 && span > 1;
   const pos = shown.map((_, i) => {
     const a = -Math.PI / 2 + (i / Math.max(1, shown.length)) * Math.PI * 2;
-    return { x: CX + Math.cos(a) * 150, y: CY + Math.sin(a) * 86 };
+    // names sit outside the orbit: above the upper gems, below the rest
+    return { x: CX + Math.cos(a) * RX, y: CY + Math.sin(a) * RY, up: Math.sin(a) < -0.3 };
   });
   const pct = (v: number) => `${Math.round(v * 100)}%`;
+  const stats: [string, string, string, string][] = [
+    ["في رعايتك", String(view.inCare), "", "طفلاً"],
+    ["أشهر الرعاية", String(view.months), "", "شهراً"],
+    ["حصّتك", String(Math.round(view.share * 100)), "%", "من حاجتهم"],
+  ];
 
   return (
     <section
       aria-labelledby="my-impact"
-      className="impact-hero relative mt-8 overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8"
+      className="impact-hero relative mt-8 overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-10"
     >
-      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
+      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12">
         <div>
-          <p className="text-sm font-bold text-bridge-ink">أثرك</p>
-          <h2 id="my-impact" className="mt-1 font-display text-3xl font-bold leading-tight">
+          <p className="flex items-center gap-3 text-sm font-bold text-bridge-ink">
+            <span aria-hidden="true" className="h-px w-8 bg-bridge" />
+            أثرك
+          </p>
+          <h2
+            id="my-impact"
+            className="mt-2 font-display text-4xl font-bold leading-tight sm:text-5xl"
+          >
             كوكبة أثرك
           </h2>
-          <p className="mt-2 max-w-md text-sm leading-7 text-muted-foreground">
+          <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
             أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية،
             والخافتة ما غطّاه الكافلون جميعاً.
           </p>
 
-          <dl className="mt-6 grid grid-cols-3 gap-3">
-            {[
-              ["في رعايتك", String(view.inCare), "طفلاً"],
-              ["أشهر الرعاية", String(view.months), "شهراً"],
-              ["حصّتك", pct(view.share), "من حاجتهم"],
-            ].map(([label, value, unit]) => (
-              <div key={label} className="rounded-2xl border border-border/70 bg-background/60 p-3">
-                <dt className="text-xs text-muted-foreground">{label}</dt>
-                <dd className="mt-1 flex flex-col">
+          <dl className="mt-7 grid grid-cols-3 border-y border-border">
+            {stats.map(([label, value, suffix, unit], i) => (
+              <div
+                key={label}
+                className={
+                  i === 0 ? "min-w-0 py-4 pe-3" : "min-w-0 border-s border-border px-3 py-4 sm:px-5"
+                }
+              >
+                <dt className="truncate text-xs text-muted-foreground">{label}</dt>
+                <dd className="mt-2 flex flex-col gap-1.5">
                   {loading ? (
-                    <Skeleton className="h-8 w-14" />
+                    <Skeleton className="h-10 w-14" />
                   ) : (
-                    <span className="font-display text-3xl font-bold tabular-nums text-foreground">
+                    <span
+                      dir="ltr"
+                      className="flex items-baseline justify-end gap-0.5 font-display text-4xl font-bold leading-none tabular-nums text-foreground sm:text-5xl"
+                    >
                       {value}
+                      {suffix && <span className="text-xl font-normal sm:text-2xl">{suffix}</span>}
                     </span>
                   )}
-                  <span className="text-xs text-muted-foreground">{unit}</span>
+                  <span className="truncate text-xs text-muted-foreground">{unit}</span>
                 </dd>
               </div>
             ))}
           </dl>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="impact-cta">
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button asChild size="lg">
               <Link to="/hall" search={hallSearch ?? {}}>
                 <Sparkles className="size-4" aria-hidden="true" />
                 الوضع الغامر
@@ -129,7 +154,7 @@ export function MyImpactHero({
         <figure className="relative -order-1 lg:order-none">
           <svg
             viewBox={`0 0 ${W} ${H}`}
-            className="h-auto w-full overflow-visible"
+            className="mx-auto h-auto w-full max-w-[30rem] overflow-visible"
             role="img"
             aria-label={
               shown.length
@@ -137,20 +162,16 @@ export function MyImpactHero({
                 : "كوكبة أثرك فارغة بعد"
             }
           >
-            <defs>
-              <radialGradient id="impact-core">
-                <stop offset="0" style={{ stopColor: "var(--bridge-bright)" }} />
-                <stop offset="1" style={{ stopColor: "var(--bridge)", stopOpacity: 0 }} />
-              </radialGradient>
-            </defs>
-            {/* the orbit */}
+            {/* the orbit: one hairline, broken once — the mark's ring, as a path for the gems */}
             <ellipse
               cx={CX}
               cy={CY}
-              rx={150}
-              ry={86}
+              rx={RX}
+              ry={RY}
               fill="none"
-              className="impact-orbit"
+              strokeWidth={0.75}
+              pathLength={100}
+              strokeDasharray="82 4 14 0"
               style={{ stroke: "var(--border)" }}
             />
             {pos.map((p, i) => (
@@ -162,33 +183,73 @@ export function MyImpactHero({
                 y2={p.y}
                 pathLength={1}
                 className="impact-ray"
-                style={{ stroke: "var(--bridge)", animationDelay: `${0.2 + i * 0.08}s` }}
+                style={{
+                  stroke: "var(--bridge)",
+                  strokeWidth: 0.6,
+                  animationDelay: `${0.2 + i * 0.08}s`,
+                }}
               />
             ))}
-            {/* you */}
-            <circle cx={CX} cy={CY} r={34} fill="url(#impact-core)" className="impact-pulse" />
-            <circle cx={CX} cy={CY} r={9} style={{ fill: "var(--bridge)" }} />
+            {/* you: a wine disc inside a white ring that is broken once */}
+            <circle
+              cx={CX}
+              cy={CY}
+              r={30}
+              fill="none"
+              strokeWidth={0.75}
+              className="impact-pulse"
+              style={{ stroke: "var(--bridge)", opacity: 0.55 }}
+            />
+            <circle
+              cx={CX}
+              cy={CY}
+              r={19}
+              strokeWidth={0.75}
+              style={{ fill: "var(--logo)", stroke: "var(--border)" }}
+            />
+            <circle
+              cx={CX}
+              cy={CY}
+              r={11.5}
+              fill="none"
+              strokeWidth={2}
+              strokeLinecap="round"
+              pathLength={100}
+              strokeDasharray="86 14"
+              transform={`rotate(${BREAK + 25} ${CX} ${CY})`}
+              style={{ stroke: "var(--ivory)" }}
+            />
             <text
               x={CX}
-              y={CY + 30}
+              y={CY + 47}
               textAnchor="middle"
               className="text-[13px] font-bold"
-              style={{ fill: "var(--bridge-ink)" }}
+              style={{
+                fill: "var(--foreground)",
+                stroke: "var(--card)",
+                strokeWidth: 5,
+                paintOrder: "stroke",
+                strokeLinejoin: "round",
+              }}
             >
               أنت
             </text>
             {shown.map((c, i) => {
               const p = pos[i]!;
+              const nameY = p.up ? p.y - 47 : p.y + 43;
               return (
                 <g
                   key={c.id}
                   className="impact-gem"
                   style={{ animationDelay: `${0.45 + i * 0.09}s`, opacity: c.active ? 1 : 0.55 }}
                 >
+                  {/* enamel disc; a hairline track; what everyone covered (thin champagne);
+                      your share (the bold ring) */}
                   <circle
                     cx={p.x}
                     cy={p.y}
-                    r={20}
+                    r={25}
+                    strokeWidth={0.75}
                     style={{ fill: "var(--card)", stroke: "var(--border)" }}
                   />
                   <circle
@@ -196,53 +257,67 @@ export function MyImpactHero({
                     cy={p.y}
                     r={25}
                     fill="none"
-                    strokeWidth={3}
+                    strokeWidth={1.5}
                     pathLength={1}
                     strokeDasharray={`${c.covered} 1`}
                     transform={`rotate(-90 ${p.x} ${p.y})`}
-                    style={{ stroke: "var(--shore-thrive)", opacity: 0.35 }}
+                    style={{ stroke: "var(--bridge)" }}
                   />
                   <circle
                     cx={p.x}
                     cy={p.y}
                     r={25}
                     fill="none"
-                    strokeWidth={3}
+                    strokeWidth={3.5}
                     strokeLinecap="round"
                     pathLength={1}
                     strokeDasharray={`${c.share} 1`}
                     transform={`rotate(-90 ${p.x} ${p.y})`}
                     className="impact-share"
-                    style={{ stroke: "var(--bridge)", animationDelay: `${0.7 + i * 0.09}s` }}
+                    style={{ stroke: "var(--primary)", animationDelay: `${0.7 + i * 0.09}s` }}
                   />
                   <text
                     x={p.x}
-                    y={p.y + 4}
+                    y={p.y + 5.5}
                     textAnchor="middle"
-                    className="text-[12px] font-bold tabular-nums"
+                    direction="ltr"
+                    className="font-display text-[17px] font-bold tabular-nums"
                     style={{ fill: "var(--foreground)" }}
                   >
-                    {pct(c.share)}
+                    {Math.round(c.share * 100)}
+                    <tspan className="text-[10px] font-normal" dx={1}>
+                      %
+                    </tspan>
                   </text>
                   <text
                     x={p.x}
-                    y={p.y + 42}
+                    y={nameY}
                     textAnchor="middle"
-                    className="text-[13px]"
-                    style={{ fill: "var(--muted-foreground)" }}
+                    className="text-[14px] font-bold"
+                    style={{
+                      fill: "var(--foreground)",
+                      stroke: "var(--card)",
+                      strokeWidth: 5,
+                      paintOrder: "stroke",
+                      strokeLinejoin: "round",
+                    }}
                   >
-                    {c.name} ·{" "}
-                    {c.months === 0
-                      ? "بدأت للتوّ"
-                      : `${c.months} ${
-                          c.months === 1
-                            ? "شهر"
-                            : c.months === 2
-                              ? "شهران"
-                              : c.months <= 10
-                                ? "أشهر"
-                                : "شهراً"
-                        }`}
+                    {c.name}
+                  </text>
+                  <text
+                    x={p.x}
+                    y={nameY + 15}
+                    textAnchor="middle"
+                    className="text-[11.5px]"
+                    style={{
+                      fill: "var(--muted-foreground)",
+                      stroke: "var(--card)",
+                      strokeWidth: 5,
+                      paintOrder: "stroke",
+                      strokeLinejoin: "round",
+                    }}
+                  >
+                    {c.months === 0 ? "بدأت للتوّ" : `${c.months} ${monthsWord(c.months)}`}
                   </text>
                 </g>
               );
@@ -272,9 +347,9 @@ export function MyImpactHero({
                 }}
                 aria-label="مسار أثرك عبر الأشهر"
                 aria-valuetext={monthsAgo(back)}
-                className="min-h-11 w-full min-w-0 flex-1 cursor-pointer rounded-full accent-[var(--bridge)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-11 w-full min-w-0 flex-1 cursor-pointer rounded-full accent-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
-              <output className="w-16 shrink-0 text-center text-sm font-bold text-bridge-ink tabular-nums">
+              <output className="w-16 shrink-0 text-center text-sm font-bold text-foreground tabular-nums">
                 {monthsAgo(Math.min(back, span))}
               </output>
             </div>
