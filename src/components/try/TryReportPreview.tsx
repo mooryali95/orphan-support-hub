@@ -9,33 +9,75 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { formatMoney } from "@/lib/format";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { TRY_CURRENCY, type TryChild } from "@/lib/try-demo";
+
+const COPY = defineCopy("components/try/TryReportPreview", {
+  ar: {
+    transferTitle: "حُوِّل عطاؤك إلى جهة الرعاية",
+    transferText: (amount: string) => `${amount} في الأسبوع الأول من الشهر، برقم تحويلٍ تراه.`,
+    deliveredTitle: (name: string) => `سُلِّم لـ${name} بمستند`,
+    deliveredText: "إيصال استلامٍ موقَّع من وليّ الأمر، مرفوعٌ في ملفّ الكفالة.",
+    spentTitle: "فيمَ صُرف",
+    spentText: (covers: string) => `${covers}.`,
+    noteTitle: "كلمة المشرف",
+    noteText: (name: string) => `«${name} مواظبٌ هذا الشهر، وتحسّن حضوره وتحصيله.»`,
+    trigger: "هذا ما يصلك كل شهر",
+    triggerHint: "شاهد نموذج التقرير الشهري قبل أن تبدأ",
+    title: "تقرير الشهر",
+    sample: "نموذج",
+    description: (name: string) => `كفالة ${name} · يصلك مثله كل شهر في «أثري» وعلى بريدك.`,
+    footnote: "نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
+  },
+  en: {
+    transferTitle: "Your gift was transferred to the care organization",
+    transferText: (amount: string) =>
+      `${amount} in the first week of the month, with a transfer reference you can see.`,
+    deliveredTitle: (name: string) => `Delivered to ${name}, with a receipt`,
+    deliveredText: "A receipt signed by the guardian, filed in the sponsorship record.",
+    spentTitle: "How it was spent",
+    spentText: (covers: string) => `${covers}.`,
+    noteTitle: "A note from the supervisor",
+    noteText: (name: string) =>
+      `“${name} attended regularly this month, and both attendance and results improved.”`,
+    trigger: "What you receive each month",
+    triggerHint: "See a sample monthly report before you begin",
+    title: "Monthly report",
+    sample: "Sample",
+    description: (name: string) =>
+      `${name}'s sponsorship · one like this reaches you each month in “My impact” and by email.`,
+    footnote:
+      "An illustrative sample. On the live platform, the report carries its actual dates and documents.",
+  },
+});
 
 /**
  * «هذا ما يصلك كل شهر»: نموذجُ التقرير الشهري قبل الدفع، ليعرف الداعم ما سيراه بعده. نموذجٌ
  * افتراضي صريح، بلا تواريخ حقيقية ولا مستندٍ حقيقي.
  */
 export function TryReportPreview({ child, amount }: { child: TryChild; amount: number }) {
+  const locale = useLocale();
+  const c = useCopy(COPY);
   const rows = [
     {
       icon: Send,
-      title: "حُوِّل عطاؤك إلى جهة الرعاية",
-      text: `${formatMoney(amount, TRY_CURRENCY, "ar")} في الأسبوع الأول من الشهر، برقم تحويلٍ تراه.`,
+      title: c.transferTitle,
+      text: c.transferText(formatMoney(amount, TRY_CURRENCY, locale)),
     },
     {
       icon: FileCheck2,
-      title: `سُلِّم لـ${child.name} بمستند`,
-      text: "إيصال استلامٍ موقَّع من وليّ الأمر، مرفوعٌ في ملفّ الكفالة.",
+      title: c.deliveredTitle(child.name),
+      text: c.deliveredText,
     },
     {
       icon: HandCoins,
-      title: "فيمَ صُرف",
-      text: `${child.covers}.`,
+      title: c.spentTitle,
+      text: c.spentText(child.covers),
     },
     {
       icon: MessageSquareText,
-      title: "كلمة المشرف",
-      text: `«${child.name} مواظبٌ هذا الشهر، وتحسّن حضوره وتحصيله.»`,
+      title: c.noteTitle,
+      text: c.noteText(child.name),
     },
   ];
   return (
@@ -47,24 +89,20 @@ export function TryReportPreview({ child, amount }: { child: TryChild; amount: n
         >
           <ScrollText className="size-5 shrink-0 text-primary" aria-hidden="true" />
           <span>
-            <span className="block font-bold">هذا ما يصلك كل شهر</span>
-            <span className="block text-xs text-muted-foreground">
-              شاهد نموذج التقرير الشهري قبل أن تبدأ
-            </span>
+            <span className="block font-bold">{c.trigger}</span>
+            <span className="block text-xs text-muted-foreground">{c.triggerHint}</span>
           </span>
         </button>
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-between gap-3 pe-6">
-            <DialogTitle className="font-display text-2xl">تقرير الشهر</DialogTitle>
+            <DialogTitle className="font-display text-2xl">{c.title}</DialogTitle>
             <span className="rounded-full bg-bridge/10 px-3 py-1 text-xs font-bold text-bridge-ink">
-              نموذج
+              {c.sample}
             </span>
           </div>
-          <DialogDescription className="leading-7">
-            كفالة {child.name} · يصلك مثله كل شهر في «أثري» وعلى بريدك.
-          </DialogDescription>
+          <DialogDescription className="leading-7">{c.description(child.name)}</DialogDescription>
         </DialogHeader>
         <ol className="relative mt-1 space-y-4 before:absolute before:inset-y-3 before:start-[1.1875rem] before:w-px before:bg-border">
           {rows.map((r) => (
@@ -82,7 +120,7 @@ export function TryReportPreview({ child, amount }: { child: TryChild; amount: n
           ))}
         </ol>
         <p className="mt-2 rounded-xl border border-dashed border-border p-3 text-xs leading-6 text-muted-foreground">
-          نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.
+          {c.footnote}
         </p>
       </DialogContent>
     </Dialog>

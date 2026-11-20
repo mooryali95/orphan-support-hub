@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1474,
+ "count": 1653,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3504,6 +3504,480 @@
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheet.tsx"
   },
+  "components/try/KafalaPromise.hadith": {
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
+   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
+   "kind": "text",
+   "hash": "ba5bbd99221a",
+   "file": "src/components/try/KafalaPromise.tsx"
+  },
+  "components/try/KafalaPromise.source": {
+   "en": "Narrated by al-Bukhari (6005)",
+   "ar": "رواه البخاري (6005)",
+   "kind": "text",
+   "hash": "68d0e4241fb7",
+   "file": "src/components/try/KafalaPromise.tsx"
+  },
+  "components/try/TryChildCard.age.one": {
+   "en": "{0} year old",
+   "ar": "سنة واحدة",
+   "kind": "plural",
+   "hash": "fc343f6253d5",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildCard.age.other": {
+   "en": "{0} years old",
+   "ar": "{0} سنة",
+   "kind": "plural",
+   "hash": "baf8c2e714e2",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildCard.coverage": {
+   "en": "Coverage of {0}'s need",
+   "ar": "تغطية حاجة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8c479a2c487c",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildCard.leftMonthly": {
+   "en": "still needed each month",
+   "ar": "متبقٍّ شهرياً",
+   "kind": "text",
+   "hash": "e0efe5b24466",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildCard.sponsor": {
+   "en": "Sponsor {0}",
+   "ar": "اكفل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cb9ef4bca4b1",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildCard.waiting": {
+   "en": "Waiting {0} days",
+   "ar": "ينتظر منذ {0} يوماً",
+   "kind": "template",
+   "params": 1,
+   "hash": "32c1a3344e36",
+   "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryJourneyAhead.after.one": {
+   "en": "In {0} month",
+   "ar": "بعد شهر",
+   "kind": "plural",
+   "hash": "0f4c29797e64",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.after.other": {
+   "en": "In {0} months",
+   "ar": "بعد {0} شهراً",
+   "kind": "plural",
+   "hash": "06592ddbb809",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.backToday": {
+   "en": "Back to today",
+   "ar": "عُد إلى اليوم",
+   "kind": "text",
+   "hash": "ca6b73d50b35",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.forward": {
+   "en": "Advance a month",
+   "ar": "قدّم شهراً",
+   "kind": "text",
+   "hash": "bf8a5da4449c",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.lead": {
+   "en": "Advance time by a month to see what reaches you after sponsoring, and your milestones as they are met.",
+   "ar": "قدّم الزمن شهراً لترى ما يصلك بعد الكفالة، ومحطّاتك وهي تتحقّق.",
+   "kind": "text",
+   "hash": "3e09e4ecf1fd",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.needMonthly": {
+   "en": "Advancing time applies to monthly sponsorships: start one to see its reports arrive.",
+   "ar": "تقديم الزمن للكفالة الشهرية: ابدأ كفالةً شهرية لترى تقاريرها تتوالى.",
+   "kind": "text",
+   "hash": "afef531b5e51",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.next": {
+   "en": "Next step",
+   "ar": "الخطوة التالية",
+   "kind": "text",
+   "hash": "cbfb6042f27a",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.nextHint": {
+   "en": "The longest wait among the children you have not yet sponsored.",
+   "ar": "هو الأطول انتظاراً ممّن لم تكفلهم بعد.",
+   "kind": "text",
+   "hash": "33707d48051d",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.nextLine": {
+   "en": "{0} in {1} has been waiting {2} days",
+   "ar": "{0} في {1} ينتظر منذ {2} يوماً",
+   "kind": "template",
+   "params": 3,
+   "hash": "6d37aaa19b34",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.running": {
+   "en": "Your sponsorship of {0} is under way. Press “Advance a month” to see what next month brings.",
+   "ar": "كفالتك لـ{0} جارية. اضغط «قدّم شهراً» لترى ما يحمله الشهر القادم.",
+   "kind": "template",
+   "params": 1,
+   "hash": "ca863e57821e",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.title": {
+   "en": "Your journey through the months",
+   "ar": "رحلتك عبر الأشهر",
+   "kind": "text",
+   "hash": "a004bdf6d3ae",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyAhead.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/components/try/TryJourneyAhead.tsx"
+  },
+  "components/try/TryJourneyGuide.choose.text": {
+   "en": "Six fictional children, longest wait first, as in the real directory.",
+   "ar": "ستة أطفالٍ افتراضيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
+   "kind": "text",
+   "hash": "bd06cf66fe2d",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.choose.title": {
+   "en": "Choose a child",
+   "ar": "اختر طفلاً",
+   "kind": "text",
+   "hash": "80eae1d9e770",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.description": {
+   "en": "From opening the site to seeing your impact, in about three minutes. Everything here is sample data, and nothing is charged.",
+   "ar": "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا افتراضي، ولا يُخصم أي مبلغ.",
+   "kind": "text",
+   "hash": "2b67f9ef7bac",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.file.text": {
+   "en": "The monthly need and how much is covered. Choose monthly or one-time, and see the impact before you pay.",
+   "ar": "حاجته الشهرية وما غُطّي منها، واختر شهرياً أو مرّةً واحدة، وترى الأثر قبل الدفع.",
+   "kind": "text",
+   "hash": "7e1e2913131d",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.file.title": {
+   "en": "Open {0}'s file",
+   "ar": "افتح ملف {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "182b7be9c19f",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.fromFile": {
+   "en": "Start from a child's file",
+   "ar": "ابدأ من ملف طفل",
+   "kind": "text",
+   "hash": "c03da1e2e459",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.fromMap": {
+   "en": "Start from the map",
+   "ar": "ابدأ الرحلة من الخريطة",
+   "kind": "text",
+   "hash": "bdedf10ebd8a",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.hall.text": {
+   "en": "Through the emblem gate to the globe: choose a country to see its regions and children.",
+   "ar": "بوابة الشعار، ثم الكرة الأرضية: اختر دولةً لترى مناطقها وأطفالها.",
+   "kind": "text",
+   "hash": "bbec6c4f0410",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.hall.title": {
+   "en": "Enter the Impact Hall",
+   "ar": "ادخل قاعة الأثر",
+   "kind": "text",
+   "hash": "8164a7970251",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.impact.text": {
+   "en": "“My impact” builds your constellation and replays it from the beginning; the immersive view takes you to the child's region to watch your gift arrive.",
+   "ar": "«أثري» تبني كوكبة أثرك وتعرضها «منذ البداية»، و«الوضع الغامر» يطير بك إلى منطقة الطفل ليصل عطاؤك أمامك.",
+   "kind": "text",
+   "hash": "0d7e827d2e6e",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.impact.title": {
+   "en": "See your impact",
+   "ar": "شاهد أثرك",
+   "kind": "text",
+   "hash": "fb3772575ce9",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.pay.text": {
+   "en": "No card and no charge: a word of thanks, then on to “My impact”.",
+   "ar": "لا بطاقة ولا خصم: تهنئةٌ ثم انتقالٌ إلى «أثري».",
+   "kind": "text",
+   "hash": "4aff97388de4",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.pay.title": {
+   "en": "Make a simulated payment",
+   "ar": "ادفع دفعاً محاكى",
+   "kind": "text",
+   "hash": "82e5c3e9b52e",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.time.text": {
+   "en": "Inside a country: a timeline from a year ago to a year ahead, and a “Watch the year pass” button.",
+   "ar": "داخل الدولة: شريطٌ من قبل سنة إلى بعد سنة، وزر «شاهد السنة تمرّ».",
+   "kind": "text",
+   "hash": "2fe6b6334919",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.time.title": {
+   "en": "Move through time",
+   "ar": "حرّك الزمن",
+   "kind": "text",
+   "hash": "0ba2b5bd0654",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.title": {
+   "en": "The full trial journey",
+   "ar": "رحلة التجربة كاملة",
+   "kind": "text",
+   "hash": "eadb74bfcbf2",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.trigger": {
+   "en": "Full journey",
+   "ar": "الرحلة كاملة",
+   "kind": "text",
+   "hash": "758c4983b8c2",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.triggerHero": {
+   "en": "The full journey, step by step",
+   "ar": "الرحلة كاملة خطوةً خطوة",
+   "kind": "text",
+   "hash": "dc00477625ab",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryReportPreview.deliveredText": {
+   "en": "A receipt signed by the guardian, filed in the sponsorship record.",
+   "ar": "إيصال استلامٍ موقَّع من وليّ الأمر، مرفوعٌ في ملفّ الكفالة.",
+   "kind": "text",
+   "hash": "b2d26d72972e",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.deliveredTitle": {
+   "en": "Delivered to {0}, with a receipt",
+   "ar": "سُلِّم لـ{0} بمستند",
+   "kind": "template",
+   "params": 1,
+   "hash": "d41bde06db8d",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.description": {
+   "en": "{0}'s sponsorship · one like this reaches you each month in “My impact” and by email.",
+   "ar": "كفالة {0} · يصلك مثله كل شهر في «أثري» وعلى بريدك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "c7b6f4f1d629",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.footnote": {
+   "en": "An illustrative sample. On the live platform, the report carries its actual dates and documents.",
+   "ar": "نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
+   "kind": "text",
+   "hash": "24f03284881b",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.noteText": {
+   "en": "“{0} attended regularly this month, and both attendance and results improved.”",
+   "ar": "«{0} مواظبٌ هذا الشهر، وتحسّن حضوره وتحصيله.»",
+   "kind": "template",
+   "params": 1,
+   "hash": "6c4379d5da2f",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.noteTitle": {
+   "en": "A note from the supervisor",
+   "ar": "كلمة المشرف",
+   "kind": "text",
+   "hash": "d7c88a990e39",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.sample": {
+   "en": "Sample",
+   "ar": "نموذج",
+   "kind": "text",
+   "hash": "c0e3c6f7c8b7",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.spentText": {
+   "en": "{0}.",
+   "ar": "{0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "856272705c24",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.spentTitle": {
+   "en": "How it was spent",
+   "ar": "فيمَ صُرف",
+   "kind": "text",
+   "hash": "dd6fd9005a88",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.title": {
+   "en": "Monthly report",
+   "ar": "تقرير الشهر",
+   "kind": "text",
+   "hash": "cde858375d5d",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.transferText": {
+   "en": "{0} in the first week of the month, with a transfer reference you can see.",
+   "ar": "{0} في الأسبوع الأول من الشهر، برقم تحويلٍ تراه.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5b48ff207d58",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.transferTitle": {
+   "en": "Your gift was transferred to the care organization",
+   "ar": "حُوِّل عطاؤك إلى جهة الرعاية",
+   "kind": "text",
+   "hash": "a91157af91cb",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.trigger": {
+   "en": "What you receive each month",
+   "ar": "هذا ما يصلك كل شهر",
+   "kind": "text",
+   "hash": "ffd0de83bf0c",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryReportPreview.triggerHint": {
+   "en": "See a sample monthly report before you begin",
+   "ar": "شاهد نموذج التقرير الشهري قبل أن تبدأ",
+   "kind": "text",
+   "hash": "2a35ab384a99",
+   "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryShareCard.cardLabel": {
+   "en": "Impact card",
+   "ar": "بطاقة الأثر",
+   "kind": "text",
+   "hash": "0b56e4901ce7",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.copied": {
+   "en": "Invitation copied",
+   "ar": "نُسخت الدعوة",
+   "kind": "text",
+   "hash": "56d6f7f8af51",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.copiedLive": {
+   "en": "The invitation text and link were copied",
+   "ar": "نُسخ نصّ الدعوة ورابطها",
+   "kind": "text",
+   "hash": "7d3c302ea7f7",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.dedication": {
+   "en": "Ongoing charity on behalf of",
+   "ar": "صدقةٌ جارية عن",
+   "kind": "text",
+   "hash": "e066d9480a61",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.lead": {
+   "en": "“Whoever guides to good is like the one who does it.” A card without the child's name or photo.",
+   "ar": "«الدالّ على الخير كفاعله». بطاقةٌ بلا اسم الطفل ولا صورته.",
+   "kind": "text",
+   "hash": "3c3d32074ea5",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.line1": {
+   "en": "A hand reached out,",
+   "ar": "يدٌ امتدّت،",
+   "kind": "text",
+   "hash": "bca8a99b3082",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.line2": {
+   "en": "and no orphan waits alone",
+   "ar": "فلم يبقَ يتيمٌ ينتظر وحده",
+   "kind": "text",
+   "hash": "4b7cc8fd2cba",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.note": {
+   "en": "In the trial, you share an invitation to try the journey. After a real sponsorship, the card becomes a record of your own impact.",
+   "ar": "في التجربة تُشارك دعوةً إلى تجربة الرحلة. وبعد كفالتك الحقيقية تصير البطاقة شاهداً على أثرك أنت.",
+   "kind": "text",
+   "hash": "3b7d6f6ed3e4",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.partnerWith": {
+   "en": "in partnership with",
+   "ar": "بالشراكة مع",
+   "kind": "text",
+   "hash": "0b933d5bf371",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.share": {
+   "en": "Share the invitation",
+   "ar": "شارك الدعوة",
+   "kind": "text",
+   "hash": "d7240f89a4fd",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.shareText": {
+   "en": "I tried the orphan sponsorship journey on {0}: you choose a child and watch your giving take shape. Try it, no account needed.",
+   "ar": "جرّبتُ رحلة كفالة اليتيم في {0}: تختار طفلاً، وترى أثر عطائك يتشكّل أمامك. جرّبها بلا حساب.",
+   "kind": "template",
+   "params": 1,
+   "hash": "93ef8bd99100",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.shared": {
+   "en": "Shared",
+   "ar": "شُوركت",
+   "kind": "text",
+   "hash": "a727d71e321d",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShareCard.title": {
+   "en": "Invite others to do good",
+   "ar": "ادعُ غيرك إلى الخير",
+   "kind": "text",
+   "hash": "786bd352ec24",
+   "file": "src/components/try/TryShareCard.tsx"
+  },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",
    "ar": "أطفالٌ يصلهم أثري",
@@ -4676,6 +5150,211 @@
    "params": 2,
    "hash": "047251131d56",
    "file": "src/lib/office-gap.ts"
+  },
+  "lib/try-demo.children.try-01.covers": {
+   "en": "Schooling, food and healthcare",
+   "ar": "الدراسة والغذاء والرعاية الصحية",
+   "kind": "text",
+   "hash": "3c4877f7157a",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-01.name": {
+   "en": "Sara",
+   "ar": "سارة",
+   "kind": "text",
+   "hash": "41b7b2c2f5b8",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-01.stage": {
+   "en": "Grade 4",
+   "ar": "الصف الرابع",
+   "kind": "text",
+   "hash": "867793e1be00",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-02.covers": {
+   "en": "School fees, uniform and food",
+   "ar": "الرسوم المدرسية والزيّ والغذاء",
+   "kind": "text",
+   "hash": "522bafa06097",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-02.name": {
+   "en": "Yusuf",
+   "ar": "يوسف",
+   "kind": "text",
+   "hash": "22759d829289",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-02.stage": {
+   "en": "Grade 6",
+   "ar": "الصف السادس",
+   "kind": "text",
+   "hash": "d9274a0c980f",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-03.covers": {
+   "en": "Food, housing and health follow-up",
+   "ar": "الغذاء والسكن والمتابعة الصحية",
+   "kind": "text",
+   "hash": "8b4ad9202c3f",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-03.name": {
+   "en": "Maryam",
+   "ar": "مريم",
+   "kind": "text",
+   "hash": "83f689b078ac",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-03.stage": {
+   "en": "Grade 2",
+   "ar": "الصف الثاني",
+   "kind": "text",
+   "hash": "f84114b1e6b6",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-04.covers": {
+   "en": "Schooling, transport and books",
+   "ar": "الدراسة والمواصلات والكتب",
+   "kind": "text",
+   "hash": "cf8faa0e574f",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-04.name": {
+   "en": "Omar",
+   "ar": "عمر",
+   "kind": "text",
+   "hash": "124cb8d8911b",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-04.stage": {
+   "en": "Middle school",
+   "ar": "المرحلة المتوسطة",
+   "kind": "text",
+   "hash": "5694fadf6348",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-05.covers": {
+   "en": "Schooling, activities and emotional care",
+   "ar": "الدراسة والأنشطة والرعاية النفسية",
+   "kind": "text",
+   "hash": "b6ca4847150a",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-05.name": {
+   "en": "Layan",
+   "ar": "ليان",
+   "kind": "text",
+   "hash": "129d4c0cfe2a",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-05.stage": {
+   "en": "Grade 5",
+   "ar": "الصف الخامس",
+   "kind": "text",
+   "hash": "aafc26721112",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-06.covers": {
+   "en": "Food, schooling and Qur'an study circles",
+   "ar": "الغذاء والدراسة وحلقات التحفيظ",
+   "kind": "text",
+   "hash": "cff58da5172f",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-06.name": {
+   "en": "Adam",
+   "ar": "آدم",
+   "kind": "text",
+   "hash": "771de529922d",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.children.try-06.stage": {
+   "en": "Grade 3",
+   "ar": "الصف الثالث",
+   "kind": "text",
+   "hash": "430474f564cb",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.deliveryText": {
+   "en": "With a receipt kept in the sponsorship file.",
+   "ar": "بمستند استلامٍ في ملفّ الكفالة.",
+   "kind": "text",
+   "hash": "d38b10e0835d",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.deliveryTitle": {
+   "en": "Delivered to {0}",
+   "ar": "سُلِّم لـ{0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a84f3769ebc9",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.0": {
+   "en": "Attended school regularly this month.",
+   "ar": "انتظم في الدراسة هذا الشهر.",
+   "kind": "text",
+   "hash": "4db806f39b91",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.1": {
+   "en": "School supplies are now complete.",
+   "ar": "اكتملت لوازمه المدرسية.",
+   "kind": "text",
+   "hash": "88adf53ba70a",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.2": {
+   "en": "Completed the routine health check.",
+   "ar": "أتمّ الفحص الصحي الدوري.",
+   "kind": "text",
+   "hash": "8ecb03fca891",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.3": {
+   "en": "Reading has improved.",
+   "ar": "تحسّن تحصيله في القراءة.",
+   "kind": "text",
+   "hash": "6157d860020b",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.4": {
+   "en": "Took part in the group activity.",
+   "ar": "شارك في نشاط المجموعة.",
+   "kind": "text",
+   "hash": "d8baeddc25bd",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.monthNotes.5": {
+   "en": "Finished the term with good progress.",
+   "ar": "أنهى الفصل الدراسي بتقدّم.",
+   "kind": "text",
+   "hash": "5cf62b04eac8",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.noteTitle": {
+   "en": "A note from the supervisor",
+   "ar": "كلمة المشرف",
+   "kind": "text",
+   "hash": "d7c88a990e39",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.transferText": {
+   "en": "{0} to the care organization.",
+   "ar": "{0} إلى جهة الرعاية.",
+   "kind": "template",
+   "params": 1,
+   "hash": "7d17bc32091b",
+   "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-demo.transferTitle": {
+   "en": "Your gift was transferred",
+   "ar": "حُوِّل عطاؤك",
+   "kind": "text",
+   "hash": "d0523b69a410",
+   "file": "src/lib/try-demo.ts"
   },
   "lib/workspaces.labels.kind.in_kind": {
    "en": "In-kind support",
@@ -7237,6 +7916,608 @@
    "kind": "plural",
    "hash": "a6ddce060012",
    "file": "src/routes/traits.tsx"
+  },
+  "routes/try.childId.activation": {
+   "en": "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
+   "ar": "تُفعَّل الكفالة بعد تأكيد الدفع، ويُسجَّل كل تحويلٍ وتسليمٍ بمستند.",
+   "kind": "text",
+   "hash": "44f356ef73a5",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.age.one": {
+   "en": "{0} year old",
+   "ar": "سنة واحدة",
+   "kind": "plural",
+   "hash": "fc343f6253d5",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.age.other": {
+   "en": "{0} years old",
+   "ar": "{0} سنة",
+   "kind": "plural",
+   "hash": "baf8c2e714e2",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.amount": {
+   "en": "Amount (EUR)",
+   "ar": "المبلغ (يورو)",
+   "kind": "text",
+   "hash": "89fbb76c756c",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.another": {
+   "en": "Choose another child",
+   "ar": "اختر طفلاً آخر",
+   "kind": "text",
+   "hash": "5d41911f6ec7",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.cadence": {
+   "en": "Type of gift",
+   "ar": "نوع العطاء",
+   "kind": "text",
+   "hash": "40d1a7d7e753",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.completesTo": {
+   "en": "Your gift completes {0}'s need: from {1}% to 100%.",
+   "ar": "بعطائك تكتمل حاجة {0}: من {1}% إلى 100%.",
+   "kind": "template",
+   "params": 2,
+   "hash": "042af5f66acf",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coverage": {
+   "en": "Coverage of {0}'s need",
+   "ar": "تغطية حاجة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8c479a2c487c",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coveredLead": {
+   "en": "",
+   "ar": "غُطّي",
+   "kind": "text",
+   "hash": "a67cf4c5cb80",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coveredOf": {
+   "en": "of",
+   "ar": "من",
+   "kind": "text",
+   "hash": "776e33293642",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coveredTail": {
+   "en": "covered each month",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "d3b3cd5bd403",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coversText": {
+   "en": "{0}, through an approved care organization that documents each monthly delivery and sends you an impact report.",
+   "ar": "{0}، عبر جهة رعايةٍ معتمدة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.",
+   "kind": "template",
+   "params": 1,
+   "hash": "46feca979605",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.coversTitle": {
+   "en": "What the sponsorship covers",
+   "ar": "ما تغطّيه الكفالة",
+   "kind": "text",
+   "hash": "fe909cfa6b04",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.dedicate": {
+   "en": "Give it as ongoing charity on behalf of someone",
+   "ar": "اجعلها صدقةً جارية عن غيرك",
+   "kind": "text",
+   "hash": "fa6432dd0619",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.dedicatePlaceholder": {
+   "en": "My late father",
+   "ar": "والدي رحمه الله",
+   "kind": "text",
+   "hash": "52cbe162343d",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.dedicateWhom": {
+   "en": "On whose behalf? (a parent, a relative, a loved one)",
+   "ar": "عمّن؟ (والدٌ، قريبٌ، من تحبّ)",
+   "kind": "text",
+   "hash": "fffda8e58b56",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.fullRest": {
+   "en": "Full remainder",
+   "ar": "المتبقّي كاملاً",
+   "kind": "text",
+   "hash": "a42409af7ed3",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.gateNote": {
+   "en": "On the live platform, the child's photo and exact location stay behind a protective access gate. This file is entirely fictional.",
+   "ar": "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملف افتراضي بالكامل.",
+   "kind": "text",
+   "hash": "a85e23efa14a",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.impactCompletes": {
+   "en": "You complete {0}'s monthly need",
+   "ar": "أنت من يُكمل حاجة {0} الشهرية",
+   "kind": "template",
+   "params": 1,
+   "hash": "32d640faf69c",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.impactCovers": {
+   "en": "Covers {0}% of {1}'s monthly need",
+   "ar": "يغطّي {0}% من حاجة {1} الشهرية",
+   "kind": "template",
+   "params": 2,
+   "hash": "c71db2dc986e",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.impactOnce": {
+   "en": "A one-time gift that reaches {0} with proof of delivery",
+   "ar": "عطاءٌ لمرّة واحدة يصل {0} بمستندٍ يثبت تسليمه",
+   "kind": "template",
+   "params": 1,
+   "hash": "ca167948a03a",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.leftToComplete": {
+   "en": "{0} more completes the need. Give the full amount",
+   "ar": "بقي {0} لتكتمل حاجته: أكمِلها",
+   "kind": "template",
+   "params": 1,
+   "hash": "82126e0a96e1",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.minAmount": {
+   "en": "The minimum amount is 5 euros.",
+   "ar": "أقلّ مبلغٍ 5 يورو.",
+   "kind": "text",
+   "hash": "125eee8ca872",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.monthly": {
+   "en": "Monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "cbf038957590",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.oneTime": {
+   "en": "One-time",
+   "ar": "مرّة واحدة",
+   "kind": "text",
+   "hash": "242fa6d0eb16",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.pageTitle": {
+   "en": "{0} · Try the platform",
+   "ar": "{0} · جرّب المنصّة",
+   "kind": "template",
+   "params": 1,
+   "hash": "107204820935",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.raisesTo": {
+   "en": "Your gift raises coverage from {0}% to {1}%.",
+   "ar": "بعطائك ترتفع التغطية من {0}% إلى {1}%.",
+   "kind": "template",
+   "params": 2,
+   "hash": "cb064a8aeb4f",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.sponsor": {
+   "en": "Sponsor {0}",
+   "ar": "اكفل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cb9ef4bca4b1",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.start": {
+   "en": "Start sponsorship",
+   "ar": "ابدأ الكفالة",
+   "kind": "text",
+   "hash": "c7e102d78cfe",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.supportNow": {
+   "en": "Give now",
+   "ar": "ادعم الآن",
+   "kind": "text",
+   "hash": "f429a89a1ce4",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.description": {
+   "en": "The complete sponsorship journey with sample data. No account, and nothing is charged.",
+   "ar": "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ افتراضية، دون حسابٍ ودون أي خصم.",
+   "kind": "text",
+   "hash": "16ef0a8edc77",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.impact.celebrateDedication": {
+   "en": "Ongoing charity on behalf of {0}. May God accept it.",
+   "ar": "صدقةٌ جارية عن {0}، تقبّلها الله.",
+   "kind": "template",
+   "params": 1,
+   "hash": "02e897cf0b23",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.celebrateText": {
+   "en": "Your giving has begun. Each month you will see when it was transferred and when it was delivered, with a receipt. This is your impact today.",
+   "ar": "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.",
+   "kind": "text",
+   "hash": "69417f7fb34c",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.celebrateTitle": {
+   "en": "From today, {0} no longer waits alone",
+   "ar": "من اليوم، {0} لا ينتظر وحده",
+   "kind": "template",
+   "params": 1,
+   "hash": "c8394e2751e9",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.choose": {
+   "en": "Choose a child",
+   "ar": "اختر طفلاً",
+   "kind": "text",
+   "hash": "80eae1d9e770",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.dedication": {
+   "en": "Ongoing charity on behalf of {0}",
+   "ar": "صدقةٌ جارية عن {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c47bae0ad1cc",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.gifts": {
+   "en": "Your gifts",
+   "ar": "عطاءاتك",
+   "kind": "text",
+   "hash": "0b787b99e279",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.lead": {
+   "en": "The impact of your gifts in this trial, as a supporter sees it on their dashboard.",
+   "ar": "أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.",
+   "kind": "text",
+   "hash": "19c8a8176eed",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.monthly": {
+   "en": "Monthly",
+   "ar": "شهرية",
+   "kind": "text",
+   "hash": "b23f0364468c",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.none": {
+   "en": "You have not started a gift in the trial yet.",
+   "ar": "لم تبدأ عطاءً بعد في التجربة.",
+   "kind": "text",
+   "hash": "99ef3172a8ea",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.oneTime": {
+   "en": "One-time",
+   "ar": "مرّة واحدة",
+   "kind": "text",
+   "hash": "242fa6d0eb16",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.pageTitle": {
+   "en": "My impact · Try the platform",
+   "ar": "أثري · جرّب المنصّة",
+   "kind": "text",
+   "hash": "6780a2621b93",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.see": {
+   "en": "See your impact",
+   "ar": "شاهد أثرك",
+   "kind": "text",
+   "hash": "fb3772575ce9",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.status": {
+   "en": "Status: active (simulated)",
+   "ar": "الحالة: نشطة (محاكاة)",
+   "kind": "text",
+   "hash": "ddbaafc7f855",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.title": {
+   "en": "My impact",
+   "ar": "أثري",
+   "kind": "text",
+   "hash": "7f977bf767b5",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.index.eyebrow": {
+   "en": "Try the platform",
+   "ar": "جرّب المنصّة",
+   "kind": "text",
+   "hash": "8b2850eaf906",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.fromMap": {
+   "en": "Start from the 3D map",
+   "ar": "ابدأ من الخريطة ثلاثية الأبعاد",
+   "kind": "text",
+   "hash": "0a6498c54e38",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.lead": {
+   "en": "Choose a child, sponsor them, and watch your impact take shape. Everything here is sample data, so explore freely.",
+   "ar": "اختر طفلاً، واكفله، ثم شاهد أثر كفالتك يتشكّل أمامك. كل ما هنا افتراضي، فجرّب بلا قلق.",
+   "kind": "text",
+   "hash": "86b1a7ae84e6",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.order": {
+   "en": "The same order as the real directory: longest wait first.",
+   "ar": "الترتيب نفسه في الدليل الحقيقي: الأطول انتظاراً أوّلاً.",
+   "kind": "text",
+   "hash": "373196c2c75c",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.0.text": {
+   "en": "A file showing the monthly need and how much is covered.",
+   "ar": "ملفٌّ يُظهر حاجته الشهرية وما غُطّي منها.",
+   "kind": "text",
+   "hash": "caee40babfae",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.0.title": {
+   "en": "Choose a child",
+   "ar": "اختر طفلاً",
+   "kind": "text",
+   "hash": "80eae1d9e770",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.1.text": {
+   "en": "Monthly or one-time, with the impact shown before you pay.",
+   "ar": "شهرياً أو مرّةً واحدة، وترى أثره قبل الدفع.",
+   "kind": "text",
+   "hash": "49fd1ba9d494",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.1.title": {
+   "en": "Choose an amount and pay",
+   "ar": "اختر المبلغ وادفع",
+   "kind": "text",
+   "hash": "cc81764bc2a9",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.2.text": {
+   "en": "“My impact” builds your picture; the Impact Hall shows it in full.",
+   "ar": "«أثري» تبني صورتك، وقاعة الأثر تعرضها غامرة.",
+   "kind": "text",
+   "hash": "f348e8f3cce3",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.steps.2.title": {
+   "en": "See your impact",
+   "ar": "شاهد أثرك",
+   "kind": "text",
+   "hash": "fb3772575ce9",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.title": {
+   "en": "The whole sponsorship journey, in three minutes",
+   "ar": "رحلة الكفالة كاملةً، في ثلاث دقائق",
+   "kind": "text",
+   "hash": "d599e638b280",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.toImpact": {
+   "en": "Go to “My impact”",
+   "ar": "انتقل إلى «أثري»",
+   "kind": "text",
+   "hash": "70da750e5256",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.waiting": {
+   "en": "Waiting the longest",
+   "ar": "ينتظرون منذ أطول مدة",
+   "kind": "text",
+   "hash": "7ca1e6b5247f",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.mode": {
+   "en": "Trial mode",
+   "ar": "وضع التجربة",
+   "kind": "text",
+   "hash": "60655b0a8e5e",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.noteLong": {
+   "en": "The children here are fictional, under pseudonyms, and payment is simulated: nothing is charged and nothing is sent.",
+   "ar": "الأطفال هنا افتراضيون بأسماءٍ مستعارة، والدفع محاكاة: لا يُخصم أي مبلغ ولا يُرسل شيء.",
+   "kind": "text",
+   "hash": "fe2efd590aed",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.noteShort": {
+   "en": "Sample data. Nothing is charged.",
+   "ar": "بياناتٌ افتراضية، ولا يُخصم شيء.",
+   "kind": "text",
+   "hash": "03d570d7b499",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.pay.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.back": {
+   "en": "Go back and change the amount",
+   "ar": "عُد وعدّل المبلغ",
+   "kind": "text",
+   "hash": "87fd4842d39f",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.card": {
+   "en": "Card payment",
+   "ar": "الدفع بالبطاقة",
+   "kind": "text",
+   "hash": "bacfb36300bb",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.child": {
+   "en": "Child",
+   "ar": "الطفل",
+   "kind": "text",
+   "hash": "9b7972644282",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.confirming": {
+   "en": "Confirming payment…",
+   "ar": "يُؤكَّد الدفع…",
+   "kind": "text",
+   "hash": "3cb3e4c04710",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.dedication": {
+   "en": "Ongoing charity on behalf of",
+   "ar": "صدقةٌ جارية عن",
+   "kind": "text",
+   "hash": "e066d9480a61",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.fee": {
+   "en": "Payment gateway fee (approximate)",
+   "ar": "رسوم بوابة الدفع (تقريبية)",
+   "kind": "text",
+   "hash": "c5326bac512f",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.monthly": {
+   "en": "Monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "cbf038957590",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.monthlyKind": {
+   "en": "Monthly sponsorship",
+   "ar": "كفالة شهرية",
+   "kind": "text",
+   "hash": "9630b012db18",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.noChild": {
+   "en": "No child has been chosen yet.",
+   "ar": "لم يُختر طفلٌ بعد.",
+   "kind": "text",
+   "hash": "58d81fb7c9eb",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.once": {
+   "en": "Paid once, and delivered to the child with proof of delivery.",
+   "ar": "يُدفع مرّةً واحدة، ويصل الطفل بمستندٍ يثبت تسليمه.",
+   "kind": "text",
+   "hash": "132a60ec9ed6",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.oneTimeKind": {
+   "en": "One-time gift",
+   "ar": "عطاءٌ لمرّة واحدة",
+   "kind": "text",
+   "hash": "6f70155ed7fa",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.pageTitle": {
+   "en": "Your gift summary · Try the platform",
+   "ar": "ملخّص عطائك · جرّب المنصّة",
+   "kind": "text",
+   "hash": "6d0d2c9bd139",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.pay": {
+   "en": "Pay {0} (simulated)",
+   "ar": "ادفع {0} (محاكاة)",
+   "kind": "template",
+   "params": 1,
+   "hash": "c82c5df688fd",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.realNote": {
+   "en": "On the live platform, payment goes through a secure gateway. Here, nothing is charged.",
+   "ar": "في المنصّة الحقيقية يتمّ الدفع عبر بوابةٍ آمنة؛ هنا لا يُخصم شيء.",
+   "kind": "text",
+   "hash": "8282174ddfe8",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.renews": {
+   "en": "Renews each month. Pause or end it from “My impact” whenever you wish.",
+   "ar": "تتجدّد كل شهر، وتوقفها أو تنهيها من «أثري» متى شئت.",
+   "kind": "text",
+   "hash": "e6b845ebcfba",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.startTrial": {
+   "en": "Start the trial",
+   "ar": "ابدأ التجربة",
+   "kind": "text",
+   "hash": "ddf55a42cdac",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.title": {
+   "en": "Your gift summary",
+   "ar": "ملخّص عطائك",
+   "kind": "text",
+   "hash": "062a4b73b27e",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.type": {
+   "en": "Type",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "ca029db4e2cf",
+   "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.restart": {
+   "en": "Start over",
+   "ar": "ابدأ من جديد",
+   "kind": "text",
+   "hash": "5eb8c718763e",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.restarted": {
+   "en": "The trial has started over",
+   "ar": "بدأت التجربة من جديد",
+   "kind": "text",
+   "hash": "deb6a4a8e71d",
+   "file": "src/routes/try.tsx"
+  },
+  "routes/try.section": {
+   "en": "Try the platform",
+   "ar": "جرّب المنصّة",
+   "kind": "text",
+   "hash": "8b2850eaf906",
+   "file": "src/routes/try.tsx"
   },
   "routes/vision.cycle.again": {
    "en": "From the start",
