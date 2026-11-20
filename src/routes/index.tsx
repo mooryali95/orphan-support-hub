@@ -23,9 +23,11 @@ import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
 import { PartnerPlate } from "@/components/brand/PartnerPlate";
 import { isTrial, showTrialLink } from "@/config/platform";
-import { BRAND, brandFor } from "@/config/brand";
+import { brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
-import { StatTile } from "@/components/kit/StatTile";
+import { KahataynMark } from "@/components/brand/KahataynMark";
+import { CountUp } from "@/components/motion/CountUp";
+import { useInView } from "@/lib/motion/use-in-view";
 import { type MapLayer, parseLayer } from "@/components/map/layers";
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
 import { MapActions } from "@/components/map/MapActions";
@@ -129,9 +131,12 @@ const COPY = defineCopy("routes/index", {
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
     hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
-    numbersH: "أرقام المنصّة اليوم",
-    numbersP: "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
-    stats: ["ملف معتمد", "مكفول بالكامل", "مبالغ الكفالة الشهرية", "الاحتياج الشهري الكلي"],
+    moneyFunded: "مبالغ الكفالة الشهرية",
+    moneyNeed: "الاحتياج الشهري الكلي",
+    impactH: "ما يعود إليك",
+    impactP:
+      "كل دفعةٍ يُسجَّل تسليمها بمستندٍ تراه، وتقارير أثرٍ دورية عن التعليم والصحة والمعيشة تراجعها الإدارة قبل أن تصلك.",
+    closeH: "من هنا جاء الاسم",
     startReal: "ابدأ من ملفٍّ حقيقي",
     partners: "جهات الرعاية الشريكة",
     proofH: "المنصّة اليوم",
@@ -144,8 +149,6 @@ const COPY = defineCopy("routes/index", {
     mapH: "أين نعمل",
     mapP: "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
     crossingH: "شطّان ومضيق",
-    crossingP:
-      "الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر — كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.",
     childH: "اليتيم عندنا شخصٌ لا «حالة»",
     childP1:
       "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
@@ -259,10 +262,12 @@ const COPY = defineCopy("routes/index", {
     hadithMeaning:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
     hadithSource: "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
-    numbersH: "The platform today",
-    numbersP:
-      "Calculated from approved files the moment you open this page — not numbers written into the design.",
-    stats: ["Approved files", "Fully sponsored", "Monthly sponsorship", "Total monthly need"],
+    moneyFunded: "Monthly sponsorship",
+    moneyNeed: "Total monthly need",
+    impactH: "What comes back to you",
+    impactP:
+      "Each delivery is recorded with a document you can see, and regular impact reports on education, health and living conditions are reviewed by the administration before they reach you.",
+    closeH: "Where the name comes from",
     startReal: "Start with a real file",
     partners: "Partner care organizations",
     proofH: "The platform today",
@@ -275,8 +280,6 @@ const COPY = defineCopy("routes/index", {
     mapH: "Where we work",
     mapP: "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
     crossingH: "Two shores and a strait",
-    crossingP:
-      "The logo isn't decoration: two palms holding a child, beneath two neighboring arcs — gold and green — like the two fingers in the hadith. Sponsor and orphan side by side; care that holds without hiding.",
     childH: "Here, an orphan is a person, not a “case”",
     childP1:
       "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers — because what isn't measured isn't followed, and what isn't followed doesn't change.",
@@ -427,23 +430,32 @@ function HomePage() {
 
   const g = useGivingCopy();
   const proof = [
-    { value: String(NETWORK_COUNTS.offices), label: c.proofOffices },
-    { value: String(NETWORK_COUNTS.field), label: c.proofField },
+    { value: NETWORK_COUNTS.offices, label: c.proofOffices },
+    { value: NETWORK_COUNTS.field, label: c.proofField },
     // أعداد المنصّة الحيّة: إن تعذّرت لا تُعرض، فلا «صفر» ولا رقمٌ مختلَق.
     ...(data.stats
       ? [
-          { value: String(data.stats.totalOrphans), label: c.proofFiles },
-          { value: String(data.stats.fullySponsored), label: c.proofFull },
+          { value: data.stats.totalOrphans, label: c.proofFiles },
+          { value: data.stats.fullySponsored, label: c.proofFull },
         ]
       : []),
   ];
+  const funded = moneyLine(data.stats, "monthlyFunded", locale);
+  const need = moneyLine(data.stats, "monthlyNeed", locale);
+  const money =
+    funded && need
+      ? [
+          { label: c.moneyFunded, value: funded },
+          { label: c.moneyNeed, value: need },
+        ]
+      : null;
 
   return (
     <div className="min-h-dvh">
       <SiteHeader />
 
       <main id="main" tabIndex={-1}>
-        {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
+        {/* ── 1 · من نحن ومع مَن: الهوية، والوعد، والفعلان، والشريك، والدليل بالأرقام ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
           <BrandPattern density="watermark" className="text-gold-line" opacity={0.08} tile={132} />
           <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-12 text-center md:pt-20 md:pb-16 lg:pt-24">
@@ -528,11 +540,22 @@ function HomePage() {
                       {item.label}
                     </dt>
                     <dd className="numeral order-first text-5xl text-primary md:text-6xl">
-                      {item.value}
+                      <CountUp value={item.value} />
                     </dd>
                   </div>
                 ))}
               </dl>
+              {/* المبالغ لكلّ عملةٍ على حدة (UX-07): سطرٌ هادئ تحت الشريط، ولا يُعرض إن تعذّرت الأعداد. */}
+              {money && (
+                <dl className="mx-auto mt-5 flex max-w-3xl flex-wrap items-baseline justify-center gap-x-8 gap-y-2 text-sm">
+                  {money.map((m) => (
+                    <div key={m.label} className="flex flex-wrap items-baseline gap-x-2">
+                      <dt className="text-muted-foreground">{m.label}</dt>
+                      <dd className="font-bold tabular-nums">{m.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
               <p className="mx-auto mt-4 max-w-2xl text-xs leading-6 text-muted-foreground">
                 {c.proofSource}
               </p>
@@ -540,7 +563,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── اختر أثرك: المسارات الثلاثة بأسمائها من config/giving-tracks ── */}
+        {/* ── 2 · طرق العطاء: المسارات الثلاثة بأسمائها من config/giving-tracks، ثم ما يشتريه العطاء ── */}
         <section
           className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-28"
           aria-labelledby="tracks-heading"
@@ -580,198 +603,23 @@ function HomePage() {
             })}
           </div>
 
-          {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
-          {/* the hadith the name comes from, set as the page's one large line of calligraphic type */}
-          <blockquote className="mx-auto mt-20 max-w-5xl text-center md:mt-28">
-            <span aria-hidden="true" className="rule-champagne mx-auto block w-40" />
-            {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
-            <p
-              className="mt-9 font-quran text-[1.75rem] leading-[1.9] text-balance text-foreground md:text-[2.25rem] md:leading-[1.8]"
-              lang="ar"
-              dir="rtl"
-            >
-              «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
-            </p>
-            {c.hadithMeaning && (
-              <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
-                {c.hadithMeaning}
-              </p>
-            )}
-            <cite className="mt-4 block text-xs text-muted-foreground not-italic">
-              {c.hadithSource}
-            </cite>
-          </blockquote>
-        </section>
-
-        {/* ── منصة الرؤية والتوجهات: تجربةٌ حيّة بلا حساب ── */}
-
-        {/* ── الخارطة تحت الهيرو: «الشبكة» افتراضياً ── */}
-        <section
-          id="map"
-          aria-labelledby="map-heading"
-          className="scroll-mt-16 border-t border-border/70"
-        >
-          <div className="mx-auto max-w-6xl px-4 pt-20 pb-6 md:pt-24">
-            <h2 id="map-heading" className="heading-section">
-              {c.mapH}
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.mapP}</p>
-          </div>
-          {/* أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
-          <WorldMap
-            stats={stats}
-            selection={selection}
-            onSelect={onSelect}
-            layer={sp.layer ?? HOME_LAYER}
-            onLayer={onLayer}
-            demo={demo}
-            status={status}
-            showUnconfirmed={isAdmin}
-            supportable={HOME_SUPPORTABLE}
-            action={(ctx) => <MapActions ctx={ctx} />}
-            className="h-[min(78dvh,760px)] min-h-[30rem]"
-          />
-        </section>
-
-        {/* ── الأرقام ── */}
-        <section className="reveal-scroll border-t border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-20 md:py-24" aria-labelledby="numbers-heading">
-            <h2 id="numbers-heading" className="heading-section">
-              {c.numbersH}
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.numbersP}</p>
-            <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4 [&>*]:reveal">
-              <StatTile
-                label={c.stats[0]!}
-                value={data.stats ? String(data.stats.totalOrphans) : "—"}
-              />
-              <StatTile
-                label={c.stats[1]!}
-                value={data.stats ? String(data.stats.fullySponsored) : "—"}
-              />
-              <StatTile
-                label={c.stats[2]!}
-                value={moneyLine(data.stats, "monthlyFunded", locale)}
-              />
-              <StatTile label={c.stats[3]!} value={moneyLine(data.stats, "monthlyNeed", locale)} />
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link to="/orphans">
-                  {c.startReal}
-                  <ArrowLeft className="ltr:-scale-x-100 size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/organizations">{c.partners}</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* ── الشطّان والمضيق ── */}
-        <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
-          aria-labelledby="crossing-heading"
-        >
-          <h2 id="crossing-heading" className="heading-section">
-            {c.crossingH}
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.crossingP}</p>
-          {/* one band parted by hairlines; the colour of each shore is its dot, the words stay ink */}
-          <ol className="mt-10 grid divide-y divide-border border-y border-border md:grid-cols-3 md:divide-x md:divide-y-0">
-            {CROSSING.map((stage, i) => (
-              <li key={i} className="py-7 md:px-9 md:py-10 md:first:ps-0 md:last:pe-0">
-                <span className="flex items-center gap-2.5">
-                  <span className={`size-2.5 rounded-full ${stage.dot}`} aria-hidden="true" />
-                  <span className="text-lg font-bold">{c.crossing[i]![0]}</span>
-                </span>
-                <p className="mt-3 text-[0.9375rem] leading-8 text-muted-foreground">
-                  {c.crossing[i]![1]}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── من هو اليتيم عندنا ── */}
-        <section className="reveal-scroll border-y border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-20 md:py-24" aria-labelledby="child-heading">
-            <div className="grid gap-12 md:grid-cols-[1fr_0.85fr] md:gap-16">
-              <div>
-                <h2 id="child-heading" className="heading-section">
-                  {c.childH}
-                </h2>
-                <div className="mt-5 space-y-4 text-base leading-8 text-muted-foreground">
-                  <p>{c.childP1}</p>
-                  <p>{c.childP2}</p>
-                </div>
-              </div>
-
-              <aside className="rounded-2xl border border-border bg-card p-7 md:p-8">
-                <ScrollText className="size-6 text-primary" strokeWidth={1.5} aria-hidden="true" />
-                <h3 className="mt-5 text-lg font-bold">{c.dignityH}</h3>
-                <ul className="mt-4 divide-y divide-border text-sm leading-7 text-muted-foreground">
-                  {c.dignity.map((line) => (
-                    <li key={line} className="py-3 first:pt-0 last:pb-0">
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              </aside>
-            </div>
-          </div>
-        </section>
-
-        {/* ── مراتب الوعي ── */}
-        <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
-          aria-labelledby="ladder-heading"
-        >
-          <h2 id="ladder-heading" className="heading-section">
-            {c.ladderH}
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.ladderP}</p>
-          {/* numbered columns on a hairline: the display numeral does the work the icon chips did */}
-          <ol className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {AWARENESS_LADDER.map((step, i) => (
-              <li key={i} className="border-t border-border pt-6">
-                <span className="numeral block text-5xl text-primary/30" aria-hidden="true">
-                  {c.ordinals[i]}
-                </span>
-                <p className="mt-6 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <span className={`size-2 rounded-full ${step.dot}`} aria-hidden="true" />
-                  {c.ladder[i]![0]}
-                </p>
-                <h3 className="mt-1.5 text-lg font-bold">{c.ladder[i]![1]}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── ما يشتريه الكافل: البرامج ── */}
-        {data.programs.length > 0 && (
-          <section className="reveal-scroll border-y border-border/70 bg-secondary/30">
-            <div
-              className="mx-auto max-w-6xl px-4 py-20 md:py-24"
-              aria-labelledby="programs-heading"
-            >
-              <h2 id="programs-heading" className="heading-section">
+          {/* ما يشتريه الكافل: البرامج — تحت الأبواب لأنها جواب «على ماذا يُصرَف؟» */}
+          {data.programs.length > 0 && (
+            <div className="mt-16 border-t border-border pt-12 md:mt-20 md:pt-14">
+              <h3 id="programs-heading" className="heading-sub">
                 {c.programsH}
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+              </h3>
+              <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">
                 {c.programsP}
               </p>
 
               {/* المعادلة الحاكمة — تُذكر لأنها تحكم التصميم لا لأنها شعار. */}
-              <figure className="mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 md:p-7">
-                <blockquote className="text-center text-base leading-9 font-bold md:text-lg">
+              <figure className="mt-8 max-w-2xl border-s-2 border-primary/30 ps-6">
+                <blockquote className="text-base leading-9 font-bold md:text-lg">
                   {c.eqLabel} <span className="text-shore-need">{c.eqA}</span> +{" "}
                   <span className="text-shore-thrive">{c.eqB}</span>
                 </blockquote>
-                <figcaption className="mt-3 text-center text-xs leading-6 text-muted-foreground">
+                <figcaption className="mt-2 text-sm leading-7 text-muted-foreground">
                   {c.eqCaption}
                 </figcaption>
               </figure>
@@ -783,7 +631,10 @@ function HomePage() {
                 <strong>{c.programsP2[3]}</strong>
                 {c.programsP2[4]}
               </p>
-              <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ul
+                className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                aria-labelledby="programs-heading"
+              >
                 {data.programs.map((program) => (
                   <li
                     key={program.id}
@@ -794,7 +645,7 @@ function HomePage() {
                     }
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="font-bold">{program.title}</h3>
+                      <h4 className="font-bold">{program.title}</h4>
                       {/* the category is a neutral hairline chip; only «بناء أهلية» keeps its green */}
                       <span
                         className={
@@ -838,54 +689,220 @@ function HomePage() {
                 ))}
               </ul>
             </div>
-          </section>
-        )}
+          )}
+        </section>
 
-        {/* ── سلسلة التوثيق ── */}
+        {/* ── 3 · الثقة: سلسلة التوثيق، ثم ما يعنيه الملفّ وقيود الكرامة ── */}
+        <section className="reveal-scroll border-y border-border/70 bg-secondary/30">
+          <div className="mx-auto max-w-6xl px-4 py-20 md:py-24" aria-labelledby="custody-heading">
+            <h2 id="custody-heading" className="heading-section">
+              {c.custodyH}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.custodyP}</p>
+            {/* a chain: one continuous hairline with a node at each link */}
+            <ol className="mt-12 grid gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+              {CUSTODY.map((Icon, i) => (
+                <li key={i} className="relative border-t border-border pe-8 pt-7">
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-[5px] start-0 size-[9px] rounded-full bg-primary"
+                  />
+                  <span className="flex items-center gap-3">
+                    <span className="numeral text-3xl text-primary">{c.ordinals[i]}</span>
+                    <Icon
+                      className="size-5 text-muted-foreground"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <h3 className="mt-4 text-lg font-bold">{c.custody[i]![0]}</h3>
+                  <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mt-16 grid gap-12 border-t border-border pt-12 md:mt-20 md:grid-cols-[1fr_0.85fr] md:gap-16 md:pt-14">
+              <div>
+                <h3 className="heading-sub">{c.childH}</h3>
+                <div className="mt-4 space-y-4 text-base leading-8 text-muted-foreground">
+                  <p>{c.childP1}</p>
+                  <p>{c.childP2}</p>
+                </div>
+                <Link
+                  to="/organizations"
+                  className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary underline decoration-primary/30 underline-offset-[6px] transition-colors hover:decoration-primary"
+                >
+                  {c.partners}
+                  <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+                </Link>
+              </div>
+
+              <aside className="self-start rounded-2xl border border-border bg-card p-7 md:p-8">
+                <ScrollText className="size-6 text-primary" strokeWidth={1.5} aria-hidden="true" />
+                <h3 className="mt-5 text-lg font-bold">{c.dignityH}</h3>
+                <ul className="mt-4 divide-y divide-border text-sm leading-7 text-muted-foreground">
+                  {c.dignity.map((line) => (
+                    <li key={line} className="py-3 first:pt-0 last:pb-0">
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 4 · ما يعود إلى المانح: العبور الذي يموّله، ومراتبه هو من الدراية إلى العمران ── */}
         <section
           className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
-          aria-labelledby="custody-heading"
+          aria-labelledby="impact-heading"
         >
-          <h2 id="custody-heading" className="heading-section">
-            {c.custodyH}
+          <h2 id="impact-heading" className="heading-section">
+            {c.impactH}
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.custodyP}</p>
-          {/* a chain: one continuous hairline with a node at each link */}
-          <ol className="mt-12 grid gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {CUSTODY.map((Icon, i) => (
-              <li key={i} className="relative border-t border-border pe-8 pt-7">
-                <span
-                  aria-hidden="true"
-                  className="absolute -top-[5px] start-0 size-[9px] rounded-full bg-primary"
-                />
-                <span className="flex items-center gap-3">
-                  <span className="numeral text-3xl text-primary">{c.ordinals[i]}</span>
-                  <Icon
-                    className="size-5 text-muted-foreground"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
+          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.impactP}</p>
+
+          {/* one band parted by hairlines; the colour of each shore is its dot, the words stay ink */}
+          <h3 className="heading-sub mt-12">{c.crossingH}</h3>
+          <ol className="mt-5 grid divide-y divide-border border-y border-border md:grid-cols-3 md:divide-x md:divide-y-0">
+            {CROSSING.map((stage, i) => (
+              <li key={i} className="py-7 md:px-9 md:py-9 md:first:ps-0 md:last:pe-0">
+                <span className="flex items-center gap-2.5">
+                  <span className={`size-2.5 rounded-full ${stage.dot}`} aria-hidden="true" />
+                  <span className="text-lg font-bold">{c.crossing[i]![0]}</span>
                 </span>
-                <h3 className="mt-4 text-lg font-bold">{c.custody[i]![0]}</h3>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
+                <p className="mt-3 text-[0.9375rem] leading-8 text-muted-foreground">
+                  {c.crossing[i]![1]}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          <h3 className="heading-sub mt-16 md:mt-20">{c.ladderH}</h3>
+          <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">{c.ladderP}</p>
+          {/* numbered columns on a hairline: the display numeral does the work the icon chips did */}
+          <ol className="mt-10 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {AWARENESS_LADDER.map((step, i) => (
+              <li key={i} className="border-t border-border pt-6">
+                <span className="numeral block text-5xl text-primary/30" aria-hidden="true">
+                  {c.ordinals[i]}
+                </span>
+                <p className="mt-6 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <span className={`size-2 rounded-full ${step.dot}`} aria-hidden="true" />
+                  {c.ladder[i]![0]}
+                </p>
+                <h4 className="mt-1.5 text-lg font-bold">{c.ladder[i]![1]}</h4>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
               </li>
             ))}
           </ol>
         </section>
+
+        {/* ── 5 · أين: الخارطة، «الشبكة» افتراضياً ── */}
+        <section
+          id="map"
+          aria-labelledby="map-heading"
+          className="scroll-mt-16 border-t border-border/70"
+        >
+          <div className="mx-auto max-w-6xl px-4 pt-20 pb-6 md:pt-24">
+            <h2 id="map-heading" className="heading-section">
+              {c.mapH}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.mapP}</p>
+          </div>
+          {/* أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
+          <WorldMap
+            stats={stats}
+            selection={selection}
+            onSelect={onSelect}
+            layer={sp.layer ?? HOME_LAYER}
+            onLayer={onLayer}
+            demo={demo}
+            status={status}
+            showUnconfirmed={isAdmin}
+            supportable={HOME_SUPPORTABLE}
+            action={(ctx) => <MapActions ctx={ctx} />}
+            className="h-[min(78dvh,760px)] min-h-[30rem]"
+          />
+        </section>
+
+        {/* ── 6 · الختام: الحديث الذي منه الاسم — مرّةً واحدة في الصفحة — وفعلٌ واحد ── */}
+        <section
+          className="reveal-scroll border-t border-border/70"
+          aria-labelledby="close-heading"
+        >
+          <div className="mx-auto max-w-5xl px-4 py-20 text-center md:py-28">
+            <DrawnMark />
+            <h2
+              id="close-heading"
+              className="eyebrow mt-7 after:h-px after:w-8 after:flex-none after:bg-bridge"
+            >
+              {c.closeH}
+            </h2>
+            {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
+            <blockquote className="mt-7">
+              {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
+              <p
+                className="font-quran text-[1.75rem] leading-[1.9] text-balance text-foreground md:text-[2.25rem] md:leading-[1.8]"
+                lang="ar"
+                dir="rtl"
+              >
+                «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
+              </p>
+              {c.hadithMeaning && (
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
+                  {c.hadithMeaning}
+                </p>
+              )}
+              <cite className="mt-4 block text-xs text-muted-foreground not-italic">
+                {c.hadithSource}
+              </cite>
+            </blockquote>
+            <span aria-hidden="true" className="rule-champagne mx-auto mt-10 block w-40" />
+            {/* فعلٌ واحد، بحسب وضع المنصّة: التجربة قبل الاعتماد، والدليل بعده. */}
+            <div className="mt-10">
+              {isTrial() ? (
+                <Button asChild size="lg">
+                  <Link to="/try">
+                    <FlaskConical className="size-4" aria-hidden="true" />
+                    {c.tryIt}
+                  </Link>
+                </Button>
+              ) : (
+                <Button asChild size="lg">
+                  <Link to="/orphans">
+                    {c.startReal}
+                    <ArrowLeft className="size-4 ltr:-scale-x-100" />
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        </section>
       </main>
 
-      <SiteFooter />
+      <SiteFooter hadith={false} />
     </div>
   );
 }
 
-/** المبلغ لكلّ عملةٍ على حدة (UX-07)؛ وبلا تقسيمٍ بالعملة «—» لا رقمٌ بعملةٍ مفترضة. */
+/** علامة المنتج فوق الحديث الذي منه اسمها: حلقتها ترسم نفسها مرّةً حين تُرى (‎.mo-draw). */
+function DrawnMark() {
+  const [ref, inView] = useInView<HTMLSpanElement>();
+  return (
+    <span ref={ref} className="mx-auto block size-16 md:size-20">
+      <KahataynMark draw={inView} />
+    </span>
+  );
+}
+
+/** المبلغ لكلّ عملةٍ على حدة (UX-07)؛ وبلا تقسيمٍ بالعملة لا يُعرض شيء — لا رقمٌ بعملةٍ مفترضة. */
 function moneyLine(
   stats: PlatformStats | null,
   key: "monthlyFunded" | "monthlyNeed",
   locale: string,
 ) {
-  if (!stats || stats.byCurrency.length === 0) return "—";
+  if (!stats || stats.byCurrency.length === 0) return null;
   return formatMoneyTotals(
     stats.byCurrency.map((r) => ({ currency: r.currency, amount: r[key] })),
     stats.byCurrency[0]!.currency,

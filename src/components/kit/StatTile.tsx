@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { CountUp } from "@/components/motion/CountUp";
 
 export type StatTone = "primary" | "gold" | "muted" | "need" | "thrive";
 
@@ -16,7 +17,12 @@ const TONE: Record<StatTone, string> = {
  * المؤشّر بالعين نفسها أينما ظهر — لا نسخةٌ ثانية بالتسمية فوق الرقم.
  *
  * `loading` يرسم هيكلاً بارتفاع الرقم نفسه، فلا يقفز ما تحته حين يصل (RT-07).
+ *
+ * العدد الصحيح المجرّد يُعدّ مرّةً واحدة حين يدخل الشاشة من تحت الطيّة (CountUp)؛ وما كان
+ * ظاهراً عند الفتح، والمبالغ والنسب والنصوص، تبقى ثابتة.
  */
+const PLAIN_INTEGER = /^\d{1,9}$/;
+
 export function StatTile({
   label,
   value,
@@ -38,7 +44,7 @@ export function StatTile({
         <Skeleton className="h-9 w-20" aria-hidden="true" />
       ) : (
         <p className={cn("text-[1.75rem] leading-9 font-extrabold tabular-nums", TONE[tone])}>
-          {value}
+          {PLAIN_INTEGER.test(value) ? <CountUp value={Number(value)} /> : value}
         </p>
       )}
       <p className="mt-1 text-sm text-muted-foreground">{label}</p>

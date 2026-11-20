@@ -1,5 +1,4 @@
 import { KahataynMark } from "@/components/brand/KahataynMark";
-import { Reveal } from "@/components/motion/Reveal";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FollowedStrip } from "@/components/support/Follow";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -654,9 +653,10 @@ function OrphansPage() {
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {DEMO_MODE
               ? sample.rows.map((child, i) => (
-                  <Reveal key={child.id} delay={(i % 6) * 0.05}>
+                  // the same CSS stagger as the real cards below (no animation library)
+                  <div key={child.id} className="stagger-in" style={{ ["--i" as string]: i }}>
                     <DemoChildCard child={child} />
-                  </Reveal>
+                  </div>
                 ))
               : rows.map((orphan, i) => (
                   // المفتاح يتضمّن الصفحة: صفحةٌ جديدة تصعد بطاقاتها بالتتابع من جديد.
