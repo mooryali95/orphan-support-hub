@@ -1,0 +1,20 @@
+Self-hosted web fonts (SIL Open Font License 1.1 — https://openfontlicense.org)
+
+Amiri 1.002 — Copyright 2010-2022 The Amiri Project Authors
+  (https://github.com/aliftype/amiri)
+  amiri-{400,700}-ar.woff2       Arabic subset as served by Google Fonts (v30)
+  amiri-{400,700}-lat.woff2      Latin subset as served by Google Fonts (v30)
+  amiri-{400,700}-ar-core.woff2  modified: subset of the Arabic file to the
+                                 everyday Arabic letters, marks and digits
+                                 (pyftsubset --layout-features='*'); the
+                                 unicode list is CORE_ARABIC in src/lib/fonts.ts
+
+Readex Pro 1.205 (variable, wght 160-700) — Copyright 2019 The Readex Pro
+  Project Authors (https://github.com/ThomasJockin/readexpro)
+  readex-ar.woff2, readex-lat.woff2  as served by Google Fonts (v27)
+
+To rebuild the core subset:
+  pyftsubset amiri-700-ar.woff2 --unicodes="<CORE_ARABIC>" \
+    --layout-features='*' --flavor=woff2 --output-file=amiri-700-ar-core.woff2
+
+Full licence texts: OFL-Amiri.txt, OFL-ReadexPro.txt (this folder).

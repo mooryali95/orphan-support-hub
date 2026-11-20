@@ -1,10 +1,12 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { FlaskConical, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { pageTitle } from "@/config/brand";
+import { dirOf, useLocale } from "@/lib/locale";
 import { resetGifts } from "@/lib/try-demo";
 
 /**
@@ -26,10 +28,13 @@ export const Route = createFileRoute("/try")({
 });
 
 function TryLayout() {
+  // نصوص التجربة عربيةٌ كلّها اليوم. فإن كانت لغة الواجهة غيرها أُعلن ذلك على الجزء
+  // نفسه: قارئ الشاشة ينطقه بالعربية، والسطور والأسهم تأخذ اتجاهها الصحيح.
+  const arabicPart = dirOf(useLocale()) === "rtl" ? {} : { lang: "ar", dir: "rtl" as const };
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
-      <div role="note" className="border-b border-bridge/25 bg-bridge/8">
+      <div role="note" {...arabicPart} className="border-b border-bridge/25 bg-bridge/8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5 text-sm">
           <span className="inline-flex items-center gap-2 font-bold text-bridge-ink">
             <FlaskConical className="size-4" aria-hidden="true" />
@@ -45,8 +50,12 @@ function TryLayout() {
           <TryJourneyGuide />
           <button
             type="button"
-            onClick={() => resetGifts()}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+            onClick={() => {
+              resetGifts();
+              // بلا هذا لا يتغيّر شيءٌ أمام الزائر خارج «أثري»، فلا يعرف أنّ ضغطته سُجّلت.
+              toast.success("بدأت التجربة من جديد");
+            }}
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg px-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             <RotateCcw className="size-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">ابدأ من جديد</span>
@@ -54,7 +63,12 @@ function TryLayout() {
           </button>
         </div>
       </div>
-      <main id="main" tabIndex={-1} className="try-page mx-auto max-w-6xl px-4 py-10">
+      <main
+        id="main"
+        tabIndex={-1}
+        {...arabicPart}
+        className="try-page mx-auto max-w-6xl px-4 py-10"
+      >
         <Outlet />
       </main>
       <SiteFooter />

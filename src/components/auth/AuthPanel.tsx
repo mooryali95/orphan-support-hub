@@ -396,7 +396,7 @@ export function AuthPanel({
               dismissOffer();
               onDone?.();
             }}
-            className="mt-3 min-h-9 w-full text-sm text-muted-foreground hover:text-foreground"
+            className="mt-3 min-h-11 w-full text-sm text-muted-foreground hover:text-foreground"
           >
             {t.later}
           </button>
@@ -435,7 +435,7 @@ export function AuthPanel({
             <button
               type="button"
               onClick={() => setStage({ step: "ask" })}
-              className="inline-flex min-h-9 items-center gap-1 text-muted-foreground hover:text-foreground"
+              className="inline-flex min-h-11 items-center gap-1 text-muted-foreground hover:text-foreground"
             >
               <ArrowRight className="size-4 ltr:-scale-x-100" aria-hidden="true" />
               {method === "email" ? t.changeEmail : t.changePhone}
@@ -444,7 +444,7 @@ export function AuthPanel({
               type="button"
               disabled={wait > 0 || busy}
               onClick={() => void send()}
-              className="min-h-9 font-medium text-primary disabled:text-muted-foreground"
+              className="min-h-11 font-medium text-primary disabled:text-muted-foreground"
             >
               {wait > 0 ? (
                 <>
@@ -590,7 +590,7 @@ export function AuthPanel({
                   setValue("");
                 }}
                 className={cn(
-                  "flex min-h-9 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
+                  "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
                   method === m
                     ? "bg-card text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground",
@@ -640,7 +640,7 @@ export function AuthPanel({
           <button
             type="button"
             onClick={() => setStage({ step: "password" })}
-            className="mt-5 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+            className="mt-3 min-h-11 w-full text-center text-sm text-muted-foreground hover:text-foreground"
           >
             {t.havePassword}
           </button>

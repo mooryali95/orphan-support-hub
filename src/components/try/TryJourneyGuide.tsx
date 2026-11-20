@@ -76,14 +76,14 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
         ) : (
           <button
             type="button"
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2 font-bold text-primary hover:bg-secondary"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-bold text-primary hover:bg-secondary"
           >
             <RouteIcon className="size-4" aria-hidden="true" />
             الرحلة كاملة
           </button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent lang="ar" dir="rtl" className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">رحلة التجربة كاملة</DialogTitle>
           <DialogDescription className="leading-7">
