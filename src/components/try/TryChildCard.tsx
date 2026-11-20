@@ -12,7 +12,7 @@ export function TryChildCard({ child, delay = 0 }: { child: TryChild; delay?: nu
   const pct = Math.round((child.funded / child.need) * 100);
   return (
     <article
-      className="try-rise lift relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card"
+      className="try-rise lift relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-ring has-[a:focus-visible]:ring-offset-2 has-[a:focus-visible]:ring-offset-background"
       style={{ animationDelay: `${delay}s` }}
     >
       <MuralImage

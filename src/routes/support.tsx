@@ -362,34 +362,40 @@ function SupportPage() {
       <SiteHeader />
       {!orphan && <SupportPicks />}
       {!orphan && (
-        <div id="support-map" className="scroll-mt-16">
-          <WorldMap
-            stats={stats}
-            demo={demo}
-            status={status}
-            selection={selection}
-            onSelect={onSelect}
-            layer={stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER}
-            cardCompact
-            supportable={supportable}
-            className="h-[calc(100dvh-4rem)]"
-            intro={{
-              title: t.mapTitle,
-              text: t.mapText,
-            }}
-            // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
-            action={(ctx) => (
-              <SupportSheet
-                ctx={ctx}
-                catalog={catalog}
-                stats={stats}
-                signedIn={!!user}
-                presetKind={presetKind}
-                openedAt={openedAt.current}
-              />
-            )}
-          />
-        </div>
+        // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخارطة هي المحتوى هنا.
+        <main id="main" tabIndex={-1} className="scroll-mt-16 outline-none">
+          <h1 className="sr-only">{t.h1}</h1>
+          <div id="support-map" className="scroll-mt-16">
+            <WorldMap
+              stats={stats}
+              demo={demo}
+              status={status}
+              selection={selection}
+              onSelect={onSelect}
+              layer={
+                stats && Object.values(stats).some((s) => s.gap != null) ? "gap" : DEFAULT_LAYER
+              }
+              cardCompact
+              supportable={supportable}
+              className="h-[calc(100dvh-4rem)]"
+              intro={{
+                title: t.mapTitle,
+                text: t.mapText,
+              }}
+              // الدعم كلّه داخل بطاقة المكان: الهدف والنوع والمبلغ والتأكيد.
+              action={(ctx) => (
+                <SupportSheet
+                  ctx={ctx}
+                  catalog={catalog}
+                  stats={stats}
+                  signedIn={!!user}
+                  presetKind={presetKind}
+                  openedAt={openedAt.current}
+                />
+              )}
+            />
+          </div>
+        </main>
       )}
       {orphan && (
         <main

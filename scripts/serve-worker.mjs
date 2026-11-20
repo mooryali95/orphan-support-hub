@@ -12,6 +12,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { brotliCompressSync, gzipSync } from "node:zlib";
 
 const root = resolve(process.argv[2] ?? ".");
 const port = Number(process.env.PORT ?? 4173);
@@ -36,6 +37,26 @@ const TYPES = {
   ".txt": "text/plain",
   ".webmanifest": "application/manifest+json",
 };
+// كما تفعل الحافة في الإنتاج: ضغط النصوص، وتخزينٌ دائم لما في اسمه بصمة
+// (.output/public/_headers)، فقياس السرعة محلّياً يشبه ما يراه الزائر.
+const TEXT = /^(text\/|image\/svg|application\/(json|manifest\+json|javascript))/;
+const packed = new Map();
+function pack(key, body, type, accept) {
+  if (!TEXT.test(type) || body.length < 1024) return { body };
+  // الملفّات تُضغط مرّةً وتُحفظ (brotli)؛ والصفحات تُضغط مع كلّ طلب (gzip أسرع).
+  const enc = key && /\bbr\b/.test(accept) ? "br" : /\bgzip\b/.test(accept) ? "gzip" : null;
+  if (!enc) return { body };
+  const k = key ? `${enc}:${key}` : null;
+  let out = k ? packed.get(k) : undefined;
+  if (!out) {
+    out = enc === "br" ? brotliCompressSync(body) : gzipSync(body);
+    if (k) packed.set(k, out);
+  }
+  return { body: out, enc };
+}
+const cacheFor = (pathname) =>
+  pathname.startsWith("/assets/") ? "public, max-age=31536000, immutable" : "public, max-age=3600";
+
 const env = { ASSETS: { fetch: async () => new Response("not found", { status: 404 }) } };
 
 createServer(async (req, res) => {
@@ -48,8 +69,15 @@ createServer(async (req, res) => {
       existsSync(file) &&
       statSync(file).isFile()
     ) {
-      res.writeHead(200, { "content-type": TYPES[extname(file)] ?? "application/octet-stream" });
-      res.end(readFileSync(file));
+      const type = TYPES[extname(file)] ?? "application/octet-stream";
+      const p = pack(file, readFileSync(file), type, String(req.headers["accept-encoding"] ?? ""));
+      res.writeHead(200, {
+        "content-type": type,
+        "cache-control": cacheFor(url.pathname),
+        vary: "accept-encoding",
+        ...(p.enc ? { "content-encoding": p.enc } : {}),
+      });
+      res.end(p.body);
       return;
     }
     const chunks = [];
@@ -67,8 +95,18 @@ createServer(async (req, res) => {
     );
     const out = {};
     r.headers.forEach((v, k) => (out[k] = v));
+    const p = pack(
+      null,
+      Buffer.from(await r.arrayBuffer()),
+      out["content-type"] ?? "",
+      out["content-encoding"] ? "" : String(req.headers["accept-encoding"] ?? ""),
+    );
+    if (p.enc) {
+      out["content-encoding"] = p.enc;
+      delete out["content-length"];
+    }
     res.writeHead(r.status, out);
-    res.end(Buffer.from(await r.arrayBuffer()));
+    res.end(p.body);
   } catch (e) {
     res.writeHead(500);
     res.end(String(e));

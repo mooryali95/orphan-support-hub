@@ -32,9 +32,7 @@ import {
 } from "@/lib/locale";
 import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
 import { PreviewBridge } from "@/components/i18n/PreviewBridge";
-
-const FONTS_CSS =
-  "https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap";
+import { fontFaceCss, fontPreloads } from "@/lib/fonts";
 
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
@@ -206,11 +204,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      // الاتصال المسبق بأصلَي الخطوط يُكتب أوّل <head> في RootShell (قبل وحدات
-      // الحزمة المحمّلة مسبقاً)، لا هنا: هنا كان يقع بعدها فلا يسبق شيئاً (RT-05).
-      // الأوزان المستعملة فقط: Tajawal 400/500/700/800 (300 لا يُستعمل)، وAmiri
-      // 400 للنصّ النبوي و700 للعناوين. و`display=swap` يرسم النصّ فوراً بالبديل.
-      { rel: "stylesheet", href: FONTS_CSS },
+      // الخطوط من أصلنا (src/lib/fonts.ts): تعريفاتها مضمَّنة في RootShell وتحميلها
+      // المسبق هناك بحسب اتجاه اللغة؛ لا ورقة أنماطٍ خارجية تحجب الرسم.
       // العلامة المضغوطة: مقطع «IO» بالطفل في الفراغ السالب — يصمد عند 16px
       // لأنه كتلتان لونيتان لا تفاصيل خطية.
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -236,9 +231,17 @@ function RootShell({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preload" as="style" href={FONTS_CSS} />
+        {fontPreloads(dirOf(locale)).map((href) => (
+          <link
+            key={href}
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href={href}
+            crossOrigin="anonymous"
+          />
+        ))}
+        <style dangerouslySetInnerHTML={{ __html: fontFaceCss(dirOf(locale)) }} />
         <HeadContent />
         {/* ألوان الهوية من brand.json — قبل أوّل رسم فلا وميض. */}
         <style dangerouslySetInnerHTML={{ __html: BRAND_CSS }} />

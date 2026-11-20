@@ -13,7 +13,7 @@
  * أنماطاً مضمَّنة، ومنعها يكسر الصفحة. أما السكربت فلا `unsafe-eval`
  * فيه — وهو الأخطر.
  *
- * والخطوط من Google تحتاج نطاقيها صراحةً، والصور تحتاج `data:` للصور
+ * والخطوط من أصلنا (src/lib/fonts.ts) فلا نطاق خارجي لها، والصور تحتاج `data:` للصور
  * المضمَّنة و`blob:` لمعاينة ما يرفعه المستخدم قبل إرساله.
  */
 /**
@@ -41,8 +41,8 @@ function contentSecurityPolicy(
   return [
     "default-src 'self'",
     scriptSource(nonce, allowInline),
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com data:",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
     `img-src 'self' data: blob: ${supabaseOrigin ?? ""}`.trim(),
     `connect-src ${connect}`,
     // لا إطارات على الإطلاق: المنصة لا تُضمّن شيئاً ولا تُضمَّن.

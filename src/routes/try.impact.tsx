@@ -6,6 +6,7 @@ import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
 import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
+import { pageTitle } from "@/config/brand";
 import { formatMoney, formatDate } from "@/lib/format";
 import { myImpact } from "@/lib/my-impact";
 import {
@@ -20,6 +21,7 @@ import {
 export const Route = createFileRoute("/try/impact")({
   validateSearch: (raw: Record<string, unknown>): { done?: string } =>
     typeof raw["done"] === "string" ? { done: raw["done"] } : {},
+  head: () => ({ meta: [{ title: pageTitle("أثري · جرّب المنصّة", false) }] }),
   component: TryImpact,
 });
 

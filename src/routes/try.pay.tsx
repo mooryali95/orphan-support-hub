@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CreditCard, Loader2, Lock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { pageTitle } from "@/config/brand";
 import { addGift, cleanDedication, TRY_CURRENCY, tryChild } from "@/lib/try-demo";
 
 type Search = {
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/try/pay")({
     cadence: raw["cadence"] === "one_time" ? "one_time" : "monthly",
     ...(cleanDedication(raw["for"]) ? { for: cleanDedication(raw["for"]) } : {}),
   }),
+  head: () => ({ meta: [{ title: pageTitle("ملخّص عطائك · جرّب المنصّة", false) }] }),
   component: TryPay,
 });
 
@@ -33,6 +35,9 @@ function TryPay() {
   const child = tryChild(id);
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+  // من غادر الصفحة قبل انتهاء «التأكيد» لا يُسجَّل له عطاءٌ ولا يُنقل من حيث ذهب.
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   if (!child)
     return (
@@ -46,10 +51,13 @@ function TryPay() {
 
   const fee = Math.round(amount * 0.05 * 100) / 100;
   function pay() {
+    if (busy) return;
     setBusy(true);
-    window.setTimeout(() => {
+    timer.current = window.setTimeout(() => {
       addGift({ childId: child!.id, amount, cadence, ...(dedication ? { dedication } : {}) });
-      void navigate({ to: "/try/impact", search: { done: child!.id } });
+      // replace: زرّ الرجوع من «أثري» يعود إلى ملف الطفل لا إلى شاشة دفعٍ تمّ،
+      // فلا يُسجَّل العطاء مرّتين بضغطةٍ ثانية.
+      void navigate({ to: "/try/impact", search: { done: child!.id }, replace: true });
     }, 1400);
   }
 
@@ -132,7 +140,7 @@ function TryPay() {
           </div>
         </div>
         <KafalaPromise className="mt-6" />
-        <Button size="lg" className="mt-3 w-full" disabled={busy} onClick={pay}>
+        <Button size="lg" className="mt-3 w-full" disabled={busy} aria-busy={busy} onClick={pay}>
           {busy ? (
             <>
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
@@ -142,6 +150,9 @@ function TryPay() {
             <>ادفع {formatMoney(amount, TRY_CURRENCY, "ar")} (محاكاة)</>
           )}
         </Button>
+        <span role="status" className="sr-only">
+          {busy ? "يُؤكَّد الدفع…" : ""}
+        </span>
         <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
           <Lock className="size-3.5" aria-hidden="true" />
           في المنصّة الحقيقية يتمّ الدفع عبر بوابةٍ آمنة؛ هنا لا يُخصم شيء.
