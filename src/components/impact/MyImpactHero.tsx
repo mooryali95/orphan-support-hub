@@ -231,14 +231,18 @@ export function MyImpactHero({
                     className="text-[13px]"
                     style={{ fill: "var(--muted-foreground)" }}
                   >
-                    {c.name} · {c.months}{" "}
-                    {c.months === 1
-                      ? "شهر"
-                      : c.months === 2
-                        ? "شهران"
-                        : c.months <= 10
-                          ? "أشهر"
-                          : "شهراً"}
+                    {c.name} ·{" "}
+                    {c.months === 0
+                      ? "بدأت للتوّ"
+                      : `${c.months} ${
+                          c.months === 1
+                            ? "شهر"
+                            : c.months === 2
+                              ? "شهران"
+                              : c.months <= 10
+                                ? "أشهر"
+                                : "شهراً"
+                        }`}
                   </text>
                 </g>
               );

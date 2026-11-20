@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
+import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
 import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
 import { formatMoney, formatDate } from "@/lib/format";
@@ -35,7 +36,11 @@ function TryImpact() {
   }, []);
   const doneChild = done ? tryChild(done) : undefined;
   const doneGift = done ? gifts?.find((g) => g.childId === done) : undefined;
-  const impact = myImpact(giftsAsSponsorships(gifts ?? []));
+  /* «قدّم شهراً»: the same gifts read as they will stand `ahead` months from now (not stored) */
+  const [ahead, setAhead] = useState(0);
+  const then = new Date();
+  then.setMonth(then.getMonth() + ahead);
+  const impact = myImpact(giftsAsSponsorships(gifts ?? []), then);
 
   return (
     <>
@@ -70,6 +75,10 @@ function TryImpact() {
           gifts?.[0] ? { try: 1, child: gifts[0].childId, cadence: gifts[0].cadence } : { try: 1 }
         }
       />
+
+      {gifts && gifts.length > 0 && (
+        <TryJourneyAhead gifts={gifts} impact={impact} ahead={ahead} onAhead={setAhead} />
+      )}
 
       <section aria-labelledby="try-gifts" className="mt-10">
         <h2 id="try-gifts" className="text-xl font-bold">
