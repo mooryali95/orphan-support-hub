@@ -8,6 +8,8 @@ import {
   coverageAfter,
   giftsAsSponsorships,
   loadGifts,
+  localTryChild,
+  monthStory,
   resetGifts,
   TRY_CHILDREN,
   tryChildrenByWait,
@@ -100,5 +102,30 @@ describe("وضع التجربة", () => {
     expect(coverageAfter(sara, 40, "monthly")).toBe(67);
     expect(coverageAfter(sara, 500, "monthly")).toBe(100);
     expect(coverageAfter(sara, 80, "one_time")).toBe(33);
+  });
+
+  it("نصوص الطفل تتبع لغة الواجهة، والعربية هي البيانات نفسها بلا تغيير", () => {
+    for (const c of TRY_CHILDREN) {
+      expect(localTryChild(c, "ar")).toBe(c);
+      const en = localTryChild(c, "en");
+      expect({ id: en.id, code: en.code, need: en.need, co: en.co }).toEqual({
+        id: c.id,
+        code: c.code,
+        need: c.need,
+        co: c.co,
+      });
+      for (const v of [en.name, en.country, en.stage, en.covers])
+        expect(v).not.toMatch(/[\u0600-\u06FF]/);
+    }
+    const sara = TRY_CHILDREN[0]!;
+    expect(monthStory(sara, 80, 1).map((s) => s.title)).toEqual([
+      "حُوِّل عطاؤك",
+      "سُلِّم لـسارة",
+      "كلمة المشرف",
+    ]);
+    const story = monthStory(localTryChild(sara, "en"), 80, 7, "en");
+    expect(story[1]!.title).toBe("Delivered to Sara");
+    expect(story[0]!.text).toContain("80");
+    expect(story.map((s) => s.title + s.text).join("")).not.toMatch(/[\u0600-\u06FF]/);
   });
 });

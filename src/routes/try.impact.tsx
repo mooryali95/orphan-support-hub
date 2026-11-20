@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
 import { formatMoney, formatDate } from "@/lib/format";
 import { myImpact } from "@/lib/my-impact";
+import { copyOf, defineCopy, dirOf, useCopy, useLocale } from "@/lib/locale";
 import {
   giftsAsSponsorships,
   loadGifts,
+  localTryChild,
   TRY_CURRENCY,
   TRY_EVENT,
   tryChild,
@@ -21,13 +23,62 @@ import {
 export const Route = createFileRoute("/try/impact")({
   validateSearch: (raw: Record<string, unknown>): { done?: string } =>
     typeof raw["done"] === "string" ? { done: raw["done"] } : {},
-  head: () => ({ meta: [{ title: pageTitle("أثري · جرّب المنصّة", false) }] }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return { meta: [{ title: pageTitle(copyOf(COPY, l).pageTitle, false, l) }] };
+  },
   component: TryImpact,
+});
+
+const COPY = defineCopy("routes/try.impact", {
+  ar: {
+    pageTitle: "أثري · جرّب المنصّة",
+    celebrateTitle: (name: string) => `من اليوم، ${name} لا ينتظر وحده`,
+    celebrateDedication: (name: string) => `صدقةٌ جارية عن ${name}، تقبّلها الله.`,
+    celebrateText: "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.",
+    see: "شاهد أثرك",
+    title: "أثري",
+    lead: "أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.",
+    gifts: "عطاءاتك",
+    none: "لم تبدأ عطاءً بعد في التجربة.",
+    choose: "اختر طفلاً",
+    monthly: "شهرية",
+    oneTime: "مرّة واحدة",
+    status: "الحالة: نشطة (محاكاة)",
+    dedication: (name: string) => `صدقةٌ جارية عن ${name}`,
+  },
+  en: {
+    pageTitle: "My impact · Try the platform",
+    celebrateTitle: (name: string) => `From today, ${name} no longer waits alone`,
+    celebrateDedication: (name: string) =>
+      `Ongoing charity on behalf of ${name}. May God accept it.`,
+    celebrateText:
+      "Your giving has begun. Each month you will see when it was transferred and when it was delivered, with a receipt. This is your impact today.",
+    see: "See your impact",
+    title: "My impact",
+    lead: "The impact of your gifts in this trial, as a supporter sees it on their dashboard.",
+    gifts: "Your gifts",
+    none: "You have not started a gift in the trial yet.",
+    choose: "Choose a child",
+    monthly: "Monthly",
+    oneTime: "One-time",
+    status: "Status: active (simulated)",
+    dedication: (name: string) => `Ongoing charity on behalf of ${name}`,
+  },
 });
 
 /** «أثري» التجربة: الصورة الحقيقية نفسها، مبنيّةً من عطاءات الزائر المحاكاة في متصفّحه. */
 function TryImpact() {
   const { done } = Route.useSearch();
+  const locale = useLocale();
+  const c = useCopy(COPY);
+  const local = (id: string) => {
+    const k = tryChild(id);
+    return k ? localTryChild(k, locale) : undefined;
+  };
+  // «كوكبة أثرك» ما زالت عربيةً وحدها (مكوّنٌ مشترك خارج الرحلة): يُعلن ذلك عليها هي فقط،
+  // فتُنطق بالعربية وتُصفّ من اليمين، وبقية الصفحة بلغة الواجهة.
+  const arabicPart = dirOf(locale) === "rtl" ? {} : { lang: "ar", dir: "rtl" as const };
   const navigate = useNavigate();
   const [gifts, setGifts] = useState<TryGift[] | null>(null);
   useEffect(() => {
@@ -36,7 +87,7 @@ function TryImpact() {
     window.addEventListener(TRY_EVENT, read);
     return () => window.removeEventListener(TRY_EVENT, read);
   }, []);
-  const doneChild = done ? tryChild(done) : undefined;
+  const doneChild = done ? local(done) : undefined;
   const doneGift = done ? gifts?.find((g) => g.childId === done) : undefined;
   /* «قدّم شهراً»: the same gifts read as they will stand `ahead` months from now (not stored) */
   const [ahead, setAhead] = useState(0);
@@ -49,34 +100,34 @@ function TryImpact() {
       {doneChild && (
         <CelebrateOverlay
           grand
-          title={`من اليوم، ${doneChild.name} لا ينتظر وحده`}
+          title={c.celebrateTitle(doneChild.name)}
           text={
             <>
               {doneGift?.dedication && (
                 <span className="mb-2 block font-bold text-bridge-ink">
-                  صدقةٌ جارية عن {doneGift.dedication}، تقبّلها الله.
+                  {c.celebrateDedication(doneGift.dedication)}
                 </span>
               )}
-              بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.
+              {c.celebrateText}
             </>
           }
-          action="شاهد أثرك"
+          action={c.see}
           onClose={() => void navigate({ to: "/try/impact", search: {}, replace: true })}
         />
       )}
-      <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">أثري</h1>
-      <p className="mt-3 text-base leading-8 text-muted-foreground">
-        أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.
-      </p>
+      <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{c.title}</h1>
+      <p className="mt-3 text-base leading-8 text-muted-foreground">{c.lead}</p>
 
-      <MyImpactHero
-        impact={impact}
-        loading={gifts === null}
-        anotherTo="/try"
-        hallSearch={
-          gifts?.[0] ? { try: 1, child: gifts[0].childId, cadence: gifts[0].cadence } : { try: 1 }
-        }
-      />
+      <div {...arabicPart}>
+        <MyImpactHero
+          impact={impact}
+          loading={gifts === null}
+          anotherTo="/try"
+          hallSearch={
+            gifts?.[0] ? { try: 1, child: gifts[0].childId, cadence: gifts[0].cadence } : { try: 1 }
+          }
+        />
+      </div>
 
       {gifts && gifts.length > 0 && (
         <TryJourneyAhead gifts={gifts} impact={impact} ahead={ahead} onAhead={setAhead} />
@@ -84,38 +135,38 @@ function TryImpact() {
 
       <section aria-labelledby="try-gifts" className="mt-10">
         <h2 id="try-gifts" className="text-xl font-bold">
-          عطاءاتك
+          {c.gifts}
         </h2>
         {gifts && gifts.length === 0 ? (
           <div className="mt-4 rounded-2xl border border-border bg-card p-8 text-center">
-            <p className="text-muted-foreground">لم تبدأ عطاءً بعد في التجربة.</p>
+            <p className="text-muted-foreground">{c.none}</p>
             <Button asChild className="mt-4">
-              <Link to="/try">اختر طفلاً</Link>
+              <Link to="/try">{c.choose}</Link>
             </Button>
           </div>
         ) : (
           <ul className="mt-4 space-y-3">
             {(gifts ?? []).map((g) => {
-              const c = tryChild(g.childId)!;
+              const kid = local(g.childId)!;
               return (
                 <li
                   key={g.id}
                   className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-border bg-card px-5 py-4"
                 >
-                  <span className="font-bold">{c.name}</span>
-                  <span className="text-sm text-muted-foreground">{c.country}</span>
+                  <span className="font-bold">{kid.name}</span>
+                  <span className="text-sm text-muted-foreground">{kid.country}</span>
                   <span className="rounded-full bg-primary/10 px-3 py-0.5 text-xs font-bold text-primary">
-                    {g.cadence === "monthly" ? "شهرية" : "مرّة واحدة"}
+                    {g.cadence === "monthly" ? c.monthly : c.oneTime}
                   </span>
                   <span className="ms-auto font-bold tabular-nums">
-                    {formatMoney(g.amount, TRY_CURRENCY, "ar")}
+                    {formatMoney(g.amount, TRY_CURRENCY, locale)}
                   </span>
                   <span className="w-full text-xs text-muted-foreground sm:w-auto">
-                    {formatDate(g.at)} · الحالة: نشطة (محاكاة)
+                    {formatDate(g.at, locale)} · {c.status}
                   </span>
                   {g.dedication && (
                     <span className="w-full text-xs font-bold text-bridge-ink">
-                      صدقةٌ جارية عن {g.dedication}
+                      {c.dedication(g.dedication)}
                     </span>
                   )}
                 </li>

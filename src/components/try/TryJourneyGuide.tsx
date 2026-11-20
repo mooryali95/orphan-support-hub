@@ -18,49 +18,120 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { tryChildrenByWait } from "@/lib/try-demo";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+import { localTryChild, tryChildrenByWait } from "@/lib/try-demo";
+
+const COPY = defineCopy("components/try/TryJourneyGuide", {
+  ar: {
+    choose: {
+      title: "اختر طفلاً",
+      text: "ستة أطفالٍ افتراضيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
+    },
+    hall: {
+      title: "ادخل قاعة الأثر",
+      text: "بوابة الشعار، ثم الكرة الأرضية: اختر دولةً لترى مناطقها وأطفالها.",
+    },
+    time: {
+      title: "حرّك الزمن",
+      text: "داخل الدولة: شريطٌ من قبل سنة إلى بعد سنة، وزر «شاهد السنة تمرّ».",
+    },
+    file: {
+      title: (name: string) => `افتح ملف ${name}`,
+      text: "حاجته الشهرية وما غُطّي منها، واختر شهرياً أو مرّةً واحدة، وترى الأثر قبل الدفع.",
+    },
+    pay: {
+      title: "ادفع دفعاً محاكى",
+      text: "لا بطاقة ولا خصم: تهنئةٌ ثم انتقالٌ إلى «أثري».",
+    },
+    impact: {
+      title: "شاهد أثرك",
+      text: "«أثري» تبني كوكبة أثرك وتعرضها «منذ البداية»، و«الوضع الغامر» يطير بك إلى منطقة الطفل ليصل عطاؤك أمامك.",
+    },
+    triggerHero: "الرحلة كاملة خطوةً خطوة",
+    trigger: "الرحلة كاملة",
+    title: "رحلة التجربة كاملة",
+    description:
+      "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا افتراضي، ولا يُخصم أي مبلغ.",
+    fromMap: "ابدأ الرحلة من الخريطة",
+    fromFile: "ابدأ من ملف طفل",
+  },
+  en: {
+    choose: {
+      title: "Choose a child",
+      text: "Six fictional children, longest wait first, as in the real directory.",
+    },
+    hall: {
+      title: "Enter the Impact Hall",
+      text: "Through the emblem gate to the globe: choose a country to see its regions and children.",
+    },
+    time: {
+      title: "Move through time",
+      text: "Inside a country: a timeline from a year ago to a year ahead, and a “Watch the year pass” button.",
+    },
+    file: {
+      title: (name: string) => `Open ${name}'s file`,
+      text: "The monthly need and how much is covered. Choose monthly or one-time, and see the impact before you pay.",
+    },
+    pay: {
+      title: "Make a simulated payment",
+      text: "No card and no charge: a word of thanks, then on to “My impact”.",
+    },
+    impact: {
+      title: "See your impact",
+      text: "“My impact” builds your constellation and replays it from the beginning; the immersive view takes you to the child's region to watch your gift arrive.",
+    },
+    triggerHero: "The full journey, step by step",
+    trigger: "Full journey",
+    title: "The full trial journey",
+    description:
+      "From opening the site to seeing your impact, in about three minutes. Everything here is sample data, and nothing is charged.",
+    fromMap: "Start from the map",
+    fromFile: "Start from a child's file",
+  },
+});
 
 /**
  * «الرحلة كاملة»: دليلٌ قصير لوضع التجربة يُريه العميل من أوّل فتح الموقع إلى ظهور الأثر،
  * وكلّ خطوةٍ رابطٌ إلى موضعها. لا يحفظ شيئاً، ولا يمسّ الدليل أو الدفع الحقيقيين.
  */
 export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" }) {
-  const first = tryChildrenByWait()[0]!;
+  const c = useCopy(COPY);
+  const first = localTryChild(tryChildrenByWait()[0]!, useLocale());
   const steps = [
     {
       icon: HeartHandshake,
-      title: "اختر طفلاً",
-      text: "ستة أطفالٍ افتراضيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
+      title: c.choose.title,
+      text: c.choose.text,
       to: "/try" as const,
     },
     {
       icon: MapIcon,
-      title: "ادخل قاعة الأثر",
-      text: "بوابة الشعار، ثم الكرة الأرضية: اختر دولةً لترى مناطقها وأطفالها.",
+      title: c.hall.title,
+      text: c.hall.text,
       to: "/hall" as const,
       search: { try: 1 as const },
     },
     {
       icon: Clock3,
-      title: "حرّك الزمن",
-      text: "داخل الدولة: شريطٌ من قبل سنة إلى بعد سنة، وزر «شاهد السنة تمرّ».",
+      title: c.time.title,
+      text: c.time.text,
     },
     {
       icon: Box,
-      title: `افتح ملف ${first.name}`,
-      text: "حاجته الشهرية وما غُطّي منها، واختر شهرياً أو مرّةً واحدة، وترى الأثر قبل الدفع.",
+      title: c.file.title(first.name),
+      text: c.file.text,
       to: "/try/$childId" as const,
       params: { childId: first.id },
     },
     {
       icon: HandCoins,
-      title: "ادفع دفعاً محاكى",
-      text: "لا بطاقة ولا خصم: تهنئةٌ ثم انتقالٌ إلى «أثري».",
+      title: c.pay.title,
+      text: c.pay.text,
     },
     {
       icon: Sparkles,
-      title: "شاهد أثرك",
-      text: "«أثري» تبني كوكبة أثرك وتعرضها «منذ البداية»، و«الوضع الغامر» يطير بك إلى منطقة الطفل ليصل عطاؤك أمامك.",
+      title: c.impact.title,
+      text: c.impact.text,
       to: "/try/impact" as const,
     },
   ];
@@ -71,7 +142,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
         {variant === "hero" ? (
           <Button size="lg" variant="outline">
             <RouteIcon className="size-4" aria-hidden="true" />
-            الرحلة كاملة خطوةً خطوة
+            {c.triggerHero}
           </Button>
         ) : (
           <button
@@ -79,17 +150,14 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
             className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 font-bold text-primary hover:bg-secondary"
           >
             <RouteIcon className="size-4" aria-hidden="true" />
-            الرحلة كاملة
+            {c.trigger}
           </button>
         )}
       </DialogTrigger>
-      <DialogContent lang="ar" dir="rtl" className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">رحلة التجربة كاملة</DialogTitle>
-          <DialogDescription className="leading-7">
-            من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا افتراضي، ولا يُخصم أي
-            مبلغ.
-          </DialogDescription>
+          <DialogTitle className="font-display text-2xl">{c.title}</DialogTitle>
+          <DialogDescription className="leading-7">{c.description}</DialogDescription>
         </DialogHeader>
         <ol className="relative mt-2 space-y-1 before:absolute before:inset-y-5 before:start-5 before:w-px before:bg-border">
           {steps.map((s, i) => {
@@ -129,12 +197,12 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
         <div className="mt-2 flex flex-wrap gap-3">
           <Button asChild size="lg" className="flex-1">
             <Link to="/hall" search={{ try: 1 }}>
-              ابدأ الرحلة من الخريطة
+              {c.fromMap}
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="flex-1">
             <Link to="/try/$childId" params={{ childId: first.id }}>
-              ابدأ من ملف طفل
+              {c.fromFile}
             </Link>
           </Button>
         </div>

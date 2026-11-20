@@ -3,6 +3,9 @@
  * مستعارة ورموز DEMO-، منفصلون تماماً عن المعرّفات القابلة للدفع: لا يصل شيءٌ منهم إلى
  * الدليل الحقيقي ولا إلى بوابة الدفع. الكفالات المحاكاة تُحفظ في متصفّح الزائر وحده.
  */
+import { countryName } from "@/lib/countries";
+import { formatMoney } from "@/lib/format";
+import { copyOf, defineCopy, type Locale } from "@/lib/locale";
 import type { MySponsorship } from "@/lib/sponsorships.functions";
 
 export type TryChild = {
@@ -239,28 +242,138 @@ export const coverageAfter = (
     Math.round(((c.funded + (cadence === "monthly" ? Math.max(0, amount) : 0)) / c.need) * 100),
   );
 
-const MONTH_NOTES = [
-  "انتظم في الدراسة هذا الشهر.",
-  "اكتملت لوازمه المدرسية.",
-  "أتمّ الفحص الصحي الدوري.",
-  "تحسّن تحصيله في القراءة.",
-  "شارك في نشاط المجموعة.",
-  "أنهى الفصل الدراسي بتقدّم.",
-];
+/**
+ * نصوص أطفال التجربة بلغة الواجهة. البيانات أعلاه تبقى كما هي (القاعة والاختبارات تقرؤها)،
+ * والعربية هنا نسخةٌ منها حرفاً بحرف للفهرس؛ وغير العربية اسمٌ مستعار مقابل.
+ */
+const TRY_COPY = defineCopy("lib/try-demo", {
+  ar: {
+    children: {
+      "try-01": {
+        name: "سارة",
+        stage: "الصف الرابع",
+        covers: "الدراسة والغذاء والرعاية الصحية",
+      },
+      "try-02": {
+        name: "يوسف",
+        stage: "الصف السادس",
+        covers: "الرسوم المدرسية والزيّ والغذاء",
+      },
+      "try-03": {
+        name: "مريم",
+        stage: "الصف الثاني",
+        covers: "الغذاء والسكن والمتابعة الصحية",
+      },
+      "try-04": {
+        name: "عمر",
+        stage: "المرحلة المتوسطة",
+        covers: "الدراسة والمواصلات والكتب",
+      },
+      "try-05": {
+        name: "ليان",
+        stage: "الصف الخامس",
+        covers: "الدراسة والأنشطة والرعاية النفسية",
+      },
+      "try-06": {
+        name: "آدم",
+        stage: "الصف الثالث",
+        covers: "الغذاء والدراسة وحلقات التحفيظ",
+      },
+    },
+    monthNotes: [
+      "انتظم في الدراسة هذا الشهر.",
+      "اكتملت لوازمه المدرسية.",
+      "أتمّ الفحص الصحي الدوري.",
+      "تحسّن تحصيله في القراءة.",
+      "شارك في نشاط المجموعة.",
+      "أنهى الفصل الدراسي بتقدّم.",
+    ],
+    transferTitle: "حُوِّل عطاؤك",
+    transferText: (amount: string) => `${amount} إلى جهة الرعاية.`,
+    deliveryTitle: (name: string) => `سُلِّم لـ${name}`,
+    deliveryText: "بمستند استلامٍ في ملفّ الكفالة.",
+    noteTitle: "كلمة المشرف",
+  },
+  en: {
+    children: {
+      "try-01": {
+        name: "Sara",
+        stage: "Grade 4",
+        covers: "Schooling, food and healthcare",
+      },
+      "try-02": {
+        name: "Yusuf",
+        stage: "Grade 6",
+        covers: "School fees, uniform and food",
+      },
+      "try-03": {
+        name: "Maryam",
+        stage: "Grade 2",
+        covers: "Food, housing and health follow-up",
+      },
+      "try-04": {
+        name: "Omar",
+        stage: "Middle school",
+        covers: "Schooling, transport and books",
+      },
+      "try-05": {
+        name: "Layan",
+        stage: "Grade 5",
+        covers: "Schooling, activities and emotional care",
+      },
+      "try-06": {
+        name: "Adam",
+        stage: "Grade 3",
+        covers: "Food, schooling and Qur'an study circles",
+      },
+    },
+    monthNotes: [
+      "Attended school regularly this month.",
+      "School supplies are now complete.",
+      "Completed the routine health check.",
+      "Reading has improved.",
+      "Took part in the group activity.",
+      "Finished the term with good progress.",
+    ],
+    transferTitle: "Your gift was transferred",
+    transferText: (amount: string) => `${amount} to the care organization.`,
+    deliveryTitle: (name: string) => `Delivered to ${name}`,
+    deliveryText: "With a receipt kept in the sponsorship file.",
+    noteTitle: "A note from the supervisor",
+  },
+});
+
+type TryChildId = keyof (typeof TRY_COPY)["ar"]["children"];
+
+/**
+ * the same demo child with its display texts in the interface language. Arabic returns the data
+ * untouched; ids, codes and amounts never change. The country is named from its code.
+ */
+export function localTryChild(c: TryChild, locale: Locale): TryChild {
+  if (locale === "ar") return c;
+  const t = copyOf(TRY_COPY, locale).children[c.id as TryChildId];
+  return t ? { ...c, ...t, country: countryName(c.co, locale) } : c;
+}
 
 /** what the donor receives in the n-th month of a sponsorship (simulated, for «قدّم شهراً») */
 export function monthStory(
   c: Pick<TryChild, "name">,
   amount: number,
   n: number,
+  locale: Locale = "ar",
 ): Array<{ key: "transfer" | "delivery" | "note"; title: string; text: string }> {
+  const t = copyOf(TRY_COPY, locale);
   return [
-    { key: "transfer", title: "حُوِّل عطاؤك", text: `${amount} € إلى جهة الرعاية.` },
-    { key: "delivery", title: `سُلِّم لـ${c.name}`, text: "بمستند استلامٍ في ملفّ الكفالة." },
+    {
+      key: "transfer",
+      title: t.transferTitle,
+      text: t.transferText(formatMoney(amount, TRY_CURRENCY, locale)),
+    },
+    { key: "delivery", title: t.deliveryTitle(c.name), text: t.deliveryText },
     {
       key: "note",
-      title: "كلمة المشرف",
-      text: MONTH_NOTES[(Math.max(1, n) - 1) % MONTH_NOTES.length]!,
+      title: t.noteTitle,
+      text: t.monthNotes[(Math.max(1, n) - 1) % t.monthNotes.length]!,
     },
   ];
 }
