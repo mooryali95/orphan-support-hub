@@ -190,15 +190,14 @@ export function resetGifts(store: Store | null = safe()) {
 
 /**
  * the simulated gifts in the shape «أثري» already reads, so the demo shows the real
- * visualisation. A monthly gift is dated a few months back, so the constellation has months
- * to show; the child's funding includes this gift.
+ * visualisation. A gift starts when it was made; «قدّم شهراً» reads it from a later date, so
+ * months are never claimed before they pass. The child's funding includes this gift.
  */
-export function giftsAsSponsorships(gifts: TryGift[], now: Date = new Date()): MySponsorship[] {
-  return gifts.flatMap((g, i) => {
+export function giftsAsSponsorships(gifts: TryGift[]): MySponsorship[] {
+  return gifts.flatMap((g) => {
     const c = tryChild(g.childId);
     if (!c) return [];
-    const started = new Date(now);
-    if (g.cadence === "monthly") started.setMonth(started.getMonth() - (3 + (i % 4)));
+    const started = new Date(g.at);
     return [
       {
         id: g.id,
@@ -239,3 +238,33 @@ export const coverageAfter = (
     100,
     Math.round(((c.funded + (cadence === "monthly" ? Math.max(0, amount) : 0)) / c.need) * 100),
   );
+
+const MONTH_NOTES = [
+  "انتظم في الدراسة هذا الشهر.",
+  "اكتملت لوازمه المدرسية.",
+  "أتمّ الفحص الصحي الدوري.",
+  "تحسّن تحصيله في القراءة.",
+  "شارك في نشاط المجموعة.",
+  "أنهى الفصل الدراسي بتقدّم.",
+];
+
+/** what the donor receives in the n-th month of a sponsorship (simulated, for «قدّم شهراً») */
+export function monthStory(
+  c: Pick<TryChild, "name">,
+  amount: number,
+  n: number,
+): Array<{ key: "transfer" | "delivery" | "note"; title: string; text: string }> {
+  return [
+    { key: "transfer", title: "حُوِّل عطاؤك", text: `${amount} € إلى جهة الرعاية.` },
+    { key: "delivery", title: `سُلِّم لـ${c.name}`, text: "بمستند استلامٍ في ملفّ الكفالة." },
+    {
+      key: "note",
+      title: "كلمة المشرف",
+      text: MONTH_NOTES[(Math.max(1, n) - 1) % MONTH_NOTES.length]!,
+    },
+  ];
+}
+
+/** the longest-waiting demo child this visitor has not given to yet */
+export const nextTryChild = (gifts: Pick<TryGift, "childId">[]) =>
+  tryChildrenByWait().find((c) => !gifts.some((g) => g.childId === c.id));

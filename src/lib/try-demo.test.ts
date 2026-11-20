@@ -51,17 +51,21 @@ describe("وضع التجربة", () => {
     expect(loadGifts(s)).toEqual([]);
   });
 
-  it("تُقرأ في «أثري» بالمنطق نفسه: الشهرية حصّةٌ وأشهر، والمرّة الواحدة شهر", () => {
+  it("تُقرأ في «أثري» بالمنطق نفسه: تبدأ يوم العطاء، وتُعدّ أشهرها حين تمرّ", () => {
     const s = mem();
     addGift({ childId: "try-01", amount: 80, cadence: "monthly" }, s, now);
     addGift({ childId: "try-03", amount: 50, cadence: "one_time" }, s, now);
-    const m = myImpact(giftsAsSponsorships(loadGifts(s), now), now);
+    const list = giftsAsSponsorships(loadGifts(s));
+    const m = myImpact(list, now);
     expect(m.inCare).toBe(2);
     const sara = m.children.find((c) => c.name === "سارة")!;
     expect(sara.share).toBeCloseTo(80 / 120);
     expect(sara.covered).toBe(1);
-    expect(sara.months).toBeGreaterThanOrEqual(3);
+    expect(sara.months).toBe(0); // لا أشهر تُدّعى قبل أن تمرّ
     expect(m.children.find((c) => c.name === "مريم")).toMatchObject({ months: 1, share: 0 });
+    // «قدّم شهراً»: بعد أربعة أشهر تُقرأ أربعة
+    const later = new Date("2027-03-20T00:00:00Z");
+    expect(myImpact(list, later).children.find((c) => c.name === "سارة")!.months).toBe(4);
   });
 
   it("كلّ طفلٍ في التجربة يقف في دولةٍ ومنطقةٍ موجودتين في القاعة", () => {
