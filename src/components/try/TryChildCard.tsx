@@ -12,7 +12,7 @@ export function TryChildCard({ child, delay = 0 }: { child: TryChild; delay?: nu
   const pct = Math.round((child.funded / child.need) * 100);
   return (
     <article
-      className="try-rise lift relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+      className="try-rise lift relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card"
       style={{ animationDelay: `${delay}s` }}
     >
       <MuralImage
@@ -21,9 +21,9 @@ export function TryChildCard({ child, delay = 0 }: { child: TryChild; delay?: nu
         register={registerFor("", pct)}
         className="aspect-[16/7] w-full bg-secondary"
       />
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-3.5 p-6">
         <div>
-          <h3 className="text-lg font-bold">
+          <h3 className="text-xl font-bold">
             <Link
               to="/try/$childId"
               params={{ childId: child.id }}
@@ -45,7 +45,7 @@ export function TryChildCard({ child, delay = 0 }: { child: TryChild; delay?: nu
           </p>
         </div>
         <div className="flex items-baseline justify-between text-sm">
-          <span className="font-bold text-bridge-ink">
+          <span className="font-bold text-foreground tabular-nums">
             {formatMoney(gap, TRY_CURRENCY, "ar")}{" "}
             <span className="font-normal text-muted-foreground">متبقٍّ شهرياً</span>
           </span>

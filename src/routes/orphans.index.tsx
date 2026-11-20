@@ -379,11 +379,11 @@ function OrphansPage() {
   return (
     <div className="min-h-dvh">
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold">{t.title}</h1>
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+        <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{t.title}</h1>
         {DEMO_MODE && <DemoNotice />}
         <FollowedStrip className="mt-4" />
-        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+        <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">
           {DEMO_MODE
             ? locale === "ar"
               ? "بطاقات افتراضية للتجربة فقط"

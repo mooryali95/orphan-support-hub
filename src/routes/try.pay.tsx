@@ -36,7 +36,7 @@ function TryPay() {
 
   if (!child)
     return (
-      <div className="mx-auto max-w-md rounded-3xl border border-border bg-card p-8 text-center">
+      <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center">
         <p>لم يُختر طفلٌ بعد.</p>
         <Link to="/try" className="mt-4 inline-flex font-bold text-primary hover:underline">
           ابدأ التجربة
@@ -55,9 +55,9 @@ function TryPay() {
 
   return (
     <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-[1fr_1.1fr]">
-      <section className="try-rise h-fit rounded-3xl border border-border bg-card p-6 shadow-soft">
-        <h1 className="text-xl font-bold">ملخّص عطائك</h1>
-        <dl className="mt-4 space-y-3 text-sm">
+      <section className="try-rise h-fit rounded-2xl border border-border bg-card p-6 md:p-7">
+        <h1 className="font-sans text-xl font-bold">ملخّص عطائك</h1>
+        <dl className="mt-5 space-y-3.5 text-sm">
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">الطفل</dt>
             <dd className="font-bold">
@@ -80,9 +80,11 @@ function TryPay() {
             <dt className="text-muted-foreground">رسوم بوابة الدفع (تقريبية)</dt>
             <dd className="tabular-nums">{formatMoney(fee, TRY_CURRENCY, "ar")}</dd>
           </div>
-          <div className="flex justify-between gap-4 border-t border-border pt-3 text-base">
+          <div className="flex items-baseline justify-between gap-4 border-t border-border pt-5 text-base">
             <dt className="font-bold">{cadence === "monthly" ? "شهرياً" : "المبلغ"}</dt>
-            <dd className="font-bold tabular-nums">{formatMoney(amount, TRY_CURRENCY, "ar")}</dd>
+            <dd className="numeral text-[2rem] text-primary">
+              {formatMoney(amount, TRY_CURRENCY, "ar")}
+            </dd>
           </div>
         </dl>
         <p className="mt-4 text-xs leading-6 text-muted-foreground">
@@ -93,7 +95,7 @@ function TryPay() {
       </section>
 
       <section
-        className="try-rise rounded-3xl border border-border bg-card p-6 shadow-soft"
+        className="try-rise rounded-2xl border border-border bg-card p-6 shadow-soft md:p-7"
         style={{ animationDelay: "0.1s" }}
         aria-labelledby="try-pay-title"
       >

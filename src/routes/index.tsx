@@ -1,9 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
-  Eye,
-  Aperture,
-  ShieldCheck,
   Building2,
   ArrowLeft,
   FlaskConical,
@@ -19,7 +16,6 @@ import {
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { BrandPattern } from "@/components/brand/BrandPattern";
-import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Button } from "@/components/ui/button";
 import { getPlatformStats } from "@/lib/orphans.functions";
 import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
@@ -356,64 +352,29 @@ export const Route = createFileRoute("/")({
 });
 
 // Tailwind يستخرج الأصناف نصياً من المصدر، فأي صنف يُركَّب في وقت التشغيل
-// (`bg-${tone}`) لا يُولَّد. لذلك تُذكر الأصناف كاملةً هنا لكل مرتبة.
+// (`bg-${tone}`) لا يُولَّد. لذلك تُذكر الأصناف كاملةً هنا لكل مرتبة. اللون نقطةٌ صغيرة
+// بجانب اسم المرتبة لا شريطٌ ولا أرضية: المعنى يبقى، والصفحة تبقى محايدة.
 /**
  * مراتب الوعي — سلّم المانح كما تعرّفه الاستراتيجية البصرية للعمران:
  * «الانتقال بالمانح من مجرد الدراية (رؤية الصورة) إلى التعقل (الالتزام بالنظام)».
  * فالمراحل ليست خطوات إجرائية بل انتقالات في وعي الكافل.
  */
 const AWARENESS_LADDER = [
-  {
-    icon: Eye,
-    bar: "bg-shore-need",
-    chip: "bg-shore-need/12 text-shore-need",
-    label: "text-shore-need",
-  },
-  // الأرضية تبقى بحرارة البرتقالي، أما الأيقونة فوقها فتُصبّ بالذهبي الداكن:
-  // البرتقالي يبلغ 2.1:1 على الأبيض ولا يستوفي 3:1 المطلوبة للعناصر غير النصّية.
-  {
-    icon: Aperture,
-    bar: "bg-bridge-bright",
-    chip: "bg-bridge-bright/12 text-bridge-ink",
-    label: "text-bridge-ink",
-  },
-  {
-    icon: ShieldCheck,
-    bar: "bg-bridge",
-    chip: "bg-bridge/12 text-bridge-ink",
-    label: "text-bridge-ink",
-  },
-  {
-    icon: Building2,
-    bar: "bg-shore-thrive",
-    chip: "bg-shore-thrive/12 text-shore-thrive",
-    label: "text-shore-thrive",
-  },
+  { dot: "bg-shore-need" },
+  { dot: "bg-bridge-bright" },
+  { dot: "bg-bridge" },
+  { dot: "bg-shore-thrive" },
 ];
 
 /** «اختر أثرك» — الأيقونة والوجهة لكل مسار؛ الأسماء في config/giving-tracks. */
 const TRACK_DOOR: Record<
   GivingTrack,
-  { icon: LucideIcon; tone: string; glow: string; kind?: "qualification" | "in_kind" }
+  { icon: LucideIcon; tone: string; kind?: "qualification" | "in_kind" }
 > = {
-  qualification: {
-    icon: Sprout,
-    tone: "bg-shore-thrive/12 text-shore-thrive",
-    glow: "from-shore-thrive/70 via-shore-thrive/25 to-transparent [--glow:var(--color-shore-thrive)]",
-    kind: "qualification",
-  },
+  qualification: { icon: Sprout, tone: "text-shore-thrive", kind: "qualification" },
   // الكفالة تبدأ من طفلٍ بعينه في الدليل؛ والمساران الآخران من «ادعم» بنوعهما.
-  monthly: {
-    icon: HeartHandshake,
-    tone: "bg-primary/10 text-primary",
-    glow: "from-primary/70 via-primary/25 to-transparent [--glow:var(--color-primary)]",
-  },
-  in_kind: {
-    icon: Package,
-    tone: "bg-bridge/15 text-bridge-ink",
-    glow: "from-bridge/80 via-bridge/30 to-transparent [--glow:var(--color-bridge)]",
-    kind: "in_kind",
-  },
+  monthly: { icon: HeartHandshake, tone: "text-primary" },
+  in_kind: { icon: Package, tone: "text-bridge-ink", kind: "in_kind" },
 };
 
 /**
@@ -427,11 +388,7 @@ const NETWORK_COUNTS = (() => {
 })();
 
 /** الشطّان والمضيق — الاستعارة الحاكمة للهوية، لا صورة بلاغية. */
-const CROSSING = [
-  { tone: "text-shore-need", dot: "bg-shore-need" },
-  { tone: "text-bridge-ink", dot: "bg-bridge" },
-  { tone: "text-shore-thrive", dot: "bg-shore-thrive" },
-];
+const CROSSING = [{ dot: "bg-shore-need" }, { dot: "bg-bridge" }, { dot: "bg-shore-thrive" }];
 
 /** كيف يصير الملفّ منشوراً — سلسلة التوثيق كما تفرضها القاعدة لا كما تُوصف. */
 const CUSTODY = [Building2, FileCheck2, Stamp, LineChart];
@@ -489,27 +446,23 @@ function HomePage() {
       <main id="main" tabIndex={-1}>
         {/* ── الهيرو أوّلاً (UI-06/UX-18): الهوية، والوعد، والفعلان، والدليل ── */}
         <section className="surface-crossing relative overflow-hidden border-b border-border/70">
-          <BrandPattern density="watermark" className="text-gold-line" opacity={0.12} tile={132} />
-          <div className="relative mx-auto max-w-6xl px-4 pt-10 pb-10 text-center md:pt-14 md:pb-12">
-            <div className="lg:grid lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-14 lg:text-start">
+          <BrandPattern density="watermark" className="text-gold-line" opacity={0.08} tile={132} />
+          <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-12 text-center md:pt-20 md:pb-16 lg:pt-24">
+            <div className="lg:grid lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16 lg:text-start">
               <div>
-                <div className="flex flex-col items-center lg:items-start">
-                  <KahataynMark className="h-16 w-auto md:h-20" title={c.logo(brand.name)} />
-                  <p className="mt-3 font-serif text-2xl font-bold text-primary md:text-3xl">
-                    {brand.name}
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-bridge-ink">{brand.tagline}</p>
-                </div>
-                <h1 className="mx-auto mt-7 max-w-4xl text-[2rem] lg:mx-0 leading-[1.3] font-extrabold md:text-[2.5rem] lg:text-5xl lg:leading-[1.25]">
+                {/* the lockup is already in the header just above; here the tagline alone opens the page */}
+                <p className="eyebrow">{brand.tagline}</p>
+                <h1 className="mx-auto mt-6 max-w-4xl text-[2.25rem] leading-[1.4] font-bold md:text-5xl md:leading-[1.35] lg:mx-0 lg:leading-[1.3] rtl:lg:text-[3.75rem] ltr:lg:leading-[1.2]">
                   {c.h1a}
                   <br />
                   {c.h1b}
                 </h1>
-                <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg lg:mx-0">
+                <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg md:leading-9 lg:mx-0">
                   {c.lead}
                 </p>
                 {/* وضع المنصّة (src/config/platform.ts): في التجربة تبدأ الرحلة من /try؛ وبعد الاعتماد من الدليل. */}
-                <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+                {/* two buttons and one quiet link: three equal buttons wrapped and left the last alone on its line */}
+                <div className="mt-9 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 lg:justify-start">
                   {isTrial() && (
                     <Button asChild size="lg">
                       <Link to="/try">
@@ -529,53 +482,59 @@ function HomePage() {
                       <ArrowLeft className="size-4 ltr:-scale-x-100" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="bg-background/70">
-                    <Link to="/support">{c.supportNow}</Link>
-                  </Button>
+                  <Link
+                    to="/support"
+                    className="inline-flex min-h-11 items-center px-3 text-sm font-bold text-primary underline decoration-primary/30 underline-offset-[6px] transition-colors hover:decoration-primary"
+                  >
+                    {c.supportNow}
+                  </Link>
                 </div>
                 {showTrialLink() && (
                   <Link
                     to="/try"
-                    className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-bridge-ink underline-offset-4 hover:underline"
+                    className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
                     <FlaskConical className="size-4" aria-hidden="true" />
                     {c.tryIt}
                   </Link>
                 )}
               </div>
-              <PartnerPlate className="mx-auto mt-10 w-full max-w-xs lg:mx-0 lg:mt-0 lg:max-w-sm lg:justify-self-end" />
+              <PartnerPlate className="mx-auto mt-12 w-full max-w-xs lg:mx-0 lg:mt-0 lg:max-w-sm lg:justify-self-end" />
             </div>
 
             {/* شريط الدليل: أرقامٌ حقيقية فقط — بيانات الندوة البحثية وأعداد المنصّة الحيّة. */}
-            <section aria-labelledby="proof-heading" className="mx-auto mt-10 max-w-4xl">
+            {/* a ledger line, not a card: two hairlines and large display numerals */}
+            <section aria-labelledby="proof-heading" className="mx-auto mt-14 max-w-5xl md:mt-20">
               <h2 id="proof-heading" className="sr-only">
                 {c.proofH}
               </h2>
               <dl
                 className={
                   proof.length === 4
-                    ? "grid grid-cols-2 overflow-hidden rounded-2xl bg-card/85 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)] backdrop-blur md:grid-cols-4"
-                    : "grid grid-cols-2 overflow-hidden rounded-2xl bg-card/85 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)] backdrop-blur"
+                    ? "grid grid-cols-2 border-y border-border md:grid-cols-4"
+                    : "mx-auto grid max-w-3xl grid-cols-2 border-y border-border"
                 }
               >
                 {proof.map((item, i) => (
                   <div
                     key={item.label}
                     className={
-                      "flex flex-col gap-1 px-4 py-4 md:py-5 " +
-                      (i % 2 === 1 ? "border-s border-border/70 " : "") +
-                      (i >= 2 ? "border-t border-border/70 md:border-t-0 " : "") +
+                      "flex flex-col items-center gap-3 px-4 py-7 text-center md:py-9 " +
+                      (i % 2 === 1 ? "border-s border-border " : "") +
+                      (i >= 2 ? "border-t border-border md:border-t-0 " : "") +
                       (i === 2 && proof.length === 4 ? "md:border-s" : "")
                     }
                   >
-                    <dt className="text-sm leading-6 text-muted-foreground">{item.label}</dt>
-                    <dd className="order-first text-3xl font-extrabold text-primary tabular-nums">
+                    <dt className="max-w-[14rem] text-sm leading-6 text-muted-foreground">
+                      {item.label}
+                    </dt>
+                    <dd className="numeral order-first text-5xl text-primary md:text-6xl">
                       {item.value}
                     </dd>
                   </div>
                 ))}
               </dl>
-              <p className="mx-auto mt-3 max-w-2xl text-xs leading-6 text-muted-foreground">
+              <p className="mx-auto mt-4 max-w-2xl text-xs leading-6 text-muted-foreground">
                 {c.proofSource}
               </p>
             </section>
@@ -584,14 +543,15 @@ function HomePage() {
 
         {/* ── اختر أثرك: المسارات الثلاثة بأسمائها من config/giving-tracks ── */}
         <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-14 md:py-16"
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-28"
           aria-labelledby="tracks-heading"
         >
-          <h2 id="tracks-heading" className="text-[1.75rem] leading-tight font-extrabold">
+          <h2 id="tracks-heading" className="heading-section">
             {g.heading}
           </h2>
-          <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">{g.lead}</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{g.lead}</p>
+          {/* three doors in one frame, parted by hairlines: equal weight, no card stack */}
+          <div className="mt-10 grid divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-3 md:divide-x md:divide-y-0">
             {GIVING_TRACKS.map((key) => {
               const door = TRACK_DOOR[key];
               const t = g.tracks[key];
@@ -601,29 +561,20 @@ function HomePage() {
                   {...(door.kind
                     ? { to: "/support" as const, search: { kind: door.kind } }
                     : { to: "/orphans" as const })}
-                  className="reveal group relative isolate flex flex-col overflow-hidden lift rounded-3xl border border-border bg-card p-6 shadow-soft hover:border-primary/40 active:scale-[0.99]"
+                  className="group flex flex-col p-7 transition-colors duration-200 hover:bg-secondary/50 focus-visible:bg-secondary/50 focus-visible:outline-none md:p-9"
                 >
-                  {/* توقيع المسار: خيطٌ بلونه أعلى البطاقة، ووهجٌ خافت يشتدّ عند المرور. */}
-                  <span
+                  <door.icon
+                    className={`size-7 ${door.tone}`}
+                    strokeWidth={1.5}
                     aria-hidden="true"
-                    className={`absolute inset-x-6 top-0 h-px bg-gradient-to-l ${door.glow}`}
                   />
-                  <span
-                    aria-hidden="true"
-                    className={`pointer-events-none absolute -top-24 -z-10 size-56 rounded-full opacity-[0.07] blur-3xl transition-opacity duration-500 group-hover:opacity-[0.16] start-[-3rem] bg-[var(--glow)] ${door.glow.split(" ").at(-1)}`}
-                  />
-                  <span
-                    className={`flex size-12 items-center justify-center rounded-2xl ring-1 ring-current/10 transition-transform duration-300 ease-[var(--ease-out)] group-hover:-translate-y-0.5 ${door.tone}`}
-                  >
-                    <door.icon className="size-6" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-bold">{t.name}</h3>
+                  <h3 className="mt-6 text-xl font-bold">{t.name}</h3>
                   <p className="mt-2 flex-1 text-base leading-8 text-muted-foreground">
                     {t.promise}
                   </p>
-                  <span className="mt-5 inline-flex min-h-11 items-center gap-1 text-base font-bold text-primary">
+                  <span className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-base font-bold text-primary">
                     {t.cta}
-                    <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100 ltr:group-hover:translate-x-0.5" />
+                    <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1 ltr:-scale-x-100 ltr:group-hover:translate-x-1" />
                   </span>
                 </Link>
               );
@@ -631,15 +582,23 @@ function HomePage() {
           </div>
 
           {/* «هكذا» اسم إشارة إلى حركة يد؛ حذفُها يترك اللفظ بلا مشارٍ إليه. */}
-          <blockquote className="mx-auto mt-14 max-w-xl text-center">
+          {/* the hadith the name comes from, set as the page's one large line of calligraphic type */}
+          <blockquote className="mx-auto mt-20 max-w-5xl text-center md:mt-28">
+            <span aria-hidden="true" className="rule-champagne mx-auto block w-40" />
             {/* النصّ النبوي بلفظه العربي دائماً، ومعناه بالإنجليزية تحته. */}
-            <p className="font-quran text-xl leading-10 text-shore-need" lang="ar" dir="rtl">
+            <p
+              className="mt-9 font-quran text-[1.75rem] leading-[1.9] text-balance text-foreground md:text-[2.25rem] md:leading-[1.8]"
+              lang="ar"
+              dir="rtl"
+            >
               «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
             </p>
             {c.hadithMeaning && (
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.hadithMeaning}</p>
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
+                {c.hadithMeaning}
+              </p>
             )}
-            <cite className="mt-2 block text-xs text-muted-foreground not-italic">
+            <cite className="mt-4 block text-xs text-muted-foreground not-italic">
               {c.hadithSource}
             </cite>
           </blockquote>
@@ -653,11 +612,11 @@ function HomePage() {
           aria-labelledby="map-heading"
           className="scroll-mt-16 border-t border-border/70"
         >
-          <div className="mx-auto max-w-6xl px-4 pt-12 pb-4">
-            <h2 id="map-heading" className="text-[1.75rem] leading-tight font-extrabold">
+          <div className="mx-auto max-w-6xl px-4 pt-20 pb-6 md:pt-24">
+            <h2 id="map-heading" className="heading-section">
               {c.mapH}
             </h2>
-            <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">{c.mapP}</p>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.mapP}</p>
           </div>
           {/* أعداد المنصّة من مصدر الجغرافيا الواحد (geo_stats): هيكلٌ أثناء التحميل و«غير متاحة» عند التعذّر. */}
           <WorldMap
@@ -687,12 +646,12 @@ function HomePage() {
 
         {/* ── الأرقام ── */}
         <section className="reveal-scroll border-t border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="numbers-heading">
-            <h2 id="numbers-heading" className="text-2xl font-extrabold">
+          <div className="mx-auto max-w-6xl px-4 py-20 md:py-24" aria-labelledby="numbers-heading">
+            <h2 id="numbers-heading" className="heading-section">
               {c.numbersH}
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.numbersP}</p>
-            <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4 [&>*]:reveal">
+            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.numbersP}</p>
+            <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4 [&>*]:reveal">
               <StatTile
                 label={c.stats[0]!}
                 value={data.stats ? String(data.stats.totalOrphans) : "—"}
@@ -724,21 +683,24 @@ function HomePage() {
 
         {/* ── الشطّان والمضيق ── */}
         <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
           aria-labelledby="crossing-heading"
         >
-          <h2 id="crossing-heading" className="text-2xl font-extrabold">
+          <h2 id="crossing-heading" className="heading-section">
             {c.crossingH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.crossingP}</p>
-          <ol className="mt-8 grid gap-4 md:grid-cols-3">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.crossingP}</p>
+          {/* one band parted by hairlines; the colour of each shore is its dot, the words stay ink */}
+          <ol className="mt-10 grid divide-y divide-border border-y border-border md:grid-cols-3 md:divide-x md:divide-y-0">
             {CROSSING.map((stage, i) => (
-              <li key={i} className="rounded-2xl border border-border bg-card p-6 md:p-7">
-                <span className="flex items-center gap-2">
+              <li key={i} className="py-7 md:px-9 md:py-10 md:first:ps-0 md:last:pe-0">
+                <span className="flex items-center gap-2.5">
                   <span className={`size-2.5 rounded-full ${stage.dot}`} aria-hidden="true" />
-                  <span className={`text-sm font-bold ${stage.tone}`}>{c.crossing[i]![0]}</span>
+                  <span className="text-lg font-bold">{c.crossing[i]![0]}</span>
                 </span>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{c.crossing[i]![1]}</p>
+                <p className="mt-3 text-[0.9375rem] leading-8 text-muted-foreground">
+                  {c.crossing[i]![1]}
+                </p>
               </li>
             ))}
           </ol>
@@ -746,26 +708,26 @@ function HomePage() {
 
         {/* ── من هو اليتيم عندنا ── */}
         <section className="reveal-scroll border-y border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="child-heading">
-            <div className="grid gap-10 md:grid-cols-[1fr_0.85fr]">
+          <div className="mx-auto max-w-6xl px-4 py-20 md:py-24" aria-labelledby="child-heading">
+            <div className="grid gap-12 md:grid-cols-[1fr_0.85fr] md:gap-16">
               <div>
-                <h2 id="child-heading" className="text-2xl font-extrabold">
+                <h2 id="child-heading" className="heading-section">
                   {c.childH}
                 </h2>
-                <div className="mt-4 space-y-4 text-sm leading-8 text-muted-foreground">
+                <div className="mt-5 space-y-4 text-base leading-8 text-muted-foreground">
                   <p>{c.childP1}</p>
                   <p>{c.childP2}</p>
                 </div>
               </div>
 
-              <aside className="rounded-2xl border border-shore-need/25 bg-background p-6">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-shore-need/12 text-shore-need">
-                  <ScrollText className="size-5" />
-                </span>
-                <h3 className="mt-4 font-bold">{c.dignityH}</h3>
-                <ul className="mt-3 space-y-3 text-sm leading-7 text-muted-foreground">
+              <aside className="rounded-2xl border border-border bg-card p-7 md:p-8">
+                <ScrollText className="size-6 text-primary" strokeWidth={1.5} aria-hidden="true" />
+                <h3 className="mt-5 text-lg font-bold">{c.dignityH}</h3>
+                <ul className="mt-4 divide-y divide-border text-sm leading-7 text-muted-foreground">
                   {c.dignity.map((line) => (
-                    <li key={line}>{line}</li>
+                    <li key={line} className="py-3 first:pt-0 last:pb-0">
+                      {line}
+                    </li>
                   ))}
                 </ul>
               </aside>
@@ -775,49 +737,47 @@ function HomePage() {
 
         {/* ── مراتب الوعي ── */}
         <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
           aria-labelledby="ladder-heading"
         >
-          <h2 id="ladder-heading" className="text-2xl font-extrabold">
+          <h2 id="ladder-heading" className="heading-section">
             {c.ladderH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.ladderP}</p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.ladderP}</p>
+          {/* numbered columns on a hairline: the display numeral does the work the icon chips did */}
+          <ol className="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {AWARENESS_LADDER.map((step, i) => (
-              <div
-                key={i}
-                className="relative overflow-hidden rounded-2xl border border-border bg-card p-5"
-              >
-                <span
-                  className={`absolute inset-x-0 top-0 h-[3px] ${step.bar}`}
-                  aria-hidden="true"
-                />
-                <span
-                  className={`flex size-10 items-center justify-center rounded-xl ${step.chip}`}
-                >
-                  <step.icon className="size-5" />
+              <li key={i} className="border-t border-border pt-6">
+                <span className="numeral block text-5xl text-primary/30" aria-hidden="true">
+                  {c.ordinals[i]}
                 </span>
-                <p className={`mt-4 text-xs font-bold ${step.label}`}>{c.ladder[i]![0]}</p>
-                <h3 className="mt-1 font-bold">{c.ladder[i]![1]}</h3>
+                <p className="mt-6 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <span className={`size-2 rounded-full ${step.dot}`} aria-hidden="true" />
+                  {c.ladder[i]![0]}
+                </p>
+                <h3 className="mt-1.5 text-lg font-bold">{c.ladder[i]![1]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.ladder[i]![2]}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
         {/* ── ما يشتريه الكافل: البرامج ── */}
         {data.programs.length > 0 && (
           <section className="reveal-scroll border-y border-border/70 bg-secondary/30">
-            <div className="mx-auto max-w-6xl px-4 py-16" aria-labelledby="programs-heading">
-              <h2 id="programs-heading" className="text-2xl font-extrabold">
+            <div
+              className="mx-auto max-w-6xl px-4 py-20 md:py-24"
+              aria-labelledby="programs-heading"
+            >
+              <h2 id="programs-heading" className="heading-section">
                 {c.programsH}
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+              <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
                 {c.programsP}
               </p>
 
               {/* المعادلة الحاكمة — تُذكر لأنها تحكم التصميم لا لأنها شعار. */}
-              <figure className="mt-6 max-w-2xl rounded-2xl border border-bridge/30 bg-background p-5">
+              <figure className="mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 md:p-7">
                 <blockquote className="text-center text-base leading-9 font-bold md:text-lg">
                   {c.eqLabel} <span className="text-shore-need">{c.eqA}</span> +{" "}
                   <span className="text-shore-thrive">{c.eqB}</span>
@@ -834,25 +794,24 @@ function HomePage() {
                 <strong>{c.programsP2[3]}</strong>
                 {c.programsP2[4]}
               </p>
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {data.programs.map((program) => (
                   <li
                     key={program.id}
                     className={
                       program.kind === "qualification"
-                        ? "flex flex-col rounded-2xl border-2 border-shore-thrive/35 bg-card p-5"
-                        : "flex flex-col rounded-2xl border border-border bg-card p-5"
+                        ? "flex flex-col rounded-2xl border border-shore-thrive/50 bg-card p-6"
+                        : "flex flex-col rounded-2xl border border-border bg-card p-6"
                     }
                   >
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="font-bold">{program.title}</h3>
-                      {/* الذهبي خطّاً لا أرضيةً تحت نصّ: على أرضية bg-bridge/12 يهبط
-                          bridge-ink إلى 4.34:1، ويستوفي 4.77:1 على أرضية البطاقة. */}
+                      {/* the category is a neutral hairline chip; only «بناء أهلية» keeps its green */}
                       <span
                         className={
                           program.kind === "qualification"
                             ? "shrink-0 rounded-full border border-shore-thrive/45 px-2.5 py-1 text-xs font-medium text-shore-thrive"
-                            : "shrink-0 rounded-full border border-bridge/40 px-2.5 py-1 text-xs font-medium text-bridge-ink"
+                            : "shrink-0 rounded-full border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground"
                         }
                       >
                         {program.kind === "qualification"
@@ -895,21 +854,30 @@ function HomePage() {
 
         {/* ── سلسلة التوثيق ── */}
         <section
-          className="reveal-scroll mx-auto max-w-6xl px-4 py-16"
+          className="reveal-scroll mx-auto max-w-6xl px-4 py-20 md:py-24"
           aria-labelledby="custody-heading"
         >
-          <h2 id="custody-heading" className="text-2xl font-extrabold">
+          <h2 id="custody-heading" className="heading-section">
             {c.custodyH}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{c.custodyP}</p>
-          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">{c.custodyP}</p>
+          {/* a chain: one continuous hairline with a node at each link */}
+          <ol className="mt-12 grid gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {CUSTODY.map((Icon, i) => (
-              <li key={i} className="rounded-2xl border border-border bg-card p-5">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-shore-thrive/12 text-shore-thrive">
-                  <Icon className="size-5" />
+              <li key={i} className="relative border-t border-border pe-8 pt-7">
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-[5px] start-0 size-[9px] rounded-full bg-primary"
+                />
+                <span className="flex items-center gap-3">
+                  <span className="numeral text-3xl text-primary">{c.ordinals[i]}</span>
+                  <Icon
+                    className="size-5 text-muted-foreground"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                 </span>
-                <p className="mt-4 text-xs font-bold text-muted-foreground">{c.ordinals[i]}</p>
-                <h3 className="mt-1 font-bold">{c.custody[i]![0]}</h3>
+                <h3 className="mt-4 text-lg font-bold">{c.custody[i]![0]}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.custody[i]![1]}</p>
               </li>
             ))}

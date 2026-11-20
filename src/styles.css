@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./styles/motion.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -162,6 +163,14 @@
     font-weight: 600;
     letter-spacing: 0;
   }
+  /* Amiri is a display face: under ~28px its thin strokes read weaker than the bold body
+     face beside it, and the hierarchy inverts. A small h2 (a text size up to `text-xl`, or no
+     size at all) is therefore set in the body face; `font-display` on the element still wins. */
+  h2:is(.text-xs, .text-sm, .text-base, .text-lg, .text-xl),
+  h2:not([class*="text-"]) {
+    font-family: var(--font-sans);
+    font-weight: 700;
+  }
   p,
   li {
     text-wrap: pretty;
@@ -197,6 +206,49 @@
 
 @utility font-quran {
   font-family: var(--font-serif);
+}
+
+/* ── editorial type roles: one scale for every donor-facing page ──
+   The section heading is where the display face earns its place (never under 30px); the
+   eyebrow is a quiet label led by a short champagne hairline, so the accent is a line and
+   not bronze text; the numeral sets figures in the display face, large and unhurried. */
+@utility heading-section {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 1.45rem + 1.7vw, 2.75rem);
+  line-height: 1.4;
+  font-weight: 700;
+}
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--muted-foreground);
+  &::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    flex: none;
+    background: var(--bridge);
+  }
+}
+@utility numeral {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+}
+/* a hairline that closes a block: the champagne rule, fading at both ends */
+@utility rule-champagne {
+  height: 1px;
+  background-image: linear-gradient(
+    to left,
+    transparent,
+    color-mix(in oklab, var(--bridge) 60%, transparent) 20%,
+    color-mix(in oklab, var(--bridge) 60%, transparent) 80%,
+    transparent
+  );
 }
 
 /* سطح أعلى الصفحة الأولى. */

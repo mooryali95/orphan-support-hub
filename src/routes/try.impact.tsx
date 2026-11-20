@@ -62,8 +62,8 @@ function TryImpact() {
           onClose={() => void navigate({ to: "/try/impact", search: {}, replace: true })}
         />
       )}
-      <h1 className="text-3xl font-bold">أثري</h1>
-      <p className="mt-1 text-muted-foreground">
+      <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">أثري</h1>
+      <p className="mt-3 text-base leading-8 text-muted-foreground">
         أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.
       </p>
 
@@ -85,7 +85,7 @@ function TryImpact() {
           عطاءاتك
         </h2>
         {gifts && gifts.length === 0 ? (
-          <div className="mt-4 rounded-3xl border border-dashed border-border bg-card p-8 text-center">
+          <div className="mt-4 rounded-2xl border border-border bg-card p-8 text-center">
             <p className="text-muted-foreground">لم تبدأ عطاءً بعد في التجربة.</p>
             <Button asChild className="mt-4">
               <Link to="/try">اختر طفلاً</Link>
@@ -98,7 +98,7 @@ function TryImpact() {
               return (
                 <li
                   key={g.id}
-                  className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-border bg-card p-4 shadow-soft"
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-border bg-card px-5 py-4"
                 >
                   <span className="font-bold">{c.name}</span>
                   <span className="text-sm text-muted-foreground">{c.country}</span>

@@ -395,12 +395,12 @@ function SupportPage() {
         <main
           id="main"
           tabIndex={-1}
-          className="mx-auto max-w-3xl scroll-mt-20 px-4 py-10"
+          className="mx-auto max-w-3xl scroll-mt-20 px-4 py-12 md:py-16"
           ref={formRef}
         >
-          <h1 className="text-3xl font-extrabold">{t.h1}</h1>
-          <p className="mt-2 text-muted-foreground">{t.lead}</p>
-          <OfferingNote className="mt-4" />
+          <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{t.h1}</h1>
+          <p className="mt-3 text-base leading-8 text-muted-foreground">{t.lead}</p>
+          <OfferingNote className="mt-6" />
 
           <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
             {t.steps.map((s, i) => (

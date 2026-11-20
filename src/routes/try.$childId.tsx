@@ -49,7 +49,7 @@ function TryChildPage() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.35fr_1fr]">
-      <article className="try-rise overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+      <article className="try-rise overflow-hidden rounded-2xl border border-border bg-card">
         <MuralImage
           photoUrl={null}
           displayName={child.name}
@@ -57,9 +57,9 @@ function TryChildPage() {
           className="aspect-[16/7] w-full bg-secondary"
           priority
         />
-        <div className="p-6">
+        <div className="p-6 md:p-8">
           <p className="text-xs tabular-nums text-muted-foreground">{child.code}</p>
-          <h1 className="mt-1 text-3xl font-bold">{child.name}</h1>
+          <h1 className="mt-2 text-4xl leading-[1.3] font-bold md:text-[2.75rem]">{child.name}</h1>
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-4" aria-hidden="true" />
@@ -68,14 +68,14 @@ function TryChildPage() {
             <span>{child.age} سنوات</span>
             <span>{child.stage}</span>
           </p>
-          <div className="mt-6 rounded-2xl bg-secondary/60 p-4">
+          <div className="mt-7 rounded-xl bg-secondary/60 p-5">
             <div className="flex items-baseline justify-between text-sm">
               <span>
                 غُطّي{" "}
                 <b className="tabular-nums">{formatMoney(child.funded, TRY_CURRENCY, "ar")}</b> من{" "}
                 <b className="tabular-nums">{formatMoney(child.need, TRY_CURRENCY, "ar")}</b> شهرياً
               </span>
-              <span className="font-bold tabular-nums text-bridge-ink">{after}%</span>
+              <span className="numeral text-2xl text-foreground">{after}%</span>
             </div>
             <CrossingProgress percent={after} className="mt-3" label={`تغطية حاجة ${child.name}`} />
             <p aria-live="polite" className="mt-2 min-h-5 text-xs text-muted-foreground">
@@ -86,7 +86,7 @@ function TryChildPage() {
                 : ""}
             </p>
           </div>
-          <h2 className="mt-6 font-bold">ما تغطّيه الكفالة</h2>
+          <h2 className="mt-8 text-lg font-bold">ما تغطّيه الكفالة</h2>
           <p className="mt-1 leading-8 text-muted-foreground">
             {child.covers}، عبر جهة رعايةٍ معتمدة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.
           </p>
@@ -99,7 +99,7 @@ function TryChildPage() {
 
       <aside
         id="sponsor-form"
-        className="try-rise h-fit rounded-3xl border border-border bg-card p-6 shadow-soft lg:sticky lg:top-24"
+        className="try-rise h-fit rounded-2xl border border-border bg-card p-6 shadow-soft md:p-7 lg:sticky lg:top-24"
         style={{ animationDelay: "0.12s" }}
       >
         <h2 className="text-xl font-bold">اكفل {child.name}</h2>
@@ -185,7 +185,7 @@ function TryChildPage() {
         )}
 
         {/* صدقةٌ جارية عن غيره: اسمٌ يكتبه الداعم، يظهر في أثره وبطاقته، ولا يغيّر شيئاً في الكفالة */}
-        <div className="mt-4 rounded-2xl border border-border p-3">
+        <div className="mt-4 rounded-xl border border-border p-3">
           <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold">
             <input
               type="checkbox"
@@ -193,7 +193,7 @@ function TryChildPage() {
               onChange={(e) => setGifting(e.target.checked)}
               className="size-5 accent-[var(--primary)]"
             />
-            <Gift className="size-4 text-bridge-ink" aria-hidden="true" />
+            <Gift className="size-4 text-muted-foreground" aria-hidden="true" />
             اجعلها صدقةً جارية عن غيرك
           </label>
           {gifting && (

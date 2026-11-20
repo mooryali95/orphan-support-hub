@@ -383,7 +383,7 @@ function OrphanDetail() {
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <div className="overflow-hidden rounded-3xl border border-border bg-card">
+            <div className="overflow-hidden rounded-2xl border border-border bg-card">
               <MuralImage
                 photoUrl={detail?.photo_url ?? null}
                 displayName={orphan.display_name}
@@ -475,7 +475,7 @@ function OrphanDetail() {
             )}
 
             {(detail?.needs.length ?? 0) > 0 && (
-              <div className="mt-6 rounded-3xl border border-border bg-card p-6">
+              <div className="mt-6 rounded-2xl border border-border bg-card p-6">
                 <h2 className="text-lg font-bold">{t.needsH}</h2>
                 <ul className="mt-4 divide-y divide-border">
                   {(detail?.needs ?? []).map((need) => (
@@ -500,7 +500,7 @@ function OrphanDetail() {
             )}
 
             {data.org && (
-              <div className="mt-6 rounded-3xl border border-border bg-card p-6">
+              <div className="mt-6 rounded-2xl border border-border bg-card p-6">
                 <h2 className="flex items-center gap-2 text-lg font-bold">
                   <Building2 className="size-5 text-shore-need" /> {t.org}
                 </h2>
@@ -546,7 +546,7 @@ function OrphanDetail() {
             {mode === "monthly" ? (
               <div
                 id="sponsor-form"
-                className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
                 <p className="text-sm text-muted-foreground">{t.monthlyNeed}</p>
                 <p className="mt-1 text-3xl font-extrabold text-primary">
@@ -739,7 +739,7 @@ function OrphanDetail() {
             ) : (
               <div
                 id="sponsor-form"
-                className="rounded-3xl border border-border bg-card p-6 shadow-sm"
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
                 <p className="font-semibold">{t.kinds[mode].label}</p>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{t.kinds[mode].text}</p>

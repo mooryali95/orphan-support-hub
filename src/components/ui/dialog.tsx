@@ -20,10 +20,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-foreground/25 backdrop-blur-[3px] duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
+    className={cn("fixed inset-0 z-50 bg-foreground/25 backdrop-blur-[3px] mo-overlay", className)}
     {...props}
   />
 ));
@@ -38,7 +35,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-[0_24px_64px_-16px_rgb(0_0_0/0.35)] duration-300 ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.97] data-[state=open]:zoom-in-[0.96] data-[state=open]:slide-in-from-top-[48%] data-[state=closed]:slide-out-to-top-[49%] data-[state=closed]:duration-150 sm:rounded-lg",
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-[0_24px_64px_-16px_rgb(0_0_0/0.35)] mo-dialog sm:rounded-lg",
         className,
       )}
       {...props}
