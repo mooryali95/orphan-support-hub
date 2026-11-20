@@ -218,6 +218,15 @@
   line-height: 1.4;
   font-weight: 700;
 }
+/* the mid-size heading (20–28px), where Amiri's thin strokes lose to the body face beside it:
+   Readex Pro at 600, a size between the card title and the section heading. No third face. */
+@utility heading-sub {
+  font-family: var(--font-sans);
+  font-size: clamp(1.375rem, 1.25rem + 0.5vw, 1.625rem);
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0;
+}
 @utility eyebrow {
   display: inline-flex;
   align-items: center;
@@ -830,16 +839,6 @@ header.sticky {
 }
 
 /* ── لحظة الإتمام ── */
-@keyframes celebrate-ring {
-  from {
-    scale: 0.6;
-    opacity: 0;
-  }
-  60% {
-    scale: 1.06;
-    opacity: 1;
-  }
-}
 @keyframes celebrate-check {
   from {
     stroke-dashoffset: 1;
@@ -861,9 +860,6 @@ header.sticky {
     transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--r1, -92px)) scale(1.1);
   }
 }
-.celebrate-ring {
-  animation: celebrate-ring 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
 .celebrate-check {
   stroke-dasharray: 1;
   animation: celebrate-check 450ms var(--ease-out) 380ms both;
@@ -876,7 +872,6 @@ header.sticky {
   animation: map-rise 450ms var(--ease-out) 550ms both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .celebrate-ring,
   .celebrate-check,
   .celebrate-text {
     animation: none;

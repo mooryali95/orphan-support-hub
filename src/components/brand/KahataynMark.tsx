@@ -27,6 +27,11 @@ const DISC =
 /** the hairline ring inside the rim, broken where the slots cross it (full version only) */
 const RING =
   "M90.8 0C90.8 -15.58 86.79 -30.89 79.17 -44.46L78.18 -42.94C85.41 -29.79 89.2 -15.02 89.2 0C89.2 15.66 85.08 31.04 77.25 44.6C69.42 58.16 58.16 69.42 44.6 77.25C31.04 85.08 15.66 89.2 0 89.2C-15.66 89.2 -31.04 85.08 -44.6 77.25C-58.16 69.42 -69.42 58.16 -77.25 44.6C-85.08 31.04 -89.2 15.66 -89.2 0C-89.2 -15.66 -85.08 -31.04 -77.25 -44.6C-69.42 -58.16 -58.16 -69.42 -44.6 -77.25C-31.04 -85.08 -15.66 -89.2 0 -89.2C13.93 -89.2 27.64 -85.94 40.05 -79.7L40.93 -81.05C28.26 -87.45 14.24 -90.8 0 -90.8C-15.94 -90.8 -31.6 -86.6 -45.4 -78.64C-59.2 -70.67 -70.67 -59.2 -78.64 -45.4C-86.6 -31.6 -90.8 -15.94 -90.8 0C-90.8 15.94 -86.6 31.6 -78.64 45.4C-70.67 59.2 -59.2 70.67 -45.4 78.64C-31.6 86.6 -15.94 90.8 0 90.8C15.94 90.8 31.6 86.6 45.4 78.64C59.2 70.67 70.67 59.2 78.64 45.4C86.6 31.6 90.8 15.94 90.8 0Z";
+/**
+ * the same ring as one stroked arc (radius 90, between the two slots), for the one place where
+ * the mark draws itself: `pathLength="1"` + `.mo-draw` (src/styles/motion.css)
+ */
+const RING_ARC = "M78.68 -43.7A90 90 0 1 1 40.44 -80.4";
 /** the crescent riding the rim */
 const CRESCENT =
   "M88.04 -57.21 94.54 -67.22C98.6 -61.51 102.15 -55.42 105.13 -49.02C113.01 -32.12 116.7 -13.57 115.89 5.06C115.08 23.69 109.78 41.85 100.46 58L90.93 52.5C99.37 37.88 104.16 21.44 104.9 4.58C105.64 -12.28 102.3 -29.08 95.16 -44.37C93.09 -48.83 90.71 -53.12 88.04 -57.21Z";
@@ -53,11 +58,14 @@ export function KahataynMark({
   compact = false,
   tone = "color",
   title,
+  draw = false,
 }: {
   className?: string;
   compact?: boolean;
   tone?: Tone;
   title?: string;
+  /** the inner ring traces itself once (700ms, no overshoot); reduced motion shows it complete */
+  draw?: boolean;
 }) {
   const solid = tone === "white" ? "#FFFFFF" : tone === "current" ? "currentColor" : null;
   // بالألوان: القرص بلون الهوية الرئيس فيتبع المظهر الداكن (عاجيّ على النبيذي العميق)،
@@ -75,7 +83,20 @@ export function KahataynMark({
       {title && <title>{title}</title>}
       {/* the ring is drawn in the page's background over the disc, so it reads as a cut hairline */}
       <path d={DISC} fill={disc} />
-      {!compact && <path d={RING} style={{ fill: "var(--background, #fff)" }} opacity={0.9} />}
+      {!compact &&
+        (draw ? (
+          <path
+            d={RING_ARC}
+            pathLength={1}
+            fill="none"
+            strokeWidth={1.6}
+            className="mo-draw"
+            style={{ stroke: "var(--background, #fff)" }}
+            opacity={0.9}
+          />
+        ) : (
+          <path d={RING} style={{ fill: "var(--background, #fff)" }} opacity={0.9} />
+        ))}
       <path
         d={CRESCENT}
         {...(solid

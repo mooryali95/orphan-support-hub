@@ -10,6 +10,8 @@ const COPY = defineCopy("components/SiteFooter", {
       "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
     platform: "المنصة",
     orphans: "دليل الأيتام",
+    support: "ادعم",
+    traits: "نموذج السمات",
     how: "كيف تعمل الكفالة",
     orgs: "جهات الرعاية",
     account: "الحساب",
@@ -28,6 +30,8 @@ const COPY = defineCopy("components/SiteFooter", {
       "A platform that connects sponsors with orphans through files verified by approved care organizations, with monthly follow-up and transparent impact reports.",
     platform: "Platform",
     orphans: "Children",
+    support: "Support",
+    traits: "Trait model",
     how: "How sponsorship works",
     orgs: "Care organizations",
     account: "Account",
@@ -44,7 +48,8 @@ const COPY = defineCopy("components/SiteFooter", {
   },
 });
 
-export function SiteFooter() {
+/** `hadith={false}` where the page already sets the hadith in its body: once per page. */
+export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
   const c = useCopy(COPY);
   const brand = brandFor(useLocale());
   return (
@@ -58,21 +63,26 @@ export function SiteFooter() {
             <PartnerLockup />
           </div>
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{c.about}</p>
-          {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
-          <blockquote className="mt-6 max-w-md border-t border-border pt-5 text-foreground">
-            {/* النصّ النبوي يبقى بلفظه العربي، والإنجليزية ترجمةٌ لمعناه تحته. */}
-            <p className="font-quran text-lg leading-9 text-balance" lang="ar" dir="rtl">
-              «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
-            </p>
-            {c.hadithNote && (
-              <p className="mt-1 text-xs leading-6 text-muted-foreground">{c.hadithNote}</p>
-            )}
-            <cite className="mt-1 block text-xs not-italic text-muted-foreground">
-              {c.hadithNote
-                ? "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d"
-                : "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه"}
-            </cite>
-          </blockquote>
+          {hadith && (
+            <>
+              {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
+              <blockquote className="mt-6 max-w-md border-t border-border pt-5 text-foreground">
+                {/* النصّ النبوي يبقى بلفظه العربي، والإنجليزية ترجمةٌ لمعناه تحته. */}
+                <p className="font-quran text-lg leading-9 text-balance" lang="ar" dir="rtl">
+                  «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما
+                  شيئاً.
+                </p>
+                {c.hadithNote && (
+                  <p className="mt-1 text-xs leading-6 text-muted-foreground">{c.hadithNote}</p>
+                )}
+                <cite className="mt-1 block text-xs not-italic text-muted-foreground">
+                  {c.hadithNote
+                    ? "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d"
+                    : "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه"}
+                </cite>
+              </blockquote>
+            </>
+          )}
         </div>
         <div>
           <h2 className="text-sm font-bold">{c.platform}</h2>
@@ -83,6 +93,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/support" className="transition-colors hover:text-foreground">
+                {c.support}
+              </Link>
+            </li>
+            <li>
               <Link to="/how-it-works" className="transition-colors hover:text-foreground">
                 {c.how}
               </Link>
@@ -90,6 +105,11 @@ export function SiteFooter() {
             <li>
               <Link to="/organizations" className="transition-colors hover:text-foreground">
                 {c.orgs}
+              </Link>
+            </li>
+            <li>
+              <Link to="/traits" className="transition-colors hover:text-foreground">
+                {c.traits}
               </Link>
             </li>
           </ul>

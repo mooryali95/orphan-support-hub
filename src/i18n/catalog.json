@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1477,
+ "count": 1474,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -405,11 +405,25 @@
    "hash": "807695b36c98",
    "file": "src/components/SiteFooter.tsx"
   },
+  "components/SiteFooter.support": {
+   "en": "Support",
+   "ar": "ادعم",
+   "kind": "text",
+   "hash": "81bb0b6bce39",
+   "file": "src/components/SiteFooter.tsx"
+  },
   "components/SiteFooter.terms": {
    "en": "Terms of use",
    "ar": "شروط الاستخدام",
    "kind": "text",
    "hash": "798d3bd74b80",
+   "file": "src/components/SiteFooter.tsx"
+  },
+  "components/SiteFooter.traits": {
+   "en": "Trait model",
+   "ar": "نموذج السمات",
+   "kind": "text",
+   "hash": "107dab55b891",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.transparency": {
@@ -434,45 +448,24 @@
    "file": "src/components/SiteHeader.tsx"
   },
   "components/SiteHeader.nav.0": {
-   "en": "Home",
-   "ar": "الرئيسية",
-   "kind": "text",
-   "hash": "349c3dbe2662",
-   "file": "src/components/SiteHeader.tsx"
-  },
-  "components/SiteHeader.nav.1": {
    "en": "Children",
    "ar": "دليل الأيتام",
    "kind": "text",
    "hash": "d765f5139550",
    "file": "src/components/SiteHeader.tsx"
   },
-  "components/SiteHeader.nav.2": {
+  "components/SiteHeader.nav.1": {
    "en": "Support",
    "ar": "ادعم",
    "kind": "text",
    "hash": "81bb0b6bce39",
    "file": "src/components/SiteHeader.tsx"
   },
-  "components/SiteHeader.nav.3": {
-   "en": "Trait model",
-   "ar": "نموذج السمات",
-   "kind": "text",
-   "hash": "107dab55b891",
-   "file": "src/components/SiteHeader.tsx"
-  },
-  "components/SiteHeader.nav.4": {
+  "components/SiteHeader.nav.2": {
    "en": "How it works",
    "ar": "كيف تعمل",
    "kind": "text",
    "hash": "f41753ab6f70",
-   "file": "src/components/SiteHeader.tsx"
-  },
-  "components/SiteHeader.nav.5": {
-   "en": "Care organizations",
-   "ar": "جهات الرعاية",
-   "kind": "text",
-   "hash": "e26fc985d686",
    "file": "src/components/SiteHeader.tsx"
   },
   "components/SiteHeader.portals": {
@@ -5190,6 +5183,13 @@
    "hash": "687893547c12",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.closeH": {
+   "en": "Where the name comes from",
+   "ar": "من هنا جاء الاسم",
+   "kind": "text",
+   "hash": "b3c2c0be9e61",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.crossing.0.0": {
    "en": "The shore of loss",
    "ar": "شطّ الفقد",
@@ -5237,13 +5237,6 @@
    "ar": "شطّان ومضيق",
    "kind": "text",
    "hash": "73ea7d268bb2",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.crossingP": {
-   "en": "The logo isn't decoration: two palms holding a child, beneath two neighboring arcs — gold and green — like the two fingers in the hadith. Sponsor and orphan side by side; care that holds without hiding.",
-   "ar": "الشعار ليس زخرفة: كفّان تحتضنان طفلاً، ويعلوهما قوسان متجاوران — ذهبيٌّ وأخضر — كالإصبعين في الحديث. الكافل واليتيم متجاوران، والرعاية تحتضن ولا تحجب.",
-   "kind": "text",
-   "hash": "5ef5a47a177a",
    "file": "src/routes/index.tsx"
   },
   "routes/index.custody.0.0": {
@@ -5407,6 +5400,20 @@
    "hash": "357084714a51",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.impactH": {
+   "en": "What comes back to you",
+   "ar": "ما يعود إليك",
+   "kind": "text",
+   "hash": "ad80084799ca",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.impactP": {
+   "en": "Each delivery is recorded with a document you can see, and regular impact reports on education, health and living conditions are reviewed by the administration before they reach you.",
+   "ar": "كل دفعةٍ يُسجَّل تسليمها بمستندٍ تراه، وتقارير أثرٍ دورية عن التعليم والصحة والمعيشة تراجعها الإدارة قبل أن تصلك.",
+   "kind": "text",
+   "hash": "a57df9fb0335",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.ladder.0.0": {
    "en": "Awareness",
    "ar": "الدراية",
@@ -5534,26 +5541,26 @@
    "hash": "a84d8b7148f4",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.moneyFunded": {
+   "en": "Monthly sponsorship",
+   "ar": "مبالغ الكفالة الشهرية",
+   "kind": "text",
+   "hash": "62effb99ae07",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.moneyNeed": {
+   "en": "Total monthly need",
+   "ar": "الاحتياج الشهري الكلي",
+   "kind": "text",
+   "hash": "d14436947596",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.months": {
    "en": "{0} months",
    "ar": "{0} شهراً",
    "kind": "template",
    "params": 1,
    "hash": "e7a031123783",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.numbersH": {
-   "en": "The platform today",
-   "ar": "أرقام المنصّة اليوم",
-   "kind": "text",
-   "hash": "8a5d74dbdd5b",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.numbersP": {
-   "en": "Calculated from approved files the moment you open this page — not numbers written into the design.",
-   "ar": "محسوبة من الملفات المعتمدة لحظةَ فتحك الصفحة — لا أرقاماً مكتوبةً في التصميم.",
-   "kind": "text",
-   "hash": "c7b02df97916",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ordinals.0": {
@@ -5701,34 +5708,6 @@
    "ar": "ابدأ من ملفٍّ حقيقي",
    "kind": "text",
    "hash": "baf2fe0c4653",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.stats.0": {
-   "en": "Approved files",
-   "ar": "ملف معتمد",
-   "kind": "text",
-   "hash": "155ad0bba3ae",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.stats.1": {
-   "en": "Fully sponsored",
-   "ar": "مكفول بالكامل",
-   "kind": "text",
-   "hash": "85cc0a887ff3",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.stats.2": {
-   "en": "Monthly sponsorship",
-   "ar": "مبالغ الكفالة الشهرية",
-   "kind": "text",
-   "hash": "62effb99ae07",
-   "file": "src/routes/index.tsx"
-  },
-  "routes/index.stats.3": {
-   "en": "Total monthly need",
-   "ar": "الاحتياج الشهري الكلي",
-   "kind": "text",
-   "hash": "d14436947596",
    "file": "src/routes/index.tsx"
   },
   "routes/index.supportNow": {

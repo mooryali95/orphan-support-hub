@@ -15,10 +15,12 @@ import { LanguageSwitch } from "@/components/kit/LanguageSwitch";
 import { ThemeSwitch } from "@/components/kit/ThemeSwitch";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
-const ROUTES = ["/", "/orphans", "/support", "/traits", "/how-it-works", "/organizations"] as const;
+// three doors for a donor: whom, how to give, how it works. Home is the lockup; the trait model
+// and the care organizations live in the footer (SiteFooter).
+const ROUTES = ["/orphans", "/support", "/how-it-works"] as const;
 const COPY = defineCopy("components/SiteHeader", {
   ar: {
-    nav: ["الرئيسية", "دليل الأيتام", "ادعم", "نموذج السمات", "كيف تعمل", "جهات الرعاية"],
+    nav: ["دليل الأيتام", "ادعم", "كيف تعمل"],
     skip: "تخطّي إلى المحتوى",
     home: "الصفحة الرئيسية",
     portals: "بواباتي",
@@ -27,7 +29,7 @@ const COPY = defineCopy("components/SiteHeader", {
     menu: "القائمة",
   },
   en: {
-    nav: ["Home", "Children", "Support", "Trait model", "How it works", "Care organizations"],
+    nav: ["Children", "Support", "How it works"],
     skip: "Skip to content",
     home: "Home page",
     portals: "My portals",
@@ -56,7 +58,7 @@ export function SiteHeader() {
       >
         {c.skip}
       </a>
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 ltr:xl:gap-2.5 ltr:2xl:gap-4">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link
           to="/"
           aria-label={`${brand.name} — ${c.home}`}
@@ -65,26 +67,18 @@ export function SiteHeader() {
           <KahataynLockup />
         </Link>
         {/* the partner beside the product: a hairline, then its mark (name on wide screens) */}
-        {/* the mark at every width from tablets up (the longer English nav has no room for it between xl and 2xl); its full name joins on very wide screens */}
-        <span
-          aria-hidden="true"
-          className="hidden h-8 w-px bg-border sm:block xl:hidden 2xl:block"
-        />
-        <PartnerLockup className="hidden shrink-0 2xl:inline-flex" />
-        <PartnerLockup
-          compact
-          className="hidden shrink-0 sm:inline-flex 2xl:hidden ltr:xl:hidden ltr:2xl:hidden"
-        />
+        {/* the mark from tablets up; with three links there is room for its full name from xl, in both languages */}
+        <span aria-hidden="true" className="hidden h-8 w-px bg-border sm:block" />
+        <PartnerLockup className="hidden shrink-0 xl:inline-flex" />
+        <PartnerLockup compact className="hidden shrink-0 sm:inline-flex xl:hidden" />
 
-        {/* the English labels are longer: tighter gaps between xl and 2xl keep the row inside the container */}
-        <nav className="hidden flex-1 items-center gap-1 xl:flex ltr:xl:gap-0.5 ltr:2xl:gap-1">
+        <nav className="hidden flex-1 items-center gap-1 ps-2 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground rtl:xl:px-3 ltr:xl:px-2 ltr:2xl:px-3"
+              className="rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
-              activeOptions={{ exact: item.to === "/" }}
             >
               {item.label}
             </Link>
@@ -130,7 +124,7 @@ export function SiteHeader() {
             aria-label={c.menu}
             aria-expanded={open}
             aria-controls="site-mobile-nav"
-            className="inline-flex size-11 items-center justify-center rounded-lg border border-border xl:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border lg:hidden"
           >
             <Menu className="size-4" />
           </button>
@@ -139,7 +133,7 @@ export function SiteHeader() {
 
       <div
         id="site-mobile-nav"
-        className={cn("border-t border-border/70 xl:hidden", open ? "block" : "hidden")}
+        className={cn("border-t border-border/70 lg:hidden", open ? "block" : "hidden")}
       >
         <nav className="mx-auto flex max-w-6xl flex-col p-2">
           {NAV.map((item) => (
