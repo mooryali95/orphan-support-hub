@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -49,10 +50,19 @@ const HOME_LAYER: MapLayer = "network";
 const homeQuery = queryOptions({
   queryKey: ["home"],
   queryFn: async () => {
-    const [stats, catalogue] = await Promise.all([getPlatformStats(), listPrograms()]);
-    return { stats, programs: catalogue.programs as PublicProgram[] };
+    // على الخادم: لا ننتظر قاعدة البيانات بلا حدّ. إن تأخّرت تُرسم الصفحة بلا
+    // أعداد (كما تُرسم عند التعذّر) ثم يعيد المتصفّح الجلب بهدوء.
+    const late = typeof window === "undefined" ? within(HOME_WAIT_MS) : null;
+    const both = Promise.all([getPlatformStats(), listPrograms()]);
+    const got = late ? await Promise.race([both, late]) : await both;
+    if (!got) return { stats: null, programs: [] as PublicProgram[], partial: true };
+    const [stats, catalogue] = got;
+    return { stats, programs: catalogue.programs as PublicProgram[], partial: false };
   },
 });
+
+const HOME_WAIT_MS = 2500;
+const within = (ms: number) => new Promise<null>((done) => setTimeout(() => done(null), ms));
 
 const COPY = defineCopy("routes/index", {
   ar: {
@@ -396,7 +406,10 @@ const CROSSING = [{ dot: "bg-shore-need" }, { dot: "bg-bridge" }, { dot: "bg-sho
 const CUSTODY = [Building2, FileCheck2, Stamp, LineChart];
 
 function HomePage() {
-  const { data } = useSuspenseQuery(homeQuery);
+  const { data, refetch } = useSuspenseQuery(homeQuery);
+  useEffect(() => {
+    if (data.partial) void refetch();
+  }, [data.partial, refetch]);
   const locale = useLocale();
   const c = useCopy(COPY);
   const brand = brandFor(locale);

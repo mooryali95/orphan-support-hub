@@ -177,9 +177,10 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
     roughnessMap: rough,
     roughness: 0.55,
     metalness: 0.15,
-    clearcoat: 1,
-    clearcoatRoughness: 0.07,
-    envMapIntensity: 0.6,
+    specularIntensity: 0.5,
+    clearcoat: 0.45, // a satin polish: the key light leaves a soft pool, not a white dot
+    clearcoatRoughness: 0.28,
+    envMapIntensity: 0.22, // the soft boxes are large: the marble stays dark and deep, not veiled
     transparent: !LOW,
     opacity: LOW ? 1 : 0.86,
   });
@@ -308,7 +309,7 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
     fragmentShader: `uniform float uTime; varying vec2 vUv;
       void main(){ vec2 c = vUv - vec2(0.5, 0.42); float d = length(c * vec2(1.0, 0.7));
         float a = smoothstep(0.55, 0.0, d) * (0.85 + 0.15 * sin(uTime * 0.8 + vUv.y * 3.0));
-        gl_FragColor = vec4(vec3(0.84, 0.2, 0.3) * 0.7, a * 0.17); }`,
+        gl_FragColor = vec4(vec3(0.78, 0.2, 0.3) * 0.7, a * 0.12); }`,
   });
   for (let i = 0; i < COUNT; i++) {
     const b = angle(i) + Math.PI / COUNT;
@@ -329,6 +330,7 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
 
   return {
     floorMaterial,
+    blob,
     update(time) {
       glowM.uniforms.uTime.value = time;
     },

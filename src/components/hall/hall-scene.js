@@ -79,7 +79,6 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     wine: 0x6b1f30,
     champagne: 0xcdae76,
     ivory: 0xf3ebe0,
-    lamp: 0xffe6cc,
   };
 
   /* ── State: the network view, the chosen country and its regions ── */
@@ -158,29 +157,46 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   scene.background = new THREE.Color(G.night);
   scene.fog = new THREE.FogExp2(G.night, 0.022);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  // warm studio for reflections: a dark room lit by lamp-coloured panels (no grey from a white box)
+  /* a procedural soft-box studio for reflections (no texture files): large soft-edged panels in
+     neutral-warm white — an overhead box, a key box to the visitor's left, a long low fill, a rim
+     strip behind — and a wine bounce from the floor. Lacquer, enamel and satin metal reflect
+     pools of light with soft edges instead of hard lamp dots. */
   {
     const env = new THREE.Scene();
-    env.background = new THREE.Color(G.night);
-    const panel = (w, h, pos, rot, k) => {
+    env.background = new THREE.Color(0x0d0508);
+    const sc = document.createElement("canvas");
+    sc.width = sc.height = 64;
+    const sx = sc.getContext("2d");
+    const sg = sx.createRadialGradient(32, 32, 6, 32, 32, 32);
+    sg.addColorStop(0, "rgba(255,255,255,1)");
+    sg.addColorStop(0.55, "rgba(255,255,255,0.7)");
+    sg.addColorStop(1, "rgba(255,255,255,0)");
+    sx.fillStyle = sg;
+    sx.fillRect(0, 0, 64, 64);
+    const soft = new THREE.CanvasTexture(sc);
+    const box = (w, h, pos, k, color = 0xfff4ea) => {
       const m = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
         new THREE.MeshBasicMaterial({
-          color: new THREE.Color(0xffdcbe).multiplyScalar(k),
+          color: new THREE.Color(color).multiplyScalar(k),
+          map: soft,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
           side: THREE.DoubleSide,
         }),
       );
       m.position.set(...pos);
-      m.rotation.set(...rot);
+      m.lookAt(0, 0, 0);
       env.add(m);
     };
-    panel(6, 6, [0, 9, 0], [Math.PI / 2, 0, 0], 3.2);
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * Math.PI * 2;
-      panel(1.2, 5, [Math.sin(a) * 8, 2, Math.cos(a) * 8], [0, a, 0], 1.4);
-    }
-    panel(20, 2, [0, -3, -9], [0, 0, 0], 0.25);
-    scene.environment = pmrem.fromScene(env, 0.02).texture;
+    box(13, 13, [0, 9, 0.01], 1.8); // overhead
+    box(11, 11, [-8, 5, 6], 2.8); // key
+    box(6, 12, [9, 2.5, 3], 0.8); // fill
+    box(16, 4, [0, 4, -10], 1.3); // rim
+    box(22, 22, [0, -6, 0.01], 0.45, 0x6b1f30); // the floor returns wine
+    scene.environment = pmrem.fromScene(env, 0.03).texture;
+    soft.dispose();
   }
 
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
@@ -213,15 +229,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ao.setQualityMode("Medium");
     composer.addPass(ao);
   }
-  const BLOOM = 0.9; // resting bloom; the gate, country and payment beats rise from it and return
+  const BLOOM = 0.8; // resting bloom; the gate, country and payment beats rise from it and return
   const bloom = new BloomEffect({
-    luminanceThreshold: 0.8, // whites draw the forms now: only true light sources should bloom
-    luminanceSmoothing: 0.2,
+    // only true emitters bloom (they are drawn above 1): white type and enamel stay crisp
+    luminanceThreshold: 1.0,
+    luminanceSmoothing: 0.25,
     intensity: BLOOM,
     mipmapBlur: true,
     radius: 0.72,
   });
-  const tone = new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC });
+  // AgX keeps hue under warm light (ACES pulls saturated wine toward orange-brown); the grade
+  // below gives back the contrast and saturation AgX holds in reserve, with lifted blacks
+  const tone = new ToneMappingEffect({ mode: ToneMappingMode.AGX });
   const dof = LOW
     ? null
     : new DepthOfFieldEffect(camera, {
@@ -237,12 +256,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     radialModulation: true,
     modulationOffset: 0.25,
   });
-  const vignette = new VignetteEffect({ darkness: 0.62, offset: 0.3 });
+  const vignette = new VignetteEffect({ darkness: 0.5, offset: 0.32 });
   const grain = new NoiseEffect({ blendFunction: BlendFunction.SOFT_LIGHT, premultiply: false });
   grain.blendMode.opacity.value = 0.14;
   const grade = [
-    new BrightnessContrastEffect({ contrast: 0.08, brightness: -0.01 }),
-    new HueSaturationEffect({ saturation: -0.04 }),
+    new BrightnessContrastEffect({ contrast: 0.1, brightness: 0.0 }),
+    new HueSaturationEffect({ saturation: 0 }),
   ];
   composer.addPass(new EffectPass(camera, ...grade, ca, vignette, grain));
   composer.addPass(new EffectPass(camera, new SMAAEffect()));
@@ -257,12 +276,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   });
   // white enamel: the mark's ring and hand, as form (frames, the broken rings, the meridian)
   const ivoryM = new THREE.MeshPhysicalMaterial({
-    color: G.ivory,
+    color: 0xfaf6ef,
     metalness: 0,
     roughness: 0.42,
     clearcoat: 0.6,
     clearcoatRoughness: 0.25,
-    envMapIntensity: 0.45,
+    envMapIntensity: 0.95, // enamel is lit by the soft boxes: white, not putty
   });
   const lacquer = new THREE.MeshPhysicalMaterial({
     color: G.lacquer,
@@ -281,29 +300,57 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       toneMapped: false,
     });
 
-  /* ── Lights: 3000K lamps, one key over the centre ───────────────── */
-  scene.add(new THREE.HemisphereLight(0xffeada, 0x14060a, 0.35));
-  const key = new THREE.SpotLight(G.lamp, 1400, 40, 0.55, 0.6, 2);
-  key.position.set(0, 22, 4);
-  key.target.position.set(0, 0, 0);
+  /* ── Lights: one soft key, a low fill, a rim — and the soft-box environment for the rest.
+     Three analytic lights instead of nine: no lamp dots on lacquer, no hot corners on the
+     screen frames. The lanterns that remain are objects (they bloom) and light nothing. ── */
+  scene.add(new THREE.HemisphereLight(0xfff1e6, 0x1c070d, 0.45));
+  const key = new THREE.SpotLight(0xfff3e8, 1700, 52, 0.5, 1, 2);
+  key.position.set(-9, 20, 17); // behind the visitor: its pool on the polished floor stays out of frame
+  key.target.position.set(0, 1, -2);
   scene.add(key, key.target);
+  const fill = new THREE.DirectionalLight(0xffeadf, 0.4);
+  fill.position.set(10, 6, 9);
+  // the rim rises from behind and below, so it edges the globe and the columns of need but never
+  // strikes the polished floor toward the visitor (no glare pool)
+  const rim = new THREE.SpotLight(0xfff6f0, 520, 26, 0.5, 0.9, 2);
+  rim.position.set(2.5, 2.2, -13.5);
+  rim.target.position.set(0, 6.4, 0);
+  scene.add(fill, rim, rim.target);
+  /* one shadow map with a tight frustum over the centre (stand, globe, land, columns of need);
+     LOW keeps the baked blobs only */
+  const SHADOWS = !LOW;
+  if (SHADOWS) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.VSMShadowMap;
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.camera.near = 8;
+    key.shadow.camera.far = 40;
+    key.shadow.focus = 0.8;
+    key.shadow.radius = 5;
+    key.shadow.blurSamples = 10;
+    key.shadow.bias = -0.0005;
+  }
+  const casts = (o) => {
+    if (SHADOWS) o.traverse((x) => x.isMesh && (x.castShadow = true));
+    return o;
+  };
+  const takes = (o) => {
+    if (SHADOWS) o.traverse((x) => x.isMesh && (x.receiveShadow = true));
+    return o;
+  };
   const lamps = [];
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2 + 0.4;
-    const l = new THREE.PointLight(G.lamp, 55, 18, 2);
-    l.position.set(Math.sin(a) * 13.5, 8.5, Math.cos(a) * 13.5);
-    scene.add(l);
-    lamps.push(l);
+  for (const a of [-1.8, -0.95, 0.95, 1.8]) {
+    const at = new THREE.Vector3(Math.sin(a) * 14.2, 9.4, Math.cos(a) * 14.2);
     const bulb = new THREE.Mesh(
-      new THREE.SphereGeometry(0.16, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xfff0e0, toneMapped: false }),
+      new THREE.SphereGeometry(0.1, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xfff4ea, toneMapped: false }),
     );
-    bulb.material.color.multiplyScalar(2.2);
-    bulb.scale.setScalar(0.7);
-    bulb.position.copy(l.position);
+    bulb.material.color.multiplyScalar(1.7);
+    bulb.position.copy(at);
     scene.add(bulb);
     const cage = new THREE.Mesh(
-      new THREE.OctahedronGeometry(0.42, 0),
+      new THREE.OctahedronGeometry(0.36, 0),
       new THREE.MeshPhysicalMaterial({
         color: G.champagne,
         metalness: 1,
@@ -311,7 +358,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         wireframe: true,
       }),
     );
-    cage.position.copy(l.position);
+    cage.position.copy(at);
     scene.add(cage);
     lamps.push(cage);
   }
@@ -439,6 +486,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     })(),
   });
   floor.material = arch.floorMaterial;
+  takes(floor);
   const doors = [];
   [-1, 1].forEach((s) => {
     const pivot = new THREE.Group();
@@ -523,20 +571,52 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   rays.position.y = 15.5;
   hall.add(rays);
 
-  /* ── Screens: canvas pages + a moving sheen shader ──────────────── */
+  /* ── Screens: objects, not canvases — a wine board, a white enamel frame with depth, a
+     champagne fillet, the page set back inside it, and a still sheet of glass over the page ── */
   const proj = (lon, lat, k) => ({ x: (lon - 20.0) * k * 0.755, y: (lat - 41.2) * k });
   const sheenMat = () =>
     new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
-      uniforms: { uTime: { value: 0 }, uHover: { value: 0 } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `uniform float uTime; uniform float uHover; varying vec2 vUv;
-    void main(){ float x = vUv.x + vUv.y*0.35; float band = smoothstep(0.08,0.0,abs(fract(x*0.5 - uTime*0.08)-0.5));
+      uniforms: { uTime: { value: 0 }, uHover: { value: 0 }, uDim: { value: 1 } },
+      vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vT;
+    void main(){ vUv = uv; vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal);
+      vV = normalize(cameraPosition - w.xyz); vT = dot(vV, normalize(mat3(modelMatrix)*vec3(1.0,0.0,0.0)));
+      gl_Position = projectionMatrix*viewMatrix*w; }`,
+      // glass, quietly: a fresnel lift at grazing angles and one wide soft-box pool that slides as
+      // the visitor moves (nothing sweeps by itself); the rim answers the pointer
+      fragmentShader: `uniform float uHover; uniform float uDim; varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vT;
+    void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 3.0);
+      float pool = smoothstep(0.42, 0.0, abs(vUv.x + vUv.y*0.38 - 0.62 - vT*1.3));
       float rim = smoothstep(0.03,0.0,min(min(vUv.x,1.0-vUv.x),min(vUv.y,1.0-vUv.y)));
-      gl_FragColor = vec4(vec3(1.0,0.92,0.82), band*0.06 + rim*(0.05+0.35*uHover)); }`,
+      gl_FragColor = vec4(vec3(1.0,0.96,0.92), (f*0.3 + pool*0.035 + rim*0.3*uHover)*uDim); }`,
     });
+  /** a rectangular moulding: outer (w+2t)x(h+2t), opening w x h, extruded with a small bevel */
+  const moulding = (w, h, t, depth, bevel) => {
+    const o = new THREE.Shape();
+    const W2 = w / 2 + t,
+      H2 = h / 2 + t;
+    o.moveTo(-W2, -H2);
+    o.lineTo(W2, -H2);
+    o.lineTo(W2, H2);
+    o.lineTo(-W2, H2);
+    o.closePath();
+    const hole = new THREE.Path();
+    hole.moveTo(-w / 2, -h / 2);
+    hole.lineTo(-w / 2, h / 2);
+    hole.lineTo(w / 2, h / 2);
+    hole.lineTo(w / 2, -h / 2);
+    hole.closePath();
+    o.holes.push(hole);
+    return new THREE.ExtrudeGeometry(o, {
+      depth,
+      bevelEnabled: bevel > 0,
+      bevelThickness: bevel,
+      bevelSize: bevel,
+      bevelSegments: 2,
+    });
+  };
   const screens = [];
   function makeScreen(angle, w, h) {
     const cv = document.createElement("canvas"),
@@ -550,18 +630,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const g = new THREE.Group();
+    // the page sits 9cm behind the frame's face
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
       new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }),
     );
+    m.position.z = -0.03;
     const sheen = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sheenMat());
-    sheen.position.z = 0.01;
-    // a slim white enamel frame on a wine board, as the mark's ring sits inside its disc
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.14, h + 0.14, 0.1), ivoryM);
-    frame.position.z = -0.07;
-    const back = new THREE.Mesh(new THREE.BoxGeometry(w + 0.9, h + 0.9, 0.1), lacquer);
-    back.position.z = -0.2;
-    g.add(back, frame, m, sheen);
+    sheen.position.z = 0.0;
+    // white enamel moulding, as the mark's ring sits on its disc; one champagne fillet inside it
+    const frame = new THREE.Mesh(moulding(w + 0.03, h + 0.03, 0.13, 0.15, 0.018), ivoryM);
+    frame.position.z = -0.1;
+    const fillet = new THREE.Mesh(moulding(w, h, 0.015, 0.05, 0), champM);
+    fillet.position.z = -0.04;
+    const back = new THREE.Mesh(moulding(w + 0.29, h + 0.29, 0.36, 0.14, 0.02), lacquer);
+    back.position.z = -0.24;
+    g.add(back, frame, fillet, m, sheen);
     g.position.set(Math.sin(angle) * 13.2, 6, Math.cos(angle) * 13.2);
     g.lookAt(0, 6, 0);
     hall.add(g);
@@ -569,18 +653,41 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     screens.push(o);
     return o;
   }
+  /* the screens speak in the hall and fall quiet when the globe takes the room */
+  const scrDim = { v: 1 };
+  const dimScreens = (v) =>
+    gsap.to(scrDim, {
+      v,
+      duration: 1.4,
+      ease: "power2.inOut",
+      overwrite: true,
+      onUpdate: () =>
+        screens.forEach((x) => {
+          x.mesh.material.color.setScalar(scrDim.v);
+          x.sheen.material.uniforms.uDim.value = scrDim.v;
+        }),
+    });
   const scrMap = makeScreen(Math.PI, 9, 6),
     scrTracks = makeScreen(Math.PI - 0.82, 6, 4.4),
     scrImpact = makeScreen(Math.PI + 0.82, 6, 4.4);
   function bg(ctx, w, h) {
     const gr = ctx.createRadialGradient(w * 0.6, h * 0.3, 50, w * 0.5, h * 0.5, w * 0.8);
     gr.addColorStop(0, "#6b1f30");
-    gr.addColorStop(1, "#2a0a13");
+    gr.addColorStop(1, "#33101a");
     ctx.fillStyle = gr;
     ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = "rgba(205,174,118,.38)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(34, 34, w - 68, h - 68);
+    // the page is set back in its frame: the moulding shades its top and its lit-side edge
+    const edge = (x0, y0, x1, y1, a) => {
+      const e = ctx.createLinearGradient(x0, y0, x1, y1);
+      e.addColorStop(0, `rgba(12,3,6,${a})`);
+      e.addColorStop(1, "rgba(12,3,6,0)");
+      ctx.fillStyle = e;
+      ctx.fillRect(0, 0, w, h);
+    };
+    edge(0, 0, 0, 46, 0.5);
+    edge(0, 0, 38, 0, 0.36);
+    edge(w, 0, w - 22, 0, 0.18);
+    edge(0, h, 0, h - 18, 0.14);
   }
   function text(ctx, s, x, y, size, color, weight = 500, fam = BODY, align = "right") {
     ctx.direction = "rtl";
@@ -589,18 +696,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ctx.font = `${weight} ${size}px "${fam}", sans-serif`;
     ctx.fillText(s, x, y);
   }
+  /** a screen's heading: flat white display type over one short champagne rule (no foil ramp) */
   function goldText(ctx, s, x, y, size) {
     ctx.direction = "rtl";
     ctx.textAlign = "right";
     ctx.font = `700 ${size}px "${DISPLAY}", serif`;
-    // headings on the wall screens are white, as on the glass: champagne only warms their foot
-    const g = ctx.createLinearGradient(0, y - size, 0, y);
-    g.addColorStop(0, "#ffffff");
-    g.addColorStop(0.7, "#fbf4e6");
-    g.addColorStop(1, "#ecdcb6");
-    ctx.fillStyle = g;
+    ctx.fillStyle = "#fbf7f0";
     ctx.fillText(s, x, y);
   }
+  const rule = (ctx, x, y, len) => {
+    ctx.fillStyle = "rgba(205,174,118,.8)";
+    ctx.fillRect(x - len, y, len, 2);
+  };
   function drawMap() {
     const { ctx, cv, tex } = scrMap,
       w = cv.lw,
@@ -608,44 +715,44 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       t = totals();
     bg(ctx, w, h);
     if (!PICKED) {
-      goldText(ctx, "شبكة الندوة حول العالم", w - 80, 130, 76);
+      goldText(ctx, "شبكة الندوة حول العالم", w - 90, 158, 92);
       text(
         ctx,
         "المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
-        w - 80,
-        200,
-        36,
-        "rgba(246,239,226,.75)",
+        w - 90,
+        238,
+        44,
+        "rgba(246,239,226,.78)",
       );
+      rule(ctx, w - 90, 286, 150);
       [
         ["1", "مقرّ رئيسي"],
         ["19", "مكتباً مؤكَّداً"],
         ["7", "نشاطاً ميدانياً"],
       ].forEach(([v, l], i) => {
-        const x = w - 80 - i * 400;
+        const x = w - 90 - i * 410;
         ctx.direction = "ltr";
         ctx.textAlign = "right";
-        ctx.font = `700 140px "${DISPLAY}", serif`;
-        const g = ctx.createLinearGradient(0, 300, 0, 440);
-        g.addColorStop(0, "#ffffff");
-        g.addColorStop(1, "#ecdcb6");
-        ctx.fillStyle = g;
-        ctx.fillText(v, x, 450);
-        text(ctx, l, x, 520, 36, "rgba(246,239,226,.8)", 600);
+        ctx.font = `700 190px "${DISPLAY}", serif`;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(v, x, 520);
+        text(ctx, l, x, 596, 44, "rgba(246,239,226,.82)", 600);
       });
+      ctx.fillStyle = "rgba(246,239,226,.16)";
+      ctx.fillRect(90, h - 196, w - 180, 2);
       text(
         ctx,
         "المس الكرة أو هذه الشاشة لتختار دولتك على خريطة العالم",
-        w - 80,
-        h - 120,
-        38,
-        "#cdae76",
+        w - 90,
+        h - 104,
+        45,
+        "#e2c896",
         700,
       );
       tex.needsUpdate = true;
       return;
     }
-    goldText(ctx, `${CO.ar} — الحال الآن`, w - 80, 130, 76);
+    goldText(ctx, `${CO.ar} — الحال الآن`, w - 80, 136, 80);
     text(
       ctx,
       `${fmt(t.need)} يتيماً في الحاجة · ${t.pct}% مموّلة · ${fmt(t.gap)} ينتظرون التأهيل`,
@@ -720,7 +827,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         ctx.fillStyle = "#cdae76";
         ctx.fillRect(lx - 440 * (c.qualified / c.need), ly + 16, 440 * (c.qualified / c.need), 6);
       });
-    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 90, 38, "#cdae76", 700);
+    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 84, 48, "#e2c896", 700);
     tex.needsUpdate = true;
   }
   function drawTracks() {
@@ -771,10 +878,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ctx.direction = "ltr";
       ctx.textAlign = "right";
       ctx.font = `700 96px "${DISPLAY}", serif`;
-      const g = ctx.createLinearGradient(0, 200, 0, 300);
-      g.addColorStop(0, "#ffffff");
-      g.addColorStop(1, "#ecdcb6");
-      ctx.fillStyle = g;
+      ctx.fillStyle = "#ffffff";
       ctx.fillText(v, x, 300);
       text(ctx, l, x, 350, 32, "rgba(246,239,226,.75)", 600);
     });
@@ -800,7 +904,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         text(ctx, r.title, w - 80, y, 36, i ? "rgba(246,239,226,.8)" : "#f6efe2", 600);
         text(ctx, r.line, 80 + 520, y, 28, "rgba(246,239,226,.55)", 500, BODY, "right");
       });
-    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 32, "#cdae76", 700);
+    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 36, "#e2c896", 700);
     tex.needsUpdate = true;
   }
 
@@ -854,6 +958,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       new THREE.Mesh(geo, landM),
       new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), inkLine(0.7)),
     );
+    takes(casts(landGroup.children[0]));
     const main = CO.rings[0],
       cx = main.reduce((a, p) => a + p[0], 0) / main.length,
       cy = main.reduce((a, p) => a + p[1], 0) / main.length;
@@ -875,6 +980,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), inkLine(0.3 - i * 0.07)),
       );
       t.position.y = 0.58 + i * 0.075;
+      takes(t);
       landGroup.add(t);
     });
   }
@@ -894,6 +1000,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   sea.rotation.x = -Math.PI / 2;
   sea.position.y = 0.002;
   country.add(sea);
+  if (SHADOWS) {
+    // the sea is drawn by its own shader: a shadow-only sheet just above it takes the land's shadow
+    const seaShade = new THREE.Mesh(
+      new THREE.CircleGeometry(7.36, 64),
+      new THREE.ShadowMaterial({ opacity: 0.5, depthWrite: false }),
+    );
+    seaShade.rotation.x = -Math.PI / 2;
+    seaShade.position.y = 0.006;
+    seaShade.receiveShadow = true;
+    country.add(seaShade);
+  }
   const bandCv = document.createElement("canvas");
   bandCv.width = 4096;
   bandCv.height = 128;
@@ -1009,7 +1126,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       new THREE.MeshPhysicalMaterial({
         color: G.ivory,
         emissive: 0xfff1e0,
-        emissiveIntensity: 0.32,
+        emissiveIntensity: 0.42,
         roughness: 0.36,
         clearcoat: 0.8,
         clearcoatRoughness: 0.2,
@@ -1026,6 +1143,25 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     );
     baseRing.rotation.x = Math.PI / 2;
     delta.visible = baseRing.visible = false;
+    if (SHADOWS) fill.castShadow = delta.castShadow = true;
+    /* the arrival glow: a sleeve of light around what the gift added; it is lit once, in pay,
+       and fades — at rest the added part is white enamel, faintly luminous */
+    const glow = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.3, 0.3, 1, 32, 1, true),
+      new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        uniforms: { uO: { value: 0 } },
+        vertexShader: `varying float vF; varying vec2 vUv; void main(){ vUv = uv; vec4 mv = modelViewMatrix*vec4(position,1.0);
+          vF = abs(dot(normalize(normalMatrix*normal), normalize(-mv.xyz))); gl_Position = projectionMatrix*mv; }`,
+        fragmentShader: `uniform float uO; varying float vF; varying vec2 vUv; void main(){
+          float a = vF*vF * smoothstep(0.0, 0.18, vUv.y) * smoothstep(1.0, 0.82, vUv.y);
+          gl_FragColor = vec4(vec3(1.0,0.96,0.9)*1.5, a*uO); }`,
+      }),
+    );
+    glow.visible = false;
     const ghost = new THREE.Mesh(
       new THREE.CylinderGeometry(0.2, 0.2, 1, 48),
       new THREE.MeshBasicMaterial({
@@ -1086,7 +1222,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     );
     halo.rotation.x = -Math.PI / 2;
     halo.position.y = 0.02;
-    g.add(glass, fill, delta, baseRing, ghost, cap, halo, dialG);
+    g.add(glass, fill, delta, glow, baseRing, ghost, cap, halo, dialG);
     country.add(g);
     glass.userData.city = fill.userData.city = c.id;
     const o = {
@@ -1095,6 +1231,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       glass,
       fill,
       delta,
+      glow,
       baseRing,
       ghost,
       cap,
@@ -1132,6 +1269,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     o.delta.visible = o.baseRing.visible = d > 0.01;
     o.delta.scale.y = Math.max(0.001, d);
     o.delta.position.y = b + d / 2;
+    o.glow.visible = o.delta.visible && o.glow.material.uniforms.uO.value > 0.004;
+    o.glow.scale.y = Math.max(0.001, d + 0.5);
+    o.glow.position.y = b + d / 2;
     o.baseRing.position.y = b;
     o.cap.position.y = total;
     o.cap.visible = o.rise > 0.02;
@@ -1347,6 +1487,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.1, 0.12, 64), champM);
     foot.position.y = 0.06;
     pedestal.add(foot);
+    casts(pedestal);
+    // contact shadow under the stand (baked, both tiers)
+    const blob = new THREE.Mesh(
+      new THREE.PlaneGeometry(5.6, 5.6),
+      new THREE.MeshBasicMaterial({ map: arch.blob, transparent: true, depthWrite: false }),
+    );
+    blob.rotation.x = -Math.PI / 2;
+    blob.position.y = 0.02;
+    pedestal.add(blob);
   }
   const GR = 3.6;
   const globeCore = new THREE.Mesh(
@@ -1361,7 +1510,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       envMapIntensity: 0.4,
     }),
   );
-  globe.add(globeCore);
+  globe.add(casts(globeCore));
   const atmo = new THREE.Mesh(
     new THREE.SphereGeometry(GR * 1.18, 64, 48),
     new THREE.ShaderMaterial({
@@ -1372,7 +1521,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       // the shell is 1.18x the globe, so its limb sits at 0.53: the halo hugs the limb and is
       // gone before the shell's own edge (no milky disc around the world)
       vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w = modelMatrix*vec4(position,1.0); vN = normalize(mat3(modelMatrix)*normal); vV = normalize(cameraPosition-w.xyz); gl_Position = projectionMatrix*viewMatrix*w; }`,
-      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float d = clamp(-dot(vN, vV) / 0.53, 0.0, 1.0); float f = d*d*d*d*d; gl_FragColor = vec4(vec3(0.95,0.56,0.6), f*0.26); }`,
+      fragmentShader: `varying vec3 vN; varying vec3 vV; void main(){ float d = clamp(-dot(vN, vV) / 0.53, 0.0, 1.0); float f = d*d*d*d*d; gl_FragColor = vec4(vec3(1.0,0.94,0.87), f*0.075); }`,
     }),
   );
   globe.add(atmo);
@@ -1804,6 +1953,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     root.classList.toggle("at-country", s === "country");
     S.stage = s;
     root.dataset.stage = s; // the bar shows only what belongs to the stage (hall.css)
+    dimScreens(s === "hall" || s === "gate" ? 1 : 0.32); // the globe owns the frame elsewhere
+    // the shaft of light from the oculus thins when the globe stands in it (no milky aura)
+    gsap.to(rays.material.uniforms.uI, {
+      value: s === "world" || s === "big" ? 0.04 : 0.14,
+      duration: 1.6,
+      overwrite: true,
+    });
+    if (dof && s !== "impact" && s !== "impactPending" && s !== "support")
+      gsap.to(dof.cocMaterial, { worldFocusRange: 9, duration: 1.2, overwrite: true });
     queueMicrotask(frameForPanel);
     root.classList.toggle(
       "in-country",
@@ -2000,6 +2158,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
   const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  /* the visitor stays in control: touching the scene ends an authored move where it stands */
+  let flight = null;
+  const takeOver = () => {
+    if (flight && controls.enabled) flight.kill();
+    flight = null;
+  };
+  on(canvas, "pointerdown", takeOver);
+  on(canvas, "wheel", takeOver, { passive: true });
   function hallPose(i) {
     const at = (i + VIEWS.length) % VIEWS.length,
       g = VIEWS[at].group,
@@ -2319,9 +2485,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       duration: 1.8,
       ease: "expo.inOut",
     });
-    controls.smoothTime = 1.2;
-    controls.setLookAt(0, 7.4, 14.2, 0, 5.4, 0, true);
-    gsap.to(focus, { x: 0, y: 5.4, z: 0, duration: 1.4 });
+    {
+      // a slow eased arc out to the world, not a straight pull; a touch takes the camera back
+      const c0 = camera.position.clone(),
+        t0 = controls.getTarget(new THREE.Vector3()),
+        c1 = V(0, 7.4, 14.2),
+        t1 = V(0, 5.4, 0);
+      if (RM || c0.distanceTo(c1) < 0.5)
+        controls.setLookAt(c1.x, c1.y, c1.z, t1.x, t1.y, t1.z, true);
+      else
+        flight = flyPath(
+          [
+            c0,
+            c0
+              .clone()
+              .lerp(c1, 0.5)
+              .add(V(1.5, 0.7, 0)),
+            c1,
+          ],
+          [t0, t0.clone().lerp(t1, 0.6), t1],
+          2.4,
+          "power2.inOut",
+        );
+    }
+    gsap.to(focus, { x: 0, y: 5.4, z: 0, duration: 2, ease: "power2.inOut" });
     arcs.forEach((a, i) => {
       const o = { n: 0 };
       gsap.to(o, {
@@ -3005,6 +3192,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       );
     }
     const tl = gsap.timeline();
+    {
+      // the one focus pull: from the whole land to the column the gift is about to raise
+      const at = o.g.getWorldPosition(new THREE.Vector3());
+      tl.to(
+        focus,
+        { x: at.x, y: at.y + H(c.need) * 0.5, z: at.z, duration: 1.8, ease: "power2.inOut" },
+        0,
+      );
+      if (dof)
+        tl.to(dof.cocMaterial, { worldFocusRange: 5, duration: 1.8, ease: "power2.inOut" }, 0);
+    }
     tl.to(flow, { t: 1.1, duration: 1.9, ease: "power1.inOut", onStart: () => (flow.t = 0) })
       /* the arrival is quiet: one slow ring crosses the land, and the added part of the column
          comes in as light and cools into white enamel — no flash, no burst */
@@ -3018,8 +3216,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       .to(shock.material, { opacity: 0, duration: 2.6, ease: "power1.out" }, 1.7)
       .fromTo(
         o.delta.material,
-        { emissiveIntensity: 1.9 },
-        { emissiveIntensity: 0.32, duration: 3.4, ease: "power2.out" },
+        { emissiveIntensity: 2.4 },
+        { emissiveIntensity: 0.42, duration: 5.2, ease: "power1.out" },
+        1.7,
+      )
+      .fromTo(
+        o.glow.material.uniforms.uO,
+        { value: 0.55 },
+        { value: 0, duration: 6, ease: "power1.out" },
         1.7,
       )
       .to(
@@ -3626,7 +3830,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   function hallView(i, smooth = true) {
     hallAt = (i + VIEWS.length) % VIEWS.length;
     const { cam, target, focus: f } = hallPose(hallAt);
-    controls.smoothTime = 0.9;
+    controls.smoothTime = 1.05; // a slow dolly between the screens
     controls.setLookAt(cam.x, cam.y, cam.z, target.x, target.y, target.z, smooth);
     gsap.to(focus, { x: f.x, y: f.y, z: f.z, duration: 1.2, ease: "power2.inOut" });
     root
@@ -3738,8 +3942,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ? document.createElement("output")
     : null;
   const meterStat = { frames: 0, since: performance.now() };
+  const counted = !!meter || !!window.__HALL_TEST;
+  const lastInfo = { calls: 0, triangles: 0 };
+  if (counted) renderer.info.autoReset = false; // count every pass of the frame, not only the last
   if (meter) {
-    renderer.info.autoReset = false; // count every pass of the frame, not only the last
     meter.className = "perf";
     root.appendChild(meter);
   }
@@ -3813,10 +4019,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
     if (!RM) {
       crown.rotation.y -= dt * 0.04;
-      lamps.forEach((l, i) => {
-        if (l.isLight) l.intensity = 55 + Math.sin(time * 1.7 + i) * 4;
-        else l.rotation.y += dt * 0.3;
-      });
+      lamps.forEach((l) => (l.rotation.y += dt * 0.3));
     }
     pillars.forEach((o) => {
       if (Math.abs(o.ghostH - o.ghostTarget) > 0.001)
@@ -3929,8 +4132,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         m.scale.setScalar(PICKED && c === CO ? 1.8 + Math.sin(time * 4) * 0.5 : 1),
       );
     }
-    if (meter) renderer.info.reset();
+    if (counted) renderer.info.reset();
     composer.render(dt);
+    if (counted) {
+      lastInfo.calls = renderer.info.render.calls;
+      lastInfo.triangles = renderer.info.render.triangles;
+    }
     if (meter) tickMeter();
     placed.length = 0;
     /* hysteresis: among globe names, the chosen country first, then every name that was already
@@ -4016,6 +4223,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     rerender: () => S.stage === "country" && renderCountry(),
     enterWorld: () => enterWorld(),
     co: () => CO.code,
+    /** draw calls and triangles of the last frame (all passes), for automated checks */
+    info: () => ({ ...lastInfo }),
     /** whether the after-payment replay still has a step waiting */
     replaying: () => !!REPLAY,
     codes: () => COUNTRIES.map((c) => c.code),
