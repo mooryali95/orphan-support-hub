@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1480,
+ "count": 1477,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1381,27 +1381,6 @@
    "kind": "text",
    "hash": "1980c666f623",
    "file": "src/components/map/network-copy.ts"
-  },
-  "components/map/NetworkSection.eyebrow": {
-   "en": "For the General Secretariat",
-   "ar": "للأمانة العامة",
-   "kind": "text",
-   "hash": "6b04f0d4f5d6",
-   "file": "src/components/map/NetworkSection.tsx"
-  },
-  "components/map/NetworkSection.lead": {
-   "en": "An analysis of documented public data: orphan need in each country against WAMY's presence there. Read it with the map above — select a country to see its card.",
-   "ar": "تحليلٌ من بياناتٍ عامّة موثّقة: حاجة الأيتام في كل دولة مقابل حضور الندوة فيها. يُقرأ مع الخارطة أعلاه — اضغط دولةً لترى بطاقتها.",
-   "kind": "text",
-   "hash": "e25fac6e2abc",
-   "file": "src/components/map/NetworkSection.tsx"
-  },
-  "components/map/NetworkSection.title": {
-   "en": "Expansion decision: where should the next office open?",
-   "ar": "قرار التوسّع: أين نفتح المكتب التالي؟",
-   "kind": "text",
-   "hash": "37a40b2a1dca",
-   "file": "src/components/map/NetworkSection.tsx"
   },
   "components/map/WorldMap.back": {
    "en": "Back",
