@@ -56,7 +56,7 @@ export function SiteHeader() {
       >
         {c.skip}
       </a>
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 ltr:xl:gap-2.5 ltr:2xl:gap-4">
         <Link
           to="/"
           aria-label={`${brand.name} — ${c.home}`}
@@ -76,12 +76,13 @@ export function SiteHeader() {
           className="hidden shrink-0 sm:inline-flex 2xl:hidden ltr:xl:hidden ltr:2xl:hidden"
         />
 
-        <nav className="hidden flex-1 items-center gap-1 xl:flex">
+        {/* the English labels are longer: tighter gaps between xl and 2xl keep the row inside the container */}
+        <nav className="hidden flex-1 items-center gap-1 xl:flex ltr:xl:gap-0.5 ltr:2xl:gap-1">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors xl:px-3 hover:bg-secondary hover:text-foreground"
+              className="rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground rtl:xl:px-3 ltr:xl:px-2 ltr:2xl:px-3"
               activeProps={{ className: "bg-secondary text-foreground" }}
               activeOptions={{ exact: item.to === "/" }}
             >

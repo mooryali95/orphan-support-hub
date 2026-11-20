@@ -3,7 +3,7 @@ import { type ReactNode, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * لحظة الإتمام — نادرةٌ فتستحقّ الحركة: حلقةٌ ذهبية تتّسع، وعلامةٌ تُرسم،
+ * لحظة الإتمام — نادرةٌ فتستحقّ الحركة: ختمٌ يستقرّ بلا ارتداد، وعلامةٌ تُرسم،
  * وأوراقٌ من الشعار تتفتّح حولها ثم تسكن. مرّةً واحدة، أقلّ من ثانيتين،
  * وبلا حركةٍ لمن طلب تقليلها. والمعنى في النصّ لا في الحركة.
  */
@@ -51,7 +51,7 @@ export function CelebrateMark({ className, grand }: { className?: string; grand?
           </svg>
         </span>
       ))}
-      <span className="celebrate-ring absolute inset-2 rounded-full bg-primary shadow-[0_12px_32px_-8px_color-mix(in_oklch,var(--color-primary)_60%,transparent)] ring-4 ring-bridge/40" />
+      <span className="mo-seal absolute inset-2 rounded-full bg-primary shadow-[0_12px_32px_-8px_color-mix(in_oklch,var(--color-primary)_60%,transparent)] ring-4 ring-bridge/40" />
       <svg viewBox="0 0 48 48" className="absolute inset-2 text-primary-foreground">
         <path
           d="M14 25l7 7 13-15"
@@ -96,9 +96,9 @@ export function CelebrateOverlay({
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="celebrate-title"
-      className="fixed inset-0 z-[60] grid place-items-center bg-foreground/25 p-4 backdrop-blur-[3px] map-rise"
+      className="fixed inset-0 z-[60] grid place-items-center bg-foreground/25 p-4 backdrop-blur-[3px] mo-overlay"
     >
-      <div className="w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-[0_24px_64px_-16px_rgb(0_0_0/0.35)]">
+      <div className="mo-dialog w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-[0_24px_64px_-16px_rgb(0_0_0/0.35)]">
         <CelebrateMark {...(grand ? { grand } : {})} />
         <h2
           id="celebrate-title"
@@ -113,7 +113,7 @@ export function CelebrateOverlay({
           ref={btn}
           type="button"
           onClick={onClose}
-          className="celebrate-text mt-6 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-6 font-medium text-primary-foreground outline-none transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.97]"
+          className="celebrate-text mt-6 inline-flex h-11 w-full items-center justify-center rounded-md bg-primary px-6 font-medium text-primary-foreground outline-none transition-[scale] duration-(--dur-1) ease-(--ease-out) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.97]"
         >
           {action}
         </button>

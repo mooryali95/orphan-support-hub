@@ -1,0 +1,262 @@
+/*
+ * نظام الحركة — فخامةٌ بالاقتصاد: مسافاتٌ قصيرة، بدايةٌ ونهايةٌ هادئتان، وفكرةٌ
+ * واحدة في اللحظة. لا ارتداد ولا تمرير مخطوف ولا مكتبة: CSS ومنصّة المتصفّح فقط.
+ * المواصفة الكاملة والمقارنة بين المكتبات في تقرير motion-2026.
+ *
+ * هذا الملف يُستورد أعلى styles.css، فقواعده تسبق قواعدها في الترتيب؛ وحيث
+ * يهذّب حركةً قائمة هناك يرفع الخصوصية (html::view-transition-*) أو يعتمد على
+ * أنّ القاعدة غير المطبَّقة (unlayered) تغلب أدوات Tailwind المطبَّقة.
+ */
+
+:root {
+  /* المدد: أربع درجات فقط. الخروج ينزل درجةً عن الدخول دائماً. */
+  --dur-1: 160ms; /* ضغط، تمرير، خروج قائمة */
+  --dur-2: 240ms; /* قائمة ومنبثق، خروج حوار ودرج */
+  --dur-3: 420ms; /* حوار، درج، دخول صفحة */
+  --dur-4: 700ms; /* لحظة هوية: ختم، رسم العلامة، عدّ رقم */
+
+  /* المنحنيات (تُكمل --ease-out و--ease-in-out و--ease-drawer في styles.css). */
+  --ease-calm: cubic-bezier(0.45, 0, 0.15, 1); /* بدايةٌ هادئة ونهايةٌ أهدأ: ما يتحرّك على الشاشة */
+  --ease-exit: cubic-bezier(0.4, 0, 0.6, 1); /* خروجٌ قصير بلا اندفاع */
+  /* نابضٌ حرج التخميد (بلا تجاوز): يقترب ولا يرتدّ — للحظات الهوية. */
+  --ease-settle: linear(
+    0,
+    0.032 3%,
+    0.106 6%,
+    0.235 10%,
+    0.369 14%,
+    0.493 18%,
+    0.625 23%,
+    0.729 28%,
+    0.82 34%,
+    0.883 40%,
+    0.936 48%,
+    0.968 57%,
+    0.987 68%,
+    0.997 82%,
+    1
+  );
+
+  /* المسافات: ثلاثٌ فقط. */
+  --rise-1: 4px; /* منبثق من مُطلِقه */
+  --rise-2: 8px; /* صفحة، حوار */
+  --rise-3: 16px; /* قسمٌ يظهر مع التمرير */
+
+  /* التتابع: 60ms بين العناصر، وستّة عناصر حدّاً أقصى (300ms). */
+  --stagger: 60ms;
+
+  /* الحركة الأفقية فيزيائية: اضرب في الاتجاه. «الأمام» يساراً في العربية. */
+  --dir: 1;
+}
+[dir="rtl"] {
+  --dir: -1;
+}
+
+/* ── ١. الانتقال بين الصفحات ───────────────────────────────────────────
+   القديمة تخفت في مكانها، والجديدة تصعد 8px وهي تظهر. الرأس وأشرطة التنقّل
+   ثابتة (تُسمّى في styles.css). حيث لا يُدعم View Transitions يتبدّل المحتوى
+   فوراً — الموجّه يتحقّق من وجود الواجهة قبل ندائها. */
+@keyframes mo-page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes mo-page-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--rise-2);
+  }
+}
+@keyframes mo-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes mo-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+html::view-transition-old(root) {
+  animation: mo-page-out var(--dur-1) var(--ease-exit) both;
+}
+html::view-transition-new(root) {
+  animation: mo-page-in var(--dur-3) var(--ease-out) 80ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html::view-transition-old(root) {
+    animation: mo-page-out var(--dur-1) linear both;
+  }
+  html::view-transition-new(root) {
+    animation: mo-fade-in var(--dur-1) linear both;
+  }
+}
+
+/* ── ٢. الظهور مع التمرير (تحسينٌ تدريجي) ──────────────────────────────
+   لا سكربت، ولا إخفاء مسبق: حيث لا يُدعم animation-timeline أو طُلب تقليل
+   الحركة لا تُطبَّق القاعدة أصلاً فيبقى المحتوى ظاهراً. والحركة مربوطة
+   بأوّل 180px من دخول القسم ثم تنتهي بلا أثرٍ باقٍ (لا تحويل ولا سياق تراكم).
+   تُطبَّق على `.reveal-scroll` وحدها: الصفحة تختار أقسامها، فلا تبهت أقسام لوحات
+   الإدارة واللوحة عند حافّة الشاشة. ويبدأ القسم من شفافيةٍ جزئية لا من الصفر، فما
+   يطلّ من أسفل الشاشة عند الفتح يبقى مقروءاً. */
+@keyframes mo-reveal {
+  from {
+    opacity: 0.35;
+    translate: 0 var(--rise-3);
+  }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal-scroll {
+      animation: mo-reveal linear backwards;
+      animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+      animation-timeline: view();
+      animation-range: entry 0px entry 180px;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-scroll {
+    animation: none;
+  }
+}
+
+/* ظهورٌ زمنيّ لمرّةٍ واحدة — لـ useInView: العنصر ظاهرٌ دائماً ما لم يضع السكربت
+   نفسه `data-inview="false"`، فلا يختفي محتوى إن غاب السكربت. */
+.mo-reveal {
+  transition:
+    opacity var(--dur-4) var(--ease-settle),
+    translate var(--dur-4) var(--ease-settle);
+  transition-delay: calc(min(var(--i, 0), 5) * var(--stagger));
+}
+.mo-reveal[data-inview="false"] {
+  opacity: 0;
+  translate: 0 var(--rise-3);
+}
+
+/* ── ٣. الحوار والدرج والمنبثق ─────────────────────────────────────────
+   تُقرأ الحالة من سمات Radix (data-state/data-side). الدخول بدرجة والخروج
+   بالتي دونها. المنبثق يخرج من مُطلِقه (transform-origin من Radix، وdata-side
+   فيزيائيّ يتبع الاصطدام، فيصحّ في RTL بلا عكس). */
+@keyframes mo-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise-2)) scale(0.98);
+  }
+}
+@keyframes mo-dialog-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes mo-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--mo-x, 0), var(--mo-y, 0)) scale(0.97);
+  }
+}
+@keyframes mo-pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes mo-sheet-in {
+  from {
+    transform: translate(var(--mo-x, 0), var(--mo-y, 0));
+  }
+}
+@keyframes mo-sheet-out {
+  to {
+    transform: translate(var(--mo-x, 0), var(--mo-y, 0));
+  }
+}
+
+.mo-overlay {
+  animation: mo-fade-in var(--dur-3) var(--ease-calm) both;
+}
+.mo-overlay[data-state="closed"] {
+  animation: mo-fade-out var(--dur-2) var(--ease-exit) both;
+}
+
+.mo-dialog {
+  animation: mo-dialog-in var(--dur-3) var(--ease-out) both;
+}
+.mo-dialog[data-state="closed"] {
+  animation: mo-dialog-out var(--dur-2) var(--ease-exit) both;
+}
+
+.mo-pop {
+  --mo-y: calc(var(--rise-1) * -1);
+  animation: mo-pop-in var(--dur-2) var(--ease-out) both;
+}
+.mo-pop[data-side="top"] {
+  --mo-y: var(--rise-1);
+}
+.mo-pop[data-side="left"] {
+  --mo-x: var(--rise-1);
+  --mo-y: 0px;
+}
+.mo-pop[data-side="right"] {
+  --mo-x: calc(var(--rise-1) * -1);
+  --mo-y: 0px;
+}
+.mo-pop[data-state="closed"] {
+  animation: mo-pop-out var(--dur-1) var(--ease-exit) both;
+}
+
+.mo-sheet {
+  animation: mo-sheet-in var(--dur-3) var(--ease-drawer) both;
+}
+.mo-sheet[data-state="closed"] {
+  animation: mo-sheet-out var(--dur-2) var(--ease-calm) both;
+}
+.mo-sheet[data-side="right"] {
+  --mo-x: 100%;
+}
+.mo-sheet[data-side="left"] {
+  --mo-x: -100%;
+}
+.mo-sheet[data-side="top"] {
+  --mo-y: -100%;
+}
+.mo-sheet[data-side="bottom"] {
+  --mo-y: 100%;
+}
+
+/* ── ٤. لحظات الهوية ───────────────────────────────────────────────────
+   الختم يستقرّ بلا ارتداد، والعلامة ترسم نفسها (المسار يحمل pathLength="1").
+   الحالة الأخيرة هي النمط الساكن، فتقليل الحركة يُظهرها مكتملة. */
+@keyframes mo-seal {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+}
+@keyframes mo-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.mo-seal {
+  animation: mo-seal var(--dur-4) var(--ease-settle) both;
+}
+.mo-draw {
+  stroke-dasharray: 1;
+  animation: mo-draw var(--dur-4) var(--ease-calm) var(--mo-delay, 0ms) both;
+}
+.mo-rise {
+  animation: mo-page-in var(--dur-3) var(--ease-out) both;
+  animation-delay: calc(var(--mo-delay, 0ms) + min(var(--i, 0), 5) * var(--stagger));
+}
+@media (prefers-reduced-motion: reduce) {
+  .mo-seal,
+  .mo-draw,
+  .mo-rise {
+    animation: none;
+  }
+  .mo-reveal[data-inview="false"] {
+    translate: none;
+  }
+}

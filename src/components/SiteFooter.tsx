@@ -48,9 +48,9 @@ export function SiteFooter() {
   const c = useCopy(COPY);
   const brand = brandFor(useLocale());
   return (
-    <footer className="relative mt-20 overflow-hidden bg-secondary/40">
+    <footer className="relative mt-16 overflow-hidden bg-secondary/40">
       <div className="brand-rule h-[3px] w-full" aria-hidden="true" />
-      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-5">
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-5 md:py-16">
         <div className="md:col-span-2">
           <div className="flex flex-wrap items-center gap-4">
             <KahataynLockup />
@@ -59,9 +59,9 @@ export function SiteFooter() {
           </div>
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">{c.about}</p>
           {/* «هكذا» اسم إشارة إلى حركة يدٍ، فحذفُها يترك اللفظ معلّقاً بلا مشار إليه. */}
-          <blockquote className="mt-4 text-sm text-shore-need">
+          <blockquote className="mt-6 max-w-md border-t border-border pt-5 text-foreground">
             {/* النصّ النبوي يبقى بلفظه العربي، والإنجليزية ترجمةٌ لمعناه تحته. */}
-            <p className="font-quran leading-8" lang="ar" dir="rtl">
+            <p className="font-quran text-lg leading-9 text-balance" lang="ar" dir="rtl">
               «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
             </p>
             {c.hadithNote && (
@@ -76,19 +76,19 @@ export function SiteFooter() {
         </div>
         <div>
           <h2 className="text-sm font-bold">{c.platform}</h2>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
             <li>
-              <Link to="/orphans" className="hover:text-foreground">
+              <Link to="/orphans" className="transition-colors hover:text-foreground">
                 {c.orphans}
               </Link>
             </li>
             <li>
-              <Link to="/how-it-works" className="hover:text-foreground">
+              <Link to="/how-it-works" className="transition-colors hover:text-foreground">
                 {c.how}
               </Link>
             </li>
             <li>
-              <Link to="/organizations" className="hover:text-foreground">
+              <Link to="/organizations" className="transition-colors hover:text-foreground">
                 {c.orgs}
               </Link>
             </li>
@@ -96,14 +96,14 @@ export function SiteFooter() {
         </div>
         <div>
           <h2 className="text-sm font-bold">{c.account}</h2>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
             <li>
-              <Link to="/auth" className="hover:text-foreground">
+              <Link to="/auth" className="transition-colors hover:text-foreground">
                 {c.signIn}
               </Link>
             </li>
             <li>
-              <Link to="/dashboard" className="hover:text-foreground">
+              <Link to="/dashboard" className="transition-colors hover:text-foreground">
                 {c.dashboard}
               </Link>
             </li>
@@ -112,24 +112,24 @@ export function SiteFooter() {
 
         <div>
           <h2 className="text-sm font-bold">{c.transparency}</h2>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
             <li>
-              <Link to="/legal/privacy" className="hover:text-foreground">
+              <Link to="/legal/privacy" className="transition-colors hover:text-foreground">
                 {c.privacy}
               </Link>
             </li>
             <li>
-              <Link to="/legal/terms" className="hover:text-foreground">
+              <Link to="/legal/terms" className="transition-colors hover:text-foreground">
                 {c.terms}
               </Link>
             </li>
             <li>
-              <Link to="/legal/faq" className="hover:text-foreground">
+              <Link to="/legal/faq" className="transition-colors hover:text-foreground">
                 {c.faq}
               </Link>
             </li>
             <li>
-              <Link to="/developers" className="hover:text-foreground">
+              <Link to="/developers" className="transition-colors hover:text-foreground">
                 {c.developers}
               </Link>
             </li>

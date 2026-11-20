@@ -4,9 +4,9 @@ import { z } from "zod";
 
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
-import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
-import { useMapStats } from "@/components/map/useMapStats";
-import { brandFor, pageTitle } from "@/config/brand";
+import { BrandHalo } from "@/components/brand/BrandPattern";
+import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { BRAND, brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { formatMoney, isolate } from "@/lib/format";
 import { loadDraft, orphanIdOfPath, type SponsorDraft } from "@/lib/sponsor-draft";
@@ -75,10 +75,6 @@ function AuthPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const redirectTo = safePath(search.redirect);
-  const { stats, demo, status } = useMapStats();
-  // الخارطة خلف النافذة تفتح على الدولة التي كان فيها الزائر، إن عُرفت.
-  const fromMap = /[?&]c=([A-Z]{2})/.exec(redirectTo)?.[1] ?? null;
-  const [selection, setSelection] = useState<MapSelection>({ country: fromMap, region: null });
   // القادم من نموذج الكفالة يرى لماذا هو هنا وإلى أين يعود (UX-09).
   const [draft, setDraft] = useState<SponsorDraft | null>(null);
   useEffect(() => {
@@ -87,51 +83,87 @@ function AuthPage() {
   }, [redirectTo]);
 
   return (
-    <div className="relative min-h-dvh overflow-hidden">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
-        <WorldMap
-          stats={stats}
-          demo={demo}
-          status={status}
-          selection={selection}
-          onSelect={setSelection}
-          className="h-dvh min-h-dvh"
-          bare
+    // a formal two-panel entry: the partner's wine field with the hadith on one side, the form
+    // on plain paper on the other. No map behind the form: nothing competes with signing in.
+    <div className="grid min-h-dvh lg:grid-cols-[1fr_1.1fr]">
+      <aside className="mural-placeholder relative hidden overflow-hidden text-white lg:flex lg:flex-col lg:justify-between lg:p-14 xl:p-16">
+        <BrandHalo className="-start-[30%] -bottom-[18%] h-[105%] text-[color:var(--bridge-bright)] opacity-20" />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-4 rounded-2xl border"
+          style={{ borderColor: "color-mix(in oklch, var(--bridge-bright) 30%, transparent)" }}
         />
-      </div>
+        <Link to="/" className="relative w-fit" aria-label={`${brand.name} — ${c.home}`}>
+          <KahataynLockup onDark />
+        </Link>
+        <div className="relative max-w-xl">
+          <span
+            aria-hidden="true"
+            className="mb-8 block h-px w-16"
+            style={{ background: "var(--bridge-bright)" }}
+          />
+          <KafalaPromise plate />
+        </div>
+        <p className="relative flex items-center gap-3">
+          <span className="grid size-12 place-items-center rounded-full bg-white">
+            <img
+              src="/brand/partner-mark.svg"
+              alt=""
+              width={30}
+              height={33}
+              decoding="async"
+              className="h-7 w-auto"
+            />
+          </span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-xs text-white/75">{BRAND.partner.with}</span>
+            <span className="font-display text-xl font-bold">{BRAND.partner.name}</span>
+          </span>
+        </p>
+      </aside>
       <main
         id="main"
-        className="map-rise relative mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-12"
+        className="map-rise relative mx-auto flex w-full max-w-md flex-col justify-center px-4 py-12 lg:max-w-[28rem]"
       >
-        <div className="rounded-3xl bg-card/95 p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_24px_48px_-12px_rgb(0_0_0/0.25)] backdrop-blur sm:p-8">
-          <Link to="/" className="flex justify-center" aria-label={`${brand.name} — ${c.home}`}>
-            <KahataynLockup />
-          </Link>
-          <h1 className="sr-only">{c.h1}</h1>
-          {draft && (
-            <p className="mt-5 rounded-xl bg-secondary/70 px-4 py-3 text-center text-sm leading-7">
-              {c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))}
-            </p>
-          )}
-          <AuthPanel
-            className="mt-6"
-            title={c.title}
-            hint={c.hint}
-            // `href` لا `to`: الوجهة قد تحمل استعلاماً (?c=AL) فتبقى كما هي.
-            onDone={() => navigate({ href: redirectTo })}
-          />
-          <p className="mt-6 text-center text-xs leading-6 text-muted-foreground">
-            {c.agree}{" "}
-            <Link to="/legal/terms" className="text-primary hover:underline">
-              {c.terms}
-            </Link>
-            {c.and}
-            <Link to="/legal/privacy" className="text-primary hover:underline">
-              {c.privacy}
-            </Link>
-            {c.note}
+        <Link
+          to="/"
+          className="flex justify-center lg:hidden"
+          aria-label={`${brand.name} — ${c.home}`}
+        >
+          <KahataynLockup />
+        </Link>
+        <span aria-hidden="true" className="rule-champagne mx-auto mt-6 block w-32 lg:hidden" />
+        <h1 className="sr-only">{c.h1}</h1>
+        {draft && (
+          <p className="mt-6 rounded-xl border border-border bg-secondary/60 px-4 py-3 text-center text-sm leading-7">
+            {c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))}
           </p>
-        </div>
+        )}
+        {/* the panel's own heading is small; here it is the page's welcome, in the display face */}
+        <AuthPanel
+          className="mt-8 lg:mt-0 [&>h2]:font-display [&>h2]:text-4xl [&>h2]:leading-[1.4] [&>h2]:font-bold [&>h2+p]:mt-3"
+          title={c.title}
+          hint={c.hint}
+          // `href` لا `to`: الوجهة قد تحمل استعلاماً (?c=AL) فتبقى كما هي.
+          onDone={() => navigate({ href: redirectTo })}
+        />
+        <p className="mt-8 border-t border-border pt-5 text-center text-xs leading-6 text-muted-foreground">
+          {c.agree}{" "}
+          <Link
+            to="/legal/terms"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            {c.terms}
+          </Link>
+          {c.and}
+          <Link
+            to="/legal/privacy"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            {c.privacy}
+          </Link>
+          {c.note}
+        </p>
       </main>
     </div>
   );

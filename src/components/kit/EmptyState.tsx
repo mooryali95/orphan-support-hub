@@ -21,18 +21,17 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-dashed border-border bg-card/60 px-6 py-10 text-center",
+        "rounded-2xl border border-border bg-card/60 px-6 py-14 text-center",
         className,
       )}
     >
-      <KahataynMark
-        compact
-        tone="current"
-        className="mx-auto h-10 w-auto text-muted-foreground/30"
-      />
-      <p className="mt-4 font-medium">{title}</p>
-      {text && <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">{text}</p>}
-      {action && <div className="mt-5 flex justify-center">{action}</div>}
+      <KahataynMark compact tone="current" className="mx-auto h-11 w-auto text-primary/25" />
+      <span aria-hidden="true" className="rule-champagne mx-auto mt-5 block w-24" />
+      <p className="mt-5 text-lg font-bold">{title}</p>
+      {text && (
+        <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-muted-foreground">{text}</p>
+      )}
+      {action && <div className="mt-6 flex justify-center">{action}</div>}
     </div>
   );
 }

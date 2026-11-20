@@ -83,7 +83,7 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
     // فيبقى الاسم وحده هو الاسم المتاح لقارئ الشاشة بدل فقرة كاملة.
     <article
       style={{ borderTopColor: regionTint(orphan.region) }}
-      className="group border-border bg-card relative flex h-full flex-col overflow-hidden lift rounded-3xl border border-t-4 shadow-soft active:scale-[0.99] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+      className="group border-border bg-card relative flex h-full flex-col overflow-hidden lift rounded-2xl border border-t-4 active:scale-[0.99] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
     >
       {/* لا صورة في الدليل: الصورة تفصيلٌ خلف الإذن، فيبقى النائب
           الهوياتيّ وحده — وهو لا يحمل معلومةً عن الطفل فيُختصر. */}
@@ -165,7 +165,9 @@ export function OrphanCard({ orphan }: { orphan: PublicOrphan }) {
               </span>
             ) : (
               <span className="text-sm font-bold">
-                <span className="text-bridge-ink">{formatMoney(gap, orphan.currency, locale)}</span>
+                <span className="text-foreground tabular-nums">
+                  {formatMoney(gap, orphan.currency, locale)}
+                </span>
                 <span className="text-muted-foreground font-normal"> {c.remaining}</span>
               </span>
             )}
