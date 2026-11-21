@@ -9,9 +9,9 @@ const COPY = defineCopy("lib/milestones", {
   ar: {
     first: ["الكفالة الأولى", "بدأتَ: طفلٌ لم يعد ينتظر وحده."],
     complete: ["أكملتَ حاجة طفل", "حين تبلغ تغطية حاجته الشهرية 100% وأنت من كافليه."],
-    m3: ["ثلاثة أشهر", "ثلاثة تقارير شهرية، كلٌّ بمستند تسليمه."],
+    m3: ["ثلاثة أشهر", "ثلاثة أشهرٍ من الرعاية، كلٌّ منها مقيَّدٌ في سجلّك."],
     two: ["طفلان في رعايتك", "كفالةٌ ثانية جارية."],
-    m6: ["نصف سنة", "ستة أشهرٍ متّصلة: يظهر أثرها في دراسته."],
+    m6: ["نصف سنة", "ستة أشهرٍ متّصلة من الرعاية، شهراً بعد شهر."],
     y1: ["سنةٌ كاملة", "سنةٌ من الرعاية المتّصلة لطفلٍ واحد."],
   },
   en: {
@@ -20,9 +20,9 @@ const COPY = defineCopy("lib/milestones", {
       "A child's need completed",
       "When a child's monthly need reaches 100% and you are among the sponsors.",
     ],
-    m3: ["Three months", "Three monthly reports, each with its delivery record."],
+    m3: ["Three months", "Three months of care, each entered in your record."],
     two: ["Two children in your care", "A second sponsorship under way."],
-    m6: ["Half a year", "Six unbroken months: it shows in the child's schooling."],
+    m6: ["Half a year", "Six unbroken months of care, month after month."],
     y1: ["A full year", "A year of unbroken care for one child."],
   },
 });

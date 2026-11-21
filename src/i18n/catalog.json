@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1696,
+ "count": 1751,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -888,6 +888,402 @@
    "kind": "text",
    "hash": "c2f38f84cdb5",
    "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/impact/ChildStanding.bar": {
+   "en": "{0}'s monthly need: {1}% without your share, {2}% with it",
+   "ar": "حاجة {0} الشهرية: {1}% بدون حصّتك، و{2}% بها",
+   "kind": "template",
+   "params": 3,
+   "hash": "73d0b26f4bf1",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.complete": {
+   "en": "Monthly need complete",
+   "ar": "اكتملت الحاجة الشهرية",
+   "kind": "text",
+   "hash": "534212210066",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.justBegan": {
+   "en": "Just begun",
+   "ar": "بدأت للتوّ",
+   "kind": "text",
+   "hash": "6230f4c4eafa",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.lead": {
+   "en": "Each child's monthly need as it stands today: what others cover, what your share added, and what is still open.",
+   "ar": "حاجة كلّ طفلٍ الشهرية كما تقف اليوم: ما يغطّيه غيرك، وما أضافته حصّتك، وما بقي مفتوحاً.",
+   "kind": "text",
+   "hash": "aa186785ce97",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.legend.0": {
+   "en": "Covered by others",
+   "ar": "يغطّيه غيرك",
+   "kind": "text",
+   "hash": "33c4ccd8dba6",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.legend.1": {
+   "en": "Your share",
+   "ar": "حصّتك",
+   "kind": "text",
+   "hash": "74b84ea0c0c2",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.legend.2": {
+   "en": "Open",
+   "ar": "مفتوح",
+   "kind": "text",
+   "hash": "4b421c1d22e6",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.months.one": {
+   "en": "{0} unbroken month of care",
+   "ar": "شهرٌ متّصل من الرعاية",
+   "kind": "plural",
+   "hash": "f2f440b83f96",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.months.other": {
+   "en": "{0} unbroken months of care",
+   "ar": "{0} شهر متّصل من الرعاية",
+   "kind": "plural",
+   "hash": "67fb3d2a0014",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.open": {
+   "en": "{0} a month still open",
+   "ar": "بقي {0} كلّ شهر لتكتمل",
+   "kind": "template",
+   "params": 1,
+   "hash": "1a44dd9febb6",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.title": {
+   "en": "With your share, and without it",
+   "ar": "بحصّتك وبدونها",
+   "kind": "text",
+   "hash": "4e86591cd710",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.waited.one": {
+   "en": "Waited {0} day before your sponsorship",
+   "ar": "انتظر يوماً قبل كفالتك",
+   "kind": "plural",
+   "hash": "69501237b935",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.waited.other": {
+   "en": "Waited {0} days before your sponsorship",
+   "ar": "انتظر {0} يوم قبل كفالتك",
+   "kind": "plural",
+   "hash": "cbfa06d73171",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.withYou": {
+   "en": "With you",
+   "ar": "بحصّتك",
+   "kind": "text",
+   "hash": "3158b56d986e",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.without": {
+   "en": "Without you",
+   "ar": "بدون حصّتك",
+   "kind": "text",
+   "hash": "480cc21c33ff",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/ChildStanding.yours": {
+   "en": "Your share: {0} each month",
+   "ar": "حصّتك {0} كلّ شهر",
+   "kind": "template",
+   "params": 1,
+   "hash": "019781b78291",
+   "file": "src/components/impact/ChildStanding.tsx"
+  },
+  "components/impact/EvidenceLedger.chain": {
+   "en": "{0} of 3 steps complete this month",
+   "ar": "اكتمل {0} من 3 في سلسلة الشهر",
+   "kind": "template",
+   "params": 1,
+   "hash": "b8639c6cbc4f",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.delivered.0": {
+   "en": "Months delivered",
+   "ar": "أشهرٌ وصلت موثّقة",
+   "kind": "text",
+   "hash": "cb7f3a827b61",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.delivered.1": {
+   "en": "each with a delivery record",
+   "ar": "كلٌّ بمستند تسليم",
+   "kind": "text",
+   "hash": "05b9aa9c1f42",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.deliveredOn": {
+   "en": "Delivered, with a document, on {0}",
+   "ar": "سُلِّمت بمستند في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e066a4cd4b82",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.emptyText": {
+   "en": "Once your first payment is recorded, its month appears here, and its chain completes in front of you: the transfer, then the delivery record.",
+   "ar": "حين تُقيَّد دفعتك الأولى يظهر شهرها هنا، ثم تكتمل سلسلته أمامك: التحويل، فمستند التسليم.",
+   "kind": "text",
+   "hash": "ebfc46c4382c",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.emptyTitle": {
+   "en": "Your record begins with the first payment",
+   "ar": "سجلّك يبدأ مع أوّل دفعة",
+   "kind": "text",
+   "hash": "843a42fd2ebe",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.given.0": {
+   "en": "Total you have given",
+   "ar": "مجموع ما قدّمت",
+   "kind": "text",
+   "hash": "7611eed608cf",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.given.1": {
+   "en": "in the recorded months",
+   "ar": "في الأشهر المقيّدة",
+   "kind": "text",
+   "hash": "48815bf2dbd8",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.issue": {
+   "en": "This month's payment did not go through",
+   "ar": "تعذّرت دفعة هذا الشهر",
+   "kind": "text",
+   "hash": "88b30ccbcf59",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.lead": {
+   "en": "Each month with its chain: your payment, its transfer to the care organization, then delivery with a document. Only what has been recorded is counted here.",
+   "ar": "كلّ شهرٍ بسلسلته: دفعتك، ثم تحويلها إلى جهة الرعاية، ثم تسليمها بمستند. لا يُعدّ هنا إلا ما قُيّد.",
+   "kind": "text",
+   "hash": "3d2400093d4c",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.nextCharge": {
+   "en": "Your next payment is on {0}; a new month then opens in this record.",
+   "ar": "الدفعة القادمة في {0}، ويبدأ بها شهرٌ جديد في السجلّ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "4e4ab2c85022",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.nextDocument": {
+   "en": "The delivery record for {0} is added here once the care organization confirms receipt.",
+   "ar": "مستند تسليم {0} يُضاف إلى هذا السجلّ حين تؤكّد جهة الرعاية الوصول.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5e15d8a28600",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.nextTitle": {
+   "en": "Coming next",
+   "ar": "القادم",
+   "kind": "text",
+   "hash": "25aca3305201",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.open": {
+   "en": "Full record",
+   "ar": "السجلّ الكامل",
+   "kind": "text",
+   "hash": "c37503771ce3",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.openLabel": {
+   "en": "Full record of {0}'s sponsorship, {1}",
+   "ar": "السجلّ الكامل لكفالة {0}، {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "f576220c334f",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.receipt": {
+   "en": "Receipt reference",
+   "ar": "مرجع الإيصال",
+   "kind": "text",
+   "hash": "0d8d9eb6df4a",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.report": {
+   "en": "From the month's report",
+   "ar": "من تقرير الشهر",
+   "kind": "text",
+   "hash": "c7e073dcc586",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.reports.0": {
+   "en": "Reports received",
+   "ar": "تقارير وصلتك",
+   "kind": "text",
+   "hash": "e8e726d18b5d",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.reports.1": {
+   "en": "from the care organization",
+   "ar": "من جهة الرعاية",
+   "kind": "text",
+   "hash": "ae3df0d88238",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.showAll.one": {
+   "en": "Show {0} earlier month",
+   "ar": "اعرض الشهر الأقدم",
+   "kind": "plural",
+   "hash": "0603578bd05e",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.showAll.other": {
+   "en": "Show {0} earlier months",
+   "ar": "اعرض {0} شهر أقدم",
+   "kind": "plural",
+   "hash": "6950a17bc46d",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.showLess": {
+   "en": "Show the latest only",
+   "ar": "اعرض الأحدث فقط",
+   "kind": "text",
+   "hash": "c5679ec0331c",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.state.0": {
+   "en": "Awaiting this month's payment",
+   "ar": "بانتظار دفعة هذا الشهر",
+   "kind": "text",
+   "hash": "c036c7962154",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.state.1": {
+   "en": "Your payment is recorded; next, its transfer to the care organization",
+   "ar": "قُيّدت دفعتك، والتالي تحويلها إلى جهة الرعاية",
+   "kind": "text",
+   "hash": "71f36f783974",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.state.2": {
+   "en": "Transferred to the care organization; awaiting the delivery record",
+   "ar": "حُوِّلت إلى جهة الرعاية، وبانتظار مستند التسليم",
+   "kind": "text",
+   "hash": "ce9b6a6d0d1d",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.state.3": {
+   "en": "Delivered, with a document",
+   "ar": "سُلِّمت بمستند",
+   "kind": "text",
+   "hash": "f5434faae43a",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.steps.0": {
+   "en": "Paid",
+   "ar": "دُفع",
+   "kind": "text",
+   "hash": "4c5c783156d4",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.steps.1": {
+   "en": "Transferred",
+   "ar": "حُوِّل",
+   "kind": "text",
+   "hash": "c9937d17792f",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.steps.2": {
+   "en": "Delivered",
+   "ar": "سُلِّم",
+   "kind": "text",
+   "hash": "03e3180fa684",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/EvidenceLedger.title": {
+   "en": "Documented record",
+   "ar": "سجلّ الأثر الموثّق",
+   "kind": "text",
+   "hash": "a7dd4a602f19",
+   "file": "src/components/impact/EvidenceLedger.tsx"
+  },
+  "components/impact/ImpactMoment.begunText": {
+   "en": "Your first payment is recorded. Next: its transfer to the care organization, then the delivery record.",
+   "ar": "قُيّدت دفعتك الأولى. التالي: تحويلها إلى جهة الرعاية، ثم مستند التسليم.",
+   "kind": "text",
+   "hash": "4c8632e1b742",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.begunTitle": {
+   "en": "Your giving for {0}'s sponsorship has begun",
+   "ar": "بدأ عطاؤك لكفالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "2a753c49a8db",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.completedText": {
+   "en": "With your share, the monthly need is 100% covered, and you are among the sponsors.",
+   "ar": "بحصّتك بلغت تغطية الحاجة الشهرية 100%، وأنت من الكافلين.",
+   "kind": "text",
+   "hash": "7aea0f9ea9e0",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.completedTitle": {
+   "en": "{0}'s monthly need is complete",
+   "ar": "اكتملت حاجة {0} الشهرية",
+   "kind": "template",
+   "params": 1,
+   "hash": "148283a41c81",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.deliveredText": {
+   "en": "{1}: your payment for {0}'s sponsorship was delivered with a document, kept in your record below.",
+   "ar": "{1}: سُلِّمت دفعتك لكفالة {0} بمستند، وهو محفوظٌ في سجلّك أدناه.",
+   "kind": "template",
+   "params": 2,
+   "hash": "3699acea574f",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.deliveredTitle": {
+   "en": "Your first documented delivery",
+   "ar": "وصل أوّل تسليمٍ موثّق",
+   "kind": "text",
+   "hash": "0682179474ee",
+   "file": "src/components/impact/ImpactMoment.tsx"
+  },
+  "components/impact/ImpactMoment.eyebrow": {
+   "en": "Entered in your record",
+   "ar": "قُيّد في سجلّك",
+   "kind": "text",
+   "hash": "2a0e3dcc8f62",
+   "file": "src/components/impact/ImpactMoment.tsx"
   },
   "components/impact/MilestonesCard.all": {
    "en": "You have reached every milestone. May God reward you.",
@@ -3811,10 +4207,10 @@
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.lead": {
-   "en": "Advance time by a month to see what reaches you after sponsoring, and your milestones as they are met.",
-   "ar": "قدّم الزمن شهراً لترى ما يصلك بعد الكفالة، ومحطّاتك وهي تتحقّق.",
+   "en": "Advance time by a month to watch your record fill: each month with its transfer, its delivery record and a line from its report, and your milestones as they are met.",
+   "ar": "قدّم الزمن شهراً لترى سجلّك يمتلئ: كلّ شهرٍ بتحويله ومستند تسليمه وسطر تقريره، ومحطّاتك وهي تتحقّق.",
    "kind": "text",
-   "hash": "3e09e4ecf1fd",
+   "hash": "c6cc043e3f85",
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.needMonthly": {
@@ -3847,11 +4243,11 @@
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.running": {
-   "en": "Your sponsorship of {0} is under way. Press “Advance a month” to see what next month brings.",
-   "ar": "كفالتك لـ{0} جارية. اضغط «قدّم شهراً» لترى ما يحمله الشهر القادم.",
+   "en": "{0}'s sponsorship is under way and your first payment is recorded. Press “Advance a month” to see its delivery record arrive.",
+   "ar": "كفالة {0} جارية، ودفعتك الأولى مقيّدة. اضغط «قدّم شهراً» لترى مستند تسليمها يصل.",
    "kind": "template",
    "params": 1,
-   "hash": "ca863e57821e",
+   "hash": "6f38abe88ae7",
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.simulated": {
@@ -5324,10 +5720,10 @@
    "file": "src/lib/milestones.ts"
   },
   "lib/milestones.m3.1": {
-   "en": "Three monthly reports, each with its delivery record.",
-   "ar": "ثلاثة تقارير شهرية، كلٌّ بمستند تسليمه.",
+   "en": "Three months of care, each entered in your record.",
+   "ar": "ثلاثة أشهرٍ من الرعاية، كلٌّ منها مقيَّدٌ في سجلّك.",
    "kind": "text",
-   "hash": "e126383f19da",
+   "hash": "b4e49d5c3fe9",
    "file": "src/lib/milestones.ts"
   },
   "lib/milestones.m6.0": {
@@ -5338,10 +5734,10 @@
    "file": "src/lib/milestones.ts"
   },
   "lib/milestones.m6.1": {
-   "en": "Six unbroken months: it shows in the child's schooling.",
-   "ar": "ستة أشهرٍ متّصلة: يظهر أثرها في دراسته.",
+   "en": "Six unbroken months of care, month after month.",
+   "ar": "ستة أشهرٍ متّصلة من الرعاية، شهراً بعد شهر.",
    "kind": "text",
-   "hash": "2e0fb3891184",
+   "hash": "ea5857725323",
    "file": "src/lib/milestones.ts"
   },
   "lib/milestones.two.0": {

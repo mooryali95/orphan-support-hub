@@ -33,6 +33,7 @@ import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Name } from "@/components/kit/Name";
 import { MilestonesCard } from "@/components/impact/MilestonesCard";
+import { MyEvidence } from "@/components/impact/MyEvidence";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
 
@@ -119,7 +120,16 @@ function DashboardPage() {
       {!listFailed && <MyImpactHero impact={myImpact(sponsorships)} loading={isLoading} />}
       {/* المحطّات: لمن له كفالةٌ واحدة على الأقل، بما تحقّق فعلاً. */}
       {!listFailed && !isLoading && sponsorships.length > 0 && (
-        <MilestonesCard impact={myImpact(sponsorships)} className="mt-6" />
+        <>
+          {/* الأثر الموثّق: ما اكتمل، وحصّتك من حاجة كلّ طفل، وسجلّ الأشهر بمستنداتها. */}
+          <MyEvidence
+            impact={myImpact(sponsorships)}
+            sponsorshipIds={sponsorships
+              .filter((s) => s.orphan && s.status !== "pending_payment")
+              .map((s) => s.id)}
+          />
+          <MilestonesCard impact={myImpact(sponsorships)} className="mt-6" />
+        </>
       )}
 
       {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}

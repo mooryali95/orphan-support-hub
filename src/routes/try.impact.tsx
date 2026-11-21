@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
+import { ChildStanding } from "@/components/impact/ChildStanding";
+import { ImpactMoment } from "@/components/impact/ImpactMoment";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
@@ -8,6 +10,7 @@ import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
 import { formatMoney, formatDate } from "@/lib/format";
+import { impactMoments } from "@/lib/impact-evidence";
 import { myImpact } from "@/lib/my-impact";
 import { copyOf, defineCopy, dirOf, useCopy, useLocale } from "@/lib/locale";
 import {
@@ -19,6 +22,7 @@ import {
   tryChild,
   type TryGift,
 } from "@/lib/try-demo";
+import { tryEvidence } from "@/lib/try-evidence";
 
 export const Route = createFileRoute("/try/impact")({
   validateSearch: (raw: Record<string, unknown>): { done?: string } =>
@@ -88,9 +92,14 @@ function TryImpact() {
   const doneGift = done ? gifts?.find((g) => g.childId === done) : undefined;
   /* «قدّم شهراً»: the same gifts read as they will stand `ahead` months from now (not stored) */
   const [ahead, setAhead] = useState(0);
-  const then = new Date();
-  then.setMonth(then.getMonth() + ahead);
+  /* whole months as «أثري» counts them (30.44 days), plus an hour so the n-th month has fully
+     passed: the hero, the milestones and the record then all say the same number */
+  const then = new Date(Date.now() + ahead * 30.44 * 86_400_000 + 3_600_000);
   const impact = myImpact(giftsAsSponsorships(gifts ?? [], locale), then);
+  const rows = tryEvidence(gifts ?? [], ahead, locale);
+  const waited = Object.fromEntries(
+    (gifts ?? []).map((g) => [g.id, tryChild(g.childId)?.waitingDays ?? 0]),
+  );
 
   return (
     <>
@@ -115,6 +124,10 @@ function TryImpact() {
       <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{c.title}</h1>
       <p className="mt-3 text-base leading-8 text-muted-foreground">{c.lead}</p>
 
+      {gifts && gifts.length > 0 && !doneChild && (
+        <ImpactMoment moments={impactMoments(impact, rows)} className="mt-6" />
+      )}
+
       <div>
         <MyImpactHero
           impact={impact}
@@ -127,7 +140,16 @@ function TryImpact() {
       </div>
 
       {gifts && gifts.length > 0 && (
-        <TryJourneyAhead gifts={gifts} impact={impact} ahead={ahead} onAhead={setAhead} />
+        <>
+          <ChildStanding impact={impact} waited={waited} sample className="mt-6" />
+          <TryJourneyAhead
+            gifts={gifts}
+            impact={impact}
+            rows={rows}
+            ahead={ahead}
+            onAhead={setAhead}
+          />
+        </>
       )}
 
       <section aria-labelledby="try-gifts" className="mt-10">
