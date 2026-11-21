@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { lovable } from "@/integrations/lovable";
+import { serverAuthMethods, type AuthMethods } from "@/lib/auth-methods";
 import { supabase } from "@/integrations/supabase/client";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -167,11 +168,14 @@ export function AuthPanel({
   title,
   hint,
   className,
+  simple,
 }: {
   onDone?: () => void;
   title?: string;
   hint?: string;
   className?: string;
+  /** أقصر طريق (التسجيل من الرحلة الافتراضية): جوجل والبصمة ورمز البريد، بلا رابط كلمة المرور */
+  simple?: boolean;
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
@@ -182,6 +186,17 @@ export function AuthPanel({
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [wait, setWait] = useState(0);
+  /* لا تُعرض طريقةٌ لا تعمل: الجوال يظهر حين يقول الخادم إنّ مزوّد الرسائل مفعّل. قبل الجواب
+     (`undefined`) لا يظهر، وإن تعذّر السؤال (`null`) يبقى كما كان ويشرح الخطأ إن وقع. */
+  const [methods, setMethods] = useState<AuthMethods | null | undefined>(undefined);
+  useEffect(() => {
+    let live = true;
+    void serverAuthMethods().then((m) => live && setMethods(m));
+    return () => {
+      live = false;
+    };
+  }, []);
+  const phoneOn = methods === null || methods?.phone === true;
 
   // مهلة إعادة الإرسال: لا يُغرَق البريد ولا يُستنفد حدّ الرسائل.
   useEffect(() => {
@@ -542,7 +557,7 @@ export function AuthPanel({
             <GoogleMark />
             {t.google}
           </Button>
-          {canPasskey && !known && (
+          {canPasskey && !known && !simple && (
             <Button
               type="button"
               variant="outline"
@@ -559,7 +574,7 @@ export function AuthPanel({
               {ceremony ? t.passkeyWait : t.passkey}
             </Button>
           )}
-          {canPasskey && caps.conditional && (
+          {canPasskey && caps.conditional && !(simple && !known) && (
             <p className="mt-2 text-center text-xs text-muted-foreground">{t.passkeyAutofill}</p>
           )}
 
@@ -569,38 +584,40 @@ export function AuthPanel({
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <div
-            role="tablist"
-            aria-label={t.codeMethod}
-            className="flex rounded-xl bg-secondary p-1"
-          >
-            {(
-              [
-                ["email", t.tabEmail, Mail],
-                ["phone", t.tabPhone, Smartphone],
-              ] as const
-            ).map(([m, label, Icon]) => (
-              <button
-                key={m}
-                type="button"
-                role="tab"
-                aria-selected={method === m}
-                onClick={() => {
-                  setMethod(m);
-                  setValue("");
-                }}
-                className={cn(
-                  "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
-                  method === m
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Icon className="size-4" aria-hidden="true" />
-                {label}
-              </button>
-            ))}
-          </div>
+          {phoneOn && (
+            <div
+              role="tablist"
+              aria-label={t.codeMethod}
+              className="flex rounded-xl bg-secondary p-1"
+            >
+              {(
+                [
+                  ["email", t.tabEmail, Mail],
+                  ["phone", t.tabPhone, Smartphone],
+                ] as const
+              ).map(([m, label, Icon]) => (
+                <button
+                  key={m}
+                  type="button"
+                  role="tab"
+                  aria-selected={method === m}
+                  onClick={() => {
+                    setMethod(m);
+                    setValue("");
+                  }}
+                  className={cn(
+                    "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
+                    method === m
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
           <form
             onSubmit={(e) => {
@@ -637,13 +654,15 @@ export function AuthPanel({
             <p className="mt-2 text-xs text-muted-foreground">{t.phoneHint}</p>
           )}
 
-          <button
-            type="button"
-            onClick={() => setStage({ step: "password" })}
-            className="mt-3 min-h-11 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-          >
-            {t.havePassword}
-          </button>
+          {!simple && (
+            <button
+              type="button"
+              onClick={() => setStage({ step: "password" })}
+              className="mt-3 min-h-11 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+            >
+              {t.havePassword}
+            </button>
+          )}
         </div>
       )}
     </div>

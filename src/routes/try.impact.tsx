@@ -7,6 +7,7 @@ import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryKindPanel, TryKindSwitch, TrySupportImpact } from "@/components/try/TryImpactKinds";
 import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
+import { TryRealInvite, TryVirtualNote } from "@/components/try/TryRealInvite";
 import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
@@ -150,6 +151,7 @@ function TryImpact() {
                 </span>
               )}
               {c.celebrateText}
+              <TryVirtualNote className="mt-3 block text-sm text-muted-foreground" />
             </>
           }
           action={c.see}
@@ -249,6 +251,9 @@ function TryImpact() {
           onAhead={setAhead}
         />
       )}
+
+      {/* the natural end of the trial: what was virtual, what was chosen, and the door to the real one */}
+      <TryRealInvite className="mt-14" />
     </>
   );
 }

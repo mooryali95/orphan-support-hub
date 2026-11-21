@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { MyPledges } from "@/components/support/MyPledges";
+import { TrialProposalCard } from "@/components/try/TrialProposal";
 import { MyJourney } from "@/components/support/MyJourney";
 import { FollowedChildren } from "@/components/support/FollowedChildren";
 import { DashboardShell } from "@/components/DashboardShell";
@@ -115,6 +116,9 @@ function DashboardPage() {
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
       )}
+
+      {/* ما اختاره في الرحلة الافتراضية: مقترحٌ من متصفّحه، يؤكّده هو في موضعه الحقيقي. لا يُنشأ عنه شيء. */}
+      <TrialProposalCard className="mb-8" />
 
       {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
       {!listFailed && <MyImpactHero impact={myImpact(sponsorships)} loading={isLoading} />}

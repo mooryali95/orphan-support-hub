@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
+import { TrialProposalOffer } from "@/components/try/TrialProposal";
 import { normalize } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
@@ -23,6 +24,7 @@ import {
   type SupportKind,
   type TargetType,
 } from "@/lib/support.functions";
+import { dismissProposal } from "@/lib/try-handoff";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/support/SupportSheet", {
@@ -180,6 +182,8 @@ export function SupportSheet({
     amountEdited.current = true;
     setAmount(value);
   }
+  /* مقترح الرحلة الافتراضية الذي ضغط الزائر «استعمله»: يُخفى حين يُسجَّل التعهّد الحقيقي فعلاً */
+  const usedProposal = useRef<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
@@ -199,6 +203,7 @@ export function SupportSheet({
           elapsed: Math.min(86_400, Math.round((Date.now() - openedAt) / 1000)),
         },
       });
+      if (res.ok && usedProposal.current) dismissProposal(usedProposal.current);
       setResult(
         res.ok ? { ok: true, text: t.pledged } : { ok: false, text: res.error ?? t.failed },
       );
@@ -241,6 +246,22 @@ export function SupportSheet({
   return (
     // عمودٌ بعرض البطاقة: صفّ «إلى من؟» يتمرّر داخلها ولا يمدّها (كان يفيض خارجها).
     <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
+      {/* من الرحلة الافتراضية، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */}
+      <TrialProposalOffer
+        tracks={["qualification", "in_kind"]}
+        co={ctx.code}
+        sameCountryOnly
+        usable={(p) =>
+          payList.some((o) => o.currency === p.currency) &&
+          !(target.type === "institution" && p.track === "qualification")
+        }
+        onUse={(p) => {
+          if (p.track !== "sponsorship") setKind(p.track);
+          setChosenCurrency(p.currency);
+          chooseAmount(p.amount);
+          usedProposal.current = p.id;
+        }}
+      />
       <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.whom}</legend>
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">

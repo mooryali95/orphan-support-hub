@@ -6,6 +6,8 @@ import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
 import { BrandHalo } from "@/components/brand/BrandPattern";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { TrialAuthNotice } from "@/components/try/TrialProposal";
+import { supabase } from "@/integrations/supabase/client";
 import { BRAND, brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { formatMoney, isolate } from "@/lib/format";
@@ -17,7 +19,7 @@ const COPY = defineCopy("routes/auth", {
     home: "الصفحة الرئيسية",
     h1: "الدخول",
     title: "أهلاً بك",
-    hint: "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+    hint: "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
     agree: "بالمتابعة أنت توافق على",
     terms: "شروط الاستخدام",
     and: " و",
@@ -31,7 +33,7 @@ const COPY = defineCopy("routes/auth", {
     home: "Home page",
     h1: "Sign in",
     title: "Welcome",
-    hint: "Your passkey if it's on this device, a code sent to your email or phone, or Google. Your account is created the first time you sign in.",
+    hint: "Your passkey if it's on this device, a code sent to you, or Google. Your account is created the first time you sign in.",
     agree: "By continuing you agree to the",
     terms: "terms of use",
     and: " and ",
@@ -81,6 +83,19 @@ function AuthPage() {
     const id = orphanIdOfPath(redirectTo);
     setDraft(id ? loadDraft(id) : null);
   }, [redirectTo]);
+  // القادم من الرحلة الافتراضية يرى ما ينتظره هناك: مقترحٌ يؤكّده هو، لا شيء يُنشأ عنه.
+  /* من عاد إلى هذه الصفحة داخلاً (جوجل، أو رابط البريد في تبويبٍ جديد) يُكمل إلى وجهته، لا إلى
+     نموذج دخولٍ ثانٍ. يُفحص مرّةً عند التركيب وحده، فلا يسبق عرضَ إضافة البصمة بعد الرمز. */
+  useEffect(() => {
+    let live = true;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (live && data.session) void navigate({ href: redirectTo, replace: true });
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     // a formal two-panel entry: the partner's wine field with the hadith on one side, the form
@@ -139,6 +154,7 @@ function AuthPage() {
             {c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))}
           </p>
         )}
+        {!draft && redirectTo === "/dashboard" && <TrialAuthNotice className="mt-6 lg:mt-0" />}
         {/* the panel's own heading is small; here it is the page's welcome, in the display face */}
         <AuthPanel
           className="mt-8 lg:mt-0 [&>h2]:font-display [&>h2]:text-4xl [&>h2]:leading-[1.4] [&>h2]:font-bold [&>h2+p]:mt-3"

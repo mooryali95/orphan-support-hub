@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -42,6 +42,9 @@ import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
+import { TrialProposalOffer } from "@/components/try/TrialProposal";
+import { dismissProposal } from "@/lib/try-handoff";
+import { resolveCountry } from "@/lib/countries";
 import {
   amountAfterSwitch,
   canPayIn,
@@ -325,6 +328,8 @@ function OrphanDetail() {
   // العائد من الدخول يجد ما اختاره كما تركه (UX-09): المبلغ والرسالة والإخفاء.
   // يُقرأ بعد التركيب (sessionStorage في المتصفّح وحده) ثم يُمحى.
   const [restored, setRestored] = useState(false);
+  /* مقترح الرحلة الافتراضية الذي ضغط الزائر «استعمله»: يُخفى حين تُنشأ الكفالة الحقيقية فعلاً */
+  const usedProposal = useRef<string | null>(null);
   useEffect(() => {
     const draft = loadDraft(orphanId);
     if (!draft) return;
@@ -396,6 +401,7 @@ function OrphanDetail() {
       }
       setExcessOffer(null);
       clearDraft(orphanId);
+      if (usedProposal.current) dismissProposal(usedProposal.current);
       // الدفع مباشرةً بعد «ابدأ»: لا يُترك الداعم يبحث عن «أكمل الدفع» في لوحته.
       toast.success(t.toPayment);
       try {
@@ -623,6 +629,19 @@ function OrphanDetail() {
                       {t.restored}
                     </p>
                   )}
+                  {/* من الرحلة الافتراضية: مقترحٌ لا يُطبَّق إلا بضغطة، ولا يُعرض بعملةٍ لا تُقبل هنا */}
+                  <TrialProposalOffer
+                    tracks={["sponsorship"]}
+                    co={resolveCountry(orphan.country)}
+                    usable={(p) => canPayIn(payOptions, p.currency)}
+                    onUse={(p) => {
+                      setChosenCurrency(p.currency);
+                      setAmount(String(p.amount));
+                      setCadence(p.cadence);
+                      setExcessOffer(null);
+                      usedProposal.current = p.id;
+                    }}
+                  />
                   <div
                     role="radiogroup"
                     aria-label={t.cadence}
