@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
+import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { tryChildrenByWait } from "@/lib/try-demo";
 
@@ -21,6 +22,19 @@ const COPY = defineCopy("routes/try.index", {
     waiting: "ينتظرون منذ أطول مدة",
     order: "الترتيب نفسه في الدليل الحقيقي: الأطول انتظاراً أوّلاً.",
     fromMap: "ابدأ من الخريطة ثلاثية الأبعاد",
+    doors: "ثلاثة أبوابٍ للعطاء، ولكلٍّ أثره",
+    doorsLead:
+      "اكفل طفلاً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
+    doorImpact: {
+      qualification: "أثره: تطوّر يُقاس، جلساتٌ وسمات",
+      monthly: "أثره: سجلّ ما دُفع ووصل",
+      in_kind: "أثره: تسليمٌ بمستنده",
+    },
+    doorCta: {
+      qualification: "ادعم من الخريطة",
+      monthly: "اختر طفلاً",
+      in_kind: "ادعم من الخريطة",
+    },
     toImpact: "انتقل إلى «أثري»",
   },
   en: {
@@ -41,6 +55,19 @@ const COPY = defineCopy("routes/try.index", {
     waiting: "Waiting the longest",
     order: "The same order as the real directory: longest wait first.",
     fromMap: "Start from the 3D map",
+    doors: "Three doors for giving, each with its own impact",
+    doorsLead:
+      "Sponsor a child financially from the list below, or support qualification or in-kind giving from the map: for a child, their group, their region or their country. Then compare the impact in “My impact”.",
+    doorImpact: {
+      qualification: "Its impact: measured development, in sessions and traits",
+      monthly: "Its impact: a record of what was paid and delivered",
+      in_kind: "Its impact: a delivery with its document",
+    },
+    doorCta: {
+      qualification: "Support from the map",
+      monthly: "Choose a child",
+      in_kind: "Support from the map",
+    },
     toImpact: "Go to “My impact”",
   },
 });
@@ -48,6 +75,7 @@ const COPY = defineCopy("routes/try.index", {
 function TryHome() {
   const c = useCopy(COPY);
   const kids = tryChildrenByWait();
+  const giving = useGivingCopy();
   return (
     <>
       <section className="try-rise text-center">
@@ -82,7 +110,56 @@ function TryHome() {
         ))}
       </ol>
 
-      <section aria-labelledby="try-kids" className="mt-16 md:mt-20">
+      {/* the three giving tracks, as on the home page: each door says what its impact looks like */}
+      <section aria-labelledby="try-doors" className="mt-14">
+        <h2 id="try-doors" className="heading-section">
+          {c.doors}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{c.doorsLead}</p>
+        <ul className="mt-6 grid gap-4 md:grid-cols-3">
+          {GIVING_TRACKS.map((k, i) => {
+            const body = (
+              <>
+                <span className="block text-lg font-bold">{giving.tracks[k].name}</span>
+                <span className="mt-2 block text-sm leading-7 text-muted-foreground">
+                  {giving.tracks[k].promise}
+                </span>
+                <span className="mt-3 block border-t border-bridge/40 pt-3 text-sm font-bold text-bridge-ink">
+                  {c.doorImpact[k]}
+                </span>
+                <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary">
+                  {c.doorCta[k]}
+                  <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+                </span>
+              </>
+            );
+            const cls =
+              "try-rise block h-full rounded-2xl border border-border bg-card p-5 shadow-soft transition-colors hover:border-primary/50 hover:bg-secondary/40";
+            const style = { animationDelay: `${0.12 + i * 0.06}s` };
+            return (
+              <li key={k}>
+                {k === "monthly" ? (
+                  <a href="#try-kids" data-door={k} className={cls} style={style}>
+                    {body}
+                  </a>
+                ) : (
+                  <Link
+                    to="/try/support"
+                    search={{ kind: k }}
+                    data-door={k}
+                    className={cls}
+                    style={style}
+                  >
+                    {body}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="try-kids" className="mt-16 scroll-mt-24 md:mt-20">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
           <div>
             <h2 id="try-kids" className="heading-section">

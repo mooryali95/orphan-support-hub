@@ -8,6 +8,7 @@ import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 import { resetGifts } from "@/lib/try-demo";
+import { resetPledges } from "@/lib/try-support";
 
 /**
  * «جرّب المنصّة»: رحلة الداعم كاملةً للعميل بلا حساب ولا دفعٍ حقيقي — أطفالٌ افتراضيون،
@@ -73,6 +74,7 @@ function TryLayout() {
             type="button"
             onClick={() => {
               resetGifts();
+              resetPledges();
               // بلا هذا لا يتغيّر شيءٌ أمام الزائر خارج «أثري»، فلا يعرف أنّ ضغطته سُجّلت.
               toast.success(c.restarted);
             }}

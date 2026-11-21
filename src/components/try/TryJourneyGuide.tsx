@@ -5,8 +5,10 @@ import {
   HandCoins,
   HeartHandshake,
   Map as MapIcon,
+  MapPinned,
   Route as RouteIcon,
   Sparkles,
+  Sprout,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -47,6 +49,14 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
       title: "شاهد أثرك",
       text: "«أثري» تبني كوكبة أثرك وتعرضها «منذ البداية»، و«الوضع الغامر» يطير بك إلى منطقة الطفل ليصل عطاؤك أمامك.",
     },
+    place: {
+      title: "ادعم منطقةً من الخريطة",
+      text: "تأهيلٌ أو دعمٌ عيني لطفلٍ أو مجموعته أو منطقته أو دولته: اختر المكان، وفي بطاقته النوع والمبلغ.",
+    },
+    kinds: {
+      title: "قارن الأثر بحسب نوع الدعم",
+      text: "في «أثري» ثلاثة ألسنة: المادية سجلّ ما وصل، والتأهيل تطوّر المنطقة بجلساته وسماته، والعيني تسليمٌ بمستنده. و«قدّم شهراً» يحرّكها كلّها.",
+    },
     triggerHero: "الرحلة كاملة خطوةً خطوة",
     trigger: "الرحلة كاملة",
     title: "رحلة التجربة كاملة",
@@ -79,6 +89,14 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
     impact: {
       title: "See your impact",
       text: "“My impact” builds your constellation and replays it from the beginning; the immersive view takes you to the child's region to watch your gift arrive.",
+    },
+    place: {
+      title: "Support a region from the map",
+      text: "Qualification or in-kind support for a child, their group, their region or their country: choose the place, then the kind and the amount on its card.",
+    },
+    kinds: {
+      title: "Compare impact by kind of support",
+      text: "“My impact” has three tabs: financial is a record of what was delivered, qualification is the region's development in sessions and traits, and in-kind is a delivery with its document. “Advance a month” moves them all.",
     },
     triggerHero: "The full journey, step by step",
     trigger: "Full journey",
@@ -133,6 +151,20 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
       title: c.impact.title,
       text: c.impact.text,
       to: "/try/impact" as const,
+    },
+    {
+      icon: MapPinned,
+      title: c.place.title,
+      text: c.place.text,
+      to: "/try/support" as const,
+      search: { c: "EG", r: "EGY-1533", kind: "qualification" as const },
+    },
+    {
+      icon: Sprout,
+      title: c.kinds.title,
+      text: c.kinds.text,
+      to: "/try/impact" as const,
+      search: { kind: "qualification" as const },
     },
   ];
 

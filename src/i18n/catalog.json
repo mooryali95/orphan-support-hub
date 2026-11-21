@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1788,
+ "count": 1933,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -1369,6 +1369,142 @@
    "hash": "2a0e3dcc8f62",
    "file": "src/components/impact/ImpactMoment.tsx"
   },
+  "components/impact/InKindImpactView.chain": {
+   "en": "{0} of 3 steps complete this month",
+   "ar": "{0} من 3 خطوات اكتملت هذا الشهر",
+   "kind": "template",
+   "params": 1,
+   "hash": "3378fd8c7ca0",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.deliveredIn": {
+   "en": "Delivered in {0} through the local office, with a document.",
+   "ar": "سُلِّم في {0} عبر المكتب المحلي بمستند.",
+   "kind": "template",
+   "params": 1,
+   "hash": "2f1fcaf9bcad",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.deliveredTo": {
+   "en": "Delivered to {0}, with a document.",
+   "ar": "سُلِّم لـ{0} بمستند.",
+   "kind": "template",
+   "params": 1,
+   "hash": "af2140d3f209",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.documented.0": {
+   "en": "Documented deliveries",
+   "ar": "تسليماتٌ موثّقة",
+   "kind": "text",
+   "hash": "4de8be17b251",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.documented.1": {
+   "en": "each with a document",
+   "ar": "كلٌّ بمستند",
+   "kind": "text",
+   "hash": "a7de7f9c31c3",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.inPreparation": {
+   "en": "The local office is preparing it; the delivery document is awaited.",
+   "ar": "المكتب المحلي يجهّزه؛ وبانتظار مستند التسليم.",
+   "kind": "text",
+   "hash": "37f6eeb5a2b7",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.lead": {
+   "en": "Your pledge on its way to delivery: the local office prepares it, then delivers and documents it. Only what is on record is counted here.",
+   "ar": "تعهّدك وهو يصير تسليماً: يجهّزه المكتب المحلي، ثم يسلّمه ويوثّقه بمستند. لا يُعدّ هنا إلا ما له قيد.",
+   "kind": "text",
+   "hash": "a1b4de14b504",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.preparing.0": {
+   "en": "In preparation",
+   "ar": "قيد التجهيز",
+   "kind": "text",
+   "hash": "02a6bba51456",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.preparing.1": {
+   "en": "at the local office",
+   "ar": "لدى المكتب المحلي",
+   "kind": "text",
+   "hash": "eb7015e9f6db",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.reachNote": {
+   "en": "The document records the delivery in the place. The number of recipients is not recorded, so none is claimed here.",
+   "ar": "المستند يوثّق التسليم في المكان؛ وعدد المستفيدين لا يُقيَّد، فلا يُدَّعى هنا.",
+   "kind": "text",
+   "hash": "60c39c7ea73d",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.recorded": {
+   "en": "Your pledge is recorded; next, the local office starts preparing it.",
+   "ar": "سُجّل تعهّدك؛ والتالي أن يبدأ المكتب المحلي تجهيزه.",
+   "kind": "text",
+   "hash": "6de61a35d2b2",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.ref": {
+   "en": "Document reference",
+   "ar": "مرجع المستند",
+   "kind": "text",
+   "hash": "b8cbbf0127db",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.showAll.one": {
+   "en": "Show {0} earlier month",
+   "ar": "اعرض شهراً أسبق",
+   "kind": "plural",
+   "hash": "5553fe9bc7a8",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.showAll.other": {
+   "en": "Show {0} earlier months",
+   "ar": "اعرض {0} شهر أسبق",
+   "kind": "plural",
+   "hash": "dd4c27174313",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.showLess": {
+   "en": "Show the latest only",
+   "ar": "اعرض الأحدث فقط",
+   "kind": "text",
+   "hash": "c5679ec0331c",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.steps.0": {
+   "en": "Pledge recorded",
+   "ar": "سُجِّل التعهّد",
+   "kind": "text",
+   "hash": "80e425e49025",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.steps.1": {
+   "en": "Office preparing",
+   "ar": "يجهّزه المكتب",
+   "kind": "text",
+   "hash": "def9f9ccdef1",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.steps.2": {
+   "en": "Delivered, documented",
+   "ar": "سُلِّم بمستند",
+   "kind": "text",
+   "hash": "75162d687916",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
+  "components/impact/InKindImpactView.title": {
+   "en": "In-kind impact",
+   "ar": "أثر الدعم العيني",
+   "kind": "text",
+   "hash": "30c0f42ab869",
+   "file": "src/components/impact/InKindImpactView.tsx"
+  },
   "components/impact/MilestonesCard.all": {
    "en": "You have reached every milestone. May God reward you.",
    "ar": "تحقّقت محطّاتك كلّها. جزاك الله خيراً.",
@@ -1587,6 +1723,338 @@
    "kind": "text",
    "hash": "6900c6edad0f",
    "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/QualificationImpactView.areaTitle": {
+   "en": "Development in {0}",
+   "ar": "التطوّر في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a4c9d7e562b1",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.chain": {
+   "en": "{0} of 4 stages complete",
+   "ar": "{0} من 4 محطّات اكتملت",
+   "kind": "template",
+   "params": 1,
+   "hash": "ba868e240bce",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.complete": {
+   "en": "The journey is complete: traits were measured before and after.",
+   "ar": "تمّت الرحلة: قيست السمات قبلها وبعدها.",
+   "kind": "text",
+   "hash": "3300ce0ac53b",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.completed.0": {
+   "en": "Journeys completed",
+   "ar": "أتمّوا الرحلة",
+   "kind": "text",
+   "hash": "bc35e77144b4",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.completed.1": {
+   "en": "with a final measurement",
+   "ar": "لهم قياسٌ بعدي",
+   "kind": "text",
+   "hash": "ed20881be3f1",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.enrolled.0": {
+   "en": "Children in qualification",
+   "ar": "أطفالٌ في التأهيل",
+   "kind": "text",
+   "hash": "3f8278ae5a9e",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.enrolled.1": {
+   "en": "enrolled in a programme",
+   "ar": "ملتحقون ببرنامج",
+   "kind": "text",
+   "hash": "ab969be9056b",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.fewer": {
+   "en": "Fewer than {0}",
+   "ar": "أقل من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "4db14ed5ce71",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.held": {
+   "en": "Sessions accepted",
+   "ar": "جلساتٌ قُبلت",
+   "kind": "text",
+   "hash": "70555196694b",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.lead": {
+   "en": "What the platform records about the qualification you fund: for a child, the journey's progress; for a group, a region or a country, what has been achieved there in aggregate.",
+   "ar": "ما تقيّده المنصّة عن التأهيل الذي تموّله: للطفل تقدّم رحلته، وللمجموعة أو المنطقة أو الدولة ما تحقّق فيها مجتمعاً.",
+   "kind": "text",
+   "hash": "de390f7c23a2",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.legend.0": {
+   "en": "First measurement",
+   "ar": "أوّل قياس",
+   "kind": "text",
+   "hash": "666fa2d53012",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.legend.1": {
+   "en": "Added by the latest measurement",
+   "ar": "ما أُضيف حتى آخر قياس",
+   "kind": "text",
+   "hash": "7388c53814d6",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.model": {
+   "en": "Trait model",
+   "ar": "نموذج السمات",
+   "kind": "text",
+   "hash": "107dab55b891",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.noChange": {
+   "en": "No change yet",
+   "ar": "لا تغيّر بعد",
+   "kind": "text",
+   "hash": "94b592b38581",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.planned": {
+   "en": "of {0} planned",
+   "ar": "من {0} مقرّرة",
+   "kind": "template",
+   "params": 1,
+   "hash": "373e5806600e",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.privacy": {
+   "en": "The child's own scores are not shown here: only those the administration authorizes see them. What you see is that the measurement took place.",
+   "ar": "درجات الطفل نفسها لا تُعرض هنا: يراها من أذنت له الإدارة وحده. ما تراه هو أنّ القياس وقع.",
+   "kind": "text",
+   "hash": "66115cd804ba",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.sessions": {
+   "en": "{0} of {1} sessions accepted",
+   "ar": "{0} من {1} جلسة قُبل مخرَجها",
+   "kind": "template",
+   "params": 2,
+   "hash": "9ec4765885c8",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.sessionsLabel": {
+   "en": "Programme sessions",
+   "ar": "جلسات البرنامج",
+   "kind": "text",
+   "hash": "74433a2cf062",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.shareNote": {
+   "en": "These are the figures for the whole place. Your pledge is one of the contributions that fund it, so they are not attributed to you alone.",
+   "ar": "هذه أرقام المكان كلّه، وتعهّدك أحد ما يموّلها؛ فلا تُنسب إليك وحدك.",
+   "kind": "text",
+   "hash": "34a80778ff2c",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.started.0": {
+   "en": "Journeys begun",
+   "ar": "بدأوا الرحلة",
+   "kind": "text",
+   "hash": "20792b32263a",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.started.1": {
+   "en": "with a baseline measurement",
+   "ar": "لهم قياسٌ قبلي",
+   "kind": "text",
+   "hash": "bb6a9b1437cc",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.state.after": {
+   "en": "All sessions are complete; next, the traits are measured after the journey.",
+   "ar": "اكتملت الجلسات، والتالي قياس السمات بعد الرحلة.",
+   "kind": "text",
+   "hash": "e5b56755abd9",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.state.before": {
+   "en": "A supervisor is assigned; next, the traits are measured before the journey.",
+   "ar": "المشرف معيَّن، والتالي قياس السمات قبل الرحلة.",
+   "kind": "text",
+   "hash": "4e69f03b3cb9",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.state.sessions": {
+   "en": "Traits were measured before the journey; the sessions are under way.",
+   "ar": "قيست السمات قبل الرحلة، والجلسات جارية.",
+   "kind": "text",
+   "hash": "01bf02b6fc27",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.state.supervisor": {
+   "en": "The pledge is recorded; a supervisor is yet to be assigned.",
+   "ar": "سُجّل التعهّد، وبانتظار تعيين مشرف.",
+   "kind": "text",
+   "hash": "bbfe52d27035",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.steps.after": {
+   "en": "Final measurement",
+   "ar": "قياسٌ بعدي",
+   "kind": "text",
+   "hash": "b33ee5652aa4",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.steps.before": {
+   "en": "Baseline measured",
+   "ar": "قياسٌ قبلي",
+   "kind": "text",
+   "hash": "daa14475469e",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.steps.sessions": {
+   "en": "Sessions",
+   "ar": "الجلسات",
+   "kind": "text",
+   "hash": "93aa50640145",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.steps.supervisor": {
+   "en": "Supervisor assigned",
+   "ar": "مشرفٌ معيَّن",
+   "kind": "text",
+   "hash": "8f03bb032f90",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.target": {
+   "en": "Target trait: {0}",
+   "ar": "السمة المستهدفة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f1b1a7507847",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.title": {
+   "en": "Qualification impact",
+   "ar": "أثر التأهيل",
+   "kind": "text",
+   "hash": "c83c544a8378",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.traitRow": {
+   "en": "{0}: from {1} to {2} out of 100",
+   "ar": "{0}: من {1} إلى {2} من 100",
+   "kind": "template",
+   "params": 3,
+   "hash": "9f780f064852",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.traitsHidden": {
+   "en": "Averages appear once {0} or more children have a baseline measurement, so that no child can be identified.",
+   "ar": "تظهر المتوسّطات حين يكون لـ{0} أطفال أو أكثر قياسٌ قبلي، حمايةً لهم من أن يُعرَفوا.",
+   "kind": "template",
+   "params": 1,
+   "hash": "106318335ea5",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.traitsLead": {
+   "en": "Each trait's average at the first and at the latest measurement, out of 100.",
+   "ar": "متوسّط كل سمةٍ عند أوّل قياسٍ وعند آخر قياس، من 100.",
+   "kind": "text",
+   "hash": "b2af7e26c6da",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/QualificationImpactView.traitsTitle": {
+   "en": "Trait movement",
+   "ar": "حركة السمات",
+   "kind": "text",
+   "hash": "618172b0a1c2",
+   "file": "src/components/impact/QualificationImpactView.tsx"
+  },
+  "components/impact/SupportImpactParts.justBegan": {
+   "en": "Just begun",
+   "ar": "بدأ للتوّ",
+   "kind": "text",
+   "hash": "509ea9d2a05a",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.monthly": {
+   "en": "{0} a month",
+   "ar": "{0} كل شهر",
+   "kind": "template",
+   "params": 1,
+   "hash": "0b2b86af9ff4",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.months.one": {
+   "en": "{0} month",
+   "ar": "شهرٌ واحد",
+   "kind": "plural",
+   "hash": "fb7cb80f7bb7",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.months.other": {
+   "en": "{0} months",
+   "ar": "{0} شهر",
+   "kind": "plural",
+   "hash": "3509a8f952e2",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.scopes.country": {
+   "en": "A country",
+   "ar": "دولة",
+   "kind": "text",
+   "hash": "13fc11a7a85a",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.scopes.group": {
+   "en": "A group",
+   "ar": "مجموعة",
+   "kind": "text",
+   "hash": "ac2facd7822d",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.scopes.institution": {
+   "en": "An organization",
+   "ar": "مؤسسة",
+   "kind": "text",
+   "hash": "584d578665d9",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.scopes.orphan": {
+   "en": "A child",
+   "ar": "طفل",
+   "kind": "text",
+   "hash": "7cc9d0a87139",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.scopes.region": {
+   "en": "A region",
+   "ar": "منطقة",
+   "kind": "text",
+   "hash": "cbcc3c7383a0",
+   "file": "src/components/impact/SupportImpactParts.tsx"
+  },
+  "components/impact/SupportImpactParts.since": {
+   "en": "Since {0}",
+   "ar": "منذ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "22f98918eaaa",
+   "file": "src/components/impact/SupportImpactParts.tsx"
   },
   "components/kit/ThemeSwitch.toDark": {
    "en": "Dark appearance",
@@ -4327,6 +4795,69 @@
    "hash": "32c1a3344e36",
    "file": "src/components/try/TryChildCard.tsx"
   },
+  "components/try/TryImpactKinds.aheadHint.in_kind": {
+   "en": "Press “Advance a month” to see the office prepare your pledge, then its delivery document arrive.",
+   "ar": "اضغط «قدّم شهراً» لترى المكتب يجهّز تعهّدك ثم يصل مستند تسليمه.",
+   "kind": "text",
+   "hash": "6d766abb9030",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.aheadHint.qualification": {
+   "en": "Press “Advance a month” to see the sessions follow and the measurement take place.",
+   "ar": "اضغط «قدّم شهراً» لترى الجلسات تتوالى والقياس يقع.",
+   "kind": "text",
+   "hash": "dac674a7b36b",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.emptyKind.in_kind.text": {
+   "en": "Support a child, a group, a region or a country from the map, then come back to see your pledge prepared, then delivered with its document.",
+   "ar": "ادعم من الخريطة طفلاً أو مجموعةً أو منطقةً أو دولة، ثم عُد هنا لترى تعهّدك يُجهَّز ثم يُسلَّم بمستنده.",
+   "kind": "text",
+   "hash": "9184967f1735",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.emptyKind.in_kind.title": {
+   "en": "You have not started in-kind support in the trial yet",
+   "ar": "لم تبدأ دعماً عينياً بعد في التجربة",
+   "kind": "text",
+   "hash": "adb4a196e594",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.emptyKind.qualification.text": {
+   "en": "Support a child, a group, a region or a country from the map, then come back to see the development: sessions held, and traits measured before and after.",
+   "ar": "ادعم من الخريطة طفلاً أو مجموعةً أو منطقةً أو دولة، ثم عُد هنا لترى التطوّر: جلساتٌ تنعقد، وسماتٌ تُقاس قبلها وبعدها.",
+   "kind": "text",
+   "hash": "c3b05c130f57",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.emptyKind.qualification.title": {
+   "en": "You have not started qualification support in the trial yet",
+   "ar": "لم تبدأ دعم تأهيلٍ بعد في التجربة",
+   "kind": "text",
+   "hash": "3b3b85853751",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.fromMap": {
+   "en": "Support from the map",
+   "ar": "ادعم من الخريطة",
+   "kind": "text",
+   "hash": "cb822832ea6a",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.kinds": {
+   "en": "Your impact by kind of giving",
+   "ar": "أثرك بحسب نوع العطاء",
+   "kind": "text",
+   "hash": "c424c4e167ad",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.kindsLead": {
+   "en": "Each kind has its own impact: financial sponsorship is a record of money delivered, qualification is development that is measured, and in-kind giving is a documented delivery.",
+   "ar": "لكل نوعٍ أثره: الكفالة المادية سجلّ مالٍ وصل، والتأهيل تطوّرٌ يُقاس، والعيني تسليمٌ موثّق.",
+   "kind": "text",
+   "hash": "6dcc70260873",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
   "components/try/TryJourneyAhead.after.one": {
    "en": "In {0} month",
    "ar": "بعد شهر",
@@ -4498,6 +5029,20 @@
    "hash": "fb3772575ce9",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
+  "components/try/TryJourneyGuide.kinds.text": {
+   "en": "“My impact” has three tabs: financial is a record of what was delivered, qualification is the region's development in sessions and traits, and in-kind is a delivery with its document. “Advance a month” moves them all.",
+   "ar": "في «أثري» ثلاثة ألسنة: المادية سجلّ ما وصل، والتأهيل تطوّر المنطقة بجلساته وسماته، والعيني تسليمٌ بمستنده. و«قدّم شهراً» يحرّكها كلّها.",
+   "kind": "text",
+   "hash": "c7038904cb1e",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.kinds.title": {
+   "en": "Compare impact by kind of support",
+   "ar": "قارن الأثر بحسب نوع الدعم",
+   "kind": "text",
+   "hash": "78beb8e15aa4",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
   "components/try/TryJourneyGuide.pay.text": {
    "en": "No card and no charge: a word of thanks, then on to “My impact”.",
    "ar": "لا بطاقة ولا خصم: تهنئةٌ ثم انتقالٌ إلى «أثري».",
@@ -4510,6 +5055,20 @@
    "ar": "ادفع دفعاً محاكى",
    "kind": "text",
    "hash": "82e5c3e9b52e",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.place.text": {
+   "en": "Qualification or in-kind support for a child, their group, their region or their country: choose the place, then the kind and the amount on its card.",
+   "ar": "تأهيلٌ أو دعمٌ عيني لطفلٍ أو مجموعته أو منطقته أو دولته: اختر المكان، وفي بطاقته النوع والمبلغ.",
+   "kind": "text",
+   "hash": "7aeeb34e278c",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.place.title": {
+   "en": "Support a region from the map",
+   "ar": "ادعم منطقةً من الخريطة",
+   "kind": "text",
+   "hash": "e7576fc2fc80",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.time.text": {
@@ -4741,6 +5300,233 @@
    "kind": "text",
    "hash": "786bd352ec24",
    "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TrySupportMap.eyebrow": {
+   "en": "Try the platform",
+   "ar": "جرّب المنصّة",
+   "kind": "text",
+   "hash": "8b2850eaf906",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.jump": {
+   "en": "Go straight to",
+   "ar": "اذهب مباشرةً إلى",
+   "kind": "text",
+   "hash": "84169c6d6335",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.lead": {
+   "en": "Choose a country, then a region. Its card lets you pick whom to support: one child, their group, the region, or the whole country. Then the kind of support and the amount.",
+   "ar": "اختر دولةً ثم منطقة، وفي بطاقتها تحدّد لمن تدعم: طفلٌ بعينه، أو مجموعته، أو المنطقة، أو الدولة كلّها. ثم نوع الدعم ومبلغه.",
+   "kind": "text",
+   "hash": "1fc12490cb39",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.mapText": {
+   "en": "Six countries in the trial, each with two regions, a group and a child, all fictional.",
+   "ar": "ست دولٍ في التجربة، وفي كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
+   "kind": "text",
+   "hash": "de7e98f26ec5",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.mapTitle": {
+   "en": "Where would you like to support?",
+   "ar": "أين تريد أن تدعم؟",
+   "kind": "text",
+   "hash": "4c63ae1c233e",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.title": {
+   "en": "Support from the map",
+   "ar": "ادعم من الخريطة",
+   "kind": "text",
+   "hash": "cb822832ea6a",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportMap.toImpact": {
+   "en": "Go to “My impact”",
+   "ar": "انتقل إلى «أثري»",
+   "kind": "text",
+   "hash": "70da750e5256",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
+  "components/try/TrySupportSheet.aChild": {
+   "en": "One child",
+   "ar": "طفلٌ بعينه",
+   "kind": "text",
+   "hash": "ef713957a453",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.amount": {
+   "en": "Monthly amount",
+   "ar": "المبلغ الشهري",
+   "kind": "text",
+   "hash": "f5510e98a9d5",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.another": {
+   "en": "Support again",
+   "ar": "دعمٌ آخر",
+   "kind": "text",
+   "hash": "df8f9e297ae2",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.children.one": {
+   "en": "{0} child",
+   "ar": "طفلٌ واحد",
+   "kind": "plural",
+   "hash": "2c7516e4b70f",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.children.other": {
+   "en": "{0} children",
+   "ar": "{0} طفل",
+   "kind": "plural",
+   "hash": "0abc15820374",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.confirm": {
+   "en": "Record my support (simulated): {0}",
+   "ar": "سجّل دعمي (محاكاة): {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "72f684eb39b5",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.done.in_kind": {
+   "en": "“My impact” shows your pledge being prepared, then delivered with its document.",
+   "ar": "في «أثري» ترى تعهّدك يُجهَّز ثم يُسلَّم بمستنده.",
+   "kind": "text",
+   "hash": "0fe176368c0a",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.done.qualification": {
+   "en": "“My impact” shows the qualification advancing month by month: the sessions, and the measurement before and after.",
+   "ar": "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
+   "kind": "text",
+   "hash": "b4149a8f753e",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.financial": {
+   "en": "Or sponsor {0} financially",
+   "ar": "أو اكفل {0} كفالةً مادية",
+   "kind": "template",
+   "params": 1,
+   "hash": "a558bbeb2695",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.kind": {
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "dfff08619ed0",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.note": {
+   "en": "Simulated: kept in your browser only. Nothing is sent and nothing is charged.",
+   "ar": "محاكاة: يُحفظ في متصفّحك وحده، ولا يُرسل شيء ولا يُخصم.",
+   "kind": "text",
+   "hash": "651ed15e72a6",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.orRegion": {
+   "en": "Or support a region in it:",
+   "ar": "أو ادعم منطقةً فيها:",
+   "kind": "text",
+   "hash": "6e61ca126993",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.other": {
+   "en": "Other amount",
+   "ar": "مبلغ آخر",
+   "kind": "text",
+   "hash": "b59a152ed5ff",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.sampleRegions": {
+   "en": "The trial's regions here are {0} and {1}. Choose one to support it, or support the whole country.",
+   "ar": "منطقتا التجربة هنا: {0} و{1}. اختر إحداهما لتدعمها، أو ادعم الدولة كلّها.",
+   "kind": "template",
+   "params": 2,
+   "hash": "f6d515952ae9",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.see": {
+   "en": "See its impact",
+   "ar": "شاهد أثره",
+   "kind": "text",
+   "hash": "0ee05e05b9ca",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.thanks": {
+   "en": "Your support is recorded",
+   "ar": "سُجّل دعمك",
+   "kind": "text",
+   "hash": "57f93175e567",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.thisCountry": {
+   "en": "This country",
+   "ar": "هذه الدولة",
+   "kind": "text",
+   "hash": "c1bd5d192ef3",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.thisRegion": {
+   "en": "This region",
+   "ar": "هذه المنطقة",
+   "kind": "text",
+   "hash": "c33ae6febd10",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.whom": {
+   "en": "For whom?",
+   "ar": "إلى من؟",
+   "kind": "text",
+   "hash": "aabca11c13dc",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TryTimeBar.after.one": {
+   "en": "In {0} month",
+   "ar": "بعد شهر",
+   "kind": "plural",
+   "hash": "0f4c29797e64",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.after.other": {
+   "en": "In {0} months",
+   "ar": "بعد {0} شهراً",
+   "kind": "plural",
+   "hash": "06592ddbb809",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.backToday": {
+   "en": "Back to today",
+   "ar": "عُد إلى اليوم",
+   "kind": "text",
+   "hash": "ca6b73d50b35",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.forward": {
+   "en": "Advance a month",
+   "ar": "قدّم شهراً",
+   "kind": "text",
+   "hash": "bf8a5da4449c",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/components/try/TryTimeBar.tsx"
   },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",
@@ -6317,6 +7103,181 @@
    "kind": "text",
    "hash": "d0523b69a410",
    "file": "src/lib/try-demo.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-AL": {
+   "en": "Dawn group",
+   "ar": "مجموعة الفجر",
+   "kind": "text",
+   "hash": "555f0e13dc88",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-BA": {
+   "en": "Loyalty group",
+   "ar": "مجموعة الوفاء",
+   "kind": "text",
+   "hash": "519caa8e9b21",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-EG": {
+   "en": "Light group",
+   "ar": "مجموعة النور",
+   "kind": "text",
+   "hash": "dabb36425d28",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-ID": {
+   "en": "Guidance group",
+   "ar": "مجموعة الهدى",
+   "kind": "text",
+   "hash": "160444271a5b",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-KE": {
+   "en": "Glad Tidings group",
+   "ar": "مجموعة البشائر",
+   "kind": "text",
+   "hash": "542f4e217947",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.groups.DEMO-GRP-SN": {
+   "en": "Hope group",
+   "ar": "مجموعة الأمل",
+   "kind": "text",
+   "hash": "5ed6d36b6966",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.program": {
+   "en": "Foundation qualification journey",
+   "ar": "رحلة التأهيل الأساسية",
+   "kind": "text",
+   "hash": "85aa6d4608b8",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.ALB-1498": {
+   "en": "Shkodër",
+   "ar": "إشقودرة",
+   "kind": "text",
+   "hash": "b9343c4b20dc",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.ALB-1529": {
+   "en": "Tirana",
+   "ar": "تيرانا",
+   "kind": "text",
+   "hash": "7aae3b026e84",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.BIH-2887": {
+   "en": "Tuzla Canton",
+   "ar": "كانتون توزلا",
+   "kind": "text",
+   "hash": "47f7b160cf10",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.BIH-2890": {
+   "en": "Sarajevo Canton",
+   "ar": "كانتون سراييفو",
+   "kind": "text",
+   "hash": "b0603a729d2b",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.EGY-1533": {
+   "en": "Cairo",
+   "ar": "القاهرة",
+   "kind": "text",
+   "hash": "5ff207ff2a90",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.EGY-1544": {
+   "en": "Giza",
+   "ar": "الجيزة",
+   "kind": "text",
+   "hash": "1e6b6d730948",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.IDN-1223": {
+   "en": "West Java",
+   "ar": "جاوة الغربية",
+   "kind": "text",
+   "hash": "b1697fb00065",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.IDN-1227": {
+   "en": "Jakarta",
+   "ar": "جاكرتا",
+   "kind": "text",
+   "hash": "77b39d0dec5c",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.KEN-1193": {
+   "en": "Coast",
+   "ar": "المحافظة الساحلية",
+   "kind": "text",
+   "hash": "da7379da3523",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.KEN-1196": {
+   "en": "Nairobi",
+   "ar": "نيروبي",
+   "kind": "text",
+   "hash": "a2c1e37739e2",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.SEN-759": {
+   "en": "Dakar",
+   "ar": "داكار",
+   "kind": "text",
+   "hash": "ffd8e2f3c783",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.regions.SEN-768": {
+   "en": "Thiès",
+   "ar": "ثيس",
+   "kind": "text",
+   "hash": "5ceec662a64a",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.dirayah": {
+   "en": "Discernment",
+   "ar": "الدراية",
+   "kind": "text",
+   "hash": "87a28348c67f",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.himmah": {
+   "en": "Drive",
+   "ar": "الهمّة",
+   "kind": "text",
+   "hash": "b0c64f0ae575",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.kifayat": {
+   "en": "Competencies",
+   "ar": "الكفايات",
+   "kind": "text",
+   "hash": "e4c5a308a66d",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.rushd": {
+   "en": "Sound judgement",
+   "ar": "الرشد",
+   "kind": "text",
+   "hash": "607fceee913b",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.sumud": {
+   "en": "Steadfastness",
+   "ar": "الصمود",
+   "kind": "text",
+   "hash": "1499f296a0bb",
+   "file": "src/lib/try-places.ts"
+  },
+  "lib/try-places.traits.ukhuwwa": {
+   "en": "Brotherhood in faith",
+   "ar": "الأخوّة الإيمانية",
+   "kind": "text",
+   "hash": "d07a81998e38",
+   "file": "src/lib/try-places.ts"
   },
   "lib/workspaces.labels.kind.in_kind": {
    "en": "In-kind support",
@@ -9063,6 +10024,14 @@
    "hash": "242fa6d0eb16",
    "file": "src/routes/try.$childId.tsx"
   },
+  "routes/try.childId.otherKinds": {
+   "en": "Or support {0} in another way, from the map:",
+   "ar": "أو ادعم {0} بغير الكفالة المادية، من الخريطة:",
+   "kind": "template",
+   "params": 1,
+   "hash": "2d1a2977167d",
+   "file": "src/routes/try.$childId.tsx"
+  },
   "routes/try.childId.pageTitle": {
    "en": "{0} · Try the platform",
    "ar": "{0} · جرّب المنصّة",
@@ -9208,6 +10177,62 @@
    "kind": "text",
    "hash": "7f977bf767b5",
    "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.index.doorCta.in_kind": {
+   "en": "Support from the map",
+   "ar": "ادعم من الخريطة",
+   "kind": "text",
+   "hash": "cb822832ea6a",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorCta.monthly": {
+   "en": "Choose a child",
+   "ar": "اختر طفلاً",
+   "kind": "text",
+   "hash": "80eae1d9e770",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorCta.qualification": {
+   "en": "Support from the map",
+   "ar": "ادعم من الخريطة",
+   "kind": "text",
+   "hash": "cb822832ea6a",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorImpact.in_kind": {
+   "en": "Its impact: a delivery with its document",
+   "ar": "أثره: تسليمٌ بمستنده",
+   "kind": "text",
+   "hash": "89a85efb3f23",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorImpact.monthly": {
+   "en": "Its impact: a record of what was paid and delivered",
+   "ar": "أثره: سجلّ ما دُفع ووصل",
+   "kind": "text",
+   "hash": "e8820252b41d",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorImpact.qualification": {
+   "en": "Its impact: measured development, in sessions and traits",
+   "ar": "أثره: تطوّر يُقاس، جلساتٌ وسمات",
+   "kind": "text",
+   "hash": "0e6cd77f9a8a",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doors": {
+   "en": "Three doors for giving, each with its own impact",
+   "ar": "ثلاثة أبوابٍ للعطاء، ولكلٍّ أثره",
+   "kind": "text",
+   "hash": "67b8358acb9d",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.doorsLead": {
+   "en": "Sponsor a child financially from the list below, or support qualification or in-kind giving from the map: for a child, their group, their region or their country. Then compare the impact in “My impact”.",
+   "ar": "اكفل طفلاً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
+   "kind": "text",
+   "hash": "9d41970fe133",
+   "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.eyebrow": {
    "en": "Try the platform",
@@ -9482,6 +10507,13 @@
    "kind": "text",
    "hash": "8b2850eaf906",
    "file": "src/routes/try.tsx"
+  },
+  "routes/try.support.pageTitle": {
+   "en": "Support from the map · Try the platform",
+   "ar": "ادعم من الخريطة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "d9dc19086573",
+   "file": "src/routes/try.support.tsx"
   },
   "routes/vision.cycle.again": {
    "en": "From the start",

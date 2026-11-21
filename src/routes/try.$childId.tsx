@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { pageTitle } from "@/config/brand";
+import { useGivingCopy } from "@/config/giving-tracks";
 import { currencyName } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
@@ -94,6 +95,7 @@ const COPY = defineCopy("routes/try.childId", {
     minAmount: (min: string) => `أقلّ مبلغٍ ${min}.`,
     activation: "تُفعَّل الكفالة بعد تأكيد الدفع، ويُسجَّل كل تحويلٍ وتسليمٍ بمستند.",
     another: "اختر طفلاً آخر",
+    otherKinds: (name: string) => `أو ادعم ${name} بغير الكفالة المادية، من الخريطة:`,
   },
   en: {
     pageTitle: (name: string) => `${name} · Try the platform`,
@@ -129,6 +131,7 @@ const COPY = defineCopy("routes/try.childId", {
     activation:
       "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
     another: "Choose another child",
+    otherKinds: (name: string) => `Or support ${name} in another way, from the map:`,
   },
 });
 
@@ -137,6 +140,7 @@ function TryChildPage() {
   const c = useCopy(COPY);
   const child = localTryChild(Route.useLoaderData().child, locale);
   const navigate = useNavigate();
+  const giving = useGivingCopy();
   const gap = gapOf(child);
   const pct = Math.round((child.funded / child.need) * 100);
   const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
@@ -432,6 +436,21 @@ function TryChildPage() {
           {c.activation}
         </p>
         <TryReportPreview child={child} amount={valid && credited > 0 ? credited : gap || 50} />
+        <div className="mt-4 rounded-xl border border-border p-3">
+          <p className="text-sm leading-6 text-muted-foreground">{c.otherKinds(child.name)}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {(["qualification", "in_kind"] as const).map((k) => (
+              <Link
+                key={k}
+                to="/try/support"
+                search={{ c: child.co, kind: k, child: child.id }}
+                className="inline-flex min-h-11 items-center rounded-full border border-input px-4 text-sm font-bold transition-colors hover:border-primary/50 hover:bg-secondary/60"
+              >
+                {giving.tracks[k].name}
+              </Link>
+            ))}
+          </div>
+        </div>
         <Link
           to="/try"
           className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-primary hover:underline"
