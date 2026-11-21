@@ -8,9 +8,9 @@ import { copyOf, defineCopy, type Locale } from "@/lib/locale";
 import { TRY_CHILDREN, type TryChild } from "@/lib/try-demo";
 
 /**
- * دول أطفال التجربة الست، ولكلٍّ منها منطقتان ومجموعةٌ واحدة. عدد أطفال المنطقة هو نفسه ما
- * تعرضه قاعة الأثر لمنطقتها (`hall`: معرّف المنطقة في `lib/hall/model`، واختبارٌ يقفل
- * التطابق)؛ وعدد الدولة مجموع منطقتيها، لا رقمٌ ثالث. المجموعة أوّل ثمانية أطفالٍ في المنطقة
+ * دول أطفال التجربة الست، ولكلٍّ منها منطقتان ومجموعةٌ واحدة. قاعة الأثر في وضع التجربة تُبنى
+ * من هذا الكتالوج نفسه (`lib/hall/trial`): مناطقها هذه المناطق بأعدادها وأسمائها، وتأخذ من
+ * `lib/hall/model` موضع العمود وحده بالمعرّف `hall`. عدد الدولة مجموع منطقتيها، لا رقمٌ ثالث. المجموعة أوّل ثمانية أطفالٍ في المنطقة
  * الأولى، وطفل التجربة أوّلهم. كلّها أعدادٌ نموذجية، والمعرّفات لا تشبه معرّفات الدفع.
  */
 export type TryRegion = {
@@ -18,9 +18,9 @@ export type TryRegion = {
   id: string;
   /** the region's Latin name in the map file: the key the map matches its figures by */
   en: string;
-  /** the same region in the impact hall (`regionsFor` in `lib/hall/model`) */
+  /** the same region's id in the impact hall: where its column stands (`regionsFor` in `lib/hall/model`) */
   hall: string;
-  /** sample: children with a file here (the hall region's `need`) */
+  /** sample: children with a file here (the height of the region's column in the trial hall) */
   children: number;
 };
 
@@ -97,6 +97,11 @@ export const tryPlace = (co: string) => TRY_PLACES.find((p) => p.co === co);
 export const placeChildren = (p: TryPlace) => p.regions.reduce((a, r) => a + r.children, 0);
 /** the trial child standing in a country (one each) */
 export const tryChildOf = (co: string) => TRY_CHILDREN.find((c) => c.co === co);
+/** the country's trial child when they stand in this hall region; none in its other region */
+export const tryChildIn = (co: string, hall: string) => {
+  const k = tryChildOf(co);
+  return k && k.region === hall ? k : undefined;
+};
 /** the map region a trial child is listed under: the one the hall also puts them in */
 export const tryRegionOfChild = (c: Pick<TryChild, "co" | "region">) =>
   tryPlace(c.co)?.regions.find((r) => r.hall === c.region);

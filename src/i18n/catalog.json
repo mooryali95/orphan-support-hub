@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1933,
+ "count": 2111,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -6732,6 +6732,1296 @@
    "kind": "text",
    "hash": "c98f68d4f7b2",
    "file": "src/lib/go-live.ts"
+  },
+  "lib/hall/trial.after.one": {
+   "en": "In {0} month",
+   "ar": "بعد شهر",
+   "kind": "plural",
+   "hash": "0f4c29797e64",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.after.other": {
+   "en": "In {0} months",
+   "ar": "بعد {0} شهراً",
+   "kind": "plural",
+   "hash": "06592ddbb809",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.before.one": {
+   "en": "{0} month ago",
+   "ar": "قبل شهر",
+   "kind": "plural",
+   "hash": "1c00d44f0758",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.before.other": {
+   "en": "{0} months ago",
+   "ar": "قبل {0} شهراً",
+   "kind": "plural",
+   "hash": "8133977266a6",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.hall": {
+   "en": "Back to the hall",
+   "ar": "عودة إلى القاعة",
+   "kind": "text",
+   "hash": "6c11606e0091",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.mine": {
+   "en": "To my impact",
+   "ar": "إلى أثري",
+   "kind": "text",
+   "hash": "d4ab7b7281ac",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.note": {
+   "en": "Sample figures. What you recorded is kept in your browser only.",
+   "ar": "أعدادٌ نموذجية، وما سجّلته محفوظٌ في متصفّحك وحده.",
+   "kind": "text",
+   "hash": "200640427569",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.sect": {
+   "en": "What your support moved in {0}",
+   "ar": "ما حرّكه دعمك في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f33911037d79",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.sub": {
+   "en": "Your support is recorded for {0} in {1}. This is what it changed, before and after.",
+   "ar": "دعمك مسجَّل لـ{0} في {1}. هذا ما تغيّر به، قبله وبعده.",
+   "kind": "template",
+   "params": 2,
+   "hash": "3bb8873f0658",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.title": {
+   "en": "The impact of your support",
+   "ar": "أثر دعمك",
+   "kind": "text",
+   "hash": "ecad92017af9",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.big.warm": {
+   "en": "Behind every figure here is a child who came closer to what they were waiting for, by the grace of God and then by your giving. May God reward you.",
+   "ar": "وراء كلّ رقمٍ هنا طفلٌ اقترب ممّا ينتظره، بفضل الله ثم بعطائك. جزاك الله خيراً.",
+   "kind": "text",
+   "hash": "65fa4a101703",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.children.one": {
+   "en": "{0} child",
+   "ar": "طفلٌ واحد",
+   "kind": "plural",
+   "hash": "2c7516e4b70f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.children.other": {
+   "en": "{0} children",
+   "ar": "{0} طفل",
+   "kind": "plural",
+   "hash": "0abc15820374",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.completed": {
+   "en": "Journeys completed",
+   "ar": "أتمّوا الرحلة",
+   "kind": "text",
+   "hash": "bc35e77144b4",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.elsewhere": {
+   "en": "The trial child and group are in",
+   "ar": "طفل التجربة ومجموعتها في",
+   "kind": "text",
+   "hash": "4bd45f0f9d69",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.gap": {
+   "en": "{0} a month still open",
+   "ar": "يتبقّى {0} شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "ed03ebd448f1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.hint": {
+   "en": "Drag to orbit the country · tap a column to choose its region",
+   "ar": "اسحب لتدور حول الدولة · المس عموداً لتختار منطقته",
+   "kind": "text",
+   "hash": "0197e50b37ec",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.impact": {
+   "en": "My impact",
+   "ar": "أثري",
+   "kind": "text",
+   "hash": "7f977bf767b5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.journey": {
+   "en": "Qualification journey: {0} of {1} sessions",
+   "ar": "رحلة تأهيله: {0} من {1} جلسة",
+   "kind": "template",
+   "params": 2,
+   "hash": "1bdbd05d7a1e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.kid": {
+   "en": "The trial child in {0}",
+   "ar": "طفل التجربة في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "1202206d6531",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.label": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.mine": {
+   "en": "Sponsored by you · delivered each month with a receipt",
+   "ar": "في كفالتك · تصله كلّ شهرٍ بمستند",
+   "kind": "text",
+   "hash": "0f4c601f4c49",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.once": {
+   "en": "You gave them a one-time gift",
+   "ar": "قدّمت له عطاءً مرّةً واحدة",
+   "kind": "text",
+   "hash": "3ffbd874e0d6",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.other": {
+   "en": "Another country",
+   "ar": "دولة أخرى",
+   "kind": "text",
+   "hash": "c85c6b0b00df",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.regions": {
+   "en": "The two trial regions",
+   "ar": "منطقتا التجربة",
+   "kind": "text",
+   "hash": "e4b82367be75",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.sponsor": {
+   "en": "Sponsor {0}",
+   "ar": "اكفل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cb9ef4bca4b1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.sub": {
+   "en": "Each column is as tall as its region's children, and the filled part is those under your qualification pledge. The figures are sample data, the same as on the support map.",
+   "ar": "ارتفاع كلّ عمود عدد أطفال المنطقة، والمملوء منه من يشملهم تعهّد تأهيلك. الأعداد نموذجية، وهي نفسها في خريطة الدعم.",
+   "kind": "text",
+   "hash": "fdf4575109ac",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.support": {
+   "en": "Support {0}",
+   "ar": "ادعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8520e0afe7c7",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.country.title": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.deliveries": {
+   "en": "Documented deliveries",
+   "ar": "تسليماتٌ موثّقة",
+   "kind": "text",
+   "hash": "4de8be17b251",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.enrolled": {
+   "en": "Children in qualification",
+   "ar": "أطفالٌ في التأهيل",
+   "kind": "text",
+   "hash": "3f8278ae5a9e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.fewer": {
+   "en": "Fewer than {0}",
+   "ar": "أقل من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "4db14ed5ce71",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.0": {
+   "en": "The impact hall: where a supporter sees where their support goes, and what it changes",
+   "ar": "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر",
+   "kind": "text",
+   "hash": "87b7f95a9a26",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.1": {
+   "en": "The WAMY network: headquarters in Riyadh and 26 sites of confirmed presence",
+   "ar": "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
+   "kind": "text",
+   "hash": "d1c32761e36c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.2": {
+   "en": "We choose Albania, a trial country, with its two regions, its group and its child",
+   "ar": "نختار ألبانيا من دول التجربة، بمنطقتيها ومجموعتها وطفلها",
+   "kind": "text",
+   "hash": "616c57c7dab1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.3": {
+   "en": "We enter it: each region has a column as tall as its children, filled by those under a qualification pledge",
+   "ar": "ندخلها: لكلّ منطقةٍ عمودٌ بعدد أطفالها، والمملوء منه من يشملهم تعهّد تأهيل",
+   "kind": "text",
+   "hash": "6e862110290b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.4": {
+   "en": "We pledge monthly for qualification in Tirana, and what the pledge covers shows before it is recorded",
+   "ar": "نتعهّد لتيرانا تأهيلاً شهرياً، فيظهر ما يشمله التعهّد قبل تسجيله",
+   "kind": "text",
+   "hash": "017e6190f5bd",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.5": {
+   "en": "The support flows, and Tirana's column fills with those the pledge covers",
+   "ar": "يتدفّق الدعم، ويمتلئ عمود تيرانا بمن شملهم التعهّد",
+   "kind": "text",
+   "hash": "e93d1aec7365",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.6": {
+   "en": "Then the impact level by level: the country, the region, the group, the child",
+   "ar": "ثم الأثر بمستوياته: الدولة، والمنطقة، والمجموعة، والطفل",
+   "kind": "text",
+   "hash": "5fe5d6884e24",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.film.7": {
+   "en": "And last, your own impact: what your support changed, before and after",
+   "ar": "وأخيراً أثرك أنت: ما تغيّر بدعمك، قبله وبعده",
+   "kind": "text",
+   "hash": "5c4065a1ff70",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.held": {
+   "en": "Sessions accepted",
+   "ar": "جلساتٌ قُبلت",
+   "kind": "text",
+   "hash": "70555196694b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.active": {
+   "en": "Active (simulated)",
+   "ar": "نشط (محاكاة)",
+   "kind": "text",
+   "hash": "48c044b1f6e8",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.again": {
+   "en": "Support again",
+   "ar": "دعمٌ آخر",
+   "kind": "text",
+   "hash": "df8f9e297ae2",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.amount": {
+   "en": "Monthly amount",
+   "ar": "المبلغ الشهري",
+   "kind": "text",
+   "hash": "f5510e98a9d5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.coverage": {
+   "en": "Monthly need covered",
+   "ar": "تغطية حاجته الشهرية",
+   "kind": "text",
+   "hash": "5247df5801a7",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.date": {
+   "en": "Date",
+   "ar": "التاريخ",
+   "kind": "text",
+   "hash": "d69460f8793a",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.done": {
+   "en": "Your support is recorded",
+   "ar": "سُجّل دعمك",
+   "kind": "text",
+   "hash": "57f93175e567",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.doneSub": {
+   "en": "Read its impact: what was recorded, then its impact by level, then what comes next.",
+   "ar": "اقرأ أثره: ما سُجّل، ثم أثره بالمستويات، ثم ما التالي.",
+   "kind": "text",
+   "hash": "ec356f5f37bf",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.eyebrow": {
+   "en": "Impact screen · your support is recorded",
+   "ar": "شاشة الأثر · سُجّل دعمك",
+   "kind": "text",
+   "hash": "c39e62938ab2",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.filmEyebrow": {
+   "en": "Impact screen · a showing only, nothing was recorded",
+   "ar": "شاشة الأثر · عرضٌ فقط، لم يُسجَّل شيء",
+   "kind": "text",
+   "hash": "fd6da84a0586",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.kCountry": {
+   "en": "What is counted here is deliveries documented in the country, not children.",
+   "ar": "يُعدّ هنا ما وُثِّق تسليمه في الدولة، لا عدد الأطفال.",
+   "kind": "text",
+   "hash": "478434c4351d",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.kRegion": {
+   "en": "No delivery is documented yet. The local office prepares it first, then delivers it with a document.",
+   "ar": "لم يوثَّق تسليمٌ بعد. يجهّزه المكتب المحلي أوّلاً، ثم يسلّمه بمستند.",
+   "kind": "text",
+   "hash": "78c5581e637e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.kind": {
+   "en": "Kind",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "9b81d0a755af",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.lead": {
+   "en": "Your support is recorded in your browser as it is from the support map, and it is now in “My impact”.",
+   "ar": "سُجّل دعمك في متصفّحك كما يُسجَّل من خريطة الدعم، وهو الآن في «أثري».",
+   "kind": "text",
+   "hash": "a72dcb42932f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.level.child": {
+   "en": "Child",
+   "ar": "الطفل",
+   "kind": "text",
+   "hash": "9b7972644282",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.level.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.level.group": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.level.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.levelsLead": {
+   "en": "The same support read level by level: the country, then the region, then the group, then the child.",
+   "ar": "دعمك نفسه مقروءاً على مستوياته: الدولة، ثم المنطقة، ثم المجموعة، ثم الطفل.",
+   "kind": "text",
+   "hash": "9891b3082f0c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.mChild": {
+   "en": "A pseudonym, with the code {0}. The need is in the file's currency.",
+   "ar": "اسمٌ مستعار ورمزه {0}. حاجته بعملة ملفّه.",
+   "kind": "template",
+   "params": 1,
+   "hash": "2616599f4326",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.mCountry": {
+   "en": "A new monthly sponsorship, delivered with a receipt each month.",
+   "ar": "كفالةٌ شهرية جديدة تصل بمستند كلّ شهر.",
+   "kind": "text",
+   "hash": "844b4e88d711",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.mRegion": {
+   "en": "The region's trial children that you sponsor.",
+   "ar": "أطفال التجربة في المنطقة ممّن تكفلهم أنت.",
+   "kind": "text",
+   "hash": "396647cab088",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.next.in_kind": {
+   "en": "“My impact” shows your pledge being prepared, then delivered with its document.",
+   "ar": "في «أثري» ترى تعهّدك يُجهَّز ثم يُسلَّم بمستنده.",
+   "kind": "text",
+   "hash": "0fe176368c0a",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.next.monthly": {
+   "en": "“My impact” shows, each month, when your gift was transferred and when it was delivered with a receipt.",
+   "ar": "في «أثري» ترى كلّ شهرٍ متى حُوِّل عطاؤك ومتى وصل بمستند.",
+   "kind": "text",
+   "hash": "44931a9ac2f8",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.next.qualification": {
+   "en": "“My impact” shows the qualification advancing month by month: the sessions, and the measurement before and after.",
+   "ar": "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
+   "kind": "text",
+   "hash": "b4149a8f753e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.perMonth": {
+   "en": "{0} a month",
+   "ar": "{0} كل شهر",
+   "kind": "template",
+   "params": 1,
+   "hash": "0b2b86af9ff4",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.qChild": {
+   "en": "A pseudonym, with the code {0}. Their journey is that of the region's first child.",
+   "ar": "اسمٌ مستعار ورمزه {0}. رحلته رحلة أوّل أطفال المنطقة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5efd112dcd46",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.qCountry": {
+   "en": "Your pledge covers the children of {0}, out of the country's children.",
+   "ar": "يشمل تعهّدك أطفال {0} من أطفال الدولة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "4f075bb8a623",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.qGroup": {
+   "en": "The group is the region's first children, and it has {0} sessions planned.",
+   "ar": "المجموعة أوّل أطفال المنطقة، ولها {0} جلسةً مقرّرة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "d9ed5ef37233",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.qRegion": {
+   "en": "All the region's children are enrolled in the qualification journey by your pledge, and no one starts on the day of the pledge.",
+   "ar": "أطفال المنطقة جميعاً ملتحقون برحلة التأهيل بتعهّدك، ولم يبدأ أحدٌ يوم التعهّد.",
+   "kind": "text",
+   "hash": "1c2dde6f2477",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.ref": {
+   "en": "Reference",
+   "ar": "المرجع",
+   "kind": "text",
+   "hash": "480de2f7de63",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.see": {
+   "en": "See its impact",
+   "ar": "شاهد أثره",
+   "kind": "text",
+   "hash": "0ee05e05b9ca",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.sessions": {
+   "en": "Sessions in the journey",
+   "ar": "جلسات الرحلة",
+   "kind": "text",
+   "hash": "e0a88695fc5a",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.slider": {
+   "en": "And here in the hall: go back to the country and move the time bar to see the same figures advance.",
+   "ar": "وهنا في القاعة: عُد إلى الدولة وحرّك شريط الزمن لترى الأعداد نفسها تتقدّم.",
+   "kind": "text",
+   "hash": "63c290440db7",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.summary": {
+   "en": "Your impact in brief",
+   "ar": "خلاصة أثرك",
+   "kind": "text",
+   "hash": "89969be31e66",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.tabs.0": {
+   "en": "What was recorded",
+   "ar": "ما سُجّل",
+   "kind": "text",
+   "hash": "57c3282f7f5e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.tabs.1": {
+   "en": "Impact by level",
+   "ar": "الأثر بالمستويات",
+   "kind": "text",
+   "hash": "8eff03472286",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.tabs.2": {
+   "en": "What comes next",
+   "ar": "ما التالي",
+   "kind": "text",
+   "hash": "f9d47344e100",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.target": {
+   "en": "For",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "68f76e986314",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.impact.title": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.legend.deliveries": {
+   "en": "Documented deliveries",
+   "ar": "تسليماتٌ موثّقة",
+   "kind": "text",
+   "hash": "4de8be17b251",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.legend.enrolled": {
+   "en": "In qualification",
+   "ar": "في التأهيل",
+   "kind": "text",
+   "hash": "89cce0647377",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.legend.sponsored": {
+   "en": "Sponsored by you",
+   "ar": "في كفالتك",
+   "kind": "text",
+   "hash": "dcfea3a9199c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.cadence.monthly": {
+   "en": "Monthly",
+   "ar": "شهرية",
+   "kind": "text",
+   "hash": "b23f0364468c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.cadence.one_time": {
+   "en": "One-time",
+   "ar": "مرّة واحدة",
+   "kind": "text",
+   "hash": "242fa6d0eb16",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.empty": {
+   "en": "You have not recorded any support in the trial yet. Choose a trial country and support it, and it is written here and in “My impact”.",
+   "ar": "لم تسجّل دعماً بعد في التجربة. اختر دولةً من دول التجربة وادعمها، فيُكتب هنا وفي «أثري».",
+   "kind": "text",
+   "hash": "19be867f99d6",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.gift": {
+   "en": "{0} · {1} · {2}",
+   "ar": "{0} · {1} · {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "455d9b470a4b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.line": {
+   "en": "{0} a month · {1} · since {2}",
+   "ar": "{0} كل شهر · {1} · منذ {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "d7d7c79b2402",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.measuredAfter": {
+   "en": "Final measurement",
+   "ar": "قياسٌ بعدي",
+   "kind": "text",
+   "hash": "b33ee5652aa4",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.measuredBefore": {
+   "en": "Baseline measurement",
+   "ar": "قياسٌ قبلي",
+   "kind": "text",
+   "hash": "096699d8b42f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.no": {
+   "en": "Not yet",
+   "ar": "لم يقع بعد",
+   "kind": "text",
+   "hash": "50463aa9955b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.sub": {
+   "en": "Everything you recorded in the trial, from the hall or from the pages, as in “My impact”.",
+   "ar": "كلّ ما سجّلته في التجربة، من القاعة أو من الصفحات، كما في «أثري».",
+   "kind": "text",
+   "hash": "28d47f8e6f32",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.title": {
+   "en": "Your impact record",
+   "ar": "سجلّ أثرك",
+   "kind": "text",
+   "hash": "8e44b533ad5e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.traits": {
+   "en": "Trait movement · out of 100",
+   "ar": "حركة السمات · من 100",
+   "kind": "text",
+   "hash": "6f5ca9b46ea3",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.traitsHidden": {
+   "en": "Averages appear once {0} or more children have a baseline measurement, so that no child can be identified.",
+   "ar": "تظهر المتوسّطات حين يكون لـ{0} أطفال أو أكثر قياسٌ قبلي، حمايةً لهم من أن يُعرَفوا.",
+   "kind": "template",
+   "params": 1,
+   "hash": "106318335ea5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.world": {
+   "en": "Choose a country",
+   "ar": "اختر دولة",
+   "kind": "text",
+   "hash": "d17c8da548c0",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.log.yes": {
+   "en": "Taken",
+   "ar": "وقع",
+   "kind": "text",
+   "hash": "78e40d3be830",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.move": {
+   "en": "{0} → {1}",
+   "ar": "{0} ← {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "95741e97d781",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.now": {
+   "en": "Now",
+   "ar": "الآن",
+   "kind": "text",
+   "hash": "f78c5cf576af",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.planned": {
+   "en": "of {0} planned",
+   "ar": "من {0} مقرّرة",
+   "kind": "template",
+   "params": 1,
+   "hash": "373e5806600e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preparing": {
+   "en": "In preparation",
+   "ar": "قيد التجهيز",
+   "kind": "text",
+   "hash": "02a6bba51456",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.eyebrow": {
+   "en": "Impact screen · before recording",
+   "ar": "شاشة الأثر · قبل التسجيل",
+   "kind": "text",
+   "hash": "de68625f6130",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kCount": {
+   "en": "Only a documented delivery is counted",
+   "ar": "يُعدّ التسليم الموثّق وحده",
+   "kind": "text",
+   "hash": "6daad01f57e8",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kCountSub": {
+   "en": "The number of beneficiaries is not recorded, so it is not claimed here",
+   "ar": "عدد المستفيدين لا يُقيَّد، فلا يُدَّعى هنا",
+   "kind": "text",
+   "hash": "bc69c4c6137f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kCover": {
+   "en": "An in-kind pledge for a region with {0}",
+   "ar": "تعهّدٌ عيني لمنطقةٍ فيها {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8e13d3dd1802",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kCoverSub": {
+   "en": "The local office prepares it, then delivers and documents it",
+   "ar": "يجهّزه المكتب المحلي، ثم يسلّمه ويوثّقه بمستند",
+   "kind": "text",
+   "hash": "e9a993da12e3",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kNow": {
+   "en": "Documented deliveries in {0} now: {1}",
+   "ar": "تسليمات {0} الموثّقة الآن: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "5c3ac24b888f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kNowSub": {
+   "en": "“My impact” shows your pledge being prepared, then delivered with its document.",
+   "ar": "في «أثري» ترى تعهّدك يُجهَّز ثم يُسلَّم بمستنده.",
+   "kind": "text",
+   "hash": "0fe176368c0a",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.kTitle": {
+   "en": "If you pledged {0} a month in kind in {1}",
+   "ar": "لو تعهّدت بـ {0} شهرياً عيناً في {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "e6d63709f791",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mCover": {
+   "en": "Monthly need covered: {0}% → {1}%",
+   "ar": "تغطية حاجته الشهرية: {0}% ← {1}%",
+   "kind": "template",
+   "params": 2,
+   "hash": "da1150436ef9",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mCoverSub": {
+   "en": "The need is in the file's currency, with no conversion",
+   "ar": "حاجته بعملة ملفّه، بلا تحويل",
+   "kind": "text",
+   "hash": "b9046cfdb9ec",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mIn": {
+   "en": "Stands in {0}",
+   "ar": "يقف في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "47c8c25ba696",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mInSub": {
+   "en": "A lantern joins the orbit of its column",
+   "ar": "فانوسٌ ينضمّ إلى مدار عمودها",
+   "kind": "text",
+   "hash": "029815e91543",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mMonthly": {
+   "en": "Delivered each month with a receipt",
+   "ar": "تصله كلّ شهرٍ بمستند",
+   "kind": "text",
+   "hash": "8608b2dfc080",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.mTitle": {
+   "en": "If you sponsored {0} with {1} a month",
+   "ar": "لو كفلت {0} بـ {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "e888ea9a7d3b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qCover": {
+   "en": "Your pledge covers {0}",
+   "ar": "يشمل تعهّدك {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cfd8e6d18e20",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qCoverSub": {
+   "en": "All the region's children. The amount is recorded as typed, with no conversion",
+   "ar": "أطفال المنطقة جميعاً، ويُقيَّد المبلغ كما كتبته بلا تحويل",
+   "kind": "text",
+   "hash": "0fd14f03fd5b",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qSessions": {
+   "en": "Journey sessions planned: {0}",
+   "ar": "جلسات الرحلة المقرّرة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9b530de44dbf",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qSessionsSub": {
+   "en": "{0} sessions per child, with the six traits measured before and after",
+   "ar": "{0} جلسات لكلّ طفل، وقياسٌ للسمات الستّ قبلها وبعدها",
+   "kind": "template",
+   "params": 1,
+   "hash": "2084148a1243",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qStart": {
+   "en": "No one starts on the day of the pledge",
+   "ar": "لا أحد يبدأ يوم التعهّد",
+   "kind": "text",
+   "hash": "febdd8a73e7f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qStartSub": {
+   "en": "“My impact” shows the qualification advancing month by month: the sessions, and the measurement before and after.",
+   "ar": "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
+   "kind": "text",
+   "hash": "b4149a8f753e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.preview.qTitle": {
+   "en": "If you pledged {0} a month for qualification in {1}",
+   "ar": "لو تعهّدت بـ {0} شهرياً تأهيلاً في {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "3f1bba302dba",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.say.in_kind": {
+   "en": "In-kind pledge recorded. It shows here once a delivery is documented",
+   "ar": "سُجّل تعهّدك العيني. يظهر هنا حين يوثَّق أوّل تسليم",
+   "kind": "text",
+   "hash": "3b2e960ad948",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.say.monthly": {
+   "en": "A lantern for your sponsorship of {0} joined the orbit",
+   "ar": "انظر حول العمود: فانوس كفالتك لـ{0} انضمّ إلى المدار",
+   "kind": "template",
+   "params": 1,
+   "hash": "a9e358391378",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.say.once": {
+   "en": "Your gift to {0} is recorded in {1}, and “My impact” shows it",
+   "ar": "عطاؤك لـ{0} مسجَّل في {1}، وتراه في «أثري»",
+   "kind": "template",
+   "params": 2,
+   "hash": "cc7e71d7c907",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.say.qualification": {
+   "en": "The column filled with those your pledge covers in {0}",
+   "ar": "انظر إلى العمود: امتلأ بمن يشملهم تعهّدك في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "00a79aa3caef",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.enter": {
+   "en": "Tap the screen to enter {0}",
+   "ar": "المس الشاشة لتدخل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a4f7fdf064d3",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.impact": {
+   "en": "Your impact so far",
+   "ar": "أثرك حتى الآن",
+   "kind": "text",
+   "hash": "55c058373649",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.map": {
+   "en": "{0} — sample data",
+   "ar": "{0} — بيانات نموذجية",
+   "kind": "template",
+   "params": 1,
+   "hash": "0fcc56daa441",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.mapLine": {
+   "en": "{0} children with a verified file · in qualification: {1} · documented deliveries: {2}",
+   "ar": "{0} يتيماً بملفٍّ موثّق · في التأهيل: {1} · تسليماتٌ موثّقة: {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "70109ea463cf",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.none": {
+   "en": "You have not recorded any support yet.",
+   "ar": "لم تسجّل دعماً بعد.",
+   "kind": "text",
+   "hash": "b023b95355d0",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.noneSub.0": {
+   "en": "Choose a trial country and support it,",
+   "ar": "اختر دولةً من دول التجربة وادعمها،",
+   "kind": "text",
+   "hash": "c6c35da41d4d",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.noneSub.1": {
+   "en": "and it is written here and in “My impact”.",
+   "ar": "فيُكتب هنا وفي «أثري».",
+   "kind": "text",
+   "hash": "acd6f71fadf1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.notTrial": {
+   "en": "Not a trial country",
+   "ar": "ليست من دول التجربة",
+   "kind": "text",
+   "hash": "4b52c852c19e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.open": {
+   "en": "Tap the screen to open your impact record",
+   "ar": "المس الشاشة لتفتح سجلّ أثرك",
+   "kind": "text",
+   "hash": "9fdfe2c98c6c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.regions": {
+   "en": "The two trial regions",
+   "ar": "منطقتا التجربة",
+   "kind": "text",
+   "hash": "e4b82367be75",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksHow.in_kind": {
+   "en": "A free monthly pledge",
+   "ar": "تعهّدٌ شهري حرّ",
+   "kind": "text",
+   "hash": "59ecc9b09d04",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksHow.monthly": {
+   "en": "In the child's file currency",
+   "ar": "بعملة ملفّ الطفل",
+   "kind": "text",
+   "hash": "d399fcc28a2e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksHow.qualification": {
+   "en": "A free monthly pledge",
+   "ar": "تعهّدٌ شهري حرّ",
+   "kind": "text",
+   "hash": "59ecc9b09d04",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksSub.in_kind": {
+   "en": "Prepared, delivered and documented by the office",
+   "ar": "يجهّزه المكتب ويسلّمه ويوثّقه",
+   "kind": "text",
+   "hash": "171ada6d1eb6",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksSub.monthly": {
+   "en": "A monthly amount for one child, with a receipt",
+   "ar": "مبلغٌ شهري لطفلٍ بعينه يصله بمستند",
+   "kind": "text",
+   "hash": "d493fce52070",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.screen.tracksSub.qualification": {
+   "en": "Supervised sessions, traits measured before and after",
+   "ar": "جلساتٌ بمشرف، وقياسٌ للسمات قبلها وبعدها",
+   "kind": "text",
+   "hash": "2fd017f49268",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.sponsored": {
+   "en": "Sponsored by you",
+   "ar": "في كفالتك",
+   "kind": "text",
+   "hash": "dcfea3a9199c",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.started": {
+   "en": "Journeys begun",
+   "ar": "بدأوا الرحلة",
+   "kind": "text",
+   "hash": "20792b32263a",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.already": {
+   "en": "You sponsor {0}. “My impact” shows what reaches them.",
+   "ar": "{0} في كفالتك. ترى ما يصله في «أثري».",
+   "kind": "template",
+   "params": 1,
+   "hash": "0a3aa8cd739f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.amount": {
+   "en": "Monthly amount",
+   "ar": "المبلغ الشهري",
+   "kind": "text",
+   "hash": "f5510e98a9d5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.back": {
+   "en": "Back",
+   "ar": "رجوع",
+   "kind": "text",
+   "hash": "af5a3761b8f5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.confirm": {
+   "en": "Record my support (simulated): {0}",
+   "ar": "سجّل دعمي (محاكاة): {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "72f684eb39b5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.currency": {
+   "en": "Currency",
+   "ar": "العملة",
+   "kind": "text",
+   "hash": "da372b886205",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.dest": {
+   "en": "For",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "68f76e986314",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.destOption": {
+   "en": "{0} — {1}",
+   "ar": "{0} — {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "5515e2971011",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.kind": {
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "dfff08619ed0",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.need": {
+   "en": "{0} needs {1} a month, and {2} of it is still open. It is recorded in the file's currency, with no conversion.",
+   "ar": "حاجة {0} الشهرية {1}، ويتبقّى منها {2}. تُقيَّد بعملة ملفّه بلا تحويل.",
+   "kind": "template",
+   "params": 3,
+   "hash": "59ca3b49f2e0",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.noChild": {
+   "en": "This country's trial child stands in",
+   "ar": "طفل التجربة في هذه الدولة يقف في",
+   "kind": "text",
+   "hash": "c252731901f5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.note": {
+   "en": "Simulated: kept in your browser only. Nothing is sent and nothing is charged.",
+   "ar": "محاكاة: يُحفظ في متصفّحك وحده، ولا يُرسل شيء ولا يُخصم.",
+   "kind": "text",
+   "hash": "651ed15e72a6",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.other": {
+   "en": "Other amount",
+   "ar": "مبلغ آخر",
+   "kind": "text",
+   "hash": "b59a152ed5ff",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.pledge": {
+   "en": "Monthly pledge",
+   "ar": "تعهّدٌ شهري",
+   "kind": "text",
+   "hash": "e4993b1b589d",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.sponsor": {
+   "en": "Sponsor {0} (simulated): {1} a month",
+   "ar": "اكفل {0} (محاكاة): {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "0d9a8487acaf",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.sub": {
+   "en": "Choose the kind of support and its amount. It is recorded as it is from the support map, and shows in “My impact”.",
+   "ar": "اختر نوع الدعم ومقداره. يُسجَّل كما يُسجَّل من خريطة الدعم، ويظهر في «أثري».",
+   "kind": "text",
+   "hash": "dfc751cb7371",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.support.title": {
+   "en": "Support {0}",
+   "ar": "ادعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8520e0afe7c7",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.tracks.go": {
+   "en": "Choose a country and support",
+   "ar": "اختر دولةً وادعم",
+   "kind": "text",
+   "hash": "0199c6efcdf1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.tracks.sub": {
+   "en": "Three kinds, each with its own impact in “My impact”. The names and promises are the platform's own.",
+   "ar": "ثلاثة أنواع، ولكلٍّ أثره في «أثري». الأسماء والوعود هي نفسها في المنصّة.",
+   "kind": "text",
+   "hash": "038c92a6ba55",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.was": {
+   "en": "Before",
+   "ar": "قبل",
+   "kind": "text",
+   "hash": "fad11c557c72",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.withFile": {
+   "en": "children with a verified file",
+   "ar": "يتيماً بملفٍّ موثّق",
+   "kind": "text",
+   "hash": "d1b28fab6dbf",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.back": {
+   "en": "Back to the hall",
+   "ar": "عودة إلى القاعة",
+   "kind": "text",
+   "hash": "6c11606e0091",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.enter": {
+   "en": "Enter {0}",
+   "ar": "ادخل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "ade6df0a9b03",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.group": {
+   "en": "Trial group",
+   "ar": "مجموعة التجربة",
+   "kind": "text",
+   "hash": "0fdb25ed3cca",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.notTrial": {
+   "en": "Not one of the trial countries, so it has no figures here. Choose a trial country to enter and support it.",
+   "ar": "ليست من دول التجربة، فلا أعداد لها هنا. اختر إحدى دول التجربة لتدخلها وتدعمها.",
+   "kind": "text",
+   "hash": "144a0e2a8802",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.note": {
+   "en": "Sample figures, the same ones as on the support map and in “My impact”.",
+   "ar": "أعدادٌ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
+   "kind": "text",
+   "hash": "6f21805d98bc",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.regions": {
+   "en": "Trial regions",
+   "ar": "مناطق التجربة",
+   "kind": "text",
+   "hash": "ed804a2a652f",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.sect": {
+   "en": "Trial countries",
+   "ar": "دول التجربة",
+   "kind": "text",
+   "hash": "3895bd791aac",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.sessions": {
+   "en": "Sessions in a journey",
+   "ar": "جلسات الرحلة",
+   "kind": "text",
+   "hash": "eefe2c3f6468",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.sub": {
+   "en": "The trial has six countries with sample figures, the same ones as on the support map and in “My impact”. The rest of the network is shown by its presence only.",
+   "ar": "في التجربة ستّ دول بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري». بقية مواقع الشبكة تُعرض بحضورها فقط.",
+   "kind": "text",
+   "hash": "baf14acf59bd",
+   "file": "src/lib/hall/trial.ts"
   },
   "lib/milestones.complete.0": {
    "en": "A child's need completed",
