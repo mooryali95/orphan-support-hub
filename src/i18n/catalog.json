@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1760,
+ "count": 1788,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -495,6 +495,90 @@
    "kind": "text",
    "hash": "62fd7babf158",
    "file": "src/components/SiteHeader.tsx"
+  },
+  "components/admin/GoLiveReadiness.badgeLive": {
+   "en": "Live",
+   "ar": "حقيقي",
+   "kind": "text",
+   "hash": "7d27121efccf",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.badgeReady": {
+   "en": "Ready to switch",
+   "ar": "جاهزة للتحويل",
+   "kind": "text",
+   "hash": "46c91c7b7b8f",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.badgeTrial": {
+   "en": "Trial",
+   "ar": "تجربة",
+   "kind": "text",
+   "hash": "2b160bd7bab1",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.contract": {
+   "en": "Operating platform link contract and switch checklist: docs/operating-platform-link.md",
+   "ar": "عقد الربط مع منصّة التشغيل وقائمة التحويل: docs/operating-platform-link.md",
+   "kind": "text",
+   "hash": "063e3b21ceef",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.modeLive": {
+   "en": "The platform is in live mode.",
+   "ar": "المنصّة في الوضع الحقيقي.",
+   "kind": "text",
+   "hash": "cd2b79bf2a01",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.modeTrial": {
+   "en": "The platform is in trial mode: the public sponsor buttons lead to /try.",
+   "ar": "المنصّة في وضع التجربة: أزرار الكفالة العامّة تقود إلى /try.",
+   "kind": "text",
+   "hash": "fc8aef988d0e",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.stateDone": {
+   "en": "met",
+   "ar": "متحقّق",
+   "kind": "text",
+   "hash": "2a8de5ea640b",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.stateOpen": {
+   "en": "not met",
+   "ar": "لم يتحقّق",
+   "kind": "text",
+   "hash": "f541ef114dd3",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.stateUnknown": {
+   "en": "unknown",
+   "ar": "غير معروف",
+   "kind": "text",
+   "hash": "b802dfd3abc0",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.title": {
+   "en": "Go-live readiness",
+   "ar": "جاهزية الاعتماد",
+   "kind": "text",
+   "hash": "3c25848875f9",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.whenNot": {
+   "en": "Once the three conditions are met, switching is a single line in src/config/platform.ts.",
+   "ar": "حين تتحقّق الشروط الثلاثة يصير التحويل سطراً واحداً في src/config/platform.ts.",
+   "kind": "text",
+   "hash": "73f05917caaf",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/GoLiveReadiness.whenReady": {
+   "en": "All conditions are met. To switch: PLATFORM_MODE = \"live\" in src/config/platform.ts, then publish.",
+   "ar": "الشروط متحقّقة. التحويل: PLATFORM_MODE = \"live\" في src/config/platform.ts، ثم النشر.",
+   "kind": "text",
+   "hash": "067b55cf4285",
+   "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/auth/AuthDialog.consent": {
    "en": "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
@@ -5748,6 +5832,120 @@
    "kind": "text",
    "hash": "04f8db13caf5",
    "file": "src/lib/event-labels.ts"
+  },
+  "lib/go-live.childrenNone": {
+   "en": "No file is published yet: organizations enter them and admins approve them from the approval queue.",
+   "ar": "لا ملفّ منشور بعد: تُدخلها الجهات وتعتمدها الإدارة من «طابور الاعتماد».",
+   "kind": "text",
+   "hash": "a7bc35c3266a",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.childrenOk": {
+   "en": "{0} files published in the directory.",
+   "ar": "{0} ملفّاً منشوراً في الدليل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "44dda765a461",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.childrenTitle": {
+   "en": "Published child files",
+   "ar": "ملفّات أطفالٍ منشورة",
+   "kind": "text",
+   "hash": "3afc15a5f130",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingEmpty": {
+   "en": "A batch arrived from the operating platform, but no child is mirrored yet: send groups, then students.",
+   "ar": "وصلت دفعةٌ من منصّة التشغيل، لكن لا طفل في المرآة بعد: تُرسَل المجموعات ثم الطلاب.",
+   "kind": "text",
+   "hash": "d2cebeb7d729",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingLagging.one": {
+   "en": "{0} other linked country is behind on sync or has no children.",
+   "ar": "ودولةٌ واحدة مربوطة تأخّرت مزامنتها أو لا أطفال فيها.",
+   "kind": "plural",
+   "hash": "623c3045a216",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingLagging.other": {
+   "en": "{0} other linked countries are behind on sync or have no children.",
+   "ar": "و{0} دولة مربوطة تأخّرت مزامنتها أو لا أطفال فيها.",
+   "kind": "plural",
+   "hash": "73d1095fb489",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingNone": {
+   "en": "No country is linked yet: link its office from “Countries and sources”.",
+   "ar": "لا دولة مربوطة بعد: يُربط مكتبها من «الدول والمصادر».",
+   "kind": "text",
+   "hash": "9e01112de11a",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingOk.one": {
+   "en": "{0} country is linked and in sync, shown as real in the hall.",
+   "ar": "دولةٌ واحدة مربوطة ومزامنتها حديثة، تظهر في القاعة «حقيقية».",
+   "kind": "plural",
+   "hash": "49b8c63097b0",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingOk.other": {
+   "en": "{0} countries are linked and in sync, shown as real in the hall.",
+   "ar": "{0} دولة مربوطة ومزامنتها حديثة، تظهر في القاعة «حقيقية».",
+   "kind": "plural",
+   "hash": "cd1dc28dda4d",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingStale": {
+   "en": "The operating platform is linked, but its last sync is older than {0} hours: check its sender before switching.",
+   "ar": "منصّة التشغيل مربوطة، لكن آخر مزامنةٍ أقدم من {0} ساعة: يُراجَع مُرسِلها قبل التحويل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "14fdaa2c7758",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingTitle": {
+   "en": "An operating platform linked and in sync",
+   "ar": "منصّة تشغيلٍ مربوطة ومتزامنة",
+   "kind": "text",
+   "hash": "4c6ef9186e86",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.operatingUnknown": {
+   "en": "Checking the operating platform links.",
+   "ar": "جارٍ التحقّق من ربط منصّات التشغيل.",
+   "kind": "text",
+   "hash": "081346562616",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.paymentsMissing": {
+   "en": "Payment gateway keys are not configured: add their secrets in the project settings.",
+   "ar": "مفاتيح بوابة الدفع غير مهيّأة: تُضاف أسرارها في إعدادات المشروع.",
+   "kind": "text",
+   "hash": "2a1745d06669",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.paymentsOk": {
+   "en": "Payment gateway keys are configured on the server.",
+   "ar": "مفاتيح بوابة الدفع مهيّأة على الخادم.",
+   "kind": "text",
+   "hash": "4e734b813315",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.paymentsTitle": {
+   "en": "Payment gateway",
+   "ar": "بوابة الدفع",
+   "kind": "text",
+   "hash": "fc5eddfdcb82",
+   "file": "src/lib/go-live.ts"
+  },
+  "lib/go-live.paymentsUnknown": {
+   "en": "Could not verify the payment setup.",
+   "ar": "تعذّر التحقّق من إعداد الدفع.",
+   "kind": "text",
+   "hash": "c98f68d4f7b2",
+   "file": "src/lib/go-live.ts"
   },
   "lib/milestones.complete.0": {
    "en": "A child's need completed",

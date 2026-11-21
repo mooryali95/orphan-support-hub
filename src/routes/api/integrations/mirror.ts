@@ -13,6 +13,14 @@ import {
   readBodyCapped,
 } from "@/lib/integrations/client";
 
+import {
+  cursorIssue,
+  invalidRefs,
+  validateMirrorRecords,
+  withoutIdempotencyKey,
+  type MirrorEntity,
+} from "./-mirror-payload";
+
 /**
  * بوّابة المزامنة — `/api/integrations/mirror` (POST).
  *
@@ -26,7 +34,11 @@ import {
  *   { "entity": "...", "reconcile": ["ref", ...] }
  *
  * المفتاح يحمل `mirror:write` ومرتبطٌ بمنصّةٍ واحدة. الطلاب يصلون «قيد
- * المراجعة» دائماً، والحذف علامةٌ لا مسح. التفصيل في docs/rowad-sync.ar.md.
+ * المراجعة» دائماً، والحذف علامةٌ لا مسح. التفصيل في docs/rowad-sync.ar.md،
+ * والعقد كاملاً في docs/operating-platform-link.md.
+ *
+ * الدفعة ذرّية: تُطبَّق كلّها أو لا يُطبَّق منها شيء. قيمةٌ لا تتحوّل (عمرٌ،
+ * تاريخ، درجة) تُردّ قبل القاعدة بـ`invalid_record` وموضعها، لا بخطأ ٥٠٠ أصمّ.
  */
 
 const ENTITIES = new Set(["groups", "students", "trait_dimensions", "traits", "trait_scores"]);
@@ -69,7 +81,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
             "Body exceeds 2 MB.",
           );
         }
-        const replay = await guardReplay(request, auth.client, raw.text);
+        // المرآة لا تحجز مفاتيح تكرار، فوجود الترويسة لا يُسقط حارس الإعادة.
+        const replay = await guardReplay(withoutIdempotencyKey(request), auth.client, raw.text);
         if (replay) return replay;
         let body: Body;
         try {
@@ -87,6 +100,15 @@ export const Route = createFileRoute("/api/integrations/mirror")({
             entities: [...ENTITIES],
           });
         }
+        const entity = body.entity as MirrorEntity;
+        const invalid = (issues: unknown[], field: string) =>
+          apiError(
+            "invalid_record",
+            422,
+            "في الدفعة قيمٌ لا تُقرأ. لم يُطبَّق منها شيء؛ أصلح المذكور وأعد إرسالها.",
+            "The batch has unreadable values. Nothing was applied; fix the listed items and resend.",
+            { field, issues },
+          );
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as unknown as {
@@ -105,6 +127,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
               "Reconcile list too large.",
             );
           }
+          const badRefs = invalidRefs(body.reconcile);
+          if (badRefs.length > 0) return invalid(badRefs, "reconcile");
           const { data, error } = await db.rpc("mirror_reconcile", {
             _client: auth.client.id,
             _entity: body.entity,
@@ -118,7 +142,8 @@ export const Route = createFileRoute("/api/integrations/mirror")({
         }
 
         const records = Array.isArray(body.records) ? body.records : [];
-        const deleted = Array.isArray(body.deleted) ? body.deleted.map(String) : [];
+        const rawDeleted = Array.isArray(body.deleted) ? body.deleted : [];
+        const deleted = rawDeleted.map(String);
         if (records.length > MAX_BATCH || deleted.length > MAX_BATCH) {
           return apiError(
             "batch_too_large",
@@ -127,6 +152,12 @@ export const Route = createFileRoute("/api/integrations/mirror")({
             `Batch exceeds ${MAX_BATCH} records.`,
           );
         }
+        const issues = validateMirrorRecords(entity, records);
+        if (issues.length > 0) return invalid(issues, "records");
+        const badDeleted = invalidRefs(rawDeleted);
+        if (badDeleted.length > 0) return invalid(badDeleted, "deleted");
+        const badCursor = cursorIssue(body.cursor);
+        if (badCursor) return invalid([badCursor], "cursor");
         const { data, error } = await db.rpc("mirror_apply", {
           _client: auth.client.id,
           _entity: body.entity,

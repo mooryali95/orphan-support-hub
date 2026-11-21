@@ -5,24 +5,61 @@ import { CheckCircle2, CircleDashed, CircleHelp, FlaskConical } from "lucide-rea
 import { PLATFORM_MODE } from "@/config/platform";
 import { getPaymentsReady } from "@/lib/admin.functions";
 import { goLiveSteps, readyToGoLive } from "@/lib/go-live";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
+
+const COPY = defineCopy("components/admin/GoLiveReadiness", {
+  ar: {
+    title: "جاهزية الاعتماد",
+    modeLive: "المنصّة في الوضع الحقيقي.",
+    modeTrial: "المنصّة في وضع التجربة: أزرار الكفالة العامّة تقود إلى /try.",
+    badgeLive: "حقيقي",
+    badgeReady: "جاهزة للتحويل",
+    badgeTrial: "تجربة",
+    stateDone: "متحقّق",
+    stateUnknown: "غير معروف",
+    stateOpen: "لم يتحقّق",
+    whenReady:
+      'الشروط متحقّقة. التحويل: PLATFORM_MODE = "live" في src/config/platform.ts، ثم النشر.',
+    whenNot: "حين تتحقّق الشروط الثلاثة يصير التحويل سطراً واحداً في src/config/platform.ts.",
+    contract: "عقد الربط مع منصّة التشغيل وقائمة التحويل: docs/operating-platform-link.md",
+  },
+  en: {
+    title: "Go-live readiness",
+    modeLive: "The platform is in live mode.",
+    modeTrial: "The platform is in trial mode: the public sponsor buttons lead to /try.",
+    badgeLive: "Live",
+    badgeReady: "Ready to switch",
+    badgeTrial: "Trial",
+    stateDone: "met",
+    stateUnknown: "unknown",
+    stateOpen: "not met",
+    whenReady:
+      'All conditions are met. To switch: PLATFORM_MODE = "live" in src/config/platform.ts, then publish.',
+    whenNot:
+      "Once the three conditions are met, switching is a single line in src/config/platform.ts.",
+    contract:
+      "Operating platform link contract and switch checklist: docs/operating-platform-link.md",
+  },
+});
 
 /**
  * «جاهزية الاعتماد»: ما بقي قبل تحويل المنصّة من التجربة إلى الحقيقي. كلّ شرطٍ من
  * حال المنصّة الفعلية؛ والتحويل نفسه سطرٌ واحد في src/config/platform.ts.
  */
 export function GoLiveReadiness({ published }: { published: number }) {
+  const t = useCopy(COPY);
+  const locale = useLocale();
   const paymentsFn = useServerFn(getPaymentsReady);
   const { data: pay } = useQuery({ queryKey: ["payments-ready"], queryFn: () => paymentsFn() });
   const { data: links } = useQuery({
     queryKey: ["operating-links"],
     queryFn: () => getOperatingLinks(),
   });
-  const steps = goLiveSteps({
-    published,
-    linked: new Set((links ?? []).map((l) => l.country)).size,
-    payments: pay ? pay.ready : null,
-  });
+  const steps = goLiveSteps(
+    { published, links: links ?? null, payments: pay ? pay.ready : null },
+    locale,
+  );
   const ready = readyToGoLive(steps);
   const live = PLATFORM_MODE === "live";
 
@@ -34,13 +71,9 @@ export function GoLiveReadiness({ published }: { published: number }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 id="go-live" className="font-display text-xl font-bold">
-            جاهزية الاعتماد
+            {t.title}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {live
-              ? "المنصّة في الوضع الحقيقي."
-              : "المنصّة في وضع التجربة: أزرار الكفالة العامّة تقود إلى /try."}
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{live ? t.modeLive : t.modeTrial}</p>
         </div>
         <span
           className={
@@ -50,7 +83,7 @@ export function GoLiveReadiness({ published }: { published: number }) {
           }
         >
           {!live && !ready && <FlaskConical className="size-3.5" aria-hidden="true" />}
-          {live ? "حقيقي" : ready ? "جاهزة للتحويل" : "تجربة"}
+          {live ? t.badgeLive : ready ? t.badgeReady : t.badgeTrial}
         </span>
       </div>
       <ol className="mt-5 space-y-3">
@@ -66,7 +99,8 @@ export function GoLiveReadiness({ published }: { published: number }) {
                 <span className="block font-bold">
                   {s.title}
                   <span className="sr-only">
-                    : {s.done === true ? "متحقّق" : s.done === null ? "غير معروف" : "لم يتحقّق"}
+                    :{" "}
+                    {s.done === true ? t.stateDone : s.done === null ? t.stateUnknown : t.stateOpen}
                   </span>
                 </span>
                 <span className="block text-sm leading-6 text-muted-foreground">{s.detail}</span>
@@ -77,11 +111,10 @@ export function GoLiveReadiness({ published }: { published: number }) {
       </ol>
       {!live && (
         <p className="mt-5 rounded-2xl bg-secondary px-4 py-3 text-sm leading-6">
-          {ready
-            ? 'الشروط متحقّقة. التحويل: PLATFORM_MODE = "live" في src/config/platform.ts، ثم النشر.'
-            : "حين تتحقّق الشروط الثلاثة يصير التحويل سطراً واحداً في src/config/platform.ts."}
+          {ready ? t.whenReady : t.whenNot}
         </p>
       )}
+      <p className="mt-3 text-xs leading-5 text-muted-foreground">{t.contract}</p>
     </section>
   );
 }
