@@ -17,6 +17,7 @@ import {
   placeChildren,
   TRY_GROUP_SIZE,
   TRY_PLACES,
+  tryChildren,
   TRY_SESSIONS,
   TRY_TRAITS,
   tryChildIn,
@@ -37,7 +38,7 @@ import {
   type TryPledge,
 } from "@/lib/try-support";
 
-import { byCode, inRing, regionsFor } from "./model";
+import { byCode, COUNTRIES, inRing, regionsFor } from "./model";
 import { TRIAL_COPY, trialDemo, trialHall } from "./trial";
 
 const mem = () => {
@@ -58,7 +59,7 @@ const demoAt = (store = mem(), locale = "ar") => {
 };
 
 describe("قاعة التجربة تُبنى من كتالوج التجربة وحده", () => {
-  it("دولها دول الكتالوج الست، ولكلٍّ منطقتاه بمعرّفيهما وعدديهما، ومجموع الدولة مجموعهما", () => {
+  it("دولها دول الكتالوج كلّها، ولكلٍّ منطقتاه بمعرّفيهما وعدديهما، ومجموع الدولة مجموعهما", () => {
     const hall = empty();
     expect(Object.keys(hall.countries).sort()).toEqual(TRY_PLACES.map((p) => p.co).sort());
     const map = tryMapStats();
@@ -107,7 +108,8 @@ describe("قاعة التجربة تُبنى من كتالوج التجربة و
     }
     expect(
       Object.values(hall.countries).flatMap((c) => c.regions.flatMap((r) => r.kids)),
-    ).toHaveLength(TRY_CHILDREN.length);
+    ).toHaveLength(tryChildren().length);
+    expect(tryChildren().length).toBeGreaterThan(TRY_CHILDREN.length);
   });
 
   it("طفل المنطقة هو طفل الدولة الواحد في منطقته: لا طفل يسقط من القاعة ولا يتكرّر", () => {
@@ -153,7 +155,11 @@ describe("قاعة التجربة تُبنى من كتالوج التجربة و
   });
 
   it("لكل منطقةٍ موضع عمودٍ في نموذج القاعة بمعرّفها، داخل حدود دولتها (هندسةٌ لا رقم)", () => {
-    for (const c of Object.values(empty().countries)) {
+    // the hall draws the network's countries; every one of them is in the catalogue
+    const drawn = new Set(COUNTRIES.map((c) => c.code));
+    const hall = trialHall({ pledges: [], gifts: [], now, locale: "ar", only: drawn });
+    expect(Object.keys(hall.countries).sort()).toEqual([...drawn].sort());
+    for (const c of Object.values(hall.countries)) {
       const shape = byCode(c.co)!;
       const columns = regionsFor(shape);
       for (const r of c.regions) {
@@ -357,9 +363,14 @@ describe("الدعم داخل القاعة يُكتب في مخزنَي الصف
       d.pledge({ kind: "qualification", co: "AL", region: "durres", amount: 40, currency: "EUR" }),
     ).toBeNull();
     expect(
-      d.pledge({ kind: "qualification", co: "SA", region: "SA-r1", amount: 40, currency: "USD" }),
+      d.pledge({ kind: "qualification", co: "AQ", region: "AQ-r1", amount: 40, currency: "USD" }),
     ).toBeNull();
     expect(loadPledges(store)).toHaveLength(1);
+    // a country outside the first six is a full trial country: its pledge is written the same way
+    expect(
+      d.pledge({ kind: "qualification", co: "SA", region: "SA-r1", amount: 40, currency: "USD" }),
+    ).not.toBeNull();
+    expect(loadPledges(store)).toHaveLength(2);
   });
 
   it("كفالة القاعة تُحفظ بـaddGift: المتبقّي من حاجة الطفل بعملة ملفّه، مرّةً واحدة", () => {

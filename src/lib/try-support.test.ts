@@ -6,11 +6,13 @@ import { IMPACT_COHORT_MIN, journeyFromQualification } from "./support-impact";
 import { TRY_CHILDREN } from "./try-demo";
 import {
   placeChildren,
+  TRY_FEATURED,
   TRY_GROUP_SIZE,
   TRY_PLACES,
   TRY_SESSIONS,
   TRY_TRAITS,
   tryChildOf,
+  tryChildren,
   tryRegionOfChild,
   tryTraitName,
 } from "./try-places";
@@ -58,8 +60,8 @@ const allTargets = (): TryTarget[] =>
 describe("مصدر التجربة الواحد: لا تداخل ولا تناقض ولا تكرار", () => {
   it("لا معرّف ولا رمز يتكرّر، ولا شيء يشبه معرّفاً قابلاً للدفع", () => {
     const ids = [
-      ...TRY_CHILDREN.map((c) => c.id),
-      ...TRY_CHILDREN.map((c) => c.code),
+      ...tryChildren().map((c) => c.id),
+      ...tryChildren().map((c) => c.code),
       ...TRY_PLACES.map((p) => p.co),
       ...TRY_PLACES.flatMap((p) => p.regions.map((r) => r.id)),
       ...TRY_PLACES.flatMap((p) => p.regions.map((r) => `${p.co}:${r.hall}`)),
@@ -72,8 +74,14 @@ describe("مصدر التجربة الواحد: لا تداخل ولا تناق�
   });
 
   it("الأماكن دول أطفال التجربة، وكل طفلٍ في منطقةٍ منها هي منطقته في القاعة", () => {
-    expect(TRY_PLACES.map((p) => p.co).sort()).toEqual(TRY_CHILDREN.map((c) => c.co).sort());
-    for (const c of TRY_CHILDREN) {
+    expect(TRY_FEATURED.map((p) => p.co).sort()).toEqual(TRY_CHILDREN.map((c) => c.co).sort());
+    // every country of the trial, generated or written by hand, has exactly one trial child
+    expect(TRY_PLACES.map((p) => p.co).sort()).toEqual(
+      tryChildren()
+        .map((c) => c.co)
+        .sort(),
+    );
+    for (const c of tryChildren()) {
       const r = tryRegionOfChild(c);
       expect(r?.hall).toBe(c.region);
       expect(tryChildOf(c.co)).toBe(c);
@@ -93,11 +101,14 @@ describe("مصدر التجربة الواحد: لا تداخل ولا تناق�
   });
 
   it("عدد أطفال المنطقة هو ما تعرضه قاعة الأثر لمنطقتها، والسمات بترتيبها وأسمائها", () => {
-    for (const p of TRY_PLACES) {
+    // the six hand-written countries carry the hall model's own counts
+    for (const p of TRY_FEATURED) {
       const hall = regionsFor(byCode(p.co)!);
       for (const r of p.regions) {
         expect(hall.find((h) => h.id === r.hall)?.need, `${p.co}:${r.hall}`).toBe(r.children);
       }
+    }
+    for (const p of TRY_PLACES) {
       expect(p.group.children).toBe(TRY_GROUP_SIZE);
       expect(p.group.children).toBeLessThanOrEqual(p.regions[0].children);
     }
@@ -157,7 +168,9 @@ describe("مصدر التجربة الواحد: لا تداخل ولا تناق�
     }
     expect(validTarget({ scope: "region", target: "EGY-1533", co: "AL" })).toBe(false);
     expect(validTarget({ scope: "orphan", target: "try-03", co: "AL" })).toBe(false);
-    expect(validTarget({ scope: "country", target: "YE", co: "YE" })).toBe(false);
+    // a territory the map file gives no two regions for is not in the catalogue
+    expect(validTarget({ scope: "country", target: "AQ", co: "AQ" })).toBe(false);
+    expect(validTarget({ scope: "country", target: "ZZ", co: "ZZ" })).toBe(false);
     expect(
       addPledge(
         { ...region, target: "nope", kind: "qualification", amount: 50, currency: "USD" },

@@ -6,9 +6,14 @@
  */
 import { copyOf, defineCopy, type Locale } from "@/lib/locale";
 import { TRY_CHILDREN, type TryChild } from "@/lib/try-demo";
+import { WORLD_CHILDREN, WORLD_PLACES, worldGroupName, worldRegionName } from "@/lib/try-world";
 
 /**
- * دول أطفال التجربة الست، ولكلٍّ منها منطقتان ومجموعةٌ واحدة. قاعة الأثر في وضع التجربة تُبنى
+ * كل دولةٍ ترسمها الخريطة دولةٌ كاملة في التجربة: الست المكتوبة هنا باليد (`TRY_FEATURED`، وهي
+ * ما تعرضه قائمة الأطفال والاختصارات)، ثم بقية الدول مولَّدةً ببذرةٍ ثابتة في `try-world`.
+ * `TRY_PLACES` مجموعهما، وهو ما تقرؤه الخريطة وورقة الدعم و«أثري» والقاعة.
+ *
+ * لكل دولةٍ منطقتان ومجموعةٌ واحدة. قاعة الأثر في وضع التجربة تُبنى
  * من هذا الكتالوج نفسه (`lib/hall/trial`): مناطقها هذه المناطق بأعدادها وأسمائها، وتأخذ من
  * `lib/hall/model` موضع العمود وحده بالمعرّف `hall`. عدد الدولة مجموع منطقتيها، لا رقمٌ ثالث. المجموعة أوّل ثمانية أطفالٍ في المنطقة
  * الأولى، وطفل التجربة أوّلهم. كلّها أعدادٌ نموذجية، والمعرّفات لا تشبه معرّفات الدفع.
@@ -41,7 +46,7 @@ export type TryTrait = (typeof TRY_TRAITS)[number];
 
 const group = (co: string) => ({ id: `DEMO-GRP-${co}`, children: TRY_GROUP_SIZE });
 
-export const TRY_PLACES: readonly TryPlace[] = [
+export const TRY_FEATURED: readonly TryPlace[] = [
   {
     co: "AL",
     regions: [
@@ -92,11 +97,19 @@ export const TRY_PLACES: readonly TryPlace[] = [
   },
 ];
 
-export const tryPlace = (co: string) => TRY_PLACES.find((p) => p.co === co);
+/** every country of the trial: the six written above first, then the generated ones */
+export const TRY_PLACES: readonly TryPlace[] = [...TRY_FEATURED, ...WORLD_PLACES];
+
+const PLACE_OF = new Map(TRY_PLACES.map((p) => [p.co, p]));
+const CHILD_OF = new Map([...TRY_CHILDREN, ...WORLD_CHILDREN].map((c) => [c.co, c]));
+
+export const tryPlace = (co: string) => PLACE_OF.get(co);
 /** a country's children: the sum of its regions, never a figure of its own */
 export const placeChildren = (p: TryPlace) => p.regions.reduce((a, r) => a + r.children, 0);
 /** the trial child standing in a country (one each) */
-export const tryChildOf = (co: string) => TRY_CHILDREN.find((c) => c.co === co);
+export const tryChildOf = (co: string) => CHILD_OF.get(co);
+/** every trial child, one per country: the six listed on «جرّب المنصّة» first */
+export const tryChildren = (): readonly TryChild[] => [...CHILD_OF.values()];
 /** the country's trial child when they stand in this hall region; none in its other region */
 export const tryChildIn = (co: string, hall: string) => {
   const k = tryChildOf(co);
@@ -180,8 +193,8 @@ type TryGroupId = keyof (typeof COPY)["ar"]["groups"];
 
 /** the names of the trial's places and of its sample programme, in the interface language */
 export const tryRegionName = (id: string, locale: Locale) =>
-  copyOf(COPY, locale).regions[id as TryRegionId] ?? id;
+  copyOf(COPY, locale).regions[id as TryRegionId] ?? worldRegionName(id, locale) ?? id;
 export const tryGroupName = (id: string, locale: Locale) =>
-  copyOf(COPY, locale).groups[id as TryGroupId] ?? id;
+  copyOf(COPY, locale).groups[id as TryGroupId] ?? worldGroupName(id, locale) ?? id;
 export const tryProgramName = (locale: Locale) => copyOf(COPY, locale).program;
 export const tryTraitName = (key: TryTrait, locale: Locale) => copyOf(COPY, locale).traits[key];

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2742,
+ "count": 2854,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9775,6 +9775,13 @@
    "hash": "deb6a4a8e71d",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TrySupportMap.anywhere": {
+   "en": "or pick any country on the map",
+   "ar": "أو اختر أيّ دولةٍ من الخريطة",
+   "kind": "text",
+   "hash": "9f159c7d5d4b",
+   "file": "src/components/try/TrySupportMap.tsx"
+  },
   "components/try/TrySupportMap.eyebrow": {
    "en": "Try the platform",
    "ar": "جرّب المنصّة",
@@ -9790,17 +9797,17 @@
    "file": "src/components/try/TrySupportMap.tsx"
   },
   "components/try/TrySupportMap.lead": {
-   "en": "Choose a country, then a region. Its card lets you pick whom to support: one child, their group, the region, or the whole country. Then the kind of support and the amount.",
-   "ar": "اختر دولةً ثم منطقة، وفي بطاقتها تحدّد لمن تدعم: طفلٌ بعينه، أو مجموعته، أو المنطقة، أو الدولة كلّها. ثم نوع الدعم ومبلغه.",
+   "en": "Choose any country, then a region. Its card lets you pick whom to support: one child, their group, the region, or the whole country. Then the kind of support and the amount.",
+   "ar": "اختر أيّ دولةٍ ثم منطقة، وفي بطاقتها تحدّد لمن تدعم: طفلٌ بعينه، أو مجموعته، أو المنطقة، أو الدولة كلّها. ثم نوع الدعم ومبلغه.",
    "kind": "text",
-   "hash": "1fc12490cb39",
+   "hash": "ace167f5353c",
    "file": "src/components/try/TrySupportMap.tsx"
   },
   "components/try/TrySupportMap.mapText": {
-   "en": "Six countries in the trial, each with two regions, a group and a child, all fictional.",
-   "ar": "ست دولٍ في التجربة، وفي كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
+   "en": "Every country on the map can be entered and supported in the trial: each has two regions, a group and a child, all fictional.",
+   "ar": "كلّ دولةٍ على الخريطة تُدخَل وتُدعَم في التجربة: في كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
    "kind": "text",
-   "hash": "de7e98f26ec5",
+   "hash": "06d7611f7845",
    "file": "src/components/try/TrySupportMap.tsx"
   },
   "components/try/TrySupportMap.mapTitle": {
@@ -11456,10 +11463,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.2": {
-   "en": "We choose Albania, a trial country, with its two regions, its group and its child",
-   "ar": "نختار ألبانيا من دول التجربة، بمنطقتيها ومجموعتها وطفلها",
+   "en": "We choose Albania (every country here can be entered), with its two regions, its group and its child",
+   "ar": "نختار ألبانيا، وكلّ دولةٍ هنا تُدخَل، بمنطقتيها ومجموعتها وطفلها",
    "kind": "text",
-   "hash": "616c57c7dab1",
+   "hash": "5796ed7cfa0c",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.3": {
@@ -11833,10 +11840,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.log.empty": {
-   "en": "You have not recorded any support in the trial yet. Choose a trial country and support it, and it is written here and in “My impact”.",
-   "ar": "لم تسجّل دعماً بعد في التجربة. اختر دولةً من دول التجربة وادعمها، فيُكتب هنا وفي «أثري».",
+   "en": "You have not recorded any support in the trial yet. Choose any country and support it, and it is written here and in “My impact”.",
+   "ar": "لم تسجّل دعماً بعد في التجربة. اختر أيّ دولةٍ وادعمها، فيُكتب هنا وفي «أثري».",
    "kind": "text",
-   "hash": "19be867f99d6",
+   "hash": "ad9088979e14",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.log.gift": {
@@ -12183,10 +12190,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.noneSub.0": {
-   "en": "Choose a trial country and support it,",
-   "ar": "اختر دولةً من دول التجربة وادعمها،",
+   "en": "Choose any country and support it,",
+   "ar": "اختر أيّ دولةٍ وادعمها،",
    "kind": "text",
-   "hash": "c6c35da41d4d",
+   "hash": "1e36f90e6d08",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.noneSub.1": {
@@ -12194,13 +12201,6 @@
    "ar": "فيُكتب هنا وفي «أثري».",
    "kind": "text",
    "hash": "acd6f71fadf1",
-   "file": "src/lib/hall/trial.ts"
-  },
-  "lib/hall/trial.screen.notTrial": {
-   "en": "Not a trial country",
-   "ar": "ليست من دول التجربة",
-   "kind": "text",
-   "hash": "4b52c852c19e",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.open": {
@@ -12455,11 +12455,33 @@
    "hash": "0fdb25ed3cca",
    "file": "src/lib/hall/trial.ts"
   },
-  "lib/hall/trial.world.notTrial": {
-   "en": "Not one of the trial countries, so it has no figures here. Choose a trial country to enter and support it.",
-   "ar": "ليست من دول التجربة، فلا أعداد لها هنا. اختر إحدى دول التجربة لتدخلها وتدعمها.",
+  "lib/hall/trial.world.kid": {
+   "en": "Trial child",
+   "ar": "طفل التجربة",
    "kind": "text",
-   "hash": "144a0e2a8802",
+   "hash": "0eb3d64226ac",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.kidLine": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.lead": {
+   "en": "Enter it and support a child, a group, a region or the whole country, in any of the three kinds of support, then see the impact.",
+   "ar": "ادخلها وادعم طفلاً أو مجموعةً أو منطقةً أو الدولة كلّها، بأنواع الدعم الثلاثة، ثم شاهد الأثر.",
+   "kind": "text",
+   "hash": "cc7f670359b4",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.more": {
+   "en": "Enter every other country from the support map",
+   "ar": "بقية دول العالم تدخلها من خريطة الدعم",
+   "kind": "text",
+   "hash": "f230d6180c88",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.world.note": {
@@ -12467,6 +12489,34 @@
    "ar": "أعدادٌ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
    "kind": "text",
    "hash": "6f21805d98bc",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.org.field": {
+   "en": "WAMY has field activity here",
+   "ar": "للندوة هنا نشاطٌ ميداني",
+   "kind": "text",
+   "hash": "abf50e3592e0",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.org.hq": {
+   "en": "WAMY's headquarters are here",
+   "ar": "للندوة هنا مقرّها الرئيسي",
+   "kind": "text",
+   "hash": "64b5c65d77a9",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.org.office": {
+   "en": "WAMY has a country office here",
+   "ar": "للندوة هنا مكتبٌ وطني",
+   "kind": "text",
+   "hash": "861c5b4b4c41",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.org.unconfirmed": {
+   "en": "No confirmed WAMY office here; the trial covers every country",
+   "ar": "لا مكتب مؤكَّداً للندوة هنا، والتجربة تشمل كلّ الدول",
+   "kind": "text",
+   "hash": "dd452bb044e5",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.world.regions": {
@@ -12483,18 +12533,11 @@
    "hash": "3895bd791aac",
    "file": "src/lib/hall/trial.ts"
   },
-  "lib/hall/trial.world.sessions": {
-   "en": "Sessions in a journey",
-   "ar": "جلسات الرحلة",
-   "kind": "text",
-   "hash": "eefe2c3f6468",
-   "file": "src/lib/hall/trial.ts"
-  },
   "lib/hall/trial.world.sub": {
-   "en": "The trial has six countries with sample figures, the same ones as on the support map and in “My impact”. The rest of the network is shown by its presence only.",
-   "ar": "في التجربة ستّ دول بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري». بقية مواقع الشبكة تُعرض بحضورها فقط.",
+   "en": "Every country here can be entered and supported in the trial, whether WAMY has an office there, field activity, or neither. Each has two regions, a group and a child with sample figures, the same ones as on the support map and in “My impact”.",
+   "ar": "كلّ دولةٍ هنا تُدخَل وتُدعَم في التجربة، للندوة فيها مكتبٌ أو نشاطٌ أو لا شيء. لكلٍّ منها منطقتان ومجموعةٌ وطفل بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
    "kind": "text",
-   "hash": "baf14acf59bd",
+   "hash": "6fb4eb90a14e",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/milestones.complete.0": {
@@ -13042,6 +13085,741 @@
    "kind": "text",
    "hash": "d07a81998e38",
    "file": "src/lib/try-places.ts"
+  },
+  "lib/try-world.covers.0": {
+   "en": "Schooling, food and healthcare",
+   "ar": "الدراسة والغذاء والرعاية الصحية",
+   "kind": "text",
+   "hash": "3c4877f7157a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.covers.1": {
+   "en": "School fees, uniform and food",
+   "ar": "الرسوم المدرسية والزيّ والغذاء",
+   "kind": "text",
+   "hash": "522bafa06097",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.covers.2": {
+   "en": "Food, housing and health follow-up",
+   "ar": "الغذاء والسكن والمتابعة الصحية",
+   "kind": "text",
+   "hash": "8b4ad9202c3f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.covers.3": {
+   "en": "Schooling, transport and books",
+   "ar": "الدراسة والمواصلات والكتب",
+   "kind": "text",
+   "hash": "cf8faa0e574f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.covers.4": {
+   "en": "Schooling, activities and emotional care",
+   "ar": "الدراسة والأنشطة والرعاية النفسية",
+   "kind": "text",
+   "hash": "b6ca4847150a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.covers.5": {
+   "en": "Food, schooling and Qur'an study circles",
+   "ar": "الغذاء والدراسة وحلقات التحفيظ",
+   "kind": "text",
+   "hash": "cff58da5172f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.0": {
+   "en": "Grade 1",
+   "ar": "الصف الأول",
+   "kind": "text",
+   "hash": "b1b594709a71",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.1": {
+   "en": "Grade 2",
+   "ar": "الصف الثاني",
+   "kind": "text",
+   "hash": "f84114b1e6b6",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.2": {
+   "en": "Grade 3",
+   "ar": "الصف الثالث",
+   "kind": "text",
+   "hash": "430474f564cb",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.3": {
+   "en": "Grade 4",
+   "ar": "الصف الرابع",
+   "kind": "text",
+   "hash": "867793e1be00",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.4": {
+   "en": "Grade 5",
+   "ar": "الصف الخامس",
+   "kind": "text",
+   "hash": "aafc26721112",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.5": {
+   "en": "Grade 6",
+   "ar": "الصف السادس",
+   "kind": "text",
+   "hash": "d9274a0c980f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.grades.6": {
+   "en": "Middle school",
+   "ar": "المرحلة المتوسطة",
+   "kind": "text",
+   "hash": "5694fadf6348",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.0": {
+   "en": "Dawn group",
+   "ar": "مجموعة الفجر",
+   "kind": "text",
+   "hash": "555f0e13dc88",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.1": {
+   "en": "Light group",
+   "ar": "مجموعة النور",
+   "kind": "text",
+   "hash": "dabb36425d28",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.10": {
+   "en": "Certainty group",
+   "ar": "مجموعة اليقين",
+   "kind": "text",
+   "hash": "825c57a3e17a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.11": {
+   "en": "Blessing group",
+   "ar": "مجموعة البركة",
+   "kind": "text",
+   "hash": "6ecfcd663deb",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.2": {
+   "en": "Hope group",
+   "ar": "مجموعة الأمل",
+   "kind": "text",
+   "hash": "5ed6d36b6966",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.3": {
+   "en": "Glad Tidings group",
+   "ar": "مجموعة البشائر",
+   "kind": "text",
+   "hash": "542f4e217947",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.4": {
+   "en": "Loyalty group",
+   "ar": "مجموعة الوفاء",
+   "kind": "text",
+   "hash": "519caa8e9b21",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.5": {
+   "en": "Guidance group",
+   "ar": "مجموعة الهدى",
+   "kind": "text",
+   "hash": "160444271a5b",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.6": {
+   "en": "Kindness group",
+   "ar": "مجموعة الإحسان",
+   "kind": "text",
+   "hash": "63cff31c3c1f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.7": {
+   "en": "Peace group",
+   "ar": "مجموعة السلام",
+   "kind": "text",
+   "hash": "4528f8996638",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.8": {
+   "en": "Resolve group",
+   "ar": "مجموعة العزم",
+   "kind": "text",
+   "hash": "cec6a1b7358e",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.groups.9": {
+   "en": "Mercy group",
+   "ar": "مجموعة الرحمة",
+   "kind": "text",
+   "hash": "00b3208dca25",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.0": {
+   "en": "Ahmad",
+   "ar": "أحمد",
+   "kind": "text",
+   "hash": "28103b0e17f2",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.1": {
+   "en": "Khalid",
+   "ar": "خالد",
+   "kind": "text",
+   "hash": "0066c57eb955",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.2": {
+   "en": "Hamza",
+   "ar": "حمزة",
+   "kind": "text",
+   "hash": "851b4da2cc1b",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.3": {
+   "en": "Salman",
+   "ar": "سلمان",
+   "kind": "text",
+   "hash": "3d9192470ea9",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.4": {
+   "en": "Fatima",
+   "ar": "فاطمة",
+   "kind": "text",
+   "hash": "fae31df75fbf",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.5": {
+   "en": "Nour",
+   "ar": "نور",
+   "kind": "text",
+   "hash": "009cdd67b234",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.6": {
+   "en": "Huda",
+   "ar": "هدى",
+   "kind": "text",
+   "hash": "21dce989f5b9",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.arab.7": {
+   "en": "Reem",
+   "ar": "ريم",
+   "kind": "text",
+   "hash": "5dbb0255f0e1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.0": {
+   "en": "Damir",
+   "ar": "دامير",
+   "kind": "text",
+   "hash": "acd9df62e7ce",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.1": {
+   "en": "Emir",
+   "ar": "أمير",
+   "kind": "text",
+   "hash": "88b50a7b0419",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.2": {
+   "en": "Besim",
+   "ar": "بسيم",
+   "kind": "text",
+   "hash": "996e46d59c26",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.3": {
+   "en": "Adnan",
+   "ar": "عدنان",
+   "kind": "text",
+   "hash": "4e80929b1739",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.4": {
+   "en": "Amina",
+   "ar": "أمينة",
+   "kind": "text",
+   "hash": "2f9a81e3d55d",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.5": {
+   "en": "Lejla",
+   "ar": "ليلى",
+   "kind": "text",
+   "hash": "44e8431025d8",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.6": {
+   "en": "Alma",
+   "ar": "ألما",
+   "kind": "text",
+   "hash": "97f6a732d429",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.balkan.7": {
+   "en": "Arta",
+   "ar": "أرتا",
+   "kind": "text",
+   "hash": "7079f249d837",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.0": {
+   "en": "Adam",
+   "ar": "آدم",
+   "kind": "text",
+   "hash": "771de529922d",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.1": {
+   "en": "Yusuf",
+   "ar": "يوسف",
+   "kind": "text",
+   "hash": "22759d829289",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.2": {
+   "en": "Elias",
+   "ar": "إلياس",
+   "kind": "text",
+   "hash": "7d7276d640b1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.3": {
+   "en": "Noah",
+   "ar": "نوح",
+   "kind": "text",
+   "hash": "492e328213f1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.4": {
+   "en": "Sara",
+   "ar": "سارة",
+   "kind": "text",
+   "hash": "41b7b2c2f5b8",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.5": {
+   "en": "Maryam",
+   "ar": "مريم",
+   "kind": "text",
+   "hash": "83f689b078ac",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.6": {
+   "en": "Layla",
+   "ar": "ليلى",
+   "kind": "text",
+   "hash": "80ecb486a264",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.global.7": {
+   "en": "Hanna",
+   "ar": "حنّة",
+   "kind": "text",
+   "hash": "f88ed102b830",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.0": {
+   "en": "Abdi",
+   "ar": "عبدي",
+   "kind": "text",
+   "hash": "081b00fbef0f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.1": {
+   "en": "Idris",
+   "ar": "إدريس",
+   "kind": "text",
+   "hash": "a6afbd2c188c",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.2": {
+   "en": "Bilal",
+   "ar": "بلال",
+   "kind": "text",
+   "hash": "3be9b6698fbb",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.3": {
+   "en": "Mahamud",
+   "ar": "محمود",
+   "kind": "text",
+   "hash": "2ecab72e1cb0",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.4": {
+   "en": "Halima",
+   "ar": "حليمة",
+   "kind": "text",
+   "hash": "110a2875f4e9",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.5": {
+   "en": "Amina",
+   "ar": "أمينة",
+   "kind": "text",
+   "hash": "2f9a81e3d55d",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.6": {
+   "en": "Zahra",
+   "ar": "زهرة",
+   "kind": "text",
+   "hash": "51fd08d1b29a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.horn.7": {
+   "en": "Hodan",
+   "ar": "هودان",
+   "kind": "text",
+   "hash": "03b354e2e81b",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.0": {
+   "en": "Mateo",
+   "ar": "ماتيو",
+   "kind": "text",
+   "hash": "f64e0e47622c",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.1": {
+   "en": "Diego",
+   "ar": "دييغو",
+   "kind": "text",
+   "hash": "3d9e6e009984",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.2": {
+   "en": "Lucas",
+   "ar": "لوكاس",
+   "kind": "text",
+   "hash": "8a23fc33cbf7",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.3": {
+   "en": "Gabriel",
+   "ar": "غابرييل",
+   "kind": "text",
+   "hash": "9f92449fcc53",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.4": {
+   "en": "Lucia",
+   "ar": "لوسيا",
+   "kind": "text",
+   "hash": "30ad5b365eaa",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.5": {
+   "en": "Sofia",
+   "ar": "صوفيا",
+   "kind": "text",
+   "hash": "805eef7495aa",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.6": {
+   "en": "Camila",
+   "ar": "كاميلا",
+   "kind": "text",
+   "hash": "16e9d1b77b8f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.latin.7": {
+   "en": "Elena",
+   "ar": "إيلينا",
+   "kind": "text",
+   "hash": "2a0b86d0c699",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.0": {
+   "en": "Rizki",
+   "ar": "رزقي",
+   "kind": "text",
+   "hash": "5d328ceb2b5e",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.1": {
+   "en": "Fajar",
+   "ar": "فجر",
+   "kind": "text",
+   "hash": "f42da6199902",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.2": {
+   "en": "Hafiz",
+   "ar": "حفيظ",
+   "kind": "text",
+   "hash": "a6ebd6339b40",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.3": {
+   "en": "Ahmad",
+   "ar": "أحمد",
+   "kind": "text",
+   "hash": "28103b0e17f2",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.4": {
+   "en": "Siti",
+   "ar": "ستي",
+   "kind": "text",
+   "hash": "d8305fddf5f7",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.5": {
+   "en": "Nur",
+   "ar": "نور",
+   "kind": "text",
+   "hash": "5d80ce39cc4a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.6": {
+   "en": "Dewi",
+   "ar": "دوي",
+   "kind": "text",
+   "hash": "6ea23fa20ec4",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.malay.7": {
+   "en": "Aisyah",
+   "ar": "عائشة",
+   "kind": "text",
+   "hash": "324c0670f5fa",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.0": {
+   "en": "Amadou",
+   "ar": "أمادو",
+   "kind": "text",
+   "hash": "04585620e966",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.1": {
+   "en": "Moussa",
+   "ar": "موسى",
+   "kind": "text",
+   "hash": "4272434d1c61",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.2": {
+   "en": "Ibrahima",
+   "ar": "إبراهيما",
+   "kind": "text",
+   "hash": "df2c256e6abb",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.3": {
+   "en": "Ousmane",
+   "ar": "عثمان",
+   "kind": "text",
+   "hash": "bf8634f72ccf",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.4": {
+   "en": "Fatou",
+   "ar": "فاتو",
+   "kind": "text",
+   "hash": "0e5f48151ac1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.5": {
+   "en": "Aminata",
+   "ar": "أميناتا",
+   "kind": "text",
+   "hash": "67035626094e",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.6": {
+   "en": "Mariama",
+   "ar": "مريمة",
+   "kind": "text",
+   "hash": "720a1901b776",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.sahel.7": {
+   "en": "Aissatou",
+   "ar": "عائشتو",
+   "kind": "text",
+   "hash": "b6570a1542f4",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.0": {
+   "en": "Rashid",
+   "ar": "راشد",
+   "kind": "text",
+   "hash": "b1d61950c89d",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.1": {
+   "en": "Imran",
+   "ar": "عمران",
+   "kind": "text",
+   "hash": "ee29b0c7e9e0",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.2": {
+   "en": "Faisal",
+   "ar": "فيصل",
+   "kind": "text",
+   "hash": "808bbd376a01",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.3": {
+   "en": "Karim",
+   "ar": "كريم",
+   "kind": "text",
+   "hash": "48a35f54574c",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.4": {
+   "en": "Ayesha",
+   "ar": "عائشة",
+   "kind": "text",
+   "hash": "114edefed280",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.5": {
+   "en": "Nasrin",
+   "ar": "نسرين",
+   "kind": "text",
+   "hash": "452e9ba8b3a7",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.6": {
+   "en": "Ruqayya",
+   "ar": "رقية",
+   "kind": "text",
+   "hash": "a217a950e408",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.southAsia.7": {
+   "en": "Shabana",
+   "ar": "شبانة",
+   "kind": "text",
+   "hash": "b81244dd3260",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.0": {
+   "en": "Juma",
+   "ar": "جمعة",
+   "kind": "text",
+   "hash": "bcd2ab19b9f1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.1": {
+   "en": "Suleiman",
+   "ar": "سليمان",
+   "kind": "text",
+   "hash": "134762b1155a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.2": {
+   "en": "Rashidi",
+   "ar": "رشيدي",
+   "kind": "text",
+   "hash": "dd4623c2f29d",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.3": {
+   "en": "Bakari",
+   "ar": "بكاري",
+   "kind": "text",
+   "hash": "0bc98bf0236a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.4": {
+   "en": "Zainabu",
+   "ar": "زينب",
+   "kind": "text",
+   "hash": "fa0f228b96de",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.5": {
+   "en": "Rehema",
+   "ar": "رحمة",
+   "kind": "text",
+   "hash": "86daaff5d9c1",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.6": {
+   "en": "Neema",
+   "ar": "نيما",
+   "kind": "text",
+   "hash": "987e8a9192e5",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.swahili.7": {
+   "en": "Amina",
+   "ar": "آمنة",
+   "kind": "text",
+   "hash": "d21f4341d36b",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.0": {
+   "en": "Timur",
+   "ar": "تيمور",
+   "kind": "text",
+   "hash": "4dd9669f7f32",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.1": {
+   "en": "Aybek",
+   "ar": "أيبك",
+   "kind": "text",
+   "hash": "33b4d67de4fe",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.2": {
+   "en": "Rustam",
+   "ar": "رستم",
+   "kind": "text",
+   "hash": "170de994cb7f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.3": {
+   "en": "Nurlan",
+   "ar": "نورلان",
+   "kind": "text",
+   "hash": "a831fa24534a",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.4": {
+   "en": "Aygul",
+   "ar": "أيغول",
+   "kind": "text",
+   "hash": "2e3b74f0303f",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.5": {
+   "en": "Madina",
+   "ar": "مدينة",
+   "kind": "text",
+   "hash": "72e7118b7dc6",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.6": {
+   "en": "Zarina",
+   "ar": "زرينة",
+   "kind": "text",
+   "hash": "379e088661cd",
+   "file": "src/lib/try-world.ts"
+  },
+  "lib/try-world.names.turkic.7": {
+   "en": "Dilnoza",
+   "ar": "ديلنوزا",
+   "kind": "text",
+   "hash": "ffd701f17961",
+   "file": "src/lib/try-world.ts"
   },
   "lib/workspaces.labels.kind.in_kind": {
    "en": "In-kind support",
@@ -16031,6 +16809,13 @@
    "ar": "اكفل طفلاً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
    "kind": "text",
    "hash": "9d41970fe133",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.everywhere": {
+   "en": "And every country on the support map has a child, a group and two regions",
+   "ar": "وفي كلّ دولةٍ على خريطة الدعم طفلٌ ومجموعةٌ ومنطقتان",
+   "kind": "text",
+   "hash": "b13695f0d7e7",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.eyebrow": {

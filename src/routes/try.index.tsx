@@ -21,6 +21,7 @@ const COPY = defineCopy("routes/try.index", {
     lead: "اختر طفلاً، واكفله، ثم شاهد أثر كفالتك يتشكّل أمامك. كل ما هنا افتراضي، فجرّب بلا قلق.",
     waiting: "ينتظرون منذ أطول مدة",
     order: "الترتيب نفسه في الدليل الحقيقي: الأطول انتظاراً أوّلاً.",
+    everywhere: "وفي كلّ دولةٍ على خريطة الدعم طفلٌ ومجموعةٌ ومنطقتان",
     fromMap: "ابدأ من الخريطة ثلاثية الأبعاد",
     doors: "ثلاثة أبوابٍ للعطاء، ولكلٍّ أثره",
     doorsLead:
@@ -54,6 +55,7 @@ const COPY = defineCopy("routes/try.index", {
     lead: "Choose a child, sponsor them, and watch your impact take shape. Everything here is sample data, so explore freely.",
     waiting: "Waiting the longest",
     order: "The same order as the real directory: longest wait first.",
+    everywhere: "And every country on the support map has a child, a group and two regions",
     fromMap: "Start from the 3D map",
     doors: "Three doors for giving, each with its own impact",
     doorsLead:
@@ -190,6 +192,13 @@ function TryHome() {
             <TryChildCard key={k.id} child={k} delay={0.15 + i * 0.06} />
           ))}
         </div>
+        <Link
+          to="/try/support"
+          className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {c.everywhere}
+          <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+        </Link>
       </section>
     </>
   );

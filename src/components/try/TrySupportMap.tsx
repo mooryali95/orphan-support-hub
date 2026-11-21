@@ -8,7 +8,7 @@ import { countryName } from "@/lib/countries";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import type { SupportKind } from "@/lib/support-impact";
 import { tryChild } from "@/lib/try-demo";
-import { TRY_PLACES, tryPlace } from "@/lib/try-places";
+import { TRY_FEATURED, tryPlace } from "@/lib/try-places";
 import { TRY_SUPPORT_COUNTRIES, tryMapStats } from "@/lib/try-support";
 import { cn } from "@/lib/utils";
 
@@ -16,20 +16,23 @@ const COPY = defineCopy("components/try/TrySupportMap", {
   ar: {
     eyebrow: "جرّب المنصّة",
     title: "ادعم من الخريطة",
-    lead: "اختر دولةً ثم منطقة، وفي بطاقتها تحدّد لمن تدعم: طفلٌ بعينه، أو مجموعته، أو المنطقة، أو الدولة كلّها. ثم نوع الدعم ومبلغه.",
+    lead: "اختر أيّ دولةٍ ثم منطقة، وفي بطاقتها تحدّد لمن تدعم: طفلٌ بعينه، أو مجموعته، أو المنطقة، أو الدولة كلّها. ثم نوع الدعم ومبلغه.",
     jump: "اذهب مباشرةً إلى",
+    anywhere: "أو اختر أيّ دولةٍ من الخريطة",
     mapTitle: "أين تريد أن تدعم؟",
-    mapText: "ست دولٍ في التجربة، وفي كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
+    mapText:
+      "كلّ دولةٍ على الخريطة تُدخَل وتُدعَم في التجربة: في كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
     toImpact: "انتقل إلى «أثري»",
   },
   en: {
     eyebrow: "Try the platform",
     title: "Support from the map",
-    lead: "Choose a country, then a region. Its card lets you pick whom to support: one child, their group, the region, or the whole country. Then the kind of support and the amount.",
+    lead: "Choose any country, then a region. Its card lets you pick whom to support: one child, their group, the region, or the whole country. Then the kind of support and the amount.",
     jump: "Go straight to",
+    anywhere: "or pick any country on the map",
     mapTitle: "Where would you like to support?",
     mapText:
-      "Six countries in the trial, each with two regions, a group and a child, all fictional.",
+      "Every country on the map can be entered and supported in the trial: each has two regions, a group and a child, all fictional.",
     toImpact: "Go to “My impact”",
   },
 });
@@ -79,7 +82,7 @@ export function TrySupportMap({
         <p className="mt-3 max-w-3xl text-base leading-8 text-muted-foreground">{c.lead}</p>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-sm font-bold text-muted-foreground">{c.jump}</span>
-          {TRY_PLACES.map((p) => {
+          {TRY_FEATURED.map((p) => {
             const on = selection.country === p.co;
             return (
               <button
@@ -99,6 +102,7 @@ export function TrySupportMap({
               </button>
             );
           })}
+          <span className="text-sm text-muted-foreground">{c.anywhere}</span>
         </div>
       </section>
 
