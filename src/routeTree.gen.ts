@@ -37,6 +37,7 @@ import { Route as TryIndexRouteImport } from './routes/try.index'
 import { Route as TryChildIdRouteImport } from './routes/try.$childId'
 import { Route as TryImpactRouteImport } from './routes/try.impact'
 import { Route as TryPayRouteImport } from './routes/try.pay'
+import { Route as TrySupportRouteImport } from './routes/try.support'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
@@ -203,6 +204,11 @@ const TryImpactRoute = TryImpactRouteImport.update({
 const TryPayRoute = TryPayRouteImport.update({
   id: '/pay',
   path: '/pay',
+  getParentRoute: () => TryRoute,
+} as any)
+const TrySupportRoute = TrySupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => TryRoute,
 } as any)
 const VisionIndexRoute = VisionIndexRouteImport.update({
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/try/$childId': typeof TryChildIdRoute
   '/try/impact': typeof TryImpactRoute
   '/try/pay': typeof TryPayRoute
+  '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByTo {
   '/try/$childId': typeof TryChildIdRoute
   '/try/impact': typeof TryImpactRoute
   '/try/pay': typeof TryPayRoute
+  '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/try/$childId': typeof TryChildIdRoute
   '/try/impact': typeof TryImpactRoute
   '/try/pay': typeof TryPayRoute
+  '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -556,6 +565,7 @@ export interface FileRouteTypes {
     | '/try/$childId'
     | '/try/impact'
     | '/try/pay'
+    | '/try/support'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -612,6 +622,7 @@ export interface FileRouteTypes {
     | '/try/$childId'
     | '/try/impact'
     | '/try/pay'
+    | '/try/support'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -670,6 +681,7 @@ export interface FileRouteTypes {
     | '/try/$childId'
     | '/try/impact'
     | '/try/pay'
+    | '/try/support'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -940,6 +952,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TryPayRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/support': {
+      id: '/try/support'
+      path: '/support'
+      fullPath: '/try/support'
+      preLoaderRoute: typeof TrySupportRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/vision/': {
       id: '/vision/'
       path: '/vision'
@@ -1186,6 +1205,7 @@ interface TryRouteChildren {
   TryChildIdRoute: typeof TryChildIdRoute
   TryImpactRoute: typeof TryImpactRoute
   TryPayRoute: typeof TryPayRoute
+  TrySupportRoute: typeof TrySupportRoute
   TryIndexRoute: typeof TryIndexRoute
 }
 
@@ -1193,6 +1213,7 @@ const TryRouteChildren: TryRouteChildren = {
   TryChildIdRoute: TryChildIdRoute,
   TryImpactRoute: TryImpactRoute,
   TryPayRoute: TryPayRoute,
+  TrySupportRoute: TrySupportRoute,
   TryIndexRoute: TryIndexRoute,
 }
 
