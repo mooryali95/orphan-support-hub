@@ -264,13 +264,7 @@ describe("أسماء أنواع العطاء: من giving-tracks", () => {
   it("المواضع التي تسمّي النوع بغير اسمه الموحّد لا تزيد", () => {
     const label =
       /"(دعم عيني|In-kind support|Building capability|Capability building)"|(label|qualification):\s*"بناء الأهلية"/;
-    /*
-     * لوحة الإدارة الجديدة تُبنى الآن ولم تُدمج؛ فيها نسخةٌ أخرى من الاسم
-     * (`copy.ts`: «In-kind support»). تُستثنى إلى أن تُدمج، ثم تُقرأ الأسماء من
-     * `giving-tracks` ويُحذف هذا الاستثناء.
-     */
-    const inFlight = (p: string) => p.startsWith("src/components/admin/overview/");
-    expect(SOURCES.filter((p) => !SHOWCASE(p) && !inFlight(p) && label.test(code(p)))).toEqual([
+    expect(SOURCES.filter((p) => !SHOWCASE(p) && label.test(code(p)))).toEqual([
       "src/components/qualification/QualificationPanel.tsx",
       "src/lib/support.functions.ts",
       "src/lib/workspaces.functions.ts",
