@@ -19,6 +19,7 @@ import { MirrorStatusPanel } from "@/components/integrations/MirrorStatusPanel";
 import { StatTile } from "@/components/kit/StatTile";
 import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
+import DataBuilding from "@/components/admin/data/DataBuilding";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
@@ -45,8 +46,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { defineCopy, dirOf, LocaleProvider, parseLocale, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("routes/_authenticated/admin", {
-  ar: { overviewLink: "لوحة الإدارة — النظرة الشاملة" },
-  en: { overviewLink: "Management overview" },
+  ar: { overviewLink: "لوحة الإدارة — النظرة الشاملة", dataTab: "بناء البيانات" },
+  en: { overviewLink: "Management overview", dataTab: "Data building" },
 });
 
 // دوالّ الإدارة القائمة تُمرَّر إلى اللوحة من هنا: هذه الصفحة تحملها أصلاً، فلا تُشقّ
@@ -91,6 +92,7 @@ type Tab =
   | "overview"
   | "orphans"
   | "sponsors"
+  | "data"
   | "queue"
   | "supervisors"
   | "access"
@@ -103,13 +105,19 @@ type Tab =
 
 const SECTIONS: Array<[string, Tab[]]> = [
   ["القرارات", ["inbox", "queue", "access", "integrity"]],
-  ["الناس", ["orphans", "sponsors", "supervisors", "offices"]],
+  ["الناس", ["orphans", "sponsors", "data", "supervisors", "offices"]],
   ["المنصّة", ["countries", "languages", "platform", "integrations"]],
   ["المراقبة", ["overview", "monitoring"]],
 ];
 
 /** ما تقرؤه الصفحة من عنوانها؛ وما عداه يبقى كما هو. */
-type Query = { tab?: unknown; sample?: unknown; period?: unknown; [key: string]: unknown };
+type Query = {
+  tab?: unknown;
+  sample?: unknown;
+  period?: unknown;
+  area?: unknown;
+  [key: string]: unknown;
+};
 
 const isTab = (v: unknown): v is Tab =>
   typeof v === "string" && SECTIONS.some(([, tabs]) => tabs.includes(v as Tab));
@@ -128,7 +136,10 @@ function AdminPage() {
   const tab: Tab = isTab(search.tab) ? search.tab : "home";
   const sample = search.sample === 1 || search.sample === "1" || search.sample === true;
   const go = useCallback(
-    (patch: { tab?: Tab; sample?: boolean; period?: number | null }, replace = false) => {
+    (
+      patch: { tab?: Tab; sample?: boolean; period?: number | null; area?: string },
+      replace = false,
+    ) => {
       void navigate({
         to: "/admin",
         replace,
@@ -137,7 +148,10 @@ function AdminPage() {
           if (patch.tab !== undefined) {
             if (patch.tab === "home") delete next.tab;
             else next.tab = patch.tab;
+            // خانة «بناء البيانات» تخصّ تبويبها وحده.
+            if (patch.tab !== "data") delete next.area;
           }
+          if (patch.area !== undefined) next.area = patch.area;
           if (patch.sample !== undefined) {
             if (patch.sample) next.sample = 1;
             else delete next.sample;
@@ -235,6 +249,7 @@ function AdminPage() {
     ["overview", "نظرة عامة", null],
     ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
     ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
+    ["data", copy.dataTab, null],
     ["queue", "طابور الاعتماد", queueCount],
     ["supervisors", "المشرفون", null],
     ["access", "الإذن بالاطّلاع", null],
@@ -431,6 +446,16 @@ function AdminPage() {
       )}
 
       {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
+
+      {/* بناء البيانات داخل قطعة الإدارة نفسها: قطعةٌ مستقلّة له كانت تزيد حزمة
+          الدخول (خريطة القطع) فتكسر ميزانية صفحات الرؤية. */}
+      {tab === "data" && (
+        <DataBuilding
+          area={search.area}
+          onArea={(area) => go({ area })}
+          openTab={(next) => setTab(next)}
+        />
+      )}
 
       {tab === "queue" && (
         <div className="mt-8 space-y-10">
