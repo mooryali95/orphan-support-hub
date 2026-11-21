@@ -14,6 +14,8 @@
   --display: "Amiri", "Times New Roman", serif;
   --body: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
   color-scheme: dark;
+  /* the styles are here: the children the page kept unpainted until now may show (hall.lazy.tsx) */
+  --hall-css: visible;
 }
 .hall {
   position: fixed;
@@ -2339,4 +2341,37 @@
    last row */
 .hall .row.pin {
   margin-top: 22px;
+}
+/* the pinned action is a footer of the glass, not a float over it: an opaque bar across the whole
+   sheet down to its edge, so the lines scrolling past end at a clean rule and never show beside
+   or under the button */
+.hall #panel {
+  --panel-pad: 22px;
+}
+@media (max-width: 760px) {
+  .hall #panel {
+    --panel-pad: 18px;
+  }
+}
+.hall .row.pin {
+  bottom: calc(-1 * var(--panel-pad));
+  margin: 22px calc(-1 * var(--panel-pad)) calc(-1 * var(--panel-pad));
+  padding: 12px var(--panel-pad) 14px;
+  background: rgb(58, 15, 26);
+  border-top: 1px solid var(--line);
+}
+/* the loading star is an overlay at the foot of the gate, out of its flow: when the scene is
+   ready and the star goes, the mark, the words and the buttons stay exactly where they were */
+.hall #gate .loader {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  margin: 0;
+  pointer-events: none;
+}
+/* no free foot on a very short screen: the button's own words carry the wait there */
+@media (max-height: 600px) {
+  .hall #gate .loader {
+    display: none;
+  }
 }
