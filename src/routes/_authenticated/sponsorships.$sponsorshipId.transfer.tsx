@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipI
 function TransferPage() {
   const { sponsorshipId } = Route.useParams();
   const fetchList = useServerFn(listMySponsorships);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["my-sponsorships"],
     queryFn: () => fetchList(),
   });
@@ -54,6 +54,20 @@ function TransferPage() {
       {isLoading ? (
         <div className="flex justify-center py-16">
           <Loader2 className="text-muted-foreground size-6 animate-spin" />
+        </div>
+      ) : isError || data?.error ? (
+        // تعذّر الجلب ليس «لم نجد كفالتك»: من وصل هنا ليدفع يُقال له الحقيقة ويعيد المحاولة.
+        <div
+          role="alert"
+          className="border-border bg-card rounded-3xl border border-dashed p-12 text-center"
+        >
+          <p className="font-medium">تعذّر تحميل كفالتك الآن. كفالتك محفوظة، فأعد المحاولة.</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <Button onClick={() => void refetch()}>إعادة المحاولة</Button>
+            <Button asChild variant="outline">
+              <Link to="/dashboard">العودة إلى كفالاتي</Link>
+            </Button>
+          </div>
         </div>
       ) : !sponsorship ? (
         <div className="border-border bg-card rounded-3xl border border-dashed p-12 text-center">

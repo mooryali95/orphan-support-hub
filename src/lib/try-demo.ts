@@ -3,6 +3,7 @@
  * مستعارة ورموز DEMO-، منفصلون تماماً عن المعرّفات القابلة للدفع: لا يصل شيءٌ منهم إلى
  * الدليل الحقيقي ولا إلى بوابة الدفع. الكفالات المحاكاة تُحفظ في متصفّح الزائر وحده.
  */
+import { tryStore, type TryStore } from "@/lib/try-store";
 import { countryName } from "@/lib/countries";
 import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, type Locale } from "@/lib/locale";
@@ -179,14 +180,9 @@ export const cleanDedication = (v: unknown): string | undefined => {
 const KEY = "try-demo:v1";
 export const TRY_EVENT = "try-demo-change";
 
-type Store = Pick<Storage, "getItem" | "setItem" | "removeItem">;
-const safe = (): Store | null => {
-  try {
-    return typeof window === "undefined" ? null : window.localStorage;
-  } catch {
-    return null;
-  }
-};
+type Store = TryStore;
+/* the browser's store, or this tab's memory when the browser denies it (see `try-store`) */
+const safe = (): Store | null => tryStore();
 
 export function loadGifts(store: Pick<Storage, "getItem"> | null = safe()): TryGift[] {
   try {

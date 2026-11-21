@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
+import { GivingOnceLine } from "@/components/auth/GivingOnceLine";
 import { BrandHalo } from "@/components/brand/BrandPattern";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
 import { TrialAuthNotice } from "@/components/try/TrialProposal";
@@ -88,9 +89,14 @@ function AuthPage() {
      نموذج دخولٍ ثانٍ. يُفحص مرّةً عند التركيب وحده، فلا يسبق عرضَ إضافة البصمة بعد الرمز. */
   useEffect(() => {
     let live = true;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (live && data.session) void navigate({ href: redirectTo, replace: true });
-    });
+    // التخزين المحجوب يرمي هنا: لا جلسة إذن، ويبقى نموذج الدخول ظاهراً.
+    try {
+      void supabase.auth.getSession().then(({ data }) => {
+        if (live && data.session) void navigate({ href: redirectTo, replace: true });
+      });
+    } catch {
+      /* no stored session to resume */
+    }
     return () => {
       live = false;
     };
@@ -151,7 +157,14 @@ function AuthPage() {
         <h1 className="sr-only">{c.h1}</h1>
         {draft && (
           <p className="mt-6 rounded-xl border border-border bg-secondary/60 px-4 py-3 text-center text-sm leading-7">
-            {c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))}
+            {draft.cadence === "one_time" ? (
+              <GivingOnceLine
+                name={isolate(draft.name)}
+                amount={formatMoney(draft.amount, draft.currency, locale)}
+              />
+            ) : (
+              c.sponsoring(isolate(draft.name), formatMoney(draft.amount, draft.currency, locale))
+            )}
           </p>
         )}
         {!draft && redirectTo === "/dashboard" && <TrialAuthNotice className="mt-6 lg:mt-0" />}

@@ -10,6 +10,7 @@
  * المجاميع مجموع أجزائها دائماً: المنطقة أطفالها واحداً واحداً، والمجموعة أوّل ثمانيةٍ منهم،
  * والدولة منطقتاها؛ وطفل التجربة أوّل أطفال منطقته، فرحلته هي رحلة أوّلهم.
  */
+import { tryStore, type TryStore } from "@/lib/try-store";
 import type { MapStats } from "@/components/map/demo-stats";
 import { countryName } from "@/lib/countries";
 import { addMonths } from "@/lib/impact-evidence";
@@ -148,14 +149,9 @@ export type TryPledge = TryTarget & {
 
 const KEY = "try-support:v1";
 
-type Store = Pick<Storage, "getItem" | "setItem" | "removeItem">;
-const safe = (): Store | null => {
-  try {
-    return typeof window === "undefined" ? null : window.localStorage;
-  } catch {
-    return null;
-  }
-};
+type Store = TryStore;
+/* the browser's store, or this tab's memory when the browser denies it (see `try-store`) */
+const safe = (): Store | null => tryStore();
 
 const clean = (v: unknown): TryPledge | null => {
   if (!v || typeof v !== "object") return null;

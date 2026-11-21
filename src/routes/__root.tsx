@@ -79,7 +79,7 @@ const ERROR = defineCopy("routes/__root/error", {
 function NotFoundComponent() {
   const c = useCopy(NOT_FOUND);
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
+    <main className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">{c.title}</h2>
@@ -93,7 +93,7 @@ function NotFoundComponent() {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -106,7 +106,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
+    <main className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold text-foreground">{c.title}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
@@ -128,7 +128,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           </a>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -262,15 +262,21 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      // الخروج، أو دخول مستخدمٍ غير من ترك بياناته على الجهاز: تُمحى مسودّات
-      // العمل من المتصفّح وذاكرة الاستعلامات معها، فلا يرى الثاني ما للأوّل (UX-05).
-      onAuthEvent(event, session?.user?.id ?? null, () => queryClient.clear());
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
-    });
-    return () => data.subscription.unsubscribe();
+    // متصفّحٌ يحجب التخزين يرمي عند إنشاء عميل الدخول: الصفحات العامّة والرحلة الافتراضية
+    // لا تحتاج دخولاً، فتبقى تعمل بزائرٍ غير داخل بدل صفحة خطأ.
+    try {
+      const { data } = supabase.auth.onAuthStateChange((event, session) => {
+        // الخروج، أو دخول مستخدمٍ غير من ترك بياناته على الجهاز: تُمحى مسودّات
+        // العمل من المتصفّح وذاكرة الاستعلامات معها، فلا يرى الثاني ما للأوّل (UX-05).
+        onAuthEvent(event, session?.user?.id ?? null, () => queryClient.clear());
+        if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+        router.invalidate();
+        if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+      });
+      return () => data.subscription.unsubscribe();
+    } catch {
+      return;
+    }
   }, [router, queryClient]);
 
   return (

@@ -35,8 +35,8 @@ const COPY = defineCopy("components/try/TryJourneyAhead", {
       `كفالة ${name} جارية، ودفعتك الأولى مقيّدة. اضغط «قدّم شهراً» لترى مستند تسليمها يصل.`,
     next: "الخطوة التالية",
     nextLine: (name: string, country: string, days: number) =>
-      `${name} في ${country} ينتظر منذ ${days} يوماً`,
-    nextHint: "هو الأطول انتظاراً ممّن لم تكفلهم بعد.",
+      `${name} في ${country}: انتظارٌ منذ ${days} يوماً`,
+    nextHint: "الأطول انتظاراً ممّن لم تكفلهم بعد.",
   },
   en: {
     title: "Your journey through the months",

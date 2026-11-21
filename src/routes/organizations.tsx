@@ -1,3 +1,4 @@
+import { LoadFailed } from "@/components/kit/LoadFailed";
 import { EmptyState } from "@/components/kit/EmptyState";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -67,7 +68,10 @@ function OrganizationsPage() {
           <h1 className="text-3xl font-extrabold">{c.title}</h1>
           <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
 
-          {data.organizations.length === 0 ? (
+          {data.error ? (
+            // تعذّر الجلب ليس «لا جهات»: القول بأن لا جهة معتمدة يطعن في المنصّة بلا سبب.
+            <LoadFailed className="mt-10" />
+          ) : data.organizations.length === 0 ? (
             <EmptyState className="mt-10" title={c.empty} />
           ) : (
             <div className="mt-8 grid gap-4 sm:grid-cols-2">

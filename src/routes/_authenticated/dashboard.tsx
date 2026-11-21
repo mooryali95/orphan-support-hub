@@ -40,8 +40,11 @@ import { myImpact } from "@/lib/my-impact";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
-  validateSearch: (raw: Record<string, unknown>): { payment?: "done" } =>
-    raw["payment"] === "done" ? { payment: "done" } : {},
+  // والعودة بلا دفع: ?payment=cancelled — يُقال إن الكفالة ما زالت تنتظر، ثم تُزال كذلك.
+  validateSearch: (raw: Record<string, unknown>): { payment?: "done" | "cancelled" } => {
+    const p = raw["payment"];
+    return p === "done" || p === "cancelled" ? { payment: p } : {};
+  },
   head: () => ({
     meta: [
       { title: pageTitle("كفالاتي") },
@@ -115,6 +118,27 @@ function DashboardPage() {
           action="إلى كفالاتي"
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
+      )}
+
+      {payment === "cancelled" && (
+        // عاد من بوابة الدفع بلا إتمام: لا يُترك أمام لوحةٍ صامتة يتساءل هل خُصم شيء.
+        <div
+          role="status"
+          className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-bridge/40 bg-bridge/8 p-4 text-sm leading-7"
+        >
+          <p className="min-w-0 flex-1">
+            <strong>لم يكتمل الدفع، ولم يُخصم شيء.</strong> كفالتك محفوظة تنتظر الدفع في «يحتاج
+            إجراءك» أدناه، وتكملها متى شئت.
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void navigate({ search: {}, replace: true, resetScroll: false })}
+          >
+            فهمت
+          </Button>
+        </div>
       )}
 
       {/* ما اختاره في الرحلة الافتراضية: مقترحٌ من متصفّحه، يؤكّده هو في موضعه الحقيقي. لا يُنشأ عنه شيء. */}
@@ -285,30 +309,36 @@ function DashboardPage() {
 
                 return (
                   <article key={s.id} className="rounded-2xl border border-border bg-card p-5 lift">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <MuralImage
-                        photoUrl={null}
-                        displayName={orphan?.display_name ?? "ملف محذوف"}
-                        register={registerFor("", percent)}
-                        className="size-16 shrink-0 rounded-xl bg-secondary"
-                      />
+                    {/* الصورة والنصّ مجموعةٌ واحدة، والأزرار بعدها: إن لم تتّسع لها السطر (موقوفة: أربعة
+                        أزرار، أو اسمٌ طويل) نزلت سطراً بدل أن تعصر الاسم كلمةً كلمة */}
+                    <div className="flex flex-wrap items-center gap-4">
+                      <div className="flex min-w-0 flex-1 basis-full items-center gap-4 sm:basis-auto">
+                        <MuralImage
+                          photoUrl={null}
+                          displayName={orphan?.display_name ?? "ملف محذوف"}
+                          register={registerFor("", percent)}
+                          className="size-16 shrink-0 rounded-xl bg-secondary"
+                        />
 
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-bold">
-                            <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
-                          </h3>
-                          <Badge variant={s.status === "active" ? "default" : "secondary"}>
-                            {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
-                          </Badge>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-lg font-bold">
+                              <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                            </h3>
+                            <Badge variant={s.status === "active" ? "default" : "secondary"}>
+                              {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {formatMoney(s.amount, s.currency)}{" "}
+                            {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
+                            {formatDate(s.started_at ?? s.created_at)}
+                          </p>
+                          <LifecycleNote s={s} />
+                          {orphan && (
+                            <CrossingProgress percent={percent} className="mt-3 max-w-sm" />
+                          )}
                         </div>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {formatMoney(s.amount, s.currency)}{" "}
-                          {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
-                          {formatDate(s.started_at ?? s.created_at)}
-                        </p>
-                        <LifecycleNote s={s} />
-                        {orphan && <CrossingProgress percent={percent} className="mt-3 max-w-sm" />}
                       </div>
 
                       <div className="flex flex-wrap gap-2">

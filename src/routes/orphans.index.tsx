@@ -1,7 +1,7 @@
 import { KahataynMark } from "@/components/brand/KahataynMark";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FollowedStrip } from "@/components/support/Follow";
-import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -20,6 +20,7 @@ import { findCountry, geoQuery } from "@/lib/geo";
 import { arCount, COUNTRIES, FILES } from "@/lib/plural";
 import { brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
+import { LoadFailed } from "@/components/kit/LoadFailed";
 import { DEMO_MODE, demoChildren } from "@/lib/demo-network";
 import { DemoNotice } from "@/components/DemoNotice";
 import { DemoChildCard } from "@/components/DemoChildCard";
@@ -293,6 +294,16 @@ function OrphansPage() {
 
   const shown = pristine ? first : (result ?? first);
   const rows = shown.rows;
+  /* the server answered with an error (unreachable database, too many requests): not "no results" */
+  const failed = !DEMO_MODE && Boolean(shown.error);
+  const queryClient = useQueryClient();
+  const [retrying, setRetrying] = useState(false);
+  function retry() {
+    setRetrying(true);
+    void queryClient
+      .invalidateQueries({ queryKey: ["orphan-cards"] })
+      .finally(() => setRetrying(false));
+  }
   const sample = demoChildren(filters);
   const total = DEMO_MODE ? sample.total : shown.total;
   const pages = Math.max(1, Math.ceil(total / PAGE));
@@ -617,10 +628,13 @@ function OrphansPage() {
           )}
           aria-live="polite"
         >
-          {t.files(total)}
+          {failed ? "" : t.files(total)}
         </p>
 
-        {(DEMO_MODE ? sample.rows.length : rows.length) === 0 ? (
+        {failed ? (
+          // تعذّر الجلب ليس «لا نتائج»: يُقال كما هو، ومعه إعادة المحاولة.
+          <LoadFailed className="mt-10" busy={isFetching || retrying} onRetry={retry} />
+        ) : (DEMO_MODE ? sample.rows.length : rows.length) === 0 ? (
           <div className="mt-10 rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center text-sm text-muted-foreground">
             <KahataynMark
               compact
