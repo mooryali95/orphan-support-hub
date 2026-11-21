@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2166,
+ "count": 2340,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -579,6 +579,1236 @@
    "kind": "text",
    "hash": "067b55cf4285",
    "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/overview.attentionAll": {
+   "en": "All items ({0})",
+   "ar": "كلّ البنود ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "701ba5b41baf",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionEmptyText": {
+   "en": "The queues are empty and operations are healthy. Anything that needs a decision appears here when it arrives.",
+   "ar": "الطوابير فارغة والتشغيل سليم. يظهر هنا كلّ ما يحتاج قراراً حين يصل.",
+   "kind": "text",
+   "hash": "3871e696a955",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionEmptyTitle": {
+   "en": "Nothing is waiting",
+   "ar": "لا شيء ينتظر",
+   "kind": "text",
+   "hash": "f21152a2741a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionLead": {
+   "en": "From every queue, most serious first. Each row opens its screen.",
+   "ar": "من كلّ الطوابير، الأخطر أوّلاً. كلّ سطرٍ يفتح شاشته.",
+   "kind": "text",
+   "hash": "dd30ecdeb179",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionPending": {
+   "en": "Reading the queues…",
+   "ar": "تُقرأ الطوابير…",
+   "kind": "text",
+   "hash": "561c596f4e47",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionTitle": {
+   "en": "Needs attention",
+   "ar": "يحتاج انتباهاً",
+   "kind": "text",
+   "hash": "6448e7907f83",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.awaitingReview": {
+   "en": "Files awaiting review",
+   "ar": "ملفّاتٌ بانتظار المراجعة",
+   "kind": "text",
+   "hash": "404e25aa096a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.balance": {
+   "en": "Balance",
+   "ar": "الرصيد",
+   "kind": "text",
+   "hash": "f31f96930a73",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.byCurrency": {
+   "en": "Financial sponsorship by currency",
+   "ar": "الكفالة المالية بعملاتها",
+   "kind": "text",
+   "hash": "f3543f42c438",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.charged": {
+   "en": "Collected",
+   "ar": "مُحصَّل",
+   "kind": "text",
+   "hash": "9b623ff1e89a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.chargedHint": {
+   "en": "what was actually paid",
+   "ar": "ما دُفع فعلاً",
+   "kind": "text",
+   "hash": "f54965af1476",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenBarLabel": {
+   "en": "{0} fully sponsored and {1} waiting",
+   "ar": "{0} مكفولون بالكامل و{1} ينتظرون",
+   "kind": "template",
+   "params": 2,
+   "hash": "118fc7d1a571",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenCaption": {
+   "en": "{0} of published files",
+   "ar": "{0} من الملفّات المنشورة",
+   "kind": "template",
+   "params": 1,
+   "hash": "29d5e69bbb35",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenEmpty": {
+   "en": "No published file yet",
+   "ar": "لا ملفّ منشور بعد",
+   "kind": "text",
+   "hash": "09061ee289ba",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenLabel": {
+   "en": "Children fully sponsored",
+   "ar": "أطفالٌ مكفولون بالكامل",
+   "kind": "text",
+   "hash": "701468ada8e8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenLead": {
+   "en": "Sponsored and waiting, and the need that remains.",
+   "ar": "المكفولون والمنتظرون، وما بقي من احتياج.",
+   "kind": "text",
+   "hash": "4f7feca6ab90",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.childrenTitle": {
+   "en": "Children",
+   "ar": "الأطفال",
+   "kind": "text",
+   "hash": "083c5f480b4f",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.colCountry": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.colCounts": {
+   "en": "Sponsored / published",
+   "ar": "مكفول / منشور",
+   "kind": "text",
+   "hash": "529596b95899",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.colCoverage": {
+   "en": "Sponsored of published",
+   "ar": "المكفول من المنشور",
+   "kind": "text",
+   "hash": "6cc87206eab5",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.colGap": {
+   "en": "Monthly gap",
+   "ar": "الفجوة الشهرية",
+   "kind": "text",
+   "hash": "4e5541be2440",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countriesEmpty": {
+   "en": "No published file yet",
+   "ar": "لا ملفّ منشور بعد",
+   "kind": "text",
+   "hash": "09061ee289ba",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countriesEmptyText": {
+   "en": "Countries appear here once the first files are approved.",
+   "ar": "تظهر الدول هنا حين تُعتمد أوّل الملفّات.",
+   "kind": "text",
+   "hash": "25914f6d7117",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countriesLead": {
+   "en": "Published files in each country, how many are sponsored, and the monthly gap in its currency.",
+   "ar": "الملفّات المنشورة في كلّ دولة، والمكفول منها، والفجوة الشهرية بعملتها.",
+   "kind": "text",
+   "hash": "6dce17962717",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countriesTitle": {
+   "en": "Children by country",
+   "ar": "الأطفال بحسب الدولة",
+   "kind": "text",
+   "hash": "6a9bc7f4a859",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countriesUnavailable": {
+   "en": "Country counts could not be read right now.",
+   "ar": "تعذّرت قراءة أعداد الدول الآن.",
+   "kind": "text",
+   "hash": "99325e613cc8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.countryBarLabel": {
+   "en": "{0}: {1} sponsored of {2}",
+   "ar": "{0}: {1} مكفولون من {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "d9d6fddf6ffe",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.coverage": {
+   "en": "Coverage {0}",
+   "ar": "التغطية {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "57452c5c1a96",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.coverageLabel": {
+   "en": "Monthly need covered in {0}",
+   "ar": "تغطية الاحتياج الشهري بعملة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c8ed624ccdcf",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.credited": {
+   "en": "Credited monthly",
+   "ar": "مُقيَّد شهرياً",
+   "kind": "text",
+   "hash": "0f84968e5a98",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.creditedHint": {
+   "en": "to the child's need, in its currency",
+   "ar": "لحاجة الطفل بعملتها",
+   "kind": "text",
+   "hash": "c80c4f37c7b7",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.currencyNote": {
+   "en": "“Credited” is what is recorded against a child's need in the need's currency; “collected” is what was actually paid in the payment currency. Two currencies are never summed; the dollar equivalent is approximate (≈).",
+   "ar": "«المقيَّد» ما يُسجَّل لحاجة الطفل بعملة حاجته، و«المحصَّل» ما دُفع فعلاً بعملة الدفع. لا تُجمع عملتان؛ والمعادل بالدولار تقريبيٌّ (≈).",
+   "kind": "text",
+   "hash": "bc41c831e3a8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.deniedText": {
+   "en": "Your account does not hold the admin role, or the session has ended. Sign in with an admin account and come back.",
+   "ar": "حسابك لا يحمل دور الإدارة، أو انتهت الجلسة. سجّل الدخول بحساب الإدارة ثم عُد.",
+   "kind": "text",
+   "hash": "84de1aed24b1",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.deniedTitle": {
+   "en": "This page is for the admin team only",
+   "ar": "هذه الصفحة لفريق الإدارة وحده",
+   "kind": "text",
+   "hash": "8f0d19631be0",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.disbursed": {
+   "en": "Disbursed",
+   "ar": "مصروف",
+   "kind": "text",
+   "hash": "74ee4f9cfa4f",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.disputedNote": {
+   "en": "Disputed {0}",
+   "ar": "متنازعٌ عليها {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0099f8ff57d7",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsActive": {
+   "en": "Active",
+   "ar": "نشطون",
+   "kind": "text",
+   "hash": "ae451679cc28",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsBarLabel": {
+   "en": "{0} active and {1} with no active sponsorship",
+   "ar": "{0} نشطون و{1} بلا كفالة نشطة",
+   "kind": "template",
+   "params": 2,
+   "hash": "425c01e86367",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsEmpty": {
+   "en": "No donor yet",
+   "ar": "لا داعم بعد",
+   "kind": "text",
+   "hash": "de1444e02c0e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsInactive": {
+   "en": "No active sponsorship",
+   "ar": "بلا كفالة نشطة",
+   "kind": "text",
+   "hash": "b79ecee6d25d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsLabel": {
+   "en": "Active donors",
+   "ar": "داعمون نشطون",
+   "kind": "text",
+   "hash": "dccde825ad88",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsLead": {
+   "en": "Active, new, and those whose giving has stopped.",
+   "ar": "النشطون، والجدد، ومن توقّف عطاؤه.",
+   "kind": "text",
+   "hash": "83842a3897b3",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsNew": {
+   "en": "New in 30 days",
+   "ar": "جدد في 30 يوماً",
+   "kind": "text",
+   "hash": "d67d4f91ca8b",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsNewPartial": {
+   "en": "More than the first hundred; needs a database count",
+   "ar": "يتجاوز العدد أوّل مئة؛ يحتاج عدّاً من القاعدة",
+   "kind": "text",
+   "hash": "02279d6babcb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsRecent": {
+   "en": "{0} started in the last 30 days",
+   "ar": "{0} بدأوا خلال 30 يوماً",
+   "kind": "template",
+   "params": 1,
+   "hash": "9c24492ae542",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsRecentUnknown": {
+   "en": "New donors: the list exceeds the first page",
+   "ar": "الجدد: يتجاوز العدد الصفحة الأولى",
+   "kind": "text",
+   "hash": "5fe1ce396157",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsTitle": {
+   "en": "Donors",
+   "ar": "الداعمون",
+   "kind": "text",
+   "hash": "c1f08a23d171",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.due": {
+   "en": "Pledges due",
+   "ar": "تعهّداتٌ مستحقّة",
+   "kind": "text",
+   "hash": "3128273a29c3",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueAmount": {
+   "en": "Amounts awaiting collection",
+   "ar": "مبالغ بانتظار التحصيل",
+   "kind": "text",
+   "hash": "a287a4dbbe2b",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueCount": {
+   "en": "sponsorships awaiting payment",
+   "ar": "كفالة بانتظار الدفع",
+   "kind": "text",
+   "hash": "011a893c841e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueNone": {
+   "en": "Nothing due right now",
+   "ar": "لا مستحقّ الآن",
+   "kind": "text",
+   "hash": "980d6d91d5ac",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.errorText": {
+   "en": "The platform figures did not arrive from the server. Nothing changed; try again.",
+   "ar": "لم تصل أرقام المنصّة من الخادم. لم يتغيّر شيء؛ حاول مرّةً أخرى.",
+   "kind": "text",
+   "hash": "3040b09b1d01",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.errorTitle": {
+   "en": "The dashboard could not load",
+   "ar": "تعذّر تحميل اللوحة",
+   "kind": "text",
+   "hash": "4ad18b4d7825",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.failedNote": {
+   "en": "Failed payments {0}",
+   "ar": "دفعاتٌ فاشلة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0f0f8dc39bb2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.gap": {
+   "en": "Monthly gap",
+   "ar": "الفجوة الشهرية",
+   "kind": "text",
+   "hash": "4e5541be2440",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.goLiveOf": {
+   "en": "of {0} conditions",
+   "ar": "من {0} شروط",
+   "kind": "template",
+   "params": 1,
+   "hash": "90ee606ae744",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroApprox": {
+   "en": "The dollar equivalent is approximate, at an indicative rate dated {0}",
+   "ar": "المعادل بالدولار تقريبيٌّ بسعرٍ استرشادي بتاريخ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "dd9b7601dcf6",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroBalance": {
+   "en": "Treasury balance",
+   "ar": "رصيد الخزينة",
+   "kind": "text",
+   "hash": "f19d7424d02c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroCaption": {
+   "en": "What active sponsorships credit to children's needs each month",
+   "ar": "ما يُقيَّد لحاجات الأطفال كلّ شهر من الكفالات النشطة",
+   "kind": "text",
+   "hash": "b4ef4216f407",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroCollected": {
+   "en": "Collected to date",
+   "ar": "مُحصَّل حتى الآن",
+   "kind": "text",
+   "hash": "c0687f11f4a4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroLabel": {
+   "en": "Active monthly commitment",
+   "ar": "الالتزام الشهري النشط",
+   "kind": "text",
+   "hash": "bcb9bf66e0ab",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroMissing": {
+   "en": "No exchange rate, so left out of the total: {0}",
+   "ar": "بلا سعر صرف فلم تدخل المجموع: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "3ba24fe399d6",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroNone": {
+   "en": "No active sponsorship yet",
+   "ar": "لا كفالة نشطة بعد",
+   "kind": "text",
+   "hash": "9320f7e969e8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroSponsorships": {
+   "en": "active sponsorships",
+   "ar": "كفالة نشطة",
+   "kind": "text",
+   "hash": "ed2b2063a026",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.hidden": {
+   "en": "Counts withheld: a small group could identify a child",
+   "ar": "أعدادٌ محجوبة: مجموعةٌ صغيرة قد تدلّ على طفل",
+   "kind": "text",
+   "hash": "c3c1be79a016",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.hiddenShort": {
+   "en": "Withheld",
+   "ar": "محجوب",
+   "kind": "text",
+   "hash": "a2d87699b7a6",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inSources.one": {
+   "en": "in {0} source",
+   "ar": "في مصدرٍ واحد",
+   "kind": "plural",
+   "hash": "110b910026ff",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inSources.other": {
+   "en": "in {0} sources",
+   "ar": "في {0} مصدر",
+   "kind": "plural",
+   "hash": "07cd832eb819",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.access": {
+   "en": "Access requests",
+   "ar": "طلبات اطّلاع",
+   "kind": "text",
+   "hash": "bf763dcd2e2c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.circle_role": {
+   "en": "Child-circle roles",
+   "ar": "أدوارٌ في دوائر الأطفال",
+   "kind": "text",
+   "hash": "53bd420f8c98",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.circle_role_renewal": {
+   "en": "Circle role renewals",
+   "ar": "تجديد أدوار الدوائر",
+   "kind": "text",
+   "hash": "57b8e91f1ff0",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.discrepancy": {
+   "en": "Source discrepancies",
+   "ar": "اختلافاتٌ من المصدر",
+   "kind": "text",
+   "hash": "772c8512d6f8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.donor": {
+   "en": "Donor entities awaiting approval",
+   "ar": "جهاتٌ مانحة بانتظار الاعتماد",
+   "kind": "text",
+   "hash": "4e1560481bcb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.money_issue": {
+   "en": "Money items needing a decision",
+   "ar": "مالٌ يحتاج قراراً",
+   "kind": "text",
+   "hash": "ec0c925849ef",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.office_report": {
+   "en": "Office reports to review",
+   "ar": "تقارير مكاتب للمراجعة",
+   "kind": "text",
+   "hash": "68b191f25056",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.org": {
+   "en": "Care organizations awaiting approval",
+   "ar": "جهات رعايةٍ بانتظار الاعتماد",
+   "kind": "text",
+   "hash": "fd116df8425c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.orphan": {
+   "en": "Child files awaiting review",
+   "ar": "ملفّات أطفالٍ بانتظار المراجعة",
+   "kind": "text",
+   "hash": "e496db37f5b0",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.orphan_edit": {
+   "en": "Edits to published files",
+   "ar": "تعديلاتٌ على ملفّاتٍ منشورة",
+   "kind": "text",
+   "hash": "68905c1bc9ab",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.pledge": {
+   "en": "Support pledges awaiting a decision",
+   "ar": "تعهّدات دعمٍ بانتظار القرار",
+   "kind": "text",
+   "hash": "c25b27a102a8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.progress_report": {
+   "en": "Organization reports to review",
+   "ar": "تقارير جهاتٍ للمراجعة",
+   "kind": "text",
+   "hash": "2ecd0bd9ae8a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.transfer": {
+   "en": "Bank transfers awaiting confirmation",
+   "ar": "تحويلاتٌ بنكية بانتظار التأكيد",
+   "kind": "text",
+   "hash": "f602cd53284b",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.inbox.unlock": {
+   "en": "Unlock requests",
+   "ar": "طلبات فكّ القفل",
+   "kind": "text",
+   "hash": "7362b6555d31",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindActive": {
+   "en": "active",
+   "ar": "نشط",
+   "kind": "text",
+   "hash": "59a33f87e7f2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindMonthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindNoSource": {
+   "en": "No database total yet",
+   "ar": "لا مجموع من القاعدة بعد",
+   "kind": "text",
+   "hash": "fd831fb3d342",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.lead": {
+   "en": "One picture of everything: support, children, donors, and what is waiting on a decision.",
+   "ar": "صورةٌ واحدة لكلّ شيء: الدعم، والأطفال، والداعمون، وما ينتظر قراراً.",
+   "kind": "text",
+   "hash": "13f7d0e3cbea",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.listJoin": {
+   "en": ", ",
+   "ar": "، ",
+   "kind": "text",
+   "hash": "b07e750c1a03",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.loadingLabel": {
+   "en": "Loading the management overview",
+   "ar": "جارٍ تحميل لوحة الإدارة",
+   "kind": "text",
+   "hash": "be97ad663a5d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ofTotal": {
+   "en": "of {0}",
+   "ar": "من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f5c8fbade00d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.oldest.one": {
+   "en": "Oldest {0} day ago",
+   "ar": "الأقدم منذ يوم",
+   "kind": "plural",
+   "hash": "f311158b00e9",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.oldest.other": {
+   "en": "Oldest {0} days ago",
+   "ar": "الأقدم منذ {0} يوم",
+   "kind": "plural",
+   "hash": "8e89a9273027",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.oldest.zero": {
+   "en": "Oldest from today",
+   "ar": "الأقدم اليوم",
+   "kind": "plural",
+   "hash": "ecb6fd5446cb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openChildren": {
+   "en": "Children list",
+   "ar": "قائمة الأطفال",
+   "kind": "text",
+   "hash": "75e5f5b190b5",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openDonors": {
+   "en": "Donors list",
+   "ar": "قائمة الداعمين",
+   "kind": "text",
+   "hash": "65980aa777dd",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openNeed": {
+   "en": "Open monthly need",
+   "ar": "الاحتياج الشهري المفتوح",
+   "kind": "text",
+   "hash": "c8fd7ad282e4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openNeedNone": {
+   "en": "No open gap",
+   "ar": "لا فجوة مفتوحة",
+   "kind": "text",
+   "hash": "7d59fcd9a95e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openQueue": {
+   "en": "Approval queue",
+   "ar": "طابور الاعتماد",
+   "kind": "text",
+   "hash": "2d74d9cc4db7",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.openTreasury": {
+   "en": "Treasury and exports",
+   "ar": "الخزينة والتصدير",
+   "kind": "text",
+   "hash": "26ee84134e33",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.admin_quorum": {
+   "en": "Admin quorum unavailable",
+   "ar": "نصاب المشرفين غير متاح",
+   "kind": "text",
+   "hash": "056486a069b9",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.discrepancies": {
+   "en": "Discrepancies with operating platforms",
+   "ar": "تعارضاتٌ مع منصّات التشغيل",
+   "kind": "text",
+   "hash": "a59bf431ef29",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.email_failed": {
+   "en": "Emails that failed to send",
+   "ar": "رسائل فشل إرسالها",
+   "kind": "text",
+   "hash": "9f61f8593c64",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.integrity_chain": {
+   "en": "The integrity log chain is broken",
+   "ar": "سلسلة سجلّ السلامة مكسورة",
+   "kind": "text",
+   "hash": "e9acb6b24abe",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.mirror_lag": {
+   "en": "Operating platforms behind on sync",
+   "ar": "منصّات تشغيلٍ تأخّرت مزامنتها",
+   "kind": "text",
+   "hash": "55daf677dca0",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.payments_stuck": {
+   "en": "Payments pending longer than expected",
+   "ar": "دفعاتٌ معلّقة أطول من المعتاد",
+   "kind": "text",
+   "hash": "81d41ff16918",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.unlock_waiting": {
+   "en": "Overdue unlock requests",
+   "ar": "طلبات فكّ قفلٍ متأخّرة",
+   "kind": "text",
+   "hash": "793f50e88cb2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ops.webhook_errors": {
+   "en": "Payment events left unprocessed",
+   "ar": "أحداث دفعٍ لم تُعالَج",
+   "kind": "text",
+   "hash": "b707ed4c349a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.partialText": {
+   "en": "Could not reach: {0}. Anything that depends on them is missing, not zero.",
+   "ar": "تعذّر الوصول إلى: {0}. ما يعتمد عليها غائبٌ لا صفر.",
+   "kind": "template",
+   "params": 1,
+   "hash": "b1ce5f985e82",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.partialTitle": {
+   "en": "This view is partial",
+   "ar": "اللوحة جزئية",
+   "kind": "text",
+   "hash": "2f0b29805f46",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.pending": {
+   "en": "Awaiting payment",
+   "ar": "بانتظار الدفع",
+   "kind": "text",
+   "hash": "670b461263f2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.refresh": {
+   "en": "Refresh",
+   "ar": "تحديث",
+   "kind": "text",
+   "hash": "7c31b389e29a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.refreshing": {
+   "en": "Refreshing",
+   "ar": "جارٍ التحديث",
+   "kind": "text",
+   "hash": "9991051387cd",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.regionPartial": {
+   "en": "partial",
+   "ar": "جزئي",
+   "kind": "text",
+   "hash": "3157279bf2bb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.regionsLabel": {
+   "en": "Published by continent",
+   "ar": "المنشور بحسب القارّة",
+   "kind": "text",
+   "hash": "754698525347",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.retry": {
+   "en": "Try again",
+   "ar": "إعادة المحاولة",
+   "kind": "text",
+   "hash": "c32d3c94b178",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleBanner": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleBannerText": {
+   "en": "Fictional figures and codes that show the dashboard populated. They are not the platform's numbers and never enter a payment flow.",
+   "ar": "أرقامٌ ورموز افتراضية لعرض اللوحة ممتلئة. ليست أرقام المنصّة، ولا تدخل أيّ مسار دفع.",
+   "kind": "text",
+   "hash": "659b31bf9552",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleOff": {
+   "en": "Back to platform data",
+   "ar": "العودة إلى بيانات المنصّة",
+   "kind": "text",
+   "hash": "29a6c3668da6",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleOn": {
+   "en": "Show sample data",
+   "ar": "عرض بيانات نموذجية",
+   "kind": "text",
+   "hash": "e27a44092e0a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleOnlyNote": {
+   "en": "Qualification, in-kind and the monthly trend have no live source yet: they appear in the sample only.",
+   "ar": "التأهيل والعيني والاتجاه الشهري لا مصدر حيّاً لها بعد: تظهر في العيّنة وحدها.",
+   "kind": "text",
+   "hash": "f6db3e6ebd76",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleOnlyTag": {
+   "en": "Sample only",
+   "ar": "نموذجي فقط",
+   "kind": "text",
+   "hash": "0a69698eb4c4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sampleTag": {
+   "en": "Sample",
+   "ar": "نموذجي",
+   "kind": "text",
+   "hash": "2954f115de87",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.access": {
+   "en": "Access permissions",
+   "ar": "الإذن بالاطّلاع",
+   "kind": "text",
+   "hash": "20a4091dd46d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.countries": {
+   "en": "Countries and sources",
+   "ar": "الدول والمصادر",
+   "kind": "text",
+   "hash": "94ae8b7d47b8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.inbox": {
+   "en": "Decision inbox",
+   "ar": "صندوق القرارات",
+   "kind": "text",
+   "hash": "dd09f0e3eae8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.integrity": {
+   "en": "Integrity",
+   "ar": "سلامة الحقيقة",
+   "kind": "text",
+   "hash": "7a3145ed6d54",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.languages": {
+   "en": "Languages and translation",
+   "ar": "اللغات والترجمة",
+   "kind": "text",
+   "hash": "6d5657dd7217",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.monitoring": {
+   "en": "Monitoring",
+   "ar": "المراقبة",
+   "kind": "text",
+   "hash": "9206912c8972",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.orphans": {
+   "en": "Children",
+   "ar": "الأيتام",
+   "kind": "text",
+   "hash": "f0b329cad8bc",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.overview": {
+   "en": "Treasury and go-live readiness",
+   "ar": "الخزينة وجاهزية الاعتماد",
+   "kind": "text",
+   "hash": "3f2d837bd05e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.queue": {
+   "en": "Approval queue",
+   "ar": "طابور الاعتماد",
+   "kind": "text",
+   "hash": "2d74d9cc4db7",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screens.sponsors": {
+   "en": "Sponsors",
+   "ar": "الكفلاء",
+   "kind": "text",
+   "hash": "9653b0302b10",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.screensTitle": {
+   "en": "Every admin screen",
+   "ar": "كلّ شاشات الإدارة",
+   "kind": "text",
+   "hash": "5eeb74acadec",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.severity.critical": {
+   "en": "Critical",
+   "ar": "حرج",
+   "kind": "text",
+   "hash": "fa39deee3489",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.severity.info": {
+   "en": "For information",
+   "ar": "للعلم",
+   "kind": "text",
+   "hash": "3513b7dc5b9c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.severity.warn": {
+   "en": "Warning",
+   "ar": "تنبيه",
+   "kind": "text",
+   "hash": "7b3737499535",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.showAll": {
+   "en": "All countries ({0})",
+   "ar": "كلّ الدول ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "21950ecd1d16",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.showLess": {
+   "en": "Fewer",
+   "ar": "أقلّ",
+   "kind": "text",
+   "hash": "46518020506e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.dispatch": {
+   "en": "notification queue",
+   "ar": "طابور الإشعارات",
+   "kind": "text",
+   "hash": "6a1b0b501211",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.geo": {
+   "en": "country counts",
+   "ar": "أعداد الدول",
+   "kind": "text",
+   "hash": "b1f9eac2909a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.inbox": {
+   "en": "decision inbox",
+   "ar": "صندوق القرارات",
+   "kind": "text",
+   "hash": "81da718832ee",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.links": {
+   "en": "operating platform links",
+   "ar": "ربط منصّات التشغيل",
+   "kind": "text",
+   "hash": "6c6bec1e7a3c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.locales": {
+   "en": "translation",
+   "ar": "الترجمة",
+   "kind": "text",
+   "hash": "647c1403acab",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.ops": {
+   "en": "operations health",
+   "ar": "صحّة التشغيل",
+   "kind": "text",
+   "hash": "07810410ffa9",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.overview": {
+   "en": "platform totals",
+   "ar": "المجاميع العامّة",
+   "kind": "text",
+   "hash": "d422100209e2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.payments": {
+   "en": "payment setup",
+   "ar": "إعداد الدفع",
+   "kind": "text",
+   "hash": "1b27cef3c1fc",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sourceNames.sources": {
+   "en": "sources",
+   "ar": "المصادر",
+   "kind": "text",
+   "hash": "2ba23ec72cd7",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sponsored": {
+   "en": "Fully sponsored",
+   "ar": "مكفولٌ بالكامل",
+   "kind": "text",
+   "hash": "0d03d0a49e6d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.sponsoredHidden": {
+   "en": "Sponsored count withheld",
+   "ar": "المكفول محجوب",
+   "kind": "text",
+   "hash": "fb2db7c2eb55",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.supportEmpty": {
+   "en": "No money movement yet",
+   "ar": "لا حركة مالية بعد",
+   "kind": "text",
+   "hash": "80fc26601167",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.supportEmptyText": {
+   "en": "Commitments and collections appear here once the first sponsorship starts.",
+   "ar": "تظهر هنا الالتزامات والتحصيل حين تبدأ أوّل كفالة.",
+   "kind": "text",
+   "hash": "4d1953e6e0bb",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.supportLead": {
+   "en": "Financial sponsorship, qualification and in-kind, with a line per currency.",
+   "ar": "الكفالة المالية والتأهيل والعيني، ولكلّ عملةٍ سطرها.",
+   "kind": "text",
+   "hash": "26184dc36168",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.supportTitle": {
+   "en": "Support",
+   "ar": "الدعم",
+   "kind": "text",
+   "hash": "ba3aaee9dae2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.title": {
+   "en": "Management overview",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "49706d84ca2e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.dispatch_failed": {
+   "en": "Notifications that exhausted their retries",
+   "ar": "إشعاراتٌ استنفدت محاولاتها",
+   "kind": "text",
+   "hash": "e10d087d2b8a",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.dispatch_pending": {
+   "en": "Notifications waiting in the send queue",
+   "ar": "إشعاراتٌ في طابور الإرسال",
+   "kind": "text",
+   "hash": "c1357ac1ec1f",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.dispatch_schema": {
+   "en": "Notification schema incomplete — dispatch is halted",
+   "ar": "مخطّط الإشعارات ناقص — التصريف موقوف",
+   "kind": "text",
+   "hash": "b48ce5b49323",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.go_live": {
+   "en": "Go-live conditions not yet met",
+   "ar": "شروط اعتمادٍ لم تتحقّق",
+   "kind": "text",
+   "hash": "e487f8cd7299",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.source_checklist": {
+   "en": "Open items on source onboarding checklists",
+   "ar": "بنودٌ مفتوحة في قوائم ربط المصادر",
+   "kind": "text",
+   "hash": "6b8a3a7a1b95",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.source_errors": {
+   "en": "Sources whose last sync ended in an error",
+   "ar": "مصادر انتهت آخر مزامنتها بخطأ",
+   "kind": "text",
+   "hash": "58f6b44be290",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.sync_lagging": {
+   "en": "Linked countries behind on sync",
+   "ar": "دولٌ مربوطة تأخّرت مزامنتها",
+   "kind": "text",
+   "hash": "25e043fe04e2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.translation_drafts": {
+   "en": "Translations awaiting review",
+   "ar": "نصوصٌ مترجمة بانتظار المراجعة",
+   "kind": "text",
+   "hash": "0812fa59fdde",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.translation_reviewed": {
+   "en": "Reviewed translations not yet published",
+   "ar": "ترجماتٌ روجعت ولم تُنشر",
+   "kind": "text",
+   "hash": "4c34667e9b49",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendChartLabel": {
+   "en": "{0} over twelve months",
+   "ar": "اتجاه {0} خلال اثني عشر شهراً",
+   "kind": "template",
+   "params": 1,
+   "hash": "172de49b7520",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendDelta": {
+   "en": "{0} vs the previous month",
+   "ar": "{0} عن الشهر السابق",
+   "kind": "template",
+   "params": 1,
+   "hash": "7c73f0ebc285",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendLoading": {
+   "en": "Drawing the trend…",
+   "ar": "يُرسم الاتجاه…",
+   "kind": "text",
+   "hash": "ee13e6344030",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendMonth": {
+   "en": "Month",
+   "ar": "الشهر",
+   "kind": "text",
+   "hash": "19993f359a79",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendTable": {
+   "en": "Show table",
+   "ar": "عرض الجدول",
+   "kind": "text",
+   "hash": "035a49b1d91d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendTitle": {
+   "en": "Twelve-month trend",
+   "ar": "اتجاه اثني عشر شهراً",
+   "kind": "text",
+   "hash": "edb992ecb8fd",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendUnavailable": {
+   "en": "The monthly trend and the qualification and in-kind totals need a database aggregation that does not exist yet.",
+   "ar": "الاتجاه الشهري ومجاميع التأهيل والعيني تحتاج تجميعاً من القاعدة لم يُنشأ بعد.",
+   "kind": "text",
+   "hash": "86b896380ae3",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.unavailable": {
+   "en": "Unavailable right now",
+   "ar": "غير متاح الآن",
+   "kind": "text",
+   "hash": "8566f7e5c997",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.updatedAt": {
+   "en": "Updated {0}",
+   "ar": "آخر تحديث {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "b5f8bf8897db",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.waiting": {
+   "en": "Waiting for a sponsor",
+   "ar": "ينتظر كافلاً",
+   "kind": "text",
+   "hash": "d881e3628d47",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.workspace": {
+   "en": "Admin workspace",
+   "ar": "مساحة العمل الإدارية",
+   "kind": "text",
+   "hash": "e183cc156f4c",
+   "file": "src/components/admin/overview/copy.ts"
   },
   "components/auth/AuthDialog.consent": {
    "en": "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
@@ -9102,6 +10332,13 @@
    "kind": "text",
    "hash": "969b0941692d",
    "file": "src/routes/__root.tsx"
+  },
+  "routes/_authenticated/admin.overviewLink": {
+   "en": "Management overview",
+   "ar": "لوحة الإدارة — النظرة الشاملة",
+   "kind": "text",
+   "hash": "b71dfdc649ae",
+   "file": "src/routes/_authenticated/admin.tsx"
   },
   "routes/auth.agree": {
    "en": "By continuing you agree to the",

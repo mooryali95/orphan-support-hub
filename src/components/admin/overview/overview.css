@@ -1,0 +1,213 @@
+/*
+ * لوحة الإدارة — تخطيطها الخاصّ.
+ *
+ * هذه الورقة تُحمَّل مع قطعة اللوحة وحدها. كلّ صنفٍ جديد من Tailwind يدخل
+ * الورقة العامّة التي تحمّلها كلّ صفحة (وميزانية ‎/vision لا تحتمل بايتاً)، فما
+ * لم يكن موجوداً هناك أصلاً كُتب هنا بأسماء `ov-`. الألوان رموز الهوية وحدها.
+ */
+.ov-divide > * + *,
+.ov-rule-top {
+  border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+.ov-bleed {
+  margin-inline: -0.5rem;
+}
+.ov-row {
+  transition: background-color 150ms;
+}
+.ov-row:hover {
+  background-color: color-mix(in oklab, var(--secondary) 70%, transparent);
+}
+.ov-row:active {
+  background-color: var(--secondary);
+}
+.ov-chip {
+  transition:
+    border-color 150ms,
+    color 150ms;
+}
+.ov-chip:hover {
+  border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+  color: var(--primary);
+}
+
+/* الصفّ الأعلى: الرقم الرئيس بعرض خانتين، ثم مؤشّران */
+.ov-top,
+.ov-mid {
+  display: grid;
+  gap: 1.25rem;
+}
+.ov-hero-num {
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 800;
+}
+.ov-hero-fig {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ov-hero-tag {
+  border: 1px solid color-mix(in oklab, currentcolor 40%, transparent);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+.ov-skel-a {
+  height: 16rem;
+}
+.ov-skel-b {
+  height: 24rem;
+}
+
+/* الدعم: الأنواع واتجاهها، ثم العملات */
+.ov-support {
+  display: grid;
+  column-gap: 2.5rem;
+  row-gap: 1.5rem;
+}
+.ov-support-side {
+  border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  padding-top: 1.25rem;
+}
+.ov-kind {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+.ov-kind:first-child {
+  padding-top: 0;
+}
+.ov-kind-spark {
+  grid-column: span 2 / span 2;
+}
+.ov-table {
+  min-width: 26rem;
+}
+
+/* خطّ الاتجاه */
+.ov-spark {
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+.ov-dot {
+  position: absolute;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--card);
+  translate: -50% -50%;
+}
+.ov-tip {
+  position: absolute;
+  top: -2.25rem;
+  z-index: 10;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* الدول: على الجوال اسمٌ وعدد ثم الشريط ثم الفجوة؛ وعلى الواسع أربعة أعمدة */
+.ov-country {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 1.25rem;
+  row-gap: 0.375rem;
+  padding-block: 0.75rem;
+}
+.ov-country-head,
+.ov-only-wide {
+  display: none;
+}
+.ov-c-bar,
+.ov-c-gap {
+  grid-column: span 2 / span 2;
+}
+.ov-c-gap {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+.ov-bar-neutral {
+  background-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ov-spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@media (min-width: 40rem) {
+  .ov-hero-num {
+    font-size: 3.25rem;
+  }
+  .ov-hero-fig {
+    font-size: 1.25rem;
+  }
+  .ov-kind {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 11rem);
+  }
+  .ov-kind-spark {
+    grid-column: auto;
+  }
+  .ov-country,
+  .ov-country-head {
+    grid-template-columns: minmax(0, 12rem) minmax(0, 1fr) 8rem 8rem;
+  }
+  .ov-country-head {
+    display: grid;
+    column-gap: 1.25rem;
+  }
+  .ov-c-count {
+    order: 3;
+  }
+  .ov-c-bar {
+    order: 2;
+    grid-column: auto;
+  }
+  .ov-c-gap {
+    order: 4;
+    grid-column: auto;
+    text-align: end;
+    font-size: 0.875rem;
+    color: var(--foreground);
+  }
+  .ov-c-hidden {
+    grid-column: span 3 / span 3;
+    text-align: start;
+  }
+  .ov-only-narrow {
+    display: none;
+  }
+  .ov-only-wide {
+    display: inline;
+  }
+}
+
+@media (min-width: 64rem) {
+  .ov-top {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .ov-top-hero {
+    grid-column: span 2 / span 2;
+  }
+  .ov-mid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+  .ov-support {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ov-support-side {
+    border-top: 0;
+    padding-top: 0;
+    border-inline-start: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+    padding-inline-start: 2.5rem;
+  }
+}

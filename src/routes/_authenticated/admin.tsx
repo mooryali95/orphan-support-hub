@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { OrphanReviewPanel } from "@/components/intake/OrphanReviewPanel";
 import { ReportQueue } from "@/components/impact/ReportQueue";
@@ -27,7 +27,9 @@ import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
+import { getAdminOverview, getPaymentsReady, reviewOrphan } from "@/lib/admin.functions";
+import { goLiveSteps, linkHealth } from "@/lib/go-live";
+import { getDecisionInbox } from "@/lib/inbox.functions";
 import {
   formatDate,
   formatMoney,
@@ -37,6 +39,31 @@ import {
 } from "@/lib/format";
 import type { AdminOverview } from "@/lib/admin.functions";
 import { BRAND, pageTitle } from "@/config/brand";
+import { getSourcesOverview } from "@/lib/integrity.functions";
+import { getDispatchHealth, getOpsHealth } from "@/lib/monitoring.functions";
+import { Skeleton } from "@/components/ui/skeleton";
+import { defineCopy, dirOf, LocaleProvider, parseLocale, useCopy } from "@/lib/locale";
+
+const COPY = defineCopy("routes/_authenticated/admin", {
+  ar: { overviewLink: "لوحة الإدارة — النظرة الشاملة" },
+  en: { overviewLink: "Management overview" },
+});
+
+// دوالّ الإدارة القائمة تُمرَّر إلى اللوحة من هنا: هذه الصفحة تحملها أصلاً، فلا تُشقّ
+// لها قطعٌ مشتركة جديدة تزيد الحزمة الأولى.
+const ADMIN_FNS = {
+  getAdminOverview,
+  getPaymentsReady,
+  getDecisionInbox,
+  getSourcesOverview,
+  getDispatchHealth,
+  getOpsHealth,
+  goLiveSteps,
+  linkHealth,
+};
+
+// لوحة الإدارة في قطعتها: تُحمَّل حين تُفتح، ولا تزيد وزن صفحةٍ أخرى.
+const ManagementOverview = lazy(() => import("@/components/admin/overview/ManagementOverview"));
 
 export const Route = createFileRoute("/_authenticated/admin")({
   /* الإدارة وحدها — راحة لا حماية: الحارس الحقيقي في القاعدة. */
@@ -57,6 +84,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Tab =
+  | "home"
   | "inbox"
   | "platform"
   | "overview"
@@ -83,12 +111,28 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<Tab>("inbox");
+  // الإدارة تهبط على «لوحة الإدارة» (النظرة الشاملة)، ومنها إلى كلّ تبويب.
+  const [tab, setTab] = useState<Tab>("home");
+  const [sample, setSample] = useState(false);
+  const copy = useCopy(COPY);
   // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
+  // و‎/admin?sample=1 يعرض العيّنة النموذجية للوحة الإدارة.
   useEffect(() => {
-    const t = new URLSearchParams(window.location.search).get("tab");
+    const q = new URLSearchParams(window.location.search);
+    const t = q.get("tab");
     if (t && SECTIONS.some(([, tabs]) => tabs.includes(t as Tab))) setTab(t as Tab);
+    if (q.get("sample") === "1" || q.get("sample") === "true") setSample(true);
   }, []);
+  const actions = useMemo(
+    () => ({
+      open: (next: Tab) => {
+        setTab(next);
+        window.scrollTo({ top: 0 });
+      },
+      setSample,
+    }),
+    [],
+  );
   // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
 
@@ -99,6 +143,28 @@ function AdminPage() {
 
   function refresh() {
     queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
+  }
+
+  if (tab === "home") {
+    // هذه اللوحة مترجمة، فيُرفع عنها غلاف العربية الذي يلفّ ما بعد الدخول
+    // (انظر route.tsx): تُعرض بلغة الزائر واتجاهها.
+    const locale = parseLocale(document.cookie);
+    return (
+      <LocaleProvider locale={locale}>
+        <div dir={dirOf(locale)} lang={locale}>
+          <Suspense
+            fallback={
+              <div className="mx-auto max-w-6xl px-4 py-10" aria-busy="true">
+                <Skeleton className="h-9 w-48" />
+                <Skeleton className="mt-8 rounded-3xl" style={{ height: "16rem" }} />
+              </div>
+            }
+          >
+            <ManagementOverview sample={sample} fns={ADMIN_FNS} actions={actions} />
+          </Suspense>
+        </div>
+      </LocaleProvider>
+    );
   }
 
   if (isLoading) {
@@ -149,6 +215,14 @@ function AdminPage() {
     >
       {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
           شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
+      <button
+        type="button"
+        onClick={() => setTab("home")}
+        className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <ChevronRight aria-hidden="true" className="size-4" strokeWidth={2} />
+        {copy.overviewLink}
+      </button>
       <nav aria-label="أقسام الإدارة" className="flex flex-wrap gap-2">
         {SECTIONS.map(([label, tabs]) => {
           const active = tabs.includes(tab);
