@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as HallRouteImport } from './routes/hall'
@@ -57,6 +58,7 @@ import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notif
 import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
 import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/reconcile'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
+import { Route as ApiPublicSupporterAssistantRouteImport } from './routes/api/public.supporter-assistant'
 import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
@@ -74,6 +76,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -310,6 +317,12 @@ const ApiPaymentsWebhookRoute = ApiPaymentsWebhookRouteImport.update({
   path: '/api/payments/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSupporterAssistantRoute =
+  ApiPublicSupporterAssistantRouteImport.update({
+    id: '/api/public/supporter-assistant',
+    path: '/api/public/supporter-assistant',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const VisionReceiptIdRoute = VisionReceiptIdRouteImport.update({
   id: '/vision/receipt/$id',
   path: '/vision/receipt/$id',
@@ -364,6 +377,7 @@ const LovableEmailTransactionalPreviewRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
   '/hall': typeof HallRoute
@@ -410,6 +424,7 @@ export interface FileRoutesByFullPath {
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -422,6 +437,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
   '/hall': typeof HallRoute
@@ -467,6 +483,7 @@ export interface FileRoutesByTo {
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -481,6 +498,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/developers': typeof DevelopersRoute
   '/hall': typeof HallRoute
@@ -527,6 +545,7 @@ export interface FileRoutesById {
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
+  '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -541,6 +560,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ask'
     | '/auth'
     | '/developers'
     | '/hall'
@@ -587,6 +607,7 @@ export interface FileRouteTypes {
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
+    | '/api/public/supporter-assistant'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -599,6 +620,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ask'
     | '/auth'
     | '/developers'
     | '/hall'
@@ -644,6 +666,7 @@ export interface FileRouteTypes {
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
+    | '/api/public/supporter-assistant'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -657,6 +680,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/ask'
     | '/auth'
     | '/developers'
     | '/hall'
@@ -703,6 +727,7 @@ export interface FileRouteTypes {
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
+    | '/api/public/supporter-assistant'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
@@ -717,6 +742,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   DevelopersRoute: typeof DevelopersRoute
   HallRoute: typeof HallRoute
@@ -748,6 +774,7 @@ export interface RootRouteChildren {
   ApiOpsHealthRoute: typeof ApiOpsHealthRoute
   ApiPaymentsReconcileRoute: typeof ApiPaymentsReconcileRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
+  ApiPublicSupporterAssistantRoute: typeof ApiPublicSupporterAssistantRoute
   VisionReceiptIdRoute: typeof VisionReceiptIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -768,6 +795,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1092,6 +1126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/supporter-assistant': {
+      id: '/api/public/supporter-assistant'
+      path: '/api/public/supporter-assistant'
+      fullPath: '/api/public/supporter-assistant'
+      preLoaderRoute: typeof ApiPublicSupporterAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vision/receipt/$id': {
       id: '/vision/receipt/$id'
       path: '/vision/receipt/$id'
@@ -1222,6 +1263,7 @@ const TryRouteWithChildren = TryRoute._addFileChildren(TryRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   DevelopersRoute: DevelopersRoute,
   HallRoute: HallRoute,
@@ -1253,6 +1295,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOpsHealthRoute: ApiOpsHealthRoute,
   ApiPaymentsReconcileRoute: ApiPaymentsReconcileRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
+  ApiPublicSupporterAssistantRoute: ApiPublicSupporterAssistantRoute,
   VisionReceiptIdRoute: VisionReceiptIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
