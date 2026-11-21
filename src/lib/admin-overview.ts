@@ -142,6 +142,11 @@ export type UnifiedTotal = {
   currency: string;
   /** كلّ المبالغ بالعملة الموحّدة أصلاً: مجموعٌ دقيق بلا تحويل. */
   exact: boolean;
+  /**
+   * `same` بلا تحويل · `firm` بسعرٍ معتمد مخزَّن (رقمٌ محاسبي بتاريخ سعره) ·
+   * `indicative` بسعرٍ استرشادي: يُعرض «≈» لا رقماً محاسبياً.
+   */
+  basis: "same" | "firm" | "indicative";
   /** أقدم تاريخ سعرٍ استُعمل؛ فارغٌ حين لا تحويل. */
   asOf: string;
   /** عملاتٌ بلا سعرٍ إلى الموحّدة: لم تدخل المجموع. */
@@ -177,6 +182,7 @@ export function unifiedTotal(rows: readonly SupportRow[], field: MoneyField): Un
     amount: Math.round(amount * 100) / 100,
     currency: UNIFIED_CURRENCY,
     exact,
+    basis: exact ? "same" : "indicative",
     asOf,
     missing,
   };
@@ -359,6 +365,8 @@ export type AttentionTopic =
   | { type: "source_errors" }
   | { type: "sync_lagging" }
   | { type: "go_live"; total: number }
+  | { type: "due_overdue" }
+  | { type: "donors_at_risk" }
   | { type: "ops"; check: string; title: string };
 
 export type AttentionItem = {
@@ -371,8 +379,11 @@ export type AttentionItem = {
   oldestAt: string | null;
 };
 
+/** من الصندوق يُقرأ النوع والتاريخ وحدهما — لا عنوان ولا اسم يصل اللوحة. */
+export type InboxEntry = Pick<InboxItem, "kind" | "created_at">;
+
 export type AttentionInput = {
-  inbox: Loaded<InboxItem[]>;
+  inbox: Loaded<readonly InboxEntry[]>;
   sources: Loaded<SourcesOverview>;
   locales: Loaded<ReviewLocale[]>;
   dispatch: Loaded<DispatchHealth>;
@@ -381,6 +392,8 @@ export type AttentionInput = {
   links: Loaded<{ linked: number; healthy: number }>;
   /** شروط الاعتماد كما تحسبها `goLiveSteps`؛ تُهمل في الوضع الحقيقي. */
   goLive: GoLiveStep[] | null;
+  /** مجاميع الدعم من القاعدة، إن وُجدت دالّتها: فائت الاستحقاق والمتعثّرون. */
+  summary?: SupportSummary | null | undefined;
   now?: number;
 };
 
@@ -533,6 +546,28 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
     );
   }
 
+  if (i.summary) {
+    const overdue = i.summary.due.filter((d) => d.bucket === "overdue");
+    add(
+      "due_overdue",
+      { type: "due_overdue" },
+      "warn",
+      overdue.reduce((a, d) => a + d.count, 0),
+      "sponsors",
+      overdue.reduce<string | null>(
+        (a, d) => (d.oldest && (!a || d.oldest < a) ? d.oldest : a),
+        null,
+      ),
+    );
+    add(
+      "donors_at_risk",
+      { type: "donors_at_risk" },
+      "info",
+      i.summary.donors?.atRisk ?? 0,
+      "sponsors",
+    );
+  }
+
   if (i.goLive) {
     add(
       "go_live",
@@ -562,10 +597,25 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
     }
   }
 
+  // الأخطر أوّلاً، ثم الأقدم انتظاراً (ما لا عمر له بعد ما له عمر)، ثم الأكثر.
+  const age = (it: AttentionItem) => waitingDays(it, now) ?? -1;
   return [...out.values()].sort(
     (a, b) =>
-      RANK[a.severity] - RANK[b.severity] || b.count - a.count || a.key.localeCompare(b.key),
+      RANK[a.severity] - RANK[b.severity] ||
+      age(b) - age(a) ||
+      b.count - a.count ||
+      a.key.localeCompare(b.key),
   );
+}
+
+/**
+ * كم يوماً انتظر أقدم بندٍ في الصفّ. `null` حيث لا عمر: صفٌّ بلا تاريخ، أو طابور
+ * الإرسال (تاريخه آخر تشغيلٍ لا عمر انتظار).
+ */
+export function waitingDays(it: AttentionItem, now: number): number | null {
+  if (!it.oldestAt || it.topic.type === "dispatch_pending") return null;
+  const at = Date.parse(it.oldestAt);
+  return Number.isFinite(at) ? Math.max(0, Math.floor((now - at) / 86_400_000)) : null;
 }
 
 export function attentionTotals(items: readonly AttentionItem[]) {
@@ -579,37 +629,419 @@ export function attentionTotals(items: readonly AttentionItem[]) {
 /* ------------------------------------------------------------------ */
 
 export type SourceKey =
-  "overview" | "geo" | "inbox" | "sources" | "locales" | "dispatch" | "ops" | "links" | "payments";
-export type SourceState = "loading" | "ready" | "failed";
+  | "overview"
+  | "geo"
+  | "inbox"
+  | "sources"
+  | "locales"
+  | "dispatch"
+  | "ops"
+  | "links"
+  | "payments"
+  | "summary";
+/** `absent`: المصدر لم يُنشأ في هذه القاعدة بعد — ليس عطلاً ولا فراغاً. */
+export type SourceState = "loading" | "ready" | "failed" | "absent";
 
 export function sourceStates(
   sources: Record<SourceKey, Loaded<unknown>>,
+  absent: readonly SourceKey[] = [],
 ): Record<SourceKey, SourceState> {
   const out = {} as Record<SourceKey, SourceState>;
   for (const k of Object.keys(sources) as SourceKey[]) {
     const v = sources[k];
-    out[k] = v === undefined ? "loading" : v === null ? "failed" : "ready";
+    out[k] = absent.includes(k)
+      ? "absent"
+      : v === undefined
+        ? "loading"
+        : v === null
+          ? "failed"
+          : "ready";
   }
   return out;
 }
 
+/** لماذا لم تُجب دالّة القاعدة: لم تُنشأ بعد · رُفض الحساب · عطل. */
+export type RpcFailure = "absent" | "denied" | "failed";
+
+/**
+ * هجرة المجاميع قد لا تكون طُبّقت على القاعدة: الدالّة الغائبة (أو جدولٌ وعمود
+ * تعتمد عليهما) تُقرأ «غائبة» فتعود اللوحة إلى سلوكها بلا المجاميع، ولا تُعرض
+ * عطلاً. وما عدا ذلك عطلٌ يُقال.
+ */
+export function rpcFailure(error: { code?: string | null; message?: string | null }): RpcFailure {
+  const c = String(error.code ?? "");
+  const m = String(error.message ?? "");
+  if (c === "42501" || /not authori[sz]ed/i.test(m)) return "denied";
+  if (
+    /^(PGRST202|42883|42P01|42703)$/.test(c) ||
+    /schema cache|does not exist|could not find the function/i.test(m)
+  ) {
+    return "absent";
+  }
+  return "failed";
+}
+
 /* ------------------------------------------------------------------ */
-/* ما لا مصدر حيّاً له بعد                                             */
+/* مجاميع الدعم من القاعدة (admin_support_summary)                      */
 /* ------------------------------------------------------------------ */
 
 export type SupportKindKey = "sponsorship" | "qualification" | "in_kind";
+export const SUPPORT_KINDS: readonly SupportKindKey[] = ["sponsorship", "qualification", "in_kind"];
+export type MoneyMeasure = "committed" | "collected" | "pending" | "disbursed";
+export type DueBucket = "overdue" | "week" | "month" | "first";
+export const DUE_BUCKETS: readonly DueBucket[] = ["overdue", "week", "month", "first"];
+
+/** مبلغٌ بعملته، ومعادله بالعملة الموحّدة بسعرٍ معتمد — `null` حين لا سعر معتمداً. */
+export type MoneyCell = { currency: string; amount: number; unified: number | null };
+export type Amount = { currency: string; amount: number };
+
+export type SupportSummary = {
+  unified: string;
+  cohortMin: number;
+  /** أشهرٌ متتالية (YYYY-MM)، الأقدم أوّلاً. */
+  months: string[];
+  kinds: Array<MoneyCell & { kind: SupportKindKey; status: string; count: number }>;
+  trend: Array<MoneyCell & { kind: SupportKindKey; month: string; count: number }>;
+  money: Array<MoneyCell & { measure: MoneyMeasure }>;
+  rates: Array<{ currency: string; firm: boolean; asOf: string | null; source: string | null }>;
+  donors: {
+    total: number;
+    active: number;
+    recent: number;
+    atRisk: number;
+    lapsed: number;
+    newDays: number;
+    graceDays: number;
+  } | null;
+  due: Array<MoneyCell & { bucket: DueBucket; count: number; oldest: string | null }>;
+  byCountry: Array<{
+    country: string;
+    /** دون حدّ الحشد: القاعدة حجبت العدد والمبلغ. */
+    small: boolean;
+    count: number | null;
+    amounts: Amount[] | null;
+  }>;
+};
+
+/** الحقول التي تُقرأ من ناتج الدالّة — كلّها «مجهولة» حتى تُضبط. */
+type RawKey =
+  | "unified"
+  | "cohort_min"
+  | "months"
+  | "kinds"
+  | "trend"
+  | "money"
+  | "rates"
+  | "donors"
+  | "due"
+  | "by_country"
+  | "kind"
+  | "status"
+  | "count"
+  | "currency"
+  | "amount"
+  | "month"
+  | "measure"
+  | "bucket"
+  | "oldest"
+  | "firm"
+  | "as_of"
+  | "source"
+  | "total"
+  | "active"
+  | "new"
+  | "at_risk"
+  | "lapsed"
+  | "rule"
+  | "new_days"
+  | "grace_days"
+  | "country"
+  | "small"
+  | "amounts";
+type Raw = { readonly [K in RawKey]?: unknown };
+const list = (v: unknown): Raw[] =>
+  Array.isArray(v) ? v.filter((x): x is Raw => !!x && typeof x === "object") : [];
+const text = (v: unknown) => (typeof v === "string" && v ? v : null);
+const cell = (x: Raw): MoneyCell => ({
+  currency: code(x.currency),
+  amount: num(x.amount),
+  unified: x.unified == null ? null : num(x.unified),
+});
+const oneOf = <T extends string>(v: unknown, all: readonly T[]): T | null =>
+  all.includes(v as T) ? (v as T) : null;
 
 /**
- * مجاميع الدعم بنوعه واتجاهه الشهري. لا دالّة قاعدةٍ تجمعها اليوم (التعهّدات
- * تُقرأ لصاحبها وحده عبر `my_pledges`)، فالمسار الحقيقي يتركها `null` والعيّنة
- * النموذجية وحدها تملؤها — وتُعلَّم كذلك في الواجهة.
+ * ناتج الدالّة كما يصل (JSONB، والمبالغ قد تكون نصّاً) ← شكلٌ مضبوط. ما لا يُعرف
+ * نوعه أو سلّته يُهمل ولا يُخمَّن؛ وما ليس ناتج الدالّة أصلاً يعود `null`.
  */
-export type SupportExtras = {
-  currency: string;
-  kinds: Array<{ kind: SupportKindKey; active: number; monthly: number }>;
-  /** أشهرٌ متتالية (YYYY-MM)، والمبالغ ما قُيِّد في الشهر بالعملة الموحّدة. */
-  trend: Array<{ month: string } & Record<SupportKindKey, number>>;
+export function parseSupportSummary(raw: unknown): SupportSummary | null {
+  if (!raw || typeof raw !== "object" || !Array.isArray((raw as { kinds?: unknown }).kinds)) {
+    return null;
+  }
+  const r = raw as Raw;
+  const d = r.donors && typeof r.donors === "object" ? (r.donors as Raw) : null;
+  const rule = (d?.rule ?? {}) as Raw;
+  const kinds: SupportSummary["kinds"] = [];
+  for (const x of list(r.kinds)) {
+    const kind = oneOf(x.kind, SUPPORT_KINDS);
+    if (kind) kinds.push({ ...cell(x), kind, status: String(x.status ?? ""), count: num(x.count) });
+  }
+  const trend: SupportSummary["trend"] = [];
+  for (const x of list(r.trend)) {
+    const kind = oneOf(x.kind, SUPPORT_KINDS);
+    const month = text(x.month);
+    if (kind && month) trend.push({ ...cell(x), kind, month, count: num(x.count) });
+  }
+  const money: SupportSummary["money"] = [];
+  for (const x of list(r.money)) {
+    const measure = oneOf(x.measure, ["committed", "collected", "pending", "disbursed"] as const);
+    if (measure) money.push({ ...cell(x), measure });
+  }
+  const due: SupportSummary["due"] = [];
+  for (const x of list(r.due)) {
+    const bucket = oneOf(x.bucket, DUE_BUCKETS);
+    if (bucket) due.push({ ...cell(x), bucket, count: num(x.count), oldest: text(x.oldest) });
+  }
+  return {
+    unified: code(r.unified) || UNIFIED_CURRENCY,
+    cohortMin: num(r.cohort_min),
+    months: Array.isArray(r.months)
+      ? r.months.filter((m): m is string => typeof m === "string")
+      : [],
+    kinds,
+    trend,
+    money,
+    rates: list(r.rates).map((x) => ({
+      currency: code(x.currency),
+      firm: x.firm === true,
+      asOf: text(x.as_of),
+      source: text(x.source),
+    })),
+    donors: d
+      ? {
+          total: num(d.total),
+          active: num(d.active),
+          recent: num(d.new),
+          atRisk: num(d.at_risk),
+          lapsed: num(d.lapsed),
+          newDays: num(rule.new_days) || NEW_DONOR_DAYS,
+          graceDays: num(rule.grace_days),
+        }
+      : null,
+    due,
+    byCountry: list(r.by_country).map((x) => {
+      const small = x.small === true || x.count == null;
+      return {
+        country: code(x.country),
+        small,
+        count: small ? null : num(x.count),
+        amounts: small
+          ? null
+          : list(x.amounts).map((a) => ({ currency: code(a.currency), amount: num(a.amount) })),
+      };
+    }),
+  };
+}
+
+const round2 = (v: number) => Math.round(v * 100) / 100;
+
+/** مجموعٌ لكلّ عملة، العملة الموحّدة أوّلاً ثم الأكبر. */
+function byCurrency(cells: readonly Amount[], unified: string): Amount[] {
+  const m = new Map<string, number>();
+  for (const c of cells) m.set(c.currency, (m.get(c.currency) ?? 0) + c.amount);
+  return [...m]
+    .map(([currency, amount]) => ({ currency, amount: round2(amount) }))
+    .filter((a) => a.amount !== 0)
+    .sort(
+      (a, b) =>
+        Number(b.currency === unified) - Number(a.currency === unified) ||
+        b.amount - a.amount ||
+        a.currency.localeCompare(b.currency),
+    );
+}
+
+/**
+ * مجموع خلايا بالعملة الموحّدة بالسعر المعتمد. خليّةٌ واحدة بلا سعرٍ معتمد تُسقط
+ * المجموع كلّه (`null`) — لا مجموع ناقص يُعرض كأنّه كامل، ولا سعر استرشادي.
+ */
+function firmSum(s: SupportSummary, cells: readonly MoneyCell[]): UnifiedTotal | null {
+  const used = cells.filter((c) => c.amount !== 0);
+  if (used.length === 0 || used.some((c) => c.unified === null)) return null;
+  let asOf = "";
+  for (const c of used) {
+    if (c.currency === s.unified) continue;
+    const at = s.rates.find((r) => r.currency === c.currency && r.firm)?.asOf ?? "";
+    if (at && (!asOf || at < asOf)) asOf = at;
+  }
+  const exact = used.every((c) => c.currency === s.unified);
+  return {
+    amount: round2(used.reduce((a, c) => a + (c.unified ?? 0), 0)),
+    currency: s.unified,
+    exact,
+    basis: exact ? "same" : "firm",
+    asOf,
+    missing: [],
+  };
+}
+
+/**
+ * المجموع الدقيق بالعملة الموحّدة لمقياسٍ مالي، بالأسعار المعتمدة المخزّنة. يعود
+ * `null` حين لا مجاميع من القاعدة أو حين عملةٌ بلا سعرٍ معتمد — فتعود اللوحة
+ * إلى التقريب المعلَّم «≈» كما كانت.
+ */
+export function firmTotal(
+  s: SupportSummary | null | undefined,
+  measure: MoneyMeasure | "balance",
+): UnifiedTotal | null {
+  if (!s) return null;
+  if (measure !== "balance") {
+    return firmSum(
+      s,
+      s.money.filter((c) => c.measure === measure),
+    );
+  }
+  const signed = s.money
+    .filter((c) => c.measure === "collected" || c.measure === "disbursed")
+    .map((c) =>
+      c.measure === "collected"
+        ? c
+        : { ...c, amount: -c.amount, unified: c.unified === null ? null : -c.unified },
+    );
+  return firmSum(s, signed);
+}
+
+/** عملاتٌ مستعملة بلا سعرٍ معتمد إلى الموحّدة. */
+export function ratesMissing(s: SupportSummary): string[] {
+  return s.rates.filter((r) => !r.firm).map((r) => r.currency);
+}
+
+export type KindRow = {
+  kind: SupportKindKey;
+  /** `summary` من دالّة المجاميع · `overview` من المجاميع العامّة · `none` لا مصدر. */
+  source: "summary" | "overview" | "none";
+  active: number;
+  pending: number;
+  /** اكتمل: تعهّدٌ وُفِّي أو كفالةٌ أتمّت مدّتها. */
+  done: number;
+  /** قيمة النشط بعملاته (للكفالة: شهرياً). */
+  amounts: Amount[];
+  unified: UnifiedTotal | null;
 };
+
+const PENDING_STATUS = new Set(["pending", "pending_payment"]);
+const DONE_STATUS = new Set(["fulfilled", "completed"]);
+
+/**
+ * سطرٌ لكلّ نوع دعم. من دالّة المجاميع إن وُجدت؛ وإلا فالكفالة من المجاميع
+ * العامّة كما كانت، والتأهيل والعيني بلا مصدر (`none`) — لا صفر يُختلق.
+ */
+export function kindRows(
+  s: SupportSummary | null | undefined,
+  fallback: { rows: readonly SupportRow[]; activeSponsorships: number; awaitingPayment: number },
+): KindRow[] {
+  return SUPPORT_KINDS.map((kind): KindRow => {
+    if (!s) {
+      if (kind !== "sponsorship") {
+        return { kind, source: "none", active: 0, pending: 0, done: 0, amounts: [], unified: null };
+      }
+      return {
+        kind,
+        source: "overview",
+        active: fallback.activeSponsorships,
+        pending: fallback.awaitingPayment,
+        done: 0,
+        amounts: fallback.rows
+          .filter((r) => r.committed !== 0)
+          .map((r) => ({ currency: r.currency, amount: r.committed })),
+        unified: unifiedTotal(fallback.rows, "committed"),
+      };
+    }
+    const cells = s.kinds.filter((c) => c.kind === kind);
+    const live = cells.filter((c) => c.status === "active");
+    const count = (pick: (status: string) => boolean) =>
+      cells.filter((c) => pick(c.status)).reduce((a, c) => a + c.count, 0);
+    return {
+      kind,
+      source: "summary",
+      active: count((st) => st === "active"),
+      pending: count((st) => PENDING_STATUS.has(st)),
+      done: count((st) => DONE_STATUS.has(st)),
+      amounts: byCurrency(live, s.unified),
+      unified: firmSum(s, live),
+    };
+  });
+}
+
+export const PERIODS = [3, 6, 12] as const;
+export type Period = (typeof PERIODS)[number];
+export const DEFAULT_PERIOD: Period = 12;
+export const parsePeriod = (v: unknown): Period =>
+  PERIODS.find((p) => p === Number(v)) ?? DEFAULT_PERIOD;
+
+export type TrendLine = {
+  kind: SupportKindKey;
+  /** عملة السلسلة: الموحّدة حين لكلّ مبلغٍ سعرٌ معتمد، وإلا العملة الوحيدة. */
+  currency: string;
+  /** قيمةٌ لكلّ شهر؛ فارغةٌ حين تعدّدت العملات بلا سعرٍ معتمد (`blocked`). */
+  values: number[];
+  total: number;
+  delta: number | null;
+  /** عملاتٌ منعت رسم خطٍّ واحد: لا تُجمع عملتان بلا سعرٍ معتمد. */
+  blocked: string[];
+};
+export type TrendView = { months: string[]; lines: TrendLine[] };
+
+/**
+ * السلسلة الشهرية لكلّ نوع خلال آخر `period` شهراً. الشهر الخالي صفرٌ حقيقي (لم
+ * يُحصَّل فيه شيء)، لا فجوة. ويعود `null` حين لا مجاميع من القاعدة.
+ */
+export function trendView(s: SupportSummary | null | undefined, period: number): TrendView | null {
+  if (!s || s.months.length === 0) return null;
+  const months = s.months.slice(-Math.max(1, period));
+  const lines = SUPPORT_KINDS.map((kind): TrendLine => {
+    const cells = s.trend.filter((c) => c.kind === kind && months.includes(c.month));
+    const currencies = [...new Set(cells.map((c) => c.currency))];
+    const firm = cells.every((c) => c.unified !== null);
+    if (!firm && currencies.length > 1) {
+      const blocked = [...new Set(cells.filter((c) => c.unified === null).map((c) => c.currency))];
+      return { kind, currency: s.unified, values: [], total: 0, delta: null, blocked };
+    }
+    const values = months.map((m) =>
+      round2(
+        cells
+          .filter((c) => c.month === m)
+          .reduce((a, c) => a + (firm ? (c.unified ?? 0) : c.amount), 0),
+      ),
+    );
+    return {
+      kind,
+      currency: firm ? s.unified : (currencies[0] ?? s.unified),
+      values,
+      total: round2(values.reduce((a, v) => a + v, 0)),
+      delta: trendDelta(values),
+      blocked: [],
+    };
+  });
+  return { months, lines };
+}
+
+export type DueRow = { bucket: DueBucket; count: number; amounts: Amount[]; oldest: string | null };
+
+/** المستحقّات بسلال تاريخها، بترتيبٍ ثابت؛ السلّة الخالية تبقى بصفرها. */
+export function dueRows(s: SupportSummary): DueRow[] {
+  return DUE_BUCKETS.map((bucket) => {
+    const cells = s.due.filter((d) => d.bucket === bucket);
+    return {
+      bucket,
+      count: cells.reduce((a, d) => a + d.count, 0),
+      amounts: byCurrency(cells, s.unified),
+      oldest: cells.reduce<string | null>(
+        (a, d) => (d.oldest && (!a || d.oldest < a) ? d.oldest : a),
+        null,
+      ),
+    };
+  });
+}
 
 /** تغيّر آخر شهرٍ عن الذي قبله بالنسبة المئوية؛ `null` حين لا أساس للمقارنة. */
 export function trendDelta(series: readonly number[]): number | null {
@@ -618,4 +1050,39 @@ export function trendDelta(series: readonly number[]): number | null {
   const prev = series[series.length - 2]!;
   if (!(prev > 0)) return null;
   return Math.round(((last - prev) / prev) * 100);
+}
+
+/* ------------------------------------------------------------------ */
+/* التصدير                                                             */
+/* ------------------------------------------------------------------ */
+
+export type CsvSection = {
+  title: string;
+  head: string[];
+  rows: Array<Array<string | number | null>>;
+};
+
+/**
+ * CSV للمجاميع المعروضة وحدها. الأرقام خامٌ (بلا رمز عملة ولا فواصل) لتُجمع في
+ * الجدول، والنصّ الذي يبدأ بما يُقرأ صيغةً (= + - @) يُسبق بفاصلةٍ عليا فلا يُنفَّذ.
+ * يبدأ بعلامة BOM ليُقرأ العربيّ صحيحاً في برامج الجداول.
+ */
+const BOM = String.fromCharCode(0xfeff);
+
+export function overviewCsv(sections: readonly CsvSection[]): string {
+  const esc = (v: string | number | null) => {
+    if (v === null) return "";
+    if (typeof v === "number") return Number.isFinite(v) ? String(v) : "";
+    const safe = /^[=+\-@\t\r]/.test(v) ? `'${v}` : v;
+    return /[",\n\r]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+  };
+  const lines: string[] = [];
+  for (const s of sections) {
+    if (s.rows.length === 0) continue;
+    if (lines.length > 0) lines.push("");
+    lines.push(esc(s.title));
+    lines.push(s.head.map(esc).join(","));
+    for (const row of s.rows) lines.push(row.map(esc).join(","));
+  }
+  return `${BOM}${lines.join("\r\n")}\r\n`;
 }

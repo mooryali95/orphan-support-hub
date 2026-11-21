@@ -3,10 +3,15 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
 
 import type { AdminOverview, getAdminOverview, getPaymentsReady } from "@/lib/admin.functions";
-import type { Loaded, SupportExtras } from "@/lib/admin-overview";
+import {
+  parseSupportSummary,
+  type InboxEntry,
+  type Loaded,
+  type SupportSummary,
+} from "@/lib/admin-overview";
+import type { getOverviewInbox, getSupportSummary } from "@/lib/admin-overview.functions";
 import { sampleOverview } from "@/lib/admin-overview-sample";
 import type { goLiveSteps, linkHealth } from "@/lib/go-live";
-import type { getDecisionInbox, InboxItem } from "@/lib/inbox.functions";
 import type { getSourcesOverview, SourcesOverview } from "@/lib/integrity.functions";
 import type {
   DispatchHealth,
@@ -24,15 +29,17 @@ export type OverviewData = {
   denied: boolean;
   overview: Loaded<AdminOverview>;
   geo: Loaded<GeoCountryRow[]>;
-  inbox: Loaded<InboxItem[]>;
+  inbox: Loaded<readonly InboxEntry[]>;
   sources: Loaded<SourcesOverview>;
   locales: Loaded<ReviewLocale[]>;
   dispatch: Loaded<DispatchHealth>;
   ops: Loaded<OpsHealth>;
   links: Loaded<OperatingLink[]>;
   payments: Loaded<boolean>;
-  /** لا مصدر حيّاً له: `null` في المسار الحقيقي دائماً. */
-  extras: SupportExtras | null;
+  /** مجاميع الدعم من `admin_support_summary`؛ `null` تعذّرت أو لم تُنشأ دالّتها. */
+  summary: Loaded<SupportSummary>;
+  /** الدالّة لم تُنشأ في هذه القاعدة بعد: اللوحة تعمل بلا مجاميعها، وليس عطلاً. */
+  summaryAbsent: boolean;
   now: number;
   updatedAt: number | null;
   refreshing: boolean;
@@ -46,13 +53,16 @@ export type OverviewData = {
 const KEYS = [
   ["admin-overview"],
   ["admin-overview-geo"],
-  ["decision-inbox"],
+  // الصندوق هنا بنوعه وتاريخه وحدهما، ويفرّق العطل عن الفراغ: مفتاحه غير مفتاح
+  // شاشة الصندوق التي تحمل العناوين.
+  ["overview-inbox"],
   ["sources-overview"],
   ["review-locales"],
   ["dispatch-health"],
   ["ops-health"],
   ["operating-links"],
   ["payments-ready"],
+  ["admin-support-summary"],
 ] as const;
 
 /** نتيجة الاستعلام ← `undefined` لم يصل · `null` تعذّر · القيمة. */
@@ -79,7 +89,8 @@ export type AdminSourceFns = {
   getSourcesOverview: typeof getSourcesOverview;
   getAdminOverview: typeof getAdminOverview;
   getPaymentsReady: typeof getPaymentsReady;
-  getDecisionInbox: typeof getDecisionInbox;
+  getOverviewInbox: typeof getOverviewInbox;
+  getSupportSummary: typeof getSupportSummary;
   goLiveSteps: typeof goLiveSteps;
   linkHealth: typeof linkHealth;
 };
@@ -88,7 +99,8 @@ export function useOverviewData(sample: boolean, fns: AdminSourceFns): OverviewD
   const qc = useQueryClient();
   const enabled = !sample;
   const fetchOverview = useServerFn(fns.getAdminOverview);
-  const fetchInbox = useServerFn(fns.getDecisionInbox);
+  const fetchInbox = useServerFn(fns.getOverviewInbox);
+  const fetchSummary = useServerFn(fns.getSupportSummary);
   const fetchSources = useServerFn(fns.getSourcesOverview);
   const fetchLocales = useServerFn(getMyReviewLocales);
   const fetchDispatch = useServerFn(fns.getDispatchHealth);
@@ -119,6 +131,12 @@ export function useOverviewData(sample: boolean, fns: AdminSourceFns): OverviewD
     enabled: allowed,
   });
 
+  const summary = useQuery({
+    queryKey: KEYS[9],
+    queryFn: () => fetchSummary({ data: { months: 12 } }),
+    enabled: allowed,
+  });
+
   const demo = useMemo(() => (sample ? sampleOverview() : null), [sample]);
   const now = useMemo(
     () => Date.now(),
@@ -135,6 +153,7 @@ export function useOverviewData(sample: boolean, fns: AdminSourceFns): OverviewD
       sample: true,
       denied: false,
       ...demo,
+      summaryAbsent: false,
       now,
       updatedAt: null,
       refreshing: false,
@@ -143,29 +162,26 @@ export function useOverviewData(sample: boolean, fns: AdminSourceFns): OverviewD
   }
 
   const o = settle(overview, (d) => (d.allowed ? d.overview : null));
-  const inboxItems = settle(inbox, (d) => d);
+  const absent = summary.data?.state === "absent";
   return {
     sample: false,
     denied: overview.data?.allowed === false,
     overview: o,
     geo: settle(geo, (d) => (d.available ? d.countries : null)),
-    // الدالّة تعيد قائمةً فارغة عند الخطأ أيضاً: إن قالت المجاميع إنّ في الطابور
-    // ملفّاتٍ أو جهات والصندوق فارغ، فالصندوق لم يُقرأ — لا «لا شيء ينتظر».
-    inbox:
-      inboxItems && o && inboxItems.length === 0 && pendingInOverview(o) > 0 ? null : inboxItems,
+    inbox: settle(inbox, (d) => (d.ok ? d.items : null)),
     sources: settle(sources, (raw) => (raw ? (JSON.parse(raw) as SourcesOverview | null) : null)),
     locales: settle(locales, (r) => (r.ok ? r.data.locales : null)),
     dispatch: settle(dispatch, (d) => (d.allowed ? d.health : null)),
     ops: settle(ops, (d) => (d.allowed ? d.health : null)),
     links: settle(links, (d) => d),
     payments: settle(payments, (d) => d.ready),
-    extras: null,
+    summary: settle(summary, (d) =>
+      d.state === "ready" ? parseSupportSummary(JSON.parse(d.json)) : null,
+    ),
+    summaryAbsent: absent,
     now,
     updatedAt: overview.dataUpdatedAt || null,
     refreshing: overview.isFetching && !overview.isPending,
     refresh,
   };
 }
-
-const pendingInOverview = (o: AdminOverview) =>
-  Number(o.orphans.awaiting_review ?? 0) + Number(o.organizations.pending ?? 0);

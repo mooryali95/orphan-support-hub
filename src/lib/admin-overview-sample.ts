@@ -8,7 +8,7 @@
  * اللوحة تعرض هذه أو تلك، لا الاثنتين.
  */
 import type { AdminOverview } from "@/lib/admin.functions";
-import type { SupportExtras } from "@/lib/admin-overview";
+import { parseSupportSummary, type SupportSummary } from "@/lib/admin-overview";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import type { SourceRow, SourcesOverview } from "@/lib/integrity.functions";
 import type { DispatchHealth, OpsHealth } from "@/lib/monitoring.functions";
@@ -320,34 +320,145 @@ function ops(now: number): OpsHealth {
   };
 }
 
-/** اثنا عشر شهراً تنتهي بالشهر الجاري. */
-function extras(now: number): SupportExtras {
-  const sponsorship = [
-    21_400, 22_900, 23_600, 25_100, 26_800, 27_500, 29_300, 30_200, 32_600, 33_900, 35_000, 36_136,
-  ];
-  const qualification = [
-    2_100, 2_300, 2_900, 3_100, 3_400, 3_300, 4_000, 4_600, 5_100, 5_400, 6_000, 6_450,
-  ];
-  const inKind = [
-    1_800, 2_600, 2_100, 3_400, 2_900, 2_400, 3_100, 3_700, 2_800, 3_300, 3_600, 3_900,
-  ];
+/** سعرٌ معتمد نموذجي: يُظهر المجموع الدقيق بالعملة الموحّدة كما يظهر بسعرٍ معتمد. */
+const SAMPLE_RATE = 1.08;
+
+/**
+ * مجاميع الدعم النموذجية بشكل ناتج `admin_support_summary` نفسه، فتمرّ بـ
+ * `parseSupportSummary` وبمسار الاشتقاق كلّه. اثنا عشر شهراً تنتهي بالشهر الجاري.
+ */
+function summary(now: number): SupportSummary {
   const end = new Date(now);
-  return {
-    currency: "USD",
-    kinds: [
-      { kind: "qualification", active: 86, monthly: 6_450 },
-      { kind: "in_kind", active: 41, monthly: 3_900 },
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - (11 - i), 1));
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+  });
+  const eur = (amount: number) => ({
+    currency: "EUR",
+    amount,
+    unified: Math.round(amount * SAMPLE_RATE * 100) / 100,
+  });
+  const usd = (amount: number) => ({ currency: "USD", amount, unified: amount });
+  // [دولار، يورو] لكلّ شهر.
+  const series: Record<string, Array<[number, number]>> = {
+    sponsorship: [
+      [15_400, 5_500],
+      [16_600, 5_800],
+      [17_100, 6_000],
+      [18_200, 6_400],
+      [19_500, 6_700],
+      [19_900, 7_000],
+      [21_300, 7_400],
+      [21_900, 7_700],
+      [23_700, 8_200],
+      [24_600, 8_600],
+      [25_400, 8_900],
+      [26_200, 9_200],
     ],
-    trend: sponsorship.map((v, i) => {
-      const d = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - (11 - i), 1));
-      return {
-        month: `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`,
-        sponsorship: v,
-        qualification: qualification[i]!,
-        in_kind: inKind[i]!,
-      };
-    }),
+    qualification: [
+      [1_400, 650],
+      [1_500, 740],
+      [1_900, 930],
+      [2_000, 1_020],
+      [2_200, 1_110],
+      [2_100, 1_110],
+      [2_600, 1_300],
+      [3_000, 1_480],
+      [3_300, 1_670],
+      [3_500, 1_760],
+      [3_900, 1_940],
+      [4_150, 2_130],
+    ],
+    in_kind: [
+      [1_200, 560],
+      [1_800, 740],
+      [1_400, 650],
+      [2_300, 1_020],
+      [2_000, 830],
+      [1_600, 740],
+      [2_100, 930],
+      [2_500, 1_110],
+      [1_900, 830],
+      [2_200, 1_020],
+      [2_400, 1_110],
+      [2_700, 1_111],
+    ],
   };
+  const raw = {
+    version: 1,
+    generated_at: iso(now, 0),
+    unified: "USD",
+    cohort_min: 5,
+    months,
+    kinds: [
+      { kind: "sponsorship", status: "active", count: 420, ...usd(26_200) },
+      { kind: "sponsorship", status: "active", count: 154, ...eur(9_200) },
+      { kind: "sponsorship", status: "pending_payment", count: 22, ...usd(1_180) },
+      { kind: "sponsorship", status: "pending_payment", count: 9, ...eur(430) },
+      { kind: "sponsorship", status: "completed", count: 48, ...usd(2_300) },
+      { kind: "qualification", status: "active", count: 58, ...usd(4_150) },
+      { kind: "qualification", status: "active", count: 28, ...eur(2_130) },
+      { kind: "qualification", status: "pending", count: 7, ...usd(640) },
+      { kind: "qualification", status: "fulfilled", count: 132, ...usd(11_900) },
+      { kind: "in_kind", status: "active", count: 27, ...usd(2_700) },
+      { kind: "in_kind", status: "active", count: 14, ...eur(1_111) },
+      { kind: "in_kind", status: "pending", count: 5, ...eur(380) },
+      { kind: "in_kind", status: "fulfilled", count: 64, ...usd(7_400) },
+    ],
+    trend: Object.entries(series).flatMap(([kind, rows]) =>
+      rows.flatMap(([a, b], i) => [
+        { kind, month: months[i], count: Math.round(a / 62), ...usd(a) },
+        { kind, month: months[i], count: Math.round(b / 60), ...eur(b) },
+      ]),
+    ),
+    money: [
+      { measure: "committed", ...usd(26_200) },
+      { measure: "committed", ...eur(9_200) },
+      { measure: "collected", ...usd(148_600) },
+      { measure: "collected", ...eur(51_800) },
+      { measure: "pending", ...usd(5_240) },
+      { measure: "pending", ...eur(1_180) },
+      { measure: "disbursed", ...usd(121_300) },
+      { measure: "disbursed", ...eur(43_900) },
+    ],
+    rates: [
+      {
+        currency: "EUR",
+        firm: true,
+        rate: SAMPLE_RATE,
+        inverse: false,
+        as_of: iso(now, 6 * DAY).slice(0, 10),
+        source: `${SAMPLE_PREFIX}RATE`,
+      },
+    ],
+    donors: {
+      total: 512,
+      active: 438,
+      new: 40,
+      at_risk: 23,
+      lapsed: 51,
+      rule: { new_days: 30, grace_days: 14 },
+    },
+    due: [
+      { bucket: "overdue", count: 9, oldest: iso(now, 37 * DAY), ...usd(720) },
+      { bucket: "overdue", count: 4, oldest: iso(now, 21 * DAY), ...eur(310) },
+      { bucket: "week", count: 61, oldest: iso(now, -1 * DAY), ...usd(2_900) },
+      { bucket: "week", count: 22, oldest: iso(now, -2 * DAY), ...eur(1_150) },
+      { bucket: "month", count: 190, oldest: iso(now, -8 * DAY), ...usd(8_700) },
+      { bucket: "month", count: 70, oldest: iso(now, -9 * DAY), ...eur(3_300) },
+      { bucket: "first", count: 22, oldest: iso(now, 12 * DAY), ...usd(1_180) },
+      { bucket: "first", count: 9, oldest: iso(now, 6 * DAY), ...eur(430) },
+    ],
+    by_country: [
+      { country: "ID", small: false, count: 61, amounts: [{ currency: "USD", amount: 5_900 }] },
+      { country: "BD", small: false, count: 48, amounts: [{ currency: "USD", amount: 4_300 }] },
+      { country: "AL", small: false, count: 37, amounts: [{ currency: "EUR", amount: 2_600 }] },
+      { country: "NG", small: false, count: 29, amounts: [{ currency: "USD", amount: 2_750 }] },
+      { country: "XK", small: false, count: 18, amounts: [{ currency: "EUR", amount: 1_021 }] },
+      { country: "SO", small: true, count: null, amounts: null },
+    ],
+  };
+  return parseSupportSummary(raw)!;
 }
 
 export type SampleOverview = {
@@ -360,7 +471,7 @@ export type SampleOverview = {
   ops: OpsHealth;
   links: OperatingLink[];
   payments: boolean;
-  extras: SupportExtras;
+  summary: SupportSummary;
 };
 
 /** العيّنة كاملةً منسوبةً إلى «الآن»، فتبقى أعمار المزامنة والطوابير معقولة. */
@@ -375,6 +486,6 @@ export function sampleOverview(now = Date.now()): SampleOverview {
     ops: ops(now),
     links: links(now),
     payments: false,
-    extras: extras(now),
+    summary: summary(now),
   };
 }

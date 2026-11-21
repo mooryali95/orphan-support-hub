@@ -1,6 +1,6 @@
 import { useId, useState, type KeyboardEvent, type PointerEvent } from "react";
 
-import type { SupportExtras, SupportKindKey } from "@/lib/admin-overview";
+import type { SupportKindKey, TrendView } from "@/lib/admin-overview";
 import { formatMoney } from "@/lib/format";
 import { dirOf, intlOf, useLocale } from "@/lib/locale";
 
@@ -41,8 +41,10 @@ export default function TrendSpark({
   const n = values.length;
   if (n < 2) return null;
 
-  const max = Math.max(...values);
-  const min = Math.min(...values);
+  // الخطّ فوق مساحةٍ مملوءة، والمساحة تُقرأ من الصفر: القاعدة صفرٌ لا أدنى قيمة،
+  // فلا يبدو تغيّرٌ صغير قفزة.
+  const max = Math.max(...values, 0);
+  const min = 0;
   const span = max - min || 1;
   // ٠ = أقدم شهر. الموضع من بداية السطر (يمينٌ بالعربية).
   const fx = (i: number) => i / (n - 1);
@@ -130,16 +132,18 @@ export default function TrendSpark({
 
 /** الجدول نفسه بالأرقام: بديل الرسم لمن يقرأ بقارئ شاشة أو يريد القيم كلّها. */
 export function TrendTable({
-  extras,
+  view,
   kinds,
   monthHeading,
+  blocked,
 }: {
-  extras: SupportExtras;
+  view: TrendView;
   kinds: Record<SupportKindKey, string>;
   monthHeading: string;
+  /** ما يُكتب مكان قيمةٍ لا تُجمع (عملتان بلا سعرٍ معتمد). */
+  blocked: string;
 }) {
   const locale = useLocale();
-  const cols: SupportKindKey[] = ["sponsorship", "qualification", "in_kind"];
   return (
     <div className="mt-3 overflow-x-auto">
       <table className="ov-table w-full text-sm">
@@ -148,22 +152,22 @@ export function TrendTable({
             <th scope="col" className="py-2 text-start font-medium">
               {monthHeading}
             </th>
-            {cols.map((k) => (
-              <th key={k} scope="col" className="py-2 text-end font-medium">
-                {kinds[k]}
+            {view.lines.map((l) => (
+              <th key={l.kind} scope="col" className="py-2 text-end font-medium">
+                {kinds[l.kind]}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {extras.trend.map((row) => (
-            <tr key={row.month} className="border-b border-border/60 last:border-0">
+          {view.months.map((month, i) => (
+            <tr key={month} className="border-b border-border/60 last:border-0">
               <th scope="row" className="py-1.5 text-start font-normal">
-                {monthLabel(row.month, locale)}
+                {monthLabel(month, locale)}
               </th>
-              {cols.map((k) => (
-                <td key={k} className="py-1.5 text-end tabular-nums">
-                  {formatMoney(row[k], extras.currency, locale)}
+              {view.lines.map((l) => (
+                <td key={l.kind} className="py-1.5 text-end tabular-nums">
+                  {l.values.length > 0 ? formatMoney(l.values[i], l.currency, locale) : blocked}
                 </td>
               ))}
             </tr>
