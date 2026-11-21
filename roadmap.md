@@ -1,5 +1,10 @@
 # Monitoring fixes
 
+## Supporter questions assistant
+- [ ] Add a single-session AI Gateway assistant grounded only in public child cards and published sponsorship guidance.
+- [ ] Add privacy, authentication, input limits, cancellation and safe failure handling.
+- [ ] Verify answers and privacy boundaries with tests and desktop/mobile browser checks.
+
 ## Demo network
 
 - [x] Add 34 country-distributed demo offices, including Albania.

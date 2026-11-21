@@ -3115,6 +3115,27 @@ export type Database = {
           },
         ]
       }
+      supporter_assistant_state: {
+        Row: {
+          id: boolean
+          message: string
+          status: number
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          message: string
+          status: number
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          message?: string
+          status?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       timeline_events: {
         Row: {
           actor_id: string | null
