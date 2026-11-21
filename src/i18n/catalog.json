@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2340,
+ "count": 2398,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -602,11 +602,26 @@
    "hash": "f21152a2741a",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.attentionLead": {
-   "en": "From every queue, most serious first. Each row opens its screen.",
-   "ar": "من كلّ الطوابير، الأخطر أوّلاً. كلّ سطرٍ يفتح شاشته.",
+  "components/admin/overview.attentionFailedText": {
+   "en": "Could not read: {0}. Items may be waiting there that do not show here.",
+   "ar": "تعذّرت قراءة: {0}. قد يكون فيها ما ينتظر ولا يظهر هنا.",
+   "kind": "template",
+   "params": 1,
+   "hash": "026449cb54cf",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionFailedTitle": {
+   "en": "This list is incomplete",
+   "ar": "القائمة ناقصة",
    "kind": "text",
-   "hash": "dd30ecdeb179",
+   "hash": "d252f8e18c58",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.attentionLead": {
+   "en": "From every queue: most serious first, then longest waiting. Each row opens its screen.",
+   "ar": "من كلّ الطوابير: الأخطر أوّلاً، ثم الأقدم انتظاراً. كلّ سطرٍ يفتح شاشته.",
+   "kind": "text",
+   "hash": "240adf2948fd",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.attentionPending": {
@@ -658,14 +673,6 @@
    "hash": "f54965af1476",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.childrenBarLabel": {
-   "en": "{0} fully sponsored and {1} waiting",
-   "ar": "{0} مكفولون بالكامل و{1} ينتظرون",
-   "kind": "template",
-   "params": 2,
-   "hash": "118fc7d1a571",
-   "file": "src/components/admin/overview/copy.ts"
-  },
   "components/admin/overview.childrenCaption": {
    "en": "{0} of published files",
    "ar": "{0} من الملفّات المنشورة",
@@ -686,20 +693,6 @@
    "ar": "أطفالٌ مكفولون بالكامل",
    "kind": "text",
    "hash": "701468ada8e8",
-   "file": "src/components/admin/overview/copy.ts"
-  },
-  "components/admin/overview.childrenLead": {
-   "en": "Sponsored and waiting, and the need that remains.",
-   "ar": "المكفولون والمنتظرون، وما بقي من احتياج.",
-   "kind": "text",
-   "hash": "4f7feca6ab90",
-   "file": "src/components/admin/overview/copy.ts"
-  },
-  "components/admin/overview.childrenTitle": {
-   "en": "Children",
-   "ar": "الأطفال",
-   "kind": "text",
-   "hash": "083c5f480b4f",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.colCountry": {
@@ -759,10 +752,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.countriesUnavailable": {
-   "en": "Country counts could not be read right now.",
-   "ar": "تعذّرت قراءة أعداد الدول الآن.",
+   "en": "Country counts are missing right now, not zero.",
+   "ar": "أعداد الدول غائبةٌ الآن، لا أصفار.",
    "kind": "text",
-   "hash": "99325e613cc8",
+   "hash": "188f5baa7ec7",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.countryBarLabel": {
@@ -803,11 +796,173 @@
    "hash": "c80c4f37c7b7",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.currencyNote": {
-   "en": "“Credited” is what is recorded against a child's need in the need's currency; “collected” is what was actually paid in the payment currency. Two currencies are never summed; the dollar equivalent is approximate (≈).",
-   "ar": "«المقيَّد» ما يُسجَّل لحاجة الطفل بعملة حاجته، و«المحصَّل» ما دُفع فعلاً بعملة الدفع. لا تُجمع عملتان؛ والمعادل بالدولار تقريبيٌّ (≈).",
+  "components/admin/overview.csv.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
    "kind": "text",
-   "hash": "bc41c831e3a8",
+   "hash": "550cc7896881",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.count": {
+   "en": "Count",
+   "ar": "العدد",
+   "kind": "text",
+   "hash": "5f80403ca27c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.currency": {
+   "en": "Currency",
+   "ar": "العملة",
+   "kind": "text",
+   "hash": "da372b886205",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.days": {
+   "en": "Longest wait in days",
+   "ar": "أقدم انتظار بالأيام",
+   "kind": "text",
+   "hash": "929bbe7db870",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.disputed": {
+   "en": "Disputed",
+   "ar": "متنازعٌ عليها",
+   "kind": "text",
+   "hash": "d2c848615a52",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.failed": {
+   "en": "Failed payments",
+   "ar": "دفعاتٌ فاشلة",
+   "kind": "text",
+   "hash": "e00090c285fd",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.figure": {
+   "en": "Figure",
+   "ar": "المؤشّر",
+   "kind": "text",
+   "hash": "e9c36ada5b98",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.generated": {
+   "en": "Generated at",
+   "ar": "وقت الاستخراج",
+   "kind": "text",
+   "hash": "8d075aac397d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.item": {
+   "en": "Item",
+   "ar": "البند",
+   "kind": "text",
+   "hash": "21772a7a5d5c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.kind": {
+   "en": "Kind",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "9b81d0a755af",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.screen": {
+   "en": "Screen",
+   "ar": "الشاشة",
+   "kind": "text",
+   "hash": "922ee6939413",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.severity": {
+   "en": "Severity",
+   "ar": "الخطورة",
+   "kind": "text",
+   "hash": "312df0e863fa",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.active": {
+   "en": "Active",
+   "ar": "نشط",
+   "kind": "text",
+   "hash": "7bc047119a8c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.cancelled": {
+   "en": "Cancelled",
+   "ar": "ملغى",
+   "kind": "text",
+   "hash": "efeccfe75820",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.completed": {
+   "en": "Completed",
+   "ar": "مكتمل",
+   "kind": "text",
+   "hash": "92a00ae58593",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.fulfilled": {
+   "en": "Fulfilled",
+   "ar": "موفّى",
+   "kind": "text",
+   "hash": "25a28d9dca97",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.paused": {
+   "en": "Paused",
+   "ar": "موقوف مؤقّتاً",
+   "kind": "text",
+   "hash": "64c718a1a012",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.pending": {
+   "en": "Awaiting a decision",
+   "ar": "بانتظار القرار",
+   "kind": "text",
+   "hash": "c74d59b3ff40",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.status.pending_payment": {
+   "en": "Awaiting payment",
+   "ar": "بانتظار الدفع",
+   "kind": "text",
+   "hash": "670b461263f2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.statusHead": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.trend": {
+   "en": "Monthly series",
+   "ar": "السلسلة الشهرية",
+   "kind": "text",
+   "hash": "87986c9c6e5c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.unified": {
+   "en": "Approved equivalent {0}",
+   "ar": "المعادل المعتمد {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c63348a7eb03",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.csv.value": {
+   "en": "Value",
+   "ar": "القيمة",
+   "kind": "text",
+   "hash": "a2c122336230",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.currencyNote": {
+   "en": "“Credited” is what is recorded against a child's need in the need's currency; “collected” is what was actually paid in the payment currency. Two currencies are only summed at an approved exchange rate; anything marked ≈ is an approximation at an indicative rate.",
+   "ar": "«المقيَّد» ما يُسجَّل لحاجة الطفل بعملة حاجته، و«المحصَّل» ما دُفع فعلاً بعملة الدفع. لا تُجمع عملتان إلا بسعر صرفٍ معتمد؛ وما عُلِّم «≈» تقريبٌ بسعرٍ استرشادي.",
+   "kind": "text",
+   "hash": "0866a8d07639",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.deniedText": {
@@ -846,12 +1001,27 @@
    "hash": "ae451679cc28",
    "file": "src/components/admin/overview/copy.ts"
   },
+  "components/admin/overview.donorsAtRisk": {
+   "en": "At risk",
+   "ar": "متعثّرون",
+   "kind": "text",
+   "hash": "6d10f67d881e",
+   "file": "src/components/admin/overview/copy.ts"
+  },
   "components/admin/overview.donorsBarLabel": {
    "en": "{0} active and {1} with no active sponsorship",
    "ar": "{0} نشطون و{1} بلا كفالة نشطة",
    "kind": "template",
    "params": 2,
    "hash": "425c01e86367",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsCaption": {
+   "en": "{0} hold an active sponsorship",
+   "ar": "{0} لهم كفالةٌ نشطة",
+   "kind": "template",
+   "params": 1,
+   "hash": "cfda248f4826",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsEmpty": {
@@ -875,11 +1045,18 @@
    "hash": "dccde825ad88",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.donorsLead": {
-   "en": "Active, new, and those whose giving has stopped.",
-   "ar": "النشطون، والجدد، ومن توقّف عطاؤه.",
+  "components/admin/overview.donorsLapsed": {
+   "en": "Lapsed",
+   "ar": "منقطعون",
    "kind": "text",
-   "hash": "83842a3897b3",
+   "hash": "be1efad4689d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsLead": {
+   "en": "Active, new, at risk, and those whose giving has lapsed.",
+   "ar": "النشطون، والجدد، والمتعثّرون، ومن انقطع عطاؤه.",
+   "kind": "text",
+   "hash": "f5799efc8d40",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsNew": {
@@ -890,25 +1067,31 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsNewPartial": {
-   "en": "More than the first hundred; needs a database count",
-   "ar": "يتجاوز العدد أوّل مئة؛ يحتاج عدّاً من القاعدة",
+   "en": "Needs a database count",
+   "ar": "يحتاج عدّاً من القاعدة",
    "kind": "text",
-   "hash": "02279d6babcb",
+   "hash": "a919488a6fc9",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.donorsRecent": {
-   "en": "{0} started in the last 30 days",
-   "ar": "{0} بدأوا خلال 30 يوماً",
-   "kind": "template",
-   "params": 1,
-   "hash": "9c24492ae542",
+  "components/admin/overview.donorsNoHealth": {
+   "en": "At-risk and lapsed donors are read from the database support totals, which are not available right now.",
+   "ar": "المتعثّرون والمنقطعون يُقرآن من مجاميع الدعم في القاعدة، وهي غير متاحة الآن.",
+   "kind": "text",
+   "hash": "4a586901e747",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.donorsRecentUnknown": {
-   "en": "New donors: the list exceeds the first page",
-   "ar": "الجدد: يتجاوز العدد الصفحة الأولى",
-   "kind": "text",
-   "hash": "5fe1ce396157",
+  "components/admin/overview.donorsRule.one": {
+   "en": "At risk: an active recurring sponsorship more than {0} day past due, or one that is paused. Lapsed: paid at least once and has no live sponsorship now.",
+   "ar": "المتعثّر: كفالةٌ دورية نشطة فات استحقاقها بأكثر من يوم، أو موقوفة مؤقّتاً. المنقطع: دفع مرّةً على الأقلّ ولا كفالة حيّة له الآن.",
+   "kind": "plural",
+   "hash": "a54233ce65e8",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.donorsRule.other": {
+   "en": "At risk: an active recurring sponsorship more than {0} days past due, or one that is paused. Lapsed: paid at least once and has no live sponsorship now.",
+   "ar": "المتعثّر: كفالةٌ دورية نشطة فات استحقاقها بأكثر من {0} يوم، أو موقوفة مؤقّتاً. المنقطع: دفع مرّةً على الأقلّ ولا كفالة حيّة له الآن.",
+   "kind": "plural",
+   "hash": "65c64ba532d6",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsTitle": {
@@ -918,18 +1101,53 @@
    "hash": "c1f08a23d171",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.due": {
-   "en": "Pledges due",
-   "ar": "تعهّداتٌ مستحقّة",
+  "components/admin/overview.donorsTotal": {
+   "en": "All donors",
+   "ar": "كلّ الداعمين",
    "kind": "text",
-   "hash": "3128273a29c3",
+   "hash": "ef8e556c7409",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.due": {
+   "en": "Due",
+   "ar": "المستحقّات",
+   "kind": "text",
+   "hash": "71aae978bf91",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.dueAmount": {
-   "en": "Amounts awaiting collection",
-   "ar": "مبالغ بانتظار التحصيل",
+   "en": "Amount",
+   "ar": "المبلغ",
    "kind": "text",
-   "hash": "a287a4dbbe2b",
+   "hash": "550cc7896881",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueBucket.first": {
+   "en": "Awaiting first payment",
+   "ar": "بانتظار الدفعة الأولى",
+   "kind": "text",
+   "hash": "8b2fc00991af",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueBucket.month": {
+   "en": "In 8 to 30 days",
+   "ar": "خلال 8 إلى 30 يوماً",
+   "kind": "text",
+   "hash": "448d0e4f8366",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueBucket.overdue": {
+   "en": "Past due",
+   "ar": "فات استحقاقها",
+   "kind": "text",
+   "hash": "33d16f262b78",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueBucket.week": {
+   "en": "Within 7 days",
+   "ar": "خلال 7 أيام",
+   "kind": "text",
+   "hash": "423981ea63ed",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.dueCount": {
@@ -939,11 +1157,39 @@
    "hash": "011a893c841e",
    "file": "src/components/admin/overview/copy.ts"
   },
+  "components/admin/overview.dueCountHead": {
+   "en": "Sponsorships",
+   "ar": "عدد الكفالات",
+   "kind": "text",
+   "hash": "51047adb8b2d",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueLead": {
+   "en": "Recurring sponsorships by their next due date, and those awaiting a first payment.",
+   "ar": "الكفالات الدورية بتاريخ استحقاقها القادم، وما ينتظر دفعته الأولى.",
+   "kind": "text",
+   "hash": "b4dc733af5d4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueNoSource": {
+   "en": "The breakdown by due date needs database totals that do not exist yet.",
+   "ar": "تفصيل الاستحقاق بتاريخه يحتاج مجاميع من القاعدة لم تُنشأ بعد.",
+   "kind": "text",
+   "hash": "7b921edd69a3",
+   "file": "src/components/admin/overview/copy.ts"
+  },
   "components/admin/overview.dueNone": {
    "en": "Nothing due right now",
    "ar": "لا مستحقّ الآن",
    "kind": "text",
    "hash": "980d6d91d5ac",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.dueWhen": {
+   "en": "Due",
+   "ar": "الاستحقاق",
+   "kind": "text",
+   "hash": "b887f4da4620",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.errorText": {
@@ -958,6 +1204,13 @@
    "ar": "تعذّر تحميل اللوحة",
    "kind": "text",
    "hash": "4ad18b4d7825",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.exportCsv": {
+   "en": "Export CSV",
+   "ar": "تصدير CSV",
+   "kind": "text",
+   "hash": "17c780f0d7f1",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.failedNote": {
@@ -1010,6 +1263,14 @@
    "ar": "مُحصَّل حتى الآن",
    "kind": "text",
    "hash": "c0687f11f4a4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.heroFirm": {
+   "en": "Dollar total at an approved exchange rate dated {0}",
+   "ar": "المجموع بالدولار بسعر صرفٍ معتمد بتاريخ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "62d6839c12ef",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.heroLabel": {
@@ -1168,10 +1429,26 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.kindActive": {
-   "en": "active",
-   "ar": "نشط",
+   "en": "{0} active",
+   "ar": "{0} نشط",
+   "kind": "template",
+   "params": 1,
+   "hash": "712499136967",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindDone": {
+   "en": "{0} completed",
+   "ar": "{0} مكتمل",
+   "kind": "template",
+   "params": 1,
+   "hash": "253eaf4323c4",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindLoading": {
+   "en": "Reading the totals…",
+   "ar": "تُقرأ المجاميع…",
    "kind": "text",
-   "hash": "59a33f87e7f2",
+   "hash": "e53ac511a2b8",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.kindMonthly": {
@@ -1186,6 +1463,21 @@
    "ar": "لا مجموع من القاعدة بعد",
    "kind": "text",
    "hash": "fd831fb3d342",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindPending": {
+   "en": "{0} pending",
+   "ar": "{0} بانتظار",
+   "kind": "template",
+   "params": 1,
+   "hash": "38cf7c05acd5",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.kindPledged": {
+   "en": "value of active pledges",
+   "ar": "قيمة التعهّدات النشطة",
+   "kind": "text",
+   "hash": "9117ebf6d91c",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.lead": {
@@ -1252,20 +1544,6 @@
    "hash": "65980aa777dd",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.openNeed": {
-   "en": "Open monthly need",
-   "ar": "الاحتياج الشهري المفتوح",
-   "kind": "text",
-   "hash": "c8fd7ad282e4",
-   "file": "src/components/admin/overview/copy.ts"
-  },
-  "components/admin/overview.openNeedNone": {
-   "en": "No open gap",
-   "ar": "لا فجوة مفتوحة",
-   "kind": "text",
-   "hash": "7d59fcd9a95e",
-   "file": "src/components/admin/overview/copy.ts"
-  },
   "components/admin/overview.openQueue": {
    "en": "Approval queue",
    "ar": "طابور الاعتماد",
@@ -1278,6 +1556,14 @@
    "ar": "الخزينة والتصدير",
    "kind": "text",
    "hash": "26ee84134e33",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.opens": {
+   "en": "Opens: {0}",
+   "ar": "يفتح: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "13ea0d2ae678",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.ops.admin_quorum": {
@@ -1358,6 +1644,94 @@
    "hash": "670b461263f2",
    "file": "src/components/admin/overview/copy.ts"
   },
+  "components/admin/overview.periodLabel": {
+   "en": "Trend period",
+   "ar": "فترة الاتجاه",
+   "kind": "text",
+   "hash": "a8e67e912870",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.periodMonths.one": {
+   "en": "{0} month",
+   "ar": "شهر",
+   "kind": "plural",
+   "hash": "f96dffab3a84",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.periodMonths.other": {
+   "en": "{0} months",
+   "ar": "{0} شهر",
+   "kind": "plural",
+   "hash": "3509a8f952e2",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.periodTotal": {
+   "en": "Period total {0}",
+   "ar": "مجموع الفترة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0cd47ca6b582",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.pledgeCountries": {
+   "en": "Qualification and in-kind by destination country",
+   "ar": "التأهيل والعيني بدولة الوجهة",
+   "kind": "text",
+   "hash": "20b56ffa419c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.pledgeCountriesLead": {
+   "en": "Open and fulfilled pledges. A country with fewer than {0} children has its figures withheld.",
+   "ar": "التعهّدات المفتوحة والموفّاة. دولةٌ أطفالها أقلّ من {0} تُحجب أرقامها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "ff82953e87b5",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.pledges.one": {
+   "en": "{0} pledge",
+   "ar": "تعهّدٌ واحد",
+   "kind": "plural",
+   "hash": "41c23289e753",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.pledges.other": {
+   "en": "{0} pledges",
+   "ar": "{0} تعهّد",
+   "kind": "plural",
+   "hash": "5dc8656290da",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.print": {
+   "en": "Print",
+   "ar": "طباعة",
+   "kind": "text",
+   "hash": "007112cc1464",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.printedAt": {
+   "en": "Printed {0}",
+   "ar": "طُبعت بتاريخ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "5919eab04569",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.published": {
+   "en": "Published files",
+   "ar": "ملفّاتٌ منشورة",
+   "kind": "text",
+   "hash": "57709c453d18",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.ratesMissing": {
+   "en": "Currencies with no approved exchange rate ({0}) are shown in their own currency and enter no dollar total.",
+   "ar": "عملاتٌ بلا سعر صرفٍ معتمد ({0}): تُعرض بعملتها ولا تدخل مجموعاً بالدولار.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1fbba18a98bf",
+   "file": "src/components/admin/overview/copy.ts"
+  },
   "components/admin/overview.refresh": {
    "en": "Refresh",
    "ar": "تحديث",
@@ -1419,20 +1793,6 @@
    "ar": "عرض بيانات نموذجية",
    "kind": "text",
    "hash": "e27a44092e0a",
-   "file": "src/components/admin/overview/copy.ts"
-  },
-  "components/admin/overview.sampleOnlyNote": {
-   "en": "Qualification, in-kind and the monthly trend have no live source yet: they appear in the sample only.",
-   "ar": "التأهيل والعيني والاتجاه الشهري لا مصدر حيّاً لها بعد: تظهر في العيّنة وحدها.",
-   "kind": "text",
-   "hash": "f6db3e6ebd76",
-   "file": "src/components/admin/overview/copy.ts"
-  },
-  "components/admin/overview.sampleOnlyTag": {
-   "en": "Sample only",
-   "ar": "نموذجي فقط",
-   "kind": "text",
-   "hash": "0a69698eb4c4",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.sampleTag": {
@@ -1618,6 +1978,13 @@
    "hash": "2ba23ec72cd7",
    "file": "src/components/admin/overview/copy.ts"
   },
+  "components/admin/overview.sourceNames.summary": {
+   "en": "support totals",
+   "ar": "مجاميع الدعم",
+   "kind": "text",
+   "hash": "e48723f66773",
+   "file": "src/components/admin/overview/copy.ts"
+  },
   "components/admin/overview.sponsored": {
    "en": "Fully sponsored",
    "ar": "مكفولٌ بالكامل",
@@ -1630,6 +1997,20 @@
    "ar": "المكفول محجوب",
    "kind": "text",
    "hash": "fb2db7c2eb55",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.summaryFailedText": {
+   "en": "Qualification, in-kind and the monthly trend are missing right now, not zero.",
+   "ar": "التأهيل والعيني والاتجاه الشهري غائبةٌ الآن، لا أصفار.",
+   "kind": "text",
+   "hash": "3cc9b607f611",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.summaryFailedTitle": {
+   "en": "Support totals could not be read",
+   "ar": "تعذّرت قراءة مجاميع الدعم",
+   "kind": "text",
+   "hash": "5de8d0fd8387",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.supportEmpty": {
@@ -1688,6 +2069,20 @@
    "hash": "b48ce5b49323",
    "file": "src/components/admin/overview/copy.ts"
   },
+  "components/admin/overview.topics.donors_at_risk": {
+   "en": "Donors at risk",
+   "ar": "داعمون متعثّرون",
+   "kind": "text",
+   "hash": "b43ed20bd33c",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.topics.due_overdue": {
+   "en": "Sponsorships past their due date",
+   "ar": "كفالاتٌ فات استحقاقها",
+   "kind": "text",
+   "hash": "4e314a069d7b",
+   "file": "src/components/admin/overview/copy.ts"
+  },
   "components/admin/overview.topics.go_live": {
    "en": "Go-live conditions not yet met",
    "ar": "شروط اعتمادٍ لم تتحقّق",
@@ -1730,12 +2125,34 @@
    "hash": "4c34667e9b49",
    "file": "src/components/admin/overview/copy.ts"
   },
-  "components/admin/overview.trendChartLabel": {
-   "en": "{0} over twelve months",
-   "ar": "اتجاه {0} خلال اثني عشر شهراً",
+  "components/admin/overview.trendBasis": {
+   "en": "The line: what sponsorships collected each month, and qualification and in-kind pledges accepted, by the date they were made.",
+   "ar": "الخطّ: ما حُصِّل من الكفالات كلّ شهر، وما قُبل من تعهّدات التأهيل والعيني بتاريخ إنشائها.",
+   "kind": "text",
+   "hash": "7cd19fb0bda6",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendBlocked": {
+   "en": "No single line can be drawn: a currency has no approved rate ({0})",
+   "ar": "لا يُرسم خطٌّ واحد: عملةٌ بلا سعرٍ معتمد ({0})",
    "kind": "template",
    "params": 1,
-   "hash": "172de49b7520",
+   "hash": "af7e357017e3",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendBlockedCell": {
+   "en": "two currencies",
+   "ar": "بعملتين",
+   "kind": "text",
+   "hash": "d73a817cf809",
+   "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/overview.trendChartLabel": {
+   "en": "Monthly trend: {0}",
+   "ar": "الاتجاه الشهري: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "49d625e323e1",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.trendDelta": {
@@ -1768,10 +2185,11 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.trendTitle": {
-   "en": "Twelve-month trend",
-   "ar": "اتجاه اثني عشر شهراً",
-   "kind": "text",
-   "hash": "edb992ecb8fd",
+   "en": "Monthly trend — {0}",
+   "ar": "الاتجاه الشهري — {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "488760a224b4",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.trendUnavailable": {
@@ -1782,10 +2200,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.unavailable": {
-   "en": "Unavailable right now",
-   "ar": "غير متاح الآن",
+   "en": "Could not be read",
+   "ar": "تعذّرت القراءة",
    "kind": "text",
-   "hash": "8566f7e5c997",
+   "hash": "8fe1ff0815d5",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.updatedAt": {

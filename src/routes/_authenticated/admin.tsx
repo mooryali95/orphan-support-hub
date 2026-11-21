@@ -1,7 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ChevronRight, Loader2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
@@ -28,8 +28,8 @@ import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAdminOverview, getPaymentsReady, reviewOrphan } from "@/lib/admin.functions";
+import { getOverviewInbox, getSupportSummary } from "@/lib/admin-overview.functions";
 import { goLiveSteps, linkHealth } from "@/lib/go-live";
-import { getDecisionInbox } from "@/lib/inbox.functions";
 import {
   formatDate,
   formatMoney,
@@ -54,7 +54,8 @@ const COPY = defineCopy("routes/_authenticated/admin", {
 const ADMIN_FNS = {
   getAdminOverview,
   getPaymentsReady,
-  getDecisionInbox,
+  getOverviewInbox,
+  getSupportSummary,
   getSourcesOverview,
   getDispatchHealth,
   getOpsHealth,
@@ -107,31 +108,63 @@ const SECTIONS: Array<[string, Tab[]]> = [
   ["المراقبة", ["overview", "monitoring"]],
 ];
 
+/** ما تقرؤه الصفحة من عنوانها؛ وما عداه يبقى كما هو. */
+type Query = { tab?: unknown; sample?: unknown; period?: unknown; [key: string]: unknown };
+
+const isTab = (v: unknown): v is Tab =>
+  typeof v === "string" && SECTIONS.some(([, tabs]) => tabs.includes(v as Tab));
+
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const decideOrphan = useServerFn(reviewOrphan);
   const queryClient = useQueryClient();
-  // الإدارة تهبط على «لوحة الإدارة» (النظرة الشاملة)، ومنها إلى كلّ تبويب.
-  const [tab, setTab] = useState<Tab>("home");
-  const [sample, setSample] = useState(false);
   const copy = useCopy(COPY);
-  // تنبيه صحّة التشغيل يفتح اللوحة على تبويبه: ‎/admin?tab=monitoring
-  // و‎/admin?sample=1 يعرض العيّنة النموذجية للوحة الإدارة.
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const t = q.get("tab");
-    if (t && SECTIONS.some(([, tabs]) => tabs.includes(t as Tab))) setTab(t as Tab);
-    if (q.get("sample") === "1" || q.get("sample") === "true") setSample(true);
-  }, []);
+  // التبويب والعيّنة وفترة الاتجاه تعيش في عنوان الصفحة: ‎/admin?tab=monitoring
+  // يفتح تبويبه، وزرّ الرجوع يعيد إلى ما قبله، والرابط يُنسخ ويُشارَك. بلا `tab`
+  // تهبط الإدارة على «لوحة الإدارة» (النظرة الشاملة). يُقرأ العنوان من الموجِّه
+  // مباشرةً بلا مخطّط بحثٍ على المسار، فلا يزيد شيءٌ في الحزمة الأولى.
+  const search = useRouterState({ select: (st) => st.location.search as Query });
+  const navigate = useNavigate();
+  const tab: Tab = isTab(search.tab) ? search.tab : "home";
+  const sample = search.sample === 1 || search.sample === "1" || search.sample === true;
+  const go = useCallback(
+    (patch: { tab?: Tab; sample?: boolean; period?: number | null }, replace = false) => {
+      void navigate({
+        to: "/admin",
+        replace,
+        search: ((prev: Query) => {
+          const next: Query = { ...prev };
+          if (patch.tab !== undefined) {
+            if (patch.tab === "home") delete next.tab;
+            else next.tab = patch.tab;
+          }
+          if (patch.sample !== undefined) {
+            if (patch.sample) next.sample = 1;
+            else delete next.sample;
+          }
+          if (patch.period !== undefined) {
+            if (patch.period === null) delete next.period;
+            else next.period = patch.period;
+          }
+          return next;
+        }) as never,
+      });
+    },
+    [navigate],
+  );
+  const setTab = useCallback((next: Tab) => go({ tab: next }), [go]);
   const actions = useMemo(
     () => ({
       open: (next: Tab) => {
-        setTab(next);
+        go({ tab: next });
         window.scrollTo({ top: 0 });
       },
-      setSample,
+      href: (next: Tab) => `/admin?tab=${next}${sample ? "&sample=1" : ""}`,
+      setSample: (on: boolean) => go({ sample: on }, true),
+      // `null`: الفترة الافتراضية — لا تُكتب في العنوان.
+      setPeriod: (months: number | null) => go({ period: months }, true),
     }),
-    [],
+    [go, sample],
   );
   // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
@@ -160,7 +193,12 @@ function AdminPage() {
               </div>
             }
           >
-            <ManagementOverview sample={sample} fns={ADMIN_FNS} actions={actions} />
+            <ManagementOverview
+              sample={sample}
+              period={search.period}
+              fns={ADMIN_FNS}
+              actions={actions}
+            />
           </Suspense>
         </div>
       </LocaleProvider>
@@ -215,14 +253,18 @@ function AdminPage() {
     >
       {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
           شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
-      <button
-        type="button"
-        onClick={() => setTab("home")}
+      <a
+        href="/admin"
+        onClick={(e) => {
+          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          setTab("home");
+        }}
         className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <ChevronRight aria-hidden="true" className="size-4" strokeWidth={2} />
         {copy.overviewLink}
-      </button>
+      </a>
       <nav aria-label="أقسام الإدارة" className="flex flex-wrap gap-2">
         {SECTIONS.map(([label, tabs]) => {
           const active = tabs.includes(tab);

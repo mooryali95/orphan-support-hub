@@ -4,17 +4,22 @@ import { lazy, Suspense, useState } from "react";
 import {
   attentionTotals,
   countryRows,
+  dueRows,
+  kindRows,
+  PERIODS,
+  ratesMissing,
   regionRows,
-  trendDelta,
-  unifiedTotal,
+  STALE_DECISION_DAYS,
+  trendView,
+  waitingDays,
   type AttentionItem,
-  type ChildrenSummary,
   type DonorsSummary,
   type Loaded,
+  type Period,
   type Severity,
-  type SupportExtras,
   type SupportKindKey,
   type SupportRow,
+  type SupportSummary,
 } from "@/lib/admin-overview";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { CONTINENT_LABEL, countryName } from "@/lib/countries";
@@ -26,6 +31,8 @@ import { cn } from "@/lib/utils";
 
 import { COPY } from "./copy";
 import {
+  Amounts,
+  Failed,
   Fig,
   Forward,
   Key,
@@ -33,7 +40,7 @@ import {
   MoreLink,
   Panel,
   Quiet,
-  SampleTag,
+  Segmented,
   SplitBar,
   TabLink,
 } from "./parts";
@@ -42,10 +49,9 @@ import {
 const TrendSpark = lazy(() => import("./TrendSpark"));
 const TrendTable = lazy(() => import("./TrendSpark").then((m) => ({ default: m.TrendTable })));
 
-const DAY = 86_400_000;
-
 /* ── ما يحتاج انتباهاً ─────────────────────────────────────────────── */
 
+const SEVERITIES: readonly Severity[] = ["critical", "warn", "info"];
 const SEVERITY_ICON: Record<Severity, typeof Circle> = {
   critical: CircleAlert,
   warn: TriangleAlert,
@@ -63,12 +69,17 @@ const FIRST_ROWS = 10;
 export function AttentionPanel({
   items,
   pending,
+  failed,
+  onRetry,
   now,
   tag,
 }: {
   items: AttentionItem[];
   /** مصدرٌ واحد على الأقلّ لم يصل بعد. */
   pending: boolean;
+  /** أسماء الطوابير التي تعذّرت قراءتها: القائمة ناقصةٌ بقدرها. */
+  failed: string[];
+  onRetry: () => void;
   now: number;
   tag: string | null;
 }) {
@@ -90,10 +101,6 @@ export function AttentionPanel({
     const topic = it.topic;
     if (topic.type === "source_checklist") return t.inSources(topic.sources);
     if (topic.type === "go_live") return t.goLiveOf(formatCount(topic.total, locale));
-    if (topic.type === "inbox" && it.oldestAt) {
-      const at = Date.parse(it.oldestAt);
-      if (Number.isFinite(at)) return t.oldest(Math.max(0, Math.floor((now - at) / DAY)));
-    }
     return null;
   };
 
@@ -106,27 +113,35 @@ export function AttentionPanel({
       aside={
         items.length > 0 ? (
           <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            {(["critical", "warn", "info"] as const)
-              .filter((s) => totals[s] > 0)
-              .map((s) => {
-                const Icon = SEVERITY_ICON[s];
-                return (
-                  <li key={s} className="inline-flex items-center gap-1.5">
-                    <Icon
-                      aria-hidden="true"
-                      className={cn("size-4", SEVERITY_TONE[s])}
-                      strokeWidth={2}
-                    />
-                    <span className="font-bold tabular-nums">{formatCount(totals[s], locale)}</span>
-                    <span className="text-muted-foreground">{t.severity[s]}</span>
-                  </li>
-                );
-              })}
+            {SEVERITIES.filter((s) => totals[s] > 0).map((s) => {
+              const Icon = SEVERITY_ICON[s];
+              return (
+                <li key={s} className="inline-flex items-center gap-1.5">
+                  <Icon
+                    aria-hidden="true"
+                    className={cn("size-4", SEVERITY_TONE[s])}
+                    strokeWidth={2}
+                  />
+                  <span className="font-bold tabular-nums">{formatCount(totals[s], locale)}</span>
+                  <span className="text-muted-foreground">{t.severity[s]}</span>
+                </li>
+              );
+            })}
           </ul>
         ) : undefined
       }
       footer={<MoreLink tab="inbox">{t.screens.inbox}</MoreLink>}
     >
+      {failed.length > 0 && (
+        <div className="mb-4">
+          <Failed
+            title={t.attentionFailedTitle}
+            text={t.attentionFailedText(failed.join(t.listJoin))}
+            retry={t.retry}
+            onRetry={onRetry}
+          />
+        </div>
+      )}
       {items.length === 0 ? (
         pending ? (
           <div aria-busy="true" className="space-y-2">
@@ -135,53 +150,75 @@ export function AttentionPanel({
               <div key={i} className="h-12 animate-pulse rounded-xl bg-secondary" />
             ))}
           </div>
-        ) : (
+        ) : failed.length > 0 ? null : (
           <Quiet title={t.attentionEmptyTitle} text={t.attentionEmptyText} />
         )
       ) : (
         <>
-          <ul className="ov-bleed ov-divide">
-            {shown.map((it) => {
-              const Icon = SEVERITY_ICON[it.severity];
-              const m = meta(it);
-              const hideCount = it.topic.type === "ops" && OPS_NO_COUNT.has(it.topic.check);
-              return (
-                <li key={it.key}>
-                  <TabLink
-                    tab={it.tab}
-                    className="ov-row flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <Icon
-                      role="img"
-                      aria-label={t.severity[it.severity]}
-                      className={cn("size-5 shrink-0", SEVERITY_TONE[it.severity])}
-                      strokeWidth={2}
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[0.9375rem] leading-6 font-medium">
-                        {label(it)}
-                      </span>
-                      {m && (
-                        <span className="block text-xs leading-5 text-muted-foreground">{m}</span>
-                      )}
-                    </span>
-                    {!hideCount && (
-                      <span className="text-lg leading-none font-bold tabular-nums">
-                        {formatCount(it.count, locale)}
-                      </span>
-                    )}
-                    <Forward className="size-4 shrink-0 text-muted-foreground" />
-                  </TabLink>
-                </li>
-              );
-            })}
-          </ul>
+          {SEVERITIES.map((sev) => {
+            const rows = shown.filter((it) => it.severity === sev);
+            if (rows.length === 0) return null;
+            const Icon = SEVERITY_ICON[sev];
+            return (
+              <section key={sev} aria-label={t.severity[sev]} className="ov-sev">
+                <h3 className="ov-sev-head">
+                  <Icon
+                    aria-hidden="true"
+                    className={cn("size-4 shrink-0", SEVERITY_TONE[sev])}
+                    strokeWidth={2}
+                  />
+                  {t.severity[sev]}
+                </h3>
+                <ul className="ov-bleed ov-divide">
+                  {rows.map((it) => {
+                    const m = meta(it);
+                    const days = waitingDays(it, now);
+                    const hideCount = it.topic.type === "ops" && OPS_NO_COUNT.has(it.topic.check);
+                    return (
+                      <li key={it.key}>
+                        <TabLink
+                          tab={it.tab}
+                          data-sev={sev}
+                          className="ov-row flex min-h-12 w-full items-center gap-3 rounded-xl px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-[0.9375rem] leading-6 font-medium">
+                              {label(it)}
+                            </span>
+                            <span className="flex flex-wrap gap-x-2 text-xs leading-5 text-muted-foreground">
+                              {days !== null && (
+                                <span
+                                  className={cn(
+                                    days > STALE_DECISION_DAYS && "font-bold text-bridge-ink",
+                                  )}
+                                >
+                                  {t.oldest(days)}
+                                </span>
+                              )}
+                              {m && <span>{m}</span>}
+                              <span className="ov-row-to">{t.opens(t.screens[it.tab])}</span>
+                            </span>
+                          </span>
+                          {!hideCount && (
+                            <span className="text-xl leading-none font-bold tabular-nums">
+                              {formatCount(it.count, locale)}
+                            </span>
+                          )}
+                          <Forward className="size-4 shrink-0 text-muted-foreground" />
+                        </TabLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            );
+          })}
           {items.length > FIRST_ROWS && (
             <button
               type="button"
               aria-expanded={all}
               onClick={() => setAll((v) => !v)}
-              className="mt-2 inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="ov-noprint mt-2 inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {all ? t.showLess : t.attentionAll(formatCount(items.length, locale))}
             </button>
@@ -194,21 +231,31 @@ export function AttentionPanel({
 
 /* ── الدعم ─────────────────────────────────────────────────────────── */
 
-const KINDS: SupportKindKey[] = ["sponsorship", "qualification", "in_kind"];
-
 export function SupportPanel({
   rows,
   activeSponsorships,
-  extras,
-  sample,
+  awaitingPayment,
+  summary,
+  absent,
+  period,
+  onPeriod,
+  onRetry,
+  tag,
 }: {
   rows: SupportRow[];
   activeSponsorships: number;
-  extras: SupportExtras | null;
-  sample: boolean;
+  awaitingPayment: number;
+  summary: Loaded<SupportSummary>;
+  /** دالّة المجاميع لم تُنشأ في هذه القاعدة بعد. */
+  absent: boolean;
+  period: Period;
+  onPeriod: (p: Period) => void;
+  onRetry: () => void;
+  tag: string | null;
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
+  const n = (v: number) => formatCount(v, locale);
   // أسماء الأنواع من مصدرها الواحد (giving-tracks)، لا نسخةٌ ثانية هنا.
   const tracks = useGivingCopy().tracks;
   const kinds: Record<SupportKindKey, string> = {
@@ -216,95 +263,113 @@ export function SupportPanel({
     qualification: tracks.qualification.name,
     in_kind: tracks.in_kind.name,
   };
-  const committed = unifiedTotal(rows, "committed");
-  const months = extras?.trend.map((p) => p.month) ?? [];
-
-  const kindRow = (kind: SupportKindKey) => {
-    if (kind === "sponsorship") {
-      return committed
-        ? {
-            active: activeSponsorships,
-            monthly: committed.exact
-              ? formatMoney(committed.amount, committed.currency, locale)
-              : approxMoney(committed.amount, committed.currency, locale),
-          }
-        : null;
-    }
-    const x = extras?.kinds.find((k) => k.kind === kind);
-    return x
-      ? { active: x.active, monthly: formatMoney(x.monthly, extras!.currency, locale) }
-      : null;
-  };
+  const list = kindRows(summary, { rows, activeSponsorships, awaitingPayment });
+  const view = trendView(summary, period);
+  const missing = summary ? ratesMissing(summary) : [];
 
   return (
     <Panel
       id="ov-support"
       title={t.supportTitle}
       lead={t.supportLead}
-      tag={sample ? t.sampleTag : null}
+      tag={tag}
+      aside={
+        view ? (
+          <Segmented
+            label={t.periodLabel}
+            value={period}
+            options={PERIODS.map((p) => ({ value: p, label: t.periodMonths(p) }))}
+            onChange={onPeriod}
+          />
+        ) : undefined
+      }
       footer={<MoreLink tab="overview">{t.openTreasury}</MoreLink>}
     >
       <div className="ov-support">
         <div>
           <ul className="ov-divide">
-            {KINDS.map((kind) => {
-              const r = kindRow(kind);
-              const series = extras?.trend.map((p) => p[kind]) ?? [];
-              const delta = trendDelta(series);
+            {list.map((r) => {
+              const line = view?.lines.find((l) => l.kind === r.kind);
               return (
-                <li key={kind} className="ov-kind">
+                <li key={r.kind} className="ov-kind">
                   <div className="min-w-0">
-                    <p className="flex flex-wrap items-center gap-2 text-[0.9375rem] leading-6 font-bold">
-                      {kinds[kind]}
-                      {sample && kind !== "sponsorship" && <SampleTag>{t.sampleOnlyTag}</SampleTag>}
-                    </p>
+                    <p className="text-[0.9375rem] leading-6 font-bold">{kinds[r.kind]}</p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {r ? (
-                        <>
-                          <span className="tabular-nums">{formatCount(r.active, locale)}</span>{" "}
-                          {t.kindActive}
-                        </>
-                      ) : (
-                        t.kindNoSource
-                      )}
+                      {r.source === "none"
+                        ? summary === undefined
+                          ? t.kindLoading
+                          : t.kindNoSource
+                        : [
+                            t.kindActive(n(r.active)),
+                            r.pending > 0 ? t.kindPending(n(r.pending)) : null,
+                            r.done > 0 ? t.kindDone(n(r.done)) : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                     </p>
                   </div>
                   <div className="text-end">
-                    {r ? (
-                      <>
-                        <p className="text-lg leading-7 font-bold tabular-nums">{r.monthly}</p>
-                        <p className="text-xs leading-5 text-muted-foreground">
-                          {delta === null
-                            ? t.kindMonthly
-                            : t.trendDelta(
-                                `${delta > 0 ? "+" : ""}${formatCount(delta, locale, { percent: true })}`,
-                              )}
-                        </p>
-                      </>
-                    ) : (
+                    {r.source === "none" || r.amounts.length === 0 ? (
                       <p aria-hidden="true" className="text-lg leading-7 text-muted-foreground">
                         —
                       </p>
+                    ) : (
+                      <>
+                        <p className="text-lg leading-7 font-bold tabular-nums">
+                          {r.unified ? (
+                            r.unified.basis === "indicative" ? (
+                              approxMoney(Math.round(r.unified.amount), r.unified.currency, locale)
+                            ) : (
+                              formatMoney(r.unified.amount, r.unified.currency, locale)
+                            )
+                          ) : (
+                            <Amounts items={r.amounts} locale={locale} />
+                          )}
+                        </p>
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {r.kind === "sponsorship" ? t.kindMonthly : t.kindPledged}
+                        </p>
+                      </>
                     )}
                   </div>
-                  {series.length > 1 && extras && (
+                  {line && (
                     <div className="ov-kind-spark">
-                      <Suspense
-                        fallback={
-                          <div
-                            role="status"
-                            aria-label={t.trendLoading}
-                            className="h-14 animate-pulse rounded-lg bg-secondary"
-                          />
-                        }
-                      >
-                        <TrendSpark
-                          months={months}
-                          values={series}
-                          currency={extras.currency}
-                          label={t.trendChartLabel(kinds[kind])}
-                        />
-                      </Suspense>
+                      {line.values.length > 1 ? (
+                        <>
+                          <Suspense
+                            fallback={
+                              <div
+                                role="status"
+                                aria-label={t.trendLoading}
+                                className="h-14 animate-pulse rounded-lg bg-secondary"
+                              />
+                            }
+                          >
+                            <TrendSpark
+                              months={view!.months}
+                              values={line.values}
+                              currency={line.currency}
+                              label={t.trendChartLabel(kinds[r.kind])}
+                            />
+                          </Suspense>
+                          <p className="ov-kind-cap mt-1 text-xs leading-5 text-muted-foreground tabular-nums">
+                            <span>
+                              {t.periodTotal(formatMoney(line.total, line.currency, locale))}
+                            </span>
+                            {line.delta !== null && (
+                              <span>
+                                {t.trendDelta(
+                                  `${line.delta > 0 ? "+" : ""}${formatCount(line.delta, locale, { percent: true })}`,
+                                )}
+                              </span>
+                            )}
+                          </p>
+                        </>
+                      ) : line.blocked.length > 0 ? (
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {t.trendBlocked(line.blocked.join(t.listJoin))}
+                        </p>
+                      ) : null}
                     </div>
                   )}
                 </li>
@@ -312,22 +377,38 @@ export function SupportPanel({
             })}
           </ul>
 
-          {extras ? (
+          {view && (
             <details className="mt-1 text-sm">
-              <summary className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                {t.trendTitle} — {t.trendTable}
-                <SampleTag>{t.sampleOnlyTag}</SampleTag>
+              <summary className="ov-noprint inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                {t.trendTitle(t.periodMonths(period))} — {t.trendTable}
               </summary>
               <Suspense fallback={null}>
-                <TrendTable extras={extras} kinds={kinds} monthHeading={t.trendMonth} />
+                <TrendTable
+                  view={view}
+                  kinds={kinds}
+                  monthHeading={t.trendMonth}
+                  blocked={t.trendBlockedCell}
+                />
               </Suspense>
             </details>
-          ) : null}
-          {extras ? (
-            <p className="text-xs leading-6 text-muted-foreground">{t.sampleOnlyNote}</p>
-          ) : (
-            <p className="mt-1 text-xs leading-6 text-muted-foreground">{t.trendUnavailable}</p>
           )}
+          {summary ? (
+            <p className="text-xs leading-6 text-muted-foreground">
+              {t.trendBasis}
+              {missing.length > 0 && <> {t.ratesMissing(missing.join(t.listJoin))}</>}
+            </p>
+          ) : summary === null && !absent ? (
+            <div className="mt-3">
+              <Failed
+                title={t.summaryFailedTitle}
+                text={t.summaryFailedText}
+                retry={t.retry}
+                onRetry={onRetry}
+              />
+            </div>
+          ) : summary === null ? (
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">{t.trendUnavailable}</p>
+          ) : null}
         </div>
         <div className="ov-support-side">
           <h3 className="text-sm font-bold">{t.byCurrency}</h3>
@@ -399,67 +480,135 @@ export function SupportPanel({
   );
 }
 
-/* ── الأطفال ───────────────────────────────────────────────────────── */
+/* ── المستحقّات ────────────────────────────────────────────────────── */
 
-export function ChildrenPanel({
+export function DuePanel({
   summary,
+  absent,
+  donors,
   rows,
+  now,
+  onRetry,
   tag,
 }: {
-  summary: ChildrenSummary;
+  summary: Loaded<SupportSummary>;
+  absent: boolean;
+  donors: DonorsSummary;
   rows: SupportRow[];
+  now: number;
+  onRetry: () => void;
   tag: string | null;
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
   const n = (v: number) => formatCount(v, locale);
-  const gaps = rows.filter((r) => r.gap > 0);
+  const pending = rows.filter((r) => r.pending > 0);
+  const due = summary ? dueRows(summary) : null;
   return (
     <Panel
-      id="ov-children"
-      title={t.childrenTitle}
-      lead={t.childrenLead}
+      id="ov-due"
+      title={t.due}
+      lead={t.dueLead}
       tag={tag}
       footer={
         <>
-          <MoreLink tab="orphans">{t.openChildren}</MoreLink>
+          <MoreLink tab="sponsors">{t.openDonors}</MoreLink>
           <MoreLink tab="queue">{t.openQueue}</MoreLink>
         </>
       }
     >
-      {summary.published === 0 ? (
-        <Quiet title={t.childrenEmpty} text={t.countriesEmptyText} />
+      {due ? (
+        due.every((d) => d.count === 0) ? (
+          <Quiet title={t.dueNone} />
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="sr-only">
+              <tr>
+                <th scope="col">{t.dueWhen}</th>
+                <th scope="col">{t.dueCountHead}</th>
+                <th scope="col">{t.dueAmount}</th>
+              </tr>
+            </thead>
+            <tbody className="ov-divide">
+              {due.map((d) => {
+                const late = d.bucket === "overdue" && d.count > 0;
+                const at = d.oldest ? Date.parse(d.oldest) : NaN;
+                const days =
+                  (d.bucket === "overdue" || d.bucket === "first") && Number.isFinite(at)
+                    ? Math.max(0, Math.floor((now - at) / 86_400_000))
+                    : null;
+                return (
+                  <tr key={d.bucket}>
+                    <th scope="row" className="py-3 text-start font-normal">
+                      <span className="flex items-center gap-2 text-[0.9375rem] leading-6 font-medium">
+                        {late && (
+                          <TriangleAlert
+                            aria-hidden="true"
+                            className="size-4 shrink-0 text-bridge-ink"
+                            strokeWidth={2}
+                          />
+                        )}
+                        {t.dueBucket[d.bucket]}
+                      </span>
+                      {days !== null && d.count > 0 && (
+                        <span className="block text-xs leading-5 text-muted-foreground">
+                          {t.oldest(days)}
+                        </span>
+                      )}
+                    </th>
+                    <td className="px-3 py-3 text-end text-lg leading-7 font-bold tabular-nums">
+                      {n(d.count)}
+                    </td>
+                    <td className="py-3 text-end leading-7 tabular-nums">
+                      {d.amounts.length === 0 ? (
+                        <span className="text-muted-foreground">—</span>
+                      ) : (
+                        <Amounts items={d.amounts} locale={locale} />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )
+      ) : summary === undefined ? (
+        <div aria-busy="true" className="space-y-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-10 animate-pulse rounded-xl bg-secondary" />
+          ))}
+        </div>
       ) : (
         <>
-          <SplitBar
-            done={summary.sponsored}
-            rest={summary.waiting}
-            label={t.childrenBarLabel(n(summary.sponsored), n(summary.waiting))}
-          />
-          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-1">
-            <Key tone="done" label={t.sponsored} value={n(summary.sponsored)} />
-            <Key tone="rest" label={t.waiting} value={n(summary.waiting)} />
-          </div>
+          {donors.awaitingPayment === 0 && pending.length === 0 ? (
+            <Quiet title={t.dueNone} />
+          ) : (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <Fig label={t.dueCount} value={n(donors.awaitingPayment)} />
+              <Fig
+                label={t.dueAmount}
+                value={
+                  pending.length === 0 ? (
+                    "—"
+                  ) : (
+                    <Amounts
+                      items={pending.map((r) => ({ currency: r.currency, amount: r.pending }))}
+                      locale={locale}
+                    />
+                  )
+                }
+              />
+            </div>
+          )}
+          {absent ? (
+            <p className="mt-3 text-xs leading-6 text-muted-foreground">{t.dueNoSource}</p>
+          ) : (
+            <div className="mt-3">
+              <Failed title={t.summaryFailedTitle} retry={t.retry} onRetry={onRetry} />
+            </div>
+          )}
         </>
       )}
-      <dl className="ov-divide ov-rule-top mt-5">
-        <div className="flex items-baseline justify-between gap-4 py-3">
-          <dt className="text-sm text-muted-foreground">{t.awaitingReview}</dt>
-          <dd className="text-lg leading-7 font-bold tabular-nums">{n(summary.awaitingReview)}</dd>
-        </div>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3">
-          <dt className="text-sm text-muted-foreground">{t.openNeed}</dt>
-          <dd className="flex flex-wrap justify-end gap-x-4 text-lg leading-7 font-bold tabular-nums">
-            {gaps.length === 0 ? (
-              <span className="text-sm font-normal text-muted-foreground">{t.openNeedNone}</span>
-            ) : (
-              gaps.map((r) => (
-                <span key={r.currency}>{formatMoney(r.gap, r.currency, locale)}</span>
-              ))
-            )}
-          </dd>
-        </div>
-      </dl>
     </Panel>
   );
 }
@@ -468,29 +617,24 @@ export function ChildrenPanel({
 
 export function DonorsPanel({
   donors,
-  rows,
+  summary,
   tag,
 }: {
   donors: DonorsSummary;
-  rows: SupportRow[];
+  summary: Loaded<SupportSummary>;
   tag: string | null;
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
   const n = (v: number) => formatCount(v, locale);
-  const pending = rows.filter((r) => r.pending > 0);
+  const health = summary?.donors ?? null;
   return (
     <Panel
       id="ov-donors"
       title={t.donorsTitle}
       lead={t.donorsLead}
       tag={tag}
-      footer={
-        <>
-          <MoreLink tab="sponsors">{t.openDonors}</MoreLink>
-          <MoreLink tab="queue">{t.openQueue}</MoreLink>
-        </>
-      }
+      footer={<MoreLink tab="sponsors">{t.openDonors}</MoreLink>}
     >
       {donors.total === 0 ? (
         <Quiet title={t.donorsEmpty} text={t.supportEmptyText} />
@@ -501,52 +645,35 @@ export function DonorsPanel({
             rest={donors.inactive}
             label={t.donorsBarLabel(n(donors.active), n(donors.inactive))}
           />
-          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-1">
-            <Key tone="done" label={t.donorsActive} value={n(donors.active)} />
-            <Key tone="rest" label={t.donorsInactive} value={n(donors.inactive)} />
+          <div className="mt-4 grid grid-cols-2 gap-x-4">
+            <Fig label={t.donorsActive} value={n(donors.active)} />
+            <Fig label={t.donorsInactive} value={n(donors.inactive)} />
           </div>
-          <dl className="ov-divide ov-rule-top mt-5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3">
-              <dt className="text-sm text-muted-foreground">{t.donorsNew}</dt>
-              <dd className="text-lg leading-7 font-bold tabular-nums">
-                {donors.recent === null ? (
+          <div className="ov-rule-top mt-4 grid grid-cols-3 gap-x-4 pt-4">
+            <Fig
+              label={t.donorsNew}
+              value={
+                health ? (
+                  n(health.recent)
+                ) : donors.recent === null ? (
                   <span className="text-sm font-normal text-muted-foreground">
                     {t.donorsNewPartial}
                   </span>
                 ) : (
                   n(donors.recent)
-                )}
-              </dd>
-            </div>
-            <div className="py-3">
-              <dt className="text-sm font-bold">{t.due}</dt>
-              <dd className="mt-2">
-                {donors.awaitingPayment === 0 && pending.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t.dueNone}</p>
-                ) : (
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                    <Fig label={t.dueCount} value={n(donors.awaitingPayment)} />
-                    <Fig
-                      label={t.dueAmount}
-                      value={
-                        pending.length === 0 ? (
-                          "—"
-                        ) : (
-                          <span className="flex flex-wrap gap-x-3">
-                            {pending.map((r) => (
-                              <span key={r.currency}>
-                                {formatMoney(r.pending, r.currency, locale)}
-                              </span>
-                            ))}
-                          </span>
-                        )
-                      }
-                    />
-                  </div>
-                )}
-              </dd>
-            </div>
-          </dl>
+                )
+              }
+            />
+            {health && (
+              <>
+                <Fig label={t.donorsAtRisk} value={n(health.atRisk)} />
+                <Fig label={t.donorsLapsed} value={n(health.lapsed)} />
+              </>
+            )}
+          </div>
+          <p className="mt-4 text-xs leading-6 text-muted-foreground">
+            {health ? t.donorsRule(health.graceDays) : t.donorsNoHealth}
+          </p>
         </>
       )}
     </Panel>
@@ -557,7 +684,17 @@ export function DonorsPanel({
 
 const FIRST_COUNTRIES = 8;
 
-export function CountriesPanel({ geo, tag }: { geo: Loaded<GeoCountryRow[]>; tag: string | null }) {
+export function CountriesPanel({
+  geo,
+  summary,
+  onRetry,
+  tag,
+}: {
+  geo: Loaded<GeoCountryRow[]>;
+  summary: Loaded<SupportSummary>;
+  onRetry: () => void;
+  tag: string | null;
+}) {
   const t = useCopy(COPY);
   const locale = useLocale();
   const [all, setAll] = useState(false);
@@ -584,7 +721,12 @@ export function CountriesPanel({ geo, tag }: { geo: Loaded<GeoCountryRow[]>; tag
           ))}
         </div>
       ) : geo === null ? (
-        <Quiet title={t.unavailable} text={t.countriesUnavailable} />
+        <Failed
+          title={t.unavailable}
+          text={t.countriesUnavailable}
+          retry={t.retry}
+          onRetry={onRetry}
+        />
       ) : rows.length === 0 ? (
         <Quiet title={t.countriesEmpty} text={t.countriesEmptyText} />
       ) : (
@@ -658,7 +800,7 @@ export function CountriesPanel({ geo, tag }: { geo: Loaded<GeoCountryRow[]>; tag
                             <div
                               role="img"
                               aria-label={`${name}: ${n(r.total)}`}
-                              className="ov-bar-neutral h-2 rounded-full"
+                              className="ov-track h-2 rounded-full"
                             />
                           ) : (
                             <SplitBar
@@ -683,27 +825,48 @@ export function CountriesPanel({ geo, tag }: { geo: Loaded<GeoCountryRow[]>; tag
           </ul>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
             <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-2">
-                <span aria-hidden="true" className="size-2.5 rounded-full bg-primary" />
-                {t.sponsored}
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span aria-hidden="true" className="size-2.5 rounded-full bg-bridge" />
-                {t.waiting}
-              </span>
+              <Key tone="done" label={t.sponsored} />
+              <Key tone="rest" label={t.waiting} />
             </div>
             {rows.length > FIRST_COUNTRIES && (
               <button
                 type="button"
                 aria-expanded={all}
                 onClick={() => setAll((v) => !v)}
-                className="inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="ov-noprint inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {all ? t.showLess : t.showAll(n(rows.length))}
               </button>
             )}
           </div>
         </>
+      )}
+      {summary && summary.byCountry.length > 0 && (
+        <div className="ov-rule-top mt-5 pt-5">
+          <h3 className="text-sm font-bold">{t.pledgeCountries}</h3>
+          <p className="mt-1 text-xs leading-6 text-muted-foreground">
+            {t.pledgeCountriesLead(n(summary.cohortMin))}
+          </p>
+          <ul className="ov-pledges mt-3">
+            {summary.byCountry.map((c) => (
+              <li key={c.country} className="min-w-0">
+                <p className="truncate text-[0.9375rem] leading-6 font-medium">
+                  <bdi>{countryName(c.country, locale)}</bdi>
+                </p>
+                {c.small || c.count === null ? (
+                  <p className="text-xs leading-5 text-muted-foreground">{t.hiddenShort}</p>
+                ) : (
+                  <p className="text-sm leading-6 text-muted-foreground tabular-nums">
+                    <span className="font-bold text-foreground">
+                      <Amounts items={c.amounts ?? []} locale={locale} />
+                    </span>{" "}
+                    · {t.pledges(c.count)}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </Panel>
   );

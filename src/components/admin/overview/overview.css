@@ -5,6 +5,23 @@
  * الورقة العامّة التي تحمّلها كلّ صفحة (وميزانية ‎/vision لا تحتمل بايتاً)، فما
  * لم يكن موجوداً هناك أصلاً كُتب هنا بأسماء `ov-`. الألوان رموز الهوية وحدها.
  */
+/*
+ * ألوان البيانات: لونٌ واحد ودرجته. العلامة بلون الهوية، والمسار اللون نفسه
+ * مخفَّفاً على سطح البطاقة — كلاهما مشتقٌّ من رموز الهوية، فيتبعان الفاتح والداكن.
+ * لا زوج ألوانٍ فئوي هنا (كان نبيذياً وشمبانيا): الأشرطة «جزءٌ من كلّ» لا فئتان،
+ * فلا يحمل اللون هويّةً، والتسمية والرقم بجوار كلّ شريط.
+ */
+.ov-root {
+  --ov-mark: var(--primary);
+  --ov-track: color-mix(in oklab, var(--primary) 16%, var(--card));
+}
+.ov-mark {
+  background-color: var(--ov-mark);
+}
+.ov-track {
+  background-color: var(--ov-track);
+}
+
 .ov-divide > * + *,
 .ov-rule-top {
   border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
@@ -20,6 +37,63 @@
 }
 .ov-row:active {
   background-color: var(--secondary);
+}
+/* الحرج يُعلَّم بسطحٍ خافت من لون التنبيه — مع أيقونة مجموعته واسمها، لا باللون وحده */
+.ov-row[data-sev="critical"] {
+  background-color: color-mix(in oklab, var(--destructive) 7%, var(--card));
+}
+.ov-row[data-sev="critical"]:hover {
+  background-color: color-mix(in oklab, var(--destructive) 12%, var(--card));
+}
+.ov-row-to {
+  display: none;
+}
+.ov-sev + .ov-sev {
+  margin-top: 1rem;
+}
+.ov-sev-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+
+/* تعذّرت القراءة: إطارٌ متّصل بلون التنبيه — غير الفراغ المنقّط */
+.ov-failed {
+  border: 1px solid color-mix(in oklab, var(--destructive) 45%, var(--border));
+  background-color: color-mix(in oklab, var(--destructive) 5%, var(--card));
+}
+
+/* اختيار الفترة */
+.ov-seg {
+  display: inline-flex;
+  padding: 0.1875rem;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  background-color: var(--card);
+}
+.ov-seg > button {
+  min-height: 2.25rem;
+  padding-inline: 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+.ov-seg > button:hover {
+  color: var(--foreground);
+}
+.ov-seg > button[aria-pressed="true"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 700;
 }
 .ov-chip {
   transition:
@@ -37,10 +111,42 @@
   display: grid;
   gap: 1.25rem;
 }
+/* الرقم الرئيس: سطح الهوية النبيذي في الوضعين، بحبرٍ عاجيّ وحدٍّ شمبانيّ رفيع */
+.ov-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  color: var(--ivory);
+  background-color: var(--wine);
+  background-image: linear-gradient(
+    160deg,
+    var(--wine),
+    color-mix(in oklab, var(--wine) 62%, var(--wine-deep))
+  );
+  border: 1px solid color-mix(in oklab, var(--gold) 38%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+.ov-hero-quiet {
+  color: color-mix(in oklab, var(--ivory) 78%, transparent);
+}
 .ov-hero-num {
-  font-size: 3rem;
+  font-size: 2.75rem;
   line-height: 1;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.ov-hero-figs {
+  display: grid;
+  gap: 0.75rem;
+}
+.ov-hero-figs > div {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
 }
 .ov-hero-fig {
   font-size: 1.125rem;
@@ -55,6 +161,12 @@
   font-size: 0.75rem;
   font-weight: 500;
   opacity: 0.9;
+}
+.ov-tile-num {
+  font-size: 2.5rem;
+  line-height: 1;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 .ov-skel-a {
   height: 16rem;
@@ -86,6 +198,12 @@
 }
 .ov-kind-spark {
   grid-column: span 2 / span 2;
+}
+.ov-kind-cap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 0.75rem;
 }
 .ov-table {
   min-width: 26rem;
@@ -134,8 +252,35 @@
   font-size: 0.75rem;
   color: var(--muted-foreground);
 }
-.ov-bar-neutral {
-  background-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent);
+.ov-pledges {
+  display: grid;
+  gap: 0.75rem 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+}
+
+/* الطباعة: اللوحة وحدها، فاتحةً، بلا أزرار ولا ترويسة الموقع */
+.ov-print-only {
+  display: none;
+}
+@media print {
+  .ov-root header,
+  .ov-noprint {
+    display: none !important;
+  }
+  .ov-print-only {
+    display: block;
+  }
+  .ov-root section {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  .ov-root details > :not(summary) {
+    display: block;
+  }
+  .ov-hero {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -146,13 +291,23 @@
 
 @media (min-width: 40rem) {
   .ov-hero-num {
-    font-size: 3.25rem;
+    font-size: 3.5rem;
   }
   .ov-hero-fig {
     font-size: 1.25rem;
   }
+  .ov-hero-figs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .ov-hero-figs > div {
+    display: block;
+  }
+  .ov-row-to {
+    display: inline;
+  }
   .ov-kind {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 11rem);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 13rem);
   }
   .ov-kind-spark {
     grid-column: auto;
