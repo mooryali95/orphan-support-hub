@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Gift, MapPin, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
@@ -6,6 +6,7 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { TryChildMissing } from "@/components/try/TryChildMissing";
 import { TryReportPreview } from "@/components/try/TryReportPreview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,21 +23,19 @@ import {
   gapOf,
   localTryChild,
   TRY_CURRENCY,
+  type TryChild,
   tryChild,
   tryPayOptions,
 } from "@/lib/try-demo";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/try/$childId")({
-  loader: ({ params }) => {
-    const child = tryChild(params.childId);
-    if (!child) throw notFound();
-    return { child };
-  },
+  // طفلٌ ليس في التجربة يُرسم داخل الصفحة نفسها (TryChildMissing): يبقى الزائر في رحلته.
+  loader: ({ params }) => ({ child: tryChild(params.childId) ?? null }),
   head: ({ loaderData, match }) => {
     const l = match.context.locale ?? "ar";
     return {
-      meta: loaderData
+      meta: loaderData?.child
         ? [
             {
               title: pageTitle(
@@ -49,7 +48,7 @@ export const Route = createFileRoute("/try/$childId")({
         : [],
     };
   },
-  component: TryChildPage,
+  component: TryChildRoute,
 });
 
 const COPY = defineCopy("routes/try.childId", {
@@ -86,7 +85,7 @@ const COPY = defineCopy("routes/try.childId", {
     oneTime: "مرّة واحدة",
     amount: (currency: string) => `المبلغ (${currency})`,
     fullRest: "المتبقّي كاملاً",
-    leftToComplete: (amount: string) => `بقي ${amount} لتكتمل حاجته: أكمِلها`,
+    leftToComplete: (amount: string) => `بقي ${amount} لتكتمل الحاجة: أكمِلها`,
     dedicate: "اجعلها صدقةً جارية عن غيرك",
     dedicateWhom: "عمّن؟ (والدٌ، قريبٌ، من تحبّ)",
     dedicatePlaceholder: "والدي رحمه الله",
@@ -135,10 +134,15 @@ const COPY = defineCopy("routes/try.childId", {
   },
 });
 
-function TryChildPage() {
+function TryChildRoute() {
+  const { child } = Route.useLoaderData();
+  return child ? <TryChildPage data={child} /> : <TryChildMissing />;
+}
+
+function TryChildPage({ data }: { data: TryChild }) {
   const locale = useLocale();
   const c = useCopy(COPY);
-  const child = localTryChild(Route.useLoaderData().child, locale);
+  const child = localTryChild(data, locale);
   const navigate = useNavigate();
   const giving = useGivingCopy();
   const gap = gapOf(child);

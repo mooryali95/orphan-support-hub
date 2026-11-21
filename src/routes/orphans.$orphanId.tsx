@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
@@ -33,6 +33,7 @@ import { AGE_BAND_LABELS } from "@/integrations/supabase/types.extra";
 import { AccessGate } from "@/components/protection/AccessGate";
 import { getOrphanViewAuthed } from "@/lib/protection.functions";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { OrphanUnavailable } from "@/components/orphan/OrphanUnavailable";
 import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { TrustSignals } from "@/components/orphan/TrustSignals";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
@@ -196,11 +197,9 @@ const orphanQuery = (orphanId: string) =>
   });
 
 export const Route = createFileRoute("/orphans/$orphanId")({
-  loader: async ({ context, params }) => {
-    const data = await context.queryClient.ensureQueryData(orphanQuery(params.orphanId));
-    if (!data.orphan) throw notFound();
-    return data;
-  },
+  // ملفٌّ غير متاح يُرسم داخل الصفحة (OrphanUnavailable) بطريقٍ إلى الدليل، لا صفحة 404 عامّة.
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(orphanQuery(params.orphanId)),
   head: ({ loaderData, match }) => {
     const l = match.context.locale ?? "ar";
     const c = copyOf(COPY, l);
@@ -233,8 +232,14 @@ export const Route = createFileRoute("/orphans/$orphanId")({
       ],
     };
   },
-  component: OrphanDetail,
+  component: OrphanRoute,
 });
+
+function OrphanRoute() {
+  const { orphanId } = Route.useParams();
+  const { data } = useSuspenseQuery(orphanQuery(orphanId));
+  return data.orphan ? <OrphanDetail /> : <OrphanUnavailable />;
+}
 
 function OrphanDetail() {
   const { orphanId } = Route.useParams();
@@ -339,6 +344,8 @@ function OrphanDetail() {
     setChosenCurrency(draft.currency);
     setMessage(draft.message);
     setAnonymous(draft.anonymous);
+    // one-time stays one-time: the type of gift is part of what the visitor chose
+    setCadence(draft.cadence);
     setMode("monthly");
     setRestored(true);
     requestAnimationFrame(() =>
@@ -364,6 +371,7 @@ function OrphanDetail() {
         message,
         anonymous,
         currency: payCurrency,
+        cadence,
       });
       navigate({ to: "/auth", search: { redirect: `/orphans/${orphanId}` } });
       return;
@@ -726,13 +734,13 @@ function OrphanDetail() {
                   <ImpactLine
                     text={
                       cadence === "one_time"
-                        ? t.impactOnce(orphan.display_name)
+                        ? t.impactOnce(isolate(orphan.display_name))
                         : credited >= remaining && remaining > 0
-                          ? t.impactFull(orphan.display_name)
+                          ? t.impactFull(isolate(orphan.display_name))
                           : credited > 0 && need > 0
                             ? t.impactPart(
                                 Math.min(100, Math.round((credited / need) * 100)),
-                                orphan.display_name,
+                                isolate(orphan.display_name),
                               )
                             : null
                     }
@@ -788,6 +796,7 @@ function OrphanDetail() {
                               message,
                               anonymous,
                               currency: payCurrency,
+                              cadence,
                             });
                             open();
                           }}

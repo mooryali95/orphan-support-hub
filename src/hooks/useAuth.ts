@@ -17,24 +17,30 @@ export function useAuth() {
       if (active) setRoles((data ?? []).map((r) => r.role as AppRole));
     }
 
-    supabase.auth.getUser().then(({ data }) => {
-      if (!active) return;
-      setUser(data.user ?? null);
-      if (data.user) void loadRoles(data.user.id);
+    // متصفّحٌ يحجب التخزين يرمي عند إنشاء عميل الدخول: الزائر يُعامَل غيرَ داخل، والصفحة تعمل.
+    try {
+      supabase.auth.getUser().then(({ data }) => {
+        if (!active) return;
+        setUser(data.user ?? null);
+        if (data.user) void loadRoles(data.user.id);
+        setLoading(false);
+      });
+
+      const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!active) return;
+        setUser(session?.user ?? null);
+        if (session?.user) void loadRoles(session.user.id);
+        else setRoles([]);
+      });
+
+      return () => {
+        active = false;
+        sub.subscription.unsubscribe();
+      };
+    } catch {
       setLoading(false);
-    });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!active) return;
-      setUser(session?.user ?? null);
-      if (session?.user) void loadRoles(session.user.id);
-      else setRoles([]);
-    });
-
-    return () => {
-      active = false;
-      sub.subscription.unsubscribe();
-    };
+      return;
+    }
   }, []);
 
   return {

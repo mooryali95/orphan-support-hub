@@ -87,7 +87,14 @@ export function CelebrateOverlay({
   useEffect(() => {
     // التركيز للوحة المفاتيح وقارئ الشاشة، بلا إطارٍ ظاهر لمن جاء بالفأرة.
     btn.current?.focus({ focusVisible: false } as FocusOptions);
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      // نافذةٌ بزرٍّ واحد: Tab يبقى عليه ولا ينزل إلى الصفحة المحجوبة خلفها.
+      if (e.key === "Tab") {
+        e.preventDefault();
+        btn.current?.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);

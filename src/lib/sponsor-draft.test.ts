@@ -27,6 +27,14 @@ describe("ما اختاره الزائر قبل الدخول (UX-09)", () => {
     });
   });
 
+  it("نوع العطاء يعود كما اختير: «مرّة واحدة» لا تصير شهرية بعد الدخول", () => {
+    expect(parseDraft(draft({ cadence: "one_time" }), ID, NOW)?.cadence).toBe("one_time");
+    expect(parseDraft(draft({ cadence: "monthly" }), ID, NOW)?.cadence).toBe("monthly");
+    // مسودّةٌ حُفظت قبل هذا الحقل، أو بقيمةٍ غريبة: الشهري كما كان افتراض النموذج
+    expect(parseDraft(draft(), ID, NOW)?.cadence).toBe("monthly");
+    expect(parseDraft(draft({ cadence: "weekly" }), ID, NOW)?.cadence).toBe("monthly");
+  });
+
   it("لا يُستعاد لطفلٍ آخر، ولا بعد ساعتين، ولا التالف", () => {
     expect(parseDraft(draft(), "a3000000-0000-4000-8000-000000000004", NOW)).toBeNull();
     expect(parseDraft(draft({ at: NOW - 3 * 3600_000 }), ID, NOW)).toBeNull();

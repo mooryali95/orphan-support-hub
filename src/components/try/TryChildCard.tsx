@@ -20,7 +20,7 @@ const COPY = defineCopy("components/try/TryChildCard", {
       0,
       "ar",
     ),
-    waiting: (days: number) => `ينتظر منذ ${days} يوماً`,
+    waiting: (days: number) => `في الانتظار منذ ${days} يوماً`,
     leftMonthly: "متبقٍّ شهرياً",
     coverage: (name: string) => `تغطية حاجة ${name}`,
     sponsor: (name: string) => `اكفل ${name}`,

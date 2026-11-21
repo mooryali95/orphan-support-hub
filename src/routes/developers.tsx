@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
@@ -98,9 +98,15 @@ function DevelopersPage() {
   const [active, setActive] = useState<Endpoint>(ENDPOINTS[0]!);
   const [key, setKey] = useState("");
   const [secret, setSecret] = useState("");
-  const [stamp, setStamp] = useState(() => Math.floor(Date.now() / 1000));
+  // الوقت والنطاق يُعرفان في المتصفّح وحده: يبدآن بقيمةٍ ثابتة يرسمها الخادم والمتصفّح
+  // معاً، ثم يُملآن بعد التركيب، فلا يختلف الرسمان.
+  const [stamp, setStamp] = useState(0);
   const [copied, setCopied] = useState(false);
-  const origin = typeof window === "undefined" ? "https://<النطاق>" : window.location.origin;
+  const [origin, setOrigin] = useState("https://<النطاق>");
+  useEffect(() => {
+    setStamp(Math.floor(Date.now() / 1000));
+    setOrigin(window.location.origin);
+  }, []);
 
   const curl = useMemo(() => {
     const lines = [
@@ -181,7 +187,7 @@ function DevelopersPage() {
               ))}
             </nav>
 
-            <section>
+            <section className="min-w-0">
               <h2 className="text-lg font-bold">{active.title}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{active.text}</p>
               <p className="mt-2 text-xs">

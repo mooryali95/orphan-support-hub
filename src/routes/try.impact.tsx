@@ -49,9 +49,9 @@ export const Route = createFileRoute("/try/impact")({
 const COPY = defineCopy("routes/try.impact", {
   ar: {
     pageTitle: "أثري · جرّب المنصّة",
-    celebrateTitle: (name: string) => `من اليوم، ${name} لا ينتظر وحده`,
+    celebrateTitle: (name: string) => `من اليوم، انتهى انتظار ${name}`,
     celebrateDedication: (name: string) => `صدقةٌ جارية عن ${name}، تقبّلها الله.`,
-    celebrateText: "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.",
+    celebrateText: "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصل بمستند، وهذه صورة أثرك الآن.",
     see: "شاهد أثرك",
     title: "أثري",
     lead: "أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.",
@@ -112,8 +112,9 @@ function TryImpact() {
   useEffect(() => {
     if (kind) setPicked(kind);
   }, [kind]);
-  const doneChild = done ? local(done) : undefined;
   const doneGift = done ? gifts?.find((g) => g.childId === done) : undefined;
+  /* the celebration answers a gift that exists: a shared or stale `?done=` link celebrates nothing */
+  const doneChild = doneGift ? local(doneGift.childId) : undefined;
   /* «قدّم شهراً»: the same gifts read as they will stand `ahead` months from now (not stored) */
   const [ahead, setAhead] = useState(0);
   /* whole months as «أثري» counts them (30.44 days), plus an hour so the n-th month has fully

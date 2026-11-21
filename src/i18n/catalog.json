@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2398,
+ "count": 2409,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -2565,6 +2565,14 @@
    "hash": "03d4da7b28c4",
    "file": "src/components/auth/AuthPanel.tsx"
   },
+  "components/auth/GivingOnceLine.line": {
+   "en": "You're about to give {0} {1} once. After signing in you'll return to their file with what you chose.",
+   "ar": "أنت على وشك دعم {0} بـ{1} مرّةً واحدة. بعد الدخول تعود إلى الملف بما اخترته.",
+   "kind": "template",
+   "params": 2,
+   "hash": "2094e42a597e",
+   "file": "src/components/auth/GivingOnceLine.tsx"
+  },
   "components/brand/SurplusBadge.perMonth": {
    "en": "per month",
    "ar": "شهرياً",
@@ -3704,6 +3712,27 @@
    "hash": "22f98918eaaa",
    "file": "src/components/impact/SupportImpactParts.tsx"
   },
+  "components/kit/LoadFailed.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/kit/LoadFailed.tsx"
+  },
+  "components/kit/LoadFailed.text": {
+   "en": "The connection may be down, or there are too many requests. Try again shortly.",
+   "ar": "قد يكون الاتصال منقطعاً أو الطلبات كثيرة. أعد المحاولة بعد قليل.",
+   "kind": "text",
+   "hash": "a94ca77f6e61",
+   "file": "src/components/kit/LoadFailed.tsx"
+  },
+  "components/kit/LoadFailed.title": {
+   "en": "This could not be loaded right now",
+   "ar": "تعذّر التحميل الآن",
+   "kind": "text",
+   "hash": "7039e970b2f9",
+   "file": "src/components/kit/LoadFailed.tsx"
+  },
   "components/kit/ThemeSwitch.toDark": {
    "en": "Dark appearance",
    "ar": "المظهر الداكن",
@@ -4821,6 +4850,34 @@
    "kind": "text",
    "hash": "632bce9c1388",
    "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/orphan/OrphanUnavailable.browse": {
+   "en": "Browse the directory",
+   "ar": "تصفّح دليل الأيتام",
+   "kind": "text",
+   "hash": "ee7cd98f6197",
+   "file": "src/components/orphan/OrphanUnavailable.tsx"
+  },
+  "components/orphan/OrphanUnavailable.home": {
+   "en": "Home page",
+   "ar": "الصفحة الرئيسية",
+   "kind": "text",
+   "hash": "18f3b398c040",
+   "file": "src/components/orphan/OrphanUnavailable.tsx"
+  },
+  "components/orphan/OrphanUnavailable.text": {
+   "en": "This file is not on show right now: its sponsorship may be complete, it may have been withdrawn, or the link is wrong.",
+   "ar": "هذا الملف غير معروض الآن: قد تكون كفالته اكتملت، أو سُحب من العرض، أو أنّ الرابط غير صحيح.",
+   "kind": "text",
+   "hash": "fed60429341c",
+   "file": "src/components/orphan/OrphanUnavailable.tsx"
+  },
+  "components/orphan/OrphanUnavailable.title": {
+   "en": "File unavailable",
+   "ar": "ملف غير متاح",
+   "kind": "text",
+   "hash": "f3a88eba8621",
+   "file": "src/components/orphan/OrphanUnavailable.tsx"
   },
   "components/orphan/ScopedSections.education": {
    "en": "Education:",
@@ -6551,11 +6608,32 @@
   },
   "components/try/TryChildCard.waiting": {
    "en": "Waiting {0} days",
-   "ar": "ينتظر منذ {0} يوماً",
+   "ar": "في الانتظار منذ {0} يوماً",
    "kind": "template",
    "params": 1,
-   "hash": "32c1a3344e36",
+   "hash": "a922bf7eb394",
    "file": "src/components/try/TryChildCard.tsx"
+  },
+  "components/try/TryChildMissing.choose": {
+   "en": "Choose a trial child",
+   "ar": "اختر طفلاً من التجربة",
+   "kind": "text",
+   "hash": "e2a761f53672",
+   "file": "src/components/try/TryChildMissing.tsx"
+  },
+  "components/try/TryChildMissing.text": {
+   "en": "The link does not match any of the trial's fictional children. Choose one from the list.",
+   "ar": "الرابط لا يطابق أحد أطفال التجربة الافتراضيين. اختر واحداً من القائمة.",
+   "kind": "text",
+   "hash": "c078b4c8a4f2",
+   "file": "src/components/try/TryChildMissing.tsx"
+  },
+  "components/try/TryChildMissing.title": {
+   "en": "This child is not in the trial",
+   "ar": "هذا الطفل ليس في التجربة",
+   "kind": "text",
+   "hash": "77863e790062",
+   "file": "src/components/try/TryChildMissing.tsx"
   },
   "components/try/TryImpactKinds.aheadHint.in_kind": {
    "en": "Press “Advance a month” to see the office prepare your pledge, then its delivery document arrive.",
@@ -6671,17 +6749,17 @@
   },
   "components/try/TryJourneyAhead.nextHint": {
    "en": "The longest wait among the children you have not yet sponsored.",
-   "ar": "هو الأطول انتظاراً ممّن لم تكفلهم بعد.",
+   "ar": "الأطول انتظاراً ممّن لم تكفلهم بعد.",
    "kind": "text",
-   "hash": "33707d48051d",
+   "hash": "7c7948ad1b53",
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.nextLine": {
    "en": "{0} in {1} has been waiting {2} days",
-   "ar": "{0} في {1} ينتظر منذ {2} يوماً",
+   "ar": "{0} في {1}: انتظارٌ منذ {2} يوماً",
    "kind": "template",
    "params": 3,
-   "hash": "6d37aaa19b34",
+   "hash": "fdb86b829233",
    "file": "src/components/try/TryJourneyAhead.tsx"
   },
   "components/try/TryJourneyAhead.running": {
@@ -13363,10 +13441,10 @@
   },
   "routes/try.childId.leftToComplete": {
    "en": "{0} more completes the need. Give the full amount",
-   "ar": "بقي {0} لتكتمل حاجته: أكمِلها",
+   "ar": "بقي {0} لتكتمل الحاجة: أكمِلها",
    "kind": "template",
    "params": 1,
-   "hash": "82126e0a96e1",
+   "hash": "c951499b8c97",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.minAmount": {
@@ -13454,17 +13532,17 @@
   },
   "routes/try.impact.celebrateText": {
    "en": "Your giving has begun. Each month you will see when it was transferred and when it was delivered, with a receipt. This is your impact today.",
-   "ar": "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصله بمستند، وهذه صورة أثرك الآن.",
+   "ar": "بدأ عطاؤك. كل شهرٍ ترى متى حُوِّل ومتى وصل بمستند، وهذه صورة أثرك الآن.",
    "kind": "text",
-   "hash": "69417f7fb34c",
+   "hash": "8a4a1b9b3cca",
    "file": "src/routes/try.impact.tsx"
   },
   "routes/try.impact.celebrateTitle": {
    "en": "From today, {0} no longer waits alone",
-   "ar": "من اليوم، {0} لا ينتظر وحده",
+   "ar": "من اليوم، انتهى انتظار {0}",
    "kind": "template",
    "params": 1,
-   "hash": "c8394e2751e9",
+   "hash": "a193aef51253",
    "file": "src/routes/try.impact.tsx"
   },
   "routes/try.impact.choose": {

@@ -19,6 +19,8 @@ export type SponsorDraft = {
   message: string;
   anonymous: boolean;
   currency: string;
+  /** شهرية أم لمرّة واحدة: ما اختاره الزائر لا يتبدّل بعودته من الدخول. */
+  cadence: "monthly" | "one_time";
   at: number;
 };
 
@@ -42,6 +44,8 @@ export function parseDraft(
       message: String(d.message ?? "").slice(0, 1000),
       anonymous: d.anonymous === true,
       currency: /^[A-Z]{3}$/.test(String(d.currency)) ? String(d.currency) : "EUR",
+      // مسودّةٌ أقدم من هذا الحقل كانت شهرية دائماً (الافتراضي في النموذج).
+      cadence: d.cadence === "one_time" ? "one_time" : "monthly",
       at: d.at,
     };
   } catch {
