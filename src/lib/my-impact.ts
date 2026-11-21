@@ -19,6 +19,8 @@ export type ImpactChild = {
   since: number;
   amount: number;
   currency: string;
+  /** the child's whole monthly need, in the sponsorship's currency (0 when unknown) */
+  need: number;
 };
 
 export type MyImpact = {
@@ -60,6 +62,7 @@ export function myImpact(list: MySponsorship[], now: Date = new Date()): MyImpac
       since: monthsBetween(s.started_at ?? s.created_at, now),
       amount: s.amount,
       currency: s.currency,
+      need,
     });
   }
   const inCare = children.filter((c) => c.active);
@@ -89,5 +92,21 @@ export function impactAt(m: MyImpact, back: number): MyImpact {
     inCare: inCare.length,
     months: children.reduce((a, c) => a + c.months, 0),
     share: inCare.length ? inCare.reduce((a, c) => a + c.share, 0) / inCare.length : 0,
+  };
+}
+
+/**
+ * «بحصّتك وبدونها»: where the child's monthly need stands with this donor's share and
+ * without it, and what is still open each month. It says "without your share", never
+ * "before you": other sponsors may have joined since, and the card does not record when.
+ */
+export function childStanding(c: ImpactChild) {
+  const without = Math.max(0, c.covered - c.share);
+  return {
+    without,
+    withYou: c.covered,
+    complete: c.share > 0 && c.covered >= 1,
+    /** what is still uncovered each month, in money (0 once complete or when need is unknown) */
+    open: Math.max(0, Math.round(c.need * (1 - c.covered))),
   };
 }

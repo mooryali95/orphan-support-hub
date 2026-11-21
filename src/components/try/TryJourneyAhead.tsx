@@ -1,21 +1,21 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, FastForward, FileCheck2, MessageSquareText, Send } from "lucide-react";
+import { ArrowLeft, FastForward } from "lucide-react";
 
+import { EvidenceLedger } from "@/components/impact/EvidenceLedger";
 import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { Button } from "@/components/ui/button";
+import type { EvidenceMonth } from "@/lib/impact-evidence";
 import type { MyImpact } from "@/lib/my-impact";
 import { defineCopy, dirOf, pluralOf, useCopy, useLocale } from "@/lib/locale";
-import { localTryChild, monthStory, nextTryChild, tryChild, type TryGift } from "@/lib/try-demo";
-import { cn } from "@/lib/utils";
+import { localTryChild, nextTryChild, tryChild, type TryGift } from "@/lib/try-demo";
 
-const ICON = { transfer: Send, delivery: FileCheck2, note: MessageSquareText } as const;
 const MAX_AHEAD = 12;
 
 const COPY = defineCopy("components/try/TryJourneyAhead", {
   ar: {
     title: "رحلتك عبر الأشهر",
     simulated: "محاكاة",
-    lead: "قدّم الزمن شهراً لترى ما يصلك بعد الكفالة، ومحطّاتك وهي تتحقّق.",
+    lead: "قدّم الزمن شهراً لترى سجلّك يمتلئ: كلّ شهرٍ بتحويله ومستند تسليمه وسطر تقريره، ومحطّاتك وهي تتحقّق.",
     today: "اليوم",
     after: pluralOf(
       {
@@ -32,7 +32,7 @@ const COPY = defineCopy("components/try/TryJourneyAhead", {
     forward: "قدّم شهراً",
     needMonthly: "تقديم الزمن للكفالة الشهرية: ابدأ كفالةً شهرية لترى تقاريرها تتوالى.",
     running: (name: string) =>
-      `كفالتك لـ${name} جارية. اضغط «قدّم شهراً» لترى ما يحمله الشهر القادم.`,
+      `كفالة ${name} جارية، ودفعتك الأولى مقيّدة. اضغط «قدّم شهراً» لترى مستند تسليمها يصل.`,
     next: "الخطوة التالية",
     nextLine: (name: string, country: string, days: number) =>
       `${name} في ${country} ينتظر منذ ${days} يوماً`,
@@ -41,7 +41,7 @@ const COPY = defineCopy("components/try/TryJourneyAhead", {
   en: {
     title: "Your journey through the months",
     simulated: "Simulated",
-    lead: "Advance time by a month to see what reaches you after sponsoring, and your milestones as they are met.",
+    lead: "Advance time by a month to watch your record fill: each month with its transfer, its delivery record and a line from its report, and your milestones as they are met.",
     today: "Today",
     after: pluralOf({ one: "In {0} month", other: "In {0} months" }),
     backToday: "Back to today",
@@ -49,7 +49,7 @@ const COPY = defineCopy("components/try/TryJourneyAhead", {
     needMonthly:
       "Advancing time applies to monthly sponsorships: start one to see its reports arrive.",
     running: (name: string) =>
-      `Your sponsorship of ${name} is under way. Press “Advance a month” to see what next month brings.`,
+      `${name}'s sponsorship is under way and your first payment is recorded. Press “Advance a month” to see its delivery record arrive.`,
     next: "Next step",
     nextLine: (name: string, country: string, days: number) =>
       `${name} in ${country} has been waiting ${days} days`,
@@ -58,17 +58,20 @@ const COPY = defineCopy("components/try/TryJourneyAhead", {
 });
 
 /**
- * «رحلتك عبر الأشهر»: الداعم يقدّم الزمن شهراً فيرى ما سيصله فعلاً (التحويل، مستند التسليم،
- * كلمة المشرف)، وتتقدّم محطّاته. محاكاةٌ صريحة فوق عطاءات التجربة؛ لا تُحفظ ولا تغيّر شيئاً.
+ * «رحلتك عبر الأشهر»: الداعم يقدّم الزمن شهراً فيرى سجلّه يمتلئ شهراً شهراً (التحويل، مستند
+ * التسليم، سطر التقرير)، وتتقدّم محطّاته. محاكاةٌ صريحة فوق عطاءات التجربة؛ لا تُحفظ ولا تغيّر شيئاً.
  */
 export function TryJourneyAhead({
   gifts,
   impact,
+  rows,
   ahead,
   onAhead,
 }: {
   gifts: TryGift[];
   impact: MyImpact;
+  /** the sample evidence rows as they stand `ahead` months from now */
+  rows: EvidenceMonth[];
   ahead: number;
   onAhead: (n: number) => void;
 }) {
@@ -78,6 +81,10 @@ export function TryJourneyAhead({
   const monthly = gifts.find((g) => g.cadence === "monthly");
   const child = local(monthly ? tryChild(monthly.childId) : undefined);
   const suggestion = local(nextTryChild(gifts));
+  /* the latest month whose delivery record has not arrived yet: what the donor returns for */
+  const pending = [...rows]
+    .filter((r) => r.reached < 3)
+    .sort((a, b) => b.month.localeCompare(a.month))[0];
 
   return (
     <section aria-labelledby="journey-ahead" className="mt-10">
@@ -91,78 +98,70 @@ export function TryJourneyAhead({
       </div>
       <p className="mt-1 text-sm text-muted-foreground">{c.lead}</p>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_1fr]">
-        <div className="rounded-3xl border border-border bg-card p-5 shadow-soft">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p aria-live="polite" className="font-display text-2xl font-bold">
-              {ahead === 0 ? c.today : c.after(ahead)}
-            </p>
-            <div className="flex gap-2">
-              {ahead > 0 && (
-                <Button variant="outline" size="sm" onClick={() => onAhead(0)}>
-                  {c.backToday}
+      <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <EvidenceLedger
+          sample
+          rows={rows}
+          next={pending ? { kind: "document", month: pending.month } : null}
+        >
+          <div className="mt-5 rounded-xl border border-border bg-background px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p aria-live="polite" className="font-display text-2xl font-bold">
+                {ahead === 0 ? c.today : c.after(ahead)}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {ahead > 0 && (
+                  <Button variant="outline" onClick={() => onAhead(0)}>
+                    {c.backToday}
+                  </Button>
+                )}
+                <Button
+                  disabled={!child || ahead >= MAX_AHEAD}
+                  onClick={() => onAhead(Math.min(MAX_AHEAD, ahead + 1))}
+                >
+                  <FastForward className="size-4" aria-hidden="true" />
+                  {c.forward}
                 </Button>
-              )}
-              <Button
-                size="sm"
-                disabled={!child || ahead >= MAX_AHEAD}
-                onClick={() => onAhead(Math.min(MAX_AHEAD, ahead + 1))}
-              >
-                <FastForward className="size-4" aria-hidden="true" />
-                {c.forward}
-              </Button>
+              </div>
             </div>
+            {!child ? (
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.needMonthly}</p>
+            ) : (
+              ahead === 0 && (
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {c.running(child.name)}
+                </p>
+              )
+            )}
           </div>
-          {!child ? (
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">{c.needMonthly}</p>
-          ) : ahead === 0 ? (
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">{c.running(child.name)}</p>
-          ) : (
-            <ol key={ahead} className="try-rise mt-4 space-y-3">
-              {monthStory(child, monthly!.amount, ahead, locale).map((s) => {
-                const Icon = ICON[s.key];
-                return (
-                  <li key={s.key} className="flex gap-3">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                      <Icon className="size-4" aria-hidden="true" />
-                    </span>
-                    <span>
-                      <span className="block text-sm font-bold">{s.title}</span>
-                      <span className="block text-sm leading-6 text-muted-foreground">
-                        {s.text}
-                      </span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ol>
+        </EvidenceLedger>
+
+        <div className="grid gap-4">
+          <MilestonesCard impact={impact} />
+          {suggestion && (
+            <Link
+              to="/try/$childId"
+              params={{ childId: suggestion.id }}
+              className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft transition-colors hover:bg-secondary"
+            >
+              <span className="mural-placeholder grid size-14 shrink-0 place-items-center rounded-2xl font-display text-2xl font-bold text-white">
+                {suggestion.name.charAt(0)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-bold text-bridge-ink">{c.next}</span>
+                <span className="block font-bold">
+                  {c.nextLine(suggestion.name, suggestion.country, suggestion.waitingDays)}
+                </span>
+                <span className="block text-sm text-muted-foreground">{c.nextHint}</span>
+              </span>
+              <ArrowLeft
+                className="size-5 shrink-0 text-primary ltr:-scale-x-100"
+                aria-hidden="true"
+              />
+            </Link>
           )}
         </div>
-
-        <div>
-          <MilestonesCard impact={impact} />
-        </div>
       </div>
-
-      {suggestion && (
-        <Link
-          to="/try/$childId"
-          params={{ childId: suggestion.id }}
-          className="mt-4 flex items-center gap-4 rounded-3xl border border-border bg-card p-5 shadow-soft transition-colors hover:bg-secondary"
-        >
-          <span className="mural-placeholder grid size-14 shrink-0 place-items-center rounded-2xl font-display text-2xl font-bold text-white">
-            {suggestion.name.charAt(0)}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-bold text-bridge-ink">{c.next}</span>
-            <span className="block font-bold">
-              {c.nextLine(suggestion.name, suggestion.country, suggestion.waitingDays)}
-            </span>
-            <span className="block text-sm text-muted-foreground">{c.nextHint}</span>
-          </span>
-          <ArrowLeft className="size-5 shrink-0 text-primary ltr:-scale-x-100" aria-hidden="true" />
-        </Link>
-      )}
     </section>
   );
 }

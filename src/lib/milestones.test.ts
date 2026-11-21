@@ -13,6 +13,7 @@ const child = (over: Partial<ImpactChild>): ImpactChild => ({
   since: 1,
   amount: 50,
   currency: "EUR",
+  need: 100,
   ...over,
 });
 const impact = (children: ImpactChild[]): MyImpact => ({

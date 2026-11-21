@@ -62,8 +62,21 @@ describe("أثري", () => {
   it("لا يقرأ من الطفل إلا بطاقة الكفالة المسموح بها", () => {
     const keys = Object.keys(myImpact([base], now).children[0]!).sort();
     expect(keys).toEqual(
-      ["active", "amount", "covered", "currency", "id", "months", "name", "share", "since"].sort(),
+      [
+        "active",
+        "amount",
+        "covered",
+        "currency",
+        "id",
+        "months",
+        "name",
+        "need",
+        "share",
+        "since",
+      ].sort(),
     );
+    // `need` is the card's own monthly_need, nothing new is read from the child
+    expect(myImpact([base], now).children[0]!.need).toBe(120);
   });
 
   it("شريط الزمن: قبل أشهرٍ يظهر ما بدأ وقتها فقط، بأشهره حتى وقتها", () => {
