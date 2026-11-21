@@ -19,6 +19,17 @@ import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
 
 export const Route = createLazyFileRoute("/hall")({ component: HallPage });
 
+/**
+ * hall.css arrives with this lazy chunk, after the server's markup has already painted. Until it
+ * does, the hall holds its final box (a fixed, dark full screen) and keeps its children unpainted,
+ * so the unstyled gate never shows in the page flow and nothing moves when the styles land.
+ * hall.css switches the children on by setting --hall-css.
+ */
+const CRITICAL_CSS =
+  ".hall{position:fixed;inset:0;z-index:60;overflow:hidden;background:#18070c}" +
+  // the hall's direct children, written without a child combinator so the text needs no escaping
+  ":where(.hall *:not(.hall * *)){visibility:var(--hall-css,hidden)}";
+
 function HallPage() {
   const ref = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
@@ -66,6 +77,7 @@ function HallPage() {
 
   return (
     <div ref={ref} className="hall" dir="rtl" lang="ar" data-state={state} data-stage="gate">
+      <style>{CRITICAL_CSS}</style>
       <canvas id="gl" aria-label="قاعة الأثر ثلاثية الأبعاد" />
       <div id="labels" aria-hidden="true" />
 

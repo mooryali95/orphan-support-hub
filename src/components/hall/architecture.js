@@ -331,6 +331,7 @@ export function buildArchitecture({ hall, champM, lacquer, LOW, rnd = Math.rando
   return {
     floorMaterial,
     blob,
+    blobMaterial: blobM,
     update(time) {
       glowM.uniforms.uTime.value = time;
     },

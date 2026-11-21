@@ -59,7 +59,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const PHONE = () => innerWidth <= 760;
-  const LOW = matchMedia("(max-width: 760px)").matches || (navigator.hardwareConcurrency || 8) < 4;
+  // the light tier: a phone-width screen, few cores, little memory (deviceMemory is Chromium-only,
+  // so its absence decides nothing), or a visitor who asked the browser to save data
+  const LOW =
+    matchMedia("(max-width: 760px)").matches ||
+    (navigator.hardwareConcurrency || 8) < 4 ||
+    (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4) ||
+    navigator.connection?.saveData === true;
   const listeners = [];
   const on = (target, type, fn, opts) => {
     target.addEventListener(type, fn, opts);
@@ -940,6 +946,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     g.traverse((o) => o.geometry && o.geometry.dispose());
     g.clear();
   };
+  const LAND_TIERS = [0.84, 0.66, 0.46]; // the terraces: the outline drawn in toward its centre
   function buildLand() {
     clearGroup(landGroup);
     R = fitR(CO);
@@ -962,7 +969,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const main = CO.rings[0],
       cx = main.reduce((a, p) => a + p[0], 0) / main.length,
       cy = main.reduce((a, p) => a + p[1], 0) / main.length;
-    [0.84, 0.66, 0.46].forEach((k, i) => {
+    LAND_TIERS.forEach((k, i) => {
       const sh = new THREE.Shape(
         main.map(([x, y]) => new THREE.Vector2((cx + (x - cx) * k) * R, (cy + (y - cy) * k) * R)),
       );
@@ -1293,6 +1300,60 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       );
     }
   }
+  /* LOW has no shadow map, so each column of need stands on a baked blob: one instanced quad
+     sharing the hall's blob texture and material — one draw call for the whole land, no light */
+  const BLOBS = 48;
+  const colBlobs = LOW
+    ? new THREE.InstancedMesh(
+        new THREE.PlaneGeometry(1.8, 1.8).rotateX(-Math.PI / 2),
+        arch.blobMaterial,
+        BLOBS,
+      )
+    : null;
+  if (colBlobs) {
+    colBlobs.count = 0;
+    colBlobs.frustumCulled = false; // instances spread over the land; the mesh's own bounds are one quad
+    colBlobs.renderOrder = -1; // under the dials and halos drawn over the same ground
+    country.add(colBlobs);
+  }
+  const inRing = (ring, x, y) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i],
+        [xj, yj] = ring[j];
+      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  };
+  /** the height of the land's surface under a city: the land itself, or the terrace it stands on */
+  function groundAt(nx, ny) {
+    const main = CO.rings[0],
+      cx = main.reduce((a, p) => a + p[0], 0) / main.length,
+      cy = main.reduce((a, p) => a + p[1], 0) / main.length;
+    let y = 0.58;
+    LAND_TIERS.forEach((k, i) => {
+      if (inRing(main, cx + (nx - cx) / k, cy + (ny - cy) / k)) y = 0.675 + i * 0.075;
+    });
+    return y;
+  }
+  let blobKey = NaN;
+  /** the blobs follow the land as it rises and each column as it grows; rewritten only on change */
+  function layoutBlobs() {
+    const n = Math.min(BLOBS, pillars.length);
+    let key = landGroup.scale.y * 31 + n;
+    for (let i = 0; i < n; i++) key += pillars[i].rise * (i + 2) + pillars[i].g.position.x;
+    if (key === blobKey) return;
+    blobKey = key;
+    for (let i = 0; i < n; i++) {
+      const o = pillars[i],
+        k = Math.min(1, Math.max(0, o.rise) * 2.5);
+      tmpM.makeScale(k, 1, k);
+      tmpM.setPosition(o.g.position.x, (o.ground + 0.012) * landGroup.scale.y, o.g.position.z);
+      colBlobs.setMatrixAt(i, tmpM);
+    }
+    colBlobs.count = n;
+    colBlobs.instanceMatrix.needsUpdate = true;
+  }
   let builtCode = null;
   function buildCountry() {
     if (builtCode === CO.code) return;
@@ -1308,6 +1369,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     pillars = CITIES.map(makePillar);
     pillars.forEach(layoutPillar);
     buildLand();
+    if (colBlobs) pillars.forEach((o) => (o.ground = groundAt(o.c.nx, o.c.ny)));
     drawBand();
     drawMap();
     refreshLabels();
@@ -4041,6 +4103,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const inCountry =
       country.visible && ["country", "support", "impact", "impactPending"].includes(S.stage);
     if (country.visible) pillars.forEach((o) => stepDial(o, dt));
+    if (colBlobs && country.visible) layoutBlobs();
     if (inCountry) layoutDots(time);
     lanterns.visible = orbit.visible = falling.visible = inCountry;
     if (inCountry) {
