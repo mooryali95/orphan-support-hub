@@ -25,6 +25,8 @@ export type TryChild = {
   region: string;
   /** what the monthly sponsorship covers for this child, in plain words */
   covers: string;
+  /** a generated child's texts outside Arabic (`try-world`); the six below have theirs in `TRY_COPY` */
+  en?: Pick<TryChild, "name" | "stage" | "covers">;
 };
 
 /** عملة حاجة أطفال التجربة: كل مبلغٍ محفوظ (حاجة، تمويل، عطاء) بها. */
@@ -124,7 +126,14 @@ export const TRY_CHILDREN: TryChild[] = [
   },
 ];
 
-export const tryChild = (id: string) => TRY_CHILDREN.find((c) => c.id === id);
+/**
+ * أطفال بقية دول التجربة (طفلٌ لكل دولةٍ على الخريطة): يملؤها `try-world` حين يُحمَّل، وهو
+ * لا يدخل حزمة الدخول؛ يحمّله مسار التجربة قبل أيّ قراءة (`beforeLoad` في `routes/try`) والقاعة.
+ */
+export const TRY_WORLD_CHILDREN: TryChild[] = [];
+
+export const tryChild = (id: string) =>
+  TRY_CHILDREN.find((c) => c.id === id) ?? TRY_WORLD_CHILDREN.find((c) => c.id === id);
 export const gapOf = (c: Pick<TryChild, "need" | "funded">) => Math.max(0, c.need - c.funded);
 
 /** the longest-waiting first, as in the real directory */
@@ -266,7 +275,7 @@ export function giftsAsSponsorships(gifts: TryGift[], locale: Locale = "ar"): My
 
 /** the demo children standing in one region of the hall (the hall lists them under that column) */
 export const tryChildrenIn = (co: string, region: string) =>
-  TRY_CHILDREN.filter((c) => c.co === co && c.region === region);
+  [...TRY_CHILDREN, ...TRY_WORLD_CHILDREN].filter((c) => c.co === co && c.region === region);
 
 /** how full the child's monthly need stands once this amount is added (monthly only), 0..100 */
 export const coverageAfter = (
@@ -388,7 +397,7 @@ type TryChildId = keyof (typeof TRY_COPY)["ar"]["children"];
  */
 export function localTryChild(c: TryChild, locale: Locale): TryChild {
   if (locale === "ar") return c;
-  const t = copyOf(TRY_COPY, locale).children[c.id as TryChildId];
+  const t = copyOf(TRY_COPY, locale).children[c.id as TryChildId] ?? c.en;
   return t ? { ...c, ...t, country: countryName(c.co, locale) } : c;
 }
 

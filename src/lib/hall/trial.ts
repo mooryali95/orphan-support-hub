@@ -198,6 +198,8 @@ export function trialHall(input: {
   gifts: TryGift[];
   now: Date;
   locale: Locale;
+  /** the countries to build (the ones the hall draws); every country of the catalogue when absent */
+  only?: ReadonlySet<string> | null;
 }): TrialHall {
   const { now, locale } = input;
   const made = (at: string) => Date.parse(at) <= now.getTime();
@@ -208,6 +210,7 @@ export function trialHall(input: {
 
   const countries: Record<string, TrialCountry> = {};
   for (const place of TRY_PLACES) {
+    if (input.only && !input.only.has(place.co)) continue;
     const state = states.find((s) => s.co === place.co)!;
     const group = {
       id: place.group.id,
@@ -417,11 +420,19 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     move: (a: string, b: string) => `${a} ← ${b}`,
     world: {
       sect: "دول التجربة",
-      sub: "في التجربة ستّ دول بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري». بقية مواقع الشبكة تُعرض بحضورها فقط.",
-      notTrial: "ليست من دول التجربة، فلا أعداد لها هنا. اختر إحدى دول التجربة لتدخلها وتدعمها.",
+      sub: "كلّ دولةٍ هنا تُدخَل وتُدعَم في التجربة، للندوة فيها مكتبٌ أو نشاطٌ أو لا شيء. لكلٍّ منها منطقتان ومجموعةٌ وطفل بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
+      lead: "ادخلها وادعم طفلاً أو مجموعةً أو منطقةً أو الدولة كلّها، بأنواع الدعم الثلاثة، ثم شاهد الأثر.",
       regions: "مناطق التجربة",
+      kid: "طفل التجربة",
+      kidLine: (name: string, code: string) => `${name} · ${code}`,
+      org: {
+        hq: "للندوة هنا مقرّها الرئيسي",
+        office: "للندوة هنا مكتبٌ وطني",
+        field: "للندوة هنا نشاطٌ ميداني",
+        unconfirmed: "لا مكتب مؤكَّداً للندوة هنا، والتجربة تشمل كلّ الدول",
+      },
+      more: "بقية دول العالم تدخلها من خريطة الدعم",
       group: "مجموعة التجربة",
-      sessions: "جلسات الرحلة",
       note: "أعدادٌ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
       enter: (name: string) => `ادخل ${name}`,
       back: "عودة إلى القاعة",
@@ -546,8 +557,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     log: {
       title: "سجلّ أثرك",
       sub: "كلّ ما سجّلته في التجربة، من القاعة أو من الصفحات، كما في «أثري».",
-      empty:
-        "لم تسجّل دعماً بعد في التجربة. اختر دولةً من دول التجربة وادعمها، فيُكتب هنا وفي «أثري».",
+      empty: "لم تسجّل دعماً بعد في التجربة. اختر أيّ دولةٍ وادعمها، فيُكتب هنا وفي «أثري».",
       world: "اختر دولة",
       close: "إغلاق",
       line: (money: string, country: string, date: string) =>
@@ -567,7 +577,6 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       mapLine: (a: string, b: string, c: string) =>
         `${a} يتيماً بملفٍّ موثّق · في التأهيل: ${b} · تسليماتٌ موثّقة: ${c}`,
       regions: "منطقتا التجربة",
-      notTrial: "ليست من دول التجربة",
       enter: (name: string) => `المس الشاشة لتدخل ${name}`,
       tracksSub: {
         qualification: "جلساتٌ بمشرف، وقياسٌ للسمات قبلها وبعدها",
@@ -581,7 +590,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       },
       impact: "أثرك حتى الآن",
       none: "لم تسجّل دعماً بعد.",
-      noneSub: ["اختر دولةً من دول التجربة وادعمها،", "فيُكتب هنا وفي «أثري»."],
+      noneSub: ["اختر أيّ دولةٍ وادعمها،", "فيُكتب هنا وفي «أثري»."],
       open: "المس الشاشة لتفتح سجلّ أثرك",
     },
     tracks: {
@@ -591,7 +600,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     film: [
       "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر",
       "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
-      "نختار ألبانيا من دول التجربة، بمنطقتيها ومجموعتها وطفلها",
+      "نختار ألبانيا، وكلّ دولةٍ هنا تُدخَل، بمنطقتيها ومجموعتها وطفلها",
       "ندخلها: لكلّ منطقةٍ عمودٌ بعدد أطفالها، والمملوء منه من يشملهم تعهّد تأهيل",
       "نتعهّد لتيرانا تأهيلاً شهرياً، فيظهر ما يشمله التعهّد قبل تسجيله",
       "يتدفّق الدعم، ويمتلئ عمود تيرانا بمن شملهم التعهّد",
@@ -621,12 +630,19 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     move: (a: string, b: string) => `${a} → ${b}`,
     world: {
       sect: "Trial countries",
-      sub: "The trial has six countries with sample figures, the same ones as on the support map and in “My impact”. The rest of the network is shown by its presence only.",
-      notTrial:
-        "Not one of the trial countries, so it has no figures here. Choose a trial country to enter and support it.",
+      sub: "Every country here can be entered and supported in the trial, whether WAMY has an office there, field activity, or neither. Each has two regions, a group and a child with sample figures, the same ones as on the support map and in “My impact”.",
+      lead: "Enter it and support a child, a group, a region or the whole country, in any of the three kinds of support, then see the impact.",
       regions: "Trial regions",
+      kid: "Trial child",
+      kidLine: (name: string, code: string) => `${name} · ${code}`,
+      org: {
+        hq: "WAMY's headquarters are here",
+        office: "WAMY has a country office here",
+        field: "WAMY has field activity here",
+        unconfirmed: "No confirmed WAMY office here; the trial covers every country",
+      },
+      more: "Enter every other country from the support map",
       group: "Trial group",
-      sessions: "Sessions in a journey",
       note: "Sample figures, the same ones as on the support map and in “My impact”.",
       enter: (name: string) => `Enter ${name}`,
       back: "Back to the hall",
@@ -772,7 +788,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       title: "Your impact record",
       sub: "Everything you recorded in the trial, from the hall or from the pages, as in “My impact”.",
       empty:
-        "You have not recorded any support in the trial yet. Choose a trial country and support it, and it is written here and in “My impact”.",
+        "You have not recorded any support in the trial yet. Choose any country and support it, and it is written here and in “My impact”.",
       world: "Choose a country",
       close: "Close",
       line: (money: string, country: string, date: string) =>
@@ -792,7 +808,6 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       mapLine: (a: string, b: string, c: string) =>
         `${a} children with a verified file · in qualification: ${b} · documented deliveries: ${c}`,
       regions: "The two trial regions",
-      notTrial: "Not a trial country",
       enter: (name: string) => `Tap the screen to enter ${name}`,
       tracksSub: {
         qualification: "Supervised sessions, traits measured before and after",
@@ -806,10 +821,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       },
       impact: "Your impact so far",
       none: "You have not recorded any support yet.",
-      noneSub: [
-        "Choose a trial country and support it,",
-        "and it is written here and in “My impact”.",
-      ],
+      noneSub: ["Choose any country and support it,", "and it is written here and in “My impact”."],
       open: "Tap the screen to open your impact record",
     },
     tracks: {
@@ -819,7 +831,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     film: [
       "The impact hall: where a supporter sees where their support goes, and what it changes",
       "The WAMY network: headquarters in Riyadh and 26 sites of confirmed presence",
-      "We choose Albania, a trial country, with its two regions, its group and its child",
+      "We choose Albania (every country here can be entered), with its two regions, its group and its child",
       "We enter it: each region has a column as tall as its children, filled by those under a qualification pledge",
       "We pledge monthly for qualification in Tirana, and what the pledge covers shows before it is recorded",
       "The support flows, and Tirana's column fills with those the pledge covers",
@@ -874,6 +886,8 @@ export function trialDemo(o: {
   const locale = o.locale;
   const giving = givingCopy(locale);
 
+  /* the countries the hall draws: the scene names them once, and the model is built for them alone */
+  let only: ReadonlySet<string> | null = null;
   const model = (ahead = 0, draft?: TrialDraft | null): TrialHall => {
     const at = clock();
     const pledges = loadPledges(store);
@@ -887,7 +901,7 @@ export function trialDemo(o: {
         if (p) pledges.unshift({ ...p, id: DRAFT_ID, at: at.toISOString() });
       }
     }
-    return trialHall({ pledges, gifts, now: tryThen(ahead, at), locale });
+    return trialHall({ pledges, gifts, now: tryThen(ahead, at), locale, only });
   };
 
   const gifts = loadGifts(store);
@@ -903,8 +917,20 @@ export function trialDemo(o: {
     /** the three kinds of giving, in the platform's order and by the platform's names */
     kinds: [...GIVING_TRACKS],
     giving: { heading: giving.heading, tracks: giving.tracks },
-    /** the trial's countries: the only ones with figures, so the only ones the hall enters */
-    codes: TRY_PLACES.map((p) => p.co),
+    /**
+     * the trial's countries the hall enters: every country it draws that the catalogue holds
+     * (all of them), in the order the scene gives. The catalogue's other countries are entered
+     * from the support map.
+     */
+    codes: [] as string[],
+    /** the scene tells the trial which countries it draws; returns the ones it can enter */
+    use(drawn: readonly string[]): string[] {
+      this.codes = drawn.filter((co) => !!tryPlace(co));
+      only = new Set(this.codes);
+      return this.codes;
+    },
+    /** where the visitor enters the countries the hall does not draw */
+    mapHref: "/try/support",
     countryName: (co: string) => countryName(co, locale),
     /** the fixed amounts an individual is offered and starts on, as on the support sheet */
     amounts: {

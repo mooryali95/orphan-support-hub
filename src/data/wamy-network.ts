@@ -129,7 +129,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "N'Djamena",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -196,7 +196,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Niamey",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -276,7 +276,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Khartoum",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -330,7 +330,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Nairobi",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -409,7 +409,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Djibouti",
       },
       type: {
-        ar: "مكتب قطري وقاعدة إغاثية لليمن والصومال",
+        ar: "مكتب وطني وقاعدة إغاثية لليمن والصومال",
         en: "Country office and relief base for Yemen and Somalia",
       },
       activity: {
@@ -462,7 +462,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Dakar",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -514,7 +514,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Conakry",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -568,7 +568,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Nouakchott",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -622,7 +622,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Cairo",
       },
       type: {
-        ar: "مكتب قطري يرعى طلاب الأزهر الوافدين",
+        ar: "مكتب وطني يرعى طلاب الأزهر الوافدين",
         en: "Country office for international Al-Azhar students",
       },
       activity: {
@@ -673,7 +673,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
       status: "office",
       city: null,
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -751,7 +751,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
       status: "office",
       city: null,
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -802,7 +802,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
       status: "office",
       city: null,
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -866,7 +866,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
       status: "office",
       city: null,
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -917,7 +917,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
       status: "office",
       city: null,
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -996,7 +996,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Jakarta",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -1063,7 +1063,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Dhaka",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {
@@ -1144,7 +1144,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Sarajevo",
       },
       type: {
-        ar: "مكتب قطري ينسّق أنشطة البلقان",
+        ar: "مكتب وطني ينسّق أنشطة البلقان",
         en: "Country office coordinating Balkan programmes",
       },
       activity: {
@@ -1252,7 +1252,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
         en: "Gaza",
       },
       type: {
-        ar: "مكتب قطري",
+        ar: "مكتب وطني",
         en: "Country office",
       },
       activity: {

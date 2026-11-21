@@ -114,8 +114,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (S.stage === "country" && !demo) renderCountry();
     })
     .catch(() => {});
+  // the trial shows and enters every country the hall draws, confirmed presence or not
   const shown = (c) =>
-    VIEW.all || c.st !== "unconfirmed" || (VIEW.layer === "gap" && PRI.has(c.code));
+    !!demo || VIEW.all || c.st !== "unconfirmed" || (VIEW.layer === "gap" && PRI.has(c.code));
   let CO = byCode("AL");
   let PICKED = false; // nothing chosen until the visitor picks a country on the globe
   const CITY_CACHE = {};
@@ -145,6 +146,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   // the vision engine holds Albania for the live hall only; the trial reads its own catalogue
   const isEngine = () => !demo && CO.code === "AL";
   /* ── the trial model: read from the visitor's two stores through `demo`, never kept here ── */
+  if (demo) demo.use(COUNTRIES.map((c) => c.code));
   let TRIAL = demo ? demo.model(0) : null;
   let TRIAL_MUTE = false; // the hall's own write is already being carried in
   const trialCo = (code = CO.code) => TRIAL?.countries[code] ?? null;
@@ -807,9 +809,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     const tc = trialCo();
     if (demo && !tc) {
-      // the trial has no figures for this country, so the screen shows none
+      // a country the catalogue does not hold (none today): its name, and no figure
       goldText(ctx, coName(), w - 80, 136, 80);
-      text(ctx, T.screen.notTrial, w - 80, 200, 36, "rgba(246,239,226,.75)");
       tex.needsUpdate = true;
       return;
     }
@@ -1170,7 +1171,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.font = `600 50px "${DISPLAY}", serif`;
     x.fillStyle = "#f6efe2"; // the hand is written in white, as in the mark
     for (let i = 0; i < 3; i++)
-      x.fillText(`${CO.ar} · ${STATUS[CO.st]} · قاعة الأثر`, (4096 * (i + 0.5)) / 3, 84);
+      x.fillText(
+        `${coName()} · ${demo ? T.sample : STATUS[CO.st]} · قاعة الأثر`,
+        (4096 * (i + 0.5)) / 3,
+        84,
+      );
     bandTex.needsUpdate = true;
   }
   const beam = new THREE.Mesh(
@@ -1945,7 +1950,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           .dot(camera.position.clone().sub(globe.position)) > 0.4,
       "g " + c.st,
     );
-    l.el.textContent = c.ar;
+    // the globe keeps the network's short Arabic names; other languages read the country's own
+    l.el.textContent = demo && demo.dir === "ltr" ? coName(c) : c.ar;
     l.globe = c;
     l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
   });
@@ -2801,26 +2807,31 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       x.fill();
     });
   }
-  /** the trial's country card: the catalogue's own counts, or none for a country outside it */
+  /**
+   * the trial's country card. It leads with the country and what the visitor can do there (the
+   * catalogue's own counts, then «ادخل»); what the organisation has there comes last, as one
+   * plain line by its status. Every country the hall draws is in the catalogue.
+   */
   function trialCard() {
     const t = trialCo(),
       name = coName(),
-      W = T.world;
+      W = T.world,
+      kid = t?.regions.flatMap((r) => r.kids)[0];
     return `<article class="co-card">
-      <div class="co-head"><div><h3>${name}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="${name}"></canvas></div>
-      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : ""}
+      <div class="co-head"><div><h3>${name}</h3><span class="st">${T.sample}</span></div><canvas id="coShape" width="520" height="300" aria-label="${name}"></canvas></div>
       ${
         t
-          ? `<div class="kv" dir="${demo.dir}">
-        <div><dt>${W.regions}</dt><dd class="num">${t.regions.length}</dd></div>
+          ? `<p class="co-line" dir="${demo.dir}">${W.lead}</p>
+      <div class="kv" dir="${demo.dir}">
+        <div><dt>${W.regions}</dt><dd>${t.regions.map((r) => r.ar).join(demo.dir === "rtl" ? "، " : ", ")}</dd></div>
         <div><dt>${T.withFile}</dt><dd class="num">${fmt(t.children)}</dd></div>
         <div><dt>${W.group}</dt><dd>${t.group.name}</dd></div>
-        <div><dt>${W.sessions}</dt><dd class="num">${t.sessions}</dd></div>
+        <div><dt>${W.kid}</dt><dd>${kid ? W.kidLine(kid.name, kid.code) : ""}</dd></div>
       </div>
-      <p class="note" dir="${demo.dir}"><span class="src">${T.sample}</span> ${W.note}</p>
+      <p class="note" dir="${demo.dir}">${W.note}</p>
+      <p class="co-act" dir="${demo.dir}">${W.org[CO.st]}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">${W.enter(name)}</button><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
-          : `<p class="note" dir="${demo.dir}">${W.notTrial}</p>
-      <div class="row pin"><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
+          : `<div class="row pin"><a class="cta" href="${demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
       }
     </article>`;
   }
@@ -2844,7 +2855,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   function renderWorld() {
     const n = (st) => COUNTRIES.filter((c) => c.st === st).length,
       sim = CO.sim,
-      sites = COUNTRIES.filter(shown).length - 1;
+      // the trial shows every country, but only confirmed presence is counted as a site
+      sites = COUNTRIES.filter((c) => (demo ? c.st !== "unconfirmed" : shown(c))).length - 1;
     const groups = [
       ["hq", "المقرّ الرئيسي"],
       ["office", "مكاتب مؤكَّدة"],
@@ -2861,9 +2873,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <div class="sect">${T.world.sect}</div><div class="co-list">${demo.codes
       .map(
         (code) =>
-          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}">${coName(byCode(code))}</button>`,
+          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
       )
-      .join("")}</div>`
+      .join("")}</div>
+    <p class="sub" dir="${demo.dir}"><a href="${demo.mapHref}">${T.world.more}</a></p>`
         : ""
     }
     <div class="kpis ${VIEW.all ? "k4" : ""}">
@@ -2889,7 +2902,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         : ""
     }
 
-    ${(VIEW.layer === "gap" ? [] : groups)
+    ${(demo || VIEW.layer === "gap" ? [] : groups)
       .map(
         ([st, name]) =>
           `<div class="sect">${name}</div><div class="co-list">${COUNTRIES.filter(
