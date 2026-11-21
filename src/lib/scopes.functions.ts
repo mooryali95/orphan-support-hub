@@ -110,7 +110,22 @@ function viewFn(name: string) {
 
 export const getOrphanJourney = viewFn("orphan_journey");
 export const getOrphanReports = viewFn("orphan_reports");
-export const getOrphanTraits = viewFn("orphan_traits");
+/** الدرجات تُقرأ بالخادم فقط، بعد التحقق من نطاق «السمات» باسم المستخدم نفسه. */
+export const getOrphanTraits = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(orphanInput)
+  .handler(async ({ data, context }) => {
+    const { data: ok, error } = await rpc(context.supabase).rpc("has_orphan_scope", {
+      _orphan: data.orphanId,
+      _scope: "traits",
+    });
+    if (error || ok !== true) return JSON.stringify({ allowed: false });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: traits, error: e2 } = await rpc(supabaseAdmin).rpc("_orphan_traits_data", {
+      _orphan: data.orphanId,
+    });
+    return JSON.stringify(e2 ? { allowed: false } : { allowed: true, traits: traits ?? [] });
+  });
 export const getOrphanGroup = viewFn("orphan_group");
 /** رحلة التأهيل كما يراها الكافل والداعم: بلا مخرجاتٍ ولا ملاحظاتٍ ولا درجاتٍ فردية. */
 export const getSponsorQualification = viewFn("sponsor_qualification");

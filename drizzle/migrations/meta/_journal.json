@@ -43,6 +43,13 @@
       "when": 1795055932176,
       "tag": "0005_restore_supervisor_approval_check",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795279290558,
+      "tag": "0006_orphan_traits_server_only",
+      "breakpoints": true
     }
   ]
 }

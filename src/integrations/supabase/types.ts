@@ -3587,6 +3587,7 @@ export type Database = {
       }
       _ops_checks: { Args: never; Returns: Json }
       _ops_level: { Args: { _checks: Json }; Returns: string }
+      _orphan_traits_data: { Args: { _orphan: string }; Returns: Json }
       access_scope_catalog: { Args: never; Returns: Json }
       access_thread: { Args: { _request: string }; Returns: Json }
       admin_access_requests: { Args: { _status?: string }; Returns: Json }
