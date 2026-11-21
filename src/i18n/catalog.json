@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1653,
+ "count": 1696,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -888,6 +888,225 @@
    "kind": "text",
    "hash": "c2f38f84cdb5",
    "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/impact/MilestonesCard.all": {
+   "en": "You have reached every milestone. May God reward you.",
+   "ar": "تحقّقت محطّاتك كلّها. جزاك الله خيراً.",
+   "kind": "text",
+   "hash": "8bc86d191cde",
+   "file": "src/components/impact/MilestonesCard.tsx"
+  },
+  "components/impact/MilestonesCard.next": {
+   "en": "Next:",
+   "ar": "القادمة:",
+   "kind": "text",
+   "hash": "13416485d2ad",
+   "file": "src/components/impact/MilestonesCard.tsx"
+  },
+  "components/impact/MilestonesCard.pending": {
+   "en": ": not yet reached",
+   "ar": ": لم تتحقّق بعد",
+   "kind": "text",
+   "hash": "7969707bfa2b",
+   "file": "src/components/impact/MilestonesCard.tsx"
+  },
+  "components/impact/MilestonesCard.reached": {
+   "en": ": reached",
+   "ar": ": تحقّقت",
+   "kind": "text",
+   "hash": "ce6ac557da40",
+   "file": "src/components/impact/MilestonesCard.tsx"
+  },
+  "components/impact/MilestonesCard.title": {
+   "en": "Your milestones",
+   "ar": "محطّاتك",
+   "kind": "text",
+   "hash": "6755612e8a39",
+   "file": "src/components/impact/MilestonesCard.tsx"
+  },
+  "components/impact/MyImpactHero.another": {
+   "en": "Sponsor another child",
+   "ar": "اكفل طفلاً آخر",
+   "kind": "text",
+   "hash": "119ded3561b5",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.empty": {
+   "en": "When your first sponsorship begins, it appears here as a gem around you.",
+   "ar": "حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.",
+   "kind": "text",
+   "hash": "968c3a768a77",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.eyebrow": {
+   "en": "Your impact",
+   "ar": "أثرك",
+   "kind": "text",
+   "hash": "debb4d519146",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.figure": {
+   "en": "Your constellation: {0}",
+   "ar": "كوكبة أثرك: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "45f9d39a2553",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.figureEmpty": {
+   "en": "Your constellation is still empty",
+   "ar": "كوكبة أثرك فارغة بعد",
+   "kind": "text",
+   "hash": "1c63a1a12c26",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.immersive": {
+   "en": "Immersive view",
+   "ar": "الوضع الغامر",
+   "kind": "text",
+   "hash": "ddad8efac626",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.inCare.0": {
+   "en": "In your care",
+   "ar": "في رعايتك",
+   "kind": "text",
+   "hash": "0525cceae49e",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.inCare.1": {
+   "en": "children",
+   "ar": "طفلاً",
+   "kind": "text",
+   "hash": "dfa046b29507",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.justBegan": {
+   "en": "Just begun",
+   "ar": "بدأت للتوّ",
+   "kind": "text",
+   "hash": "6230f4c4eafa",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.lead": {
+   "en": "You are at the centre, and each child you sponsor is a gem around you. The clear ring is your share of the child's monthly need; the faint one is what all sponsors have covered.",
+   "ar": "أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه الكافلون جميعاً.",
+   "kind": "text",
+   "hash": "95a944c3a212",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.months.0": {
+   "en": "Care so far",
+   "ar": "أشهر الرعاية",
+   "kind": "text",
+   "hash": "fb03be0621e0",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.months.1": {
+   "en": "months",
+   "ar": "شهراً",
+   "kind": "text",
+   "hash": "cfc7c3dfed51",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.monthsAgo.one": {
+   "en": "{0} month ago",
+   "ar": "قبل شهر",
+   "kind": "plural",
+   "hash": "1c00d44f0758",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.monthsAgo.other": {
+   "en": "{0} months ago",
+   "ar": "قبل {0} شهر",
+   "kind": "plural",
+   "hash": "cf6c93fa0291",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.monthsOf.one": {
+   "en": "{0} month",
+   "ar": "شهر واحد",
+   "kind": "plural",
+   "hash": "3677c3571fc1",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.monthsOf.other": {
+   "en": "{0} months",
+   "ar": "{0} شهر",
+   "kind": "plural",
+   "hash": "3509a8f952e2",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.more": {
+   "en": "And {0} more in your sponsorship list below.",
+   "ar": "و{0} آخرون في قائمة كفالاتك أدناه.",
+   "kind": "template",
+   "params": 1,
+   "hash": "2916fe321959",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.rail": {
+   "en": "Your impact across the months",
+   "ar": "مسار أثرك عبر الأشهر",
+   "kind": "text",
+   "hash": "1e6fae684475",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.replay": {
+   "en": "From the start",
+   "ar": "منذ البداية",
+   "kind": "text",
+   "hash": "111461e3fd24",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.replayLabel": {
+   "en": "Watch your impact take shape from the start",
+   "ar": "شاهد أثرك يتكوّن منذ البداية",
+   "kind": "text",
+   "hash": "695c792db455",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.sep": {
+   "en": ", ",
+   "ar": "، ",
+   "kind": "text",
+   "hash": "b07e750c1a03",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.share.0": {
+   "en": "Your share",
+   "ar": "حصّتك",
+   "kind": "text",
+   "hash": "74b84ea0c0c2",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.share.1": {
+   "en": "of their need",
+   "ar": "من حاجتهم",
+   "kind": "text",
+   "hash": "49c4aee34fef",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.title": {
+   "en": "Your constellation",
+   "ar": "كوكبة أثرك",
+   "kind": "text",
+   "hash": "6fd58b614c68",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.you": {
+   "en": "You",
+   "ar": "أنت",
+   "kind": "text",
+   "hash": "6900c6edad0f",
+   "file": "src/components/impact/MyImpactHero.tsx"
   },
   "components/kit/ThemeSwitch.toDark": {
    "en": "Dark appearance",
@@ -5068,6 +5287,90 @@
    "kind": "text",
    "hash": "04f8db13caf5",
    "file": "src/lib/event-labels.ts"
+  },
+  "lib/milestones.complete.0": {
+   "en": "A child's need completed",
+   "ar": "أكملتَ حاجة طفل",
+   "kind": "text",
+   "hash": "0664d5979df7",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.complete.1": {
+   "en": "When a child's monthly need reaches 100% and you are among the sponsors.",
+   "ar": "حين تبلغ تغطية حاجته الشهرية 100% وأنت من كافليه.",
+   "kind": "text",
+   "hash": "ad0f4b1684fb",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.first.0": {
+   "en": "First sponsorship",
+   "ar": "الكفالة الأولى",
+   "kind": "text",
+   "hash": "d9919a998451",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.first.1": {
+   "en": "You have begun: one child no longer waits alone.",
+   "ar": "بدأتَ: طفلٌ لم يعد ينتظر وحده.",
+   "kind": "text",
+   "hash": "e8c2a987205f",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.m3.0": {
+   "en": "Three months",
+   "ar": "ثلاثة أشهر",
+   "kind": "text",
+   "hash": "7065fdf0e102",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.m3.1": {
+   "en": "Three monthly reports, each with its delivery record.",
+   "ar": "ثلاثة تقارير شهرية، كلٌّ بمستند تسليمه.",
+   "kind": "text",
+   "hash": "e126383f19da",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.m6.0": {
+   "en": "Half a year",
+   "ar": "نصف سنة",
+   "kind": "text",
+   "hash": "93dfce3edcb5",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.m6.1": {
+   "en": "Six unbroken months: it shows in the child's schooling.",
+   "ar": "ستة أشهرٍ متّصلة: يظهر أثرها في دراسته.",
+   "kind": "text",
+   "hash": "2e0fb3891184",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.two.0": {
+   "en": "Two children in your care",
+   "ar": "طفلان في رعايتك",
+   "kind": "text",
+   "hash": "35df00842a19",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.two.1": {
+   "en": "A second sponsorship under way.",
+   "ar": "كفالةٌ ثانية جارية.",
+   "kind": "text",
+   "hash": "07ed44047908",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.y1.0": {
+   "en": "A full year",
+   "ar": "سنةٌ كاملة",
+   "kind": "text",
+   "hash": "9232790718f8",
+   "file": "src/lib/milestones.ts"
+  },
+  "lib/milestones.y1.1": {
+   "en": "A year of unbroken care for one child.",
+   "ar": "سنةٌ من الرعاية المتّصلة لطفلٍ واحد.",
+   "kind": "text",
+   "hash": "abfa15f290db",
+   "file": "src/lib/milestones.ts"
   },
   "lib/office-gap.absent": {
    "en": "no confirmed WAMY presence at the moment",

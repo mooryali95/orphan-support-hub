@@ -196,10 +196,11 @@ export function resetGifts(store: Store | null = safe()) {
  * visualisation. A gift starts when it was made; «قدّم شهراً» reads it from a later date, so
  * months are never claimed before they pass. The child's funding includes this gift.
  */
-export function giftsAsSponsorships(gifts: TryGift[]): MySponsorship[] {
+export function giftsAsSponsorships(gifts: TryGift[], locale: Locale = "ar"): MySponsorship[] {
   return gifts.flatMap((g) => {
-    const c = tryChild(g.childId);
-    if (!c) return [];
+    const k = tryChild(g.childId);
+    if (!k) return [];
+    const c = localTryChild(k, locale);
     const started = new Date(g.at);
     return [
       {
