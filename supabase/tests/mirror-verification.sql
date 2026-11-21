@@ -42,7 +42,7 @@ DO $$ BEGIN
 END $$;
 
 DO $$
-DECLARE _j JSONB; _n INTEGER;
+DECLARE _j JSONB; _n INTEGER; _ok BOOLEAN;
 BEGIN
   -- النموذج عامّ
   SET LOCAL ROLE anon;
@@ -53,25 +53,39 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — نموذج السمات يُعرض للعموم أبعاداً وسماتٍ وعناصر';
 
-  -- الغريب لا يرى الدرجات لا بالدالة ولا بالجدول
+  -- الدرجات تُقرأ بالخادم وحده (drizzle 0006): العميل لا ينفّذ الدالّتين أصلاً
+  IF has_function_privilege('authenticated', 'public.orphan_traits(uuid)', 'EXECUTE')
+     OR has_function_privilege('anon', 'public.orphan_traits(uuid)', 'EXECUTE')
+     OR has_function_privilege('authenticated', 'public._orphan_traits_data(uuid)', 'EXECUTE')
+     OR has_function_privilege('anon', 'public._orphan_traits_data(uuid)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'FAIL — دالّة درجات السمات ما زالت مفتوحةً للعميل';
+  END IF;
+  RAISE NOTICE 'PASS — دالّتا درجات السمات لمفتاح الخدمة وحده';
+
+  -- الغريب: لا نطاق له (فلا يقرأ الخادم باسمه) ولا يرى الجدول
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000004","role":"authenticated"}';
-  _j := public.orphan_traits('c3000000-0000-4000-8000-00000000000b');
+  _ok := public.has_orphan_scope('c3000000-0000-4000-8000-00000000000b', 'traits');
   SELECT count(*) INTO _n FROM public.orphan_trait_scores;
   RESET ROLE;
-  IF (_j->>'allowed')::boolean OR _n <> 0 THEN
-    RAISE EXCEPTION 'FAIL — غريبٌ رأى السمات (% / %)', _j, _n;
+  IF _ok OR _n <> 0 THEN
+    RAISE EXCEPTION 'FAIL — غريبٌ رأى السمات (% / %)', _ok, _n;
   END IF;
   RAISE NOTICE 'PASS — درجات السمات مغلقة على من لا نطاق له';
 
-  -- المأذون يرى الأول والأخير، بلا ملاحظة المشرف
+  -- المأذون: نطاقه يُثبَت باسمه، ثم يقرأ الخادم الأول والأخير بلا ملاحظة المشرف
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
-  _j := public.orphan_traits('c3000000-0000-4000-8000-00000000000b');
+  _ok := public.has_orphan_scope('c3000000-0000-4000-8000-00000000000b', 'traits');
   RESET ROLE;
-  IF NOT (_j->>'allowed')::boolean
-     OR (_j->'traits'->0->>'first_percent')::numeric <> 40
-     OR (_j->'traits'->0->>'latest_percent')::numeric <> 70 THEN
+  IF NOT _ok THEN
+    RAISE EXCEPTION 'FAIL — المأذون لا يُثبَت له نطاق السمات';
+  END IF;
+  SET LOCAL ROLE service_role;
+  _j := public._orphan_traits_data('c3000000-0000-4000-8000-00000000000b');
+  RESET ROLE;
+  IF (_j->0->>'first_percent')::numeric <> 40
+     OR (_j->0->>'latest_percent')::numeric <> 70 THEN
     RAISE EXCEPTION 'FAIL — المأذون لا يرى تطوّر السمة: %', _j;
   END IF;
   IF _j::text LIKE '%سرية%' THEN
