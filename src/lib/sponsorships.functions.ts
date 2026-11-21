@@ -2,7 +2,81 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { withM5 } from "@/integrations/supabase/types.extra";
+import {
+  needOnly,
+  parsePayOptions,
+  quoteFor,
+  unitInNeed,
+  type PayOptions,
+} from "@/lib/pay-options";
 import { publicClient } from "@/lib/protection.functions";
+
+/**
+ * عملات الدفع لملفٍّ منشور: عملة حاجته، ثم عملة تشغيل دولته والعملة الموحّدة
+ * حيث لهما سعرٌ مخزَّن ويحصّل بهما المزوّد. تُقرأ بدالّةٍ أحدث من الأنواع
+ * المولَّدة (`sponsorship_pay_options`)، فإن غابت (هجرةٌ لم تُطبَّق) أو تعذّرت
+ * عادت عملة الحاجة وحدها — كما كان قبل العملة الموحّدة.
+ */
+type PayRpc = {
+  rpc: (
+    fn: "sponsorship_pay_options",
+    args: { _orphan: string },
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+};
+
+async function readPayOptions(
+  client: unknown,
+  orphanId: string,
+  needCurrency: string,
+): Promise<PayOptions> {
+  try {
+    const { data, error } = await (client as PayRpc).rpc("sponsorship_pay_options", {
+      _orphan: orphanId,
+    });
+    if (error) return needOnly(needCurrency);
+    const parsed = parsePayOptions(data, needCurrency);
+    // المزوّد يحدّ ما يُعرض: عملةٌ لا يحصّل بها شهرياً ولمرّة لا تُختار، والتحويل
+    // اليدوي يُطابَق بعملة الحاجة وحدها.
+    const { paymentProvider } = await import("@/lib/payments");
+    const provider = paymentProvider();
+    // لا تحصيل حقيقيّ بسعرٍ استرشادي: عملةٌ لا تُحوَّل إلى عملة الحاجة إلا عبر
+    // سعرٍ غير معتمد (بذرة الهجرة مثلاً) لا تُعرض حتى ينشر المدير سعراً معتمداً.
+    const firm = parsed.rates.filter((r) => !r.indicative);
+    const convertible = (currency: string) =>
+      firm.some(
+        (r) =>
+          (r.base === currency && r.quote === needCurrency) ||
+          (r.quote === currency && r.base === needCurrency),
+      );
+    const options = parsed.options.filter(
+      (o) =>
+        o.currency === needCurrency ||
+        (convertible(o.currency) &&
+          provider.supportsCurrency?.(o.currency, true) === true &&
+          provider.supportsCurrency(o.currency, false) === true),
+    );
+    return {
+      needCurrency,
+      options,
+      // لا يُرسل سعرُ عملةٍ لم تُعرض.
+      rates: parsed.rates.filter((r) =>
+        options.some(
+          (o) => o.currency !== needCurrency && (o.currency === r.base || o.currency === r.quote),
+        ),
+      ),
+    };
+  } catch {
+    return needOnly(needCurrency);
+  }
+}
+
+export const getPayOptions = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({ orphanId: z.string().uuid(), currency: z.string().regex(/^[A-Z]{3}$/) })
+      .parse(input),
+  )
+  .handler(async ({ data }) => readPayOptions(publicClient(), data.orphanId, data.currency));
 
 /**
  * التمويل الزائد (M5) — يُقترَح لا يُرفَض.
@@ -118,6 +192,14 @@ export const createSponsorship = createServerFn({ method: "POST" })
         message: z.string().trim().max(500).optional(),
         /** إقرار الكافل بأن مبلغه يتجاوز المتبقّي وأنه يريده لهذا الطفل. */
         confirmExcess: z.boolean().default(false),
+        /**
+         * عملة الدفع التي كتب بها الكافل `amount`. غيابها أو مطابقتها لعملة
+         * الحاجة = الدفع بعملة الحاجة كما كان.
+         */
+        currency: z
+          .string()
+          .regex(/^[A-Z]{3}$/)
+          .optional(),
       })
       .parse(input),
   )
@@ -135,6 +217,31 @@ export const createSponsorship = createServerFn({ method: "POST" })
       return { ok: false as const, error: "الملف غير متاح للكفالة حالياً" };
     }
 
+    // عملة دفعٍ غير عملة الحاجة: يُتحقَّق أنها ممّا يُدفع به لهذا الطفل، ويُحسب
+    // ما يُقيَّد لحاجته بالسعر المخزَّن. القاعدة تعيد الحساب نفسه عند الإدراج
+    // (مُشغّل الإنشاء)، فالرقم هنا للمقارنة بالمتبقّي لا للحفظ.
+    const payCurrency = data.currency && data.currency !== orphan.currency ? data.currency : null;
+    let credited = data.amount;
+    // المبلغ وحداتٌ كاملة من عملة الدفع: ما يزيد عن المتبقّي بأقلّ من وحدةٍ
+    // أثرُ تقريبٍ («المتبقّي كاملاً» صعوداً) لا تجاوزٌ يُسأل عنه الكافل.
+    let tolerance = 1;
+    if (payCurrency) {
+      const options = await readPayOptions(supabase, data.orphanId, orphan.currency);
+      const quote = quoteFor(options, data.amount, payCurrency);
+      if (!quote) {
+        return {
+          ok: false as const,
+          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملف الآن. اختر عملة الملف (${orphan.currency}).`,
+        };
+      }
+      // الاشتراك الشهري لدى المزوّد وحداتٌ كاملة من عملة الدفع.
+      if (data.type === "monthly" && !Number.isInteger(data.amount)) {
+        return { ok: false as const, error: "الكفالة الشهرية بمبلغٍ صحيح بلا كسور" };
+      }
+      credited = quote.credited.amount;
+      tolerance = unitInNeed(options, payCurrency);
+    }
+
     // التجاوز يحتاج إقراراً صريحاً. وليس منعاً: الطلب يعود بالمتبقّي
     // وباقتراحات، ثم يُعاد بـ`confirmExcess` إن أصرّ الكافل.
     // a one-time gift is not a share of the monthly need, so the monthly gap does not bound it
@@ -145,9 +252,10 @@ export const createSponsorship = createServerFn({ method: "POST" })
       const state = raw as { gap: number } | null;
       const gap = Number(state?.gap ?? 0);
 
-      if (state && data.amount > gap) {
+      // بعملة الحاجة يبقى الحدّ كما كان (أيّ زيادة تُسأل)؛ التسامح لأثر التقريب عند التحويل وحده.
+      if (state && (payCurrency ? credited - gap >= tolerance : credited > gap)) {
         const { data: alts } = await db.rpc("suggest_orphans_for_amount", {
-          _amount: data.amount - gap,
+          _amount: credited - gap,
           _exclude: data.orphanId,
           _limit: 3,
         });
@@ -155,35 +263,63 @@ export const createSponsorship = createServerFn({ method: "POST" })
           ok: false as const,
           needsExcessConfirmation: true as const,
           gap,
-          excess: data.amount - gap,
+          excess: credited - gap,
           suggestions: toSuggestions(alts),
           error: "المبلغ يتجاوز المتبقّي لهذا الملف",
         };
       }
     }
 
-    const { data: created, error } = await supabase
-      .from("sponsorships")
-      .insert({
-        sponsor_id: userId,
-        orphan_id: data.orphanId,
-        amount: data.amount,
-        currency: orphan.currency,
-        type: data.type,
-        is_anonymous: data.isAnonymous,
-        message: data.message ?? null,
-        status: "pending_payment",
-      })
-      .select("id")
-      .single();
+    const row = {
+      sponsor_id: userId,
+      orphan_id: data.orphanId,
+      amount: credited,
+      currency: orphan.currency,
+      type: data.type,
+      is_anonymous: data.isAnonymous,
+      message: data.message ?? null,
+      status: "pending_payment" as const,
+    };
+    // عمودا التحصيل أحدث من الأنواع المولَّدة؛ يُرسلان فقط حين اختيرت عملة دفعٍ
+    // أخرى، فالمسار القديم لا يمسّه شيء إن لم تُطبَّق الهجرة بعد.
+    const { data: created, error } = payCurrency
+      ? await (supabase as unknown as ChargeInsert)
+          .from("sponsorships")
+          .insert({ ...row, charge_currency: payCurrency, charge_amount: data.amount })
+          .select("id")
+          .single()
+      : await supabase.from("sponsorships").insert(row).select("id").single();
 
-    if (error) return { ok: false as const, error: error.message };
+    if (error) {
+      if (payCurrency && /currency_not_payable|charge_currency|charge_amount/.test(error.message)) {
+        return {
+          ok: false as const,
+          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملف الآن. اختر عملة الملف (${orphan.currency}).`,
+        };
+      }
+      return { ok: false as const, error: error.message };
+    }
+    if (!created) return { ok: false as const, error: "تعذّر تسجيل الكفالة، حاول لاحقاً" };
 
     // سجلّ المدفوعات يُكتب من webhook بوابة الدفع عبر service_role حصراً،
     // فلا يستطيع العميل تلفيق قيد بحالة "paid". قيد الدفعة يُنشأ في المرحلة 3
     // مع نيّة الدفع لدى المزوّد.
     return { ok: true as const, sponsorshipId: created.id };
   });
+
+/** إدراج كفالةٍ بعمودَي التحصيل (هجرة العملة الموحّدة) — خارج الأنواع المولَّدة. */
+type ChargeInsert = {
+  from: (t: "sponsorships") => {
+    insert: (row: Record<string, unknown>) => {
+      select: (c: "id") => {
+        single: () => PromiseLike<{
+          data: { id: string } | null;
+          error: { message: string } | null;
+        }>;
+      };
+    };
+  };
+};
 
 export const listMySponsorships = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

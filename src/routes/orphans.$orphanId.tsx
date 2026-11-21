@@ -17,7 +17,11 @@ import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { getPlatformStats, getPublicOrphan } from "@/lib/orphans.functions";
 import { getOrphanQualification } from "@/lib/qualification.functions";
 import { QualificationPanel } from "@/components/qualification/QualificationPanel";
-import { createSponsorship, type SuggestedOrphan } from "@/lib/sponsorships.functions";
+import {
+  createSponsorship,
+  getPayOptions,
+  type SuggestedOrphan,
+} from "@/lib/sponsorships.functions";
 import { startCheckout } from "@/lib/payments.functions";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { ExcessSuggestion } from "@/components/ExcessSuggestion";
@@ -38,7 +42,15 @@ import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
-import { amountPresets } from "@/lib/amount-presets";
+import {
+  amountAfterSwitch,
+  canPayIn,
+  needOnly,
+  presetKeyOf,
+  presetsIn,
+  quoteFor,
+} from "@/lib/pay-options";
+import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { Name } from "@/components/kit/Name";
 import { FollowButton } from "@/components/support/Follow";
 
@@ -273,6 +285,37 @@ function OrphanDetail() {
   const detail = orphan.detail ?? null;
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
+  // عملة الدفع: عملة الملف افتراضاً، ومعها عملة بلد الطفل والعملة الموحّدة حيث
+  // لهما سعرٌ مخزَّن ويحصّل بهما المزوّد. تعذّر القراءة = عملة الملف وحدها كما كان.
+  const fetchPayOptions = useServerFn(getPayOptions);
+  const { data: payData } = useQuery({
+    queryKey: ["pay-options", orphanId, orphan.currency],
+    queryFn: () => fetchPayOptions({ data: { orphanId, currency: orphan.currency } }),
+    staleTime: 5 * 60_000,
+  });
+  const payOptions = payData ?? needOnly(orphan.currency);
+  const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
+  // ما اختاره الداعم يُحترم ما دام ممّا يُدفع به؛ وإلا عملة الملف.
+  const payCurrency =
+    chosenCurrency && canPayIn(payOptions, chosenCurrency) ? chosenCurrency : orphan.currency;
+  const need = Number(orphan.monthly_need);
+  const presets = presetsIn(payOptions, payCurrency, need, remaining);
+  const quote = quoteFor(payOptions, Number(amount), payCurrency);
+  /** ما يُقيَّد لحاجة الطفل من المبلغ المكتوب، بعملة الملف */
+  const credited = quote?.credited.amount ?? 0;
+  function switchCurrency(next: string) {
+    if (next === payCurrency) return;
+    // typed by hand: the number stays; picked from the suggestions: the same suggestion
+    setAmount(
+      amountAfterSwitch(
+        presetKeyOf(presets, Number(amount)),
+        amount,
+        presetsIn(payOptions, next, need, remaining),
+      ),
+    );
+    setChosenCurrency(next);
+    setExcessOffer(null);
+  }
   const [anonymous, setAnonymous] = useState(false);
   // الشهري هو الأصل، والعطاء لمرّة واحدة بابٌ أخفّ لأوّل خطوة (الخادم يقبل النوعين).
   const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
@@ -287,6 +330,8 @@ function OrphanDetail() {
     if (!draft) return;
     clearDraft(orphanId);
     setAmount(draft.amount);
+    // the amount was typed in this currency; it is honoured once the options confirm it is payable
+    setChosenCurrency(draft.currency);
     setMessage(draft.message);
     setAnonymous(draft.anonymous);
     setMode("monthly");
@@ -313,7 +358,7 @@ function OrphanDetail() {
         amount,
         message,
         anonymous,
-        currency: orphan.currency,
+        currency: payCurrency,
       });
       navigate({ to: "/auth", search: { redirect: `/orphans/${orphanId}` } });
       return;
@@ -333,6 +378,7 @@ function OrphanDetail() {
           isAnonymous: anonymous,
           message: message.trim() || undefined,
           confirmExcess,
+          ...(payCurrency !== orphan.currency ? { currency: payCurrency } : {}),
         },
       });
       if (!res.ok) {
@@ -600,8 +646,13 @@ function OrphanDetail() {
                       </button>
                     ))}
                   </div>
+                  <PayCurrencyChoice
+                    options={payOptions.options}
+                    value={payCurrency}
+                    onChange={switchCurrency}
+                  />
                   <div>
-                    <Label htmlFor="amount">{t.amount(orphan.currency)}</Label>
+                    <Label htmlFor="amount">{t.amount(payCurrency)}</Label>
                     <Input
                       id="amount"
                       inputMode="numeric"
@@ -610,16 +661,16 @@ function OrphanDetail() {
                       className="mt-2"
                     />
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {remaining > 0 && (
+                      {presets.gap !== null && (
                         <button
                           type="button"
-                          onClick={() => setAmount(String(Math.round(remaining)))}
+                          onClick={() => setAmount(String(presets.gap))}
                           className="border-bridge text-bridge-ink inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium hover:bg-bridge/10"
                         >
                           {t.fullRest}
                         </button>
                       )}
-                      {amountPresets(Number(orphan.monthly_need), remaining).map((v) => (
+                      {presets.amounts.map((v) => (
                         <button
                           key={v}
                           type="button"
@@ -630,6 +681,7 @@ function OrphanDetail() {
                         </button>
                       ))}
                     </div>
+                    <FxNote quote={quote} childName={orphan.display_name} className="mt-3" />
                   </div>
 
                   <div>
@@ -656,14 +708,11 @@ function OrphanDetail() {
                     text={
                       cadence === "one_time"
                         ? t.impactOnce(orphan.display_name)
-                        : Number(amount) >= remaining && remaining > 0
+                        : credited >= remaining && remaining > 0
                           ? t.impactFull(orphan.display_name)
-                          : Number(amount) > 0 && Number(orphan.monthly_need) > 0
+                          : credited > 0 && need > 0
                             ? t.impactPart(
-                                Math.min(
-                                  100,
-                                  Math.round((Number(amount) / Number(orphan.monthly_need)) * 100),
-                                ),
+                                Math.min(100, Math.round((credited / need) * 100)),
                                 orphan.display_name,
                               )
                             : null
@@ -678,7 +727,13 @@ function OrphanDetail() {
                       suggestions={excessOffer.suggestions}
                       pending={pending}
                       onUseGapOnly={() => {
-                        setAmount(String(Math.round(excessOffer.gap)));
+                        // the remaining gap as it is written in the payment currency
+                        setAmount(
+                          String(
+                            presetsIn(payOptions, payCurrency, need, excessOffer.gap).gap ??
+                              Math.round(excessOffer.gap),
+                          ),
+                        );
                         setExcessOffer(null);
                       }}
                       onConfirm={() => void onSponsor(true)}
@@ -713,7 +768,7 @@ function OrphanDetail() {
                               amount,
                               message,
                               anonymous,
-                              currency: orphan.currency,
+                              currency: payCurrency,
                             });
                             open();
                           }}

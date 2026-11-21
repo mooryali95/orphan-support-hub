@@ -4,10 +4,12 @@ import { byCode, regionsFor } from "./hall/model";
 import { myImpact } from "./my-impact";
 import {
   addGift,
+  cleanPaid,
   cleanDedication,
   coverageAfter,
   giftsAsSponsorships,
   loadGifts,
+  tryPayOptions,
   localTryChild,
   monthStory,
   resetGifts,
@@ -43,6 +45,39 @@ describe("وضع التجربة", () => {
     expect(loadGifts(s).map((g) => g.childId)).toEqual(["try-02", "try-01"]);
     resetGifts(s);
     expect(loadGifts(s)).toEqual([]);
+  });
+
+  it("عطاءٌ بعملةٍ أخرى: المقيَّد بعملة الملف، وما دُفع بسعره وتاريخه", () => {
+    const s = mem();
+    const paid = {
+      amount: 54,
+      currency: "USD",
+      rate: 1 / 1.08,
+      asOf: "2026-11-21",
+      indicative: true,
+    };
+    addGift({ childId: "try-01", amount: 50, cadence: "monthly", paid }, s, now);
+    const [g] = loadGifts(s);
+    expect(g!.amount).toBe(50);
+    expect(g!.paid).toEqual(paid);
+    // «أثري» reads the credited amount in the file currency, whatever was paid
+    expect(giftsAsSponsorships(loadGifts(s))[0]).toMatchObject({ amount: 50, currency: "EUR" });
+    // a malformed or same-currency record is dropped, never guessed
+    expect(cleanPaid({ ...paid, currency: "EUR" })).toBeUndefined();
+    expect(cleanPaid({ ...paid, rate: 0 })).toBeUndefined();
+    expect(cleanPaid({ ...paid, asOf: "today" })).toBeUndefined();
+    expect(cleanPaid("54 USD")).toBeUndefined();
+  });
+
+  it("عملات الدفع: عملة الملف ثم عملة بلد الطفل أو الموحّدة", () => {
+    expect(tryPayOptions({ co: "AL" }).options.map((o) => [o.currency, o.kind])).toEqual([
+      ["EUR", "operating"],
+      ["USD", "unified"],
+    ]);
+    expect(tryPayOptions({ co: "KE" }).options.map((o) => [o.currency, o.kind])).toEqual([
+      ["EUR", "need"],
+      ["USD", "operating"],
+    ]);
   });
 
   it("يتجاهل ما ليس طفلاً من التجربة أو التخزين التالف", () => {

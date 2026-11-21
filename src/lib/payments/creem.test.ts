@@ -242,6 +242,21 @@ describe("createCheckout", () => {
     }
   });
 
+  it("يُعلن العملات التي يحصّل بها قبل أن تُعرض على الكافل", () => {
+    // المنتج العامّ بالدولار (الافتراض)، ولا منتج باليورو.
+    expect(creemProvider.supportsCurrency?.("USD", true)).toBe(true);
+    expect(creemProvider.supportsCurrency?.("usd", false)).toBe(true);
+    expect(creemProvider.supportsCurrency?.("EUR", true)).toBe(false);
+    process.env["CREEM_PRODUCT_MONTHLY_EUR"] = "prod_monthly_eur";
+    try {
+      expect(creemProvider.supportsCurrency?.("EUR", true)).toBe(true);
+      // منتج الدفعة الواحدة باليورو لم يُضبط.
+      expect(creemProvider.supportsCurrency?.("EUR", false)).toBe(false);
+    } finally {
+      delete process.env["CREEM_PRODUCT_MONTHLY_EUR"];
+    }
+  });
+
   it("لا يدوّر مبلغاً شهرياً كسرياً صامتاً", async () => {
     stubFetch();
     await expect(
