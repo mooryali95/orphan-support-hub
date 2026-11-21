@@ -30,12 +30,13 @@ import {
   type SupportKind,
   type TraitMovement,
 } from "@/lib/support-impact";
-import { localTryChild, TRY_EVENT, tryChild } from "@/lib/try-demo";
+import { localTryChild, TRY_EVENT, tryChild, type TryGift } from "@/lib/try-demo";
 import {
   placeChildren,
   TRY_PLACES,
   TRY_SESSIONS,
   TRY_TRAITS,
+  tryChildIn,
   tryGroupName,
   tryPlace,
   tryProgramName,
@@ -408,5 +409,113 @@ export function tryInKind(pledges: TryPledge[], now: Date, locale: Locale = "ar"
   return inKindFromPledges(tryMyPledges(pledges, now, locale), now).flatMap((item) => {
     const p = byId.get(item.id);
     return p ? [withPlace(item, p, locale)] : [];
+  });
+}
+
+/* ── the trial as it stands in each place: what the impact hall draws ── */
+
+/**
+ * the instant the trial reads its records at, `ahead` whole months from `from` (negative: before).
+ * Whole months as «أثري» counts them (30.44 days), plus an hour so the n-th month has fully passed.
+ */
+export const tryThen = (ahead: number, from: Date = new Date()) =>
+  new Date(from.getTime() + ahead * 30.44 * 86_400_000 + 3_600_000);
+
+export type TryRegionState = AreaCounts & {
+  co: string;
+  /** the map's region id, and the same region's id in the hall */
+  id: string;
+  hall: string;
+  /** sample: children with a file here */
+  children: number;
+  /** documented deliveries of the in-kind pledges made to this region or inside it */
+  deliveries: number;
+  /** the region's trial children this visitor sponsors monthly */
+  sponsored: number;
+  /** whole months the region's first child (the trial child) has been under a qualification pledge; -1 when under none */
+  lead: number;
+};
+
+export type TryPlaceState = {
+  co: string;
+  children: number;
+  /** documented deliveries of every in-kind pledge in the country, whatever its scope */
+  deliveries: number;
+  regions: TryRegionState[];
+};
+
+/**
+ * every trial place as of `now`, from this visitor's pledges and gifts and nothing else: a
+ * region's qualification counts are its children one by one (a child under several pledges
+ * follows the earliest), in-kind counts only documented deliveries (never children reached),
+ * and a sponsored child is one with a monthly gift. With no pledge every count is zero: the
+ * trial invents no progress for a place. A pledge or gift made after `now` is not there yet.
+ */
+export function tryPlaceStates(
+  pledges: TryPledge[],
+  gifts: ReadonlyArray<Pick<TryGift, "childId" | "cadence" | "at">>,
+  now: Date,
+): TryPlaceState[] {
+  const made = (at: string) => Date.parse(at) <= now.getTime();
+  const live = pledges.filter((p) => validTarget(p) && made(p.at));
+  const documented = new Map(
+    tryMyPledges(
+      live.filter((p) => p.kind === "in_kind"),
+      now,
+    ).map((row) => [
+      row.id,
+      (row.deliveries ?? []).filter((d) => d.stage === "delivered" && d.documented).length,
+    ]),
+  );
+  const sponsored = new Set(
+    gifts.filter((g) => g.cadence === "monthly" && made(g.at)).map((g) => g.childId),
+  );
+  return TRY_PLACES.map((place) => {
+    const own = live.filter((p) => p.co === place.co);
+    const regions = place.regions.map((r): TryRegionState => {
+      // the furthest any qualification pledge has carried each child, in whole months
+      const months = Array.from({ length: r.children }, () => -1);
+      let deliveries = 0;
+      for (const p of own) {
+        const here = slices(p).find(([x]) => x.id === r.id);
+        if (!here) continue;
+        if (p.kind === "in_kind") {
+          if (p.scope !== "country") deliveries += documented.get(p.id) ?? 0;
+          continue;
+        }
+        const m = monthsBetween(p.at, now);
+        for (let i = 0; i < here[1]; i += 1) months[i] = Math.max(months[i]!, m);
+      }
+      const out: TryRegionState = {
+        co: place.co,
+        id: r.id,
+        hall: r.hall,
+        children: r.children,
+        enrolled: 0,
+        started: 0,
+        completed: 0,
+        sessionsPlanned: 0,
+        sessionsHeld: 0,
+        deliveries,
+        sponsored: sponsored.has(tryChildIn(place.co, r.hall)?.id ?? "") ? 1 : 0,
+        lead: months[0] ?? -1,
+      };
+      months.forEach((m, i) => {
+        if (m < 0) return;
+        const c = childAt(i, m);
+        out.enrolled += 1;
+        out.sessionsPlanned += TRY_SESSIONS;
+        out.sessionsHeld += c.held;
+        if (c.started) out.started += 1;
+        if (c.completed) out.completed += 1;
+      });
+      return out;
+    });
+    return {
+      co: place.co,
+      children: placeChildren(place),
+      deliveries: own.reduce((a, p) => a + (documented.get(p.id) ?? 0), 0),
+      regions,
+    };
   });
 }

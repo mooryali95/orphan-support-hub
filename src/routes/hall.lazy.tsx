@@ -12,8 +12,8 @@ import {
 } from "@/components/brand/KahataynMark";
 import { isTrial } from "@/config/platform";
 import { geoQuery } from "@/lib/geo";
+import { useLocale } from "@/lib/locale";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
-import { gapOf, loadGifts, TRY_CHILDREN, tryChild } from "@/lib/try-demo";
 
 /** ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there */
 
@@ -33,6 +33,7 @@ const CRITICAL_CSS =
 function HallPage() {
   const ref = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
+  const locale = useLocale();
   const queryClient = useQueryClient();
   // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
   const trying = search.try === 1 || isTrial();
@@ -48,8 +49,14 @@ function HallPage() {
     }
     let dispose: (() => void) | null = null;
     let cancelled = false;
-    import("@/components/hall/hall-scene.js")
-      .then(({ mountHall }) => {
+    /* two halls behind one switch. The trial hall loads the trial catalogue (`lib/hall/trial`:
+       countries, regions, children, pledges and copy, the same the trial pages read) and reads
+       no directory; the live hall loads none of it and reads the directory's counts. */
+    Promise.all([
+      import("@/components/hall/hall-scene.js"),
+      trying ? import("@/lib/hall/trial") : null,
+    ])
+      .then(([{ mountHall }, trial]) => {
         if (cancelled) return;
         dispose = mountHall(root, {
           brand: BRAND.name,
@@ -57,7 +64,9 @@ function HallPage() {
           linked: getOperatingLinks()
             .then((links) => links.map((l) => l.country))
             .catch(() => []),
-          demo: trying ? demoFor(search.child, search.cadence) : null,
+          demo: trial
+            ? trial.trialDemo({ locale, child: search.child, cadence: search.cadence })
+            : null,
           // عدّ الدليل الحقيقي بالدولة (geo_stats)، بالحماية نفسها التي يعرضها الدليل.
           live: trying
             ? null
@@ -327,44 +336,4 @@ function Loader() {
       </svg>
     </div>
   );
-}
-
-/** remembers which simulated gift the hall has already replayed (this browser only) */
-const REPLAYED_KEY = "hall-replayed:v1";
-
-/**
- * the arrival is replayed once per gift: the link back from «أثري» always carries the latest
- * gift's child, and replaying it on every entry took the visitor out of the hall they had opened.
- */
-function firstReplay(token: string): boolean {
-  try {
-    if (window.localStorage.getItem(REPLAYED_KEY) === token) return false;
-    window.localStorage.setItem(REPLAYED_KEY, token);
-    return true;
-  } catch {
-    return true; // storage blocked: the replay still plays, and any touch cancels it
-  }
-}
-
-/** the demo children by hall region, and (right after a simulated gift) the moment to replay */
-function demoFor(childId: string | undefined, cadence: "monthly" | "one_time" | undefined) {
-  const gifts = loadGifts();
-  const gift = childId ? gifts.find((g) => g.childId === childId) : undefined;
-  // only a gift this visitor really made is replayed, and only the first time they arrive with it
-  const child = gift && firstReplay(gift.id) ? tryChild(gift.childId) : undefined;
-  // the visitor's simulated gifts (browser only): those children read «في كفالتك» in the hall
-  const mine = new Set(gifts.map((g) => g.childId));
-  return {
-    kids: TRY_CHILDREN.map((c) => ({
-      id: c.id,
-      name: c.name,
-      co: c.co,
-      region: c.region,
-      gap: gapOf(c),
-      mine: mine.has(c.id),
-    })),
-    focus: child
-      ? { co: child.co, region: child.region, name: child.name, cadence: cadence ?? "monthly" }
-      : null,
-  };
 }

@@ -1,5 +1,8 @@
 // قاعة الأثر — المشهد ثلاثي الأبعاد (three.js) وطبقة الواجهة فوقه.
 // المنطق والبيانات في `@/lib/hall/model` (مختبَر)؛ هنا العرض والحركة فقط.
+// طريقان منفصلان بمفتاح `demo`: القاعة الحيّة تقرأ `model` وجسر المحرّك وأعداد الدليل؛ وقاعة
+// التجربة لا تقرأ منها رقماً ولا نصّاً: نموذجها ونصوصها وكتابتها كلّها من `@/lib/hall/trial`
+// (كتالوج التجربة الواحد)، تُمرَّر في `demo`. كلّ ما يخصّ التجربة هنا اسمه يبدأ بـ`trial`.
 // يُحمَّل كسولاً من `src/routes/hall.tsx` فلا يثقل بقية الصفحات.
 import * as THREE from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector.js";
@@ -57,6 +60,10 @@ const DISPLAY = "Amiri",
 export function mountHall(root, { brand, linked = [], demo = null, live = null }) {
   const $ = (s, r = root) => r.querySelector(s);
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
+  /* the trial's copy, in the interface language (null in the live hall) */
+  const T = demo?.copy ?? null;
+  const TRIAL_KINDS = demo?.kinds ?? [];
+  const num = (n) => `<span class="num">${fmt(n)}</span>`;
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const PHONE = () => innerWidth <= 760;
   // the light tier: a phone-width screen, few cores, little memory (deviceMemory is Chromium-only,
@@ -116,7 +123,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const S = {
     stage: "gate",
     track: "qualify",
-    amount: 10000,
+    amount: demo ? demo.amounts.initial : 10000,
+    // the trial: the kind of giving as the platform names it, and the currency the pledge is typed in
+    kind: "qualification",
+    currency: null,
     city: "tirana",
     history: [],
     last: null,
@@ -132,8 +142,45 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
   })();
   let ENGINE = loadEngine(store);
-  const isEngine = () => CO.code === "AL";
+  // the vision engine holds Albania for the live hall only; the trial reads its own catalogue
+  const isEngine = () => !demo && CO.code === "AL";
+  /* ── the trial model: read from the visitor's two stores through `demo`, never kept here ── */
+  let TRIAL = demo ? demo.model(0) : null;
+  let TRIAL_MUTE = false; // the hall's own write is already being carried in
+  const trialCo = (code = CO.code) => TRIAL?.countries[code] ?? null;
+  const coName = (c = CO) => (demo ? demo.countryName(c.code) : c.ar);
+  /** the trial's regions of a country, each with where its column stands: the one thing the
+      trial takes from the hall's own model, and it is geometry, not a figure */
+  function trialColumns(co) {
+    const at = regionsFor(co);
+    return (trialCo(co.code)?.regions ?? []).map((r) => {
+      const g = at.find((x) => x.id === r.id);
+      return { ...r, nx: g?.nx ?? 0, ny: g?.ny ?? 0 };
+    });
+  }
+  /** re-reads the trial model and carries it into the region objects the columns stand on */
+  function trialSync(ahead = Math.round(TIME.m), draft = null) {
+    TRIAL = demo.model(ahead, draft);
+    for (const [code, list] of Object.entries(CITY_CACHE)) {
+      const fresh = TRIAL.countries[code]?.regions ?? [];
+      list.forEach((r) =>
+        Object.assign(
+          r,
+          fresh.find((x) => x.id === r.id),
+        ),
+      );
+    }
+  }
   function initCities() {
+    if (demo) {
+      const t = trialCo();
+      if (!t) return; // outside the trial's countries the hall has no figures to stand on
+      if (!CITY_CACHE[CO.code]) CITY_CACHE[CO.code] = trialColumns(CO);
+      CITIES = CITY_CACHE[CO.code];
+      S.city = CITIES[0].id; // the region the trial child and group stand in
+      S.currency = t.currencies[0]; // each country opens on its own currency, as the support map does
+      return;
+    }
     if (isEngine()) {
       ENGINE = loadEngine(store);
       CITY_CACHE.AL = albaniaRegions(ENGINE, regionsFor(CO));
@@ -758,10 +805,20 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       tex.needsUpdate = true;
       return;
     }
-    goldText(ctx, `${CO.ar} — الحال الآن`, w - 80, 136, 80);
+    const tc = trialCo();
+    if (demo && !tc) {
+      // the trial has no figures for this country, so the screen shows none
+      goldText(ctx, coName(), w - 80, 136, 80);
+      text(ctx, T.screen.notTrial, w - 80, 200, 36, "rgba(246,239,226,.75)");
+      tex.needsUpdate = true;
+      return;
+    }
+    goldText(ctx, demo ? T.screen.map(tc.name) : `${CO.ar} — الحال الآن`, w - 80, 136, 80);
     text(
       ctx,
-      `${fmt(t.need)} يتيماً في الحاجة · ${t.pct}% مموّلة · ${fmt(t.gap)} ينتظرون التأهيل`,
+      demo
+        ? T.screen.mapLine(fmt(tc.children), fmt(tc.enrolled), fmt(tc.deliveries))
+        : `${fmt(t.need)} يتيماً في الحاجة · ${t.pct}% مموّلة · ${fmt(t.gap)} ينتظرون التأهيل`,
       w - 80,
       200,
       36,
@@ -819,7 +876,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
     const lx = w - 80;
     let ly = 330;
-    text(ctx, "أكبر الفجوات", lx, ly, 34, "#cdae76", 700);
+    text(ctx, demo ? T.screen.regions : "أكبر الفجوات", lx, ly, 34, "#cdae76", 700);
     ly += 20;
     [...CITIES]
       .sort((a, b) => gapOf(b) - gapOf(a))
@@ -827,25 +884,47 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       .forEach((c) => {
         ly += 66;
         text(ctx, c.ar, lx, ly, 34, "#f6efe2", 600);
-        text(ctx, `${gapOf(c)} ينتظرون`, lx - 330, ly, 30, "rgba(246,239,226,.7)");
+        text(
+          ctx,
+          demo ? T.children(c.need) : `${gapOf(c)} ينتظرون`,
+          lx - 330,
+          ly,
+          30,
+          "rgba(246,239,226,.7)",
+        );
         ctx.fillStyle = "rgba(246,239,226,.12)";
         ctx.fillRect(lx - 440, ly + 16, 440, 6);
         ctx.fillStyle = "#cdae76";
         ctx.fillRect(lx - 440 * (c.qualified / c.need), ly + 16, 440 * (c.qualified / c.need), 6);
       });
-    text(ctx, `المس الشاشة لتدخل ${CO.ar}`, w - 80, h - 84, 48, "#e2c896", 700);
+    text(
+      ctx,
+      demo ? T.screen.enter(tc.name) : `المس الشاشة لتدخل ${CO.ar}`,
+      w - 80,
+      h - 84,
+      48,
+      "#e2c896",
+      700,
+    );
     tex.needsUpdate = true;
   }
   function drawTracks() {
     const { ctx, cv, tex } = scrTracks,
       w = cv.lw;
     bg(ctx, w, cv.lh);
-    goldText(ctx, "أنواع الدعم الثلاثة", w - 80, 140, 68);
-    [
-      ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
-      ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
-      ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
-    ].forEach(([a, b, c], i) => {
+    goldText(ctx, demo ? demo.giving.heading : "أنواع الدعم الثلاثة", w - 80, 140, 68);
+    (demo
+      ? TRIAL_KINDS.map((k) => [
+          demo.giving.tracks[k].name,
+          T.screen.tracksHow[k],
+          T.screen.tracksSub[k],
+        ])
+      : [
+          ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
+          ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
+          ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
+        ]
+    ).forEach(([a, b, c], i) => {
       const y = 300 + i * 200;
       ctx.fillStyle = "#cdae76";
       ctx.beginPath();
@@ -863,6 +942,49 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       w = cv.lw,
       h = cv.lh;
     bg(ctx, w, h);
+    if (demo) {
+      // the trial's record is the visitor's two stores: what the pages wrote shows here too
+      const all = TRIAL.history;
+      goldText(ctx, T.screen.impact, w - 80, 140, 68);
+      if (!all.length) {
+        text(ctx, T.screen.none, w - 80, 300, 46, "rgba(246,239,226,.85)");
+        T.screen.noneSub.forEach((line, i) =>
+          text(ctx, line, w - 80, 370 + i * 50, 36, "rgba(246,239,226,.6)"),
+        );
+        tex.needsUpdate = true;
+        return;
+      }
+      TRIAL_KINDS.forEach((k, i) => {
+        const x = w - 80 - i * 400;
+        ctx.direction = "ltr";
+        ctx.textAlign = "right";
+        ctx.font = `700 96px "${DISPLAY}", serif`;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(String(all.filter((e) => e.kind === k).length), x, 300);
+        text(ctx, demo.giving.tracks[k].name, x, 350, 32, "rgba(246,239,226,.75)", 600);
+      });
+      ctx.strokeStyle = "rgba(205,174,118,.38)";
+      ctx.beginPath();
+      ctx.moveTo(80, 470);
+      ctx.lineTo(w - 80, 470);
+      ctx.stroke();
+      all.slice(0, 3).forEach((e, i) => {
+        const y = 540 + i * 82;
+        text(
+          ctx,
+          T.impact.title(e.kindName, e.label),
+          w - 80,
+          y,
+          36,
+          i ? "rgba(246,239,226,.8)" : "#f6efe2",
+          600,
+        );
+        text(ctx, e.money, 80 + 520, y, 28, "rgba(246,239,226,.55)", 500, BODY, "right");
+      });
+      text(ctx, T.screen.open, w - 80, h - 60, 36, "#e2c896", 700);
+      tex.needsUpdate = true;
+      return;
+    }
     goldText(ctx, "أثرك حتى الآن", w - 80, 140, 68);
     if (!S.history.length) {
       text(ctx, "لم تدعم بعد.", w - 80, 300, 46, "rgba(246,239,226,.85)");
@@ -1112,6 +1234,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
      colour-blindness. Champagne = qualified, emerald = sponsored (the one hue outside the mark,
      kept as a data colour), pearl = clothed. hall.css --t-* must match. */
   const TRACK_COL = { qualify: 0xcdae76, sponsor: 0x5cc9a4, kiswa: 0xeef0f7 };
+  /* in the trial the same three forms carry the platform's three kinds of giving: the column is
+     children under a qualification pledge, the lanterns the trial children this visitor sponsors,
+     the pearls documented in-kind deliveries (never children reached) */
   const DIAL = [
     [0.36, 0.44, "qualify", "qualified"],
     [0.5, 0.58, "sponsor", "sponsored"],
@@ -1473,7 +1598,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   function layoutDots(time = 0) {
     const o = pillars.find((p) => p.c.id === S.city),
       c = o.c,
-      pr = project();
+      pr = demo ? { lit: trialLit(c) } : project();
     const base =
       S.track === "qualify" ? c.qualified : S.track === "kiswa" ? c.clothed : c.sponsored;
     const target = S.stage === "support" ? pr.lit : 0;
@@ -1874,15 +1999,23 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     labels.forEach((l) => l.globe && l.el.classList.toggle("hot", PICKED && l.globe === CO));
     pillars.forEach((o) => {
       o.label.el.classList.toggle("hot", o.c.id === S.city);
-      o.label.el.innerHTML = `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
+      if (demo) o.label.el.dir = demo.dir;
+      o.label.el.innerHTML = demo
+        ? T.country.label(o.c.ar, num(o.c.need))
+        : `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
     });
   }
   const legend = $("#legend");
   function renderLegend() {
     const c = CITIES.find((x) => x.id === S.city);
     if (!legend || !c) return;
-    const row = (t, n, w) =>
-      `<li class="lg-${t}"><i aria-hidden="true"></i>${w}<b class="num">${fmt(n)}</b><small>/ <span class="num">${fmt(c.need)}</span></small></li>`;
+    const row = (t, n, w, of = true) =>
+      `<li class="lg-${t}"><i aria-hidden="true"></i>${w}<b class="num">${fmt(n)}</b>${of ? `<small>/ <span class="num">${fmt(c.need)}</span></small>` : ""}</li>`;
+    if (demo) {
+      legend.dir = demo.dir;
+      legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, T.legend.enrolled)}${row("sponsor", c.sponsored, T.legend.sponsored, false)}${row("kiswa", c.clothed, T.legend.deliveries, false)}</ul>`;
+      return;
+    }
     legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, "تأهّلوا")}${row("sponsor", c.sponsored, "مكفولون")}${row("kiswa", c.clothed, "مكسوّون")}</ul>`;
   }
   const cur = $("#cursor");
@@ -2010,7 +2143,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   function setStage(s) {
     if (s !== "country") {
       TIME.play?.kill();
-      if (TIME.snap) setTime(0); // support and payment always work on today's numbers
+      if (TIME.snap || (demo && TIME.m)) setTime(0); // support and payment always work on today's numbers
     }
     root.classList.toggle("at-country", s === "country");
     S.stage = s;
@@ -2046,6 +2179,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       return;
     }
     h.textContent = t;
+    if (demo) h.dir = demo.dir === "ltr" && /[A-Za-z]/.test(t) ? "ltr" : "rtl";
     gsap.fromTo(
       h,
       { autoAlpha: 0, y: 14 },
@@ -2089,7 +2223,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (swapping) readyQueue.push(fn);
     else requestAnimationFrame(() => fn());
   }
-  function showPanel(html) {
+  function showPanel(html, dir) {
+    // the trial's panels read in the interface language; the live hall's are Arabic as before
+    if (demo) panel.dir = dir ?? "rtl";
     const first = !panel.classList.contains("on");
     swapping = true;
     readyQueue = [];
@@ -2148,6 +2284,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
   function showImpact(html, flashKey) {
+    if (demo) impact.dir = demo.dir;
     const was = impact.hidden;
     impact.hidden = false;
     impact.innerHTML = html;
@@ -2277,6 +2414,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     filmRun++;
     root.classList.remove("film");
     caption("");
+    if (demo) trialRefresh(); // the film wrote nothing: back to what the stores really hold
   }
   on(
     root,
@@ -2292,7 +2430,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     FILM = true;
     root.classList.add("film");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-    const steps = [
+    const live = [
       [() => enterHall(), "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر", 5200],
       [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
       [
@@ -2319,6 +2457,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       [() => {}, "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب", 14000],
       [() => enterBig(), "وأخيراً أثرك أنت: ما حرّكه دعمك، قبله وبعده", 7000],
     ];
+    /* the trial's film walks the same stages on the trial catalogue: a monthly qualification
+       pledge for Tirana, shown and never recorded */
+    const steps = demo
+      ? live.map(([act, , ms], i) => [
+          i === 4
+            ? () => {
+                S.kind = "qualification";
+                S.amount = demo.amounts.initial;
+                setStage("support");
+                selectCity("tirana");
+              }
+            : act,
+          T.film[i],
+          ms,
+        ])
+      : live;
     for (const [act, text, ms] of steps) {
       if (!FILM || run !== filmRun || disposed) return;
       caption(text);
@@ -2444,6 +2598,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
 
   /* ── Into the country: push in, flash, rise ─────────────────────── */
   function enterCountry() {
+    if (demo && !trialCo()) return; // the trial enters only the countries its catalogue holds
     hint("");
     const fromWorld = S.stage === "world";
     sound.cue("dive");
@@ -2639,14 +2794,38 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.strokeStyle = "#f6efe2";
     x.lineWidth = 2;
     x.stroke();
-    regionsFor(co).forEach((c) => {
+    (demo ? trialColumns(co) : regionsFor(co)).forEach((c) => {
       x.beginPath();
       x.arc(ox + c.nx * s, oy - c.ny * s, 4 + c.need / 14, 0, Math.PI * 2);
       x.fillStyle = "rgba(243,227,181,.85)";
       x.fill();
     });
   }
+  /** the trial's country card: the catalogue's own counts, or none for a country outside it */
+  function trialCard() {
+    const t = trialCo(),
+      name = coName(),
+      W = T.world;
+    return `<article class="co-card">
+      <div class="co-head"><div><h3>${name}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="${name}"></canvas></div>
+      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : ""}
+      ${
+        t
+          ? `<div class="kv" dir="${demo.dir}">
+        <div><dt>${W.regions}</dt><dd class="num">${t.regions.length}</dd></div>
+        <div><dt>${T.withFile}</dt><dd class="num">${fmt(t.children)}</dd></div>
+        <div><dt>${W.group}</dt><dd>${t.group.name}</dd></div>
+        <div><dt>${W.sessions}</dt><dd class="num">${t.sessions}</dd></div>
+      </div>
+      <p class="note" dir="${demo.dir}"><span class="src">${T.sample}</span> ${W.note}</p>
+      <div class="row pin"><button class="cta" type="button" id="enterCo">${W.enter(name)}</button><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
+          : `<p class="note" dir="${demo.dir}">${W.notTrial}</p>
+      <div class="row pin"><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
+      }
+    </article>`;
+  }
   function cardHTML() {
+    if (demo) return trialCard();
     const sim = CO.sim;
     return `<article class="co-card">
       <div class="co-head"><div><h3>${CO.ar}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${CO.ar}"></canvas></div>
@@ -2675,7 +2854,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     showPanel(`
     <h2>شبكة الندوة حول العالم</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>اختر دولة</h3><p class="co-line">المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`} أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة.</p>
+    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
+    ${
+      demo
+        ? `<p class="sub" dir="${demo.dir}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
+    <div class="sect">${T.world.sect}</div><div class="co-list">${demo.codes
+      .map(
+        (code) =>
+          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}">${coName(byCode(code))}</button>`,
+      )
+      .join("")}</div>`
+        : ""
+    }
     <div class="kpis ${VIEW.all ? "k4" : ""}">
       <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>مقرّ رئيسي</span></div>
       <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>مكتباً مؤكَّداً</span></div>
@@ -2760,6 +2950,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
 
   function cityRows() {
+    if (demo)
+      return CITIES.map(
+        (c) => `
+    <li><button type="button" data-city="${c.id}" aria-pressed="${c.id === S.city}">
+      <span><b>${c.ar}</b></span><small>${T.children(c.need)}</small>
+      <span class="bar"><i style="width:${Math.round((c.qualified / c.need) * 100)}%"></i></span></button></li>`,
+      ).join("");
     return [...CITIES]
       .sort((a, b) => gapOf(b) - gapOf(a))
       .map(
@@ -2774,7 +2971,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const t = totals(),
       c = city();
     hideImpact();
-    showPanel(`
+    showPanel(
+      demo
+        ? trialCountryHtml(c)
+        : `
     <h2>${CO.ar} · الحال الآن</h2>
     <p class="sub">${STATUS[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والمملوء منه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
     <div class="kpis">
@@ -2782,10 +2982,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
       <div class="kpi"><b class="num" data-count="${t.gap}">0</b><span>ينتظرون</span></div>
     </div>
-    ${demo ? demoKidsHtml(c) : liveHtml()}
+    ${liveHtml()}
     <div class="sect">${CO.code === "AL" ? "المدن" : "المناطق"} · الأكبر فجوةً أوّلاً</div>
     <ul class="cities">${cityRows()}</ul>
-    <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`);
+    <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`,
+      demo?.dir,
+    );
     onPanel(() => {
       panel
         .querySelectorAll("[data-city]")
@@ -2796,7 +2998,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
       $("#otherCo")?.addEventListener("click", backToWorld);
     });
-    hint(PHONE() ? "" : "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته");
+    hint(
+      PHONE() ? "" : demo ? T.country.hint : "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته",
+    );
     refreshLabels();
     layoutDots();
     if (TIME.m) setTime(TIME.m);
@@ -2810,21 +3014,71 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     tlPlay = $("#tlPlay");
   const monthsAr = (n) =>
     n === 1 ? "شهر" : n === 2 ? "شهرين" : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
+  /** the trial's kinds, the country as the catalogue has it now, and the months as the pages say them */
+  const trialWhen = (m) => (m === 0 ? T.today : m > 0 ? T.after(m) : T.before(-m));
+  const trialKpis = (t = trialCo()) => [
+    [t.children, T.withFile],
+    [t.enrolled, T.enrolled],
+    [t.deliveries, T.deliveries],
+  ];
+  function trialCountryHtml(c) {
+    const t = trialCo();
+    return `
+    <h2>${T.country.title(t.name, trialWhen(TIME.shown))}</h2>
+    <p class="sub"><span class="src">${T.sample}</span> ${T.country.sub}</p>
+    <div class="kpis">${trialKpis(t)
+      .map(
+        ([v, l]) =>
+          `<div class="kpi"><b class="num" data-count="${v}">0</b><span>${l}</span></div>`,
+      )
+      .join("")}</div>
+    ${demoKidsHtml(c)}
+    <div class="sect">${T.country.regions}</div>
+    <ul class="cities">${cityRows()}</ul>
+    <div class="row"><button class="cta" type="button" id="toSupport">${T.country.support(c.ar)}</button><button class="ghost" type="button" id="otherCo">${T.country.other}</button></div>`;
+  }
+  /** the columns and screens follow the trial model after any change to it */
+  function trialRefresh() {
+    trialSync();
+    pillars.forEach((o) => {
+      o.fillH = o.baseH = H(o.c.qualified);
+      layoutPillar(o);
+    });
+    drawMap();
+    drawImpactScreen();
+    if (S.stage === "country") renderCountry();
+    else refreshLabels();
+  }
+  if (demo)
+    listeners.push(
+      // a pledge or gift recorded on the pages (another tab, or this one) shows here at once
+      demo.subscribe(() => {
+        if (!TRIAL_MUTE && !FILM && !disposed) trialRefresh();
+      }),
+    );
   const timeLabel = (m) =>
-    m === 0
-      ? "اليوم"
-      : Math.abs(m) === 12
-        ? m < 0
-          ? "قبل سنة"
-          : "بعد سنة"
-        : m < 0
-          ? `قبل ${monthsAr(-m)}`
-          : `بعد ${monthsAr(m)}`;
+    demo
+      ? trialWhen(m)
+      : m === 0
+        ? "اليوم"
+        : Math.abs(m) === 12
+          ? m < 0
+            ? "قبل سنة"
+            : "بعد سنة"
+          : m < 0
+            ? `قبل ${monthsAr(-m)}`
+            : `بعد ${monthsAr(m)}`;
   function setTime(m) {
     const shown = Math.round(m);
-    if (!TIME.snap && m !== 0)
+    if (demo) {
+      // the trial moves time as «أثري» does: the same records read `shown` months from today
+      if (shown !== TIME.shown) {
+        trialSync(shown);
+        pillars.forEach((o) => (o.fillH = o.baseH = H(o.c.qualified)));
+      }
+    } else if (!TIME.snap && m !== 0)
       TIME.snap = CITIES.map((c) => ({ c, q: c.qualified, k: c.clothed, s: c.sponsored }));
-    if (TIME.snap) {
+    if (!demo && TIME.snap) {
       const need = TIME.snap.reduce((a, x) => a + x.c.need, 0) || 1,
         monthly = Math.max(6, Math.round(need / 18));
       for (const { c, q, k, s } of TIME.snap) {
@@ -2849,21 +3103,28 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (tlOut)
       tlOut.innerHTML =
         timeLabel(shown) +
-        (shown > 0
-          ? "<small>تقديرٌ بإيقاع اليوم</small>"
-          : shown < 0
-            ? "<small>استرجاعٌ تقريبي</small>"
-            : "");
+        (demo
+          ? shown
+            ? `<small>${T.simulated}</small>`
+            : ""
+          : shown > 0
+            ? "<small>تقديرٌ بإيقاع اليوم</small>"
+            : shown < 0
+              ? "<small>استرجاعٌ تقريبي</small>"
+              : "");
     root.classList.toggle("in-past", shown < 0);
     root.classList.toggle("in-future", shown > 0);
     if (S.stage === "country") {
       const t = totals(),
         nums = panel.querySelectorAll(".kpis .num");
-      [fmt(t.need), `${t.pct}%`, fmt(t.gap)].forEach(
+      (demo ? trialKpis().map(([v]) => fmt(v)) : [fmt(t.need), `${t.pct}%`, fmt(t.gap)]).forEach(
         (v, i) => nums[i] && (nums[i].textContent = v),
       );
       const head = panel.querySelector("h2");
-      if (head) head.textContent = `${CO.ar} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
+      if (head)
+        head.textContent = demo
+          ? T.country.title(trialCo().name, trialWhen(shown))
+          : `${CO.ar} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
       const list = panel.querySelector("ul.cities");
       if (list && TIME.shown !== shown) {
         list.innerHTML = cityRows();
@@ -2876,6 +3137,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     TIME.shown = shown;
   }
+  if (demo && tlOut) tlOut.textContent = T.today;
   if (tlRange)
     on(tlRange, "input", () => {
       TIME.play?.kill();
@@ -2914,23 +3176,27 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           : "الأعداد الصغيرة تُحجب حمايةً للأطفال"
       }</small></span><a class="cta" href="${href}">تصفّحهم</a></li></ul>`;
   }
+  /** the trial child standing in the region and their group, as the catalogue holds them */
   function demoKidsHtml(c) {
     if (!demo) return "";
-    const here = demo.kids.filter((k) => k.co === CO.code && k.region === c.id);
-    if (here.length)
-      return `<div class="sect">أطفالٌ في ${c.ar} · ينتظرون كافلاً</div>
-      <ul class="kids">${here
-        .map((k) =>
-          k.mine
-            ? `<li class="mine"><span><b>${k.name}</b><small>في كفالتك · تصله كلّ شهرٍ بمستند</small></span><a class="ghost" href="/try/impact">أثري</a></li>`
-            : `<li><span><b>${k.name}</b><small>يتبقّى <span class="num">${fmt(k.gap)}</span> € شهرياً</small></span><a class="cta" href="/try/${k.id}?from=hall">اكفل ${k.name}</a></li>`,
-        )
-        .join("")}</ul>`;
-    const elsewhere = demo.kids.filter((k) => k.co === CO.code);
-    if (!elsewhere.length) return "";
-    const r = CITIES.find((x) => x.id === elsewhere[0].region);
+    const K = T.country;
+    if (c.kids.length)
+      return `<div class="sect">${K.kid(c.ar)}</div>
+      <ul class="kids">${c.kids
+        .map((k) => {
+          const journey = k.journey
+            ? `<small>${K.journey(num(k.journey.held), num(k.journey.planned))}</small>`
+            : "";
+          return k.gift === "monthly"
+            ? `<li class="mine"><span><b>${k.name}</b><small>${K.mine}</small>${journey}</span><a class="ghost" href="${demo.impactHref("monthly")}">${K.impact}</a></li>`
+            : `<li><span><b>${k.name}</b><small>${k.gift ? `${K.once} · ` : ""}${K.gap(demo.money(k.gap, k.currency))}</small>${journey}</span><a class="cta" href="${demo.childHref(k.id)}">${K.sponsor(k.name)}</a></li>`;
+        })
+        .join(
+          "",
+        )}</ul>${c.group ? `<p class="sub">${c.group.name} · ${T.children(c.group.children)}</p>` : ""}`;
+    const r = CITIES.find((x) => x.kids.length);
     return r
-      ? `<p class="sub">في هذه الدولة أطفالٌ ينتظرون في <button type="button" class="linkish" data-city="${r.id}">${r.ar}</button>.</p>`
+      ? `<p class="sub">${K.elsewhere} <button type="button" class="linkish" data-city="${r.id}">${r.ar}</button>.</p>`
       : "";
   }
   /** after the simulated payment the visitor returns here: the hall flies to that region and plays the arrival */
@@ -2961,14 +3227,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         if (!c || !o) return;
         selectCity(c.id);
         replayStep(1.4, () => {
-          if (f.cadence === "monthly") c.sponsored = Math.min(c.need, c.sponsored + 1);
+          // the gift is already in the model (read from the gift store): only its arrival plays
           refreshLabels();
-          arrive({ track: f.cadence === "monthly" ? "sponsor" : "kiswa", kids: 1 }, o, c);
-          hint(
-            f.cadence === "monthly"
-              ? `كفالتك لـ${f.name} انضمّت إلى مدار ${c.ar}: فانوسٌ زمرّدي جديد حول العمود`
-              : `عطاؤك لـ${f.name} وصل ${c.ar}: هديةٌ لؤلؤية نزلت على الأطفال`,
-          );
+          if (f.cadence === "monthly")
+            arrive({ track: "sponsor", kids: 1, say: T.say.monthly(f.name) }, o, c);
+          else hint(T.say.once(f.name, c.ar));
         });
       });
     });
@@ -3002,7 +3265,153 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     else if (S.stage === "support") renderSupport();
   }
 
+  /* ── the trial's support stage: the platform's three kinds, recorded through the pages' stores ── */
+  const trialKid = (c) => c.kids[0] ?? null;
+  /** what would be recorded now: a pledge for the region as typed, or the child's sponsorship */
+  function trialDraft(c = city()) {
+    if (S.kind !== "monthly")
+      return { kind: S.kind, co: CO.code, region: c.id, amount: S.amount, currency: S.currency };
+    const kid = trialKid(c);
+    return kid && kid.gift !== "monthly" && kid.gap > 0
+      ? { kind: "monthly", childId: kid.id }
+      : null;
+  }
+  /** children the support being composed would newly light */
+  const trialLit = (c) =>
+    S.kind === "qualification"
+      ? c.need - c.qualified
+      : S.kind === "monthly" && trialDraft(c)
+        ? 1
+        : 0;
+  function trialSupport() {
+    const c = city(),
+      t = trialCo(),
+      kid = trialKid(c),
+      U = T.support;
+    if (!t.currencies.includes(S.currency)) S.currency = t.currencies[0];
+    S.track = demo.track[S.kind];
+    const money = () => demo.money(S.amount, S.currency);
+    let body, cta;
+    if (S.kind === "monthly") {
+      const other = CITIES.find((x) => x.kids.length);
+      if (!kid) {
+        body = other
+          ? `<p class="sub">${U.noChild} <button type="button" class="linkish" data-city="${other.id}">${other.ar}</button>.</p>`
+          : "";
+        cta = "";
+      } else if (!trialDraft(c)) {
+        body = `<p class="sub">${U.already(kid.name)}</p>`;
+        cta = `<a class="cta" href="${demo.impactHref("monthly")}">${T.country.impact}</a>`;
+      } else {
+        const gap = demo.money(kid.gap, kid.currency);
+        body = `<p class="sub">${U.need(kid.name, demo.money(kid.need, kid.currency), gap)}</p>`;
+        cta = `<button class="cta" type="button" id="pay">${U.sponsor(kid.name, gap)}</button>`;
+      }
+    } else {
+      body = `<div class="sect">${U.amount}</div>
+    <div class="amount"><span class="num" id="amtOut">${money()}</span></div>
+    <div class="presets">${demo.amounts.presets.map((v) => `<button type="button" data-amt="${v}" aria-pressed="${v === S.amount}"><span class="num">${demo.money(v, S.currency)}</span></button>`).join("")}<input id="amt" type="number" inputmode="numeric" min="${demo.amounts.min}" max="${demo.amounts.max}" value="${S.amount}" aria-label="${U.other}"></div>
+    ${t.currencies.length > 1 ? `<div class="sect">${U.currency}</div><div class="presets" role="group" aria-label="${U.currency}">${t.currencies.map((cur) => `<button type="button" data-cur="${cur}" aria-pressed="${cur === S.currency}"><span class="num">${cur}</span></button>`).join("")}</div>` : ""}`;
+      cta = `<button class="cta" type="button" id="pay">${U.confirm(money())}</button>`;
+    }
+    showPanel(
+      `
+    <h2>${U.title(c.ar)}</h2>
+    <p class="sub">${U.sub}</p>
+    <div class="sect">${U.kind}</div>
+    <div class="tracks" role="group" aria-label="${U.kind}">
+      ${TRIAL_KINDS.map(
+        (k) =>
+          `<button type="button" data-kind="${k}" aria-pressed="${k === S.kind}"><b>${demo.giving.tracks[k].name}</b><small>${k === "monthly" ? (kid?.name ?? "—") : U.pledge}</small></button>`,
+      ).join("")}
+    </div>
+    ${body}
+    <div class="sect">${U.dest}</div>
+    <select id="dest" aria-label="${U.dest}">${CITIES.map((x) => `<option value="${x.id}" ${x.id === S.city ? "selected" : ""}>${U.destOption(x.ar, T.children(x.need))}</option>`).join("")}</select>
+    <div class="row">${cta}<button class="ghost" type="button" id="back">${U.back}</button></div>
+    <p class="note"><span class="src">${T.sample}</span> ${U.note}</p>`,
+      demo.dir,
+    );
+    onPanel(() => {
+      panel.querySelectorAll("[data-kind]").forEach((b) =>
+        b.addEventListener("click", () => {
+          S.kind = b.dataset.kind;
+          trialSupport();
+        }),
+      );
+      panel.querySelectorAll("[data-cur]").forEach((b) =>
+        b.addEventListener("click", () => {
+          S.currency = b.dataset.cur;
+          trialSupport();
+        }),
+      );
+      panel
+        .querySelectorAll("[data-city]")
+        .forEach((b) => b.addEventListener("click", () => selectCity(b.dataset.city)));
+      const amt = $("#amt");
+      // the amount is typed freely and recorded as typed: no unit price, no conversion
+      const setAmount = (v) => {
+        S.amount = Math.min(demo.amounts.max, Math.max(demo.amounts.min, Math.floor(v) || 1));
+        $("#amtOut").textContent = money();
+        $("#pay").textContent = U.confirm(money());
+        panel
+          .querySelectorAll("[data-amt]")
+          .forEach((b) => b.setAttribute("aria-pressed", +b.dataset.amt === S.amount));
+        renderPreview();
+      };
+      amt?.addEventListener("input", () => setAmount(+amt.value));
+      panel.querySelectorAll("[data-amt]").forEach((b) =>
+        b.addEventListener("click", () => {
+          amt.value = b.dataset.amt;
+          setAmount(+b.dataset.amt);
+        }),
+      );
+      $("#dest")?.addEventListener("change", (e) => selectCity(e.target.value));
+      $("#back")?.addEventListener("click", () => {
+        setStage("country");
+        renderCountry();
+      });
+      $("#pay")?.addEventListener("click", pay);
+    });
+    hint("");
+    renderPreview(true);
+  }
+  /** what the support being composed covers, before it is recorded: the catalogue's own counts */
+  function trialPreview(c) {
+    const P = T.preview,
+      t = trialCo(),
+      kid = trialKid(c);
+    if (S.kind === "qualification")
+      return {
+        title: P.qTitle(demo.money(S.amount, S.currency), c.ar),
+        items: [
+          [P.qCover(T.children(c.need)), P.qCoverSub],
+          [P.qSessions(num(c.need * t.sessions)), P.qSessionsSub(num(t.sessions))],
+          [P.qStart, P.qStartSub],
+        ],
+      };
+    if (S.kind === "in_kind")
+      return {
+        title: P.kTitle(demo.money(S.amount, S.currency), c.ar),
+        items: [
+          [P.kCover(T.children(c.need)), P.kCoverSub],
+          [P.kCount, P.kCountSub],
+          [P.kNow(c.ar, num(c.clothed)), P.kNowSub],
+        ],
+      };
+    if (!kid) return { title: T.support.title(c.ar), items: [] };
+    return {
+      title: P.mTitle(kid.name, demo.money(kid.gap, kid.currency)),
+      items: [
+        [P.mCover(num(kid.coverage[0]), num(kid.coverage[1])), P.mCoverSub],
+        [P.mMonthly, kid.covers],
+        [P.mIn(c.ar), P.mInSub],
+      ],
+    };
+  }
+
   function renderSupport() {
+    if (demo) return trialSupport();
     const c = city();
     showPanel(`
     <h2>ادعم ${c.ar}</h2>
@@ -3068,10 +3477,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   let lastKey = "";
   function renderPreview(first = false) {
     const c = city(),
-      p = project(),
+      p = demo ? null : project(),
       money = `<span class="num">${fmt(S.amount)}</span> ر.س`;
     let title, items;
-    if (p.track === "qualify") {
+    if (demo) ({ title, items } = trialPreview(c));
+    else if (p.track === "qualify") {
       title = `لو دعمت بـ ${money} تأهيلاً في ${c.ar}`;
       items = [
         [
@@ -3126,7 +3536,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     const key = JSON.stringify(items.map((x) => x[0]));
     showImpact(
-      `<div class="eyebrow">شاشة الأثر · قبل الدفع</div><h3>${title}</h3>
+      `<div class="eyebrow">${demo ? T.preview.eyebrow : "شاشة الأثر · قبل الدفع"}</div><h3>${title}</h3>
     <ol class="chain">${items.map(([b, s], i) => `<li><span class="n num">${i + 1}</span><div><b>${b}</b><span>${s}</span></div></li>`).join("")}</ol>`,
       key !== lastKey && !first,
     );
@@ -3134,7 +3544,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     lastKey = key;
     const o = pillars.find((x) => x.c.id === S.city);
     pillars.forEach((x) => {
-      x.ghostTarget = x === o && p.track === "qualify" ? H(p.kids) : 0;
+      x.ghostTarget =
+        x !== o
+          ? 0
+          : demo
+            ? S.kind === "qualification"
+              ? H(c.need - c.qualified)
+              : 0
+            : p.track === "qualify"
+              ? H(p.kids)
+              : 0;
     });
   }
 
@@ -3147,9 +3566,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   function arrive(p, o, c) {
     sound.cue(p.track);
     renderLegend();
-    hint(SAY[p.track](fmt(p.kids)));
+    const say = p.say ?? SAY[p.track](fmt(p.kids)); // the trial says it in the catalogue's words
+    hint(say);
     const live = $("#srLive");
-    if (live) live.textContent = SAY[p.track](fmt(p.kids));
+    if (live) live.textContent = say;
     if (p.track === "qualify") {
       const b0 = o.baseH,
         b1 = H(c.qualified);
@@ -3196,9 +3616,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     sound.cue("chime");
     const c = city(),
       o = pillars.find((x) => x.c.id === S.city);
-    let p = project();
-    if (!p.kids) return;
-    S.before = { ...c, totals: totals() };
+    let p;
+    if (demo) {
+      p = trialCommit(c);
+      if (!p) return;
+    } else {
+      p = project();
+      if (!p.kids) return;
+      S.before = { ...c, totals: totals() };
+    }
     $("#pay").disabled = true;
     const end = new THREE.Vector3(o.g.position.x, H(c.need) + 0.9, o.g.position.z).applyMatrix4(
       country.matrixWorld,
@@ -3235,7 +3661,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (p.track === "qualify")
         p = { ...p, kids: c.qualified - S.before.qualified, gap1: gapOf(c) };
       facts = levelFacts(s0, ENGINE, c.id);
-    } else applyTo(p, c);
+    } else if (!demo) applyTo(p, c);
     root.classList.add("watching");
     controls.setFocalOffset(0, 0, 0, true);
     {
@@ -3309,6 +3735,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       .to(bloom, { intensity: BLOOM, duration: 1.4 }, 2.3)
       .add(() => arrive(p, o, c), 1.7)
       .add(() => {
+        if (demo) {
+          // the trial keeps no history of its own: the record is the stores, already written
+          S.last = { ...p, city: c.id };
+          drawMap();
+          drawImpactScreen();
+          refreshLabels();
+          S.stage = "impactPending";
+          root.dataset.stage = "impactPending";
+          return;
+        }
         const label = {
           qualify: `تأهّل ${p.kids} طفلاً في ${c.ar}`,
           sponsor: `كفالة ${p.kids} ${p.kids > 2 ? "أطفال" : "طفل"} في ${c.ar}`,
@@ -3339,8 +3775,229 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     void fillFrom;
   }
 
+  /**
+   * the trial records the support being composed: a pledge through `addPledge` or a sponsorship
+   * through `addGift` (the pages' own stores), then reads the model back. The film only shows.
+   */
+  function trialCommit(c) {
+    const draft = trialDraft(c),
+      kid = trialKid(c);
+    if (!draft) return null;
+    const before = { region: { ...c }, country: { ...trialCo() } };
+    let id = demo.draftId;
+    if (FILM) trialSync(0, draft);
+    else {
+      TRIAL_MUTE = true;
+      id = draft.kind === "monthly" ? demo.sponsor(draft.childId) : demo.pledge(draft);
+      TRIAL_MUTE = false;
+      if (!id) return null;
+      trialSync(0);
+    }
+    const entry = TRIAL.history.find((e) => e.id === id);
+    if (!entry) return null;
+    S.before = before;
+    return {
+      track: demo.track[S.kind],
+      kind: S.kind,
+      kids:
+        S.kind === "qualification"
+          ? c.qualified - before.region.qualified
+          : S.kind === "monthly"
+            ? 1
+            : 0,
+      entry,
+      kid,
+      film: FILM,
+      say:
+        S.kind === "qualification"
+          ? T.say.qualification(c.ar)
+          : S.kind === "monthly"
+            ? T.say.monthly(kid.name)
+            : T.say.in_kind,
+    };
+  }
+  const trialKv = (rows) =>
+    `<dl class="kv">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
+  /** a count before and after the support; one plain row when it did not move */
+  const trialDelta = (label, v0, v1, suf = "") =>
+    v0 === v1
+      ? trialKv([[label, `<span class="num">${fmt(v1)}${suf}</span>`]])
+      : `<div class="delta-row"><div><small>${label}</small><div class="dv"><b class="num was">${fmt(v0)}${suf}</b><span class="arrow">${demo.dir === "rtl" ? "←" : "→"}</span><b class="num now" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div><span class="chip-d ok"><span class="num">${v1 > v0 ? "+" : "−"}${fmt(Math.abs(v1 - v0))}${suf}</span></span></div>`;
+  /** a count as «أثري» publishes it: below the cohort minimum it is withheld, here too */
+  const trialSafe = (n) =>
+    n === null || demo.cohortSafe(n) === null ? T.fewer(num(demo.cohortMin)) : num(n);
+  const trialLevel = (icon, name, place, rows, meaning) =>
+    `<article class="lvl"><header><span class="ic">${icon}</span><div><small>${name}</small><b>${place}</b></div></header>${rows}<p class="mean">${meaning}</p></article>`;
+  /** the two figures the trial's closing panels open with: what was typed, and what it stands on */
+  function trialDoneKpis(L) {
+    const t = trialCo(),
+      c = city(L.city),
+      e = L.entry;
+    const [v, l] =
+      L.kind === "qualification"
+        ? [c.qualified, T.enrolled]
+        : L.kind === "monthly"
+          ? [t.sponsored, T.sponsored]
+          : [t.deliveries, T.deliveries];
+    return `<div class="kpis k2">
+      <div class="kpi"><b class="num" data-count="${e.amount}">0</b><span>${T.impact.perMonth(e.currency)}</span></div>
+      <div class="kpi"><b class="num" data-count="${v}">0</b><span>${l}</span></div>
+    </div>`;
+  }
+  function trialImpact() {
+    const L = S.last,
+      e = L.entry,
+      c = city(L.city),
+      b = S.before,
+      t = trialCo(),
+      kid = L.kid,
+      I = T.impact;
+    const recorded = `${L.film ? "" : `<p class="lead">${I.lead}</p>`}${trialKv([
+      [I.kind, e.kindName],
+      [I.target, `${e.label} · ${e.country}`],
+      [I.amount, e.money],
+      [I.date, e.date],
+      ...(L.film
+        ? []
+        : [
+            [I.status, I.active],
+            [I.ref, `<span class="num">${e.id}</span>`],
+          ]),
+    ])}<p class="note"><span class="src">${T.sample}</span> ${T.support.note}</p>`;
+    let levels;
+    if (L.kind === "qualification") {
+      levels =
+        trialLevel(
+          "1",
+          I.level.country,
+          t.name,
+          trialDelta(T.enrolled, b.country.enrolled, t.enrolled) +
+            trialKv([[T.withFile, num(t.children)]]),
+          I.qCountry(c.ar),
+        ) +
+        trialLevel(
+          "2",
+          I.level.region,
+          c.ar,
+          trialDelta(T.enrolled, b.region.qualified, c.qualified) +
+            trialKv([
+              [T.started, trialSafe(c.started)],
+              [T.held, `${num(c.sessionsHeld)} ${T.planned(num(c.sessionsPlanned))}`],
+            ]),
+          I.qRegion,
+        ) +
+        (c.group
+          ? trialLevel(
+              "3",
+              I.level.group,
+              c.group.name,
+              trialKv([
+                [T.enrolled, num(c.group.children)],
+                [I.sessions, num(c.group.children * t.sessions)],
+              ]),
+              I.qGroup(num(c.group.children * t.sessions)),
+            )
+          : "") +
+        (kid?.journey
+          ? trialLevel(
+              "4",
+              I.level.child,
+              kid.name,
+              trialKv([
+                [I.sessions, `${num(kid.journey.held)} / ${num(kid.journey.planned)}`],
+                [T.log.measuredBefore, kid.journey.before ? T.log.yes : T.log.no],
+              ]),
+              I.qChild(`<span class="num">${kid.code}</span>`),
+            )
+          : "");
+    } else if (L.kind === "in_kind") {
+      levels =
+        trialLevel(
+          "1",
+          I.level.country,
+          t.name,
+          trialDelta(T.deliveries, b.country.deliveries, t.deliveries),
+          I.kCountry,
+        ) +
+        trialLevel(
+          "2",
+          I.level.region,
+          c.ar,
+          trialDelta(T.deliveries, b.region.clothed, c.clothed),
+          I.kRegion,
+        );
+    } else {
+      levels =
+        trialLevel(
+          "1",
+          I.level.country,
+          t.name,
+          trialDelta(T.sponsored, b.country.sponsored, t.sponsored),
+          I.mCountry,
+        ) +
+        trialLevel(
+          "2",
+          I.level.region,
+          c.ar,
+          trialDelta(T.sponsored, b.region.sponsored, c.sponsored),
+          I.mRegion,
+        ) +
+        trialLevel(
+          "3",
+          I.level.child,
+          kid.name,
+          trialDelta(I.coverage, kid.coverage[0], kid.coverage[1], "%"),
+          I.mChild(`<span class="num">${kid.code}</span>`),
+        );
+    }
+    const next = `<p class="lead">${I.next[L.kind]}</p><p class="note">${I.slider}</p>${L.film ? "" : `<div class="row"><a class="cta" href="${demo.impactHref(L.kind)}">${I.see}</a></div>`}`;
+    story(
+      `<div class="eyebrow">${L.film ? I.filmEyebrow : I.eyebrow}</div><h3>${I.title(e.kindName, e.label)}</h3>`,
+      [
+        [I.tabs[0], recorded],
+        [I.tabs[1], `<p class="lead">${I.levelsLead}</p>${levels}`],
+        [I.tabs[2], next],
+      ],
+    );
+    showPanel(
+      `
+    <h2>${I.done}</h2>
+    <p class="sub">${I.doneSub}</p>
+    ${trialDoneKpis(L)}
+    <div class="row"><button class="cta" type="button" id="toBig">${I.summary}</button><button class="ghost" type="button" id="again">${I.again}</button></div>`,
+      demo.dir,
+    );
+    onPanel(wireDone);
+  }
+  /** the trial's close: what the recorded support stands on in the country, before and after */
+  function trialBig() {
+    const L = S.last,
+      e = L.entry,
+      t = trialCo(),
+      b = S.before.country,
+      B = T.big;
+    const cmp = (label, v0, v1) =>
+      `<div class="compare"><div><small>${label} · ${T.was}</small><b class="num">${fmt(v0)}</b></div><span>${demo.dir === "rtl" ? "←" : "→"}</span><div class="after"><small>${T.now}</small><b class="num" data-count="${v1}" data-from="${v0}">${fmt(v0)}</b></div></div>`;
+    showPanel(
+      `
+    <h2>${B.title}</h2>
+    <p class="sub">${B.sub(e.label, t.name)}</p>
+    ${trialDoneKpis(L)}
+    <div class="sect">${B.sect(t.name)}</div>
+    ${cmp(T.enrolled, b.enrolled, t.enrolled)}
+    ${cmp(T.sponsored, b.sponsored, t.sponsored)}
+    ${cmp(T.deliveries, b.deliveries, t.deliveries)}
+    <p class="warm">${B.warm}</p>
+    <p class="note"><span class="src">${T.sample}</span> ${B.note}</p>
+    <div class="row"><button class="ghost" type="button" id="again2">${T.impact.again}</button><button class="ghost" type="button" id="otherCo2">${T.country.other}</button><button class="ghost" type="button" id="hallBack">${B.hall}</button></div>
+    <div class="row pin"><button class="cta" type="button" id="toMine">${B.mine}</button></div>`,
+      demo.dir,
+    );
+  }
+
   function renderImpact() {
     sound.cue("bell");
+    if (demo) return trialImpact();
     const L = S.last,
       c = city(L.city),
       b = S.before,
@@ -3618,8 +4275,22 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ],
       ["التفاصيل", details],
     ];
+    story(`<div class="eyebrow">شاشة الأثر · دعمك ${money}</div><h3>${title}</h3>`, TABS);
+    showPanel(`
+    <h2>تمّ — شكراً لك</h2>
+    <p class="sub">قُيِّد دعمك بفاتورة، وسلك طريقه إلى التشغيل. اقرأ أثره: الأساس، ثم ما تمّ، ثم أثره على البلد و${CO.code === "AL" ? "المدينة" : "المنطقة"} والمجموعة و${L.track === "qualify" ? "الطالب" : "الفرد"}، ثم التفاصيل.</p>
+    <div class="kpis">
+      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
+      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً"}</span></div>
+      <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>رقم الفاتورة</span></div>
+    </div>
+    <div class="row"><button class="cta" type="button" id="toBig">خلاصة أثرك</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
+    onPanel(wireDone);
+  }
+  /** the impact told in tabs that advance by themselves until the visitor takes over */
+  function story(head, TABS) {
     impact.hidden = true;
-    showImpact(`<div class="eyebrow">شاشة الأثر · دعمك ${money}</div><h3>${title}</h3>
+    showImpact(`${head}
     <div class="story-tabs" role="tablist">${TABS.map(([n], i) => `<button type="button" role="tab" data-i="${i}" aria-selected="${i === 0}"><span class="num">${i + 1}</span> ${n}<i class="prog"></i></button>`).join("")}</div>
     <div class="story">${TABS.map(([, h], i) => `<section class="pane" data-i="${i}" ${i ? "hidden" : ""}>${h}</section>`).join("")}</div>`);
     const tabs = [...impact.querySelectorAll(".story-tabs button")],
@@ -3678,8 +4349,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         animatePane(to);
         to.dataset.shown = 1;
       });
-      if (auto && i < 3) {
-        const d = i === 2 ? 9 : 4.2;
+      if (auto && i < TABS.length - 1) {
+        const d = i === TABS.length - 2 ? 9 : 4.2;
         gsap.fromTo(
           tabs[i].querySelector(".prog"),
           { scaleX: 0 },
@@ -3697,22 +4368,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       }),
     );
     go(0);
-    showPanel(`
-    <h2>تمّ — شكراً لك</h2>
-    <p class="sub">قُيِّد دعمك بفاتورة، وسلك طريقه إلى التشغيل. اقرأ أثره: الأساس، ثم ما تمّ، ثم أثره على البلد و${CO.code === "AL" ? "المدينة" : "المنطقة"} والمجموعة و${L.track === "qualify" ? "الطالب" : "الفرد"}، ثم التفاصيل.</p>
-    <div class="kpis">
-      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
-      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً"}</span></div>
-      <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>رقم الفاتورة</span></div>
-    </div>
-    <div class="row"><button class="cta" type="button" id="toBig">خلاصة أثرك</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
-    onPanel(() => {
-      $("#toBig")?.addEventListener("click", enterBig);
-      $("#again")?.addEventListener("click", () => {
-        pillars.forEach((o) => (o.baseH = o.fillH));
-        setStage("support");
-        renderSupport();
-      });
+  }
+  function wireDone() {
+    $("#toBig")?.addEventListener("click", enterBig);
+    $("#again")?.addEventListener("click", () => {
+      pillars.forEach((o) => (o.baseH = o.fillH));
+      setStage("support");
+      renderSupport();
     });
   }
 
@@ -3771,6 +4433,17 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           }),
         1.2,
       );
+    if (demo) trialBig();
+    else liveBig();
+    onPanel(() => {
+      // the page owns the route to «أثري» (the demo's or the donor's dashboard): follow its link
+      $("#toMine")?.addEventListener("click", () => $("#hud a.exit")?.click());
+      $("#again2")?.addEventListener("click", backToCountry);
+      $("#otherCo2")?.addEventListener("click", enterWorld);
+      $("#hallBack")?.addEventListener("click", backToHall);
+    });
+  }
+  function liveBig() {
     const PACE = pace(),
       t = totals(),
       b = S.before.totals,
@@ -3800,13 +4473,6 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
     <div class="row"><button class="ghost" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>
     <div class="row pin"><button class="cta" type="button" id="toMine">إلى أثري</button></div>`);
-    onPanel(() => {
-      // the page owns the route to «أثري» (the demo's or the donor's dashboard): follow its link
-      $("#toMine")?.addEventListener("click", () => $("#hud a.exit")?.click());
-      $("#again2")?.addEventListener("click", backToCountry);
-      $("#otherCo2")?.addEventListener("click", enterWorld);
-      $("#hallBack")?.addEventListener("click", backToHall);
-    });
   }
   function resetCountry() {
     country.position.set(0, 0, 0);
@@ -3880,7 +4546,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       // the visitor may have gone elsewhere meanwhile (the globe is touchable): do not pull them back
       if (disposed || S.stage !== left) return;
       setStage("hall");
-      hallView(S.history.length ? 0 : 1);
+      hallView((demo ? TRIAL.history : S.history).length ? 0 : 1);
       hint(PHONE() ? "" : "اسحب يميناً ويساراً بين الشاشات · المس شاشة الأثر لتفاصيله");
     }, 1500);
   }
@@ -3906,7 +4572,70 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (b.dataset.v) hallView(+b.dataset.v);
     else hallView(hallAt + +b.dataset.d);
   });
+  /** the trial's record: every pledge and gift in the two stores, read as «أثري» reads them */
+  function trialLog(sel = 0) {
+    const all = TRIAL.history,
+      G = T.log;
+    if (!all.length) {
+      showPanel(
+        `<h2>${G.title}</h2><p class="sub">${G.empty}</p><div class="row"><button class="cta" type="button" id="goWorld">${G.world}</button><button class="ghost" type="button" id="closeP">${G.close}</button></div>`,
+        demo.dir,
+      );
+      onPanel(() => {
+        $("#goWorld")?.addEventListener("click", enterWorld);
+        $("#closeP")?.addEventListener("click", hidePanel);
+      });
+      return;
+    }
+    const r = all[Math.min(sel, all.length - 1)],
+      d = r.detail;
+    const safe = trialSafe;
+    const yes = (v) => (v ? G.yes : G.no);
+    const detail =
+      d.type === "area"
+        ? trialKv([
+            [T.enrolled, safe(d.enrolled)],
+            [T.started, safe(d.started)],
+            [T.completed, safe(d.completed)],
+            [T.held, `${num(d.sessionsHeld)} ${T.planned(num(d.sessionsPlanned))}`],
+          ]) +
+          (d.traits
+            ? `<div class="sect">${G.traits}</div>${trialKv(d.traits.map((x) => [x.label, T.move(num(x.before), num(x.latest))]))}`
+            : `<p class="note">${G.traitsHidden(num(demo.cohortMin))}</p>`)
+        : d.type === "journey"
+          ? trialKv([
+              [T.impact.sessions, `${num(d.held)} / ${num(d.planned)}`],
+              [G.measuredBefore, yes(d.before)],
+              [G.measuredAfter, yes(d.after)],
+            ])
+          : d.type === "in_kind"
+            ? trialKv([
+                [T.deliveries, num(d.documented)],
+                [T.preparing, num(d.preparing)],
+              ])
+            : trialKv([
+                [T.impact.kind, G.cadence[d.cadence]],
+                [T.impact.coverage, `<span class="num">${d.coverage}%</span>`],
+              ]);
+    showPanel(
+      `
+    <h2>${G.title}</h2>
+    <p class="sub"><span class="src">${T.sample}</span> ${G.sub}</p>
+    <div class="co-list">${all.map((x, i) => `<button type="button" data-h="${i}" aria-pressed="${x === r}">${T.impact.title(x.kindName, x.label)}</button>`).join("")}</div>
+    <article class="co-card" data-entry="${r.id}"><h3 class="log-h">${T.impact.title(r.kindName, r.label)}</h3><p class="co-line">${(r.kind === "monthly" ? G.gift : G.line)(r.money, r.country, r.date)}</p>${detail}
+    <div class="row"><a class="cta" href="${demo.impactHref(r.kind)}">${T.impact.see}</a></div></article>
+    <div class="row"><button class="ghost" type="button" id="closeP">${G.close}</button></div>`,
+      demo.dir,
+    );
+    onPanel(() => {
+      panel
+        .querySelectorAll("[data-h]")
+        .forEach((b) => b.addEventListener("click", () => trialLog(+b.dataset.h)));
+      $("#closeP")?.addEventListener("click", hidePanel);
+    });
+  }
   function openImpactLog(sel = S.history.length - 1) {
+    if (demo) return trialLog();
     const H = S.history;
     if (!H.length) {
       showPanel(
@@ -3946,7 +4675,23 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       countUp(panel);
     });
   }
+  /** the trial's three kinds, by the platform's own names and promises */
+  function trialTracks() {
+    showPanel(
+      `
+    <h2>${demo.giving.heading}</h2>
+    <p class="sub">${T.tracks.sub}</p>
+    ${TRIAL_KINDS.map((k, i) => `<article class="lvl"><header><span class="ic">${i + 1}</span><div><small>${T.screen.tracksHow[k]}</small><b>${demo.giving.tracks[k].name}</b></div></header><p class="mean">${demo.giving.tracks[k].promise}</p><p class="mean">${T.impact.next[k]}</p></article>`).join("")}
+    <div class="row"><button class="cta" type="button" id="goWorld">${T.tracks.go}</button><button class="ghost" type="button" id="closeP">${T.log.close}</button></div>`,
+      demo.dir,
+    );
+    onPanel(() => {
+      $("#goWorld")?.addEventListener("click", enterWorld);
+      $("#closeP")?.addEventListener("click", hidePanel);
+    });
+  }
   function openTracks() {
+    if (demo) return trialTracks();
     const rows = [
       [
         "البلد",
@@ -4290,7 +5035,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     info: () => ({ ...lastInfo }),
     /** whether the after-payment replay still has a step waiting */
     replaying: () => !!REPLAY,
-    codes: () => COUNTRIES.map((c) => c.code),
+    // the countries the hall can enter: all of the network live, the trial catalogue's in the trial
+    codes: () => (demo ? [...demo.codes] : COUNTRIES.map((c) => c.code)),
+    /** the trial model the hall is drawing now (null in the live hall) */
+    trial: () => TRIAL,
+    /** for automated checks: open the impact record, and move the time bar */
+    log: () => openImpactLog(),
+    time: (m) => setTime(m),
     /** for automated checks: pick a country on the globe and enter it */
     visit: (code) => {
       selectCountry(code);
