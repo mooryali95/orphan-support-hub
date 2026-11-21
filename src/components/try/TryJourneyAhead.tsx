@@ -78,8 +78,6 @@ export function TryJourneyAhead({
   const monthly = gifts.find((g) => g.cadence === "monthly");
   const child = local(monthly ? tryChild(monthly.childId) : undefined);
   const suggestion = local(nextTryChild(gifts));
-  // «محطّاتك» ما زالت عربيةً وحدها (خارج الرحلة): يُعلن ذلك عليها فتُنطق وتُصفّ صحيحةً.
-  const arabicPart = dirOf(locale) === "rtl" ? {} : { lang: "ar", dir: "rtl" as const };
 
   return (
     <section aria-labelledby="journey-ahead" className="mt-10">
@@ -141,7 +139,7 @@ export function TryJourneyAhead({
           )}
         </div>
 
-        <div {...arabicPart}>
+        <div>
           <MilestonesCard impact={impact} />
         </div>
       </div>

@@ -1,20 +1,39 @@
 import { Check } from "lucide-react";
 
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { milestones, nextMilestone } from "@/lib/milestones";
 import type { MyImpact } from "@/lib/my-impact";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/impact/MilestonesCard", {
+  ar: {
+    title: "محطّاتك",
+    reached: ": تحقّقت",
+    pending: ": لم تتحقّق بعد",
+    next: "القادمة:",
+    all: "تحقّقت محطّاتك كلّها. جزاك الله خيراً.",
+  },
+  en: {
+    title: "Your milestones",
+    reached: ": reached",
+    pending: ": not yet reached",
+    next: "Next:",
+    all: "You have reached every milestone. May God reward you.",
+  },
+});
 
 /**
  * «محطّاتك»: تقديرٌ هادئ لما تحقّق فعلاً من «أثري»، والمحطّة القادمة ظاهرة. تُستعمل في لوحة
  * الداعم الحقيقية وفي التجربة بالمنطق نفسه (`@/lib/milestones`).
  */
 export function MilestonesCard({ impact, className }: { impact: MyImpact; className?: string }) {
-  const list = milestones(impact);
+  const c = useCopy(COPY);
+  const list = milestones(impact, useLocale());
   const next = nextMilestone(list);
   return (
     <div className={cn("rounded-2xl border border-border bg-card p-5 sm:p-6", className)}>
       <div className="flex items-baseline justify-between gap-3">
-        <h3 className="font-bold">محطّاتك</h3>
+        <h3 className="font-bold">{c.title}</h3>
         <span
           dir="ltr"
           aria-hidden="true"
@@ -57,17 +76,17 @@ export function MilestonesCard({ impact, className }: { impact: MyImpact; classN
               )}
             </span>
             <span className="min-w-0">{m.title}</span>
-            <span className="sr-only">{m.done ? ": تحقّقت" : ": لم تتحقّق بعد"}</span>
+            <span className="sr-only">{m.done ? c.reached : c.pending}</span>
           </li>
         ))}
       </ul>
       <p aria-live="polite" className="mt-3 text-sm leading-6 text-muted-foreground">
         {next ? (
           <>
-            القادمة: <b className="text-foreground">{next.title}</b>. {next.hint}
+            {c.next} <b className="text-foreground">{next.title}</b>. {next.hint}
           </>
         ) : (
-          "تحقّقت محطّاتك كلّها. جزاك الله خيراً."
+          c.all
         )}
       </p>
     </div>

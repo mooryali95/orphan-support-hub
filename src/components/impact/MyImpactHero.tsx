@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { defineCopy, pluralOf, useCopy } from "@/lib/locale";
 import { impactAt, impactSpan, type MyImpact } from "@/lib/my-impact";
 
 /**
@@ -11,16 +12,68 @@ import { impactAt, impactSpan, type MyImpact } from "@/lib/my-impact";
  * حلقتان: ما غطّاه الجميع من حاجته الشهرية (خافتة)، وحصّتك أنت منها (بلون الهوية).
  * الألوان من رموز الهوية فقط، فتعمل في الوضعين الفاتح والداكن.
  */
-const monthsAgo = (n: number) =>
-  n === 0
-    ? "اليوم"
-    : n === 1
-      ? "قبل شهر"
-      : n === 2
-        ? "قبل شهرين"
-        : n <= 10
-          ? `قبل ${n} أشهر`
-          : `قبل ${n} شهراً`;
+const COPY = defineCopy("components/impact/MyImpactHero", {
+  ar: {
+    today: "اليوم",
+    monthsAgo: pluralOf(
+      {
+        one: "قبل شهر",
+        two: "قبل شهرين",
+        few: "قبل {0} أشهر",
+        many: "قبل {0} شهراً",
+        other: "قبل {0} شهر",
+      },
+      0,
+      "ar",
+    ),
+    monthsOf: pluralOf(
+      { one: "شهر واحد", two: "شهران", few: "{0} أشهر", many: "{0} شهراً", other: "{0} شهر" },
+      0,
+      "ar",
+    ),
+    eyebrow: "أثرك",
+    title: "كوكبة أثرك",
+    lead: "أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه الكافلون جميعاً.",
+    inCare: ["في رعايتك", "طفلاً"],
+    months: ["أشهر الرعاية", "شهراً"],
+    share: ["حصّتك", "من حاجتهم"],
+    immersive: "الوضع الغامر",
+    another: "اكفل طفلاً آخر",
+    figure: (list: string) => `كوكبة أثرك: ${list}`,
+    sep: "، ",
+    figureEmpty: "كوكبة أثرك فارغة بعد",
+    you: "أنت",
+    justBegan: "بدأت للتوّ",
+    replayLabel: "شاهد أثرك يتكوّن منذ البداية",
+    replay: "منذ البداية",
+    rail: "مسار أثرك عبر الأشهر",
+    empty: "حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.",
+    more: (n: number) => `و${n} آخرون في قائمة كفالاتك أدناه.`,
+  },
+  en: {
+    today: "Today",
+    monthsAgo: pluralOf({ one: "{0} month ago", other: "{0} months ago" }),
+    monthsOf: pluralOf({ one: "{0} month", other: "{0} months" }),
+    eyebrow: "Your impact",
+    title: "Your constellation",
+    lead: "You are at the centre, and each child you sponsor is a gem around you. The clear ring is your share of the child's monthly need; the faint one is what all sponsors have covered.",
+    inCare: ["In your care", "children"],
+    months: ["Care so far", "months"],
+    share: ["Your share", "of their need"],
+    immersive: "Immersive view",
+    another: "Sponsor another child",
+    figure: (list: string) => `Your constellation: ${list}`,
+    sep: ", ",
+    figureEmpty: "Your constellation is still empty",
+    you: "You",
+    justBegan: "Just begun",
+    replayLabel: "Watch your impact take shape from the start",
+    replay: "From the start",
+    rail: "Your impact across the months",
+    empty: "When your first sponsorship begins, it appears here as a gem around you.",
+    more: (n: number) => `And ${n} more in your sponsorship list below.`,
+  },
+});
 
 /* the drawing is nearly square so it stays legible on a phone (about 0.9x at 390px) */
 const W = 360,
@@ -32,9 +85,6 @@ const W = 360,
   MAX = 8;
 /** the break in the centre ring and in the orbit sits up and to the right, as the mark's does */
 const BREAK = -57;
-
-const monthsWord = (n: number) =>
-  n === 1 ? "شهر" : n === 2 ? "شهران" : n <= 10 ? "أشهر" : "شهراً";
 
 export function MyImpactHero({
   impact,
@@ -51,6 +101,8 @@ export function MyImpactHero({
 }) {
   /* the time rail: how many whole months back the picture stands (0 = today) */
   const span = impactSpan(impact);
+  const c = useCopy(COPY);
+  const ago = (n: number) => (n === 0 ? c.today : c.monthsAgo(n));
   const [back, setBack] = useState(0);
   const timer = useRef<number | null>(null);
   const stop = () => {
@@ -84,9 +136,9 @@ export function MyImpactHero({
   });
   const pct = (v: number) => `${Math.round(v * 100)}%`;
   const stats: [string, string, string, string][] = [
-    ["في رعايتك", String(view.inCare), "", "طفلاً"],
-    ["أشهر الرعاية", String(view.months), "", "شهراً"],
-    ["حصّتك", String(Math.round(view.share * 100)), "%", "من حاجتهم"],
+    [c.inCare[0]!, String(view.inCare), "", c.inCare[1]!],
+    [c.months[0]!, String(view.months), "", c.months[1]!],
+    [c.share[0]!, String(Math.round(view.share * 100)), "%", c.share[1]!],
   ];
 
   return (
@@ -98,18 +150,15 @@ export function MyImpactHero({
         <div>
           <p className="flex items-center gap-3 text-sm font-bold text-bridge-ink">
             <span aria-hidden="true" className="h-px w-8 bg-bridge" />
-            أثرك
+            {c.eyebrow}
           </p>
           <h2
             id="my-impact"
             className="mt-2 font-display text-4xl font-bold leading-tight sm:text-5xl"
           >
-            كوكبة أثرك
+            {c.title}
           </h2>
-          <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-            أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية،
-            والخافتة ما غطّاه الكافلون جميعاً.
-          </p>
+          <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">{c.lead}</p>
 
           <dl className="mt-7 grid grid-cols-3 border-y border-border">
             {stats.map(([label, value, suffix, unit], i) => (
@@ -142,11 +191,11 @@ export function MyImpactHero({
             <Button asChild size="lg">
               <Link to="/hall" search={hallSearch ?? {}}>
                 <Sparkles className="size-4" aria-hidden="true" />
-                الوضع الغامر
+                {c.immersive}
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to={anotherTo}>اكفل طفلاً آخر</Link>
+              <Link to={anotherTo}>{c.another}</Link>
             </Button>
           </div>
         </div>
@@ -158,8 +207,8 @@ export function MyImpactHero({
             role="img"
             aria-label={
               shown.length
-                ? `كوكبة أثرك: ${shown.map((c) => `${c.name} ${pct(c.share)}`).join("، ")}`
-                : "كوكبة أثرك فارغة بعد"
+                ? c.figure(shown.map((k) => `${k.name} ${pct(k.share)}`).join(c.sep))
+                : c.figureEmpty
             }
           >
             {/* the orbit: one hairline, broken once — the mark's ring, as a path for the gems */}
@@ -232,16 +281,16 @@ export function MyImpactHero({
                 strokeLinejoin: "round",
               }}
             >
-              أنت
+              {c.you}
             </text>
-            {shown.map((c, i) => {
+            {shown.map((k, i) => {
               const p = pos[i]!;
               const nameY = p.up ? p.y - 47 : p.y + 43;
               return (
                 <g
-                  key={c.id}
+                  key={k.id}
                   className="impact-gem"
-                  style={{ animationDelay: `${0.45 + i * 0.09}s`, opacity: c.active ? 1 : 0.55 }}
+                  style={{ animationDelay: `${0.45 + i * 0.09}s`, opacity: k.active ? 1 : 0.55 }}
                 >
                   {/* enamel disc; a hairline track; what everyone covered (thin champagne);
                       your share (the bold ring) */}
@@ -259,7 +308,7 @@ export function MyImpactHero({
                     fill="none"
                     strokeWidth={1.5}
                     pathLength={1}
-                    strokeDasharray={`${c.covered} 1`}
+                    strokeDasharray={`${k.covered} 1`}
                     transform={`rotate(-90 ${p.x} ${p.y})`}
                     style={{ stroke: "var(--bridge)" }}
                   />
@@ -271,7 +320,7 @@ export function MyImpactHero({
                     strokeWidth={3.5}
                     strokeLinecap="round"
                     pathLength={1}
-                    strokeDasharray={`${c.share} 1`}
+                    strokeDasharray={`${k.share} 1`}
                     transform={`rotate(-90 ${p.x} ${p.y})`}
                     className="impact-share"
                     style={{ stroke: "var(--primary)", animationDelay: `${0.7 + i * 0.09}s` }}
@@ -284,7 +333,7 @@ export function MyImpactHero({
                     className="font-display text-[17px] font-bold tabular-nums"
                     style={{ fill: "var(--foreground)" }}
                   >
-                    {Math.round(c.share * 100)}
+                    {Math.round(k.share * 100)}
                     <tspan className="text-[10px] font-normal" dx={1}>
                       %
                     </tspan>
@@ -302,7 +351,7 @@ export function MyImpactHero({
                       strokeLinejoin: "round",
                     }}
                   >
-                    {c.name}
+                    {k.name}
                   </text>
                   <text
                     x={p.x}
@@ -317,7 +366,7 @@ export function MyImpactHero({
                       strokeLinejoin: "round",
                     }}
                   >
-                    {c.months === 0 ? "بدأت للتوّ" : `${c.months} ${monthsWord(c.months)}`}
+                    {k.months === 0 ? c.justBegan : c.monthsOf(k.months)}
                   </text>
                 </g>
               );
@@ -330,10 +379,10 @@ export function MyImpactHero({
                 size="sm"
                 variant="outline"
                 onClick={play}
-                aria-label="شاهد أثرك يتكوّن منذ البداية"
+                aria-label={c.replayLabel}
               >
                 <Play className="size-3.5" aria-hidden="true" />
-                منذ البداية
+                {c.replay}
               </Button>
               <input
                 type="range"
@@ -345,23 +394,23 @@ export function MyImpactHero({
                   stop();
                   setBack(span - Number(e.target.value));
                 }}
-                aria-label="مسار أثرك عبر الأشهر"
-                aria-valuetext={monthsAgo(back)}
+                aria-label={c.rail}
+                aria-valuetext={ago(back)}
                 className="min-h-11 w-full min-w-0 flex-1 cursor-pointer rounded-full accent-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               <output className="w-16 shrink-0 text-center text-sm font-bold text-foreground tabular-nums">
-                {monthsAgo(Math.min(back, span))}
+                {ago(Math.min(back, span))}
               </output>
             </div>
           )}
           {!loading && shown.length === 0 && back === 0 && (
             <figcaption className="absolute inset-x-0 bottom-2 text-center text-sm text-muted-foreground">
-              حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.
+              {c.empty}
             </figcaption>
           )}
           {more > 0 && (
             <figcaption className="mt-2 text-center text-xs text-muted-foreground">
-              و{more} آخرون في قائمة كفالاتك أدناه.
+              {c.more(more)}
             </figcaption>
           )}
         </figure>

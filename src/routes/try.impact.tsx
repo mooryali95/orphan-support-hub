@@ -76,9 +76,6 @@ function TryImpact() {
     const k = tryChild(id);
     return k ? localTryChild(k, locale) : undefined;
   };
-  // «كوكبة أثرك» ما زالت عربيةً وحدها (مكوّنٌ مشترك خارج الرحلة): يُعلن ذلك عليها هي فقط،
-  // فتُنطق بالعربية وتُصفّ من اليمين، وبقية الصفحة بلغة الواجهة.
-  const arabicPart = dirOf(locale) === "rtl" ? {} : { lang: "ar", dir: "rtl" as const };
   const navigate = useNavigate();
   const [gifts, setGifts] = useState<TryGift[] | null>(null);
   useEffect(() => {
@@ -93,7 +90,7 @@ function TryImpact() {
   const [ahead, setAhead] = useState(0);
   const then = new Date();
   then.setMonth(then.getMonth() + ahead);
-  const impact = myImpact(giftsAsSponsorships(gifts ?? []), then);
+  const impact = myImpact(giftsAsSponsorships(gifts ?? [], locale), then);
 
   return (
     <>
@@ -118,7 +115,7 @@ function TryImpact() {
       <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{c.title}</h1>
       <p className="mt-3 text-base leading-8 text-muted-foreground">{c.lead}</p>
 
-      <div {...arabicPart}>
+      <div>
         <MyImpactHero
           impact={impact}
           loading={gifts === null}
