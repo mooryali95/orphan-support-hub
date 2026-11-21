@@ -232,6 +232,7 @@ DECLARE _allowed TEXT[] := ARRAY[
     'public_ui_locales()',
     'published_regions()',
     'published_ui_messages(text)',
+    'sponsorship_pay_options(uuid)', -- عملات الدفع لملفٍّ منشور وسعرها المعروض (بلا بيانات طفل)
     'suggest_orphans_for_amount(numeric,uuid,integer)',
     'support_catalog(text)',
     'trait_model(text)',

@@ -6,6 +6,7 @@
 import { countryName } from "@/lib/countries";
 import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, type Locale } from "@/lib/locale";
+import { demoPayOptions, type PayOptions } from "@/lib/pay-options";
 import type { MySponsorship } from "@/lib/sponsorships.functions";
 
 export type TryChild = {
@@ -25,7 +26,15 @@ export type TryChild = {
   covers: string;
 };
 
+/** عملة حاجة أطفال التجربة: كل مبلغٍ محفوظ (حاجة، تمويل، عطاء) بها. */
 export const TRY_CURRENCY = "EUR";
+
+/**
+ * عملات الدفع لطفل التجربة: عملة ملفّه، وعملة تشغيل بلده، والعملة الموحّدة —
+ * من خريطة الدول وبذرة الأسعار الاسترشادية، بلا خادم.
+ */
+export const tryPayOptions = (c: Pick<TryChild, "co">): PayOptions =>
+  demoPayOptions(c.co, TRY_CURRENCY);
 
 export const TRY_CHILDREN: TryChild[] = [
   {
@@ -121,14 +130,43 @@ export const gapOf = (c: Pick<TryChild, "need" | "funded">) => Math.max(0, c.nee
 export const tryChildrenByWait = () =>
   [...TRY_CHILDREN].sort((a, b) => b.waitingDays - a.waitingDays);
 
+/** ما دُفع فعلاً حين اختار الداعم عملةً غير عملة الملف، بسعره وتاريخه. */
+export type TryPaid = {
+  amount: number;
+  currency: string;
+  /** السعر كما طُبّق: وحدةٌ من عملة الدفع بعملة الملف. */
+  rate: number;
+  asOf: string;
+  indicative: boolean;
+};
+
 export type TryGift = {
   id: string;
   childId: string;
+  /** ما قُيِّد لحاجة الطفل، بعملة الملف (`TRY_CURRENCY`) دائماً. */
   amount: number;
   cadence: "monthly" | "one_time";
   at: string;
   /** whom the donor gives it on behalf of («صدقة جارية عن…»), as they typed it */
   dedication?: string;
+  /** غائبٌ حين دُفع بعملة الملف نفسها. */
+  paid?: TryPaid;
+};
+
+/** ما دُفع كما حُفظ: مبلغٌ موجب بعملةٍ من ثلاثة أحرف وسعرٍ موجب بتاريخه؛ وإلا لا شيء. */
+export const cleanPaid = (v: unknown): TryPaid | undefined => {
+  if (!v || typeof v !== "object") return undefined;
+  const p = v as Record<string, unknown>;
+  const amount = Number(p["amount"]);
+  const rate = Number(p["rate"]);
+  const currency = String(p["currency"] ?? "");
+  const asOf = String(p["asOf"] ?? "");
+  if (!(amount > 0) || !(rate > 0) || !Number.isFinite(amount) || !Number.isFinite(rate)) {
+    return undefined;
+  }
+  if (!/^[A-Z]{3}$/.test(currency) || currency === TRY_CURRENCY) return undefined;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return undefined;
+  return { amount, currency, rate, asOf, indicative: p["indicative"] !== false };
 };
 
 /** a dedication as typed: trimmed, single line, short; empty means none */
@@ -165,6 +203,7 @@ export function addGift(
   now: Date = new Date(),
 ): TryGift {
   const dedication = cleanDedication(gift.dedication);
+  const paid = cleanPaid(gift.paid);
   const g: TryGift = {
     childId: gift.childId,
     amount: gift.amount,
@@ -172,6 +211,7 @@ export function addGift(
     id: `gift-${now.getTime()}`,
     at: now.toISOString(),
     ...(dedication ? { dedication } : {}),
+    ...(paid ? { paid } : {}),
   };
   try {
     store?.setItem(KEY, JSON.stringify([g, ...loadGifts(store)].slice(0, 20)));

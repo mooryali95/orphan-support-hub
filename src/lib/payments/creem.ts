@@ -156,6 +156,15 @@ export const creemProvider: PaymentProvider = {
     return true;
   },
 
+  supportsCurrency(currency: string, recurring: boolean) {
+    try {
+      productFor(recurring ? "MONTHLY" : "ONETIME", currency);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
   async createCheckout(req: CheckoutRequest): Promise<CheckoutSession> {
     const body: Json = {
       request_id: req.idempotencyKey,

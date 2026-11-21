@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 1751,
+ "count": 1760,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3890,6 +3890,71 @@
    "kind": "text",
    "hash": "7c73674ea30f",
    "file": "src/components/qualification/QualificationPanel.tsx"
+  },
+  "components/sponsorship/PayCurrency.charged": {
+   "en": "You are charged",
+   "ar": "يُخصم منك",
+   "kind": "text",
+   "hash": "4fc09ed5d1ac",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.credited": {
+   "en": "Credited to {0}'s need",
+   "ar": "يُقيَّد لحاجة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e8fb8f6228f8",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.fixed": {
+   "en": "The rate applied is stored with your gift, so the amount credited does not change later.",
+   "ar": "يُحفظ السعر المطبَّق مع عطائك، فلا يتغيّر ما قُيِّد للطفل بعده.",
+   "kind": "text",
+   "hash": "7237d628a592",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.indicative": {
+   "en": "An indicative rate, not a live market rate.",
+   "ar": "سعرٌ استرشادي لا سعر السوق اللحظي.",
+   "kind": "text",
+   "hash": "b4975af8fa41",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.label": {
+   "en": "Payment currency",
+   "ar": "عملة الدفع",
+   "kind": "text",
+   "hash": "3a2a2a3f3412",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.need": {
+   "en": "Need currency",
+   "ar": "عملة الاحتياج",
+   "kind": "text",
+   "hash": "ab39501aadd4",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.operating": {
+   "en": "Child's country currency",
+   "ar": "عملة بلد الطفل",
+   "kind": "text",
+   "hash": "a93fa51e6909",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.rate": {
+   "en": "Rate: {0}, dated {1}.",
+   "ar": "السعر: {0}، بتاريخ {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "abf2df4b0140",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/PayCurrency.unified": {
+   "en": "Unified currency",
+   "ar": "العملة الموحّدة",
+   "kind": "text",
+   "hash": "95120cefa33c",
+   "file": "src/components/sponsorship/PayCurrency.tsx"
   },
   "components/support/Follow.follow": {
    "en": "Follow",
@@ -8638,10 +8703,11 @@
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.amount": {
-   "en": "Amount (EUR)",
-   "ar": "المبلغ (يورو)",
-   "kind": "text",
-   "hash": "89fbb76c756c",
+   "en": "Amount ({0})",
+   "ar": "المبلغ ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "ef2246a7fb30",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.another": {
@@ -8778,10 +8844,11 @@
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.minAmount": {
-   "en": "The minimum amount is 5 euros.",
-   "ar": "أقلّ مبلغٍ 5 يورو.",
-   "kind": "text",
-   "hash": "125eee8ca872",
+   "en": "The minimum amount is {0}.",
+   "ar": "أقلّ مبلغٍ {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "0073fcdc785e",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.monthly": {

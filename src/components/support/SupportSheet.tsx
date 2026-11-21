@@ -10,7 +10,9 @@ import type { MapStats } from "@/components/map/demo-stats";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { normalize } from "@/lib/countries";
+import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
@@ -151,14 +153,22 @@ export function SupportSheet({
       }),
     [target.type, ctx.code, ctx.regionValue, ctx.regionName, stats],
   );
-  const currency = gap?.currency ?? "EUR";
+  // عملة التعهّد: عملة الفجوة (أو عملة تشغيل الدولة) افتراضاً، والعملة الموحّدة
+  // بجانبها. التعهّد يُسجَّل بالعملة المختارة كما كُتب مبلغه، بلا تحويل.
+  const payList = useMemo(() => payableOptions(ctx.code, gap?.currency), [ctx.code, gap?.currency]);
+  const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
+  const currency =
+    payList.find((o) => o.currency === chosenCurrency)?.currency ?? payList[0]!.currency;
   // مبالغ فرد (UX-11): 25/50/100 و«سدّ المتبقّي» — لا كسور فجوةٍ جماعية.
-  const suggested = individualPresets(gap).map((p) => ({
-    key: `${p.kind}:${p.value}`,
-    label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
-    sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
-    value: p.value,
-  }));
+  // «سدّ المتبقّي» بعملة الفجوة وحدها: لا يُعرض رقمها بعملةٍ أخرى بلا تحويل.
+  const suggested = individualPresets(gap)
+    .filter((p) => p.kind !== "rest" || currency === gap?.currency)
+    .map((p) => ({
+      key: `${p.kind}:${p.value}`,
+      label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
+      sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
+      value: p.value,
+    }));
   const suggestedDefault = defaultIndividualAmount(gap);
   const [amount, setAmount] = useState(suggestedDefault);
   const amountEdited = useRef(false);
@@ -273,6 +283,9 @@ export function SupportSheet({
           ))}
         </div>
       </fieldset>
+
+      {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم، والزرّ يعرضه بعملته */}
+      <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
 
       <fieldset className="min-w-0">
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">

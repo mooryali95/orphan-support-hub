@@ -97,7 +97,10 @@ export const createPledge = createServerFn({ method: "POST" })
           .regex(/^[A-Z]{2}$/)
           .optional(),
         note: z.string().trim().max(1000).optional(),
-        /** عملة الفجوة التي اقتُرح منها المبلغ؛ الافتراضي EUR. */
+        /**
+         * عملة التعهّد كما اختارها الداعم: عملة الفجوة أو عملة تشغيل الدولة أو
+         * العملة الموحّدة (القاعدة ترفض ما عداها). الافتراضي EUR.
+         */
         currency: z
           .string()
           .regex(/^[A-Z]{3}$/)
@@ -133,6 +136,8 @@ export const getMyPledges = createServerFn({ method: "GET" })
 /** رسائل القاعدة رموزٌ تقنية؛ الداعم يحتاج جملةً يفهمها. */
 export function pledgeError(code: string): string {
   if (code.includes("country_not_active")) return "الدعم في هذه الدولة لم يُفتح بعد.";
+  if (code.includes("currency_not_payable"))
+    return "هذه العملة غير متاحة لهذا الهدف. اختر عملةً أخرى.";
   if (code.includes("target_not_found")) return "الهدف المختار غير متاح الآن.";
   if (code.includes("auth_required")) return "سجّل الدخول لتسجيل دعمك.";
   return "تعذّر تسجيل الدعم. حاول لاحقاً.";

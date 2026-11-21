@@ -6,6 +6,8 @@ import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { SupportPicks } from "@/components/support/SupportPicks";
+import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
+import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
@@ -234,14 +236,26 @@ function SupportPage() {
       }),
     [targetType, target, activeCountry, stats, orphanGap, orphanCur],
   );
-  const currency = gapOf?.currency ?? "EUR";
+  // عملة التعهّد: عملة الفجوة (أو عملة تشغيل الدولة) افتراضاً، والعملة الموحّدة
+  // بجانبها. التعهّد يُسجَّل بالعملة المختارة كما كُتب مبلغه، بلا تحويل. دولة
+  // الطفل لا تُعرف من رابطه، فله عملة ملفّه والموحّدة.
+  const payList = useMemo(
+    () => payableOptions(targetType === "orphan" ? null : activeCountry, gapOf?.currency),
+    [targetType, activeCountry, gapOf?.currency],
+  );
+  const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
+  const currency =
+    payList.find((o) => o.currency === chosenCurrency)?.currency ?? payList[0]!.currency;
   // مبالغ فرد (UX-11): 25/50/100 و«سدّ المتبقّي» حين تُعرف الفجوة.
-  const suggested = individualPresets(gapOf).map((p) => ({
-    key: `${p.kind}:${p.value}`,
-    label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
-    sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
-    value: p.value,
-  }));
+  // «سدّ المتبقّي» بعملة الفجوة وحدها: لا يُعرض رقمها بعملةٍ أخرى بلا تحويل.
+  const suggested = individualPresets(gapOf)
+    .filter((p) => p.kind !== "rest" || currency === gapOf?.currency)
+    .map((p) => ({
+      key: `${p.kind}:${p.value}`,
+      label: p.kind === "rest" ? t.rest : formatMoney(p.value, currency, locale),
+      sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
+      value: p.value,
+    }));
   // حين تُعرف الفجوة يبدأ المبلغ بـ50 — أو بالمتبقّي إن كان أقلّ.
   useEffect(() => {
     if (gapOf) setAmount(defaultIndividualAmount(gapOf));
@@ -563,6 +577,13 @@ function SupportPage() {
                       {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
                     </p>
                   )}
+                  {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم */}
+                  <PayCurrencyChoice
+                    options={payList}
+                    value={currency}
+                    onChange={setChosenCurrency}
+                    className="mb-4 max-w-md"
+                  />
                   <div className="flex flex-wrap gap-2">
                     {suggested.map((a) => (
                       <Button

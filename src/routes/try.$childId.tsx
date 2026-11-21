@@ -1,18 +1,20 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Gift, MapPin, ShieldCheck } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
+import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
 import { TryReportPreview } from "@/components/try/TryReportPreview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { pageTitle } from "@/config/brand";
-import { amountPresets } from "@/lib/amount-presets";
+import { currencyName } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
+import { amountAfterSwitch, presetKeyOf, presetsIn, quoteFor } from "@/lib/pay-options";
 import {
   cleanDedication,
   coverageAfter,
@@ -20,6 +22,7 @@ import {
   localTryChild,
   TRY_CURRENCY,
   tryChild,
+  tryPayOptions,
 } from "@/lib/try-demo";
 import { cn } from "@/lib/utils";
 
@@ -80,7 +83,7 @@ const COPY = defineCopy("routes/try.childId", {
     cadence: "نوع العطاء",
     monthly: "شهرياً",
     oneTime: "مرّة واحدة",
-    amount: "المبلغ (يورو)",
+    amount: (currency: string) => `المبلغ (${currency})`,
     fullRest: "المتبقّي كاملاً",
     leftToComplete: (amount: string) => `بقي ${amount} لتكتمل حاجته: أكمِلها`,
     dedicate: "اجعلها صدقةً جارية عن غيرك",
@@ -88,7 +91,7 @@ const COPY = defineCopy("routes/try.childId", {
     dedicatePlaceholder: "والدي رحمه الله",
     supportNow: "ادعم الآن",
     start: "ابدأ الكفالة",
-    minAmount: "أقلّ مبلغٍ 5 يورو.",
+    minAmount: (min: string) => `أقلّ مبلغٍ ${min}.`,
     activation: "تُفعَّل الكفالة بعد تأكيد الدفع، ويُسجَّل كل تحويلٍ وتسليمٍ بمستند.",
     another: "اختر طفلاً آخر",
   },
@@ -114,7 +117,7 @@ const COPY = defineCopy("routes/try.childId", {
     cadence: "Type of gift",
     monthly: "Monthly",
     oneTime: "One-time",
-    amount: "Amount (EUR)",
+    amount: (currency: string) => `Amount (${currency})`,
     fullRest: "Full remainder",
     leftToComplete: (amount: string) => `${amount} more completes the need. Give the full amount`,
     dedicate: "Give it as ongoing charity on behalf of someone",
@@ -122,7 +125,7 @@ const COPY = defineCopy("routes/try.childId", {
     dedicatePlaceholder: "My late father",
     supportNow: "Give now",
     start: "Start sponsorship",
-    minAmount: "The minimum amount is 5 euros.",
+    minAmount: (min: string) => `The minimum amount is ${min}.`,
     activation:
       "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
     another: "Choose another child",
@@ -137,22 +140,46 @@ function TryChildPage() {
   const gap = gapOf(child);
   const pct = Math.round((child.funded / child.need) * 100);
   const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
+  /* عملة الدفع: عملة الملف افتراضاً، أو عملة بلد الطفل، أو العملة الموحّدة. المبلغ يُكتب بها،
+     وما يُقيَّد لحاجة الطفل (بعملة الملف) هو ما تجيب به الشرائط والنسب أدناه. */
+  const co = child.co;
+  const payOptions = useMemo(() => tryPayOptions({ co }), [co]);
+  const [payCurrency, setPayCurrency] = useState(payOptions.needCurrency);
+  const presets = presetsIn(payOptions, payCurrency, child.need, gap);
   const [amount, setAmount] = useState(String(gap > 0 ? gap : 50));
   const value = Number(amount);
   const valid = Number.isFinite(value) && value >= 5;
+  const quote = valid ? quoteFor(payOptions, value, payCurrency) : null;
+  /* what reaches the child's need, in the file currency */
+  const credited = quote?.credited.amount ?? 0;
+  function switchCurrency(next: string) {
+    if (next === payCurrency) return;
+    // typed by hand: the number stays; picked from the suggestions: the same suggestion
+    setAmount(
+      amountAfterSwitch(
+        presetKeyOf(presets, value),
+        amount,
+        presetsIn(payOptions, next, child.need, gap),
+      ),
+    );
+    setPayCurrency(next);
+  }
   const [gifting, setGifting] = useState(false);
   const [dedication, setDedication] = useState("");
   /* the bar answers the amount as it is typed: where the child's need stands after this gift */
-  const after = valid ? coverageAfter(child, value, cadence) : pct;
-  const completes = cadence === "monthly" && gap > 0 && value >= gap;
-  const left = cadence === "monthly" && valid && value < gap ? gap - value : 0;
+  const after = valid ? coverageAfter(child, credited, cadence) : pct;
+  const completes = cadence === "monthly" && gap > 0 && credited >= gap;
+  const left =
+    cadence === "monthly" && valid && presets.gap !== null && credited < gap
+      ? presets.gap - value
+      : 0;
   const impact =
     cadence === "one_time"
       ? c.impactOnce(child.name)
       : completes
         ? c.impactCompletes(child.name)
-        : value > 0
-          ? c.impactCovers(Math.min(100, Math.round((value / child.need) * 100)), child.name)
+        : credited > 0
+          ? c.impactCovers(Math.min(100, Math.round((credited / child.need) * 100)), child.name)
           : null;
 
   function start(e: FormEvent) {
@@ -164,6 +191,7 @@ function TryChildPage() {
         child: child.id,
         amount: value,
         cadence,
+        ...(payCurrency !== payOptions.needCurrency ? { cur: payCurrency } : {}),
         ...(gifting && cleanDedication(dedication) ? { for: cleanDedication(dedication) } : {}),
       },
     });
@@ -282,8 +310,14 @@ function TryChildPage() {
               </button>
             ))}
           </div>
+          <PayCurrencyChoice
+            options={payOptions.options}
+            value={payCurrency}
+            onChange={switchCurrency}
+            className="mt-5"
+          />
           <Label htmlFor="try-amount" className="mt-5 block">
-            {c.amount}
+            {c.amount(currencyName(payCurrency, locale))}
           </Label>
           <Input
             id="try-amount"
@@ -300,16 +334,16 @@ function TryChildPage() {
             className="mt-2 text-lg tabular-nums"
           />
           <div className="mt-2 flex flex-wrap gap-2">
-            {gap > 0 && (
+            {presets.gap !== null && (
               <button
                 type="button"
-                onClick={() => setAmount(String(gap))}
+                onClick={() => setAmount(String(presets.gap))}
                 className="inline-flex min-h-11 items-center rounded-md border border-bridge px-4 text-sm font-medium text-bridge-ink hover:bg-bridge/10"
               >
                 {c.fullRest}
               </button>
             )}
-            {amountPresets(child.need, gap).map((v) => (
+            {presets.amounts.map((v) => (
               <button
                 key={v}
                 type="button"
@@ -320,6 +354,7 @@ function TryChildPage() {
               </button>
             ))}
           </div>
+          <FxNote quote={quote} childName={child.name} className="mt-3" />
           {impact && (
             <p
               aria-live="polite"
@@ -343,10 +378,10 @@ function TryChildPage() {
           {left > 0 && (
             <button
               type="button"
-              onClick={() => setAmount(String(gap))}
+              onClick={() => setAmount(String(presets.gap))}
               className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-primary underline-offset-4 hover:underline"
             >
-              {c.leftToComplete(formatMoney(left, TRY_CURRENCY, locale))}
+              {c.leftToComplete(formatMoney(left, payCurrency, locale))}
             </button>
           )}
 
@@ -388,7 +423,7 @@ function TryChildPage() {
           </Button>
           {!valid && (
             <p id="try-amount-error" role="alert" className="mt-2 text-xs text-destructive">
-              {c.minAmount}
+              {c.minAmount(formatMoney(5, payCurrency, locale))}
             </p>
           )}
         </form>
@@ -396,7 +431,7 @@ function TryChildPage() {
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-shore-thrive" aria-hidden="true" />
           {c.activation}
         </p>
-        <TryReportPreview child={child} amount={valid ? value : gap || 50} />
+        <TryReportPreview child={child} amount={valid && credited > 0 ? credited : gap || 50} />
         <Link
           to="/try"
           className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-primary hover:underline"

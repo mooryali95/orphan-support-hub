@@ -2,18 +2,30 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CreditCard, Loader2, Lock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { FxNote } from "@/components/sponsorship/PayCurrency";
 import { Button } from "@/components/ui/button";
+import { formatMoneyExact } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
-import { addGift, cleanDedication, localTryChild, TRY_CURRENCY, tryChild } from "@/lib/try-demo";
+import { canPayIn, quoteFor } from "@/lib/pay-options";
+import {
+  addGift,
+  cleanDedication,
+  localTryChild,
+  TRY_CURRENCY,
+  tryChild,
+  tryPayOptions,
+} from "@/lib/try-demo";
 
 type Search = {
   child: string;
   amount: number;
   cadence: "monthly" | "one_time";
   for?: string | undefined;
+  /** عملة الدفع إن اختار الداعم غير عملة الملف؛ وما ليس ممّا يُدفع به للطفل يُهمل عند العرض. */
+  cur?: string | undefined;
 };
 
 export const Route = createFileRoute("/try/pay")({
@@ -22,6 +34,7 @@ export const Route = createFileRoute("/try/pay")({
     amount: Math.max(5, Math.min(100_000, Number(raw["amount"]) || 0)),
     cadence: raw["cadence"] === "one_time" ? "one_time" : "monthly",
     ...(cleanDedication(raw["for"]) ? { for: cleanDedication(raw["for"]) } : {}),
+    ...(typeof raw["cur"] === "string" && /^[A-Z]{3}$/.test(raw["cur"]) ? { cur: raw["cur"] } : {}),
   }),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
@@ -83,7 +96,7 @@ const COPY = defineCopy("routes/try.pay", {
  * المتصفّح وحده ثم ينتقل إلى «أثري» التجربة.
  */
 function TryPay() {
-  const { child: id, amount, cadence, for: dedication } = Route.useSearch();
+  const { child: id, amount, cadence, for: dedication, cur } = Route.useSearch();
   const locale = useLocale();
   const c = useCopy(COPY);
   const data = tryChild(id);
@@ -104,12 +117,33 @@ function TryPay() {
       </div>
     );
 
+  /* عملة الدفع من الرابط إن كانت ممّا يُدفع به لهذا الطفل، وإلا عملة الملف. المبلغ بها كما كُتب،
+     وما يُقيَّد لحاجة الطفل بعملة الملف هو ما يُحفظ في «أثري». */
+  const payOptions = tryPayOptions(child);
+  const payCurrency = cur && canPayIn(payOptions, cur) ? cur : TRY_CURRENCY;
+  const quote = quoteFor(payOptions, amount, payCurrency);
   const fee = Math.round(amount * 0.05 * 100) / 100;
   function pay() {
-    if (busy) return;
+    if (busy || !quote) return;
     setBusy(true);
     timer.current = window.setTimeout(() => {
-      addGift({ childId: child!.id, amount, cadence, ...(dedication ? { dedication } : {}) });
+      addGift({
+        childId: child!.id,
+        amount: quote.credited.amount,
+        cadence,
+        ...(dedication ? { dedication } : {}),
+        ...(quote.fx
+          ? {
+              paid: {
+                amount: quote.charged.amount,
+                currency: quote.charged.currency,
+                rate: quote.fx.rate,
+                asOf: quote.fx.asOf,
+                indicative: quote.fx.indicative,
+              },
+            }
+          : {}),
+      });
       // replace: زرّ الرجوع من «أثري» يعود إلى ملف الطفل لا إلى شاشة دفعٍ تمّ،
       // فلا يُسجَّل العطاء مرّتين بضغطةٍ ثانية.
       void navigate({ to: "/try/impact", search: { done: child!.id }, replace: true });
@@ -139,15 +173,16 @@ function TryPay() {
           )}
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">{c.fee}</dt>
-            <dd className="tabular-nums">{formatMoney(fee, TRY_CURRENCY, locale)}</dd>
+            <dd className="tabular-nums">{formatMoneyExact(fee, payCurrency, locale)}</dd>
           </div>
           <div className="flex items-baseline justify-between gap-4 border-t border-border pt-5 text-base">
             <dt className="font-bold">{cadence === "monthly" ? c.monthly : c.amount}</dt>
             <dd className="numeral text-[2rem] text-primary">
-              {formatMoney(amount, TRY_CURRENCY, locale)}
+              {formatMoney(amount, payCurrency, locale)}
             </dd>
           </div>
         </dl>
+        <FxNote quote={quote} childName={child.name} className="mt-4" />
         <p className="mt-4 text-xs leading-6 text-muted-foreground">
           {cadence === "monthly" ? c.renews : c.once}
         </p>
@@ -198,7 +233,7 @@ function TryPay() {
               {c.confirming}
             </>
           ) : (
-            c.pay(formatMoney(amount, TRY_CURRENCY, locale))
+            c.pay(formatMoney(amount, payCurrency, locale))
           )}
         </Button>
         <span role="status" className="sr-only">

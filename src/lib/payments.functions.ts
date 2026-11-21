@@ -32,6 +32,51 @@ async function readHold(supabase: unknown) {
   };
 }
 
+/**
+ * شروط التحصيل المحفوظة مع الكفالة (هجرة العملة الموحّدة): ما اتُّفق على
+ * تحصيله بعملة الدفع. العمودان أحدث من الأنواع المولَّدة، فيُقرآن بنوعٍ محلّي؛
+ * وإن غابا (هجرةٌ لم تُطبَّق) أو فرغا عاد null فيُحصَّل مبلغ الكفالة بعملتها.
+ * أيّ خطأٍ آخر يوقف الدفع: تحصيل مبلغ الحاجة بعملتها عن كفالةٍ اتُّفق على
+ * غيرها خطأٌ ماليّ لا يُخاطَر به لتعذّر قراءة.
+ */
+type ChargeTermsClient = {
+  from: (t: "sponsorships") => {
+    select: (c: "charge_currency, charge_amount") => {
+      eq: (
+        c: "id",
+        v: string,
+      ) => {
+        maybeSingle: () => PromiseLike<{
+          data: { charge_currency: string | null; charge_amount: number | string | null } | null;
+          error: { message: string; code?: string } | null;
+        }>;
+      };
+    };
+  };
+};
+
+async function readChargeTerms(
+  supabase: unknown,
+  sponsorshipId: string,
+): Promise<{ ok: true; terms: { amount: number; currency: string } | null } | { ok: false }> {
+  const { data, error } = await (supabase as ChargeTermsClient)
+    .from("sponsorships")
+    .select("charge_currency, charge_amount")
+    .eq("id", sponsorshipId)
+    .maybeSingle();
+  if (error) {
+    // 42703 (PostgreSQL) / PGRST204 (PostgREST): العمود غير موجود بعد.
+    const missing = error.code === "42703" || error.code === "PGRST204";
+    if (missing) return { ok: true, terms: null };
+    console.error("[payments] تعذّرت قراءة شروط التحصيل", error.message);
+    return { ok: false };
+  }
+  if (!data?.charge_currency) return { ok: true, terms: null };
+  const amount = Number(data.charge_amount);
+  if (!(amount > 0)) return { ok: false };
+  return { ok: true, terms: { amount, currency: data.charge_currency } };
+}
+
 /** ما تحتاجه الواجهة لتعرف كيف تصف مسار الدفع، بلا كشف أي سرّ. */
 export const getPaymentMode = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -86,6 +131,24 @@ export const startCheckout = createServerFn({ method: "POST" })
     const { paymentProvider, CurrencyNotSupportedError } = await import("@/lib/payments");
     const provider = paymentProvider();
 
+    // ما يُحصَّل: المتّفق عليه بعملة الدفع إن اختار الكافل غير عملة الحاجة
+    // (`charge_*`)، وإلا مبلغ الكفالة بعملتها كما كان.
+    const read = await readChargeTerms(supabase, sponsorship.id);
+    if (!read.ok) return { ok: false as const, error: "تعذّر بدء الدفع، حاول لاحقاً" };
+    const terms = read.terms;
+    const charge = terms ?? {
+      amount: Number(sponsorship.amount),
+      currency: sponsorship.currency,
+    };
+    // التحويل اليدوي يُطابَق بمبلغ الكفالة وعملتها؛ كفالةٌ اتُّفق على تحصيلها
+    // بعملةٍ أخرى لا تُحوَّل يدوياً بمبلغٍ غير المتّفق عليه.
+    if (terms && provider.id === "manual") {
+      return {
+        ok: false as const,
+        error: `هذه الكفالة سُجّلت للدفع بالبطاقة بعملة ${terms.currency}، والدفع الإلكتروني غير متاح الآن. ألغِها وابدأ كفالةً بعملة الملف (${sponsorship.currency}).`,
+      };
+    }
+
     // التعليق يخصّ التحصيل الإلكتروني وحده: التحويل اليدوي تطابقه الإدارة
     // قبل التفعيل، فلا يُغلق بإغلاق المزوّد. والفحص هنا لا في الواجهة: زرّ
     // مخفيّ يُتجاوَز بطلب واحد.
@@ -137,11 +200,11 @@ export const startCheckout = createServerFn({ method: "POST" })
     try {
       session = await provider.createCheckout({
         sponsorshipId: sponsorship.id,
-        amount: Number(sponsorship.amount),
-        currency: sponsorship.currency,
+        amount: charge.amount,
+        currency: charge.currency,
         recurring: sponsorship.type === "monthly" && provider.supportsRecurring(),
         idempotencyKey,
-        description: `كفالة ${orphanName} — ${sponsorship.currency} ${sponsorship.amount}`,
+        description: `كفالة ${orphanName} — ${charge.currency} ${charge.amount}`,
         returnUrl: `${origin}/dashboard?payment=done`,
         cancelUrl: `${origin}/dashboard?payment=cancelled`,
       });
@@ -150,7 +213,7 @@ export const startCheckout = createServerFn({ method: "POST" })
         // APP-04: لا تُحصَّل كفالةٌ باليورو على منتجٍ بالدولار.
         return {
           ok: false as const,
-          error: `الدفع الإلكتروني لا يقبل عملة هذه الكفالة (${sponsorship.currency}) بعد. يمكنك إكمالها بتحويلٍ بنكي.`,
+          error: `الدفع الإلكتروني لا يقبل عملة هذه الكفالة (${charge.currency}) بعد. يمكنك إكمالها بتحويلٍ بنكي.`,
         };
       }
       const message = cause instanceof Error ? cause.message : String(cause);
@@ -163,8 +226,9 @@ export const startCheckout = createServerFn({ method: "POST" })
     const { error: paymentError } = await admin.from("sponsorship_payments").insert({
       sponsorship_id: sponsorship.id,
       sponsor_id: userId,
-      amount: Number(sponsorship.amount),
-      currency: sponsorship.currency,
+      // الدفعة تحمل ما يُحصَّل فعلاً؛ والمقيَّد لحاجة الطفل يكتبه قيد التحصيل.
+      amount: charge.amount,
+      currency: charge.currency,
       status: "pending",
       provider: provider.id,
       provider_checkout_id: session.providerCheckoutId,

@@ -71,6 +71,13 @@ export interface PaymentProvider {
   /** هل يدير المزوّد التحصيل الشهري بنفسه. */
   supportsRecurring(): boolean;
 
+  /**
+   * هل يحصّل المزوّد بهذه العملة (شهرياً أو لمرّة)؟ يُسأل قبل عرض العملة على
+   * الكافل، فلا يختار ما يُرفض عند الدفع. التحويل اليدوي يُطابَق بعملة الحاجة
+   * وحدها، فلا يُعرَّف له.
+   */
+  supportsCurrency?(currency: string, recurring: boolean): boolean;
+
   createCheckout(req: CheckoutRequest): Promise<CheckoutSession>;
 
   /**
