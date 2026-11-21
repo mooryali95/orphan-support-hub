@@ -12,12 +12,26 @@ import {
 } from "@/components/brand/KahataynMark";
 import { isTrial } from "@/config/platform";
 import { geoQuery } from "@/lib/geo";
-import { useLocale } from "@/lib/locale";
+import { copyOf, defineCopy, useLocale } from "@/lib/locale";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 
 /** ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there */
 
 export const Route = createLazyFileRoute("/hall")({ component: HallPage });
+
+/** the trial's own words on the hall's chrome; the hall speaks Arabic, so they are read in Arabic */
+const TRIAL_COPY = defineCopy("routes/hall.lazy", {
+  ar: {
+    tag: "رحلة افتراضية",
+    gate: "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
+    gateReal: "الرحلة الحقيقية تبدأ بتسجيلك",
+  },
+  en: {
+    tag: "Virtual journey",
+    gate: "You are now in a virtual journey: everything in the hall is simulated, and nothing is charged.",
+    gateReal: "The real journey begins when you register",
+  },
+});
 
 /**
  * hall.css arrives with this lazy chunk, after the server's markup has already painted. Until it
@@ -38,6 +52,7 @@ function HallPage() {
   // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
   const trying = search.try === 1 || isTrial();
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
+  const trial = copyOf(TRIAL_COPY, "ar");
 
   useEffect(() => {
     const root = ref.current;
@@ -91,10 +106,26 @@ function HallPage() {
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">
-        <div className="brand">
+        <div className="brand" style={trying ? { flexWrap: "wrap", rowGap: 0 } : undefined}>
           <span className="brand-name">{BRAND.name}</span>
           <span className="brand-sep">·</span>
           <span className="brand-hall">قاعة الأثر</span>
+          {/* the persistent mark of the trial, under the hall's name on every stage */}
+          {trying && (
+            <span
+              data-hall-trial
+              style={{
+                flexBasis: "100%",
+                fontFamily: "var(--body)",
+                fontSize: 11,
+                lineHeight: 1.5,
+                letterSpacing: 0,
+                color: "var(--champagne)",
+              }}
+            >
+              {trial.tag}
+            </span>
+          )}
         </div>
         <ol id="steps" aria-label="مراحل الرحلة">
           <li data-s="world">العالم</li>
@@ -134,6 +165,19 @@ function HallPage() {
           <p className="gate-net">
             المقرّ في الرياض و26 موقعاً للندوة حول العالم، تختار منها على الكرة.
           </p>
+          {trying && (
+            <p className="gate-net" data-hall-trial-gate>
+              {trial.gate}{" "}
+              <Link
+                to="/auth"
+                search={{ redirect: "/dashboard" }}
+                style={{ textDecoration: "underline", textUnderlineOffset: 4 }}
+              >
+                {trial.gateReal}
+              </Link>
+              .
+            </p>
+          )}
           {state === "unsupported" ? (
             <p className="gate-net">
               متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في{" "}

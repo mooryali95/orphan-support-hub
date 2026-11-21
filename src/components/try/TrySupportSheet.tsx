@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import type { MapActionContext } from "@/components/map/WorldMap";
 import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
+import { TryRealLine } from "@/components/try/TryRealInvite";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useGivingCopy } from "@/config/giving-tracks";
@@ -174,6 +175,7 @@ export function TrySupportSheet({
             {t.another}
           </Button>
         </div>
+        <TryRealLine className="mt-2" />
       </div>
     );
   }

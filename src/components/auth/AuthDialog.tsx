@@ -31,11 +31,17 @@ export function AuthDialog({
   title: titleProp,
   hint: hintProp,
   onDone,
+  simple,
+  onOpen,
 }: {
   trigger: (open: () => void) => ReactNode;
   title?: string;
   hint?: string;
   onDone?: () => void;
+  /** أقصر طريق: بلا رابط كلمة المرور (انظر `AuthPanel`) */
+  simple?: boolean;
+  /** قبل أن تُفتح النافذة: لحفظ ما يلزم إن غادر الزائر الصفحة للدخول (جوجل) */
+  onOpen?: () => void;
 }) {
   const c = useCopy(COPY);
   const title = titleProp ?? c.title;
@@ -43,7 +49,10 @@ export function AuthDialog({
   const [open, setOpen] = useState(false);
   return (
     <>
-      {trigger(() => setOpen(true))}
+      {trigger(() => {
+        onOpen?.();
+        setOpen(true);
+      })}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-6 sm:max-w-sm">
           <KahataynMark className="h-10 w-auto" />
@@ -61,6 +70,7 @@ export function AuthDialog({
             <AuthPanel
               title={title}
               hint={hint}
+              {...(simple ? { simple } : {})}
               onDone={() => {
                 setOpen(false);
                 onDone?.();

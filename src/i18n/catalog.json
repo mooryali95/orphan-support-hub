@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2111,
+ "count": 2166,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -4750,6 +4750,120 @@
    "hash": "68d0e4241fb7",
    "file": "src/components/try/KafalaPromise.tsx"
   },
+  "components/try/TrialProposal.authText": {
+   "en": "What you chose in the virtual journey is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
+   "ar": "ما اخترته في الرحلة الافتراضية ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
+   "kind": "text",
+   "hash": "9e7b92fb709c",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.authTitle": {
+   "en": "You are entering the real journey",
+   "ar": "تدخل الآن الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "dc50bd56d48c",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.chooseChild": {
+   "en": "Choose a child in {0}",
+   "ar": "اختر طفلاً في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "6afd6a5901fd",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.dismissOne": {
+   "en": "Hide this proposal",
+   "ar": "أخفِ هذا المقترح",
+   "kind": "text",
+   "hash": "d37f49f0e2b7",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.eyebrow": {
+   "en": "From your virtual journey",
+   "ar": "من رحلتك الافتراضية",
+   "kind": "text",
+   "hash": "6c3e240ddea3",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.lead": {
+   "en": "These are proposals only: no sponsorship or pledge was created, and nothing was charged. The trial's children are fictional, so choose a real child or place here, then confirm the amount yourself.",
+   "ar": "هذه مقترحاتٌ فقط: لم تُنشأ كفالةٌ ولا تعهّد، ولم يُخصم شيء. أطفال التجربة افتراضيون؛ فاختر هنا طفلاً أو مكاناً حقيقياً، ثم أكّد المبلغ بنفسك.",
+   "kind": "text",
+   "hash": "9f50e50dc410",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.monthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.notNow": {
+   "en": "Not now",
+   "ar": "ليس الآن",
+   "kind": "text",
+   "hash": "c3b125c8d296",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.offerFrom": {
+   "en": "From your trial",
+   "ar": "من تجربتك",
+   "kind": "text",
+   "hash": "ad41c783d5bf",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.offerNote": {
+   "en": "Nothing changes until you press.",
+   "ar": "لا يتغيّر شيء حتى تضغط.",
+   "kind": "text",
+   "hash": "b72dea074b0c",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.offerUse": {
+   "en": "Use this amount",
+   "ar": "استعمل هذا المبلغ",
+   "kind": "text",
+   "hash": "df94109a7476",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.offerUsed": {
+   "en": "Placed in the form. Review it, then confirm yourself.",
+   "ar": "وُضع في النموذج. راجعه، ثم أكّد بنفسك.",
+   "kind": "text",
+   "hash": "48fd2c3a2353",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.oneTime": {
+   "en": "one-time",
+   "ar": "مرّة واحدة",
+   "kind": "text",
+   "hash": "a5b214a59a34",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.oneTimeKind": {
+   "en": "One-time gift",
+   "ar": "عطاءٌ لمرّة واحدة",
+   "kind": "text",
+   "hash": "6f70155ed7fa",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.supportIn": {
+   "en": "Support in {0}",
+   "ar": "ادعم في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "994a13dabf82",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TrialProposal.title": {
+   "en": "What you chose in the trial awaits your confirmation",
+   "ar": "ما اخترته في التجربة ينتظر تأكيدك",
+   "kind": "text",
+   "hash": "dd5c04779f10",
+   "file": "src/components/try/TrialProposal.tsx"
+  },
   "components/try/TryChildCard.age.one": {
    "en": "{0} year old",
    "ar": "سنة واحدة",
@@ -5071,6 +5185,83 @@
    "hash": "e7576fc2fc80",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
+  "components/try/TryJourneyGuide.railLabel": {
+   "en": "Where you are in the virtual journey",
+   "ar": "أين أنت في الرحلة الافتراضية",
+   "kind": "text",
+   "hash": "f4176a8d378e",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.real.text": {
+   "en": "Register with just your email, then confirm what you chose here: that is where real impact begins.",
+   "ar": "سجّل ببريدك وحده، ثم أكّد ما اخترته هنا: هناك يبدأ الأثر الحقيقي.",
+   "kind": "text",
+   "hash": "a38986efd1d9",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.real.textRegistered": {
+   "en": "Your account is ready: your real “My impact” holds what you chose as a proposal awaiting your confirmation.",
+   "ar": "حسابك جاهز: في «أثري» الحقيقية تجد ما اخترته مقترحاً ينتظر تأكيدك.",
+   "kind": "text",
+   "hash": "9a707b74eb9d",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.real.title": {
+   "en": "Enter the real journey",
+   "ar": "ادخل الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "6dbd445e4e6c",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stages.choose": {
+   "en": "Choose",
+   "ar": "اختر",
+   "kind": "text",
+   "hash": "c2314e01f584",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stages.give": {
+   "en": "Give",
+   "ar": "ادعم",
+   "kind": "text",
+   "hash": "599bfbf31a05",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stages.impact": {
+   "en": "See your impact",
+   "ar": "شاهد أثرك",
+   "kind": "text",
+   "hash": "fb3772575ce9",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stages.real": {
+   "en": "The real journey",
+   "ar": "الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "4c3c1e1bc53c",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stateAhead": {
+   "en": "Ahead",
+   "ar": "لاحقاً",
+   "kind": "text",
+   "hash": "66cfe174e85d",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stateCurrent": {
+   "en": "You are here",
+   "ar": "أنت هنا",
+   "kind": "text",
+   "hash": "67fc27162c95",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.stateDone": {
+   "en": "Done",
+   "ar": "تمّت",
+   "kind": "text",
+   "hash": "4f35bda9199d",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
   "components/try/TryJourneyGuide.time.text": {
    "en": "Inside a country: a timeline from a year ago to a year ahead, and a “Watch the year pass” button.",
    "ar": "داخل الدولة: شريطٌ من قبل سنة إلى بعد سنة، وزر «شاهد السنة تمرّ».",
@@ -5105,6 +5296,132 @@
    "kind": "text",
    "hash": "dc00477625ab",
    "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryJourneyGuide.youAreHere": {
+   "en": "You are here",
+   "ar": "أنت هنا",
+   "kind": "text",
+   "hash": "67fc27162c95",
+   "file": "src/components/try/TryJourneyGuide.tsx"
+  },
+  "components/try/TryRealInvite.after": {
+   "en": "This is a virtual journey: nothing was charged. The real one begins when you register.",
+   "ar": "هذه رحلةٌ افتراضية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
+   "kind": "text",
+   "hash": "5a9a56d3d8a3",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.chosen": {
+   "en": "What you chose in the trial",
+   "ar": "ما اخترته في التجربة",
+   "kind": "text",
+   "hash": "fc99f1e00453",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.continue": {
+   "en": "Continue to your real journey",
+   "ar": "أكمل إلى رحلتك الحقيقية",
+   "kind": "text",
+   "hash": "5b771bedef77",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.enter": {
+   "en": "Enter the real journey",
+   "ar": "ادخل الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "6dbd445e4e6c",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.enterShort": {
+   "en": "The real journey",
+   "ar": "الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "4c3c1e1bc53c",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.enterTiny": {
+   "en": "Go real",
+   "ar": "الحقيقية",
+   "kind": "text",
+   "hash": "439a976234c7",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.eyebrow": {
+   "en": "From virtual to real",
+   "ar": "من الافتراضي إلى الحقيقي",
+   "kind": "text",
+   "hash": "c0ed09810e53",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.fields": {
+   "en": "One field: your email.",
+   "ar": "حقلٌ واحد: بريدك.",
+   "kind": "text",
+   "hash": "efecde707fb8",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.line": {
+   "en": "This gift is virtual: nothing real was recorded.",
+   "ar": "هذا عطاءٌ افتراضي: لم يُسجَّل شيءٌ حقيقي.",
+   "kind": "text",
+   "hash": "729332b8d5c8",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.lineRegistered": {
+   "en": "This gift is virtual. You confirm the real one in “My impact”.",
+   "ar": "هذا عطاءٌ افتراضي. الحقيقي تؤكّده في «أثري».",
+   "kind": "text",
+   "hash": "c5694a2516ed",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.promises.0": {
+   "en": "Nothing is carried over automatically: what you chose becomes a proposal only.",
+   "ar": "لا يُنقل شيءٌ تلقائياً: ما اخترته يصير مقترحاً فقط.",
+   "kind": "text",
+   "hash": "09a6b8a5caae",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.promises.1": {
+   "en": "You confirm every amount yourself; no amount changes without you.",
+   "ar": "تؤكّد كلّ مبلغٍ بنفسك، ولا يتغيّر مبلغٌ دون علمك.",
+   "kind": "text",
+   "hash": "997d8fb3aa45",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.promises.2": {
+   "en": "The trial's children are fictional; there you choose a child from the accredited directory.",
+   "ar": "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من الدليل المعتمد.",
+   "kind": "text",
+   "hash": "f4a65225c1fe",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.text": {
+   "en": "Everything you saw here is simulated: nothing was charged, and no child was sponsored. Register with just your email and find what you chose waiting there as a proposal.",
+   "ar": "كلّ ما رأيته هنا محاكاة: لم يُخصم شيء، ولم يُكفل طفل. سجّل ببريدك وحده، فتجد ما اخترته مقترحاً ينتظرك هناك.",
+   "kind": "text",
+   "hash": "a09dc0cc9dba",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.textRegistered": {
+   "en": "What you saw here is simulated. In your real “My impact” you will find what you chose as a proposal, and nothing begins before you confirm it.",
+   "ar": "ما رأيته هنا محاكاة. في «أثري» الحقيقية تجد ما اخترته مقترحاً، ولا يبدأ شيءٌ قبل أن تؤكّده.",
+   "kind": "text",
+   "hash": "a25848f9761d",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.title": {
+   "en": "This is a virtual journey. The real one begins when you register",
+   "ar": "هذه رحلةٌ افتراضية. الحقيقية تبدأ بتسجيلك",
+   "kind": "text",
+   "hash": "6bf73d3403a0",
+   "file": "src/components/try/TryRealInvite.tsx"
+  },
+  "components/try/TryRealInvite.titleRegistered": {
+   "en": "Your account is ready. Your real journey is waiting",
+   "ar": "حسابك جاهز. رحلتك الحقيقية تنتظرك",
+   "kind": "text",
+   "hash": "51c1d904ce63",
+   "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryReportPreview.deliveredText": {
    "en": "A receipt signed by the guardian, filed in the sponsorship record.",
@@ -5300,6 +5617,90 @@
    "kind": "text",
    "hash": "786bd352ec24",
    "file": "src/components/try/TryShareCard.tsx"
+  },
+  "components/try/TryShell.dialogHint": {
+   "en": "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
+   "ar": "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
+   "kind": "text",
+   "hash": "69132e84fb5e",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.dialogTitle": {
+   "en": "Enter the real journey",
+   "ar": "ادخل الرحلة الحقيقية",
+   "kind": "text",
+   "hash": "6dbd445e4e6c",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.leftAction": {
+   "en": "Enter the real one",
+   "ar": "ادخل الحقيقية",
+   "kind": "text",
+   "hash": "a250a2d29f98",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.leftText": {
+   "en": "What you chose is kept in your browser as a proposal. Register with your email to enter the real journey.",
+   "ar": "ما اخترته محفوظٌ في متصفّحك مقترحاً. سجّل ببريدك لتدخل الرحلة الحقيقية.",
+   "kind": "text",
+   "hash": "971ce975a89c",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.leftTitle": {
+   "en": "You have left the virtual journey",
+   "ar": "غادرت الرحلة الافتراضية",
+   "kind": "text",
+   "hash": "1926efdc8401",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.mode": {
+   "en": "Virtual journey",
+   "ar": "رحلة افتراضية",
+   "kind": "text",
+   "hash": "9c06e142a9ca",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.modeLabel": {
+   "en": "You are now in a virtual journey",
+   "ar": "أنت الآن في رحلةٍ افتراضية",
+   "kind": "text",
+   "hash": "2130f6af9e08",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.noteLong": {
+   "en": "You are now in a virtual journey: the children are under pseudonyms and payment is simulated, so nothing is charged or sent. You enter the real journey by registering.",
+   "ar": "أنت الآن في رحلةٍ افتراضية: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
+   "kind": "text",
+   "hash": "d63372dc5d8e",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.noteRegistered": {
+   "en": "You are now in a virtual journey, and your account is ready: what you choose here stays simulated until you confirm it in your real “My impact”.",
+   "ar": "أنت الآن في رحلةٍ افتراضية، وحسابك جاهز: ما تختاره هنا يبقى محاكاة حتى تؤكّده في «أثري» الحقيقية.",
+   "kind": "text",
+   "hash": "3cc60cf933df",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.noteShort": {
+   "en": "You are now in a virtual journey: nothing is charged. The real one begins when you register.",
+   "ar": "أنت الآن في رحلةٍ افتراضية: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
+   "kind": "text",
+   "hash": "e574e01b65af",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.restart": {
+   "en": "Start over",
+   "ar": "ابدأ من جديد",
+   "kind": "text",
+   "hash": "5eb8c718763e",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.restarted": {
+   "en": "The trial has started over",
+   "ar": "بدأت التجربة من جديد",
+   "kind": "text",
+   "hash": "deb6a4a8e71d",
+   "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TrySupportMap.eyebrow": {
    "en": "Try the platform",
@@ -8724,10 +9125,10 @@
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.hint": {
-   "en": "Your passkey if it's on this device, a code sent to your email or phone, or Google. Your account is created the first time you sign in.",
-   "ar": "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك إلى البريد أو الجوال، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+   "en": "Your passkey if it's on this device, a code sent to you, or Google. Your account is created the first time you sign in.",
+   "ar": "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
    "kind": "text",
-   "hash": "6d27c3e9523f",
+   "hash": "14b666f3065d",
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.home": {
@@ -8779,6 +9180,27 @@
    "kind": "text",
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
+  },
+  "routes/hall.lazy.gate": {
+   "en": "You are now in a virtual journey: everything in the hall is simulated, and nothing is charged.",
+   "ar": "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
+   "kind": "text",
+   "hash": "f37c9e8bf8df",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.gateReal": {
+   "en": "The real journey begins when you register",
+   "ar": "الرحلة الحقيقية تبدأ بتسجيلك",
+   "kind": "text",
+   "hash": "21dde7a00ddc",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.tag": {
+   "en": "Virtual journey",
+   "ar": "رحلة افتراضية",
+   "kind": "text",
+   "hash": "9c06e142a9ca",
+   "file": "src/routes/hall.lazy.tsx"
   },
   "routes/how-it-works.actors.0.0": {
    "en": "Care organization",
@@ -11615,27 +12037,6 @@
    "hash": "7ca1e6b5247f",
    "file": "src/routes/try.index.tsx"
   },
-  "routes/try.mode": {
-   "en": "Trial mode",
-   "ar": "وضع التجربة",
-   "kind": "text",
-   "hash": "60655b0a8e5e",
-   "file": "src/routes/try.tsx"
-  },
-  "routes/try.noteLong": {
-   "en": "The children here are fictional, under pseudonyms, and payment is simulated: nothing is charged and nothing is sent.",
-   "ar": "الأطفال هنا افتراضيون بأسماءٍ مستعارة، والدفع محاكاة: لا يُخصم أي مبلغ ولا يُرسل شيء.",
-   "kind": "text",
-   "hash": "fe2efd590aed",
-   "file": "src/routes/try.tsx"
-  },
-  "routes/try.noteShort": {
-   "en": "Sample data. Nothing is charged.",
-   "ar": "بياناتٌ افتراضية، ولا يُخصم شيء.",
-   "kind": "text",
-   "hash": "03d570d7b499",
-   "file": "src/routes/try.tsx"
-  },
   "routes/try.pay.amount": {
    "en": "Amount",
    "ar": "المبلغ",
@@ -11776,20 +12177,6 @@
    "kind": "text",
    "hash": "ca029db4e2cf",
    "file": "src/routes/try.pay.tsx"
-  },
-  "routes/try.restart": {
-   "en": "Start over",
-   "ar": "ابدأ من جديد",
-   "kind": "text",
-   "hash": "5eb8c718763e",
-   "file": "src/routes/try.tsx"
-  },
-  "routes/try.restarted": {
-   "en": "The trial has started over",
-   "ar": "بدأت التجربة من جديد",
-   "kind": "text",
-   "hash": "deb6a4a8e71d",
-   "file": "src/routes/try.tsx"
   },
   "routes/try.section": {
    "en": "Try the platform",
