@@ -49,7 +49,7 @@ check Functions "SELECT proname FROM pg_proc WHERE pronamespace = 'public'::regn
 check Enums "SELECT typname FROM pg_type WHERE typnamespace = 'public'::regnamespace AND typtype = 'e'" || rc=1
 
 # drizzle/ ليس طريق هجرة: 0000–0002 نُقلت إلى 20261108200000_port_drizzle_policies.sql،
-# و0003–0004 إلى 20261116100000_reconcile_live_drizzle.sql، و0005 إلى 20261119100000_port_drizzle_0005.sql. ملفٌّ جديدٌ فيه يعني أنّ أحداً طبّق
+# و0003–0004 إلى 20261116100000_reconcile_live_drizzle.sql، و0005 إلى 20261119100000_port_drizzle_0005.sql، و0006 إلى 20261121140000_port_drizzle_0006.sql. ملفٌّ جديدٌ فيه يعني أنّ أحداً طبّق
 # تغييراً على الإنتاج من خارج السلسلة.
 if [[ -d drizzle/migrations ]]; then
   extra=$(find drizzle/migrations -maxdepth 1 -name '*.sql' \
@@ -58,7 +58,8 @@ if [[ -d drizzle/migrations ]]; then
     ! -name '0002_restrict_lookup_reads.sql' \
     ! -name '0003_support_network_countries.sql' \
     ! -name '0004_gate_enrollment_supervisor_lookups.sql' \
-    ! -name '0005_restore_supervisor_approval_check.sql' | sort)
+    ! -name '0005_restore_supervisor_approval_check.sql' \
+    ! -name '0006_orphan_traits_server_only.sql' | sort)
   if [[ -n "$extra" ]]; then
     printf '  ✗ drizzle/migrations يحمل SQL لم يُنقل إلى supabase/migrations:\n'
     printf '      %s\n' $extra

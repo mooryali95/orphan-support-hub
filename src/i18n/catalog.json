@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2409,
+ "count": 2742,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -579,6 +579,2353 @@
    "kind": "text",
    "hash": "067b55cf4285",
    "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/data.add": {
+   "en": "Add",
+   "ar": "إضافة",
+   "kind": "text",
+   "hash": "fb8affd3f523",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.clear": {
+   "en": "Start over",
+   "ar": "ابدأ من جديد",
+   "kind": "text",
+   "hash": "5eb8c718763e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.commit.one": {
+   "en": "Save one row",
+   "ar": "احفظ صفّاً واحداً",
+   "kind": "plural",
+   "hash": "80922bc46baf",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.commit.other": {
+   "en": "Save {0} rows",
+   "ar": "احفظ {0} صفّ",
+   "kind": "plural",
+   "hash": "415392d7fa2f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.commit.zero": {
+   "en": "No rows ready",
+   "ar": "لا صفوف جاهزة",
+   "kind": "plural",
+   "hash": "212c134a6d63",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.committing": {
+   "en": "Saving",
+   "ar": "جارٍ الحفظ",
+   "kind": "text",
+   "hash": "59da2e37134e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.done": {
+   "en": "{0} files saved, {1} not saved.",
+   "ar": "حُفظ {0} ملفّاً، ولم يُحفظ {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "906c608bf489",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.doneHint": {
+   "en": "Everything saved is “under review” and unpublished.",
+   "ar": "كلّ ما حُفظ «قيد المراجعة» وغير منشور.",
+   "kind": "text",
+   "hash": "a092230a63bc",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.downloadRejected": {
+   "en": "Download the rows that were not saved",
+   "ar": "نزّل الصفوف التي لم تُحفظ",
+   "kind": "text",
+   "hash": "fc6547ffc817",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.dryRun": {
+   "en": "Check on the server (no saving)",
+   "ar": "افحص على الخادم (بلا حفظ)",
+   "kind": "text",
+   "hash": "e40a6c2ba101",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.dryRunDone": {
+   "en": "Check finished. Nothing was saved.",
+   "ar": "انتهى الفحص. لم يُحفظ شيء.",
+   "kind": "text",
+   "hash": "68413cb9ec8b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.dryRunFirst": {
+   "en": "Check on the server first: that is where duplicates against existing files are found.",
+   "ar": "افحص على الخادم أوّلاً: هناك يُكشف التكرار مع الملفّات القائمة.",
+   "kind": "text",
+   "hash": "06606c38b7b9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.dryRunning": {
+   "en": "Checking",
+   "ar": "جارٍ الفحص",
+   "kind": "text",
+   "hash": "573e8bd82992",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.duplicate": {
+   "en": "Possible duplicate",
+   "ar": "تكرارٌ محتمل",
+   "kind": "text",
+   "hash": "44e16fdc97b2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.emptySheet": {
+   "en": "No rows in the table.",
+   "ar": "لا صفوف في الجدول.",
+   "kind": "text",
+   "hash": "0cc4d344f4d8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.birth_date": {
+   "en": "Date of birth",
+   "ar": "تاريخ الميلاد",
+   "kind": "text",
+   "hash": "53a5c8a52620",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.display_name": {
+   "en": "Pseudonym",
+   "ar": "الاسم المستعار",
+   "kind": "text",
+   "hash": "49a69f16be54",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.education_stage": {
+   "en": "School stage",
+   "ar": "المرحلة الدراسية",
+   "kind": "text",
+   "hash": "4460d379fb71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.external_ref": {
+   "en": "Reference",
+   "ar": "المرجع",
+   "kind": "text",
+   "hash": "480de2f7de63",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.full_name": {
+   "en": "Full name",
+   "ar": "الاسم الكامل",
+   "kind": "text",
+   "hash": "15b3547c7b4c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.gender": {
+   "en": "Gender",
+   "ar": "الجنس",
+   "kind": "text",
+   "hash": "cde9d827f5c5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.group": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.guardian_name": {
+   "en": "Guardian",
+   "ar": "وليّ الأمر",
+   "kind": "text",
+   "hash": "8e0427ad2597",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.guardian_phone": {
+   "en": "Guardian's phone",
+   "ar": "جوال وليّ الأمر",
+   "kind": "text",
+   "hash": "47c265802a26",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.monthly_need": {
+   "en": "Monthly need",
+   "ar": "الاحتياج الشهري",
+   "kind": "text",
+   "hash": "295dbc9a8b5a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.fieldNames.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.heading": {
+   "en": "Bulk upload",
+   "ar": "رفع دفعة",
+   "kind": "text",
+   "hash": "a21ddc012733",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.hint": {
+   "en": "Paste a table or upload a CSV file. Every row is checked and shown before anything is saved.",
+   "ar": "الصق جدولاً أو ارفع ملفّ CSV. يُفحص كلّ صفٍّ ويُعرض قبل أن يُحفظ شيء.",
+   "kind": "text",
+   "hash": "2088f2483ccd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.ignoredColumns": {
+   "en": "Unknown columns were ignored: {0}",
+   "ar": "أعمدةٌ لم تُعرف فتُجوهلت: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "03bad04c3677",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.importAnyway": {
+   "en": "Different person — save",
+   "ar": "شخصٌ آخر — احفظه",
+   "kind": "text",
+   "hash": "6c30992641e5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.inFile": {
+   "en": "Matches row {0} in the file",
+   "ar": "يطابق الصفّ {0} في الملفّ",
+   "kind": "template",
+   "params": 1,
+   "hash": "b652761bd96f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.invalid": {
+   "en": "Rejected",
+   "ar": "مرفوض",
+   "kind": "text",
+   "hash": "6f3c73f28fae",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.matches": {
+   "en": "Matches {0} ({1})",
+   "ar": "يطابق {0} ({1})",
+   "kind": "template",
+   "params": 2,
+   "hash": "57be97a0288b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.missingColumns": {
+   "en": "Required columns are missing: {0}",
+   "ar": "أعمدةٌ إلزامية غائبة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "15a943a4a2ae",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.paste": {
+   "en": "Paste here (the first line is the column headers)",
+   "ar": "الصق هنا (السطر الأوّل عناوين الأعمدة)",
+   "kind": "text",
+   "hash": "988ed8159578",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.previewTitle": {
+   "en": "Preview",
+   "ar": "المعاينة",
+   "kind": "text",
+   "hash": "e75f813a2711",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.read": {
+   "en": "Read the table",
+   "ar": "اقرأ الجدول",
+   "kind": "text",
+   "hash": "e3756e03d4cd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.ready": {
+   "en": "Ready",
+   "ar": "جاهز",
+   "kind": "text",
+   "hash": "f747073cd625",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.rowNo": {
+   "en": "Row",
+   "ar": "الصفّ",
+   "kind": "text",
+   "hash": "b51646f2a4dd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.sampleName": {
+   "en": "Pseudonym",
+   "ar": "اسم مستعار",
+   "kind": "text",
+   "hash": "681bd3accfb9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.skipped": {
+   "en": "Not saved",
+   "ar": "لم يُحفظ",
+   "kind": "text",
+   "hash": "50e59e924564",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.state": {
+   "en": "State",
+   "ar": "الحال",
+   "kind": "text",
+   "hash": "de452a057a98",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.summary": {
+   "en": "{0} ready · {1} rejected · {2} possible duplicates",
+   "ar": "{0} جاهز · {1} مرفوض · {2} تكرار محتمل",
+   "kind": "template",
+   "params": 3,
+   "hash": "bfd3dc3b00b8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.template": {
+   "en": "Download the template",
+   "ar": "نزّل القالب",
+   "kind": "text",
+   "hash": "26d822044cf8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.templateHint": {
+   "en": "Headers are in Arabic. Delete the sample row before uploading.",
+   "ar": "العناوين بالعربية. احذف الصفّ التوضيحي قبل الرفع.",
+   "kind": "text",
+   "hash": "a3d5739201d1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.tooMany": {
+   "en": "The limit is {0} rows per batch. Split the file.",
+   "ar": "الحدّ {0} صفّاً في الدفعة. قسّم الملفّ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "36904a064ea1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.upload": {
+   "en": "Or upload a CSV file",
+   "ar": "أو ارفع ملفّ CSV",
+   "kind": "text",
+   "hash": "70e77f356002",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.whyNotPartner": {
+   "en": "This path is for the administration. Partner organizations upload through an integration key under “Integration”, and their files stop at review like these.",
+   "ar": "هذا المسار للإدارة. الجهات الشريكة ترفع عبر مفتاح التكامل من «التكامل»، وملفّاتها تقف عند المراجعة مثل هذه.",
+   "kind": "text",
+   "hash": "722b00feca03",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.bulk.written": {
+   "en": "Saved",
+   "ar": "حُفظ",
+   "kind": "text",
+   "hash": "a5d39a14e0d1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.chooseCountry": {
+   "en": "Choose a country",
+   "ar": "اختر الدولة",
+   "kind": "text",
+   "hash": "2298614ba4b3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.chooseRegion": {
+   "en": "Choose a region",
+   "ar": "اختر المنطقة",
+   "kind": "text",
+   "hash": "10985f4b7e7c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.activateConfirm": {
+   "en": "Open sponsorship",
+   "ar": "افتح الكفالة",
+   "kind": "text",
+   "hash": "8d85b67cd0fe",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.activateText": {
+   "en": "Once open, the country accepts new files from organizations and appears in entry forms. This does not publish files; each file is published by its own approval.",
+   "ar": "بعد الفتح تقبل الدولة ملفّاتٍ جديدة من الجهات وتظهر في نماذج الإدخال. الملفّات لا تُنشر بهذا؛ النشر باعتماد كلّ ملفّ.",
+   "kind": "text",
+   "hash": "9d72c6aa75f7",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.activateTitle": {
+   "en": "Open sponsorship in {0}?",
+   "ar": "فتح الكفالة في {0}؟",
+   "kind": "template",
+   "params": 1,
+   "hash": "a94363cf6f15",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.addHint": {
+   "en": "It is added as “planned”: build its regions and data first, then open sponsorship by decision.",
+   "ar": "تُضاف «مخطّطة»: تُبنى مناطقها وبياناتها أوّلاً، ثم تُفتح الكفالة فيها بقرار.",
+   "kind": "text",
+   "hash": "39983037facb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.addPerson": {
+   "en": "Add a person",
+   "ar": "أضف شخصاً",
+   "kind": "text",
+   "hash": "0eaf36c0b483",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.addPick": {
+   "en": "Choose a country from the world…",
+   "ar": "اختر دولةً من العالم…",
+   "kind": "text",
+   "hash": "c632f8ff8e8b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.addSubmit": {
+   "en": "Add the country",
+   "ar": "أضف الدولة",
+   "kind": "text",
+   "hash": "5e48aa7277ec",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.addTitle": {
+   "en": "Add a country",
+   "ar": "إضافة دولة",
+   "kind": "text",
+   "hash": "3c023a4c3750",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.added": {
+   "en": "{0} added",
+   "ar": "أُضيفت {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "5b6f11aa5876",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.children": {
+   "en": "Files",
+   "ar": "الملفّات",
+   "kind": "text",
+   "hash": "3585776bf5e4",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.currency": {
+   "en": "Currency",
+   "ar": "العملة",
+   "kind": "text",
+   "hash": "da372b886205",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.currencyAuto": {
+   "en": "By continent (euro for Europe, dollar elsewhere)",
+   "ar": "بحسب القارّة (يورو لأوروبا، دولار لغيرها)",
+   "kind": "text",
+   "hash": "0b8cd7e9e2ff",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.currencyDefault": {
+   "en": "Platform currency ({0})",
+   "ar": "عملة المنصّة ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "cea73349be1d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.emergencyHint": {
+   "en": "Emergency mode is lifted from “Countries and sources”.",
+   "ar": "وضع الطوارئ يُرفع من «الدول والمصادر».",
+   "kind": "text",
+   "hash": "e6264dc83e2f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.empty": {
+   "en": "No countries in the registry yet",
+   "ar": "لا دول في السجلّ بعد",
+   "kind": "text",
+   "hash": "088cbe889221",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.emptyText": {
+   "en": "Add a country from the list below, or match the network countries in one go.",
+   "ar": "أضف دولةً من القائمة أدناه، أو طابق دول الشبكة دفعةً واحدة.",
+   "kind": "text",
+   "hash": "3b567d422de9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.filterActive": {
+   "en": "Sponsorship open",
+   "ar": "الكفالة مفتوحة",
+   "kind": "text",
+   "hash": "a88125cb3730",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.filterAll": {
+   "en": "All",
+   "ar": "الكل",
+   "kind": "text",
+   "hash": "4d78e47a912e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.filterEmpty": {
+   "en": "No regions",
+   "ar": "بلا مناطق",
+   "kind": "text",
+   "hash": "1fc52af87df1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.filterNetwork": {
+   "en": "In the network",
+   "ar": "في الشبكة",
+   "kind": "text",
+   "hash": "4c3572297b9b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.groups": {
+   "en": "Groups",
+   "ar": "المجموعات",
+   "kind": "text",
+   "hash": "92210342810b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.heading": {
+   "en": "Countries",
+   "ar": "الدول",
+   "kind": "text",
+   "hash": "7f0e3e766f4f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.hint": {
+   "en": "Each country's state in one place: whether it is in the network, whether sponsorship is open, its currency, and what has been built in it.",
+   "ar": "حال كلّ دولة في مكانٍ واحد: هل هي في الشبكة، وهل الكفالة مفتوحة فيها، وعملتها، وما بُني فيها.",
+   "kind": "text",
+   "hash": "4af0fbbf513a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.inNetwork": {
+   "en": "In the network",
+   "ar": "في الشبكة",
+   "kind": "text",
+   "hash": "4c3572297b9b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.inNetworkHint": {
+   "en": "Shown on the map as a destination for qualification and in-kind giving",
+   "ar": "تظهر وجهةً للتأهيل والتبرّع العيني على الخارطة",
+   "kind": "text",
+   "hash": "5bbee1012fd8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.manageRegions": {
+   "en": "Its regions",
+   "ar": "مناطقها",
+   "kind": "text",
+   "hash": "43e78c9762c2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.nameAr": {
+   "en": "Arabic name",
+   "ar": "الاسم بالعربية",
+   "kind": "text",
+   "hash": "6b9964ebb9c6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.nameLocal": {
+   "en": "Local name",
+   "ar": "الاسم المحلّي",
+   "kind": "text",
+   "hash": "23047aaf629b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.noMatch": {
+   "en": "No country matches the search.",
+   "ar": "لا دولة تطابق البحث.",
+   "kind": "text",
+   "hash": "be451ef4e585",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.noSource": {
+   "en": "No operating platform",
+   "ar": "لا منصّة تشغيل",
+   "kind": "text",
+   "hash": "7c2a45fd110a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.published": {
+   "en": "{0} published",
+   "ar": "{0} منشور",
+   "kind": "template",
+   "params": 1,
+   "hash": "a2d79b84765e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.regions": {
+   "en": "Regions",
+   "ar": "المناطق",
+   "kind": "text",
+   "hash": "68f11e249e43",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.search": {
+   "en": "Search by country name or code",
+   "ar": "ابحث باسم الدولة أو رمزها",
+   "kind": "text",
+   "hash": "02afc63c9ef6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.sources": {
+   "en": "Operating platform",
+   "ar": "منصّة التشغيل",
+   "kind": "text",
+   "hash": "cbdc395893dd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statActive": {
+   "en": "sponsorship open",
+   "ar": "الكفالة مفتوحة",
+   "kind": "text",
+   "hash": "8c4c072a0477",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statChildren": {
+   "en": "files",
+   "ar": "ملفّاً",
+   "kind": "text",
+   "hash": "ba101999c5ab",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statCountries": {
+   "en": "countries in the registry",
+   "ar": "دولة في السجلّ",
+   "kind": "text",
+   "hash": "72469652ae0b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statNetwork": {
+   "en": "in the network",
+   "ar": "في الشبكة",
+   "kind": "text",
+   "hash": "ac5ef7e838f5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.status": {
+   "en": "Sponsorship",
+   "ar": "حال الكفالة",
+   "kind": "text",
+   "hash": "45988f114b32",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statusLabels.active": {
+   "en": "Open",
+   "ar": "مفتوحة",
+   "kind": "text",
+   "hash": "042fc41a8885",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statusLabels.emergency": {
+   "en": "Emergency",
+   "ar": "طوارئ",
+   "kind": "text",
+   "hash": "85d5540991ec",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statusLabels.paused": {
+   "en": "Paused",
+   "ar": "موقوفة",
+   "kind": "text",
+   "hash": "1045c18429c7",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.statusLabels.planned": {
+   "en": "Planned",
+   "ar": "مخطّطة",
+   "kind": "text",
+   "hash": "73c6c8351a35",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncAdd": {
+   "en": "Added to the registry (planned and flagged)",
+   "ar": "تُضاف إلى السجلّ (مخطّطة ومعلَّمة)",
+   "kind": "text",
+   "hash": "6f19c234c9a6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncApplied": {
+   "en": "Match applied",
+   "ar": "طُبّقت المطابقة",
+   "kind": "text",
+   "hash": "3bb312a779c5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncApply.one": {
+   "en": "Apply one change",
+   "ar": "طبّق تغييراً واحداً",
+   "kind": "plural",
+   "hash": "e8798e85cbcc",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncApply.other": {
+   "en": "Apply {0} changes",
+   "ar": "طبّق {0} تغيير",
+   "kind": "plural",
+   "hash": "0b8652eec915",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncButton": {
+   "en": "Match network countries",
+   "ar": "طابق دول الشبكة",
+   "kind": "text",
+   "hash": "fceeaf3fc8b8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncDisable": {
+   "en": "Flag removed (not on the list)",
+   "ar": "يُرفع عنها التعليم (ليست في القائمة)",
+   "kind": "text",
+   "hash": "4c82d3fdb720",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncEnable": {
+   "en": "Flagged “in the network”",
+   "ar": "تُعلَّم «في الشبكة»",
+   "kind": "text",
+   "hash": "7803228ff897",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncLead": {
+   "en": "The “in the network” flag is matched to the public presence list ({0} countries: an office or field activity). Sponsorship status does not change.",
+   "ar": "تعليم «في الشبكة» يُطابَق مع قائمة الحضور العلني ({0} دولة: مكتبٌ أو نشاطٌ ميداني). حال الكفالة لا تتغيّر بهذا.",
+   "kind": "template",
+   "params": 1,
+   "hash": "547f7b3a2d09",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncLoading": {
+   "en": "Working out the difference",
+   "ar": "جارٍ حساب الفرق",
+   "kind": "text",
+   "hash": "abb318f3c21b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncNone": {
+   "en": "The countries table matches the network list. Nothing changes.",
+   "ar": "جدول الدول مطابقٌ لقائمة الشبكة. لا شيء يتغيّر.",
+   "kind": "text",
+   "hash": "075da59d47a0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncTitle": {
+   "en": "Match network countries",
+   "ar": "مطابقة دول الشبكة",
+   "kind": "text",
+   "hash": "995fd037a9f6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.syncWhere": {
+   "en": "Written to the database this site is connected to, under your name.",
+   "ar": "يُكتب على القاعدة المتّصلة بهذا الموقع، باسمك.",
+   "kind": "text",
+   "hash": "889ddd554462",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.unlinked.one": {
+   "en": "One file has a country text that did not resolve to a code.",
+   "ar": "ملفٌّ واحد لم يُعرف رمز دولته من نصّها.",
+   "kind": "plural",
+   "hash": "3d5e297bbe03",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.unlinked.other": {
+   "en": "{0} files have a country text that did not resolve to a code.",
+   "ar": "{0} ملفّ لم يُعرف رمز دولتها من نصّها.",
+   "kind": "plural",
+   "hash": "af82df69b179",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.countries.unlinkedHint": {
+   "en": "Fix each from its file; anything entered here always carries its country code.",
+   "ar": "تُصحَّح من ملفّ كلٍّ منها؛ وما يُدخَل من هنا يحمل رمز دولته دائماً.",
+   "kind": "text",
+   "hash": "720765211555",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.degradedText": {
+   "en": "Countries can be viewed and edited now. Region, child and group counts, and the regions, people, groups and upload sections, work once the “data building” package is applied.",
+   "ar": "الدول تُعرض وتُعدَّل الآن. أعداد المناطق والأطفال والمجموعات، وخانات المناطق والأشخاص والمجموعات والرفع، تعمل بعد تطبيق حزمة «بناء البيانات».",
+   "kind": "text",
+   "hash": "a270a1b201a2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.degradedTitle": {
+   "en": "Partial view until the database is updated",
+   "ar": "عرضٌ جزئي حتى تُحدَّث القاعدة",
+   "kind": "text",
+   "hash": "d0b59683af28",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.edit": {
+   "en": "Edit",
+   "ar": "تعديل",
+   "kind": "text",
+   "hash": "c9b1555b11cb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.admin_only": {
+   "en": "This action is for the administration team only.",
+   "ar": "هذا الإجراء لفريق الإدارة وحده.",
+   "kind": "text",
+   "hash": "fa48d2ba6ba3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.country_exists": {
+   "en": "This country is already in the registry.",
+   "ar": "هذه الدولة موجودة في السجلّ.",
+   "kind": "text",
+   "hash": "6d1aee10e5ed",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.country_unknown": {
+   "en": "The country is not in the platform registry. Add it under Countries first.",
+   "ar": "الدولة ليست في سجلّ المنصّة. أضفها من «الدول» أوّلاً.",
+   "kind": "text",
+   "hash": "ab8d103a696b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.failed": {
+   "en": "That did not go through. Nothing changed.",
+   "ar": "تعذّر التنفيذ. لم يتغيّر شيء.",
+   "kind": "text",
+   "hash": "5c8282f4310e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.group_has_members": {
+   "en": "A group with members cannot move to another country. Remove its members first.",
+   "ar": "لا تُنقل المجموعة إلى دولةٍ أخرى وفيها أعضاء. أخرِج أعضاءها أوّلاً.",
+   "kind": "text",
+   "hash": "2e0711976a7b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.group_name_required": {
+   "en": "Enter the group name (at least two characters).",
+   "ar": "اكتب اسم المجموعة (حرفان على الأقل).",
+   "kind": "text",
+   "hash": "fd623ec07206",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.group_synced": {
+   "en": "This group comes from the operating platform and is edited there.",
+   "ar": "هذه المجموعة تأتي من منصّة التشغيل وتُعدَّل هناك.",
+   "kind": "text",
+   "hash": "1872792771d2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.group_unknown": {
+   "en": "The group does not exist.",
+   "ar": "المجموعة غير موجودة.",
+   "kind": "text",
+   "hash": "7ef3e958e712",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.name_required": {
+   "en": "Enter the name.",
+   "ar": "اكتب الاسم.",
+   "kind": "text",
+   "hash": "23929b7e7818",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.not_saved": {
+   "en": "Not saved: this account cannot write to the countries table.",
+   "ar": "لم يُحفظ: الحساب لا يملك صلاحية الكتابة على جدول الدول.",
+   "kind": "text",
+   "hash": "2637b18c8297",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.preview_stale": {
+   "en": "The countries table changed since the preview. This is a fresh preview; review it, then apply.",
+   "ar": "تغيّر جدول الدول منذ المعاينة. هذه معاينةٌ جديدة؛ راجعها ثم طبّق.",
+   "kind": "text",
+   "hash": "2d57b95444a7",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.region_exists": {
+   "en": "A region with this name already exists in this country.",
+   "ar": "منطقةٌ بهذا الاسم موجودة في هذه الدولة.",
+   "kind": "text",
+   "hash": "155b18211400",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.region_name_required": {
+   "en": "Enter the region name.",
+   "ar": "اكتب اسم المنطقة.",
+   "kind": "text",
+   "hash": "27d019529a85",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.region_unknown": {
+   "en": "The region is not one of this country's regions.",
+   "ar": "المنطقة ليست من مناطق هذه الدولة.",
+   "kind": "text",
+   "hash": "6b70738a3a7c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.errors.rows_invalid": {
+   "en": "The batch is empty or over the limit.",
+   "ar": "الدفعة فارغة أو أكبر من الحدّ.",
+   "kind": "text",
+   "hash": "4d7241f09dbe",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.eyebrow": {
+   "en": "Data building",
+   "ar": "بناء البيانات",
+   "kind": "text",
+   "hash": "7082970433de",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.addMember": {
+   "en": "Add",
+   "ar": "ضمّ",
+   "kind": "text",
+   "hash": "07221a0cc9f3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.adoptCountry": {
+   "en": "Move them to the group's country (with its currency and region)",
+   "ar": "انقله إلى دولة المجموعة (ومعها عملتها ومنطقتها)",
+   "kind": "text",
+   "hash": "d685c112ec45",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.allCountries": {
+   "en": "All countries",
+   "ar": "كل الدول",
+   "kind": "text",
+   "hash": "4b65cb574be8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.already": {
+   "en": "Already a member",
+   "ar": "عضوٌ فيها",
+   "kind": "text",
+   "hash": "7d19da167e84",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.confirmJoin": {
+   "en": "Add with these choices",
+   "ar": "ضمّه بهذه الاختيارات",
+   "kind": "text",
+   "hash": "24c3f5182f0b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.conflictCountry": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.conflictGroup": {
+   "en": "Current group",
+   "ar": "مجموعته الحالية",
+   "kind": "text",
+   "hash": "5e021f2364aa",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.conflictRegion": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.conflictText": {
+   "en": "Nothing is replaced until you choose.",
+   "ar": "لا يُستبدل شيء حتى تختار.",
+   "kind": "text",
+   "hash": "ad9e436430af",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.conflictTitle": {
+   "en": "This person's data differs from the group",
+   "ar": "بيانات هذا الشخص تخالف المجموعة",
+   "kind": "text",
+   "hash": "56aed46ae472",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.create": {
+   "en": "Create the group",
+   "ar": "أنشئ المجموعة",
+   "kind": "text",
+   "hash": "0c87e1567a15",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.created": {
+   "en": "Group created",
+   "ar": "أُنشئت المجموعة",
+   "kind": "text",
+   "hash": "428840651b43",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.editTitle": {
+   "en": "Edit the group",
+   "ar": "تعديل المجموعة",
+   "kind": "text",
+   "hash": "6ae18f3ef71d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.empty": {
+   "en": "No groups yet",
+   "ar": "لا مجموعات بعد",
+   "kind": "text",
+   "hash": "8747ffa161ac",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.emptyText": {
+   "en": "Create a group, link it to its country, then add its members.",
+   "ar": "أنشئ مجموعةً واربطها بدولتها، ثم ضمّ إليها أعضاءها.",
+   "kind": "text",
+   "hash": "8483ad94edc9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.heading": {
+   "en": "Groups",
+   "ar": "المجموعات",
+   "kind": "text",
+   "hash": "92210342810b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.hint": {
+   "en": "A group is linked to a country and a region, and its members follow it. Operating-platform groups are read only.",
+   "ar": "مجموعةٌ تُربط بدولةٍ ومنطقة، وأعضاؤها يتبعونها. مجموعات منصّة التشغيل تُعرض للقراءة.",
+   "kind": "text",
+   "hash": "c360716be593",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.institution": {
+   "en": "Institution",
+   "ar": "المؤسسة",
+   "kind": "text",
+   "hash": "edc561e59cf1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.local": {
+   "en": "Local",
+   "ar": "محلّية",
+   "kind": "text",
+   "hash": "cf2aeca42cc3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberAdded": {
+   "en": "Added to the group",
+   "ar": "ضُمّ إلى المجموعة",
+   "kind": "text",
+   "hash": "3a656f143451",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.country_fixed": {
+   "en": "A published file, or one with a live sponsorship: its country and currency are fixed, so it cannot join a group in another country.",
+   "ar": "ملفٌّ منشور أو له كفالةٌ قائمة: دولته وعملته ثابتتان، فلا يُضمّ إلى مجموعةٍ في دولةٍ أخرى.",
+   "kind": "text",
+   "hash": "988e27e426a5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.group_synced": {
+   "en": "A group from the operating platform: its membership is written there.",
+   "ar": "مجموعةٌ من منصّة التشغيل: عضويتها تُكتب هناك.",
+   "kind": "text",
+   "hash": "12ba2d2603d2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.group_unknown": {
+   "en": "The group does not exist.",
+   "ar": "المجموعة غير موجودة.",
+   "kind": "text",
+   "hash": "7ef3e958e712",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.locked": {
+   "en": "A locked file (sponsorship, support or disbursement): it is edited through an unlock request under “Integrity”.",
+   "ar": "ملفٌّ مقفول (كفالة أو دعم أو صرف): تعديله بطلب فكٍّ من «سلامة الحقيقة».",
+   "kind": "text",
+   "hash": "5c10dd9147dd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.person_unknown": {
+   "en": "The file does not exist.",
+   "ar": "الملفّ غير موجود.",
+   "kind": "text",
+   "hash": "6c558cf36436",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberBlocked.synced": {
+   "en": "This file is synced from {0}: its group and region are written there.",
+   "ar": "هذا الملفّ يُزامَن من {0}: مجموعته ومنطقته تُكتبان هناك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "f4dd15ce42b7",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.memberRemoved": {
+   "en": "Removed from the group",
+   "ar": "أُخرج من المجموعة",
+   "kind": "text",
+   "hash": "b1b870d95a8c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.members.one": {
+   "en": "One member",
+   "ar": "عضو واحد",
+   "kind": "plural",
+   "hash": "e7ef1ef14451",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.members.other": {
+   "en": "{0} members",
+   "ar": "{0} عضو",
+   "kind": "plural",
+   "hash": "916c4788f983",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.members.zero": {
+   "en": "No members",
+   "ar": "بلا أعضاء",
+   "kind": "plural",
+   "hash": "76e6ae132fea",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.membersEmpty": {
+   "en": "No members yet. Search for a person and add them.",
+   "ar": "لا أعضاء بعد. ابحث عن شخصٍ وضمّه.",
+   "kind": "text",
+   "hash": "56e87e381bb6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.membersTitle": {
+   "en": "Members of {0}",
+   "ar": "أعضاء {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7cc0358b97f0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.moveFromGroup": {
+   "en": "Move them from their current group",
+   "ar": "انقله من مجموعته الحالية",
+   "kind": "text",
+   "hash": "5ec35f5320f4",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.name": {
+   "en": "Group name",
+   "ar": "اسم المجموعة",
+   "kind": "text",
+   "hash": "de981fc92deb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.newTitle": {
+   "en": "New group",
+   "ar": "مجموعة جديدة",
+   "kind": "text",
+   "hash": "11bc99c2ee83",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.onFile": {
+   "en": "On the file",
+   "ar": "على ملفّه",
+   "kind": "text",
+   "hash": "fb06ebf103dc",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.onGroup": {
+   "en": "On the group",
+   "ar": "على المجموعة",
+   "kind": "text",
+   "hash": "153e35183a53",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.open": {
+   "en": "Members",
+   "ar": "الأعضاء",
+   "kind": "text",
+   "hash": "de58413d17e0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.regionKeep": {
+   "en": "Keep their region",
+   "ar": "أبقِ منطقته",
+   "kind": "text",
+   "hash": "ab094c48979a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.regionUseGroup": {
+   "en": "Take the group's region",
+   "ar": "خذ منطقة المجموعة",
+   "kind": "text",
+   "hash": "d2ae7ebd6665",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.remove": {
+   "en": "Remove",
+   "ar": "أخرِج",
+   "kind": "text",
+   "hash": "1bf02c153dac",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.searchHint": {
+   "en": "Type at least two characters.",
+   "ar": "اكتب حرفين على الأقل.",
+   "kind": "text",
+   "hash": "f1e8d9b45d8b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.searchNone": {
+   "en": "No results.",
+   "ar": "لا نتائج.",
+   "kind": "text",
+   "hash": "4cba38d02915",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.searchPerson": {
+   "en": "Search by pseudonym or file number",
+   "ar": "ابحث بالاسم المستعار أو رقم الملفّ",
+   "kind": "text",
+   "hash": "82a00360b3d1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.supervisor": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.groups.synced": {
+   "en": "From {0} — read only",
+   "ar": "من {0} — للقراءة",
+   "kind": "template",
+   "params": 1,
+   "hash": "2e5dd229bb17",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.lead": {
+   "en": "Country first, then its regions, then groups and people. Nothing entered here is published until it passes the approval queue.",
+   "ar": "الدولة أوّلاً، ثم مناطقها، ثم المجموعات والأشخاص. كلّ ما يُدخَل هنا يبقى غير منشور حتى يمرّ بطابور الاعتماد.",
+   "kind": "text",
+   "hash": "ff8d0a21f532",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.listJoin": {
+   "en": ", ",
+   "ar": "، ",
+   "kind": "text",
+   "hash": "b07e750c1a03",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.loadFailed": {
+   "en": "This list could not be loaded. Nothing changed.",
+   "ar": "تعذّر تحميل هذه القائمة. لم يتغيّر شيء.",
+   "kind": "text",
+   "hash": "3e1bfaf607b1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.loading": {
+   "en": "Loading",
+   "ar": "جارٍ التحميل",
+   "kind": "text",
+   "hash": "dd4242b665fb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.needsUpdateText": {
+   "en": "This section works once the “data building” package is applied to the database (file 20261121130000). Nothing was saved, and the page is not broken.",
+   "ar": "هذه الخانة تعمل بعد تطبيق حزمة «بناء البيانات» على القاعدة (الملفّ 20261121130000). لم يُحفظ شيء، ولا خلل في الصفحة.",
+   "kind": "text",
+   "hash": "9a90d1ac13d2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.needsUpdateTitle": {
+   "en": "A database update is needed",
+   "ar": "تحتاج تحديث قاعدة البيانات",
+   "kind": "text",
+   "hash": "c52ba04beb6a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.noRegion": {
+   "en": "No region",
+   "ar": "بلا منطقة",
+   "kind": "text",
+   "hash": "b1473547931d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.none": {
+   "en": "—",
+   "ar": "—",
+   "kind": "text",
+   "hash": "e3913b1621f1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.optional": {
+   "en": "Optional",
+   "ar": "اختياري",
+   "kind": "text",
+   "hash": "b39d73f037ed",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.birthDate": {
+   "en": "Date of birth",
+   "ar": "تاريخ الميلاد",
+   "kind": "text",
+   "hash": "53a5c8a52620",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.countryHint": {
+   "en": "Chosen first: the region list and the currency come from it.",
+   "ar": "تُختار أوّلاً: منها تأتي قائمة المناطق والعملة.",
+   "kind": "text",
+   "hash": "80252cde7c67",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.displayName": {
+   "en": "Pseudonym",
+   "ar": "الاسم المستعار",
+   "kind": "text",
+   "hash": "49a69f16be54",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.displayNameHint": {
+   "en": "Shown to visitors. Do not write the full real name here.",
+   "ar": "يظهر للزوّار. لا تكتب الاسم الحقيقي الكامل هنا.",
+   "kind": "text",
+   "hash": "20259589c95c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupConfirm": {
+   "en": "Different person — save",
+   "ar": "شخصٌ آخر — احفظ",
+   "kind": "text",
+   "hash": "bf6e5aea0dd9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupReasons.same_birth_date": {
+   "en": "Same date of birth",
+   "ar": "تاريخ الميلاد نفسه",
+   "kind": "text",
+   "hash": "935a0b1ada13",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupReasons.same_full_name": {
+   "en": "Same full name",
+   "ar": "الاسم الكامل نفسه",
+   "kind": "text",
+   "hash": "3189e0fd7ece",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupReasons.same_name": {
+   "en": "Same name",
+   "ar": "الاسم نفسه",
+   "kind": "text",
+   "hash": "ac595c7d3966",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupReasons.same_reference": {
+   "en": "Same reference",
+   "ar": "المرجع نفسه",
+   "kind": "text",
+   "hash": "88057e4e1cde",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupReasons.same_region": {
+   "en": "Same region",
+   "ar": "المنطقة نفسها",
+   "kind": "text",
+   "hash": "25ab20f6442a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupText": {
+   "en": "Review the matching files. If this is a different person, save; otherwise cancel.",
+   "ar": "راجع الملفّات المطابقة. إن كان شخصاً آخر فاحفظه، وإلا فألغِ.",
+   "kind": "text",
+   "hash": "19962ed2d7c3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.dupTitle": {
+   "en": "This person may already have been entered",
+   "ar": "قد يكون هذا الشخص مُدخَلاً من قبل",
+   "kind": "text",
+   "hash": "caf1cbcd9c7e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.educationStage": {
+   "en": "School stage",
+   "ar": "المرحلة الدراسية",
+   "kind": "text",
+   "hash": "4460d379fb71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.female": {
+   "en": "Female",
+   "ar": "أنثى",
+   "kind": "text",
+   "hash": "7cd6b69de17e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.fullName": {
+   "en": "Full name",
+   "ar": "الاسم الكامل",
+   "kind": "text",
+   "hash": "15b3547c7b4c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.gender": {
+   "en": "Gender",
+   "ar": "الجنس",
+   "kind": "text",
+   "hash": "cde9d827f5c5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.group": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.groupHint": {
+   "en": "This country's local groups. The region follows the group unless you choose one.",
+   "ar": "مجموعات هذه الدولة المحلّية. المنطقة تتبع المجموعة ما لم تخترها.",
+   "kind": "text",
+   "hash": "7a893ad02c14",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.groupNone": {
+   "en": "No group",
+   "ar": "بلا مجموعة",
+   "kind": "text",
+   "hash": "a35ff55f47ad",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.groupRegionDiffers": {
+   "en": "The region you chose differs from the group's region. It was saved as you chose.",
+   "ar": "المنطقة التي اخترتها غير منطقة المجموعة. حُفظت كما اخترتها.",
+   "kind": "text",
+   "hash": "9aec91fd5f44",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.guardianName": {
+   "en": "Guardian's name",
+   "ar": "اسم وليّ الأمر",
+   "kind": "text",
+   "hash": "789b467cd047",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.guardianPhone": {
+   "en": "Guardian's phone",
+   "ar": "جوال وليّ الأمر",
+   "kind": "text",
+   "hash": "47c265802a26",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.heading": {
+   "en": "Add a person",
+   "ar": "إضافة شخص",
+   "kind": "text",
+   "hash": "16a48737dc80",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.hint": {
+   "en": "Three fields are enough: country, pseudonym and gender. The rest can be completed later.",
+   "ar": "ثلاثة حقول تكفي: الدولة، والاسم المستعار، والجنس. والباقي يُكمَل لاحقاً.",
+   "kind": "text",
+   "hash": "265dbc5ba79f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.keptDefaults": {
+   "en": "Country, region and group stay as chosen for the next person.",
+   "ar": "بقيت الدولة والمنطقة والمجموعة كما اخترتها للشخص التالي.",
+   "kind": "text",
+   "hash": "7c0111168def",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.locked": {
+   "en": "Locked",
+   "ar": "مقفول",
+   "kind": "text",
+   "hash": "cc369ca09f73",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.male": {
+   "en": "Male",
+   "ar": "ذكر",
+   "kind": "text",
+   "hash": "09e209b42163",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.monthlyNeed": {
+   "en": "Monthly need",
+   "ar": "الاحتياج الشهري",
+   "kind": "text",
+   "hash": "295dbc9a8b5a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.monthlyNeedHint": {
+   "en": "In the country's currency ({0}). Leave empty to set it later from need items.",
+   "ar": "بعملة الدولة ({0}). يُترك فارغاً ويُحدَّد لاحقاً ببنوده.",
+   "kind": "template",
+   "params": 1,
+   "hash": "e8d0554422bf",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.more": {
+   "en": "More details",
+   "ar": "تفاصيل إضافية",
+   "kind": "text",
+   "hash": "d4ada2d5ef15",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.notPublished": {
+   "en": "What is saved here is not published. It appears in the directory after approval in the approval queue, with its documents.",
+   "ar": "ما يُحفظ هنا لا يُنشر. يظهر في الدليل بعد اعتماده من «طابور الاعتماد» بوثائقه.",
+   "kind": "text",
+   "hash": "ef63a2e720e5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.org": {
+   "en": "Responsible organization",
+   "ar": "الجهة المسؤولة",
+   "kind": "text",
+   "hash": "ff1d0063f8dc",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.orgHint": {
+   "en": "With an approved organization it is saved as a draft the organization completes with documents and submits.",
+   "ar": "مع جهةٍ معتمدة يُحفظ «مسودّةً» تكملها الجهة بوثائقها ثم تقدّمها.",
+   "kind": "text",
+   "hash": "d1e521051018",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.orgNone": {
+   "en": "No organization (enters as “under review”)",
+   "ar": "بلا جهة (يدخل «قيد المراجعة»)",
+   "kind": "text",
+   "hash": "0747a83b109a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.privateHint": {
+   "en": "Not shown to anyone outside the administration and the responsible organization.",
+   "ar": "لا تظهر لأحدٍ خارج الإدارة والجهة المسؤولة.",
+   "kind": "text",
+   "hash": "df8c4a52b9a0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.privateTitle": {
+   "en": "Confidential data",
+   "ar": "بياناتٌ سرّية",
+   "kind": "text",
+   "hash": "ede254a058cd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.recentEmpty": {
+   "en": "No files yet in this country.",
+   "ar": "لا ملفّات بعد في هذه الدولة.",
+   "kind": "text",
+   "hash": "aa5fa13a0a20",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.recentTitle": {
+   "en": "Most recently entered",
+   "ar": "آخر ما أُدخل",
+   "kind": "text",
+   "hash": "776bc077923f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.regionEmpty": {
+   "en": "No regions for this country in the registry yet.",
+   "ar": "لا مناطق لهذه الدولة في السجلّ بعد.",
+   "kind": "text",
+   "hash": "3798a5bd4e64",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.regionEmptyAction": {
+   "en": "Add its regions",
+   "ar": "أضف مناطقها",
+   "kind": "text",
+   "hash": "0c6321f6ae0d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.regionFromGroup": {
+   "en": "Region taken from the group: {0}",
+   "ar": "المنطقة أُخذت من المجموعة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "bd0ddebc792d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.regionOf": {
+   "en": "Regions of {0}",
+   "ar": "مناطق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "75b06e821036",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.birth_date_invalid": {
+   "en": "The date of birth is not valid.",
+   "ar": "تاريخ الميلاد غير صحيح.",
+   "kind": "text",
+   "hash": "09bd31f87b70",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.country_required": {
+   "en": "Choose the country.",
+   "ar": "اختر الدولة.",
+   "kind": "text",
+   "hash": "fafa29d7aa12",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.country_unknown": {
+   "en": "The country is not in the platform registry.",
+   "ar": "الدولة ليست في سجلّ المنصّة.",
+   "kind": "text",
+   "hash": "e39cfe0f973d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.demo_reference": {
+   "en": "A reference from the trial showcase: it cannot enter real data.",
+   "ar": "مرجعٌ من العرض التجريبي: لا يدخل بياناتٍ حقيقية.",
+   "kind": "text",
+   "hash": "4c81a6f9cc2a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.gender_invalid": {
+   "en": "Choose the gender.",
+   "ar": "اختر الجنس.",
+   "kind": "text",
+   "hash": "979cd4654a62",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.group_country_mismatch": {
+   "en": "The group is in another country.",
+   "ar": "المجموعة في دولةٍ أخرى.",
+   "kind": "text",
+   "hash": "da2c9cfbf00f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.group_synced": {
+   "en": "A group from the operating platform: its membership is written there.",
+   "ar": "مجموعةٌ من منصّة التشغيل: عضويتها تُكتب هناك.",
+   "kind": "text",
+   "hash": "12ba2d2603d2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.group_unknown": {
+   "en": "Unknown group.",
+   "ar": "المجموعة غير معروفة.",
+   "kind": "text",
+   "hash": "d7b824b2c7a7",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.name_required": {
+   "en": "A pseudonym is required (two to eighty characters).",
+   "ar": "الاسم المستعار مطلوب (حرفان إلى ثمانين).",
+   "kind": "text",
+   "hash": "d7ff47aadc30",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.need_invalid": {
+   "en": "The need must be a plain number.",
+   "ar": "الاحتياج رقمٌ بلا رموز.",
+   "kind": "text",
+   "hash": "31a25e80475a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.org_unknown": {
+   "en": "The organization is not approved or does not exist.",
+   "ar": "الجهة غير معتمدة أو غير موجودة.",
+   "kind": "text",
+   "hash": "7aeb321ce1bd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.reference_invalid": {
+   "en": "The reference is too long.",
+   "ar": "المرجع أطول من الحدّ.",
+   "kind": "text",
+   "hash": "f715ef08d865",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.region_unknown": {
+   "en": "The region is not one of this country's regions.",
+   "ar": "المنطقة ليست من مناطق هذه الدولة.",
+   "kind": "text",
+   "hash": "6b70738a3a7c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowErrors.write_failed": {
+   "en": "This row could not be written.",
+   "ar": "تعذّرت كتابة هذا الصفّ.",
+   "kind": "text",
+   "hash": "25ca5202583c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowWarnings.duplicate_in_file": {
+   "en": "Repeated within the file",
+   "ar": "مكرَّر داخل الملفّ",
+   "kind": "text",
+   "hash": "5c381027d454",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowWarnings.group_region_differs": {
+   "en": "Region differs from the group's",
+   "ar": "المنطقة غير منطقة المجموعة",
+   "kind": "text",
+   "hash": "fa34098ce8be",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowWarnings.region_from_group": {
+   "en": "Region from the group",
+   "ar": "المنطقة من المجموعة",
+   "kind": "text",
+   "hash": "c3d843d019cd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.rowWarnings.regions_not_loaded": {
+   "en": "Region is matched at the check",
+   "ar": "تُطابَق المنطقة عند الفحص",
+   "kind": "text",
+   "hash": "88765fd0891c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.saveAnother": {
+   "en": "Save and add another",
+   "ar": "احفظ وأضف آخر",
+   "kind": "text",
+   "hash": "ffab320adac9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.saveOne": {
+   "en": "Save",
+   "ar": "احفظ",
+   "kind": "text",
+   "hash": "b61aac0442f5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.savedAs": {
+   "en": "File {0} saved — {1}",
+   "ar": "حُفظ الملفّ {0} — {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "0a02ecbd2774",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.persons.synced": {
+   "en": "From operating platform {0} — read only",
+   "ar": "من منصّة التشغيل {0} — للقراءة",
+   "kind": "template",
+   "params": 1,
+   "hash": "cc90c8e3dffd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.activate": {
+   "en": "Activate",
+   "ar": "تفعيل",
+   "kind": "text",
+   "hash": "dd0f3c168a25",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.active": {
+   "en": "Active",
+   "ar": "مفعّلة",
+   "kind": "text",
+   "hash": "a27ae761242a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.addLocalPlaceholder": {
+   "en": "Local name (optional)",
+   "ar": "الاسم المحلّي (اختياري)",
+   "kind": "text",
+   "hash": "b3d07dc9afb1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.addPlaceholder": {
+   "en": "New region name",
+   "ar": "اسم منطقةٍ جديدة",
+   "kind": "text",
+   "hash": "6161e481b125",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.added": {
+   "en": "Region added",
+   "ar": "أُضيفت المنطقة",
+   "kind": "text",
+   "hash": "fbd5ec4c04f6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.children.one": {
+   "en": "One file",
+   "ar": "ملفٌّ واحد",
+   "kind": "plural",
+   "hash": "6e1877334583",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.children.other": {
+   "en": "{0} files",
+   "ar": "{0} ملفّ",
+   "kind": "plural",
+   "hash": "b4e88a39c455",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.children.zero": {
+   "en": "No files",
+   "ar": "لا ملفّات",
+   "kind": "plural",
+   "hash": "0a817765dbfb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.count.one": {
+   "en": "One region",
+   "ar": "منطقة واحدة",
+   "kind": "plural",
+   "hash": "7d70c91c45dd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.count.other": {
+   "en": "{0} regions",
+   "ar": "{0} منطقة",
+   "kind": "plural",
+   "hash": "a0079e07a622",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.count.zero": {
+   "en": "No regions",
+   "ar": "لا مناطق",
+   "kind": "plural",
+   "hash": "b7b9077545ea",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.deactivate": {
+   "en": "Deactivate",
+   "ar": "إيقاف",
+   "kind": "text",
+   "hash": "c46c0bb01ea1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.deactivateHint": {
+   "en": "An inactive region is not offered in entry forms; what is on existing files stays.",
+   "ar": "الموقوفة لا تُعرض في نماذج الإدخال؛ وما على الملفّات القائمة باقٍ.",
+   "kind": "text",
+   "hash": "450ca546b88b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.empty": {
+   "en": "No regions for this country yet",
+   "ar": "لا مناطق لهذه الدولة بعد",
+   "kind": "text",
+   "hash": "215d3b65eb0c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.emptyText": {
+   "en": "Start from the list suggested by the map and edit it, or add regions by hand.",
+   "ar": "ابدأ بالقائمة المقترحة من الخارطة ثم عدّلها، أو أضف المناطق يدوياً.",
+   "kind": "text",
+   "hash": "c1d5deab3997",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.heading": {
+   "en": "Country regions",
+   "ar": "مناطق الدولة",
+   "kind": "text",
+   "hash": "08336e9e1f82",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.hint": {
+   "en": "The list people choose from when entering a person or a group. What is written here is what is saved on the file.",
+   "ar": "قائمة المناطق التي يُختار منها عند إدخال شخصٍ أو مجموعة. ما يُكتب هنا هو ما يُحفظ على الملفّ.",
+   "kind": "text",
+   "hash": "3ad2e0b72c84",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.inactive": {
+   "en": "Inactive",
+   "ar": "موقوفة",
+   "kind": "text",
+   "hash": "da666a0c92f0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.name": {
+   "en": "Region name",
+   "ar": "اسم المنطقة",
+   "kind": "text",
+   "hash": "e29cac4ba3c5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.nameLocal": {
+   "en": "Local name",
+   "ar": "الاسم المحلّي",
+   "kind": "text",
+   "hash": "23047aaf629b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.pickFirst": {
+   "en": "Choose a country to see its regions.",
+   "ar": "اختر دولةً لتُعرض مناطقها.",
+   "kind": "text",
+   "hash": "d2df831b0e71",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.rename": {
+   "en": "Rename",
+   "ar": "إعادة تسمية",
+   "kind": "text",
+   "hash": "f17bfeafbcf5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.renameCascade": {
+   "en": "Also change the name on the files that carry it ({0})",
+   "ar": "غيّر الاسم على الملفّات التي تحمله أيضاً ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "62a0ab8b247e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.renameCascadeHint": {
+   "en": "Files owned by an operating platform and locked files are not touched; the result says how many remain.",
+   "ar": "لا يُمسّ ما تملكه منصّة تشغيل ولا الملفّ المقفول؛ ويُذكر كم بقي.",
+   "kind": "text",
+   "hash": "3e869c786782",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.renamed": {
+   "en": "Name saved. {0} files moved, {1} still carry the old name.",
+   "ar": "حُفظ الاسم. نُقل {0} ملفّاً، وبقي {1} بالاسم القديم.",
+   "kind": "template",
+   "params": 2,
+   "hash": "177a3f0f1107",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterAccept.one": {
+   "en": "Accept one region",
+   "ar": "اقبل منطقةً واحدة",
+   "kind": "plural",
+   "hash": "4f80fa5f1265",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterAccept.other": {
+   "en": "Accept {0} regions",
+   "ar": "اقبل {0} منطقة",
+   "kind": "plural",
+   "hash": "880ec40b383d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterAll": {
+   "en": "Select all",
+   "ar": "حدّد الكل",
+   "kind": "text",
+   "hash": "38b248083cb3",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterButton": {
+   "en": "Suggest regions from the map",
+   "ar": "اقترح مناطق من الخارطة",
+   "kind": "text",
+   "hash": "993603612351",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterDone": {
+   "en": "{0} regions added",
+   "ar": "أُضيفت {0} منطقة",
+   "kind": "template",
+   "params": 1,
+   "hash": "6f4c3f06d00a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterLead": {
+   "en": "Region names as the map draws them. Edit what you like, untick what you do not want, then accept.",
+   "ar": "أسماء المناطق كما ترسمها الخارطة. عدّل ما تشاء وألغِ تحديد ما لا تريد، ثم اقبل.",
+   "kind": "text",
+   "hash": "1bf51d320cfc",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterNone": {
+   "en": "No suggested list for this country, or all its regions are in the registry.",
+   "ar": "لا قائمة مقترحة لهذه الدولة، أو كلّ مناطقها في السجلّ.",
+   "kind": "text",
+   "hash": "161254f20ddd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterNoneBtn": {
+   "en": "Clear selection",
+   "ar": "ألغِ التحديد",
+   "kind": "text",
+   "hash": "ab28b4ab86eb",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.starterTitle": {
+   "en": "Suggested list",
+   "ar": "قائمة مقترحة",
+   "kind": "text",
+   "hash": "533979e264a2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.unmatchedAdd": {
+   "en": "Add to the registry",
+   "ar": "أضفه إلى السجلّ",
+   "kind": "text",
+   "hash": "c79b6d1e7eb0",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.unmatchedText": {
+   "en": "Written before the list existed. Add the name to the registry as is, or rename the correct region to cover it.",
+   "ar": "كُتبت قبل وجود القائمة. أضف الاسم إلى السجلّ كما هو، أو أعد تسمية المنطقة الصحيحة لتشمله.",
+   "kind": "text",
+   "hash": "ca9b7328b9d5",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.regions.unmatchedTitle": {
+   "en": "Names on files the registry does not know",
+   "ar": "أسماء على ملفّاتٍ لا يعرفها السجلّ",
+   "kind": "text",
+   "hash": "80c7edcc78ec",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.required": {
+   "en": "Required",
+   "ar": "مطلوب",
+   "kind": "text",
+   "hash": "309a165c62a2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.save": {
+   "en": "Save",
+   "ar": "حفظ",
+   "kind": "text",
+   "hash": "95ac72a0305a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.saved": {
+   "en": "Saved",
+   "ar": "حُفظ",
+   "kind": "text",
+   "hash": "a5d39a14e0d1",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.saving": {
+   "en": "Saving",
+   "ar": "جارٍ الحفظ",
+   "kind": "text",
+   "hash": "59da2e37134e",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.bulk": {
+   "en": "Bulk upload",
+   "ar": "رفع دفعة",
+   "kind": "text",
+   "hash": "a21ddc012733",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.countries": {
+   "en": "Countries",
+   "ar": "الدول",
+   "kind": "text",
+   "hash": "7f0e3e766f4f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.groups": {
+   "en": "Groups",
+   "ar": "المجموعات",
+   "kind": "text",
+   "hash": "92210342810b",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.persons": {
+   "en": "Add a person",
+   "ar": "إضافة شخص",
+   "kind": "text",
+   "hash": "16a48737dc80",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.regions": {
+   "en": "Regions",
+   "ar": "المناطق",
+   "kind": "text",
+   "hash": "68f11e249e43",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.steps.team": {
+   "en": "Data-entry team",
+   "ar": "فريق الإدخال",
+   "kind": "text",
+   "hash": "5ac518a91eb2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.stepsLabel": {
+   "en": "Data-building steps",
+   "ar": "خطوات بناء البيانات",
+   "kind": "text",
+   "hash": "1e551d7e4578",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.copied": {
+   "en": "Link copied",
+   "ar": "نُسخ الرابط",
+   "kind": "text",
+   "hash": "41c28b9b3e51",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.copy": {
+   "en": "Copy the link",
+   "ar": "انسخ الرابط",
+   "kind": "text",
+   "hash": "e3100c2e451a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.gapTitle": {
+   "en": "What does not exist yet",
+   "ar": "ما ليس موجوداً بعد",
+   "kind": "text",
+   "hash": "a52bdbfd9df9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.gaps.0": {
+   "en": "There is no email invitation: the person creates an account first, then is linked by email. Someone who has not signed up cannot be added.",
+   "ar": "لا دعوة بالبريد: الشخص يُنشئ حسابه أوّلاً، ثم يُربط ببريده. من لم يسجّل بعد لا يُضاف.",
+   "kind": "text",
+   "hash": "6afce999c41f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.gaps.1": {
+   "en": "Guardian: no admin section links a guardian's account to a child's file. Today the link is made in the database directly.",
+   "ar": "وليّ الأمر: لا خانة في الإدارة تربط حسابه بملفّ الطفل. الربط اليوم من القاعدة مباشرةً.",
+   "kind": "text",
+   "hash": "f3386f1970f4",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.gaps.2": {
+   "en": "The admin role is granted from the database, not the interface, on purpose.",
+   "ar": "صلاحية الإدارة تُمنح من القاعدة لا من الواجهة، عمداً.",
+   "kind": "text",
+   "hash": "13b640e57ac8",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.heading": {
+   "en": "Data-entry team",
+   "ar": "فريق الإدخال",
+   "kind": "text",
+   "hash": "5ac518a91eb2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.hint": {
+   "en": "Who enters data with you, and how each is registered with what the platform already has.",
+   "ar": "من يُدخل البيانات معك، وكيف يُسجَّل كلٌّ منهم بما هو قائمٌ في المنصّة.",
+   "kind": "text",
+   "hash": "14f335d99add",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.openTab": {
+   "en": "Open the section",
+   "ar": "افتح الخانة",
+   "kind": "text",
+   "hash": "d4ba915d253a",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.steps.0": {
+   "en": "Send the sign-up link so they create an account with their email.",
+   "ar": "أرسل رابط التسجيل فيُنشئ حسابه ببريده.",
+   "kind": "text",
+   "hash": "0f8bfd2af91f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.steps.1": {
+   "en": "Under “Offices and entities”, create the office and link it to its country.",
+   "ar": "من «المكاتب والجهات» أنشئ المكتب واربطه بدولته.",
+   "kind": "text",
+   "hash": "59fce00ba346",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.steps.2": {
+   "en": "Add the member by email with their role in the office.",
+   "ar": "أضف العضو ببريده ودوره في المكتب.",
+   "kind": "text",
+   "hash": "75e4fb41f988",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.tab": {
+   "en": "Offices and entities",
+   "ar": "المكاتب والجهات",
+   "kind": "text",
+   "hash": "a6a215157c0f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.title": {
+   "en": "Office member",
+   "ar": "عضو مكتب",
+   "kind": "text",
+   "hash": "42f34b978384",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.office.what": {
+   "en": "Uploads the office's reports and deliveries in its country and region.",
+   "ar": "يرفع تقارير المكتب وتسليماته في دولته ومنطقته.",
+   "kind": "text",
+   "hash": "c0f30e3afee9",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.steps.0": {
+   "en": "Send the sign-up link to the organization's contact so they create an account.",
+   "ar": "أرسل رابط التسجيل إلى مسؤول الجهة فيُنشئ حسابه.",
+   "kind": "text",
+   "hash": "9332cbff5a68",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.steps.1": {
+   "en": "They open “Care organization” and fill in the organization's details and documents.",
+   "ar": "يفتح «جهة الرعاية» ويملأ بيانات الجهة ووثائقها.",
+   "kind": "text",
+   "hash": "ce5429029ff6",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.steps.2": {
+   "en": "Approve the organization from the decisions inbox; “New file” then appears for it.",
+   "ar": "تعتمد الجهة من «صندوق القرارات»، فيظهر لها «ملفٌّ جديد».",
+   "kind": "text",
+   "hash": "b740fa514dbe",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.tab": {
+   "en": "Decisions inbox",
+   "ar": "صندوق القرارات",
+   "kind": "text",
+   "hash": "507e2b438f14",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.title": {
+   "en": "Care organization",
+   "ar": "جهة رعاية",
+   "kind": "text",
+   "hash": "a6fa25e0639c",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.org.what": {
+   "en": "Enters its children's files and documents and submits them for approval.",
+   "ar": "تُدخل ملفّات أطفالها ووثائقهم وتقدّمها للاعتماد.",
+   "kind": "text",
+   "hash": "f67179e1adfd",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.supervisor.steps.0": {
+   "en": "Send the sign-up link so they create an account with their email.",
+   "ar": "أرسل رابط التسجيل فيُنشئ حسابه ببريده.",
+   "kind": "text",
+   "hash": "0f8bfd2af91f",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.supervisor.steps.1": {
+   "en": "Under “Supervisors”, certify them by email and level.",
+   "ar": "من «المشرفون» اعتمده ببريده ومستواه.",
+   "kind": "text",
+   "hash": "c63c9a1a1c47",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.supervisor.tab": {
+   "en": "Supervisors",
+   "ar": "المشرفون",
+   "kind": "text",
+   "hash": "8ff20010bde2",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.supervisor.title": {
+   "en": "Supervisor",
+   "ar": "مشرف",
+   "kind": "text",
+   "hash": "659186f1ea9d",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.roles.supervisor.what": {
+   "en": "Follows the qualification sessions and assesses them.",
+   "ar": "يتابع جلسات التأهيل ويقيّمها.",
+   "kind": "text",
+   "hash": "e5fe9b51d361",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.signInLink": {
+   "en": "Sign-up link",
+   "ar": "رابط التسجيل",
+   "kind": "text",
+   "hash": "f0279783e755",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.team.steps": {
+   "en": "Steps",
+   "ar": "الخطوات",
+   "kind": "text",
+   "hash": "643eb1fefd16",
+   "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data.title": {
+   "en": "Build the real data, one step at a time",
+   "ar": "ابنِ البيانات الحقيقية خطوةً خطوة",
+   "kind": "text",
+   "hash": "2d474edc9504",
+   "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/overview.attentionAll": {
    "en": "All items ({0})",
@@ -10828,6 +13175,13 @@
    "kind": "text",
    "hash": "969b0941692d",
    "file": "src/routes/__root.tsx"
+  },
+  "routes/_authenticated/admin.dataTab": {
+   "en": "Data building",
+   "ar": "بناء البيانات",
+   "kind": "text",
+   "hash": "7082970433de",
+   "file": "src/routes/_authenticated/admin.tsx"
   },
   "routes/_authenticated/admin.overviewLink": {
    "en": "Management overview",
