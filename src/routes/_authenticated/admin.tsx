@@ -20,6 +20,7 @@ import { StatTile } from "@/components/kit/StatTile";
 import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import DataBuilding from "@/components/admin/data/DataBuilding";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
 import { AdminMfaGate } from "@/components/admin/AdminMfaGate";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
@@ -48,8 +49,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { defineCopy, dirOf, LocaleProvider, parseLocale, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("routes/_authenticated/admin", {
-  ar: { overviewLink: "لوحة الإدارة — النظرة الشاملة", dataTab: "بناء البيانات" },
-  en: { overviewLink: "Management overview", dataTab: "Data building" },
+  ar: {
+    overviewLink: "لوحة الإدارة — النظرة الشاملة",
+    homeShort: "النظرة الشاملة",
+    dataTab: "بناء البيانات",
+  },
+  en: { homeShort: "Overview", dataTab: "Data building" },
 });
 
 // دوالّ الإدارة القائمة تُمرَّر إلى اللوحة من هنا: هذه الصفحة تحملها أصلاً، فلا تُشقّ
@@ -279,315 +284,294 @@ function AdminPage() {
       <AdminTrustStrip />
       {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
           شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
-      <a
-        href="/admin"
-        onClick={(e) => {
-          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-          e.preventDefault();
-          setTab("home");
-        }}
-        className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-bold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <ChevronRight aria-hidden="true" className="size-4" strokeWidth={2} />
-        {copy.overviewLink}
-      </a>
-      <nav aria-label="أقسام الإدارة" className="flex flex-wrap gap-2">
-        {SECTIONS.map(([label, tabs]) => {
-          const active = tabs.includes(tab);
-          return (
-            <button
-              key={label}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setTab(tabs[0]!)}
-              className={
-                active
-                  ? "rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
-                  : "rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-              }
-            >
-              {label}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="border-border mt-4 flex flex-wrap gap-1 border-b">
-        {TABS.filter(([key]) => SECTIONS.find(([, t]) => t.includes(tab))?.[1].includes(key)).map(
-          ([key, label, count]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setTab(key)}
-              className={
-                tab === key
-                  ? "border-primary text-primary -mb-px border-b-2 px-4 py-2.5 text-sm font-bold"
-                  : "text-muted-foreground hover:text-foreground -mb-px border-b-2 border-transparent px-4 py-2.5 text-sm font-medium"
-              }
-            >
-              {label}
-              {count !== null && count > 0 && (
-                <span className="bg-secondary text-foreground ms-2 rounded-full px-2 py-0.5 text-xs">
-                  {count}
-                </span>
-              )}
-            </button>
-          ),
-        )}
-      </div>
-
-      {tab === "inbox" && (
-        <div className="mt-8">
-          <DecisionInbox
-            onOpenQueue={() => setTab("queue")}
-            onOpenIntegrity={() => setTab("integrity")}
-          />
-        </div>
-      )}
-
-      {tab === "integrity" && (
-        <div className="mt-8">
-          <IntegrityPanel />
-        </div>
-      )}
-
-      {tab === "languages" && <LocalesPanel />}
-
-      {tab === "countries" && (
-        <div className="mt-8">
-          <SourcesPanel />
-        </div>
-      )}
-
-      {tab === "platform" && (
-        <div className="mt-8">
-          <PlatformRegistries />
-        </div>
-      )}
-
-      {tab === "overview" && (
-        <div className="mt-8 space-y-10">
-          <GoLiveReadiness published={o.orphans.published} />
-          <section>
-            <h2 className="text-sm font-bold">الرحلة</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="ملف منشور" value={String(o.orphans.published)} tone="need" />
-              <Stat label="مكفول بالكامل" value={String(o.orphans.fully_sponsored)} tone="thrive" />
-              <Stat label="جهة معتمدة" value={String(o.organizations.approved)} tone="need" />
-              <Stat label="بانتظار المراجعة" value={String(queueCount)} tone="bridge" />
-            </div>
-          </section>
-
-          {/* لكلّ عملةٍ سطرها (PRD-14 / UX-07): لا يُجمع يورو مع دولار. */}
-          <section>
-            <h2 className="text-sm font-bold">التمويل الشهري</h2>
-            <div className="mt-4 space-y-4">
-              {byCurrency(o).orphans.map((r) => (
-                <div key={r.currency} className="border-border bg-card rounded-2xl border p-6">
-                  <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <p className="text-2xl font-extrabold">
-                      {formatMoney(r.monthly_funded, r.currency)}
-                      <span className="text-muted-foreground text-sm font-normal">
-                        {" "}
-                        من {formatMoney(r.monthly_need, r.currency)}
-                      </span>
-                    </p>
-                    <p className="text-bridge-ink text-sm font-bold">
-                      المتبقّي {formatMoney(r.monthly_gap, r.currency)}
-                    </p>
-                  </div>
-                  <CrossingProgress
-                    percent={fundingPercent(r.monthly_need, r.monthly_funded)}
-                    className="mt-4"
-                    label={`تغطية الاحتياج الشهري بعملة ${r.currency}`}
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-              <Stat label="كافل" value={String(o.sponsors.total)} tone="need" />
-              <Stat label="كفالة نشطة" value={String(o.sponsors.active)} tone="thrive" />
-              <Stat
-                label="التزام شهري"
-                value={formatMoneyTotals(byCurrency(o).committed, cur)}
-                tone="bridge"
+      <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
+        <AdminNav
+          sections={SECTIONS.map(([label, keys]) => ({
+            label,
+            items: keys.map((key) => {
+              const row = TABS.find(([k]) => k === key)!;
+              return { key, label: row[1], count: row[2] };
+            }),
+          }))}
+          active={tab}
+          onSelect={setTab}
+          homeLabel={copy.homeShort}
+          onHome={() => setTab("home")}
+        />
+        <div className="min-w-0">
+          <h2 className="font-display text-2xl font-bold lg:mt-1">
+            {TABS.find(([k]) => k === tab)?.[1]}
+          </h2>
+          {tab === "inbox" && (
+            <div className="mt-8">
+              <DecisionInbox
+                onOpenQueue={() => setTab("queue")}
+                onOpenIntegrity={() => setTab("integrity")}
               />
             </div>
-          </section>
+          )}
 
-          <section>
-            <h2 className="text-sm font-bold">الخزينة</h2>
-            {byCurrency(o).money.map((m) => (
-              <div key={m.currency} className="mt-4">
-                <p className="text-muted-foreground text-xs font-bold">{m.currency}</p>
-                <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {tab === "integrity" && (
+            <div className="mt-8">
+              <IntegrityPanel />
+            </div>
+          )}
+
+          {tab === "languages" && <LocalesPanel />}
+
+          {tab === "countries" && (
+            <div className="mt-8">
+              <SourcesPanel />
+            </div>
+          )}
+
+          {tab === "platform" && (
+            <div className="mt-8">
+              <PlatformRegistries />
+            </div>
+          )}
+
+          {tab === "overview" && (
+            <div className="mt-8 space-y-10">
+              <GoLiveReadiness published={o.orphans.published} />
+              <section>
+                <h2 className="text-sm font-bold">الرحلة</h2>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <Stat label="ملف منشور" value={String(o.orphans.published)} tone="need" />
                   <Stat
-                    label="المحصّل"
-                    value={formatMoney(m.collected, m.currency)}
+                    label="مكفول بالكامل"
+                    value={String(o.orphans.fully_sponsored)}
                     tone="thrive"
                   />
-                  <Stat label="المصروف" value={formatMoney(m.disbursed, m.currency)} tone="need" />
-                  <Stat label="الرصيد" value={formatMoney(m.balance, m.currency)} tone="bridge" />
+                  <Stat label="جهة معتمدة" value={String(o.organizations.approved)} tone="need" />
+                  <Stat label="بانتظار المراجعة" value={String(queueCount)} tone="bridge" />
+                </div>
+              </section>
+
+              {/* لكلّ عملةٍ سطرها (PRD-14 / UX-07): لا يُجمع يورو مع دولار. */}
+              <section>
+                <h2 className="text-sm font-bold">التمويل الشهري</h2>
+                <div className="mt-4 space-y-4">
+                  {byCurrency(o).orphans.map((r) => (
+                    <div key={r.currency} className="border-border bg-card rounded-2xl border p-6">
+                      <div className="flex flex-wrap items-baseline justify-between gap-3">
+                        <p className="text-2xl font-extrabold">
+                          {formatMoney(r.monthly_funded, r.currency)}
+                          <span className="text-muted-foreground text-sm font-normal">
+                            {" "}
+                            من {formatMoney(r.monthly_need, r.currency)}
+                          </span>
+                        </p>
+                        <p className="text-bridge-ink text-sm font-bold">
+                          المتبقّي {formatMoney(r.monthly_gap, r.currency)}
+                        </p>
+                      </div>
+                      <CrossingProgress
+                        percent={fundingPercent(r.monthly_need, r.monthly_funded)}
+                        className="mt-4"
+                        label={`تغطية الاحتياج الشهري بعملة ${r.currency}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <Stat label="كافل" value={String(o.sponsors.total)} tone="need" />
+                  <Stat label="كفالة نشطة" value={String(o.sponsors.active)} tone="thrive" />
                   <Stat
-                    label="بانتظار الدفع"
-                    value={formatMoney(m.pending, m.currency)}
-                    tone="muted"
+                    label="التزام شهري"
+                    value={formatMoneyTotals(byCurrency(o).committed, cur)}
+                    tone="bridge"
                   />
                 </div>
-                {m.failed > 0 && (
-                  <p className="text-destructive mt-3 text-xs">
-                    دفعات فاشلة بقيمة {formatMoney(m.failed, m.currency)} — تحتاج متابعة.
-                  </p>
-                )}
-              </div>
-            ))}
-          </section>
+              </section>
 
-          <AdminExports />
-        </div>
-      )}
-
-      {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
-      {tab === "orphans" && <AdminOrphansList currency={cur} />}
-
-      {tab === "monitoring" && (
-        <>
-          <OpsHealthPanel />
-          <DispatchHealthPanel />
-        </>
-      )}
-
-      {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
-
-      {/* بناء البيانات داخل قطعة الإدارة نفسها: قطعةٌ مستقلّة له كانت تزيد حزمة
-          الدخول (خريطة القطع) فتكسر ميزانية صفحات الرؤية. */}
-      {tab === "data" && (
-        <DataBuilding
-          area={search.area}
-          onArea={(area) => go({ area })}
-          openTab={(next) => setTab(next)}
-        />
-      )}
-
-      {tab === "queue" && (
-        <div className="mt-8 space-y-10">
-          <AwaitingTransfers />
-
-          <section>
-            <h2 className="text-lg font-bold">
-              ملفات بانتظار المراجعة ({o.pending_orphans.length})
-            </h2>
-            <div className="mt-4 space-y-3">
-              {o.pending_orphans.length === 0 && <Empty>لا توجد ملفات معلّقة.</Empty>}
-              {o.pending_orphans.map((p) => (
-                <div key={p.id} className="border-border bg-card rounded-2xl border p-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold">
-                          <Name>{p.name}</Name>
-                        </h3>
-                        <Badge variant="secondary">
-                          {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground mt-1 text-xs">
-                        <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")} —
-                        احتياج {formatMoney(p.need, p.currency ?? cur)} — {formatDate(p.created_at)}
-                      </p>
+              <section>
+                <h2 className="text-sm font-bold">الخزينة</h2>
+                {byCurrency(o).money.map((m) => (
+                  <div key={m.currency} className="mt-4">
+                    <p className="text-muted-foreground text-xs font-bold">{m.currency}</p>
+                    <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      <Stat
+                        label="المحصّل"
+                        value={formatMoney(m.collected, m.currency)}
+                        tone="thrive"
+                      />
+                      <Stat
+                        label="المصروف"
+                        value={formatMoney(m.disbursed, m.currency)}
+                        tone="need"
+                      />
+                      <Stat
+                        label="الرصيد"
+                        value={formatMoney(m.balance, m.currency)}
+                        tone="bridge"
+                      />
+                      <Stat
+                        label="بانتظار الدفع"
+                        value={formatMoney(m.pending, m.currency)}
+                        tone="muted"
+                      />
                     </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      aria-expanded={reviewing === p.id}
-                      onClick={() => setReviewing(reviewing === p.id ? null : p.id)}
+                    {m.failed > 0 && (
+                      <p className="text-destructive mt-3 text-xs">
+                        دفعات فاشلة بقيمة {formatMoney(m.failed, m.currency)} — تحتاج متابعة.
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </section>
+
+              <AdminExports />
+            </div>
+          )}
+
+          {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
+          {tab === "orphans" && <AdminOrphansList currency={cur} />}
+
+          {tab === "monitoring" && (
+            <>
+              <OpsHealthPanel />
+              <DispatchHealthPanel />
+            </>
+          )}
+
+          {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
+
+          {/* بناء البيانات داخل قطعة الإدارة نفسها: قطعةٌ مستقلّة له كانت تزيد حزمة
+          الدخول (خريطة القطع) فتكسر ميزانية صفحات الرؤية. */}
+          {tab === "data" && (
+            <DataBuilding
+              area={search.area}
+              onArea={(area) => go({ area })}
+              openTab={(next) => setTab(next)}
+            />
+          )}
+
+          {tab === "queue" && (
+            <div className="mt-8 space-y-10">
+              <AwaitingTransfers />
+
+              <section>
+                <h2 className="text-lg font-bold">
+                  ملفات بانتظار المراجعة ({o.pending_orphans.length})
+                </h2>
+                <div className="mt-4 space-y-3">
+                  {o.pending_orphans.length === 0 && <Empty>لا توجد ملفات معلّقة.</Empty>}
+                  {o.pending_orphans.map((p) => (
+                    <div key={p.id} className="border-border bg-card rounded-2xl border p-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold">
+                              <Name>{p.name}</Name>
+                            </h3>
+                            <Badge variant="secondary">
+                              {ORPHAN_STATUS_LABELS[p.status] ?? p.status}
+                            </Badge>
+                          </div>
+                          <p className="text-muted-foreground mt-1 text-xs">
+                            <Name>{p.code}</Name> — {[p.city, p.region].filter(Boolean).join("، ")}{" "}
+                            — احتياج {formatMoney(p.need, p.currency ?? cur)} —{" "}
+                            {formatDate(p.created_at)}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          aria-expanded={reviewing === p.id}
+                          onClick={() => setReviewing(reviewing === p.id ? null : p.id)}
+                        >
+                          {reviewing === p.id ? "إغلاق المراجعة" : "مراجعة المستندات"}
+                        </Button>
+                      </div>
+
+                      {reviewing === p.id && (
+                        <OrphanReviewPanel
+                          orphanId={p.id}
+                          onDecided={async (decision, code, reason) => {
+                            const res = await decideOrphan({
+                              data: {
+                                id: p.id,
+                                decision,
+                                ...(code ? { code: code as never } : {}),
+                                ...(reason ? { reason } : {}),
+                              },
+                            });
+                            if (res.ok) {
+                              toast.success(
+                                decision === "approved" ? "تم اعتماد الملف" : "تم رفض الملف",
+                              );
+                              setReviewing(null);
+                            } else {
+                              toast.error(res.error ?? "تعذّر تنفيذ القرار");
+                            }
+                            refresh();
+                          }}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <ReportQueue onDone={refresh} />
+
+              <section>
+                <h2 className="text-lg font-bold">
+                  جهات بانتظار الاعتماد ({o.pending_orgs.length})
+                </h2>
+                <div className="mt-4 space-y-3">
+                  {o.pending_orgs.length === 0 && <Empty>لا توجد طلبات جهات معلّقة.</Empty>}
+                  {o.pending_orgs.map((org) => (
+                    <div
+                      key={org.id}
+                      className="border-border bg-card flex flex-wrap items-center gap-3 rounded-2xl border p-4"
                     >
-                      {reviewing === p.id ? "إغلاق المراجعة" : "مراجعة المستندات"}
-                    </Button>
-                  </div>
-
-                  {reviewing === p.id && (
-                    <OrphanReviewPanel
-                      orphanId={p.id}
-                      onDecided={async (decision, code, reason) => {
-                        const res = await decideOrphan({
-                          data: {
-                            id: p.id,
-                            decision,
-                            ...(code ? { code: code as never } : {}),
-                            ...(reason ? { reason } : {}),
-                          },
-                        });
-                        if (res.ok) {
-                          toast.success(
-                            decision === "approved" ? "تم اعتماد الملف" : "تم رفض الملف",
-                          );
-                          setReviewing(null);
-                        } else {
-                          toast.error(res.error ?? "تعذّر تنفيذ القرار");
-                        }
-                        refresh();
-                      }}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <ReportQueue onDone={refresh} />
-
-          <section>
-            <h2 className="text-lg font-bold">جهات بانتظار الاعتماد ({o.pending_orgs.length})</h2>
-            <div className="mt-4 space-y-3">
-              {o.pending_orgs.length === 0 && <Empty>لا توجد طلبات جهات معلّقة.</Empty>}
-              {o.pending_orgs.map((org) => (
-                <div
-                  key={org.id}
-                  className="border-border bg-card flex flex-wrap items-center gap-3 rounded-2xl border p-4"
-                >
-                  <div className="flex-1">
-                    <h3 className="font-bold">{org.name}</h3>
-                    <p className="text-muted-foreground mt-1 text-xs">
-                      {[org.city, org.region].filter(Boolean).join("، ")} — ترخيص{" "}
-                      {org.license ?? "—"} — {org.email ?? "—"}
-                    </p>
-                  </div>
-                  {/* القرار من الصندوق: هناك بيانات التحقّق ووثائقه وما ينقص،
+                      <div className="flex-1">
+                        <h3 className="font-bold">{org.name}</h3>
+                        <p className="text-muted-foreground mt-1 text-xs">
+                          {[org.city, org.region].filter(Boolean).join("، ")} — ترخيص{" "}
+                          {org.license ?? "—"} — {org.email ?? "—"}
+                        </p>
+                      </div>
+                      {/* القرار من الصندوق: هناك بيانات التحقّق ووثائقه وما ينقص،
                       لا ضغطة اعتمادٍ عمياء هنا (PRD-16). */}
-                  <Button size="sm" variant="outline" onClick={() => setTab("inbox")}>
-                    راجِع في صندوق القرارات
-                  </Button>
+                      <Button size="sm" variant="outline" onClick={() => setTab("inbox")}>
+                        راجِع في صندوق القرارات
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </section>
             </div>
-          </section>
-        </div>
-      )}
+          )}
 
-      {tab === "supervisors" && (
-        <div className="mt-8">
-          <SupervisorAdmin />
-        </div>
-      )}
+          {tab === "supervisors" && (
+            <div className="mt-8">
+              <SupervisorAdmin />
+            </div>
+          )}
 
-      {tab === "access" && (
-        <div className="mt-8">
-          <AccessQueue />
-        </div>
-      )}
+          {tab === "access" && (
+            <div className="mt-8">
+              <AccessQueue />
+            </div>
+          )}
 
-      {tab === "offices" && (
-        <div className="mt-8">
-          <OfficesAdmin />
-        </div>
-      )}
+          {tab === "offices" && (
+            <div className="mt-8">
+              <OfficesAdmin />
+            </div>
+          )}
 
-      {tab === "integrations" && (
-        <div className="mt-8">
-          <ApiClientsAdmin />
-          <MirrorStatusPanel />
+          {tab === "integrations" && (
+            <div className="mt-8">
+              <ApiClientsAdmin />
+              <MirrorStatusPanel />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </DashboardShell>
   );
 }

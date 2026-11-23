@@ -13982,11 +13982,11 @@
    "hash": "7082970433de",
    "file": "src/routes/_authenticated/admin.tsx"
   },
-  "routes/_authenticated/admin.overviewLink": {
-   "en": "Management overview",
-   "ar": "لوحة الإدارة — النظرة الشاملة",
+  "routes/_authenticated/admin.homeShort": {
+   "en": "Overview",
+   "ar": "النظرة الشاملة",
    "kind": "text",
-   "hash": "b71dfdc649ae",
+   "hash": "bc391100c284",
    "file": "src/routes/_authenticated/admin.tsx"
   },
   "routes/auth.agree": {
