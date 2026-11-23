@@ -62,6 +62,9 @@ describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => 
     expect(hallSource({ live: 1 })).toMatchObject({ mode: "live", mine: "/dashboard" });
     // الرابط العامّ بلا معرّف يفتح التجربة الموسومة، لا القاعة التصوّرية
     expect(hallSource({})).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    // زائرٌ في الوضع التجريبي يرى قاعة التجربة وحدها، ولو طلب الرابط الحقيقي أو أثر الداعم
+    expect(hallSource({ live: 1 }, { demo: true })).toMatchObject({ mode: "trial" });
+    expect(hallSource({ me: 1 }, { demo: true })).toMatchObject({ mode: "trial" });
     expect(parseHallSearch({ live: "1" })).toEqual({ live: 1 });
   });
 
@@ -69,7 +72,8 @@ describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => 
     const readers = HALL_FILES.filter((f) => importsOf(f).includes("@/config/platform"));
     expect(readers).toEqual([]);
     const page = read("src/routes/hall.lazy.tsx");
-    expect(page).toContain("hallSource(search)");
+    // the visitor's demo session is an input to the same decision, not a second switch
+    expect(page).toContain("hallSource(search, { demo })");
     expect(page).not.toMatch(/search\.try\b/);
   });
 });

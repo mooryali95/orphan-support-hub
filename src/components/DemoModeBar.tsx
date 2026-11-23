@@ -36,6 +36,7 @@ export default function DemoModeBar() {
   return (
     <div
       role="region"
+      data-demo-bar
       aria-label={c.label}
       className="sticky top-0 z-50 bg-foreground text-background print:hidden"
     >
@@ -49,7 +50,7 @@ export default function DemoModeBar() {
           <a href="/try/admin" className={LINK}>
             {c.admin}
           </a>
-          <a href="/hall" className={LINK}>
+          <a href="/hall?try=1" className={LINK}>
             {c.hall}
           </a>
           <button

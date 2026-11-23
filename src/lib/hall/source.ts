@@ -77,11 +77,14 @@ export type HallSource = {
  * link, opens the donor's hall on their real sponsorships; `?live=1` opens the concept hall on
  * the real directory's counts; a bare link is the trial. Everything the page does differently between the three follows from `mode`.
  */
-export function hallSource(search: HallSearch): HallSource {
+export function hallSource(search: HallSearch, opts: { demo?: boolean } = {}): HallSource {
   // a bare /hall is the trial: labelled, and the same catalogue the trial pages read. The concept
   // hall, whose figures are sample beside one real count, opens only when a link asks for it.
-  const mode =
+  // A visitor in demo mode (`@/lib/demo-mode`) always gets the trial hall: no donor's real
+  // sponsorships and no directory counts reach a demo session, whatever the link says.
+  const asked =
     search.try === 1 ? "trial" : search.me === 1 ? "donor" : search.live === 1 ? "live" : "trial";
+  const mode = opts.demo ? "trial" : asked;
   const mine = mode === "trial" ? "/try/impact" : "/dashboard";
   const from = hallReturn(search.from);
   return {

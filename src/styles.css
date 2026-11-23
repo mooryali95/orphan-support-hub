@@ -1131,3 +1131,8 @@ html {
     var(--logo-deep) 100%
   );
 }
+
+/* شريط التجربة لا يظهر فوق القاعة الغامرة (routes/hall.lazy.tsx) */
+.hall-open [data-demo-bar] {
+  display: none;
+}
