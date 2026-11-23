@@ -145,7 +145,13 @@ function DashboardPage() {
       <TrialProposalCard className="mb-8" />
 
       {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
-      {!listFailed && <MyImpactHero impact={myImpact(sponsorships)} loading={isLoading} />}
+      {!listFailed && (
+        <MyImpactHero
+          impact={myImpact(sponsorships)}
+          loading={isLoading}
+          hallSearch={{ from: "/dashboard" }}
+        />
+      )}
       {/* المحطّات: لمن له كفالةٌ واحدة على الأقل، بما تحقّق فعلاً. */}
       {!listFailed && !isLoading && sponsorships.length > 0 && (
         <>

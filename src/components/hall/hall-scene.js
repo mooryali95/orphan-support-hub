@@ -57,7 +57,7 @@ import { createSound } from "./sound.js";
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
 
-export function mountHall(root, { brand, linked = [], demo = null, live = null }) {
+export function mountHall(root, { brand, linked = [], demo = null, live = null, start = null }) {
   const $ = (s, r = root) => r.querySelector(s);
   const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
   /* the trial's copy, in the interface language (null in the live hall) */
@@ -99,6 +99,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   /* the site map's "needs an office" layer, and operating platforms that are really linked */
   const PRI = new Map(rankPriorities().map((p) => [p.code, p]));
   const TIER = { high: "أولوية عالية", medium: "أولوية متوسطة", data: "تحتاج بيانات" };
+  /* confirmed sites other than the HQ: counted from the network the hall draws, never typed */
+  const SITES = COUNTRIES.filter((c) => c.st !== "unconfirmed").length - 1;
   const LINKED = new Set();
   Promise.resolve(linked)
     .then((codes) => {
@@ -773,7 +775,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       goldText(ctx, "شبكة الندوة حول العالم", w - 90, 158, 92);
       text(
         ctx,
-        "المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
+        `المقرّ في الرياض و${SITES} موقعاً مؤكَّد الحضور`,
         w - 90,
         238,
         44,
@@ -2438,7 +2440,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const live = [
       [() => enterHall(), "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر", 5200],
-      [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
+      [() => enterWorld(), `شبكة الندوة: المقرّ في الرياض و${SITES} موقعاً مؤكَّد الحضور`, 4600],
       [
         () => selectCountry("AL"),
         "نختار ألبانيا: نشاطٌ ميداني للندوة، بمدنها ومجموعاتها وأطفالها",
@@ -2589,6 +2591,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         hallView(1, false);
         if (demo?.focus && !FILM) {
           replayStep(0.8, demoFocus);
+          return;
+        }
+        if (startCountry() && !FILM) {
+          replayStep(0.8, startFocus);
           return;
         }
         if (!PHONE())
@@ -2866,7 +2872,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     showPanel(`
     <h2>شبكة الندوة حول العالم</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>اختر دولة</h3><p class="co-line">المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
+    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">${COUNTRIES.length - 1}</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
     ${
       demo
         ? `<p class="sub" dir="${demo.dir}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
@@ -3248,6 +3254,19 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         });
       });
     });
+  }
+  /** the country the visitor came from on the pages, when this hall shows and can enter it */
+  function startCountry() {
+    const co = start && byCode(start);
+    return co && shown(co) && (!demo || trialCo(co.code)) ? co : null;
+  }
+  /** arriving from a country's page lands on that country: once, and any touch cancels it */
+  function startFocus() {
+    const co = startCountry();
+    if (!co) return;
+    start = null;
+    selectCountry(co.code);
+    replayStep(1.2, enterCountry);
   }
   function selectCity(id) {
     S.city = id;

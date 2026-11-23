@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { HallSearch } from "@/lib/hall/source";
 import { defineCopy, pluralOf, useCopy } from "@/lib/locale";
 import { impactAt, impactSpan, type MyImpact } from "@/lib/my-impact";
 
@@ -96,8 +97,8 @@ export function MyImpactHero({
   loading: boolean;
   /** where «اكفل طفلاً آخر» leads; the client demo keeps the visitor inside /try */
   anotherTo?: "/orphans" | "/try";
-  /** the demo opens the hall in demo mode, on the visitor's latest gift */
-  hallSearch?: { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
+  /** the demo opens the hall in demo mode, on the visitor's latest gift; `from` is the way back */
+  hallSearch?: HallSearch;
 }) {
   /* the time rail: how many whole months back the picture stands (0 = today) */
   const span = impactSpan(impact);

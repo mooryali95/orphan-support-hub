@@ -82,6 +82,9 @@ export const NETWORK: NetworkOffice[] = WAMY_COUNTRIES.flatMap((c) => {
   ];
 });
 
+/** مواقع الندوة المؤكَّدة الحضور غير المقرّ: الرقم الواحد الذي تذكره القاعة والصفحات. */
+export const NETWORK_SITES = NETWORK.filter((n) => !n.hq).length;
+
 /** علم الدولة من رمزها (حرفان) — بلا صور. */
 export function flagOf(code: string) {
   return String.fromCodePoint(

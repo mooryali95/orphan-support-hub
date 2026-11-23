@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { createLazyFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import "@/components/hall/hall.css";
@@ -10,12 +10,16 @@ import {
   MARK2_SLOTS,
   MARK2_VIEWBOX,
 } from "@/components/brand/KahataynMark";
-import { isTrial } from "@/config/platform";
+import { NETWORK_SITES } from "@/data/vision-network";
 import { geoQuery } from "@/lib/geo";
+import { hallLiveRows, hallSource } from "@/lib/hall/source";
 import { copyOf, defineCopy, useLocale } from "@/lib/locale";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 
-/** ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there */
+/**
+ * ?try=1 opens the hall in the client demo; ?child=&cadence= replays a simulated gift there;
+ * ?c= lands on a country and ?from= is the page to return to (`@/lib/hall/source`).
+ */
 
 export const Route = createLazyFileRoute("/hall")({ component: HallPage });
 
@@ -49,8 +53,10 @@ function HallPage() {
   const search = Route.useSearch();
   const locale = useLocale();
   const queryClient = useQueryClient();
-  // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
-  const trying = search.try === 1 || isTrial();
+  const router = useRouter();
+  // المفتاح الواحد: في وضع التجربة تفتح القاعة على كتالوج التجربة؛ وبعد الاعتماد على أعداد الدليل.
+  const source = hallSource(search);
+  const trying = source.mode === "trial";
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
   const trial = copyOf(TRIAL_COPY, "ar");
 
@@ -87,8 +93,10 @@ function HallPage() {
             ? null
             : queryClient
                 .fetchQuery(geoQuery)
-                .then((g) => (g.available ? g.countries : []))
+                .then(hallLiveRows)
                 .catch(() => []),
+          // الدولة التي كان الزائر ينظر إليها في الصفحات: تُفتح القاعة عليها.
+          start: source.start,
         });
         setState("ready");
       })
@@ -140,15 +148,24 @@ function HallPage() {
           <button id="soundBtn" type="button" className="chip" aria-pressed="false">
             الصوت
           </button>
-          {trying ? (
-            <Link to="/try/impact" className="chip exit">
-              إلى أثري<span className="exit-note"> (التجربة)</span>
-            </Link>
-          ) : (
-            <Link to="/dashboard" className="chip exit">
-              إلى أثري
-            </Link>
+          {/* العودة إلى الصفحة التي جاء منها الزائر، ببحثها كما تركه (ما اختاره يبقى مختاراً) */}
+          {source.back && (
+            <a
+              href={source.back}
+              className="chip"
+              data-hall-back
+              onClick={(e) => {
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                e.preventDefault();
+                router.history.push(source.back!);
+              }}
+            >
+              عودة
+            </a>
           )}
+          <Link to={source.mine} className="chip exit">
+            إلى أثري{trying && <span className="exit-note"> (التجربة)</span>}
+          </Link>
         </nav>
       </header>
 
@@ -163,7 +180,7 @@ function HallPage() {
             بخلاصة ما حرّكه دعمك أنت.
           </p>
           <p className="gate-net">
-            المقرّ في الرياض و26 موقعاً للندوة حول العالم، تختار منها على الكرة.
+            المقرّ في الرياض و{NETWORK_SITES} موقعاً للندوة حول العالم، تختار منها على الكرة.
           </p>
           {trying && (
             <p className="gate-net" data-hall-trial-gate>
@@ -181,7 +198,7 @@ function HallPage() {
           {state === "unsupported" ? (
             <p className="gate-net">
               متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في{" "}
-              {trying ? <Link to="/try/impact">أثري</Link> : <Link to="/dashboard">أثري</Link>}.
+              <Link to={source.mine}>أثري</Link>.
             </p>
           ) : (
             <>

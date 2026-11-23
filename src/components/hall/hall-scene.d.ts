@@ -21,5 +21,7 @@ export function mountHall(
         small: boolean;
       }>
     > | null;
+    /** the country the visitor was looking at on the pages: the hall lands on it once, on entry */
+    start?: string | null;
   },
 ): () => void;

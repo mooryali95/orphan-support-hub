@@ -25,6 +25,7 @@ import {
 import { useState } from "react";
 
 import { useTryJourney } from "@/components/try/TryRealInvite";
+import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { localTryChild, tryChildrenByWait } from "@/lib/try-demo";
 import { tryJourney, type TryStage, type TryStageState } from "@/lib/try-handoff";
@@ -250,6 +251,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
     TryStageState
   >;
   const [open, setOpen] = useState(false);
+  const hallSearch = useTryHallSearch();
   const steps = [
     {
       stage: "choose" as const,
@@ -264,7 +266,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
       title: c.hall.title,
       text: c.hall.text,
       to: "/hall" as const,
-      search: { try: 1 as const },
+      search: hallSearch,
     },
     {
       stage: "give" as const,
@@ -433,7 +435,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
         </ol>
         <div className="mt-2 flex flex-wrap gap-3">
           <Button asChild size="lg" className="flex-1">
-            <Link to="/hall" search={{ try: 1 }}>
+            <Link to="/hall" search={hallSearch}>
               {c.fromMap}
             </Link>
           </Button>
