@@ -46,7 +46,9 @@ describe("أثر المبلغ في القاعة هو ما تقوله ورقة ا
         }
       }
     }
-  });
+    // exhaustive on purpose (every place, region, currency and amount in both languages): about
+    // two seconds on a laptop, more than the default five on a shared CI runner
+  }, 60_000);
 
   it("المبلغ يغيّر المعروض: الحصّة تتبعه، بأرضيةٍ وسقف، ولا تدّعي المنطقة كلّها", () => {
     const t = { scope: "region" as const, target: "ALB-1529", co: "AL" };
