@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3474,
+ "count": 3477,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9159,6 +9159,27 @@
    "kind": "text",
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheetBody.amount": {
+   "en": "Monthly amount",
+   "ar": "المبلغ الشهري",
+   "kind": "text",
+   "hash": "f5510e98a9d5",
+   "file": "src/components/support/SupportSheetBody.tsx"
+  },
+  "components/support/SupportSheetBody.other": {
+   "en": "Other amount",
+   "ar": "مبلغ آخر",
+   "kind": "text",
+   "hash": "b59a152ed5ff",
+   "file": "src/components/support/SupportSheetBody.tsx"
+  },
+  "components/support/SupportSheetBody.whom": {
+   "en": "For whom?",
+   "ar": "إلى من؟",
+   "kind": "text",
+   "hash": "aabca11c13dc",
+   "file": "src/components/support/SupportSheetBody.tsx"
   },
   "components/try/KafalaPromise.hadith": {
    "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
