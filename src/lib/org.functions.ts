@@ -256,3 +256,27 @@ export const removeOrgDocument = createServerFn({ method: "POST" })
  * ولم تُترك معطَّلةً بل حُذفت: مسار كتابة معطوب لا يستدعيه أحد اليوم
  * يبقى قابلاً لأن يُستدعى غداً.
  */
+
+/** تعهّد تأهيلٍ أو عينيّ موجَّهٌ إلى الجهة أو إلى طفلٍ من أطفالها — بلا هويّة الداعم. */
+export type OrgIncomingPledge = {
+  id: string;
+  kind: "qualification" | "in_kind";
+  target_type: string;
+  orphan: string | null;
+  amount: number;
+  currency: string;
+  status: "pending" | "active" | "fulfilled" | "cancelled";
+  created_at: string;
+  stage: "preparing" | "delivered" | null;
+};
+
+export const getOrgIncomingPledges = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ orgId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await rpc(context.supabase).rpc("org_incoming_pledges", {
+      _org: data.orgId,
+    });
+    if (error) return { ok: false as const, pledges: [] as OrgIncomingPledge[] };
+    return { ok: true as const, pledges: (rows ?? []) as OrgIncomingPledge[] };
+  });

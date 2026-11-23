@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Eye, FileText, GraduationCap, Loader2, PencilLine, Plus, UserRound } from "lucide-react";
 import { OrgInbox } from "@/components/org/OrgInbox";
+import { OrgPledges } from "@/components/org/OrgPledges";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { CompletenessLine } from "@/components/orphan/TrustSignals";
 import { getProfileCompleteness, SECTION_LABELS } from "@/lib/profile.functions";
@@ -276,6 +277,7 @@ function OrgPage() {
           ))
         )}
       </div>
+      <OrgPledges orgId={org.id} />
     </DashboardShell>
   );
 }

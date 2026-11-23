@@ -26,6 +26,8 @@ const KIND_FRAME: Record<string, { eyebrow: string; cta: string }> = {
   payment_failed: { eyebrow: "تعثّرت دفعة", cta: "معالجة الدفع" },
   report_published: { eyebrow: "تقرير أثر", cta: "قراءة التقرير" },
   report_rejected: { eyebrow: "التقرير يحتاج تصحيحاً", cta: "فتح التقرير" },
+  pledge_preparing: { eyebrow: "يُجهَّز تبرّعك", cta: "متابعة التبرّع" },
+  pledge_delivered: { eyebrow: "وصل تبرّعك", cta: "عرض مستند التسليم" },
   other: { eyebrow: "إشعار", cta: "فتح المنصّة" },
 };
 
