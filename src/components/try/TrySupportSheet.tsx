@@ -58,6 +58,7 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     financial: (name: string) => `أو اكفل ${name} كفالةً مادية`,
     sponsorChild: (name: string) => `اكفل ${name} كفالةً مادية`,
     financialAny: "اختر طفلاً لكفالته",
+    toHall: "شاهد عطاءك في قاعة الأثر",
     thanks: "سُجّل دعمك",
     done: {
       qualification: "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
@@ -83,6 +84,7 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     financial: (name: string) => `Or sponsor ${name} financially`,
     sponsorChild: (name: string) => `Sponsor ${name} financially`,
     financialAny: "Choose a child to sponsor",
+    toHall: "See your gift in the impact hall",
     thanks: "Your support is recorded",
     done: {
       qualification:
@@ -187,6 +189,13 @@ export function TrySupportSheet({
             {t.another}
           </Button>
         </div>
+        <a
+          href={`/hall?try=1&c=${ctx.code}`}
+          data-to-hall
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {t.toHall}
+        </a>
         <TryRealLine className="mt-2" />
       </div>
     );

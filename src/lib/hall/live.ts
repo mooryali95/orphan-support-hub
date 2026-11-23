@@ -24,9 +24,10 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
     sample: "بيانات نموذجية",
     region: (n: string) => `المنطقة ${n}`,
     tracks: {
-      qualify: { name: "تأهيل", unit: "رحلة طفل", per: "رحلة طفل" },
-      sponsor: { name: "كفالة", unit: "شهر كفالة", per: "شهر" },
-      kiswa: { name: "كسوة", unit: "كسوة يتيم", per: "يتيم" },
+      // الأسماء أسماء «اختر أثرك» نفسها (config/giving-tracks)؛ يقفلها live.test.
+      qualify: { name: "تبرع تأهيل", unit: "رحلة طفل", per: "رحلة طفل" },
+      sponsor: { name: "كفالة مادية", unit: "شهر كفالة", per: "شهر" },
+      kiswa: { name: "تبرع عيني", unit: "عطاء عيني ليتيم", per: "يتيم" },
     },
     trackLine: (unit: string, money: string) => `${unit} · ${money}`,
     levels: { start: "في البداية", growing: "نامٍ", capable: "متمكّن", distinct: "متميّز" },
@@ -670,9 +671,13 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
     sample: "Sample data",
     region: (n: string) => `Region ${n}`,
     tracks: {
-      qualify: { name: "Qualification", unit: "One child's journey", per: "per child's journey" },
-      sponsor: { name: "Sponsorship", unit: "One month", per: "per month" },
-      kiswa: { name: "Clothing", unit: "One orphan clothed", per: "per orphan" },
+      qualify: {
+        name: "Qualification giving",
+        unit: "One child's journey",
+        per: "per child's journey",
+      },
+      sponsor: { name: "Financial sponsorship", unit: "One month", per: "per month" },
+      kiswa: { name: "In-kind giving", unit: "One orphan's in-kind gift", per: "per orphan" },
     },
     trackLine: (unit: string, money: string) => `${unit} · ${money}`,
     levels: {
