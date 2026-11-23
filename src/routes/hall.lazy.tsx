@@ -3,7 +3,6 @@ import { createLazyFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 
-import "@/components/hall/hall.css";
 import { brandFor } from "@/config/brand";
 import { COLORS } from "@/config/brand-colors";
 import {
@@ -19,6 +18,7 @@ import { geoQuery } from "@/lib/geo";
 import { hallEntryOf, onPop, onStage, type HallStep } from "@/lib/hall/history";
 import { hallLocale } from "@/lib/hall/copy";
 import { donorHall, donorOrphanIds } from "@/lib/hall/donor";
+import { loadHallScene, loadHallTrial } from "@/lib/hall/preload";
 import { hallLanguage, hallLiveRows, hallSource } from "@/lib/hall/source";
 import { formatCount } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, useLocale } from "@/lib/locale";
@@ -53,6 +53,8 @@ const COPY = defineCopy("routes/hall.lazy", {
       "تدخل القاعة فترى أثرك أنت على خريطة العالم: دول كفالاتك مضيئةً على الكرة، وأرقامك كما في لوحتك. لا محاكاة هنا ولا أرقام نموذجية.",
     lead: "تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه دعمك أنت.",
     net: (n: string) => `المقرّ في الرياض و${n} موقعاً للندوة حول العالم، تختار منها على الكرة.`,
+    netTrial: (n: string) =>
+      `للندوة مقرٌّ في الرياض و${n} موقعاً مؤكَّد الحضور حول العالم. والتجربة تفتح معها دولاً لا حضور مؤكَّداً للندوة فيها، وتميّزها القاعة.`,
     unsupported: "متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في",
     unsupportedLink: "أثري",
     enter: "ادخل القاعة",
@@ -91,6 +93,8 @@ const COPY = defineCopy("routes/hall.lazy", {
     lead: "Step into the hall, pick a country on the world map and go in to see how it stands. Choose a kind of support and an amount and watch the impact change in front of you. Then give, see what it does for the country, the region, the group and the child, and finish with a summary of what your own support moved.",
     net: (n: string) =>
       `Headquarters in Riyadh and ${n} WAMY sites around the world, yours to choose from on the globe.`,
+    netTrial: (n: string) =>
+      `WAMY has its headquarters in Riyadh and ${n} sites of confirmed presence around the world. The trial also opens countries where it has no confirmed presence, and the hall marks them.`,
     unsupported: "Your browser cannot draw 3D graphics. The impact of your support is in",
     unsupportedLink: "My impact",
     enter: "Enter the hall",
@@ -113,10 +117,11 @@ const COPY = defineCopy("routes/hall.lazy", {
 });
 
 /**
- * hall.css arrives with this lazy chunk, after the server's markup has already painted. Until it
- * does, the hall holds its final box (a fixed, dark full screen) and keeps its children unpainted,
- * so the unstyled gate never shows in the page flow and nothing moves when the styles land.
- * hall.css switches the children on by setting --hall-css.
+ * hall.css is a stylesheet link of the route's head (`routes/hall.tsx`), so it normally lands
+ * before the first paint. Should it be late (a slow or failed request), the hall still holds its
+ * final box (a fixed, dark full screen) and keeps its children unpainted, so the unstyled gate
+ * never shows in the page flow and nothing moves when the styles land. hall.css switches the
+ * children on by setting --hall-css.
  */
 const CRITICAL_CSS =
   ".hall{position:fixed;inset:0;z-index:60;overflow:hidden;background:#18070c}" +
@@ -194,9 +199,10 @@ function HallPage() {
     /* two halls behind one switch. The trial hall loads the trial catalogue (`lib/hall/trial`:
        countries, regions, children, pledges and copy, the same the trial pages read) and reads
        no directory; the live hall loads none of it and reads the directory's counts. */
+    // the same two chunks the route already asked for on the way in (`@/lib/hall/preload`)
     Promise.all([
-      import("@/components/hall/hall-scene.js"),
-      trying ? import("@/lib/hall/trial") : null,
+      loadHallScene(),
+      trying ? loadHallTrial() : null,
       // the live hall's own strings and sample names, in the interface language
       trying || donor ? null : import("@/lib/hall/live"),
     ])
@@ -379,7 +385,9 @@ function HallPage() {
           <div className="eyebrow">{c.eyebrow}</div>
           <h1>{c.title}</h1>
           <p>{donor ? c.donorLead : c.lead}</p>
-          <p className="gate-net">{c.net(formatCount(NETWORK_SITES, locale))}</p>
+          <p className="gate-net">
+            {(trying ? c.netTrial : c.net)(formatCount(NETWORK_SITES, locale))}
+          </p>
           {trying && (
             <p className="gate-net" data-hall-trial-gate>
               {c.gate}{" "}

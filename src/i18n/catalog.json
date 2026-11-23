@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3326,
+ "count": 3346,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -11493,6 +11493,13 @@
    "hash": "fd641bf82b23",
    "file": "src/lib/hall/copy.ts"
   },
+  "lib/hall/copy.donor.offGlobeCard": {
+   "en": "This country is not drawn on the hall's globe, so there is no marker to turn to. Your children there are listed here.",
+   "ar": "هذه الدولة ليست مرسومةً على كرة القاعة، فلا موضع لها تُدار الكرة إليه. أطفالك فيها مذكورون هنا.",
+   "kind": "text",
+   "hash": "155ee414d158",
+   "file": "src/lib/hall/copy.ts"
+  },
   "lib/hall/copy.donor.open": {
    "en": "Open the file",
    "ar": "افتح ملفّه",
@@ -11618,6 +11625,34 @@
    "ar": "اسحب لتدير العالم · المس دولةً لترى صورتها",
    "kind": "text",
    "hash": "89c49c6bc0d1",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.lost.body": {
+   "en": "The browser stopped 3D drawing on this page, which can happen when the device runs short of memory. Nothing you recorded is lost. Reload the hall, or carry on in the pages.",
+   "ar": "أوقف المتصفّح الرسم ثلاثي الأبعاد في هذه الصفحة، وقد يحدث ذلك حين تقلّ ذاكرة الجهاز. لم يضع شيءٌ ممّا سجّلته. أعد تحميل القاعة، أو تابع في الصفحات.",
+   "kind": "text",
+   "hash": "c340519a9ac6",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.lost.mine": {
+   "en": "Continue in My impact",
+   "ar": "تابع في «أثري»",
+   "kind": "text",
+   "hash": "7da4a246a31e",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.lost.reload": {
+   "en": "Reload the hall",
+   "ar": "أعد تحميل القاعة",
+   "kind": "text",
+   "hash": "ea681a7e63d1",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.lost.title": {
+   "en": "The 3D view has stopped",
+   "ar": "توقّف العرض ثلاثي الأبعاد",
+   "kind": "text",
+   "hash": "642bfaacae2a",
    "file": "src/lib/hall/copy.ts"
   },
   "lib/hall/copy.network.choose": {
@@ -14441,10 +14476,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.country.sub": {
-   "en": "Each column is as tall as its region's children, and the filled part is those under your qualification pledge. The figures are sample data, the same as on the support map.",
-   "ar": "ارتفاع كلّ عمود عدد أطفال المنطقة، والمملوء منه من يشملهم تعهّد تأهيلك. الأعداد نموذجية، وهي نفسها في خريطة الدعم.",
+   "en": "Each column is as tall as its region's children, and the filled part is the children of a qualification fund your pledge joined. The figures are sample data, the same as on the support map.",
+   "ar": "ارتفاع كلّ عمود عدد أطفال المنطقة، والمملوء منه أطفال صندوق تأهيلٍ انضمّ إليه تعهّدك. الأعداد نموذجية، وهي نفسها في خريطة الدعم.",
    "kind": "text",
-   "hash": "fdf4575109ac",
+   "hash": "8e930dd56b64",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.country.support": {
@@ -14471,10 +14506,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.enrolled": {
-   "en": "Children in qualification",
-   "ar": "أطفالٌ في التأهيل",
+   "en": "In qualification funds you joined",
+   "ar": "في صناديق تأهيلٍ انضممت إليها",
    "kind": "text",
-   "hash": "3f8278ae5a9e",
+   "hash": "412a8077e578",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.fewer": {
@@ -14514,17 +14549,17 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.4": {
-   "en": "We pledge monthly for qualification in Tirana, and what the pledge covers shows before it is recorded",
-   "ar": "نتعهّد لتيرانا تأهيلاً شهرياً، فيظهر ما يشمله التعهّد قبل تسجيله",
+   "en": "We pledge monthly for qualification in Tirana, and its share of Tirana's fund shows before it is recorded",
+   "ar": "نتعهّد لتيرانا تأهيلاً شهرياً، فتظهر حصّة التعهّد من صندوقها قبل تسجيله",
    "kind": "text",
-   "hash": "017e6190f5bd",
+   "hash": "79f3cec66922",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.5": {
-   "en": "The support flows, and Tirana's column fills with those the pledge covers",
-   "ar": "يتدفّق الدعم، ويمتلئ عمود تيرانا بمن شملهم التعهّد",
+   "en": "The support flows, and Tirana's column fills with the children of the fund the pledge joined",
+   "ar": "يتدفّق الدعم، ويمتلئ عمود تيرانا بأطفال الصندوق الذي انضمّ إليه التعهّد",
    "kind": "text",
-   "hash": "e93d1aec7365",
+   "hash": "2fa437f1cbb7",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.6": {
@@ -14718,11 +14753,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.perMonth": {
-   "en": "{0} a month",
-   "ar": "{0} كل شهر",
-   "kind": "template",
-   "params": 1,
-   "hash": "0b2b86af9ff4",
+   "en": "a month",
+   "ar": "كل شهر",
+   "kind": "text",
+   "hash": "c621673ec39b",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.qChild": {
@@ -14734,11 +14768,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.qCountry": {
-   "en": "Your pledge covers the children of {0}, out of the country's children.",
-   "ar": "يشمل تعهّدك أطفال {0} من أطفال الدولة.",
+   "en": "The {0} fund you joined carries these children, out of the country's children.",
+   "ar": "صندوق {0} الذي انضممت إليه يحمل هؤلاء الأطفال من أطفال الدولة.",
    "kind": "template",
    "params": 1,
-   "hash": "4f075bb8a623",
+   "hash": "792547f898c8",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.qGroup": {
@@ -14750,10 +14784,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.qRegion": {
-   "en": "All the region's children are enrolled in the qualification journey by your pledge, and no one starts on the day of the pledge.",
-   "ar": "أطفال المنطقة جميعاً ملتحقون برحلة التأهيل بتعهّدك، ولم يبدأ أحدٌ يوم التعهّد.",
+   "en": "The fund enrols all the region's children in the qualification journey, and your pledge is a share of it. No one starts on the day of the pledge.",
+   "ar": "الصندوق يُلحق أطفال المنطقة جميعاً برحلة التأهيل، وتعهّدك حصّةٌ منه. لم يبدأ أحدٌ يوم التعهّد.",
    "kind": "text",
-   "hash": "1c2dde6f2477",
+   "hash": "394805ee05ed",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.impact.ref": {
@@ -15014,21 +15048,6 @@
    "hash": "bc69c4c6137f",
    "file": "src/lib/hall/trial.ts"
   },
-  "lib/hall/trial.preview.kCover": {
-   "en": "An in-kind pledge for a region with {0}",
-   "ar": "تعهّدٌ عيني لمنطقةٍ فيها {0}",
-   "kind": "template",
-   "params": 1,
-   "hash": "8e13d3dd1802",
-   "file": "src/lib/hall/trial.ts"
-  },
-  "lib/hall/trial.preview.kCoverSub": {
-   "en": "The local office prepares it, then delivers and documents it",
-   "ar": "يجهّزه المكتب المحلي، ثم يسلّمه ويوثّقه بمستند",
-   "kind": "text",
-   "hash": "e9a993da12e3",
-   "file": "src/lib/hall/trial.ts"
-  },
   "lib/hall/trial.preview.kNow": {
    "en": "Documented deliveries in {0} now: {1}",
    "ar": "تسليمات {0} الموثّقة الآن: {1}",
@@ -15097,27 +15116,12 @@
    "hash": "e888ea9a7d3b",
    "file": "src/lib/hall/trial.ts"
   },
-  "lib/hall/trial.preview.qCover": {
-   "en": "Your pledge covers {0}",
-   "ar": "يشمل تعهّدك {0}",
-   "kind": "template",
-   "params": 1,
-   "hash": "cfd8e6d18e20",
-   "file": "src/lib/hall/trial.ts"
-  },
-  "lib/hall/trial.preview.qCoverSub": {
-   "en": "All the region's children. The amount is recorded as typed, with no conversion",
-   "ar": "أطفال المنطقة جميعاً، ويُقيَّد المبلغ كما كتبته بلا تحويل",
-   "kind": "text",
-   "hash": "0fd14f03fd5b",
-   "file": "src/lib/hall/trial.ts"
-  },
   "lib/hall/trial.preview.qSessions": {
-   "en": "Journey sessions planned: {0}",
-   "ar": "جلسات الرحلة المقرّرة: {0}",
+   "en": "Sessions planned in the fund: {0}",
+   "ar": "جلسات الصندوق المقرّرة: {0}",
    "kind": "template",
    "params": 1,
-   "hash": "9b530de44dbf",
+   "hash": "641267978e83",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.preview.qSessionsSub": {
@@ -15181,11 +15185,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.say.qualification": {
-   "en": "The column filled with those your pledge covers in {0}",
-   "ar": "انظر إلى العمود: امتلأ بمن يشملهم تعهّدك في {0}",
+   "en": "The column filled with the children of the {0} fund your pledge joined",
+   "ar": "انظر إلى العمود: امتلأ بأطفال صندوق {0} الذي انضمّ إليه تعهّدك",
    "kind": "template",
    "params": 1,
-   "hash": "00a79aa3caef",
+   "hash": "b7bb8578f22a",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.enter": {
@@ -15477,6 +15481,14 @@
    "hash": "6c11606e0091",
    "file": "src/lib/hall/trial.ts"
   },
+  "lib/hall/trial.world.count": {
+   "en": "The trial opens all {0} countries drawn here: WAMY's headquarters in Riyadh, {1}, and {2}.",
+   "ar": "تفتح التجربة كلّ الدول المرسومة هنا، وعددها {0}: مقرّ الندوة في الرياض، و{1}، و{2}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "a0f95a37edd8",
+   "file": "src/lib/hall/trial.ts"
+  },
   "lib/hall/trial.world.enter": {
    "en": "Enter {0}",
    "ar": "ادخل {0}",
@@ -15570,11 +15582,46 @@
    "hash": "3895bd791aac",
    "file": "src/lib/hall/trial.ts"
   },
+  "lib/hall/trial.world.sites.one": {
+   "en": "{0} site of confirmed presence",
+   "ar": "موقعٌ واحد مؤكَّد الحضور",
+   "kind": "plural",
+   "hash": "d567eea4c3e5",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.sites.other": {
+   "en": "{0} sites of confirmed presence",
+   "ar": "{0} موقع مؤكَّد الحضور",
+   "kind": "plural",
+   "hash": "ecfb919e28a8",
+   "file": "src/lib/hall/trial.ts"
+  },
   "lib/hall/trial.world.sub": {
    "en": "Every country here can be entered and supported in the trial, whether WAMY has an office there, field activity, or neither. Each has two regions, a group and a child with sample figures, the same ones as on the support map and in “My impact”.",
    "ar": "كلّ دولةٍ هنا تُدخَل وتُدعَم في التجربة، للندوة فيها مكتبٌ أو نشاطٌ أو لا شيء. لكلٍّ منها منطقتان ومجموعةٌ وطفل بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
    "kind": "text",
    "hash": "6fb4eb90a14e",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.trialOnly.one": {
+   "en": "{0} country with no confirmed WAMY presence, opened for the trial only",
+   "ar": "دولةٌ واحدة بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+   "kind": "plural",
+   "hash": "d511be7043c3",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.trialOnly.other": {
+   "en": "{0} countries with no confirmed WAMY presence, opened for the trial only",
+   "ar": "{0} دولة بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+   "kind": "plural",
+   "hash": "7d258db9c085",
+   "file": "src/lib/hall/trial.ts"
+  },
+  "lib/hall/trial.world.unconfirmedMark": {
+   "en": "No confirmed presence · trial only",
+   "ar": "بلا حضورٍ مؤكَّد · للتجربة وحدها",
+   "kind": "text",
+   "hash": "c3c11ea7a287",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/milestones.complete.0": {
@@ -16122,6 +16169,96 @@
    "kind": "text",
    "hash": "d07a81998e38",
    "file": "src/lib/try-places.ts"
+  },
+  "lib/try-reach.all": {
+   "en": "{0} a month covers the fund's whole sample monthly need ({2}) for {1}.",
+   "ar": "{0} شهرياً تغطّي حاجة الصندوق الشهرية النموذجية كلّها ({2}) لـ{1}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "88afdca035fa",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.children.one": {
+   "en": "{0} child",
+   "ar": "طفلٌ واحد",
+   "kind": "plural",
+   "hash": "2c7516e4b70f",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.children.other": {
+   "en": "{0} children",
+   "ar": "{0} طفل",
+   "kind": "plural",
+   "hash": "0abc15820374",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.equals.one": {
+   "en": "{1} a month equals the monthly need of {0} child out of {2}: {3} of the fund's sample monthly need ({4}).",
+   "ar": "{1} شهرياً تعادل الحاجة الشهرية لطفلٍ واحد من {2}، وهي {3} من حاجة الصندوق الشهرية النموذجية ({4}).",
+   "kind": "plural",
+   "hash": "5ef554e59497",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.equals.other": {
+   "en": "{1} a month equals the monthly need of {0} children out of {2}: {3} of the fund's sample monthly need ({4}).",
+   "ar": "{1} شهرياً تعادل الحاجة الشهرية لـ{0} طفل من {2}، وهي {3} من حاجة الصندوق الشهرية النموذجية ({4}).",
+   "kind": "plural",
+   "hash": "4a8551d2b566",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.head": {
+   "en": "Your pledge joins the {0} fund",
+   "ar": "تعهّدك ينضمّ إلى صندوق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "78bc2a023657",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.joined": {
+   "en": "in the {0} fund you joined",
+   "ar": "في صندوق {0} الذي انضممت إليه",
+   "kind": "template",
+   "params": 1,
+   "hash": "79a01f1172ea",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.part": {
+   "en": "{0} a month is {1} of one child's monthly need ({2}, a sample figure). The fund carries {3}, and your share is {4} of its sample monthly need ({5}).",
+   "ar": "{0} شهرياً تعادل {1} من الحاجة الشهرية لطفلٍ واحد ({2}، رقمٌ نموذجي). الصندوق يحمل {3}، وحصّتك {4} من حاجته الشهرية النموذجية ({5}).",
+   "kind": "template",
+   "params": 6,
+   "hash": "531af7e14a56",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.shareOf": {
+   "en": "your share of the {0} fund",
+   "ar": "حصّتك من صندوق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "ec0d7cef22d4",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.typed": {
+   "en": "{0} a month joins a fund that carries {1}. The fund's sample need is kept in {2}; your amount is recorded as typed, with no conversion, so no share is claimed for it.",
+   "ar": "{0} شهرياً تنضمّ إلى صندوقٍ يحمل {1}. حاجة الصندوق النموذجية مقيَّدة بعملة {2}، ومبلغك يُقيَّد كما كتبته بلا تحويل، فلا تُدَّعى له حصّة.",
+   "kind": "template",
+   "params": 3,
+   "hash": "793c22e57f1b",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.under": {
+   "en": "under 1%",
+   "ar": "أقل من 1%",
+   "kind": "text",
+   "hash": "23e63dff1d20",
+   "file": "src/lib/try-reach.ts"
+  },
+  "lib/try-reach.whole": {
+   "en": "100%",
+   "ar": "100%",
+   "kind": "text",
+   "hash": "a55dde73376b",
+   "file": "src/lib/try-reach.ts"
   },
   "lib/try-world.covers.0": {
    "en": "Schooling, food and healthcare",
@@ -17208,6 +17345,14 @@
    "kind": "template",
    "params": 1,
    "hash": "a389c35fcff3",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.netTrial": {
+   "en": "WAMY has its headquarters in Riyadh and {0} sites of confirmed presence around the world. The trial also opens countries where it has no confirmed presence, and the hall marks them.",
+   "ar": "للندوة مقرٌّ في الرياض و{0} موقعاً مؤكَّد الحضور حول العالم. والتجربة تفتح معها دولاً لا حضور مؤكَّداً للندوة فيها، وتميّزها القاعة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "52d753558976",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.next": {

@@ -9,7 +9,6 @@ import { TryRealLine } from "@/components/try/TryRealInvite";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useGivingCopy } from "@/config/giving-tracks";
-import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { INDIVIDUAL_AMOUNTS } from "@/lib/support-amounts";
@@ -22,6 +21,7 @@ import {
   tryRegionName,
   tryRegionOfChild,
 } from "@/lib/try-places";
+import { tryPledgeCurrencies, tryReachText } from "@/lib/try-reach";
 import { addPledge, tryRegionByName, type TryScope } from "@/lib/try-support";
 import { cn } from "@/lib/utils";
 
@@ -145,7 +145,7 @@ export function TrySupportSheet({
   }, [presetKind]);
 
   // the pledge is recorded in the chosen currency as typed: no conversion, so no rate to show
-  const payList = useMemo(() => payableOptions(ctx.code, null), [ctx.code]);
+  const payList = useMemo(() => tryPledgeCurrencies(ctx.code), [ctx.code]);
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const currency =
     payList.find((o) => o.currency === chosenCurrency)?.currency ?? payList[0]!.currency;
@@ -187,6 +187,14 @@ export function TrySupportSheet({
         ? "border-primary bg-primary text-primary-foreground"
         : "border-border bg-background hover:border-primary/60",
     );
+
+  // what the amount stands for, in the words the impact hall shows for the same input
+  const reach = tryReachText(
+    { scope: target.scope, target: target.target, co: place.co },
+    amount,
+    currency,
+    locale,
+  );
 
   function confirm() {
     if (!place || !target) return;
@@ -303,6 +311,16 @@ export function TrySupportSheet({
           />
         </div>
       </fieldset>
+
+      {reach && (
+        <p
+          className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
+          data-try-reach
+        >
+          <b className="block text-sm text-foreground">{reach.head}</b>
+          <span className="text-muted-foreground">{reach.line}</span>
+        </p>
+      )}
 
       <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
         {t.confirm(formatMoney(amount, currency, locale))}

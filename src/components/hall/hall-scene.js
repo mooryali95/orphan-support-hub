@@ -24,6 +24,8 @@ import {
   ToneMappingMode,
   DepthOfFieldEffect,
   BlendFunction,
+  ShaderPass,
+  CopyMaterial,
 } from "postprocessing";
 import { N8AOPostPass } from "n8ao";
 
@@ -55,7 +57,7 @@ import {
 import { hallDirectory } from "@/lib/hall/source";
 import { rankPriorities } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
-import { buildMark, createEmblem } from "./mark3d.js";
+import { createEmblem } from "./mark3d.js";
 import { createSound } from "./sound.js";
 
 const DISPLAY = "Amiri",
@@ -111,6 +113,8 @@ export function mountHall(
   // so its absence decides nothing), or a visitor who asked the browser to save data
   const LOW =
     matchMedia("(max-width: 760px)").matches ||
+    // a phone held sideways is still a phone: the tier follows the device, not its rotation
+    (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) <= 760) ||
     (navigator.hardwareConcurrency || 8) < 4 ||
     (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4) ||
     navigator.connection?.saveData === true;
@@ -358,6 +362,11 @@ export function mountHall(
     });
     ao.setQualityMode("Medium");
     composer.addPass(ao);
+    /* the occlusion pass hands its picture on in the composer's second buffer, so the next pass
+       (depth of field, which reads the scene's depth) would draw into the buffer that depth is
+       attached to: the driver refuses that draw every frame ("feedback loop"). One plain copy
+       puts the picture back where a depth-reading pass may write beside it. */
+    composer.addPass(new ShaderPass(new CopyMaterial()));
   }
   const BLOOM = 0.8; // resting bloom; the gate, country and payment beats rise from it and return
   const bloom = new BloomEffect({
@@ -497,8 +506,9 @@ export function mountHall(
   const hall = new THREE.Group();
   scene.add(hall);
   // mirror floor under smoked lacquer
+  let mirror = null;
   if (!LOW) {
-    const mirror = new Reflector(new THREE.CircleGeometry(19, 96), {
+    mirror = new Reflector(new THREE.CircleGeometry(19, 96), {
       textureWidth: innerWidth * 0.5,
       textureHeight: innerHeight * 0.5,
       color: 0x6a5a55,
@@ -2459,7 +2469,7 @@ export function mountHall(
     mark && markEl && !LOW
       ? createEmblem({ renderer, art: mark, environment: scene.environment, still: RM })
       : null;
-  const emblemAt = { x: 0, y: 0, on: false };
+  const emblemAt = { x: 0, y: 0, on: false, drawn: -1 };
   function sizeEmblem() {
     if (!emblem) return;
     emblem.setSize(markEl.offsetWidth * (1 + emblem.pad * 2), renderer.getPixelRatio());
@@ -2486,16 +2496,6 @@ export function mountHall(
         Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight / 2)),
       );
     });
-  }
-  /* the same mark set into the floor inside the door, as a threshold seal: lacquer and brushed champagne,
-     lit by the hall, with a low light under the two fingers */
-  if (mark && !LOW) {
-    const seal = buildMark(mark, { envMapIntensity: 0.7 });
-    seal.light.color.setScalar(0.55);
-    seal.group.rotation.x = -Math.PI / 2;
-    seal.group.scale.setScalar(0.016);
-    seal.group.position.set(0, 0.11, 1.5); // crossed on the way in, out of the resting views
-    inlay.add(seal.group); // shown with the floor's inlay: the hall's floor, not a country's
   }
 
   /* ── Gate: the two-fingers mark is drawn, the words rise, then the mark opens like a door ── */
@@ -2664,6 +2664,7 @@ export function mountHall(
 
   function enterHall() {
     if (S.stage !== "gate") return;
+    gateShut = false; // the door is opening: the hall behind it draws every frame again
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
@@ -2939,6 +2940,7 @@ export function mountHall(
   function selectCountry(code) {
     sound.cue("tick");
     if (!byCode(code)) return; // a country the hall's globe does not draw
+    OFF = null;
     CO = byCode(code);
     PICKED = true;
     markLand();
@@ -3046,6 +3048,8 @@ export function mountHall(
       <div class="row pin"><button class="cta" type="button" id="enterCo">${Cd.enter(name)}</button><button class="ghost" type="button" id="toHall">${Cd.back}</button></div>
     </article>`;
   }
+  /** a country of the donor's that the globe does not draw, opened in the panel (it has no marker) */
+  let OFF = null;
   /** the donor's panel: their own figures and countries, and the ways on to the real pages */
   function donorWorld() {
     const esc = (t) => String(t).replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
@@ -3058,11 +3062,13 @@ export function mountHall(
     else if (!MINE.impact.children.length)
       body = `<article class="co-card empty"><h3>${D.emptyTitle}</h3><p class="co-line">${D.empty}</p></article>${ways}`;
     else {
-      const here = PICKED ? mineAt(CO.code) : null;
-      const card = !PICKED
+      const off = OFF ? mineAt(OFF) : null;
+      const here = off ?? (PICKED ? mineAt(CO.code) : null);
+      const hereName = off ? i18n.countryName(off.code) : coName();
+      const card = !(PICKED || off)
         ? ""
         : here
-          ? `<article class="co-card"><div class="co-head"><div><h3>${D.card(coName())}</h3><span class="st">${here.inCare ? D.inCountry(here.inCare) : D.ended}</span></div><canvas id="coShape" width="520" height="300" aria-label="${coName()}"></canvas></div>
+          ? `<article class="co-card"${off ? ' data-off-card=""' : ""}><div class="co-head"><div><h3>${D.card(hereName)}</h3><span class="st">${here.inCare ? D.inCountry(here.inCare) : D.ended}</span></div>${off ? "" : `<canvas id="coShape" width="520" height="300" aria-label="${hereName}"></canvas>`}</div>${off ? `<p class="co-line">${D.offGlobeCard}</p>` : ""}
             <ul class="kids">${here.children
               .map(
                 (k) =>
@@ -3080,8 +3086,8 @@ export function mountHall(
           ? `<div class="sect">${D.countries}</div><div class="co-list">${MINE.countries
               .map((c) =>
                 byCode(c.code)
-                  ? `<button type="button" data-co="${c.code}" aria-pressed="${PICKED && c.code === CO.code}"><i class="dot office"></i>${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`
-                  : `<span class="off-globe" title="${D.offGlobe}">${i18n.countryName(c.code)} · ${num(c.children.length)}</span>`,
+                  ? `<button type="button" data-co="${c.code}" aria-pressed="${!OFF && PICKED && c.code === CO.code}"><i class="dot office"></i>${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`
+                  : `<button type="button" class="off-globe" data-off="${c.code}" aria-pressed="${OFF === c.code}" title="${D.offGlobe}">${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`,
               )
               .join("")}</div>`
           : ""
@@ -3105,6 +3111,14 @@ export function mountHall(
       panel
         .querySelectorAll("[data-co]")
         .forEach((b) => b.addEventListener("click", () => selectCountry(b.dataset.co)));
+      // a country the globe does not draw opens in the panel: its children, with no globe turn
+      panel.querySelectorAll("[data-off]").forEach((b) =>
+        b.addEventListener("click", () => {
+          OFF = b.dataset.off;
+          donorWorld();
+          panel.querySelector(`[data-off="${OFF}"]`)?.focus();
+        }),
+      );
       $("#toHall")?.addEventListener("click", backToHall);
     });
     hint(PHONE() ? "" : D.hint);
@@ -3127,14 +3141,14 @@ export function mountHall(
     showPanel(`
     <h2>${HC.network.title}</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>${HC.network.pick}</h3><p class="co-line">${HC.network.pickLine}</p></article>`}
-    <p class="sub">${VIEW.all && W ? W.full(num(COUNTRIES.length - 1), num(n("unconfirmed"))) : HC.network.choose(num(sites))}${W ? ` ${SAMPLE} ${W.simNote}` : ""}</p>
+    <p class="sub">${demo ? T.world.count(num(demo.codes.length), T.world.sites(sites), T.world.trialOnly(demo.codes.length - sites - 1)) : VIEW.all && W ? W.full(num(COUNTRIES.length - 1), num(n("unconfirmed"))) : HC.network.choose(num(sites))}${!demo && W ? ` ${SAMPLE} ${W.simNote}` : ""}</p>
     ${
       demo
         ? `<p class="sub" dir="${DIR}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
     <div class="sect">${T.world.sect}</div><div class="co-list">${demo.codes
       .map(
         (code) =>
-          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
+          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"${byCode(code).st === "unconfirmed" ? ` title="${T.world.unconfirmedMark}"` : ""}><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
       )
       .join("")}</div>
     <p class="sub" dir="${DIR}"><a href="${demo.mapHref}">${T.world.more}</a></p>`
@@ -3593,7 +3607,7 @@ export function mountHall(
       body = `<div class="sect">${U.amount}</div>
     <div class="amount"><span class="num" id="amtOut">${money()}</span></div>
     <div class="presets">${demo.amounts.presets.map((v) => `<button type="button" data-amt="${v}" aria-pressed="${v === S.amount}"><span class="num">${demo.money(v, S.currency)}</span></button>`).join("")}<input id="amt" type="number" inputmode="numeric" min="${demo.amounts.min}" max="${demo.amounts.max}" value="${S.amount}" aria-label="${U.other}"></div>
-    ${t.currencies.length > 1 ? `<div class="sect">${U.currency}</div><div class="presets" role="group" aria-label="${U.currency}">${t.currencies.map((cur) => `<button type="button" data-cur="${cur}" aria-pressed="${cur === S.currency}"><span class="num">${cur}</span></button>`).join("")}</div>` : ""}`;
+    ${t.currencies.length > 1 ? `<div class="sect">${U.currency}</div><div class="presets" role="group" aria-label="${U.currency}">${t.currencies.map((cur) => `<button type="button" data-cur="${cur}" aria-pressed="${cur === S.currency}">${demo.currencyName(cur)}</button>`).join("")}</div>` : ""}`;
       cta = `<button class="cta" type="button" id="pay">${U.confirm(money())}</button>`;
     }
     showPanel(
@@ -3663,11 +3677,16 @@ export function mountHall(
     const P = T.preview,
       t = trialCo(),
       kid = trialKid(c);
+    // a pooled pledge joins the region's fund: its share is shown, never the whole region
+    const reach =
+      S.kind === "monthly"
+        ? null
+        : demo.reach({ co: CO.code, region: c.id, amount: S.amount, currency: S.currency });
     if (S.kind === "qualification")
       return {
         title: P.qTitle(demo.money(S.amount, S.currency), c.ar),
         items: [
-          [P.qCover(T.children(c.need)), P.qCoverSub],
+          [reach.head, reach.line],
           [P.qSessions(num(c.need * t.sessions)), P.qSessionsSub(num(t.sessions))],
           [P.qStart, P.qStartSub],
         ],
@@ -3676,7 +3695,7 @@ export function mountHall(
       return {
         title: P.kTitle(demo.money(S.amount, S.currency), c.ar),
         items: [
-          [P.kCover(T.children(c.need)), P.kCoverSub],
+          [reach.head, reach.line],
           [P.kCount, P.kCountSub],
           [P.kNow(c.ar, num(c.clothed)), P.kNowSub],
         ],
@@ -4098,21 +4117,30 @@ export function mountHall(
     n === null || demo.cohortSafe(n) === null ? T.fewer(num(demo.cohortMin)) : num(n);
   const trialLevel = (icon, name, place, rows, meaning) =>
     `<article class="lvl"><header><span class="ic">${icon}</span><div><small>${name}</small><b>${place}</b></div></header>${rows}<p class="mean">${meaning}</p></article>`;
+  /** the recorded pledge's share of its region's fund, as the support sheet words it */
+  const trialReach = (L) =>
+    demo.reach({
+      co: L.entry.co,
+      region: L.entry.region ?? L.city,
+      amount: L.entry.amount,
+      currency: L.entry.currency,
+    });
   /** the two figures the trial's closing panels open with: what was typed, and what it stands on */
   function trialDoneKpis(L) {
     const t = trialCo(),
       c = city(L.city),
       e = L.entry;
-    const [v, l] =
-      L.kind === "qualification"
-        ? [c.qualified, T.enrolled]
-        : L.kind === "monthly"
-          ? [t.sponsored, T.sponsored]
-          : [t.deliveries, T.deliveries];
+    // a pooled pledge is shown as its share of the fund it joined, not as the fund's children
+    const reach = L.kind === "monthly" ? null : trialReach(L);
+    const second = reach
+      ? reach.share
+        ? `<b>${reach.share}</b><span>${reach.shareLabel}</span>`
+        : `<b class="num" data-count="${reach.children}">0</b><span>${reach.childrenLabel}</span>`
+      : `<b class="num" data-count="${t.sponsored}">0</b><span>${T.sponsored}</span>`;
     return `<div class="kpis k2">
-      <div class="kpi"><b class="num" data-count="${e.amount}">0</b><span>${T.impact.perMonth(e.currency)}</span></div>
-      <div class="kpi"><b class="num" data-count="${v}">0</b><span>${l}</span></div>
-    </div>`;
+      <div class="kpi"><b class="num">${e.money}</b><span>${T.impact.perMonth}</span></div>
+      <div class="kpi">${second}</div>
+    </div>${reach ? `<p class="sub" dir="${DIR}">${reach.line}</p>` : ""}`;
   }
   function trialImpact() {
     const L = S.last,
@@ -4151,6 +4179,7 @@ export function mountHall(
           c.ar,
           trialDelta(T.enrolled, b.region.qualified, c.qualified) +
             trialKv([
+              ...(trialReach(L)?.share ? [[trialReach(L).shareLabel, trialReach(L).share]] : []),
               [T.started, trialSafe(c.started)],
               [T.held, `${num(c.sessionsHeld)} ${T.planned(num(c.sessionsPlanned))}`],
             ]),
@@ -5039,15 +5068,62 @@ export function mountHall(
   function resize() {
     renderer.setSize(innerWidth, innerHeight, false);
     composer.setSize(innerWidth, innerHeight);
+    // the mirror floor's picture follows the window: half its size, as when it was made
+    mirror
+      ?.getRenderTarget()
+      .setSize(
+        Math.max(1, Math.round(innerWidth * 0.5)),
+        Math.max(1, Math.round(innerHeight * 0.5)),
+      );
+    gateDrawn = -1;
     camera.aspect = innerWidth / innerHeight;
     camera.fov = PHONE() ? 55 : 42;
     camera.updateProjectionMatrix();
     placeImpact();
     sizeEmblem();
   }
+  /* behind the gate the hall is a dim, still backdrop: once it has settled it holds its pose and
+     is redrawn once a second (late textures, a resize), not every frame. `enterHall` lifts this. */
+  const GATE_SETTLE = 2.5,
+    GATE_EVERY = 1;
+  let gateShut = true,
+    gateDrawn = -1;
   on(window, "resize", resize);
   resize();
   const clock = new THREE.Clock();
+  /* a hidden tab draws nothing: the loop stops, and starts again from now when the tab returns */
+  on(document, "visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    } else if (!raf && !disposed && !lost) {
+      clock.getDelta();
+      raf = requestAnimationFrame(frame);
+    }
+  });
+  /* a lost WebGL context (the GPU process restarted, the device ran short of memory) would leave
+     a frozen picture: the loop stops and the hall says so, with a way to reload it and a way on
+     to the same figures on the pages. The message stays if the browser hands a context back: the
+     scene's baked light and render targets went with the old one, so only a reload is whole. */
+  let lost = false;
+  const lostEl = document.createElement("div");
+  lostEl.className = "gl-lost";
+  lostEl.setAttribute("role", "alert");
+  lostEl.hidden = true;
+  root.appendChild(lostEl);
+  on(canvas, "webglcontextlost", (e) => {
+    if (disposed) return;
+    e.preventDefault();
+    lost = true;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    const exit = $(".exits .exit");
+    lostEl.innerHTML = `<div><h2>${HC.lost.title}</h2><p>${HC.lost.body}</p><div class="row"><button class="cta" type="button">${HC.lost.reload}</button>${exit ? `<a class="ghost" href="${exit.getAttribute("href")}">${HC.lost.mine}</a>` : ""}</div></div>`;
+    lostEl.querySelector("button").addEventListener("click", () => location.reload());
+    lostEl.hidden = false;
+    root.classList.add("gl-is-lost");
+    lostEl.querySelector("button").focus();
+  });
   on(canvas, "pointerdown", () => (idle = 0));
   const perf = { n: 0, t: 0, stepped: false, tier: LOW ? HC.perf.low : HC.perf.high };
   /* ?perf — a small meter for real-device testing: frames per second, draw calls, quality tier */
@@ -5056,7 +5132,7 @@ export function mountHall(
     : null;
   const meterStat = { frames: 0, since: performance.now() };
   const counted = !!meter || !!window.__HALL_TEST;
-  const lastInfo = { calls: 0, triangles: 0 };
+  const lastInfo = { calls: 0, triangles: 0, frames: 0 };
   if (counted) renderer.info.autoReset = false; // count every pass of the frame, not only the last
   if (meter) {
     meter.className = "perf";
@@ -5107,10 +5183,14 @@ export function mountHall(
     }
     return ordered;
   }
+  const vLbl = new THREE.Vector3();
   function frame() {
-    if (disposed) return;
+    if (disposed || lost) return;
     const dt = Math.min(window.__DTCAP || 0.05, clock.getDelta()),
-      time = clock.elapsedTime;
+      real = clock.elapsedTime,
+      // the settled backdrop behind the gate holds one moment: nothing in it drifts or jumps
+      backdrop = gateShut && S.stage === "gate" && real > GATE_SETTLE,
+      time = backdrop ? GATE_SETTLE : real;
     if (!window.__HALL_TEST) adapt(dt);
     idle += dt;
     if (
@@ -5135,7 +5215,7 @@ export function mountHall(
       s.sheen.material.uniforms.uHover.value +=
         ((s === scrMap ? hoverScr : 0) - s.sheen.material.uniforms.uHover.value) * 0.1;
     });
-    if (!RM) {
+    if (!RM && !backdrop) {
       crown.rotation.y -= dt * 0.04;
       lamps.forEach((l) => (l.rotation.y += dt * 0.3));
     }
@@ -5242,7 +5322,7 @@ export function mountHall(
     landDots.material.uniforms.uTime.value = time;
     landDots.material.uniforms.uScale.value = globe.scale.x;
     if (globe.visible) {
-      if (!RM)
+      if (!RM && !backdrop)
         globe.rotation.y +=
           dt * (S.stage === "hall" || S.stage === "gate" ? 0.12 : S.stage === "world" ? 0 : 0.04);
       const cu = globe.userData.selCurve;
@@ -5253,12 +5333,20 @@ export function mountHall(
         ),
       );
     }
-    if (emblemAt.on && !RM && S.stage === "gate") emblem.render(time, emblemAt);
-    if (counted) renderer.info.reset();
-    composer.render(dt);
-    if (counted) {
-      lastInfo.calls = renderer.info.render.calls;
-      lastInfo.triangles = renderer.info.render.triangles;
+    // the emblem turns slowly: thirty pictures a second carry it, at half the read-back cost
+    if (emblemAt.on && !RM && S.stage === "gate" && real - emblemAt.drawn > 1 / 40) {
+      emblemAt.drawn = real;
+      emblem.render(real, emblemAt);
+    }
+    if (!backdrop || gateDrawn < 0 || real - gateDrawn >= GATE_EVERY) {
+      gateDrawn = real;
+      if (counted) renderer.info.reset();
+      composer.render(dt);
+      if (counted) {
+        lastInfo.calls = renderer.info.render.calls;
+        lastInfo.triangles = renderer.info.render.triangles;
+        lastInfo.frames++;
+      }
     }
     if (meter) tickMeter();
     placed.length = 0;
@@ -5275,7 +5363,7 @@ export function mountHall(
           l.on = false;
           continue;
         }
-        const p = l.getPos().clone().project(camera);
+        const p = vLbl.copy(l.getPos()).project(camera);
         if (p.z > 1) {
           l.el.style.opacity = 0;
           l.on = false;
@@ -5424,6 +5512,7 @@ export function mountHall(
     labels.forEach((l) => l.el.remove());
     labels.length = 0;
     meter?.remove();
+    lostEl.remove();
     if (impact.parentNode !== root) root.appendChild(impact); // the page owns it
     for (const el of [panel, impact, legend]) if (el) el.replaceChildren();
     delete window.__hall;

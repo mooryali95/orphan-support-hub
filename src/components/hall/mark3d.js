@@ -18,69 +18,105 @@ const shapesOf = (loader, d) =>
     .paths.flatMap((p) => SVGLoader.createShapes(p));
 
 /**
- * the mark as a lit object: the body extruded with a fine bevel, the trim in brushed metal a
- * little proud of it, the inlay as a metal hairline on its face, and a warm light standing
- * behind it (it shows through whatever the body's path leaves open). Centred on the viewBox's
- * centre, one unit per viewBox unit, facing +z. The caller owns the group; `dispose` frees it.
+ * the mark as a lit object: the body a thick lacquer medallion with a broad rounded rim, its face
+ * shaded as a shallow dome (so light pools on it and moves as it turns, instead of one flat tone),
+ * the trim in brushed metal riding a little proud of it, the inlay a metal hairline standing off
+ * the face, and a warm light standing inside it (it shows through whatever the body's path
+ * leaves open). The bevels are cut inward, so the silhouette is exactly the vector's. Centred on
+ * the viewBox's centre, one unit per viewBox unit, facing +z. `relief` scales the depth (a seal
+ * set into a floor is shallower than an emblem). The caller owns the group; `dispose` frees it.
  * @param {MarkArt} art
  */
-export function buildMark(art, { envMapIntensity = 1 } = {}) {
+export function buildMark(art, { envMapIntensity = 1, relief = 1 } = {}) {
   const [vx, vy, vw, vh] = art.viewBox.split(/\s+/).map(Number);
   const loader = new SVGLoader();
   const group = new THREE.Group();
   const owned = [];
   const keep = (x) => (owned.push(x), x);
+  // deep wine under a hard clear coat: the colour stays the logo's, the gloss is the coat's
   const lacquer = keep(
     new THREE.MeshPhysicalMaterial({
       color: art.colors.body,
-      roughness: 0.42,
-      metalness: 0.05,
+      roughness: 0.46,
+      metalness: 0,
       clearcoat: 1,
-      clearcoatRoughness: 0.3,
-      envMapIntensity: envMapIntensity * 1.6,
+      clearcoatRoughness: 0.1,
+      envMapIntensity: envMapIntensity * 1.15,
     }),
   );
-  // brushed, never mirror foil: the metal is a line and an edge, not a surface
+  // brushed, never mirror foil: the grain runs one way, so the highlight is a soft streak across
+  // the metal that slides as the piece turns
   const metal = keep(
     new THREE.MeshPhysicalMaterial({
       color: art.colors.metal,
       metalness: 1,
-      roughness: 0.34,
-      envMapIntensity: envMapIntensity * 3.2,
+      roughness: 0.3,
+      anisotropy: 0.8,
+      anisotropyRotation: Math.PI / 2,
+      envMapIntensity: envMapIntensity * 2.4,
     }),
   );
   const light = keep(new THREE.MeshBasicMaterial({ color: art.colors.light, toneMapped: false }));
-  const DEPTH = { body: 9, trim: 7, inlay: 1.2 };
-  const Z = { body: 0, trim: 5.5, inlay: 10.9 };
+  const DEPTH = { body: 15 * relief, trim: 11 * relief, inlay: 1.4 };
+  const BEVEL = {
+    body: { t: 4.4 * relief, s: 3.6, n: 8 },
+    trim: { t: 2.2 * relief, s: 1.3, n: 6 },
+  };
+  const face = DEPTH.body + BEVEL.body.t; // the body's front face
+  // the trim's face stands a little proud of the body's; the inlay stands off it by a hair
+  const Z = { body: 0, trim: face + 3 * relief - DEPTH.trim - BEVEL.trim.t, inlay: face - 0.5 };
+  const at = art.lightAt ?? { x: vx + vw / 2, y: vy + vh / 2, r: Math.min(vw, vh) * 0.45 };
   // SVG's y runs down: the art is flipped, and the viewBox's centre is brought to the origin
   const art3d = new THREE.Group();
   art3d.scale.y = -1;
-  art3d.position.set(-(vx + vw / 2), vy + vh / 2, -DEPTH.body / 2);
+  art3d.position.set(-(vx + vw / 2), vy + vh / 2, -face / 2);
   group.add(art3d);
   for (const part of art.parts) {
+    const bevel = BEVEL[part.role];
     const geo = keep(
       new THREE.ExtrudeGeometry(shapesOf(loader, part.d), {
         depth: DEPTH[part.role],
-        bevelEnabled: part.role !== "inlay",
-        bevelThickness: 1.8,
-        bevelSize: 1.5,
-        bevelSegments: 5,
-        curveSegments: 28,
+        bevelEnabled: !!bevel,
+        bevelThickness: bevel?.t ?? 0,
+        bevelSize: bevel?.s ?? 0,
+        bevelOffset: -(bevel?.s ?? 0),
+        bevelSegments: bevel?.n ?? 1,
+        curveSegments: 40,
       }),
     );
+    if (part.role === "body") {
+      /* the face is flat geometry shaded as a shallow dome: each face vertex's normal leans
+         outward from the centre, more toward the rim, and the renderer blends between them */
+      const pos = geo.attributes.position,
+        nor = geo.attributes.normal,
+        lean = 0.3 / at.r;
+      for (let i = 0; i < pos.count; i++) {
+        if (nor.getZ(i) < 0.99 || pos.getZ(i) < face - 0.01) continue;
+        const nx = (pos.getX(i) - at.x) * lean,
+          ny = (pos.getY(i) - at.y) * lean,
+          k = 1 / Math.hypot(nx, ny, 1);
+        nor.setXYZ(i, nx * k, ny * k, k);
+      }
+      nor.needsUpdate = true;
+    }
     const mesh = new THREE.Mesh(geo, part.role === "body" ? lacquer : metal);
     mesh.position.z = Z[part.role];
     art3d.add(mesh);
   }
-  // the light behind the body, inside its silhouette: it shows through what the path leaves open
-  const at = art.lightAt ?? { x: vx + vw / 2, y: vy + vh / 2, r: Math.min(vw, vh) * 0.45 };
+  // the light inside the body, within its silhouette: it shows through what the path leaves open
   const glow = new THREE.Mesh(keep(new THREE.CircleGeometry(at.r, 64)), light);
-  glow.position.set(at.x, at.y, -2.5);
+  glow.position.set(at.x, at.y, DEPTH.body * 0.3);
   art3d.add(glow);
   return {
     group,
     light,
     size: { w: vw, h: vh },
+    /** where the body's light stands, in the group's own space (for a lamp on the cut walls) */
+    lightAt: new THREE.Vector3(
+      at.x - (vx + vw / 2),
+      -(at.y - (vy + vh / 2)),
+      DEPTH.body * 0.55 - face / 2,
+    ),
     dispose() {
       owned.forEach((x) => x.dispose());
       group.clear();
@@ -90,32 +126,46 @@ export function buildMark(art, { envMapIntensity = 1 } = {}) {
 
 /**
  * the mark as the page's emblem: drawn by the given renderer into an off-screen target (no second
- * WebGL context) and copied to a 2D canvas the caller lays over the flat mark. Soft studio light
- * (the given environment and one key), a slow highlight that crosses the face, a gentle idle
- * turn and a slight lean toward the pointer. `still` (reduced motion) holds one pose.
+ * WebGL context) and copied to a 2D canvas the caller lays over the flat mark. Studio light: the
+ * given environment, a warm key high on one side, a cool rim light from behind the other (it
+ * draws the edge of the medallion and the wall of its rim), a lamp inside that warms the cut
+ * walls, and a narrow highlight that crosses the face now and then. A slow idle turn shows the
+ * thickness, with a slight lean toward the pointer. `still` (reduced motion) holds one pose.
  *
  * Returns null where it cannot be drawn well (no float render target): the flat mark stays.
  * @param {{ renderer: THREE.WebGLRenderer, art: MarkArt, environment?: THREE.Texture|null, still?: boolean, pad?: number }} o
  */
-export function createEmblem({ renderer, art, environment = null, still = false, pad = 0.1 }) {
+export function createEmblem({ renderer, art, environment = null, still = false, pad = 0.14 }) {
   const gl = renderer.getContext();
   if (!renderer.capabilities.isWebGL2 || !gl.getExtension("EXT_color_buffer_float")) return null;
-  const mark = buildMark(art, { envMapIntensity: 1.1 });
+  const mark = buildMark(art, { envMapIntensity: 1 });
   const scene = new THREE.Scene();
   scene.environment = environment;
-  const key = new THREE.DirectionalLight(0xfff4ea, 2.6);
-  key.position.set(-0.7, 0.9, 1.4);
-  // a soft pool high on the key side, so the flat face is never one flat tone
-  const pool = new THREE.PointLight(0xfff0e2, 1, 0, 2);
+  const { w, h } = mark.size;
+  const key = new THREE.DirectionalLight(0xfff1e2, 2.4);
+  key.position.set(-0.8, 1, 1.2);
+  // from behind and to the side: it never reaches the face, only the rim's wall and its far bevel
+  const rim = new THREE.DirectionalLight(0xe9eeff, 3.4);
+  rim.position.set(1.1, 0.5, -0.9);
+  const under = new THREE.DirectionalLight(0xffd9b0, 0.9);
+  under.position.set(0.2, -1, 0.5);
+  // the lamp inside: the walls the two fingers are cut through glow warm from behind
+  const lamp = new THREE.PointLight(0xffe9cc, w * w * 0.05, w * 0.5, 2);
+  lamp.position.copy(mark.lightAt);
+  mark.group.add(lamp);
   // the highlight: a narrow warm light that crosses the face now and then
   const sweep = new THREE.PointLight(0xfff1dc, 0, 0, 2);
-  scene.add(mark.group, key, pool, sweep, new THREE.HemisphereLight(0xfff1e6, 0x3a0f1a, 1.1));
-  const { w, h } = mark.size;
-  pool.position.set(-w * 0.34, h * 0.36, w * 0.55);
-  pool.intensity = w * w * 0.26;
-  const FOV = 18;
+  scene.add(
+    mark.group,
+    key,
+    rim,
+    under,
+    sweep,
+    new THREE.HemisphereLight(0xfff1e6, 0x2a0a12, 0.55),
+  );
+  const FOV = 22;
   const camera = new THREE.PerspectiveCamera(FOV, w / h, 10, 4000);
-  // the art fills the canvas less its padding (room for the turn and the bevel)
+  // the art fills the canvas less its padding (room for the turn and the rim's thickness)
   const dist = (h * (1 + pad * 2)) / 2 / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
   camera.position.set(0, 0, dist);
 
@@ -154,15 +204,15 @@ export function createEmblem({ renderer, art, environment = null, still = false,
     lean.x += ((pointer ? pointer.x : 0) - lean.x) * 0.06;
     lean.y += ((pointer ? pointer.y : 0) - lean.y) * 0.06;
     mark.group.rotation.set(
-      0.05 + (still ? 0 : Math.sin(t * 0.42) * 0.035) + lean.y * 0.16,
-      (still ? -0.2 : Math.sin(t * 0.31) * 0.26) + lean.x * 0.22,
+      0.1 + (still ? 0 : Math.sin(t * 0.42) * 0.05) + lean.y * 0.16,
+      (still ? -0.3 : Math.sin(t * 0.31) * 0.34) + lean.x * 0.22,
       0,
     );
     // the sweep crosses once every nine seconds and rests dark between
-    const s = still ? 0.5 : (t % 9) / 2.6;
-    sweep.intensity = s < 1 ? Math.sin(s * Math.PI) * w * w * 0.75 : 0;
-    sweep.position.set((s - 0.5) * w * 1.6, h * 0.12, w * 0.36);
-    mark.light.color.setScalar(still ? 1.25 : 1.2 + Math.sin(t * 1.1) * 0.12);
+    const s = still ? 0.42 : (t % 9) / 2.6;
+    sweep.intensity = s < 1 ? Math.sin(s * Math.PI) * w * w * 0.55 : 0;
+    sweep.position.set((s - 0.5) * w * 1.6, h * 0.16, w * 0.42);
+    mark.light.color.setScalar(still ? 1.05 : 1 + Math.sin(t * 1.1) * 0.08);
 
     const prev = {
       target: renderer.getRenderTarget(),

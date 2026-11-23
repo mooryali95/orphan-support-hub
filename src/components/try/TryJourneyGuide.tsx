@@ -400,6 +400,8 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
                     to={s.to}
                     {...("search" in s ? { search: s.search } : {})}
                     {...("params" in s ? { params: s.params } : {})}
+                    // the hall's heavy chunks start on hover, touch or focus of its link
+                    {...(s.to === "/hall" ? { preload: "intent" as const } : {})}
                     onClick={() => setOpen(false)}
                     className="flex gap-3 rounded-2xl p-2 transition-colors hover:bg-secondary"
                   >
@@ -435,7 +437,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
         </ol>
         <div className="mt-2 flex flex-wrap gap-3">
           <Button asChild size="lg" className="flex-1">
-            <Link to="/hall" search={hallSearch}>
+            <Link to="/hall" search={hallSearch} preload="intent">
               {c.fromMap}
             </Link>
           </Button>
