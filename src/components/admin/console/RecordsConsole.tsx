@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, FlaskConical, Loader2, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ import {
   PAGE_SIZE,
   transitionPledge,
   type AccessRecord,
+  type AnyRecord,
   type DocumentRecord,
   type OfficeRecord,
   type OrgRecord,
@@ -536,9 +537,11 @@ function DocumentActions({ record, run }: { record: DocumentRecord; run: ActionR
         size="sm"
         variant="outline"
         onClick={() =>
-          void openPrivateFile(ORPHAN_DOCS, record.path).then((ok) => {
-            if (!ok) toast.error("تعذّر فتح المستند");
-          })
+          record.path.startsWith("sample/")
+            ? void toast.info("مستندٌ نموذجي — لا ملفّ خلفه في وضع البيانات النموذجية")
+            : void openPrivateFile(ORPHAN_DOCS, record.path).then((ok) => {
+                if (!ok) toast.error("تعذّر فتح المستند");
+              })
         }
       >
         عرض المستند
@@ -572,7 +575,17 @@ function DocumentActions({ record, run }: { record: DocumentRecord; run: ActionR
 
 const ORPHAN_DOCS = "orphan-documents";
 
-export function RecordsConsole({ kind }: { kind: RecordKind }) {
+export function RecordsConsole({
+  kind,
+  sample = false,
+  onSampleChange,
+}: {
+  kind: RecordKind;
+  /** بيانات نموذجية: تُولَّد في الصفحة، والإجراءات عليها محاكاةٌ لا تصل الخادم */
+  sample?: boolean;
+  /** يُعرض زرّ التبديل حين تُمرَّر (وضع التجربة وحده) */
+  onSampleChange?: (on: boolean) => void;
+}) {
   const entity = ENTITIES[kind] as unknown as Entity<{ id: string }>;
   const fetchRows = useServerFn(listRecords);
   const setPledge = useServerFn(transitionPledge);
@@ -584,13 +597,33 @@ export function RecordsConsole({ kind }: { kind: RecordKind }) {
   const [page, setPage] = useState(0);
   const [open, setOpen] = useState<{ id: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  // تعديلات المحاكاة على الصفوف النموذجية: في الصفحة وحدها، تُنسى عند مغادرتها.
+  const [edits, setEdits] = useState<Record<string, Partial<AnyRecord>>>({});
 
   const res = useQuery({
-    queryKey: ["admin-records", kind, query, status, page],
-    queryFn: () =>
-      fetchRows({ data: { kind, q: query || undefined, status: status || undefined, page } }),
+    queryKey: ["admin-records", kind, query, status, page, sample, edits],
+    queryFn: async () => {
+      if (!sample) {
+        return fetchRows({
+          data: { kind, q: query || undefined, status: status || undefined, page },
+        });
+      }
+      const { sampleRows, samplePage } = await import("@/lib/admin-console-sample");
+      const rows = sampleRows(kind).map((r) => ({ ...r, ...edits[r.id] }) as AnyRecord);
+      return {
+        ok: true as const,
+        error: null,
+        page: samplePage(rows, { q: query, status, page, pageSize: PAGE_SIZE }),
+      };
+    },
     placeholderData: keepPreviousData,
   });
+  /** إجراءٌ على بيانات نموذجية: يُطبَّق في الصفحة وحدها ويقول ذلك صراحةً. */
+  const simulate = (id: string, patch: Partial<AnyRecord>, message: string) => {
+    setEdits((e) => ({ ...e, [id]: { ...e[id], ...patch } }));
+    toast.success(`${message} — محاكاة: لم يُرسل شيء إلى الخادم`);
+    setOpen(null);
+  };
   const data = res.data?.page ?? null;
   const rows = (data?.rows ?? []) as Array<{ id: string }>;
   const counts = data?.counts ?? {};
@@ -600,6 +633,7 @@ export function RecordsConsole({ kind }: { kind: RecordKind }) {
   const run: ActionRunner = {
     busy,
     pledge: (id, next, reason) => {
+      if (sample) return simulate(id, { status: next }, "تغيّرت حالة التعهّد");
       setBusy(true);
       void setPledge({ data: { id, status: next, reason: reason.trim() || undefined } })
         .then((r) => {
@@ -611,6 +645,12 @@ export function RecordsConsole({ kind }: { kind: RecordKind }) {
         .finally(() => setBusy(false));
     },
     verifyDoc: (id, verified, note) => {
+      if (sample)
+        return simulate(
+          id,
+          { status: verified ? "verified" : "unverified" },
+          verified ? "وُثّق المستند" : "سُحب التوثيق",
+        );
       setBusy(true);
       void verifyDoc({ data: { id, verified, note: note.trim() || undefined } })
         .then((r) => {
@@ -633,7 +673,32 @@ export function RecordsConsole({ kind }: { kind: RecordKind }) {
 
   return (
     <section className="mt-6">
-      <p className="text-muted-foreground text-sm leading-7">{entity.lead}</p>
+      {sample && (
+        <div
+          role="note"
+          className="border-bridge/60 bg-bridge/10 mb-4 flex flex-wrap items-center gap-3 rounded-2xl border px-4 py-3 text-sm leading-7"
+        >
+          <FlaskConical className="text-bridge-ink size-5 shrink-0" aria-hidden="true" />
+          <p className="min-w-0 flex-1">
+            <strong>بيانات نموذجية</strong> — أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة
+            لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.
+          </p>
+          {onSampleChange && (
+            <Button size="sm" variant="outline" onClick={() => onSampleChange(false)}>
+              العودة إلى بيانات المنصّة
+            </Button>
+          )}
+        </div>
+      )}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <p className="text-muted-foreground text-sm leading-7">{entity.lead}</p>
+        {!sample && onSampleChange && (
+          <Button size="sm" variant="ghost" onClick={() => onSampleChange(true)}>
+            <FlaskConical className="size-4" aria-hidden="true" />
+            عرض بيانات نموذجية
+          </Button>
+        )}
+      </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <button type="button" className={chip(!status)} onClick={() => (setStatus(""), setPage(0))}>
