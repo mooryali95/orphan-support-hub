@@ -1,4 +1,3 @@
-import { DemoModeBar } from "@/components/DemoModeBar";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -10,7 +9,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { useDemo } from "@/lib/demo-mode";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -262,6 +262,20 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+// شريط التجربة في قطعته: لا يدخل حزمة أيّ صفحة إلا لزائرٍ في الوضع التجريبي.
+const DemoModeBar = lazy(() =>
+  import("@/components/DemoModeBar").then((m) => ({ default: m.DemoModeBar })),
+);
+
+function DemoBarSlot() {
+  const demo = useDemo();
+  return demo ? (
+    <Suspense fallback={null}>
+      <DemoModeBar />
+    </Suspense>
+  ) : null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const locale = useLocale();
@@ -288,7 +302,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationProgress />
-      <DemoModeBar />
+      <DemoBarSlot />
       <PreviewBridge>
         <Outlet />
       </PreviewBridge>
