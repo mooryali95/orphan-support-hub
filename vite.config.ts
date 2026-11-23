@@ -24,11 +24,19 @@ export default defineConfig({
   },
   vite: {
     resolve: {
-      alias: {
-        "entities/lib/decode.js": path.resolve(rootDir, "node_modules/entities/lib/decode.js"),
-        "entities/lib/encode.js": path.resolve(rootDir, "node_modules/entities/lib/encode.js"),
-        entities: path.resolve(rootDir, "node_modules/entities"),
-      },
+      // مطابقة تامّة لا بادئة: parse5 يستورد entities/decode و entities/escape من نسخته
+      // المتداخلة (v6+)، وتحويل كل ما يبدأ بـ entities إلى النسخة الجذرية (v4) يكسر البناء.
+      alias: [
+        {
+          find: /^entities\/lib\/decode\.js$/,
+          replacement: path.resolve(rootDir, "node_modules/entities/lib/decode.js"),
+        },
+        {
+          find: /^entities\/lib\/encode\.js$/,
+          replacement: path.resolve(rootDir, "node_modules/entities/lib/encode.js"),
+        },
+        { find: /^entities$/, replacement: path.resolve(rootDir, "node_modules/entities") },
+      ],
     },
   },
 });

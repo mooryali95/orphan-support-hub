@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2854,
+ "count": 2855,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -466,6 +466,13 @@
    "ar": "كيف تعمل",
    "kind": "text",
    "hash": "f41753ab6f70",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.nav.3": {
+   "en": "Ask",
+   "ar": "اسأل",
+   "kind": "text",
+   "hash": "fbb6577a973f",
    "file": "src/components/SiteHeader.tsx"
   },
   "components/SiteHeader.portals": {
