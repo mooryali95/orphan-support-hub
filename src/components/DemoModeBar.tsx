@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { FlaskConical, X } from "lucide-react";
 
 import { exitDemo, useDemo } from "@/lib/demo-mode";
@@ -34,7 +34,9 @@ export function DemoModeBar() {
   const demo = useDemo();
   const c = useCopy(COPY);
   const navigate = useNavigate();
-  if (!demo) return null;
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  // القاعة وضعٌ غامر بملء الشاشة، ولوحاتها تحمل شارة العيّنة نفسها ومخرجها.
+  if (!demo || path === "/hall" || path.startsWith("/hall/")) return null;
   return (
     <div
       role="region"
@@ -54,7 +56,7 @@ export function DemoModeBar() {
           <Link to="/try/admin" className={LINK}>
             {c.admin}
           </Link>
-          <Link to="/hall" className={LINK}>
+          <Link to="/hall" search={{ try: 1 }} className={LINK}>
             {c.hall}
           </Link>
           <button
