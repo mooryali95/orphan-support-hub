@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { isTrial } from "@/config/platform";
+import { useDemo } from "@/lib/demo-mode";
 import {
   attentionItems,
   childrenSummary,
@@ -65,12 +66,15 @@ const QUEUES = ["inbox", "sources", "locales", "dispatch", "ops", "links"] as co
 export default function ManagementOverview({
   sample: wantSample,
   period: rawPeriod,
+  embedded = false,
   fns,
   actions,
 }: {
   sample: boolean;
   /** نافذة الاتجاه الشهري كما في عنوان الصفحة (‎?period=…)، فتُشارَك وتُستعاد. */
   period: unknown;
+  /** داخل صفحةٍ لها رأسها: بلا رأس لوحة التحكّم. */
+  embedded?: boolean;
   /** فتح تبويبٍ قائم في ‎/admin، وتبديل العيّنة والفترة. */
   actions: OverviewActions;
   /** دوالّ الإدارة القائمة، تمرّرها صفحة الإدارة التي تحملها. */
@@ -80,8 +84,9 @@ export default function ManagementOverview({
   const locale = useLocale();
   const period = parsePeriod(rawPeriod);
   const tracks = useGivingCopy().tracks;
-  // العيّنة للعرض قبل الاعتماد وحده؛ بعده تُهمل ولو طُلبت في الرابط.
-  const sample = wantSample && isTrial();
+  // العيّنة للعرض قبل الاعتماد، أو لزائرٍ في الوضع التجريبي؛ وإلا تُهمل ولو طُلبت في الرابط.
+  const demo = useDemo();
+  const sample = wantSample && (isTrial() || demo);
   const d = useOverviewData(sample, fns);
   const { open, setSample, setPeriod } = actions;
   const n = (v: number) => formatCount(v, locale);
@@ -305,7 +310,7 @@ export default function ManagementOverview({
   return (
     <OverviewActionsContext.Provider value={actions}>
       <div ref={root} className="ov-root">
-        <DashboardShell title={t.title} description={t.lead}>
+        <DashboardShell title={t.title} description={t.lead} embedded={embedded}>
           {!sample && <AdminTrustStrip />}
           {sample && (
             <div
@@ -323,14 +328,17 @@ export default function ManagementOverview({
                   <span className="text-muted-foreground"> — {t.sampleBannerText}</span>
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="ov-noprint"
-                onClick={() => setSample(false)}
-              >
-                {t.sampleOff}
-              </Button>
+              {/* في الوضع التجريبي لا بيانات حقيقية يُعاد إليها: المخرج في شريط التجربة. */}
+              {!demo && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ov-noprint"
+                  onClick={() => setSample(false)}
+                >
+                  {t.sampleOff}
+                </Button>
+              )}
             </div>
           )}
 

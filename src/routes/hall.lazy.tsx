@@ -21,6 +21,7 @@ import { donorHall, donorOrphanIds } from "@/lib/hall/donor";
 import { loadHallScene, loadHallTrial } from "@/lib/hall/preload";
 import { hasWebGL2 } from "@/lib/hall/webgl";
 import { hallLanguage, hallLiveRows, hallSource } from "@/lib/hall/source";
+import { enterDemo, useDemo } from "@/lib/demo-mode";
 import { formatCount } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, useLocale } from "@/lib/locale";
 import { getPublicOrphan } from "@/lib/orphans.functions";
@@ -137,8 +138,18 @@ function HallPage() {
   const fetchMine = useServerFn(listMySponsorships);
   const router = useRouter();
   // المفتاح الواحد: في وضع التجربة تفتح القاعة على كتالوج التجربة؛ وبعد الاعتماد على أعداد الدليل.
-  const source = hallSource(search);
+  const demo = useDemo();
+  const source = hallSource(search, { demo });
   const trying = source.mode === "trial";
+  // قاعة التجربة جزءٌ من الوضع التجريبي: من خرج منها إلى صفحةٍ أخرى يرى شريطه ومخرجه.
+  useEffect(() => {
+    if (trying) enterDemo();
+  }, [trying]);
+  // القاعة وضعٌ غامر بملء الشاشة، ولوحاتها تحمل شارة العيّنة: شريط التجربة يختفي ما دامت مفتوحة.
+  useEffect(() => {
+    document.documentElement.classList.add("hall-open");
+    return () => document.documentElement.classList.remove("hall-open");
+  }, []);
   const donor = source.mode === "donor";
   const locale = hallLanguage(source.mode, appLocale);
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");

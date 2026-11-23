@@ -24,6 +24,7 @@ import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
 import { PartnerPlate } from "@/components/brand/PartnerPlate";
 import { isTrial, showTrialLink } from "@/config/platform";
+import { enterDemo } from "@/lib/demo-mode";
 import { brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { KahataynMark } from "@/components/brand/KahataynMark";
@@ -137,7 +138,7 @@ const COPY = defineCopy("routes/index", {
     h1b: "بل نبني نظم عمران",
     lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
     supportNow: "ادعم الآن",
-    tryIt: "جرّب الرحلة كاملة بلا حساب",
+    tryIt: "ادخل التجربة — بلا حساب ولا خصم",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
     hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
@@ -268,7 +269,7 @@ const COPY = defineCopy("routes/index", {
     h1b: "we build systems for thriving",
     lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
     supportNow: "Support now",
-    tryIt: "Try the whole journey, no account",
+    tryIt: "Enter the demo — no account, nothing charged",
     browse: "Browse children's files",
     hadithMeaning:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
@@ -497,7 +498,7 @@ function HomePage() {
                 <div className="mt-9 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 lg:justify-start">
                   {isTrial() && (
                     <Button asChild size="lg">
-                      <Link to="/try">
+                      <Link to="/try" onClick={enterDemo}>
                         <FlaskConical className="size-4" aria-hidden="true" />
                         {c.tryIt}
                       </Link>
@@ -524,6 +525,7 @@ function HomePage() {
                 {showTrialLink() && (
                   <Link
                     to="/try"
+                    onClick={enterDemo}
                     className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
                     <FlaskConical className="size-4" aria-hidden="true" />

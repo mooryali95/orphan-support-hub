@@ -1136,3 +1136,8 @@ html {
 html.try-present {
   font-size: 112.5%;
 }
+
+/* شريط التجربة لا يظهر فوق القاعة الغامرة (routes/hall.lazy.tsx) */
+.hall-open [data-demo-bar] {
+  display: none;
+}

@@ -1,5 +1,5 @@
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -7,6 +7,21 @@ import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { CycleAdminTask } from "@/components/try/TryCycleTasks";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import type { RecordKind } from "@/lib/admin-console.functions";
+import { ADMIN_FNS } from "@/components/admin/overview/admin-fns";
+import type { OverviewActions } from "@/components/admin/overview/parts";
+import type { AdminTab } from "@/lib/admin-overview";
+
+// النظرة الشاملة نفسها التي تفتحها الإدارة، على العيّنة: لا شاشةٌ مقلَّدة.
+const ManagementOverview = lazy(() => import("@/components/admin/overview/ManagementOverview"));
+
+/** ما يقابل لسان النظرة الشاملة من جداول العرض؛ وما لا مقابل له يبقى في النظرة. */
+const TAB_TO_RECORDS: Partial<Record<AdminTab, RecordKind>> = {
+  orphans: "orphans",
+  sponsors: "sponsorships",
+  queue: "orphans",
+  access: "access_log",
+  integrity: "documents",
+};
 
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
 
@@ -60,52 +75,73 @@ function TryAdmin() {
         />
         <div className="min-w-0">
           {tab === "home" ? (
-            <section>
+            <>
               <CycleAdminTask />
-              <h2 className="mt-8 text-2xl font-bold">ماذا تجرّب هنا؟</h2>
-              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                {(
-                  [
-                    ["orphans", "افتح طفلاً وشاهد شارة توثيقه وما ينقص ملفّه"],
-                    ["documents", "وثّق مستنداً، أو اسحب توثيقه بملاحظة"],
-                    ["pledges", "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد"],
-                    ["access_log", "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة"],
+              <Suspense fallback={null}>
+                <ManagementOverview
+                  sample
+                  embedded
+                  period={undefined}
+                  fns={ADMIN_FNS}
+                  actions={
+                    {
+                      open: (t: AdminTab) => {
+                        const k = TAB_TO_RECORDS[t];
+                        if (k) setTab(k);
+                      },
+                      href: () => "#",
+                      setSample: () => {},
+                      setPeriod: () => {},
+                    } satisfies OverviewActions
+                  }
+                />
+              </Suspense>
+              <section className="mt-10">
+                <h2 className="text-2xl font-bold">ماذا تجرّب هنا؟</h2>
+                <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {(
                     [
-                      "sponsorships",
-                      "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
-                    ],
-                  ] as Array<[RecordKind, string]>
-                ).map(([key, text]) => (
-                  <li key={key}>
-                    <button
-                      type="button"
-                      onClick={() => setTab(key)}
-                      className="group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-5 text-start transition-colors hover:border-primary/50"
-                    >
-                      <span className="font-bold">{LABELS[key]}</span>
-                      <span className="mt-1 text-sm leading-7 text-muted-foreground">{text}</span>
-                      <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary">
-                        افتح
-                        <ArrowLeft
-                          className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-6 text-sm leading-7 text-muted-foreground">
-                وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —{" "}
-                <Link
-                  to="/try/cycle"
-                  className="font-bold text-primary underline-offset-4 hover:underline"
-                >
-                  افتح «الدورة الكاملة»
-                </Link>
-                .
-              </p>
-            </section>
+                      ["orphans", "افتح طفلاً وشاهد شارة توثيقه وما ينقص ملفّه"],
+                      ["documents", "وثّق مستنداً، أو اسحب توثيقه بملاحظة"],
+                      ["pledges", "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد"],
+                      ["access_log", "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة"],
+                      [
+                        "sponsorships",
+                        "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
+                      ],
+                    ] as Array<[RecordKind, string]>
+                  ).map(([key, text]) => (
+                    <li key={key}>
+                      <button
+                        type="button"
+                        onClick={() => setTab(key)}
+                        className="group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-5 text-start transition-colors hover:border-primary/50"
+                      >
+                        <span className="font-bold">{LABELS[key]}</span>
+                        <span className="mt-1 text-sm leading-7 text-muted-foreground">{text}</span>
+                        <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary">
+                          افتح
+                          <ArrowLeft
+                            className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-sm leading-7 text-muted-foreground">
+                  وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —{" "}
+                  <Link
+                    to="/try/cycle"
+                    className="font-bold text-primary underline-offset-4 hover:underline"
+                  >
+                    افتح «الدورة الكاملة»
+                  </Link>
+                  .
+                </p>
+              </section>
+            </>
           ) : (
             <>
               <h2 className="text-2xl font-bold">{LABELS[tab]}</h2>
