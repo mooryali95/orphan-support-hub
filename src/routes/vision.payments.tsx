@@ -17,10 +17,18 @@ import {
 
 import { Eyebrow, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
-import { DonateForm, Feed, useMoney, usePlace, useVision } from "@/components/vision/VisionStore";
+import {
+  DonateForm,
+  Feed,
+  useCurrencyName,
+  useMoney,
+  usePlace,
+  useVision,
+} from "@/components/vision/VisionStore";
 import { feeSplit, MONEY, type MoneyStage } from "@/data/vision-demo";
-import { totals } from "@/lib/vision-engine";
-import { copyOf, defineCopy, useCopy } from "@/lib/locale";
+import { formatMoneyExact } from "@/lib/currency";
+import { totals, VISION_CURRENCY } from "@/lib/vision-engine";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/vision/payments")({
@@ -46,7 +54,7 @@ const COPY = defineCopy("routes/vision.payments", {
     acProvider: "مزوّد الدفع",
     acProviderNote: "Creem: بائعٌ مسجَّل يتحمّل الضريبة",
     acWamy: "حساب الندوة",
-    acWamyNote: "يستقرّ فيه كلّ مال — بالريال",
+    acWamyNote: "يستقرّ فيه كلّ مال — بعملة المنصّة الموحّدة",
     acOffice: "حساب مكتب ألبانيا",
     acOfficeNote: "صرفٌ شهري — باليورو",
     acField: "المجموعة",
@@ -76,7 +84,6 @@ const COPY = defineCopy("routes/vision.payments", {
     settledTag: "مُقيَّد",
     simLead: "كيف يُقرأ تبرّعٌ واحد في السجلّ.",
     amount: "المبلغ",
-    sar: "ر.س",
     feeLabel: "رسوم المنصّة (افتراض)",
     gross: "المحصَّل",
     fee: "الرسوم",
@@ -113,7 +120,7 @@ const COPY = defineCopy("routes/vision.payments", {
     acProvider: "Payment provider",
     acProviderNote: "Creem: merchant of record handling tax",
     acWamy: "WAMY account",
-    acWamyNote: "Where all money settles — in SAR",
+    acWamyNote: "Where all money settles — in the platform's unified currency",
     acOffice: "Albania office account",
     acOfficeNote: "Monthly disbursement — in EUR",
     acField: "The group",
@@ -144,7 +151,6 @@ const COPY = defineCopy("routes/vision.payments", {
     settledTag: "Recorded",
     simLead: "How one donation reads in the ledger.",
     amount: "Amount",
-    sar: "SAR",
     feeLabel: "Platform fee (assumption)",
     gross: "Collected",
     fee: "Fee",
@@ -333,7 +339,9 @@ function Simulator() {
   const pct = state.feePercent;
   const setPct = (n: number) => dispatch({ type: "setFee", pct: n });
   const { fee, net } = feeSplit(amount, pct);
-  const money = (n: number) => num(n, { maximumFractionDigits: 2 });
+  const locale = useLocale();
+  const currency = useCurrencyName();
+  const money = (n: number) => formatMoneyExact(n, VISION_CURRENCY, locale);
   return (
     <section
       className="rounded-3xl bg-[linear-gradient(160deg,#5b1626,var(--color-wine-deep))] p-6 text-ivory"
@@ -344,7 +352,7 @@ function Simulator() {
       </h2>
       <p className="text-xs text-gold-soft">{c.simLead}</p>
       <label className="mt-5 block text-sm">
-        {c.amount} ({c.sar})
+        {c.amount} ({currency})
         <input
           type="number"
           min={50}
@@ -380,9 +388,7 @@ function Simulator() {
         ).map(([k, v, cls]) => (
           <div key={k} className="flex items-baseline justify-between">
             <dt>{k}</dt>
-            <dd className={cn("font-serif tabular-nums", cls)}>
-              {money(v)} {c.sar}
-            </dd>
+            <dd className={cn("font-serif tabular-nums", cls)}>{money(v)}</dd>
           </div>
         ))}
       </dl>

@@ -1,6 +1,7 @@
 /**
  * what a trial pledge's amount stands for, said the same way wherever the trial shows it (the
- * support sheet on the map and the impact hall both read this file, so the two cannot differ).
+ * support sheet on the map, the impact hall and «أثري» (`/try/impact`) all read this file, so
+ * the three cannot differ).
  *
  * A pledge to a region, a group or a country is pooled: it joins that place's fund, and the fund
  * (never one donor) carries the place's children. So the amount is shown as its share of the
@@ -14,7 +15,7 @@ import { formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, pluralOf, type Locale } from "@/lib/locale";
 import { TRY_CURRENCY } from "@/lib/try-demo";
 import { tryChildOf } from "@/lib/try-places";
-import { targetChildren, targetLabel, type TryTarget } from "@/lib/try-support";
+import { targetChildren, targetLabel, type TryPledge, type TryTarget } from "@/lib/try-support";
 
 /**
  * the currencies a trial pledge is typed in: the trial's file currency first (the one every
@@ -167,4 +168,30 @@ export function tryReachText(
     children: r.children,
     childrenLabel: c.joined(place),
   };
+}
+
+export type TryPledgeReach = TryReachText & { id: string };
+
+/**
+ * the reach of each recorded pledge of one kind, for «أثري» (`/try/impact`): the very words the
+ * sheet showed before the pledge was confirmed and the hall shows for it, newest first as the
+ * page lists its pledges. A pledge outside the catalogue has no reach and is left out.
+ */
+export function tryPledgeReaches(
+  pledges: ReadonlyArray<TryPledge>,
+  kind: TryPledge["kind"],
+  locale: Locale,
+): TryPledgeReach[] {
+  return pledges
+    .filter((p) => p.kind === kind)
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .flatMap((p) => {
+      const r = tryReachText(
+        { scope: p.scope, target: p.target, co: p.co },
+        p.amount,
+        p.currency,
+        locale,
+      );
+      return r ? [{ id: p.id, ...r }] : [];
+    });
 }

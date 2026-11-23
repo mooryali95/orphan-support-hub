@@ -10,15 +10,27 @@
  * يتّصل التكامل. المعرّفات وصفية (`demo-…`) ولا تصلح لدفعٍ أو صرف.
  */
 import { ALBANIA, GROUPS, SYSTEM, TRAITS, type T } from "@/data/vision-demo";
+import { findRate, operatingCurrency, UNIFIED_CURRENCY } from "@/lib/currency";
 
-/** كلفة تأهيل يتيمٍ واحد لدورةٍ كاملة (ستّ جلسات ومستلزماتها)، بالريال. */
+/**
+ * the one currency every sample amount in this engine is kept in: the platform's unified
+ * currency, the same one the impact hall writes its sample amounts in (`@/lib/hall/live`). A
+ * payment simulated in the hall is recorded here as the same number, so it must read as the
+ * same currency on every /vision page. Pages format through `useMoney` (`formatMoney`), never
+ * with a currency written by hand (`vision-currency.test.ts`).
+ */
+export const VISION_CURRENCY = UNIFIED_CURRENCY;
+/** the currency the Albania office is disbursed in: the country's operating currency */
+export const OFFICE_CURRENCY = operatingCurrency("AL");
+
+/** كلفة تأهيل يتيمٍ واحد لدورةٍ كاملة (ستّ جلسات ومستلزماتها)، بعملة المحرّك `VISION_CURRENCY` (رقمٌ نموذجي). */
 export const COST_PER_ORPHAN = 600;
 export const GROUP_SIZE = 9;
 export const SESSIONS_PER_CYCLE = 6;
 /** متوسّط ارتفاع السمة بعد دورةٍ مكتملة (من قياسات الرواد المنشورة). */
 export const TRAIT_GAIN = 2;
-/** تحويل الريال إلى اليورو للصرف إلى مكتب ألبانيا (افتراضٌ ثابت). */
-export const SAR_TO_EUR = 0.245;
+/** sample rate for the disbursement to the Albania office: the platform's indicative seed rate */
+export const OFFICE_RATE = findRate(VISION_CURRENCY, OFFICE_CURRENCY)?.rate ?? 1;
 
 export type Method = "card" | "bank";
 export type Layer = "support" | "operations" | "decision";
@@ -28,7 +40,7 @@ export type CityState = {
   name: T;
   /** أيتامٌ ينتظرون التأهيل في المدينة. */
   need: number;
-  /** ما خُصِّص للمدينة كلّه (مجموعاتها ورصيدها الحرّ)، بالريال. */
+  /** ما خُصِّص للمدينة كلّه (مجموعاتها ورصيدها الحرّ)، بعملة المحرّك. */
   funded: number;
   /** رصيدٌ حرّ لم يُربط بمجموعةٍ بعد. */
   pool: number;
@@ -234,18 +246,18 @@ export const MONTHLY_AMOUNT = 1500;
 
 /* ── القراءة: ما تراه لوحة القرار ──────────────────────────────────── */
 
-export function cityNeedSar(c: CityState) {
+export function cityNeedMoney(c: CityState) {
   return c.need * COST_PER_ORPHAN;
 }
 export function fundingPct(c: CityState) {
-  return Math.round((c.funded / cityNeedSar(c)) * 100);
+  return Math.round((c.funded / cityNeedMoney(c)) * 100);
 }
 /** الفجوة بالأيتام: من لم يُغطَّ تأهيلهم بعد. الفائض لا فجوة له. */
 export function gapOrphans(c: CityState) {
-  return Math.max(0, Math.ceil((cityNeedSar(c) - c.funded) / COST_PER_ORPHAN));
+  return Math.max(0, Math.ceil((cityNeedMoney(c) - c.funded) / COST_PER_ORPHAN));
 }
 export function surplusSar(c: CityState) {
-  return Math.max(0, c.funded - cityNeedSar(c));
+  return Math.max(0, c.funded - cityNeedMoney(c));
 }
 export function isFunded(g: GroupState) {
   return g.funded >= groupCost(g.members);
@@ -261,8 +273,8 @@ export function ranked(s: VisionState) {
 }
 
 export function totals(s: VisionState) {
-  const need = s.cities.reduce((a, c) => a + cityNeedSar(c), 0);
-  const funded = s.cities.reduce((a, c) => a + Math.min(c.funded, cityNeedSar(c)), 0);
+  const need = s.cities.reduce((a, c) => a + cityNeedMoney(c), 0);
+  const funded = s.cities.reduce((a, c) => a + Math.min(c.funded, cityNeedMoney(c)), 0);
   const settled = s.donations.filter((d) => d.status === "settled");
   return {
     need,
@@ -431,7 +443,7 @@ function allocate(s: VisionState, d: Donation, at: number) {
   city.funded += d.net;
   ev(s, at, "operations", "disbursed", {
     city: city.id,
-    eur: Math.round(d.net * SAR_TO_EUR),
+    eur: Math.round(d.net * OFFICE_RATE),
     invoice: d.invoice,
   });
 }
@@ -737,7 +749,7 @@ export function planOf(s: VisionState, sc: Scenario): Array<{ city: string; amou
   // لا تُعطى مدينةٌ فوق فجوتها: ما زاد يبقى في الصندوق («غير مخصّص»).
   const cap = (id: string) => {
     const c = s.cities.find((x) => x.id === id);
-    return c ? Math.max(0, cityNeedSar(c) - c.funded) : 0;
+    return c ? Math.max(0, cityNeedMoney(c) - c.funded) : 0;
   };
   if (sc.strategy === "city" && sc.city) {
     const v = Math.min(amount, cap(sc.city));

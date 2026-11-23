@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3434,
+ "count": 3433,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9224,6 +9224,20 @@
    "hash": "6dcc70260873",
    "file": "src/components/try/TryImpactKinds.tsx"
   },
+  "components/try/TryImpactKinds.reachNote": {
+   "en": "Sample figures, the same ones the support sheet and the impact hall show.",
+   "ar": "أرقامٌ نموذجية، وهي نفسها في ورقة الدعم وفي قاعة الأثر.",
+   "kind": "text",
+   "hash": "3d7ca2a383e2",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
+  "components/try/TryImpactKinds.reachTitle": {
+   "en": "What your pledge amount stands for",
+   "ar": "ما يمثّله مبلغ تعهّدك",
+   "kind": "text",
+   "hash": "99017252f902",
+   "file": "src/components/try/TryImpactKinds.tsx"
+  },
   "components/try/TryJourneyAhead.after.one": {
    "en": "In {0} month",
    "ar": "بعد شهر",
@@ -10684,10 +10698,10 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.amount": {
-   "en": "Amount (SAR)",
-   "ar": "المبلغ (ر.س)",
+   "en": "Amount",
+   "ar": "المبلغ",
    "kind": "text",
-   "hash": "d829eb855aa3",
+   "hash": "550cc7896881",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.bank": {
@@ -10753,11 +10767,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.disbursed": {
-   "en": "Disbursed to the Albania office: €{0} for {1}",
-   "ar": "صرفٌ إلى مكتب ألبانيا: {0} € لـ{1}",
+   "en": "Disbursed to the Albania office: {0} for {1}",
+   "ar": "صرفٌ إلى مكتب ألبانيا: {0} لـ{1}",
    "kind": "template",
    "params": 2,
-   "hash": "b8fb06ed88ad",
+   "hash": "06bff0114248",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.donation": {
@@ -10936,13 +10950,6 @@
    "hash": "59cd76b538e4",
    "file": "src/components/vision/VisionStore.tsx"
   },
-  "components/vision/VisionStore.sar": {
-   "en": "SAR",
-   "ar": "ر.س",
-   "kind": "text",
-   "hash": "53241d57f1d0",
-   "file": "src/components/vision/VisionStore.tsx"
-  },
   "components/vision/VisionStore.session": {
    "en": "{0}: session {1} of {2}",
    "ar": "{0}: جلسة {1} من {2}",
@@ -11060,10 +11067,10 @@
    "file": "src/components/vision/WhatIf.tsx"
   },
   "components/vision/WhatIf.budget": {
-   "en": "Budget (SAR)",
-   "ar": "الميزانية (ر.س)",
+   "en": "Budget",
+   "ar": "الميزانية",
    "kind": "text",
-   "hash": "2f8292a438fd",
+   "hash": "cb9f2505e400",
    "file": "src/components/vision/WhatIf.tsx"
   },
   "components/vision/WhatIf.byCity": {
@@ -14719,10 +14726,10 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.1": {
-   "en": "The WAMY network: headquarters in Riyadh and 26 sites of confirmed presence",
-   "ar": "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
+   "en": "The WAMY network: headquarters in Riyadh and {sites} sites of confirmed presence",
+   "ar": "شبكة الندوة: المقرّ في الرياض و{sites} موقعاً مؤكَّد الحضور",
    "kind": "text",
-   "hash": "d1c32761e36c",
+   "hash": "cd2c6f6139e7",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.film.2": {
@@ -21436,13 +21443,6 @@
    "hash": "2b436ed2ec56",
    "file": "src/routes/vision.cycle.tsx"
   },
-  "routes/vision.cycle.sar": {
-   "en": "SAR",
-   "ar": "ر.س",
-   "kind": "text",
-   "hash": "53241d57f1d0",
-   "file": "src/routes/vision.cycle.tsx"
-  },
   "routes/vision.cycle.sessions": {
    "en": "Concept sessions",
    "ar": "جلسات المفهوم",
@@ -23892,10 +23892,10 @@
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.acWamyNote": {
-   "en": "Where all money settles — in SAR",
-   "ar": "يستقرّ فيه كلّ مال — بالريال",
+   "en": "Where all money settles — in the platform's unified currency",
+   "ar": "يستقرّ فيه كلّ مال — بعملة المنصّة الموحّدة",
    "kind": "text",
-   "hash": "f22e18b10490",
+   "hash": "5e4fa0a6e78b",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.accountsH": {
@@ -24183,13 +24183,6 @@
    "ar": "طريقا التحصيل",
    "kind": "text",
    "hash": "2db3bce9e874",
-   "file": "src/routes/vision.payments.tsx"
-  },
-  "routes/vision.payments.sar": {
-   "en": "SAR",
-   "ar": "ر.س",
-   "kind": "text",
-   "hash": "53241d57f1d0",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.settledTag": {

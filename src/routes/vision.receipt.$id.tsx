@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import {
   useMoney,
+  useOfficeMoney,
   usePlace,
   useVision,
   VisionStoreProvider,
@@ -99,6 +100,7 @@ function Receipt() {
   const { id } = Route.useParams();
   const { state, ready } = useVision();
   const money = useMoney();
+  const officeMoney = useOfficeMoney();
   const place = usePlace();
   const locale = useLocale();
   const d = state.donations.find((x) => x.id === id);
@@ -216,7 +218,7 @@ function Receipt() {
                           className="mt-2 size-1.5 shrink-0 rounded-full bg-gold"
                         />
                         {e.kind === "disbursed"
-                          ? `${place(String(e.args["city"]))} · € ${new Intl.NumberFormat(intlOf(locale)).format(Number(e.args["eur"]))}`
+                          ? `${place(String(e.args["city"]))} · ${officeMoney(Number(e.args["eur"]))}`
                           : `${place(String(e.args["group"] ?? e.args["city"]))} · ${money(Number(e.args["amount"]))}`}
                       </li>
                     ))}

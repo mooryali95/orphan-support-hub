@@ -248,6 +248,7 @@ function TryImpact() {
           kind={tab}
           qualification={qualification}
           inKind={inKind}
+          pledges={pledges ?? []}
           ahead={ahead}
           onAhead={setAhead}
         />

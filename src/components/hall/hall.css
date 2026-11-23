@@ -2096,6 +2096,21 @@
 .hall .brand-sep {
   color: var(--champagne);
 }
+/* the persistent mark of what the hall shows (the trial, the donor's real figures, or the concept
+   hall's sample figures), on its own line under the hall's name. It is the honesty marker: it is
+   never cut. Where the bar is too narrow for one line it wraps to a second (phones, below). */
+.hall .brand {
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+.hall .brand-mark {
+  flex-basis: 100%;
+  font-family: var(--body);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--champagne);
+}
 .hall #steps li.on {
   background: var(--champagne);
   color: var(--wine-ink);
@@ -2270,6 +2285,17 @@
   .hall .brand-hall {
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.25;
+  }
+  /* the mark reads in full beside the bar's buttons: it takes the room they leave and wraps
+     to two balanced lines instead of being cut at the column's edge */
+  .hall .brand-mark {
+    min-width: 0;
+    white-space: normal;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    font-size: 10.5px;
+    line-height: 1.35;
   }
   .hall #steps {
     flex: none;
@@ -2357,8 +2383,10 @@
     min-height: 46px;
   }
 }
+/* the narrowest phones: the hall's name gives its place to the mark of what the hall shows,
+   which stays readable (the page's title still names the hall) */
 @media (max-width: 360px) {
-  .hall .brand {
+  .hall .brand-hall {
     display: none;
   }
 }
