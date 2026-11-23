@@ -17,6 +17,8 @@ export type HallSearch = {
   try?: 1;
   /** the donor's own hall: entered from their dashboard, it shows their real sponsorships */
   me?: 1;
+  /** the concept hall on the real directory's counts: only by this explicit link */
+  live?: 1;
   /** a trial child whose simulated gift is replayed on arrival */
   child?: string;
   cadence?: "monthly" | "one_time";
@@ -44,6 +46,7 @@ export function parseHallSearch(raw: Record<string, unknown>): HallSearch {
   return {
     ...(raw["try"] === 1 || raw["try"] === "1" ? { try: 1 as const } : {}),
     ...(raw["me"] === 1 || raw["me"] === "1" ? { me: 1 as const } : {}),
+    ...(raw["live"] === 1 || raw["live"] === "1" ? { live: 1 as const } : {}),
     ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
     ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
       ? { cadence: raw["cadence"] }
@@ -71,11 +74,14 @@ export type HallSource = {
 /**
  * the one demo/real switch of the hall. The hall follows its source, never the platform-wide
  * mode: `?try=1` (the trial pages' own links) opens the trial hall; `?me=1`, the dashboard's own
- * link, opens the donor's hall on their real sponsorships; anything else is the live hall on the
- * real directory. Everything the page does differently between the three follows from `mode`.
+ * link, opens the donor's hall on their real sponsorships; `?live=1` opens the concept hall on
+ * the real directory's counts; a bare link is the trial. Everything the page does differently between the three follows from `mode`.
  */
 export function hallSource(search: HallSearch): HallSource {
-  const mode = search.try === 1 ? "trial" : search.me === 1 ? "donor" : "live";
+  // a bare /hall is the trial: labelled, and the same catalogue the trial pages read. The concept
+  // hall, whose figures are sample beside one real count, opens only when a link asks for it.
+  const mode =
+    search.try === 1 ? "trial" : search.me === 1 ? "donor" : search.live === 1 ? "live" : "trial";
   const mine = mode === "trial" ? "/try/impact" : "/dashboard";
   const from = hallReturn(search.from);
   return {

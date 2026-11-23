@@ -59,7 +59,10 @@ const importsOf = (path: string) =>
 describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => {
   it("التجربة بـ?try=1 وحدها، وإلا فالحقيقي؛ و«أثري» من الوضع نفسه", () => {
     expect(hallSource({ try: 1 })).toMatchObject({ mode: "trial", mine: "/try/impact" });
-    expect(hallSource({})).toMatchObject({ mode: "live", mine: "/dashboard" });
+    expect(hallSource({ live: 1 })).toMatchObject({ mode: "live", mine: "/dashboard" });
+    // الرابط العامّ بلا معرّف يفتح التجربة الموسومة، لا القاعة التصوّرية
+    expect(hallSource({})).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    expect(parseHallSearch({ live: "1" })).toEqual({ live: 1 });
   });
 
   it("لا ملفّ في القاعة يقرأ وضع المنصّة، والصفحة تأخذ قرارها من source.ts", () => {
@@ -280,7 +283,7 @@ describe("الدخول والخروج يحملان السياق", () => {
       back: from,
       start: "SN",
     });
-    expect(hallSource({ from: "/dashboard" }).back).toBeNull();
+    expect(hallSource({ live: 1, from: "/dashboard" }).back).toBeNull();
     expect(hallSource({ try: 1, from: "/try/impact?kind=monthly" }).back).toBeNull();
   });
 
