@@ -10,6 +10,10 @@ export type AuthMethods = {
   email: boolean;
   /** رمزٌ برسالةٍ نصّية: يحتاج مزوّد SMS في الخادم */
   phone: boolean;
+  /** الدخول بجوجل: يظهر زرّه حين يفعّله الخادم وحده */
+  google: boolean;
+  /** البصمة (passkey): `passkeys_enabled` في إعدادات المصادقة */
+  passkey: boolean;
 };
 
 export function parseAuthSettings(json: unknown): AuthMethods | null {
@@ -17,7 +21,12 @@ export function parseAuthSettings(json: unknown): AuthMethods | null {
   const external = (json as Record<string, unknown>)["external"];
   if (!external || typeof external !== "object") return null;
   const e = external as Record<string, unknown>;
-  return { email: e["email"] !== false, phone: e["phone"] === true };
+  return {
+    email: e["email"] !== false,
+    phone: e["phone"] === true,
+    google: e["google"] === true,
+    passkey: (json as Record<string, unknown>)["passkeys_enabled"] === true,
+  };
 }
 
 let asked: Promise<AuthMethods | null> | null = null;

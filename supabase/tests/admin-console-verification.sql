@@ -94,5 +94,30 @@ BEGIN
   RESET ROLE;
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — نوعٌ غير معروف مرّ'; END IF;
   RAISE NOTICE 'PASS — لوحة البيانات: قراءة موحّدة، وتوثيق، وانتقالات مسجَّلة';
+
+  -- سجلّ الاطّلاع: من رأى التفصيل يُسجَّل مرّةً في عشر دقائق، والزائر لا يُسجَّل.
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims', '{"sub":"ac100000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+  _v := public.orphan_view('ac300000-0000-4000-8000-000000000001');
+  IF NOT (_v ? 'detail') THEN RAISE EXCEPTION 'FAIL — المدير لا يرى التفصيل: %', _v; END IF;
+  PERFORM public.orphan_view('ac300000-0000-4000-8000-000000000001');
+  _r := public.admin_records('access_log', 'AC-1');
+  RESET ROLE;
+  IF (_r->>'total')::int <> 1 OR _r->'rows'->0->>'viewer' <> 'ac-admin@example.test' THEN
+    RAISE EXCEPTION 'FAIL — سجلّ الاطّلاع: %', _r;
+  END IF;
+  SET LOCAL ROLE anon;
+  PERFORM set_config('request.jwt.claims', '{"role":"anon"}', true);
+  PERFORM public.orphan_view('ac300000-0000-4000-8000-000000000001');
+  RESET ROLE;
+  IF (SELECT count(*) FROM public.child_access_log WHERE orphan_id = 'ac300000-0000-4000-8000-000000000001') <> 1 THEN
+    RAISE EXCEPTION 'FAIL — زيارة بلا حساب سُجّلت أو الدمج لم يعمل';
+  END IF;
+  IF has_function_privilege('anon', 'public.orphan_view_core(uuid)', 'EXECUTE')
+     OR has_function_privilege('authenticated', 'public.orphan_view_core(uuid)', 'EXECUTE')
+     OR has_table_privilege('authenticated', 'public.child_access_log', 'SELECT') THEN
+    RAISE EXCEPTION 'FAIL — الدالّة الداخلية أو السجلّ مكشوفان';
+  END IF;
+  RAISE NOTICE 'PASS — سجلّ الاطّلاع: يُسجَّل في القاعدة، ولا يُتجاوز';
 END $$;
 ROLLBACK;

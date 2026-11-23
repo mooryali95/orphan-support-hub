@@ -29,6 +29,12 @@ import {
 const EMAIL_OTP_LENGTH = 6;
 const SMS_OTP_LENGTH = 6;
 
+/**
+ * الدخول بكلمة مرور مُزال بقرار: رمز البريد وحده يُثبت ملكية الصندوق في كلّ
+ * دخول، ولا كلمة مرورٍ تُسرَّب أو تُخمَّن. الكود باقٍ خلف هذا المفتاح.
+ */
+const PASSWORD_SIGN_IN = false;
+
 const COPY = defineCopy("components/auth/AuthPanel", {
   ar: {
     title: "ادخل لتكمل",
@@ -229,7 +235,9 @@ export function AuthPanel({
       live = false;
     };
   }, []);
-  const canPasskey = caps.supported && !serverOff;
+  // جوجل والبصمة يظهران حين يفعّلهما الخادم فعلاً، لا قبل: زرٌّ لا يعمل يُفهم عطلاً.
+  const googleOn = methods?.google === true;
+  const canPasskey = caps.supported && !serverOff && methods?.passkey === true;
 
   /* ── الإكمال التلقائي (Conditional UI) ──
    * حين يلمس الزائر حقل البريد يعرض المتصفّح بصماته فوق لوحة المفاتيح،
@@ -554,17 +562,19 @@ export function AuthPanel({
               {ceremony ? t.passkeyWait : t.passkey}
             </Button>
           )}
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            className="h-11 w-full gap-3 bg-card text-base"
-            disabled={busy}
-            onClick={() => void google()}
-          >
-            <GoogleMark />
-            {t.google}
-          </Button>
+          {googleOn && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="h-11 w-full gap-3 bg-card text-base"
+              disabled={busy}
+              onClick={() => void google()}
+            >
+              <GoogleMark />
+              {t.google}
+            </Button>
+          )}
           {canPasskey && !known && !simple && (
             <Button
               type="button"
@@ -586,11 +596,14 @@ export function AuthPanel({
             <p className="mt-2 text-center text-xs text-muted-foreground">{t.passkeyAutofill}</p>
           )}
 
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />
-            {known ? t.otherWays : t.orCode}
-            <span className="h-px flex-1 bg-border" />
-          </div>
+          {/* الفاصل «أو برمزٍ يصلك» حين يسبقه طريقٌ آخر فقط */}
+          {(googleOn || canPasskey) && (
+            <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="h-px flex-1 bg-border" />
+              {known ? t.otherWays : t.orCode}
+              <span className="h-px flex-1 bg-border" />
+            </div>
+          )}
 
           {phoneOn && (
             <div
@@ -662,7 +675,7 @@ export function AuthPanel({
             <p className="mt-2 text-xs text-muted-foreground">{t.phoneHint}</p>
           )}
 
-          {!simple && (
+          {PASSWORD_SIGN_IN && !simple && (
             <button
               type="button"
               onClick={() => setStage({ step: "password" })}

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2971,
+ "count": 2976,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -14509,10 +14509,10 @@
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.hint": {
-   "en": "Your passkey if it's on this device, a code sent to you, or Google. Your account is created the first time you sign in.",
-   "ar": "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+   "en": "A code sent to your email, no password. Your account is created the first time you sign in.",
+   "ar": "رمزٌ يصل إلى بريدك، بلا كلمة مرور. والحساب يُنشأ عند أوّل دخول.",
    "kind": "text",
-   "hash": "14b666f3065d",
+   "hash": "4924b077410a",
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.home": {
@@ -15470,6 +15470,13 @@
    "hash": "246b96d05d89",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.launching": {
+   "en": "Launching soon",
+   "ar": "قيد الإطلاق",
+   "kind": "text",
+   "hash": "16d1131ae897",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.lead": {
    "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
    "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
@@ -16172,6 +16179,34 @@
    "ar": "",
    "kind": "plural",
    "hash": "9264577be806",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.launchSupport": {
+   "en": "Support a place",
+   "ar": "ادعم مكاناً",
+   "kind": "text",
+   "hash": "b846ea177542",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.launchText": {
+   "en": "The first files are published once a licensed care organization documents them and the administration approves them. Until then, try the full journey or support a place now.",
+   "ar": "أول الملفات تُنشر بعد توثيقها من جهة رعاية مرخّصة واعتمادها من الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
+   "kind": "text",
+   "hash": "efbedafcce66",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.launchTitle": {
+   "en": "The children's directory is launching soon",
+   "ar": "دليل الأيتام قيد الإطلاق",
+   "kind": "text",
+   "hash": "53edc638080c",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.launchTry": {
+   "en": "Try the full journey",
+   "ar": "جرّب الرحلة كاملة",
+   "kind": "text",
+   "hash": "57e47d3a9e23",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.lead": {
