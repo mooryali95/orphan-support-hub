@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
+import { TryDirectory } from "@/components/try/TryDirectory";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
@@ -202,6 +203,8 @@ function TryHome() {
           <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
         </Link>
       </section>
+
+      <TryDirectory />
     </>
   );
 }

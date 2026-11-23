@@ -10,7 +10,7 @@ import { copyOf, defineCopy } from "@/lib/locale";
  */
 export const Route = createFileRoute("/try")({
   // كتالوج بقية الدول يُحمَّل هنا قبل أيّ قراءة، فلا يدخل حزمة الدخول ويجده كل ما تحت «جرّب».
-  beforeLoad: () => import("@/lib/try-world").then(() => {}),
+  beforeLoad: () => import("@/lib/try-places").then(() => {}),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     const c = copyOf(COPY, l);

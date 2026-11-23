@@ -87,3 +87,30 @@ export function tryStore(): TryStore | null {
   }
   return withMemory(inner);
 }
+
+/** كلّ مفاتيح التجربة في الجلسة: الحاضرة منها هي نفسها مفاتيحها الدائمة القديمة. */
+export const TRIAL_SESSION_KEYS = LEGACY_TRIAL_KEYS;
+
+/**
+ * «ابدأ من جديد»: يمحو التجربة كلّها من الجلسة — العطاءات، والتعهّدات، وحالة
+ * القاعة والرؤية، والمقترحات المحمولة إلى الحساب — ثم يُعلم الصفحات المفتوحة
+ * لتعيد القراءة. لا شيء حقيقيّ يُمسّ: البيانات الحقيقية ليست في المتصفّح.
+ */
+export function resetTrialSession(
+  store: Pick<Storage, "removeItem"> | null = typeof window === "undefined"
+    ? null
+    : window.sessionStorage,
+) {
+  for (const key of TRIAL_SESSION_KEYS) {
+    try {
+      store?.removeItem(key);
+    } catch {
+      /* محجوب: لا شيء يُمحى */
+    }
+  }
+  memory.clear();
+  if (typeof window !== "undefined") {
+    for (const name of ["try-demo-change", "try-handoff-change", "vision-sync"])
+      window.dispatchEvent(new Event(name));
+  }
+}

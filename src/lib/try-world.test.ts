@@ -384,8 +384,9 @@ describe("الكتالوج المولَّد خارج حزمة الدخول وص�
     expect(importers("try-world.data", /from "@\/lib\/try-world\.data"/)).toEqual([
       "src/lib/try-world.ts",
     ]);
+    // the trial route loads it lazily through try-places (which also adds the six countries' extras)
     expect(readFileSync("src/routes/try.tsx", "utf8")).toMatch(
-      /beforeLoad: \(\) => import\("@\/lib\/try-world"\)/,
+      /beforeLoad: \(\) => import\("@\/lib\/try-places"\)/,
     );
   });
 
@@ -401,5 +402,33 @@ describe("الكتالوج المولَّد خارج حزمة الدخول وص�
     );
     expect(guarded.length).toBeGreaterThan(5);
     for (const [f, text] of guarded) expect(heavy.test(text), f).toBe(false);
+  });
+});
+
+describe("trial directory extras", () => {
+  it("adds a fixed number of extra children per region, each findable and supportable", async () => {
+    const { WORLD_EXTRA_CHILDREN, WORLD_PLACES, EXTRA_PER_REGION } =
+      await import("@/lib/try-world");
+    const { tryChild, tryChildrenIn } = await import("@/lib/try-demo");
+    expect(WORLD_EXTRA_CHILDREN.length).toBe(WORLD_PLACES.length * 2 * EXTRA_PER_REGION);
+    const { TRY_FEATURED } = await import("@/lib/try-places");
+    const { TRY_WORLD_EXTRA } = await import("@/lib/try-demo");
+    // the six featured countries get their extras too, in their own regions
+    expect(TRY_WORLD_EXTRA.length).toBe(
+      (WORLD_PLACES.length + TRY_FEATURED.length) * 2 * EXTRA_PER_REGION,
+    );
+    expect(new Set(TRY_WORLD_EXTRA.map((c) => c.id)).size).toBe(TRY_WORLD_EXTRA.length);
+    for (const p of TRY_FEATURED)
+      for (const r of p.regions)
+        expect(TRY_WORLD_EXTRA.filter((c) => c.co === p.co && c.region === r.hall)).toHaveLength(
+          EXTRA_PER_REGION,
+        );
+    expect(new Set(WORLD_EXTRA_CHILDREN.map((c) => c.id)).size).toBe(WORLD_EXTRA_CHILDREN.length);
+    for (const c of WORLD_EXTRA_CHILDREN) {
+      expect(tryChild(c.id)).toBe(c);
+      expect(c.need - c.funded).toBeGreaterThanOrEqual(20);
+      // extras stay out of the hall and the map: the region keeps its one featured child
+      expect(tryChildrenIn(c.co, c.region)).not.toContain(c);
+    }
   });
 });

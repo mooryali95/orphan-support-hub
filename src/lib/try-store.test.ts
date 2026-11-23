@@ -65,3 +65,13 @@ describe("trial store", () => {
     expect(store.getItem("k")).toBe("new");
   });
 });
+
+describe("resetTrialSession", () => {
+  it("clears every trial key from the session store", async () => {
+    const { resetTrialSession, TRIAL_SESSION_KEYS } = await import("@/lib/try-store");
+    const data = new Map<string, string>(TRIAL_SESSION_KEYS.map((k) => [k, "x"]));
+    data.set("unrelated", "keep");
+    resetTrialSession({ removeItem: (k: string) => void data.delete(k) });
+    expect([...data.keys()]).toEqual(["unrelated"]);
+  });
+});
