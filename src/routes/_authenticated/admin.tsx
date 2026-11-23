@@ -109,6 +109,11 @@ type Tab =
   | "orphans"
   | "sponsorships"
   | "pledges"
+  | "rec_orgs"
+  | "rec_offices"
+  | "rec_supervisors"
+  | "rec_documents"
+  | "rec_payments"
   | "sponsors"
   | "data"
   | "queue"
@@ -123,7 +128,20 @@ type Tab =
 
 const SECTIONS: Array<[string, Tab[]]> = [
   ["القرارات", ["inbox", "queue", "access", "integrity"]],
-  ["السجلّات", ["orphans", "sponsorships", "pledges", "sponsors"]],
+  [
+    "السجلّات",
+    [
+      "orphans",
+      "sponsorships",
+      "pledges",
+      "sponsors",
+      "rec_orgs",
+      "rec_offices",
+      "rec_supervisors",
+      "rec_documents",
+      "rec_payments",
+    ],
+  ],
   ["الناس", ["data", "supervisors", "offices"]],
   ["المنصّة", ["countries", "languages", "platform", "integrations"]],
   ["المراقبة", ["overview", "monitoring"]],
@@ -269,6 +287,11 @@ function AdminPage() {
     ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
     ["sponsorships", "الكفالات", null],
     ["pledges", "التعهّدات", null],
+    ["rec_orgs", "جهات الرعاية", null],
+    ["rec_offices", "سجلّ المكاتب", null],
+    ["rec_supervisors", "سجلّ المشرفين", null],
+    ["rec_documents", "المستندات", null],
+    ["rec_payments", "المدفوعات", null],
     ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
     ["data", copy.dataTab, null],
     ["queue", "طابور الاعتماد", queueCount],
@@ -435,6 +458,11 @@ function AdminPage() {
           {tab === "orphans" && <RecordsConsole kind="orphans" />}
           {tab === "sponsorships" && <RecordsConsole kind="sponsorships" />}
           {tab === "pledges" && <RecordsConsole kind="pledges" />}
+          {tab === "rec_orgs" && <RecordsConsole kind="orgs" />}
+          {tab === "rec_offices" && <RecordsConsole kind="offices" />}
+          {tab === "rec_supervisors" && <RecordsConsole kind="supervisors" />}
+          {tab === "rec_documents" && <RecordsConsole kind="documents" />}
+          {tab === "rec_payments" && <RecordsConsole kind="payments" />}
 
           {tab === "monitoring" && (
             <>
