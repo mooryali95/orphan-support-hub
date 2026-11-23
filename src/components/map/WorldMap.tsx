@@ -58,6 +58,7 @@ import {
   rankOf,
 } from "./layers";
 import { interactiveCodes, kindCounts, networkPaint, type NetworkKind } from "./network-layer";
+import { officeRegisterQuery, withRegister } from "@/lib/office-presence";
 import {
   ExpansionList,
   NetworkCountryCard,
@@ -555,10 +556,17 @@ export function WorldMap({
   const source: MapSourceStatus = status ?? (demo ? "demo" : "ready");
   // طبقتا الشبكة: ما يُرسم وما يُفتح من البيانات البحثية لا من أعداد المنصّة.
   const netLayer = isNetworkLayer(layer) ? layer : null;
-  const net = useMemo(
-    () => (netLayer ? (networkPaintOverride ?? networkPaint(netLayer, { showUnconfirmed })) : null),
-    [netLayer, showUnconfirmed, networkPaintOverride],
-  );
+  // طبقة الشبكة من المصدر الواحد مع القاعة: ملفّ البحث، وفوقه سجلّ المكاتب (`@/lib/office-presence`).
+  const { data: register } = useQuery({
+    ...officeRegisterQuery,
+    enabled: netLayer === "network" && !networkPaintOverride,
+  });
+  const net = useMemo(() => {
+    if (!netLayer) return null;
+    if (networkPaintOverride) return networkPaintOverride;
+    const base = networkPaint(netLayer, { showUnconfirmed });
+    return netLayer === "network" ? withRegister(base, register?.offices ?? []) : base;
+  }, [netLayer, showUnconfirmed, networkPaintOverride, register]);
   const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
   const activeSet = useMemo(() => {
     const set = net ? interactiveCodes(net) : new Set(Object.keys(stats));
