@@ -24,6 +24,7 @@ import {
 } from "@/lib/sponsorships.functions";
 import { startCheckout } from "@/lib/payments.functions";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupporterModeGate } from "@/components/SupporterModeGate";
 import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
@@ -783,46 +784,48 @@ function OrphanDetail() {
                     />
                   )}
 
-                  {user ? (
-                    <Button
-                      className="w-full"
-                      size="lg"
-                      onClick={() => void onSponsor()}
-                      disabled={pending}
-                    >
-                      {pending && <Loader2 className="size-4 animate-spin" />}
-                      {cadence === "one_time" ? t.startOnce : t.start}
-                    </Button>
-                  ) : (
-                    // الدخول في الصفحة نفسها، ثم تُسجَّل الكفالة وينتقل إلى الدفع دون نقرةٍ ثانية.
-                    <AuthDialog
-                      title={t.signIn}
-                      hint={t.signInHint}
-                      onDone={() => void onSponsor(false, true)}
-                      trigger={(open) => (
-                        <Button
-                          className="w-full"
-                          size="lg"
-                          disabled={pending}
-                          onClick={() => {
-                            saveDraft({
-                              orphanId,
-                              name: orphan.display_name,
-                              amount,
-                              message,
-                              anonymous,
-                              currency: payCurrency,
-                              cadence,
-                            });
-                            open();
-                          }}
-                        >
-                          {pending && <Loader2 className="size-4 animate-spin" />}
-                          {t.signIn}
-                        </Button>
-                      )}
-                    />
-                  )}
+                  <SupporterModeGate>
+                    {user ? (
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        onClick={() => void onSponsor()}
+                        disabled={pending}
+                      >
+                        {pending && <Loader2 className="size-4 animate-spin" />}
+                        {cadence === "one_time" ? t.startOnce : t.start}
+                      </Button>
+                    ) : (
+                      // الدخول في الصفحة نفسها، ثم تُسجَّل الكفالة وينتقل إلى الدفع دون نقرةٍ ثانية.
+                      <AuthDialog
+                        title={t.signIn}
+                        hint={t.signInHint}
+                        onDone={() => void onSponsor(false, true)}
+                        trigger={(open) => (
+                          <Button
+                            className="w-full"
+                            size="lg"
+                            disabled={pending}
+                            onClick={() => {
+                              saveDraft({
+                                orphanId,
+                                name: orphan.display_name,
+                                amount,
+                                message,
+                                anonymous,
+                                currency: payCurrency,
+                                cadence,
+                              });
+                              open();
+                            }}
+                          >
+                            {pending && <Loader2 className="size-4 animate-spin" />}
+                            {t.signIn}
+                          </Button>
+                        )}
+                      />
+                    )}
+                  </SupporterModeGate>
 
                   {stats && stats.totalOrphans > 0 && stats.fullySponsored > 0 && (
                     <p className="text-center text-xs leading-6 text-muted-foreground">
