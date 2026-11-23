@@ -1,9 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { pageTitle } from "@/config/brand";
+import { parseHallSearch } from "@/lib/hall/source";
+import { copyOf, defineCopy } from "@/lib/locale";
+
+const COPY = defineCopy("routes/hall", {
+  ar: {
+    title: "قاعة الأثر",
+    description:
+      "رحلة الداعم ثلاثية الأبعاد في شبكة الندوة: اختر دولة، وادعمها، وشاهد أثر دعمك على البلد والمنطقة والمجموعة والطفل.",
+  },
+  en: {
+    title: "Impact Hall",
+    description:
+      "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
+  },
+});
 
 // المكوّن وتنسيقه في hall.lazy.tsx: يُحمَّلان عند فتح القاعة وحدها، فلا يثقلان بقية الصفحات.
-type HallSearch = { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
 
 /**
  * قاعة الأثر — رحلة الداعم ثلاثية الأبعاد: القاعة، ثم خريطة العالم، ثم الدولة،
@@ -11,21 +25,15 @@ type HallSearch = { try?: 1; child?: string; cadence?: "monthly" | "one_time" };
  * الصفحة فقط (three.js والمعالجة السينمائية)، فلا يثقل بقية المنصّة.
  */
 export const Route = createFileRoute("/hall")({
-  validateSearch: (raw: Record<string, unknown>): HallSearch => ({
-    ...(raw["try"] === 1 || raw["try"] === "1" ? { try: 1 as const } : {}),
-    ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
-    ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
-      ? { cadence: raw["cadence"] }
-      : {}),
-  }),
-  head: ({ match }) => ({
-    meta: [
-      { title: pageTitle("قاعة الأثر", false, match.context.locale ?? "ar") },
-      {
-        name: "description",
-        content:
-          "رحلة الداعم ثلاثية الأبعاد في شبكة الندوة: اختر دولة، وادعمها، وشاهد أثر دعمك على البلد والمنطقة والمجموعة والطفل.",
-      },
-    ],
-  }),
+  validateSearch: parseHallSearch,
+  head: ({ match }) => {
+    const locale = match.context.locale ?? "ar";
+    const c = copyOf(COPY, locale);
+    return {
+      meta: [
+        { title: pageTitle(c.title, false, locale) },
+        { name: "description", content: c.description },
+      ],
+    };
+  },
 });

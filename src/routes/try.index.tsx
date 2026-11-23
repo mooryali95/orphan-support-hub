@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
+import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { tryChildrenByWait } from "@/lib/try-demo";
@@ -76,6 +77,7 @@ const COPY = defineCopy("routes/try.index", {
 
 function TryHome() {
   const c = useCopy(COPY);
+  const hallSearch = useTryHallSearch();
   const kids = tryChildrenByWait();
   const giving = useGivingCopy();
   return (
@@ -173,7 +175,7 @@ function TryHome() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link
               to="/hall"
-              search={{ try: 1 }}
+              search={hallSearch}
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-input px-5 text-sm font-bold text-foreground transition-colors hover:border-primary/50 hover:bg-secondary/60"
             >
               {c.fromMap}

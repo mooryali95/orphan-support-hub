@@ -109,15 +109,15 @@ export type City = {
   groups: number;
 };
 export const ALBANIA: City[] = [
-  { id: "shkoder", name: t("شكودر", "Shkodër"), need: 40, funded: 80, groups: 2 },
+  { id: "shkoder", name: t("إشقودرة", "Shkodër"), need: 40, funded: 80, groups: 2 },
   { id: "kukes", name: t("كوكس", "Kukës"), need: 22, funded: 70, groups: 1 },
   { id: "durres", name: t("دوريس", "Durrës"), need: 34, funded: 62, groups: 2 },
   { id: "tirana", name: t("تيرانا", "Tirana"), need: 88, funded: 34, groups: 4 },
-  { id: "elbasan", name: t("إلباسان", "Elbasan"), need: 30, funded: 125, groups: 2 },
+  { id: "elbasan", name: t("إيلبصان", "Elbasan"), need: 30, funded: 125, groups: 2 },
   { id: "fier", name: t("فيير", "Fier"), need: 32, funded: 64, groups: 2 },
   { id: "berat", name: t("بيرات", "Berat"), need: 20, funded: 58, groups: 1 },
-  { id: "korce", name: t("كورتشا", "Korçë"), need: 36, funded: 72, groups: 2 },
-  { id: "vlore", name: t("فلورا", "Vlorë"), need: 24, funded: 66, groups: 3 },
+  { id: "korce", name: t("كورتشي", "Korçë"), need: 36, funded: 72, groups: 2 },
+  { id: "vlore", name: t("فلوره", "Vlorë"), need: 24, funded: 66, groups: 3 },
 ];
 /** تاريخ التقرير في العرض: ثابتٌ فلا يختلف ما يرسمه الخادم عمّا يرسمه المتصفّح. */
 export const REPORT_DATE = "2026-11-05";
@@ -176,7 +176,7 @@ export const GROUPS: Array<{
   },
   {
     id: "demo-g-shkoder-1",
-    name: t("مجموعة شكودر", "Shkodër group"),
+    name: t("مجموعة إشقودرة", "Shkodër group"),
     city: "shkoder",
     supervisor: t("المشرف «ي. ح.»", "Supervisor “Y. H.”"),
     members: 10,
@@ -187,7 +187,7 @@ export const GROUPS: Array<{
   },
   {
     id: "demo-g-elbasan-1",
-    name: t("مجموعة إلباسان", "Elbasan group"),
+    name: t("مجموعة إيلبصان", "Elbasan group"),
     city: "elbasan",
     supervisor: t("المشرف «س. ب.»", "Supervisor “S. B.”"),
     members: 7,
