@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { listPendingReports, reviewProgressReport } from "@/lib/impact.functions";
-import { createDocumentReadUrl } from "@/lib/intake.functions";
+import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { formatDate } from "@/lib/format";
 
 /**
@@ -20,7 +20,6 @@ import { formatDate } from "@/lib/format";
 export function ReportQueue({ onDone }: { onDone: () => void }) {
   const fetchPending = useServerFn(listPendingReports);
   const review = useServerFn(reviewProgressReport);
-  const readUrl = useServerFn(createDocumentReadUrl);
 
   const [rejecting, setRejecting] = useState<string | null>(null);
   const [note, setNote] = useState("");
@@ -33,12 +32,8 @@ export function ReportQueue({ onDone }: { onDone: () => void }) {
   const reports = data?.reports ?? [];
 
   async function open(path: string) {
-    const res = await readUrl({ data: { path } });
-    if (!res.ok) {
-      toast.error(res.error);
-      return;
-    }
-    window.open(res.url, "_blank", "noopener,noreferrer");
+    // يُنزَّل بجلسة القارئ لحظة الفتح؛ لا رابط موقَّعاً يبقى بعد سحب الإذن.
+    if (!(await openPrivateFile("orphan-documents", path))) toast.error("تعذّر فتح الوثيقة");
   }
 
   async function decide(id: string, decision: "approved" | "rejected", text?: string) {

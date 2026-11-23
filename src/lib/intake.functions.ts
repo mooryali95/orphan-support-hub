@@ -420,22 +420,6 @@ export const createDocumentUploadUrl = createServerFn({ method: "POST" })
     return { ok: true as const, path, token: signed.token, signedUrl: signed.signedUrl };
   });
 
-/** رابط قراءة موقّع قصير العمر — لا يُخزَّن ولا يُشارَك. */
-export const createDocumentReadUrl = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z.object({ path: z.string().trim().min(3).max(500) }).parse(input),
-  )
-  .handler(async ({ data, context }) => {
-    const { data: signed, error } = await context.supabase.storage
-      .from("orphan-documents")
-      // ستّون ثانية تكفي لفتح الوثيقة ولا تكفي لتسريبها.
-      .createSignedUrl(data.path, 60);
-
-    if (error) return { ok: false as const, error: error.message };
-    return { ok: true as const, url: signed.signedUrl };
-  });
-
 export const listOrphanDocuments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ orphanId: z.string().uuid() }).parse(input))
