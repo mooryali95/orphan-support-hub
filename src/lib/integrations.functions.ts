@@ -51,7 +51,7 @@ export const issueApiClient = createServerFn({ method: "POST" })
     if (data.scopes.includes("orphans:import") && !data.orgId) {
       return {
         ok: false as const,
-        error: "نطاق الاستيراد يحتاج جهة رعاية مسؤولة عن الملفّات الواردة.",
+        error: "نطاق الاستيراد يحتاج جهة ميدانية مسؤولة عن الملفّات الواردة.",
         credentials: null,
       };
     }

@@ -10,6 +10,8 @@
  * والفقرة (U+2028/U+2029) اللذان يكسران JavaScript القديم. والتهريب
  * بـ`\uXXXX` يُبقي JSON صالحاً يقرؤه المحلِّل بالقيمة نفسها.
  */
+import { BRAND, brandFor } from "@/config/brand";
+
 const UNSAFE = /[<>&\u2028\u2029]/g;
 
 export function serializeJsonLd(value: unknown): string {
@@ -17,6 +19,27 @@ export function serializeJsonLd(value: unknown): string {
     UNSAFE,
     (ch) => `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`,
   );
+}
+
+/**
+ * the platform as a site and whose it is: the owning organisation as its publisher, by the names
+ * in brand.json. Ownership only; nothing here claims accreditation, audit or figures.
+ */
+export function siteJsonLd(locale: string) {
+  const b = brandFor(locale);
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: b.name,
+    alternateName: locale === "ar" ? b.nameLatin : BRAND.name,
+    description: b.description,
+    inLanguage: locale,
+    publisher: {
+      "@type": "Organization",
+      name: b.ownerName,
+      alternateName: b.ownerShort,
+    },
+  };
 }
 
 /** عنصر `scripts` لرأس المسار، مهرَّباً. */

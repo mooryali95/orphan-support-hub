@@ -62,3 +62,24 @@ describe("حارس الحقن في الصفحات", () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe("JSON-LD للمنصّة: لمن هي", () => {
+  it("الناشر هو الجهة المالكة من brand.json، بالعربية والإنجليزية، بلا ادّعاء غير الملكية", async () => {
+    const { siteJsonLd } = await import("./json-ld");
+    const raw = JSON.parse(readFileSync("src/config/brand.json", "utf8"));
+    const ar = siteJsonLd("ar");
+    const en = siteJsonLd("en");
+    expect(ar.publisher).toEqual({
+      "@type": "Organization",
+      name: raw.owner.name,
+      alternateName: raw.owner.short,
+    });
+    expect(en.publisher.name).toBe(raw.owner.nameLatin);
+    expect(ar.description.startsWith(raw.owner.line)).toBe(true);
+    expect(en.description).toMatch(
+      /^The World Assembly of Muslim Youth's orphan sponsorship platform\./,
+    );
+    expect(JSON.stringify([ar, en])).not.toMatch(/accredit|audit|معتمدة من|مدقَّق/i);
+    expect(readFileSync("src/routes/__root.tsx", "utf8")).toContain("jsonLdScript(siteJsonLd(");
+  });
+});

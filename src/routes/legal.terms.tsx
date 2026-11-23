@@ -54,8 +54,8 @@ function TermsAr() {
             <strong>الكافل:</strong> يختار ملفاً وبرامج، ويسدّد شهرياً، ويتابع الأثر.
           </li>
           <li>
-            <strong>جهة الرعاية:</strong> ترفع الملفّات بوثائقها، وتنفّذ البرامج، وترفع التقارير.
-            وهي مسؤولة عن صحّة ما ترفعه.
+            <strong>الجهة الميدانية:</strong> ترفع الملفّات بوثائقها، وتنفّذ البرامج، وترفع
+            التقارير. وهي مسؤولة عن صحّة ما ترفعه.
           </li>
           <li>
             <strong>ولي الأمر:</strong> يمنح الموافقات ويتابع ما يصل من خدمات.
@@ -110,9 +110,7 @@ function TermsAr() {
       </Section>
 
       <Section title="8. التواصل">
-        <p>
-          <span dir="ltr">p.o.m2012@hotmail.com</span>
-        </p>
+        <p>نموذج التواصل الرسمي قيد الإعداد وسيُتاح في هذه الصفحة.</p>
       </Section>
     </LegalPage>
   );
@@ -150,7 +148,7 @@ function TermsEn() {
             impact.
           </li>
           <li>
-            <strong>Care organization:</strong> uploads files with their documents, runs the
+            <strong>Field organization:</strong> uploads files with their documents, runs the
             programs and submits reports. It is responsible for the accuracy of what it uploads.
           </li>
           <li>
@@ -217,9 +215,7 @@ function TermsEn() {
       </Section>
 
       <Section title="8. Contact">
-        <p>
-          <span dir="ltr">p.o.m2012@hotmail.com</span>
-        </p>
+        <p>The official contact form is being prepared and will be available on this page.</p>
       </Section>
     </LegalPage>
   );

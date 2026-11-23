@@ -109,19 +109,29 @@ describe("الشبكة: قائمة دولٍ واحدة", () => {
   });
 
   /*
-   * تناقضٌ قائم: AGENTS.md يُلزم بأن يبقى `countries.in_network` مطابقاً لملفّ
-   * الشبكة، والمستودع لا يملأ العمود أصلاً — الهجرة تضيفه `DEFAULT false`
-   * وجدول الدول يُبذر بألبانيا وحدها. قاعدةٌ تُبنى من المستودع تعرض على الخريطة
-   * دولاً يرفضها `create_support_pledge` بـ`country_not_active`. يُصلَح بهجرةٍ
-   * تُدرج دول الحضور العلني وتعلّمها `in_network`؛ عندها يُحوَّل هذا إلى `it`.
+   * AGENTS.md يُلزم بأن يبقى `countries.in_network` مطابقاً لملفّ الشبكة. القائمة
+   * مكرَّرةٌ في SQL اضطراراً (الهجرة لا تقرأ TypeScript)، فتُقفل هنا: آخر هجرةٍ
+   * تبذر العمود تحمل دول الحضور العلني بالضبط، برمزها واسمها العربي، ولا تحمل
+   * غير المؤكَّد. من يغيّر الملفّ يكتب هجرةً جديدة بالقائمة الجديدة.
    */
-  it.fails("هجرةٌ تملأ countries.in_network من دول الحضور العلني كلّها", () => {
+  it("هجرةٌ تملأ countries.in_network من دول الحضور العلني كلّها، ولا غيرها", () => {
     const seeds = MIGRATION_FILES.map((f) => readFileSync(join(MIGRATIONS, f), "utf8")).filter(
       (sql) => /(INSERT INTO|UPDATE) public\.countries[\s\S]{0,4000}in_network/.test(sql),
     );
-    expect(seeds.length).toBeGreaterThan(0);
-    const seeded = seeds.join("\n");
-    for (const c of PUBLIC_NETWORK) expect(seeded).toContain(`'${c}'`);
+    const latest = seeds.at(-1) ?? "";
+    const block = /WITH network \(code, name_ar, name_local\) AS \(\s*VALUES([\s\S]*?)\n\)/.exec(
+      latest,
+    )?.[1];
+    expect(block, "آخر هجرةٍ تمسّ in_network تحمل قائمة الشبكة").toBeTruthy();
+    const seeded = [...(block ?? "").matchAll(/\('([A-Z]{2})', '([^']+)', '(?:[^']|'')+'\)/g)].map(
+      (m) => [m[1]!, m[2]!] as const,
+    );
+    const wanted = WAMY_COUNTRIES.filter((c) => c.presence.status !== "unconfirmed")
+      .map((c) => [c.code, c.nameAr] as const)
+      .sort(([a], [b]) => a.localeCompare(b));
+    expect([...seeded].sort(([a], [b]) => a.localeCompare(b))).toEqual(wanted);
+    // وما ليس في القائمة يُرفع عنه التعليم، فلا يبقى تعليمٌ قديم خارج الملفّ.
+    expect(latest).toMatch(/SET in_network = false[\s\S]*NOT EXISTS \(SELECT 1 FROM network/);
   });
 });
 

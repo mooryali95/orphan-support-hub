@@ -10,7 +10,7 @@
  */
 import { GIVING_TRACKS, givingCopy, type GivingTrack } from "@/config/giving-tracks";
 import { countryName } from "@/lib/countries";
-import { payableOptions } from "@/lib/currency";
+import { currencyName } from "@/lib/currency";
 import { formatDate, formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, pluralOf, type Locale } from "@/lib/locale";
 import { defaultIndividualAmount, INDIVIDUAL_AMOUNTS } from "@/lib/support-amounts";
@@ -40,6 +40,7 @@ import {
   tryRegionName,
   tryRegionOfChild,
 } from "@/lib/try-places";
+import { tryPledgeCurrencies, tryReachText } from "@/lib/try-reach";
 import {
   addPledge,
   loadPledges,
@@ -109,7 +110,7 @@ export type TrialCountry = {
   sponsored: number;
   sessions: number;
   group: { id: string; name: string; children: number };
-  /** the currencies a pledge here is recorded in, the country's own first */
+  /** the currencies a pledge here is recorded in: the trial's file currency first, as on the sheet */
   currencies: string[];
   regions: TrialRegion[];
 };
@@ -277,7 +278,7 @@ export function trialHall(input: {
       sponsored: sum((r) => r.sponsored),
       sessions: TRY_SESSIONS,
       group,
-      currencies: payableOptions(place.co, null).map((o) => o.currency),
+      currencies: tryPledgeCurrencies(place.co).map((o) => o.currency),
       regions,
     };
   }
@@ -405,7 +406,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       "ar",
     ),
     simulated: "محاكاة",
-    enrolled: "أطفالٌ في التأهيل",
+    enrolled: "في صناديق تأهيلٍ انضممت إليها",
     started: "بدأوا الرحلة",
     completed: "أتمّوا الرحلة",
     held: "جلساتٌ قُبلت",
@@ -420,6 +421,34 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     move: (a: string, b: string) => `${a} ← ${b}`,
     world: {
       sect: "دول التجربة",
+      /* the sentence above the list counts the list itself: confirmed presence apart from the
+         countries the trial alone opens */
+      count: (total: string, sites: string, trialOnly: string) =>
+        `تفتح التجربة كلّ الدول المرسومة هنا، وعددها ${total}: مقرّ الندوة في الرياض، و${sites}، و${trialOnly}.`,
+      sites: pluralOf(
+        {
+          one: "موقعٌ واحد مؤكَّد الحضور",
+          two: "موقعان مؤكَّدا الحضور",
+          few: "{0} مواقع مؤكَّدة الحضور",
+          many: "{0} موقعاً مؤكَّد الحضور",
+          other: "{0} موقع مؤكَّد الحضور",
+        },
+        0,
+        "ar",
+      ),
+      trialOnly: pluralOf(
+        {
+          zero: "لا دولة بلا حضورٍ مؤكَّد",
+          one: "دولةٌ واحدة بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+          two: "دولتان بلا حضورٍ مؤكَّد للندوة، فُتحتا للتجربة وحدها",
+          few: "{0} دول بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+          many: "{0} دولةً بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+          other: "{0} دولة بلا حضورٍ مؤكَّد للندوة، فُتحت للتجربة وحدها",
+        },
+        0,
+        "ar",
+      ),
+      unconfirmedMark: "بلا حضورٍ مؤكَّد · للتجربة وحدها",
       sub: "كلّ دولةٍ هنا تُدخَل وتُدعَم في التجربة، للندوة فيها مكتبٌ أو نشاطٌ أو لا شيء. لكلٍّ منها منطقتان ومجموعةٌ وطفل بأعدادٍ نموذجية، هي نفسها في خريطة الدعم وفي «أثري».",
       lead: "ادخلها وادعم طفلاً أو مجموعةً أو منطقةً أو الدولة كلّها، بأنواع الدعم الثلاثة، ثم شاهد الأثر.",
       regions: "مناطق التجربة",
@@ -439,7 +468,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     },
     country: {
       title: (name: string, when: string) => `${name} · ${when}`,
-      sub: "ارتفاع كلّ عمود عدد أطفال المنطقة، والمملوء منه من يشملهم تعهّد تأهيلك. الأعداد نموذجية، وهي نفسها في خريطة الدعم.",
+      sub: "ارتفاع كلّ عمود عدد أطفال المنطقة، والمملوء منه أطفال صندوق تأهيلٍ انضمّ إليه تعهّدك. الأعداد نموذجية، وهي نفسها في خريطة الدعم.",
       regions: "منطقتا التجربة",
       kid: (region: string) => `طفل التجربة في ${region}`,
       gap: (money: string) => `يتبقّى ${money} شهرياً`,
@@ -478,15 +507,11 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       eyebrow: "شاشة الأثر · قبل التسجيل",
       qTitle: (money: string, region: string) =>
         `لو تعهّدت بـ ${money} شهرياً تأهيلاً في ${region}`,
-      qCover: (n: string) => `يشمل تعهّدك ${n}`,
-      qCoverSub: "أطفال المنطقة جميعاً، ويُقيَّد المبلغ كما كتبته بلا تحويل",
-      qSessions: (n: string) => `جلسات الرحلة المقرّرة: ${n}`,
+      qSessions: (n: string) => `جلسات الصندوق المقرّرة: ${n}`,
       qSessionsSub: (n: string) => `${n} جلسات لكلّ طفل، وقياسٌ للسمات الستّ قبلها وبعدها`,
       qStart: "لا أحد يبدأ يوم التعهّد",
       qStartSub: "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
       kTitle: (money: string, region: string) => `لو تعهّدت بـ ${money} شهرياً عيناً في ${region}`,
-      kCover: (n: string) => `تعهّدٌ عيني لمنطقةٍ فيها ${n}`,
-      kCoverSub: "يجهّزه المكتب المحلي، ثم يسلّمه ويوثّقه بمستند",
       kCount: "يُعدّ التسليم الموثّق وحده",
       kCountSub: "عدد المستفيدين لا يُقيَّد، فلا يُدَّعى هنا",
       kNow: (region: string, n: string) => `تسليمات ${region} الموثّقة الآن: ${n}`,
@@ -499,7 +524,8 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       mInSub: "فانوسٌ ينضمّ إلى مدار عمودها",
     },
     say: {
-      qualification: (region: string) => `انظر إلى العمود: امتلأ بمن يشملهم تعهّدك في ${region}`,
+      qualification: (region: string) =>
+        `انظر إلى العمود: امتلأ بأطفال صندوق ${region} الذي انضمّ إليه تعهّدك`,
       monthly: (name: string) => `انظر حول العمود: فانوس كفالتك لـ${name} انضمّ إلى المدار`,
       in_kind: "سُجّل تعهّدك العيني. يظهر هنا حين يوثَّق أوّل تسليم",
       once: (name: string, region: string) =>
@@ -520,8 +546,10 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       ref: "المرجع",
       levelsLead: "دعمك نفسه مقروءاً على مستوياته: الدولة، ثم المنطقة، ثم المجموعة، ثم الطفل.",
       level: { country: "الدولة", region: "المنطقة", group: "المجموعة", child: "الطفل" },
-      qCountry: (region: string) => `يشمل تعهّدك أطفال ${region} من أطفال الدولة.`,
-      qRegion: "أطفال المنطقة جميعاً ملتحقون برحلة التأهيل بتعهّدك، ولم يبدأ أحدٌ يوم التعهّد.",
+      qCountry: (region: string) =>
+        `صندوق ${region} الذي انضممت إليه يحمل هؤلاء الأطفال من أطفال الدولة.`,
+      qRegion:
+        "الصندوق يُلحق أطفال المنطقة جميعاً برحلة التأهيل، وتعهّدك حصّةٌ منه. لم يبدأ أحدٌ يوم التعهّد.",
       qGroup: (n: string) => `المجموعة أوّل أطفال المنطقة، ولها ${n} جلسةً مقرّرة.`,
       qChild: (code: string) => `اسمٌ مستعار ورمزه ${code}. رحلته رحلة أوّل أطفال المنطقة.`,
       kCountry: "يُعدّ هنا ما وُثِّق تسليمه في الدولة، لا عدد الأطفال.",
@@ -540,7 +568,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       see: "شاهد أثره",
       done: "سُجّل دعمك",
       doneSub: "اقرأ أثره: ما سُجّل، ثم أثره بالمستويات، ثم ما التالي.",
-      perMonth: (currency: string) => `${currency} كل شهر`,
+      perMonth: "كل شهر",
       summary: "خلاصة أثرك",
       again: "دعمٌ آخر",
     },
@@ -602,8 +630,8 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
       "نختار ألبانيا، وكلّ دولةٍ هنا تُدخَل، بمنطقتيها ومجموعتها وطفلها",
       "ندخلها: لكلّ منطقةٍ عمودٌ بعدد أطفالها، والمملوء منه من يشملهم تعهّد تأهيل",
-      "نتعهّد لتيرانا تأهيلاً شهرياً، فيظهر ما يشمله التعهّد قبل تسجيله",
-      "يتدفّق الدعم، ويمتلئ عمود تيرانا بمن شملهم التعهّد",
+      "نتعهّد لتيرانا تأهيلاً شهرياً، فتظهر حصّة التعهّد من صندوقها قبل تسجيله",
+      "يتدفّق الدعم، ويمتلئ عمود تيرانا بأطفال الصندوق الذي انضمّ إليه التعهّد",
       "ثم الأثر بمستوياته: الدولة، والمنطقة، والمجموعة، والطفل",
       "وأخيراً أثرك أنت: ما تغيّر بدعمك، قبله وبعده",
     ],
@@ -615,7 +643,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     after: pluralOf({ one: "In {0} month", other: "In {0} months" }),
     before: pluralOf({ one: "{0} month ago", other: "{0} months ago" }),
     simulated: "Simulated",
-    enrolled: "Children in qualification",
+    enrolled: "In qualification funds you joined",
     started: "Journeys begun",
     completed: "Journeys completed",
     held: "Sessions accepted",
@@ -630,6 +658,17 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     move: (a: string, b: string) => `${a} → ${b}`,
     world: {
       sect: "Trial countries",
+      count: (total: string, sites: string, trialOnly: string) =>
+        `The trial opens all ${total} countries drawn here: WAMY's headquarters in Riyadh, ${sites}, and ${trialOnly}.`,
+      sites: pluralOf({
+        one: "{0} site of confirmed presence",
+        other: "{0} sites of confirmed presence",
+      }),
+      trialOnly: pluralOf({
+        one: "{0} country with no confirmed WAMY presence, opened for the trial only",
+        other: "{0} countries with no confirmed WAMY presence, opened for the trial only",
+      }),
+      unconfirmedMark: "No confirmed presence · trial only",
       sub: "Every country here can be entered and supported in the trial, whether WAMY has an office there, field activity, or neither. Each has two regions, a group and a child with sample figures, the same ones as on the support map and in “My impact”.",
       lead: "Enter it and support a child, a group, a region or the whole country, in any of the three kinds of support, then see the impact.",
       regions: "Trial regions",
@@ -649,7 +688,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     },
     country: {
       title: (name: string, when: string) => `${name} · ${when}`,
-      sub: "Each column is as tall as its region's children, and the filled part is those under your qualification pledge. The figures are sample data, the same as on the support map.",
+      sub: "Each column is as tall as its region's children, and the filled part is the children of a qualification fund your pledge joined. The figures are sample data, the same as on the support map.",
       regions: "The two trial regions",
       kid: (region: string) => `The trial child in ${region}`,
       gap: (money: string) => `${money} a month still open`,
@@ -693,9 +732,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       eyebrow: "Impact screen · before recording",
       qTitle: (money: string, region: string) =>
         `If you pledged ${money} a month for qualification in ${region}`,
-      qCover: (n: string) => `Your pledge covers ${n}`,
-      qCoverSub: "All the region's children. The amount is recorded as typed, with no conversion",
-      qSessions: (n: string) => `Journey sessions planned: ${n}`,
+      qSessions: (n: string) => `Sessions planned in the fund: ${n}`,
       qSessionsSub: (n: string) =>
         `${n} sessions per child, with the six traits measured before and after`,
       qStart: "No one starts on the day of the pledge",
@@ -703,8 +740,6 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
         "“My impact” shows the qualification advancing month by month: the sessions, and the measurement before and after.",
       kTitle: (money: string, region: string) =>
         `If you pledged ${money} a month in kind in ${region}`,
-      kCover: (n: string) => `An in-kind pledge for a region with ${n}`,
-      kCoverSub: "The local office prepares it, then delivers and documents it",
       kCount: "Only a documented delivery is counted",
       kCountSub: "The number of beneficiaries is not recorded, so it is not claimed here",
       kNow: (region: string, n: string) => `Documented deliveries in ${region} now: ${n}`,
@@ -718,7 +753,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     },
     say: {
       qualification: (region: string) =>
-        `The column filled with those your pledge covers in ${region}`,
+        `The column filled with the children of the ${region} fund your pledge joined`,
       monthly: (name: string) => `A lantern for your sponsorship of ${name} joined the orbit`,
       in_kind: "In-kind pledge recorded. It shows here once a delivery is documented",
       once: (name: string, region: string) =>
@@ -741,9 +776,9 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
         "The same support read level by level: the country, then the region, then the group, then the child.",
       level: { country: "Country", region: "Region", group: "Group", child: "Child" },
       qCountry: (region: string) =>
-        `Your pledge covers the children of ${region}, out of the country's children.`,
+        `The ${region} fund you joined carries these children, out of the country's children.`,
       qRegion:
-        "All the region's children are enrolled in the qualification journey by your pledge, and no one starts on the day of the pledge.",
+        "The fund enrols all the region's children in the qualification journey, and your pledge is a share of it. No one starts on the day of the pledge.",
       qGroup: (n: string) =>
         `The group is the region's first children, and it has ${n} sessions planned.`,
       qChild: (code: string) =>
@@ -770,7 +805,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       done: "Your support is recorded",
       doneSub:
         "Read its impact: what was recorded, then its impact by level, then what comes next.",
-      perMonth: (currency: string) => `${currency} a month`,
+      perMonth: "a month",
       summary: "Your impact in brief",
       again: "Support again",
     },
@@ -833,8 +868,8 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       "The WAMY network: headquarters in Riyadh and 26 sites of confirmed presence",
       "We choose Albania (every country here can be entered), with its two regions, its group and its child",
       "We enter it: each region has a column as tall as its children, filled by those under a qualification pledge",
-      "We pledge monthly for qualification in Tirana, and what the pledge covers shows before it is recorded",
-      "The support flows, and Tirana's column fills with those the pledge covers",
+      "We pledge monthly for qualification in Tirana, and its share of Tirana's fund shows before it is recorded",
+      "The support flows, and Tirana's column fills with the children of the fund the pledge joined",
       "Then the impact level by level: the country, the region, the group, the child",
       "And last, your own impact: what your support changed, before and after",
     ],
@@ -945,6 +980,18 @@ export function trialDemo(o: {
     draftId: DRAFT_ID,
     track: KIND_TRACK,
     money: (amount: number, currency: string) => formatMoney(amount, currency, locale),
+    /** a currency by its name in the interface language, never its raw code */
+    currencyName: (currency: string) => currencyName(currency, locale),
+    /**
+     * what a pooled pledge's amount stands for (its share of the region's fund), in the words
+     * and figures the support sheet shows for the same input (`@/lib/try-reach`)
+     */
+    reach: (d: { co: string; region: string; amount: number; currency: string }) => {
+      const r = tryPlace(d.co)?.regions.find((x) => x.hall === d.region);
+      return r
+        ? tryReachText({ scope: "region", target: r.id, co: d.co }, d.amount, d.currency, locale)
+        : null;
+    },
     model,
     /** records a pledge for a hall region through the pages' own store; the entry's id, or null */
     pledge: (d: Extract<TrialDraft, { amount: number }>): string | null => {
@@ -970,7 +1017,7 @@ export function trialDemo(o: {
       };
     },
     impactHref: (kind: GivingTrack) => `/try/impact?kind=${kind}`,
-    childHref: (id: string) => `/try/${id}?from=hall`,
+    childHref: (id: string) => `/try/${id}`,
     focus: child
       ? {
           co: child.co,

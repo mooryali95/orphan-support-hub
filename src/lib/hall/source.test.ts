@@ -24,6 +24,7 @@ import type { MySponsorship } from "@/lib/sponsorships.functions";
 
 import { donorHall, donorOrphanIds } from "./donor";
 import {
+  hallDirectory,
   hallEntry,
   hallLanguage,
   hallLiveRows,
@@ -58,7 +59,10 @@ const importsOf = (path: string) =>
 describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => {
   it("التجربة بـ?try=1 وحدها، وإلا فالحقيقي؛ و«أثري» من الوضع نفسه", () => {
     expect(hallSource({ try: 1 })).toMatchObject({ mode: "trial", mine: "/try/impact" });
-    expect(hallSource({})).toMatchObject({ mode: "live", mine: "/dashboard" });
+    expect(hallSource({ live: 1 })).toMatchObject({ mode: "live", mine: "/dashboard" });
+    // الرابط العامّ بلا معرّف يفتح التجربة الموسومة، لا القاعة التصوّرية
+    expect(hallSource({})).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    expect(parseHallSearch({ live: "1" })).toEqual({ live: 1 });
   });
 
   it("لا ملفّ في القاعة يقرأ وضع المنصّة، والصفحة تأخذ قرارها من source.ts", () => {
@@ -134,6 +138,56 @@ describe("الحقيقي: القاعة تقرأ مسار الصفحات نفسه
     expect(hall.find((r) => r.code === "XK")).toMatchObject({ total: null, small: true });
   });
 
+  it("ما تكتبه القاعة الحيّة عن الدولة هو ما تكتبه ورقة الخريطة: العدد والمنتظرون والحجب", () => {
+    const row = (
+      country: string,
+      total: number | null,
+      sponsored: number | null,
+      small = false,
+    ) => ({
+      country,
+      total,
+      sponsored,
+      small,
+      gap: null,
+      currency: null,
+      delivered: null,
+      regions: [],
+    });
+    const geo = shapeGeo(
+      [
+        row("ألبانيا", 128, 40),
+        row("Kosovo", null, null, true),
+        row("Senegal", 1, 0),
+        row("Egypt", 7, 7),
+        row("Turkey", 30, null),
+        row("Ghana", 0, 0),
+      ] as Parameters<typeof shapeGeo>[0],
+      true,
+    );
+    const map = toMapStats(resolveMapSource(geo, { demoMode: false, failed: false }).geo);
+    for (const r of hallLiveRows(geo)) {
+      const m = map[r.code!]!;
+      // the map's country sheet (`WorldMap`): hidden when small or uncounted, else the total,
+      // and «ينتظرون» is total − sponsored when both are known
+      const hidden = m.small || m.total == null;
+      const waiting = m.total != null && m.sponsored != null ? m.total - m.sponsored : null;
+      const hall = hallDirectory(r);
+      expect(hall.total, r.value).toBe(hidden || !m.total ? null : m.total);
+      expect(hall.waiting, r.value).toBe(hall.total == null ? null : waiting);
+      expect(hall.href).toBe(`/orphans?country=${encodeURIComponent(m.value)}`);
+    }
+    const of = (code: string) => hallDirectory(hallLiveRows(geo).find((r) => r.code === code)!);
+    expect(of("AL")).toMatchObject({ total: 128, waiting: 88 });
+    expect(of("XK")).toMatchObject({ total: null, waiting: null }); // small cohort: no number
+    expect(of("SN")).toMatchObject({ total: 1, waiting: 1 });
+    expect(of("TR")).toMatchObject({ total: 30, waiting: null });
+    // the scene writes the directory through this one selector, and reads no row field itself
+    const scene = read("src/components/hall/hall-scene.js");
+    expect(scene).toContain("const d = hallDirectory(r),");
+    expect(scene).not.toMatch(/\br\.(total|sponsored|small)\b/);
+  });
+
   it("دليلٌ متعذّر لا يعطي القاعة رقماً، ووضع العرض يعطيها ما يعطي الخريطة", () => {
     expect(hallLiveRows({ available: false, countries: demoGeography().countries })).toEqual([]);
     const demo = resolveMapSource(undefined, { demoMode: true, failed: false }).geo;
@@ -150,7 +204,9 @@ describe("التجربة والعرض: تعريفٌ واحد لما يتكرّر
     const drawn = COUNTRIES.filter((c) => c.st !== "unconfirmed");
     expect(NETWORK_SITES).toBe(NETWORK.length - 1);
     expect(NETWORK_SITES).toBe(drawn.length - 1);
-    expect(read("src/routes/hall.lazy.tsx")).toContain("c.net(formatCount(NETWORK_SITES, locale))");
+    expect(read("src/routes/hall.lazy.tsx")).toContain(
+      "(trying ? c.netTrial : c.net)(formatCount(NETWORK_SITES, locale))",
+    );
     for (const f of ["src/routes/hall.lazy.tsx", "src/components/hall/hall-scene.js"])
       expect(read(f)).not.toMatch(/\d+(<\/span>)?\s*موقعاً/);
   });
@@ -227,7 +283,7 @@ describe("الدخول والخروج يحملان السياق", () => {
       back: from,
       start: "SN",
     });
-    expect(hallSource({ from: "/dashboard" }).back).toBeNull();
+    expect(hallSource({ live: 1, from: "/dashboard" }).back).toBeNull();
     expect(hallSource({ try: 1, from: "/try/impact?kind=monthly" }).back).toBeNull();
   });
 
@@ -316,16 +372,24 @@ describe("مفتاح القاعة: الداعم من لوحته يرى أثره 
       'hallSearch={{ me: 1, from: "/dashboard" }}',
     );
     const page = read("src/routes/hall.lazy.tsx");
-    expect(page).toContain('trying ? import("@/lib/hall/trial") : null');
+    expect(page).toContain("trying ? loadHallTrial() : null");
     expect(page).toContain('const donor = source.mode === "donor"');
     // real and sample never share a view: the scene's donor path exists only without the demo
     expect(read("src/components/hall/hall-scene.js")).toContain("const donor = !!mine && !demo;");
   });
 
-  it("لغة القاعة: التجربة والداعم بلغة الواجهة، والحيّة عربية كلّها حتى تُترجم لوحاتها", () => {
-    expect(hallLanguage("trial", "en")).toBe("en");
-    expect(hallLanguage("donor", "en")).toBe("en");
-    expect(hallLanguage("live", "en")).toBe("ar");
+  it("لغة القاعة: القاعات الثلاث بلغة الواجهة، والحيّة منها لا تُثبَّت على العربية", () => {
+    for (const mode of ["trial", "donor", "live"] as const) {
+      expect(hallLanguage(mode, "en")).toBe("en");
+      expect(hallLanguage(mode, "ar")).toBe("ar");
+      expect(hallLanguage(mode, "sq")).toBe("sq");
+    }
+    // `lang` and `dir` on the hall follow the same locale, and the live copy is loaded for it
+    const page = read("src/routes/hall.lazy.tsx");
+    expect(page).toContain("dir={dirOf(locale)}");
+    expect(page).toContain("lang={locale}");
+    expect(page).toContain('trying || donor ? null : import("@/lib/hall/live")');
+    expect(page).toContain("text: liveHall ? liveHall.hallLive(locale) : null");
   });
 });
 

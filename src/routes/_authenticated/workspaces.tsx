@@ -94,7 +94,7 @@ function WorkspacesPage() {
         {ws.care_org ? (
           <Portal
             icon={<Building2 className="size-5" />}
-            title="جهة الرعاية"
+            title="الجهة الميدانية"
             text={
               ws.care_org_status === "pending"
                 ? "طلب الاعتماد عند الإدارة — أكمل وثائقه."
@@ -109,8 +109,8 @@ function WorkspacesPage() {
           // الاعتماد»، ولا تُرفع ملفات أطفالٍ قبل أن تعتمدها الإدارة.
           <Portal
             icon={<Building2 className="size-5" />}
-            title="سجّل جهة رعاية"
-            text="جمعية أو دار ترعى أطفالاً؟ قدّم بياناتها ووثيقة تسجيلها للاعتماد."
+            title="سجّل جهة ميدانية"
+            text="مكتبٌ للندوة أو جهة تعمل معها ميدانياً؟ قدّم بياناتها ووثيقة تسجيلها لتراجعها الإدارة."
             to="/org"
           />
         )}

@@ -1,6 +1,7 @@
 // قاعة الأثر — المشهد ثلاثي الأبعاد (three.js) وطبقة الواجهة فوقه.
 // المنطق والبيانات في `@/lib/hall/model` (مختبَر)؛ هنا العرض والحركة فقط.
-// طريقان منفصلان بمفتاح `demo`: القاعة الحيّة تقرأ `model` وجسر المحرّك وأعداد الدليل؛ وقاعة
+// طريقان منفصلان بمفتاح `demo`: القاعة الحيّة تقرأ `model` وجسر المحرّك وأعداد الدليل، ونصوصها
+// وعملتها وأسماء عيّنتها من `@/lib/hall/live` (تُمرَّر في `text`) بلغة الواجهة؛ وقاعة
 // التجربة لا تقرأ منها رقماً ولا نصّاً: نموذجها ونصوصها وكتابتها كلّها من `@/lib/hall/trial`
 // (كتالوج التجربة الواحد)، تُمرَّر في `demo`. كلّ ما يخصّ التجربة هنا اسمه يبدأ بـ`trial`.
 // يُحمَّل كسولاً من `src/routes/hall.tsx` فلا يثقل بقية الصفحات.
@@ -23,6 +24,8 @@ import {
   ToneMappingMode,
   DepthOfFieldEffect,
   BlendFunction,
+  ShaderPass,
+  CopyMaterial,
 } from "postprocessing";
 import { N8AOPostPass } from "n8ao";
 
@@ -35,7 +38,9 @@ import {
   regionsFor,
   gapOf,
   TRACKS,
-  TRAITS,
+  AMOUNTS,
+  AMOUNT_PRESETS,
+  countryFigures,
   totals as totalsOf,
   pace as paceOf,
   project as projectOf,
@@ -49,8 +54,10 @@ import {
   saveEngine,
   SYNC_EVENT,
 } from "@/lib/hall/engine-bridge";
+import { hallDirectory } from "@/lib/hall/source";
 import { rankPriorities } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
+import { createEmblem } from "./mark3d.js";
 import { createSound } from "./sound.js";
 
 const DISPLAY = "Amiri",
@@ -64,8 +71,10 @@ export function mountHall(
     linked = [],
     demo = null,
     live = null,
+    text: liveKit = null, // `text` is the canvas writer below
     start = null,
     mine = null,
+    mark = null,
     onStage = null,
     onBack = null,
   },
@@ -81,12 +90,31 @@ export function mountHall(
   const T = demo?.copy ?? null;
   const TRIAL_KINDS = demo?.kinds ?? [];
   const num = (n) => `<span class="num">${fmt(n)}</span>`;
+  /* the live hall's own copy and sample names, in the interface language (`@/lib/hall/live`);
+     null in the trial and in the donor's hall, which never reach the live panels. Everything
+     the live hall shows beyond the network and the directory's counts is sample data: each
+     panel of it carries the SAMPLE chip, and money is written in the hall's one currency. */
+  const LX = demo || mine ? null : liveKit,
+    X = LX?.copy ?? null;
+  const SAMPLE = X ? `<span class="src">${X.sample}</span>` : "";
+  const ARROW = LTR ? "→" : "←";
+  const cash = (n) => `<span class="num">${LX.money(n)}</span>`;
+  /** a counted phrase: the number picks the plural form, and `{1}` is the figure as written */
+  const many = (phrase, n, ...rest) => phrase(n, num(n), ...rest);
+  const manyT = (phrase, n, ...rest) => phrase(n, fmt(n), ...rest); // plain text (canvas, hints)
+  /** sample regions take their name in the interface language; the model holds both */
+  const named = (regions) => {
+    if (LX) regions.forEach((r) => (r.ar = LX.regionName(r)));
+    return regions;
+  };
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const PHONE = () => innerWidth <= 760;
   // the light tier: a phone-width screen, few cores, little memory (deviceMemory is Chromium-only,
   // so its absence decides nothing), or a visitor who asked the browser to save data
   const LOW =
     matchMedia("(max-width: 760px)").matches ||
+    // a phone held sideways is still a phone: the tier follows the device, not its rotation
+    (matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) <= 760) ||
     (navigator.hardwareConcurrency || 8) < 4 ||
     (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4) ||
     navigator.connection?.saveData === true;
@@ -116,7 +144,6 @@ export function mountHall(
   const VIEW = { all: false, layer: "network" };
   /* the site map's "needs an office" layer, and operating platforms that are really linked */
   const PRI = new Map(rankPriorities().map((p) => [p.code, p]));
-  const TIER = { high: "أولوية عالية", medium: "أولوية متوسطة", data: "تحتاج بيانات" };
   /* confirmed sites other than the HQ: counted from the network the hall draws, never typed */
   const SITES = COUNTRIES.filter((c) => c.st !== "unconfirmed").length - 1;
   const LINKED = new Set();
@@ -170,7 +197,7 @@ export function mountHall(
   const S = {
     stage: "gate",
     track: "qualify",
-    amount: demo ? demo.amounts.initial : 10000,
+    amount: demo ? demo.amounts.initial : AMOUNTS.initial,
     // the trial: the kind of giving as the platform names it, and the currency the pledge is typed in
     kind: "qualification",
     currency: null,
@@ -231,12 +258,18 @@ export function mountHall(
     }
     if (isEngine()) {
       ENGINE = loadEngine(store);
-      CITY_CACHE.AL = albaniaRegions(ENGINE, regionsFor(CO));
-    } else if (!CITY_CACHE[CO.code]) CITY_CACHE[CO.code] = regionsFor(CO);
+      CITY_CACHE.AL = named(albaniaRegions(ENGINE, regionsFor(CO)));
+    } else if (!CITY_CACHE[CO.code]) CITY_CACHE[CO.code] = named(regionsFor(CO));
     CITIES = CITY_CACHE[CO.code];
     S.city = [...CITIES].sort((a, b) => gapOf(b) - gapOf(a))[0].id;
   }
   initCities();
+  /** the sample regions a country's stage stands on, without entering it: the very list the
+      country panel totals (this visit's simulated support included), for the world card */
+  const regionsOf = (co) =>
+    co.code === "AL" && !demo
+      ? named(albaniaRegions(loadEngine(store), regionsFor(co)))
+      : (CITY_CACHE[co.code] ?? named(regionsFor(co)));
   const city = (id = S.city) => CITIES.find((c) => c.id === id);
   const totals = () => totalsOf(CITIES);
   const pace = () => paceOf(CITIES);
@@ -329,6 +362,11 @@ export function mountHall(
     });
     ao.setQualityMode("Medium");
     composer.addPass(ao);
+    /* the occlusion pass hands its picture on in the composer's second buffer, so the next pass
+       (depth of field, which reads the scene's depth) would draw into the buffer that depth is
+       attached to: the driver refuses that draw every frame ("feedback loop"). One plain copy
+       puts the picture back where a depth-reading pass may write beside it. */
+    composer.addPass(new ShaderPass(new CopyMaterial()));
   }
   const BLOOM = 0.8; // resting bloom; the gate, country and payment beats rise from it and return
   const bloom = new BloomEffect({
@@ -468,8 +506,9 @@ export function mountHall(
   const hall = new THREE.Group();
   scene.add(hall);
   // mirror floor under smoked lacquer
+  let mirror = null;
   if (!LOW) {
-    const mirror = new Reflector(new THREE.CircleGeometry(19, 96), {
+    mirror = new Reflector(new THREE.CircleGeometry(19, 96), {
       textureWidth: innerWidth * 0.5,
       textureHeight: innerHeight * 0.5,
       color: 0x6a5a55,
@@ -859,12 +898,12 @@ export function mountHall(
       tex.needsUpdate = true;
       return;
     }
-    goldText(ctx, demo ? T.screen.map(tc.name) : `${coName()} — الحال الآن`, w - 80, 136, 80);
+    goldText(ctx, demo ? T.screen.map(tc.name) : X.screen.mapTitle(coName()), w - 80, 136, 80);
     text(
       ctx,
       demo
         ? T.screen.mapLine(fmt(tc.children), fmt(tc.enrolled), fmt(tc.deliveries))
-        : `${fmt(t.need)} يتيماً في الحاجة · ${t.pct}% مموّلة · ${fmt(t.gap)} ينتظرون التأهيل`,
+        : X.screen.mapLine(fmt(t.need), fmt(t.pct), fmt(t.gap)),
       w - 80,
       200,
       36,
@@ -922,7 +961,7 @@ export function mountHall(
     });
     const lx = w - 80;
     let ly = 330;
-    text(ctx, demo ? T.screen.regions : "أكبر الفجوات", lx, ly, 34, "#cdae76", 700);
+    text(ctx, demo ? T.screen.regions : X.screen.gaps, lx, ly, 34, "#cdae76", 700);
     ly += 20;
     [...CITIES]
       .sort((a, b) => gapOf(b) - gapOf(a))
@@ -932,7 +971,7 @@ export function mountHall(
         text(ctx, c.ar, lx, ly, 34, "#f6efe2", 600);
         text(
           ctx,
-          demo ? T.children(c.need) : `${gapOf(c)} ينتظرون`,
+          demo ? T.children(c.need) : X.screen.waiting(fmt(gapOf(c))),
           lx - 330,
           ly,
           30,
@@ -946,7 +985,7 @@ export function mountHall(
       });
     text(
       ctx,
-      demo ? T.screen.enter(tc.name) : `المس الشاشة لتدخل ${coName()}`,
+      demo ? T.screen.enter(tc.name) : X.screen.enter(coName()),
       w - 80,
       h - 84,
       48,
@@ -961,7 +1000,7 @@ export function mountHall(
     bg(ctx, w, cv.lh);
     goldText(
       ctx,
-      donor ? D.kinds : demo ? demo.giving.heading : "أنواع الدعم الثلاثة",
+      donor ? D.kinds : demo ? demo.giving.heading : X.screen.tracksTitle,
       w - 80,
       140,
       donor && LTR ? 58 : 68,
@@ -975,11 +1014,12 @@ export function mountHall(
             T.screen.tracksHow[k],
             T.screen.tracksSub[k],
           ])
-        : [
-            ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
-            ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
-            ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
-          ]
+        : // sample unit prices in the hall's one currency, named as sample under the list
+          Object.keys(TRACKS).map((k) => [
+            X.tracks[k].name,
+            X.trackLine(X.tracks[k].per, LX.money(TRACKS[k].unit)),
+            X.screen.tracksSub[k],
+          ])
     ).forEach(([a, b, c], i) => {
       const y = 300 + i * 200;
       ctx.fillStyle = "#cdae76";
@@ -994,6 +1034,7 @@ export function mountHall(
       text(ctx, c, w - 170, y + 62, 34, "rgba(246,239,226,.72)");
     });
     if (donor) text(ctx, D.kindsOpen, w - 80, cv.lh - 60, 36, "#e2c896", 700);
+    else if (X) text(ctx, X.screen.tracksNote, w - 80, cv.lh - 60, 34, "#e2c896", 600);
     tex.needsUpdate = true;
   }
   /** the donor's three figures, written as their dashboard writes them */
@@ -1064,11 +1105,14 @@ export function mountHall(
       tex.needsUpdate = true;
       return;
     }
-    goldText(ctx, "أثرك حتى الآن", w - 80, 140, 68);
+    /* the live hall's record is this visit's simulated support, and the screen says so */
+    const Sc = X.screen;
+    goldText(ctx, Sc.impactTitle, w - 80, 140, LTR ? 58 : 64);
     if (!S.history.length) {
-      text(ctx, "لم تدعم بعد.", w - 80, 300, 46, "rgba(246,239,226,.85)");
-      text(ctx, "اختر دولةً وادعمها، فيُكتب هنا ما تمّ", w - 80, 370, 36, "rgba(246,239,226,.6)");
-      text(ctx, "على البلد والمنطقة والمجموعة والطفل.", w - 80, 420, 36, "rgba(246,239,226,.6)");
+      text(ctx, Sc.none, w - 80, 300, 46, "rgba(246,239,226,.85)");
+      Sc.noneSub.forEach((line, i) =>
+        text(ctx, line, w - 80, 370 + i * 50, 36, "rgba(246,239,226,.6)"),
+      );
       tex.needsUpdate = true;
       return;
     }
@@ -1077,23 +1121,19 @@ export function mountHall(
       kids = H.reduce((a, r) => a + r.kids, 0),
       cos = new Set(H.map((r) => r.co)).size;
     [
-      [fmt(total), "ر.س دعمك"],
-      [fmt(kids), "طفلاً وصلهم"],
-      [String(cos), cos > 2 ? "دول" : cos === 2 ? "دولتان" : "دولة"],
+      [LX.money(total), Sc.support],
+      [fmt(kids), Sc.reached(kids)],
+      [fmt(cos), Sc.countries(cos)],
     ].forEach(([v, l], i) => {
       const x = w - 80 - i * 400;
-      figure(ctx, v, x, 300, 96);
+      figure(ctx, v, x, 300, v.length > 9 ? 78 : 96); // a long total keeps to its column
       text(ctx, l, x, 350, 32, "rgba(246,239,226,.75)", 600);
     });
     const by = (t) => H.filter((r) => r.track === t).reduce((a, r) => a + r.kids, 0);
-    [
-      ["qualify", "تأهّلوا"],
-      ["sponsor", "كُفلوا"],
-      ["kiswa", "كُسوا"],
-    ].forEach(([t, l], i) => {
+    Object.keys(TRACKS).forEach((t, i) => {
       const x = w - 80 - i * 400,
         v = by(t);
-      text(ctx, `${v} ${l}`, x, 430, 34, v ? "#cdae76" : "rgba(246,239,226,.35)", 700);
+      text(ctx, Sc.by[t](fmt(v)), x, 430, 34, v ? "#cdae76" : "rgba(246,239,226,.35)", 700);
     });
     ctx.strokeStyle = "rgba(205,174,118,.38)";
     ctx.beginPath();
@@ -1107,7 +1147,7 @@ export function mountHall(
         text(ctx, r.title, w - 80, y, 36, i ? "rgba(246,239,226,.8)" : "#f6efe2", 600);
         text(ctx, r.line, 80 + 520, y, 28, "rgba(246,239,226,.55)", 500, BODY, "right");
       });
-    text(ctx, "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته", w - 80, h - 60, 36, "#e2c896", 700);
+    text(ctx, Sc.open, w - 80, h - 60, 36, "#e2c896", 700);
     tex.needsUpdate = true;
   }
 
@@ -2093,7 +2133,7 @@ export function mountHall(
         ? ""
         : demo
           ? T.country.label(o.c.ar, num(o.c.need))
-          : `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
+          : `${o.c.ar} · ${num(gapOf(o.c))}`;
     });
   }
   const legend = $("#legend");
@@ -2107,7 +2147,10 @@ export function mountHall(
       legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, T.legend.enrolled)}${row("sponsor", c.sponsored, T.legend.sponsored, false)}${row("kiswa", c.clothed, T.legend.deliveries, false)}</ul>`;
       return;
     }
-    legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, "تأهّلوا")}${row("sponsor", c.sponsored, "مكفولون")}${row("kiswa", c.clothed, "مكسوّون")}</ul>`;
+    const Lg = X?.legend;
+    legend.innerHTML = Lg
+      ? `<p>${c.ar}</p><ul>${row("qualify", c.qualified, Lg.qualify)}${row("sponsor", c.sponsored, Lg.sponsor)}${row("kiswa", c.clothed, Lg.kiswa)}</ul>`
+      : "";
   }
   const cur = $("#cursor");
   on(window, "pointermove", (e) => {
@@ -2326,7 +2369,7 @@ export function mountHall(
     else requestAnimationFrame(() => fn());
   }
   function showPanel(html, dir) {
-    // the trial's panels read in the interface language; the live hall's are Arabic as before
+    // every hall's panels read in the interface language
     panel.dir = dir ?? DIR;
     const first = !panel.classList.contains("on");
     swapping = true;
@@ -2415,6 +2458,43 @@ export function mountHall(
         gsap.set(impact, { clearProps: "all" });
         frameView();
       },
+    });
+  }
+
+  /* ── The emblem: the gate's mark in real 3D, laid over the flat one once it can be drawn.
+     The flat SVG paints first and stays the mark on the light tier and wherever the emblem
+     cannot be drawn; it is also what opens as the door, so entry hands back to it. ── */
+  const markEl = $("#gate .mark");
+  const emblem =
+    mark && markEl && !LOW
+      ? createEmblem({ renderer, art: mark, environment: scene.environment, still: RM })
+      : null;
+  const emblemAt = { x: 0, y: 0, on: false, drawn: -1 };
+  function sizeEmblem() {
+    if (!emblem) return;
+    emblem.setSize(markEl.offsetWidth * (1 + emblem.pad * 2), renderer.getPixelRatio());
+    if (emblemAt.on && RM) emblem.render(0);
+  }
+  if (emblem) {
+    emblem.canvas.className = "mark-3d";
+    emblem.canvas.setAttribute("aria-hidden", "true");
+    emblem.canvas.style.setProperty("--pad", String(emblem.pad));
+    markEl.appendChild(emblem.canvas);
+    sizeEmblem();
+    // after the flat mark has drawn itself (hall.css), and only once a frame has really been drawn
+    gsap.delayedCall(RM ? 0.2 : 2.4, () => {
+      if (S.stage !== "gate" || !emblem.render(clock.elapsedTime)) return;
+      emblemAt.on = true;
+      root.classList.add("mark-3d-on");
+    });
+    on(window, "pointermove", (e) => {
+      if (!emblemAt.on || e.pointerType !== "mouse") return;
+      const r = markEl.getBoundingClientRect();
+      emblemAt.x = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (innerWidth / 2)));
+      emblemAt.y = Math.max(
+        -1,
+        Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight / 2)),
+      );
     });
   }
 
@@ -2533,32 +2613,28 @@ export function mountHall(
     FILM = true;
     root.classList.add("film");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    /* the live film's captions, in the interface language; it names its sample data and its
+       simulated payment as such. The trial's film reads its own captions below. */
+    const F = X?.film,
+      tirana = LX ? LX.regionName(regionsFor(byCode("AL")).find((r) => r.id === "tirana")) : "";
     const live = [
-      [() => enterHall(), "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر", 5200],
-      [() => enterWorld(), `شبكة الندوة: المقرّ في الرياض و${SITES} موقعاً مؤكَّد الحضور`, 4600],
-      [
-        () => selectCountry("AL"),
-        "نختار ألبانيا: نشاطٌ ميداني للندوة، بمدنها ومجموعاتها وأطفالها",
-        4200,
-      ],
-      [
-        () => enterCountry(),
-        "ندخلها: لكلّ مدينةٍ عمودٌ بقدر حاجتها، والمملوء منه ما مُوِّل تأهيله",
-        7000,
-      ],
+      [() => enterHall(), F?.hall, 5200],
+      [() => enterWorld(), F?.network(fmt(SITES)), 4600],
+      [() => selectCountry("AL"), F?.pick(coName(byCode("AL"))), 4200],
+      [() => enterCountry(), F?.enter, 7000],
       [
         () => {
           S.track = "qualify";
-          S.amount = 10000;
+          S.amount = AMOUNTS.initial;
           setStage("support");
           selectCity("tirana");
         },
-        "ندعم تيرانا بعشرة آلاف ريال تأهيلاً، فيظهر الأثر قبل الدفع",
+        F?.support(tirana, LX?.money(AMOUNTS.initial)),
         5200,
       ],
-      [() => pay(), "يتدفّق الدعم، ويرتفع عمود تيرانا بقدر ما موّل", 5200],
-      [() => {}, "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب", 14000],
-      [() => enterBig(), "وأخيراً أثرك أنت: ما حرّكه دعمك، قبله وبعده", 7000],
+      [() => pay(), F?.flow(tirana), 5200],
+      [() => {}, F?.levels, 14000],
+      [() => enterBig(), F?.close, 7000],
     ];
     /* the trial's film walks the same stages on the trial catalogue: a monthly qualification
        pledge for Tirana, shown and never recorded */
@@ -2588,18 +2664,22 @@ export function mountHall(
 
   function enterHall() {
     if (S.stage !== "gate") return;
+    gateShut = false; // the door is opening: the hall behind it draws every frame again
     sound.cue("door");
     const tl = gsap.timeline();
     const end = hallPose(1);
     // the two fingers are the key and the disc the door: the two slots fill with light and draw
     // together into one opening, the seam runs down to the rim, the disc parts along it as two
     // leaves, the light behind floods through, and the camera goes in
-    const mark = $("#gate .mark");
-    if (mark) {
+    // the flat mark is the door: the emblem hands back to it before it opens
+    emblemAt.on = false;
+    root.classList.remove("mark-3d-on");
+    const gateMark = $("#gate .mark");
+    if (gateMark) {
       // the idle float would override gsap's transform: stop it where it is, and settle from there
-      const lift = new DOMMatrixReadOnly(getComputedStyle(mark).transform).m42;
-      mark.style.animation = "none";
-      gsap.set(mark, { y: lift });
+      const lift = new DOMMatrixReadOnly(getComputedStyle(gateMark).transform).m42;
+      gateMark.style.animation = "none";
+      gsap.set(gateMark, { y: lift });
     }
     const glow = $("#gate .k-glow");
     if (glow) {
@@ -2860,6 +2940,7 @@ export function mountHall(
   function selectCountry(code) {
     sound.cue("tick");
     if (!byCode(code)) return; // a country the hall's globe does not draw
+    OFF = null;
     CO = byCode(code);
     PICKED = true;
     markLand();
@@ -2948,21 +3029,27 @@ export function mountHall(
   }
   function cardHTML() {
     if (demo) return trialCard();
-    const sim = CO.sim;
+    /* the share funded is the country stage's own figure (`countryFigures`): one computation
+       for the card and the panel, so the two can never disagree */
+    const f = countryFigures(CO, regionsOf(CO)).card,
+      Cd = X.card,
+      name = coName();
     return `<article class="co-card">
-      <div class="co-head"><div><h3>${coName()}</h3><span class="st ${CO.st}">${HC.status[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${coName()}"></canvas></div>
-      ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها، وأرقامها افتراضية.</p>`}
-      ${CO.act ? `<p class="co-act">${CO.act}<small> · من البحث العامّ</small></p>` : ""}
+      <div class="co-head"><div><h3>${name}</h3><span class="st ${CO.st}">${HC.status[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="${Cd.shape(name)}"></canvas></div>
+      ${CO.type ? `<p class="co-line"><b>${LX.pick(CO.type)}</b>${CO.city ? ` · ${LX.pick(CO.city)}` : ""}</p>` : `<p class="co-line">${Cd.noPresence}</p>`}
+      ${CO.act ? `<p class="co-act">${LX.pick(CO.act)}<small> · ${Cd.research}</small></p>` : ""}
       <div class="kv">
-        <div><dt>مجموعات تأهيل</dt><dd class="num">${sim.groups}</dd></div>
-        <div><dt>أيتامٌ في التأهيل</dt><dd class="num">${sim.inQualification}</dd></div>
-        <div><dt>نسبة التمويل</dt><dd class="num">${sim.funded}%</dd></div>
-        <div><dt>مشرفون</dt><dd class="num">${sim.supervisors}</dd></div>
+        <div><dt>${Cd.groups}</dt><dd class="num">${fmt(f.groups)}</dd></div>
+        <div><dt>${Cd.inQualification}</dt><dd class="num">${fmt(f.inQualification)}</dd></div>
+        <div><dt>${Cd.funded}</dt><dd class="num">${fmt(f.funded)}%</dd></div>
+        <div><dt>${Cd.supervisors}</dt><dd class="num">${fmt(f.supervisors)}</dd></div>
       </div>
-      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${coName()} المتّصلة.` : CO.code === "AL" ? `<span class="src">تجريبي</span> مدن ${coName()} ومجموعاتها وأطفالها بياناتٌ تجريبية، ودعمك هنا يُقيَّد عليها.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${coName()}.`}</p>
-      <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${coName()}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
+      <p class="note">${SAMPLE} ${LINKED.has(CO.code) ? Cd.noteLinked(name) : CO.code === "AL" ? Cd.noteDemo(name) : Cd.noteSim(name)}</p>
+      <div class="row pin"><button class="cta" type="button" id="enterCo">${Cd.enter(name)}</button><button class="ghost" type="button" id="toHall">${Cd.back}</button></div>
     </article>`;
   }
+  /** a country of the donor's that the globe does not draw, opened in the panel (it has no marker) */
+  let OFF = null;
   /** the donor's panel: their own figures and countries, and the ways on to the real pages */
   function donorWorld() {
     const esc = (t) => String(t).replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
@@ -2975,11 +3062,13 @@ export function mountHall(
     else if (!MINE.impact.children.length)
       body = `<article class="co-card empty"><h3>${D.emptyTitle}</h3><p class="co-line">${D.empty}</p></article>${ways}`;
     else {
-      const here = PICKED ? mineAt(CO.code) : null;
-      const card = !PICKED
+      const off = OFF ? mineAt(OFF) : null;
+      const here = off ?? (PICKED ? mineAt(CO.code) : null);
+      const hereName = off ? i18n.countryName(off.code) : coName();
+      const card = !(PICKED || off)
         ? ""
         : here
-          ? `<article class="co-card"><div class="co-head"><div><h3>${D.card(coName())}</h3><span class="st">${here.inCare ? D.inCountry(here.inCare) : D.ended}</span></div><canvas id="coShape" width="520" height="300" aria-label="${coName()}"></canvas></div>
+          ? `<article class="co-card"${off ? ' data-off-card=""' : ""}><div class="co-head"><div><h3>${D.card(hereName)}</h3><span class="st">${here.inCare ? D.inCountry(here.inCare) : D.ended}</span></div>${off ? "" : `<canvas id="coShape" width="520" height="300" aria-label="${hereName}"></canvas>`}</div>${off ? `<p class="co-line">${D.offGlobeCard}</p>` : ""}
             <ul class="kids">${here.children
               .map(
                 (k) =>
@@ -2997,8 +3086,8 @@ export function mountHall(
           ? `<div class="sect">${D.countries}</div><div class="co-list">${MINE.countries
               .map((c) =>
                 byCode(c.code)
-                  ? `<button type="button" data-co="${c.code}" aria-pressed="${PICKED && c.code === CO.code}"><i class="dot office"></i>${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`
-                  : `<span class="off-globe" title="${D.offGlobe}">${i18n.countryName(c.code)} · ${num(c.children.length)}</span>`,
+                  ? `<button type="button" data-co="${c.code}" aria-pressed="${!OFF && PICKED && c.code === CO.code}"><i class="dot office"></i>${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`
+                  : `<button type="button" class="off-globe" data-off="${c.code}" aria-pressed="${OFF === c.code}" title="${D.offGlobe}">${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`,
               )
               .join("")}</div>`
           : ""
@@ -3022,6 +3111,14 @@ export function mountHall(
       panel
         .querySelectorAll("[data-co]")
         .forEach((b) => b.addEventListener("click", () => selectCountry(b.dataset.co)));
+      // a country the globe does not draw opens in the panel: its children, with no globe turn
+      panel.querySelectorAll("[data-off]").forEach((b) =>
+        b.addEventListener("click", () => {
+          OFF = b.dataset.off;
+          donorWorld();
+          panel.querySelector(`[data-off="${OFF}"]`)?.focus();
+        }),
+      );
       $("#toHall")?.addEventListener("click", backToHall);
     });
     hint(PHONE() ? "" : D.hint);
@@ -3032,23 +3129,26 @@ export function mountHall(
       sim = CO.sim,
       // the trial shows every country, but only confirmed presence is counted as a site
       sites = COUNTRIES.filter((c) => (demo ? c.st !== "unconfirmed" : shown(c))).length - 1;
-    const groups = [
-      ["hq", "المقرّ الرئيسي"],
-      ["office", "مكاتب مؤكَّدة"],
-      ["field", "نشاط ميداني"],
-      ...(VIEW.all ? [["unconfirmed", "غير مؤكَّد — للإدارة فقط"]] : []),
-    ];
+    const W = X?.world,
+      groups = W
+        ? [
+            ["hq", W.groups.hq],
+            ["office", W.groups.office],
+            ["field", W.groups.field],
+            ...(VIEW.all ? [["unconfirmed", W.groups.unconfirmed]] : []),
+          ]
+        : [];
     showPanel(`
     <h2>${HC.network.title}</h2>
     ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>${HC.network.pick}</h3><p class="co-line">${HC.network.pickLine}</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">${COUNTRIES.length - 1}</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : HC.network.choose(num(sites))}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
+    <p class="sub">${demo ? T.world.count(num(demo.codes.length), T.world.sites(sites), T.world.trialOnly(demo.codes.length - sites - 1)) : VIEW.all && W ? W.full(num(COUNTRIES.length - 1), num(n("unconfirmed"))) : HC.network.choose(num(sites))}${!demo && W ? ` ${SAMPLE} ${W.simNote}` : ""}</p>
     ${
       demo
         ? `<p class="sub" dir="${DIR}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
     <div class="sect">${T.world.sect}</div><div class="co-list">${demo.codes
       .map(
         (code) =>
-          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
+          `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"${byCode(code).st === "unconfirmed" ? ` title="${T.world.unconfirmedMark}"` : ""}><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
       )
       .join("")}</div>
     <p class="sub" dir="${DIR}"><a href="${demo.mapHref}">${T.world.more}</a></p>`
@@ -3058,19 +3158,15 @@ export function mountHall(
       <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>${HC.network.hq}</span></div>
       <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>${HC.network.offices}</span></div>
       <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>${HC.network.field}</span></div>
-      ${VIEW.all ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>غير مؤكَّد</span></div>` : ""}
+      ${VIEW.all && W ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>${W.unconfirmed}</span></div>` : ""}
     </div>
     ${
-      VIEW.layer === "gap"
-        ? `<p class="sub">كطبقة «تحتاج مكتباً» في خريطة الموقع: دولٌ للندوة فيها نشاطٌ ميداني أو حضورٌ غير مؤكَّد، مرتّبةً بتقدير أيتامها وثقة مصدره.</p>${[
-            "high",
-            "medium",
-            "data",
-          ]
+      VIEW.layer === "gap" && W
+        ? `<p class="sub">${W.gapLead}</p>${["high", "medium", "data"]
             .map((t) => {
               const list = [...PRI.values()].filter((p) => p.tier === t);
               return list.length
-                ? `<div class="sect">${TIER[t]}</div><div class="co-list">${list.map((p) => `<button type="button" data-co="${p.code}" aria-pressed="${PICKED && p.code === CO.code}"><i class="dot gap-${t}"></i>${byCode(p.code) ? coName(byCode(p.code)) : p.code}</button>`).join("")}</div>`
+                ? `<div class="sect">${W.tier[t]}</div><div class="co-list">${list.map((p) => `<button type="button" data-co="${p.code}" aria-pressed="${PICKED && p.code === CO.code}"><i class="dot gap-${t}"></i>${byCode(p.code) ? coName(byCode(p.code)) : p.code}</button>`).join("")}</div>`
                 : "";
             })
             .join("")}`
@@ -3150,30 +3246,32 @@ export function mountHall(
       .map(
         (c) => `
     <li><button type="button" data-city="${c.id}" aria-pressed="${c.id === S.city}">
-      <span><b>${c.ar}</b></span><small><span class="num">${gapOf(c)}</span> ينتظرون من <span class="num">${c.need}</span></small>
+      <span><b>${c.ar}</b></span><small>${X.country.row(num(gapOf(c)), num(c.need))}</small>
       <span class="bar"><i style="width:${Math.round((c.qualified / c.need) * 100)}%"></i></span></button></li>`,
       )
       .join("");
   }
   function renderCountry() {
-    const t = totals(),
+    const k = countryFigures(CO, CITIES).kpis, // the card's own computation (`./model`)
+      AL = CO.code === "AL",
+      N = X?.country,
       c = city();
     hideImpact();
     showPanel(
       demo
         ? trialCountryHtml(c)
         : `
-    <h2>${coName()} · الحال الآن</h2>
-    <p class="sub">${HC.status[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والمملوء منه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
+    <h2>${N.title(coName(), N.now)}</h2>
+    <p class="sub">${SAMPLE} ${HC.status[CO.st]}${CO.city ? ` · ${LX.pick(CO.city)}` : ""}. ${AL ? N.subCity : N.subRegion} ${AL ? N.sampleCity : N.sampleRegion}</p>
     <div class="kpis">
-      <div class="kpi"><b class="num" data-count="${t.need}">0</b><span>يتيماً في الحاجة</span></div>
-      <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
-      <div class="kpi"><b class="num" data-count="${t.gap}">0</b><span>ينتظرون</span></div>
+      <div class="kpi"><b class="num" data-count="${k.need}">0</b><span>${N.need}</span></div>
+      <div class="kpi"><b class="num" data-count="${k.funded}" data-suf="%">0</b><span>${N.funded}</span></div>
+      <div class="kpi"><b class="num" data-count="${k.waiting}">0</b><span>${N.waiting}</span></div>
     </div>
     ${liveHtml()}
-    <div class="sect">${CO.code === "AL" ? "المدن" : "المناطق"} · الأكبر فجوةً أوّلاً</div>
+    <div class="sect">${AL ? N.cities : N.regions}</div>
     <ul class="cities">${cityRows()}</ul>
-    <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`,
+    <div class="row"><button class="cta" type="button" id="toSupport">${N.support(c.ar)}</button><button class="ghost" type="button" id="otherCo">${N.other}</button></div>`,
       DIR,
     );
     onPanel(() => {
@@ -3186,9 +3284,7 @@ export function mountHall(
       });
       $("#otherCo")?.addEventListener("click", backToWorld);
     });
-    hint(
-      PHONE() ? "" : demo ? T.country.hint : "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته",
-    );
+    hint(PHONE() ? "" : demo ? T.country.hint : X.country.hint);
     refreshLabels();
     layoutDots();
     if (TIME.m) setTime(TIME.m);
@@ -3200,8 +3296,6 @@ export function mountHall(
   const tlRange = $("#tlRange"),
     tlOut = $("#tlOut"),
     tlPlay = $("#tlPlay");
-  const monthsAr = (n) =>
-    n === 1 ? "شهر" : n === 2 ? "شهرين" : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
   /** the trial's kinds, the country as the catalogue has it now, and the months as the pages say them */
   const trialWhen = (m) => (m === 0 ? T.today : m > 0 ? T.after(m) : T.before(-m));
   const trialKpis = (t = trialCo()) => [
@@ -3247,15 +3341,17 @@ export function mountHall(
   const timeLabel = (m) =>
     demo
       ? trialWhen(m)
-      : m === 0
-        ? "اليوم"
-        : Math.abs(m) === 12
-          ? m < 0
-            ? "قبل سنة"
-            : "بعد سنة"
-          : m < 0
-            ? `قبل ${monthsAr(-m)}`
-            : `بعد ${monthsAr(m)}`;
+      : !X
+        ? ""
+        : m === 0
+          ? X.time.today
+          : Math.abs(m) === 12
+            ? m < 0
+              ? X.time.yearAgo
+              : X.time.yearOn
+            : m < 0
+              ? X.time.before(-m)
+              : X.time.after(m);
   function setTime(m) {
     const shown = Math.round(m);
     if (demo) {
@@ -3296,9 +3392,9 @@ export function mountHall(
             ? `<small>${T.simulated}</small>`
             : ""
           : shown > 0
-            ? "<small>تقديرٌ بإيقاع اليوم</small>"
+            ? `<small>${X.time.estimate}</small>`
             : shown < 0
-              ? "<small>استرجاعٌ تقريبي</small>"
+              ? `<small>${X.time.past}</small>`
               : "");
     root.classList.toggle("in-past", shown < 0);
     root.classList.toggle("in-future", shown > 0);
@@ -3312,7 +3408,7 @@ export function mountHall(
       if (head)
         head.textContent = demo
           ? T.country.title(trialCo().name, trialWhen(shown))
-          : `${coName()} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
+          : X.country.title(coName(), shown === 0 ? X.country.now : timeLabel(shown));
       const list = panel.querySelector("ul.cities");
       if (list && TIME.shown !== shown) {
         list.innerHTML = cityRows();
@@ -3350,19 +3446,18 @@ export function mountHall(
   function liveHtml() {
     const r = LIVE.get(CO.code);
     if (!r) return "";
-    const href = `/orphans?country=${encodeURIComponent(r.value)}`;
-    const counted = !r.small && r.total != null && r.total > 0;
-    const waiting = counted && r.sponsored != null ? Math.max(0, r.total - r.sponsored) : null;
-    return `<div class="sect">في الدليل الآن</div>
+    /* the one real figure of the country stage: the directory's own row, read as the map reads
+       it (`hallDirectory`), small cohorts hidden. It is named as the directory's, apart from
+       the sample figures around it. */
+    const d = hallDirectory(r),
+      Dr = X.directory;
+    return `<div class="sect">${Dr.sect}</div>
       <ul class="kids"><li><span><b>${
-        counted
-          ? `<span class="num">${fmt(r.total)}</span> ${r.total <= 10 ? "أطفال" : "طفلاً"} في ${coName()}`
-          : `أطفال ${coName()}`
+        d.total != null ? many(Dr.count, d.total, coName()) : Dr.hidden(coName())
       }</b><small>${
-        waiting != null
-          ? `<span class="num">${fmt(waiting)}</span> منهم ينتظرون كافلاً`
-          : "الأعداد الصغيرة تُحجب حمايةً للأطفال"
-      }</small></span><a class="cta" href="${href}">تصفّحهم</a></li></ul>`;
+        d.waiting != null ? many(Dr.waiting, d.waiting) : Dr.small
+      }</small></span><a class="cta" href="${d.href}">${Dr.browse}</a></li></ul>
+      <p class="note"><span class="src real">${Dr.chip}</span> ${Dr.note}</p>`;
   }
   /** the trial child standing in the region and their group, as the catalogue holds them */
   function demoKidsHtml(c) {
@@ -3512,7 +3607,7 @@ export function mountHall(
       body = `<div class="sect">${U.amount}</div>
     <div class="amount"><span class="num" id="amtOut">${money()}</span></div>
     <div class="presets">${demo.amounts.presets.map((v) => `<button type="button" data-amt="${v}" aria-pressed="${v === S.amount}"><span class="num">${demo.money(v, S.currency)}</span></button>`).join("")}<input id="amt" type="number" inputmode="numeric" min="${demo.amounts.min}" max="${demo.amounts.max}" value="${S.amount}" aria-label="${U.other}"></div>
-    ${t.currencies.length > 1 ? `<div class="sect">${U.currency}</div><div class="presets" role="group" aria-label="${U.currency}">${t.currencies.map((cur) => `<button type="button" data-cur="${cur}" aria-pressed="${cur === S.currency}"><span class="num">${cur}</span></button>`).join("")}</div>` : ""}`;
+    ${t.currencies.length > 1 ? `<div class="sect">${U.currency}</div><div class="presets" role="group" aria-label="${U.currency}">${t.currencies.map((cur) => `<button type="button" data-cur="${cur}" aria-pressed="${cur === S.currency}">${demo.currencyName(cur)}</button>`).join("")}</div>` : ""}`;
       cta = `<button class="cta" type="button" id="pay">${U.confirm(money())}</button>`;
     }
     showPanel(
@@ -3582,11 +3677,16 @@ export function mountHall(
     const P = T.preview,
       t = trialCo(),
       kid = trialKid(c);
+    // a pooled pledge joins the region's fund: its share is shown, never the whole region
+    const reach =
+      S.kind === "monthly"
+        ? null
+        : demo.reach({ co: CO.code, region: c.id, amount: S.amount, currency: S.currency });
     if (S.kind === "qualification")
       return {
         title: P.qTitle(demo.money(S.amount, S.currency), c.ar),
         items: [
-          [P.qCover(T.children(c.need)), P.qCoverSub],
+          [reach.head, reach.line],
           [P.qSessions(num(c.need * t.sessions)), P.qSessionsSub(num(t.sessions))],
           [P.qStart, P.qStartSub],
         ],
@@ -3595,7 +3695,7 @@ export function mountHall(
       return {
         title: P.kTitle(demo.money(S.amount, S.currency), c.ar),
         items: [
-          [P.kCover(T.children(c.need)), P.kCoverSub],
+          [reach.head, reach.line],
           [P.kCount, P.kCountSub],
           [P.kNow(c.ar, num(c.clothed)), P.kNowSub],
         ],
@@ -3613,27 +3713,30 @@ export function mountHall(
 
   function renderSupport() {
     if (demo) return trialSupport();
-    const c = city();
+    const c = city(),
+      U = X.support;
+    /* a sample sheet: its amounts, unit prices and payment are simulated, and it says so at the
+       top, on the button and under it. Nothing here reaches a payment or a payable child. */
     showPanel(`
-    <h2>ادعم ${c.ar}</h2>
-    <p class="sub">اختر نوع الدعم ومقداره، فيتغيّر الأثر أمامك على العمود ونقاط الأيتام وشاشة الأثر قبل أن تدفع.</p>
-    <div class="sect">نوع الدعم</div>
-    <div class="tracks" role="group" aria-label="نوع الدعم">
+    <h2>${U.title(c.ar)}</h2>
+    <p class="sub">${SAMPLE} ${U.sub}</p>
+    <div class="sect">${U.kind}</div>
+    <div class="tracks" role="group" aria-label="${U.kind}">
       ${Object.entries(TRACKS)
         .map(
           ([k, t]) =>
-            `<button type="button" data-track="${k}" aria-pressed="${k === S.track}"><b>${t.name}</b><small>${t.unitName} · <span class="num">${t.unit}</span> ر.س</small></button>`,
+            `<button type="button" data-track="${k}" aria-pressed="${k === S.track}"><b>${X.tracks[k].name}</b><small>${X.trackLine(X.tracks[k].unit, cash(t.unit))}</small></button>`,
         )
         .join("")}
     </div>
-    <div class="sect">المقدار</div>
-    <div class="amount"><span class="num" id="amtOut">${fmt(S.amount)}</span> <small>ر.س</small></div>
-    <input id="amt" type="range" min="1000" max="100000" step="500" value="${S.amount}" aria-label="المقدار">
-    <div class="presets">${[1000, 5000, 10000, 25000, 50000].map((v) => `<button type="button" data-amt="${v}" aria-pressed="${v === S.amount}"><span class="num">${fmt(v)}</span></button>`).join("")}</div>
-    <div class="sect">الوجهة</div>
-    <select id="dest" aria-label="المدينة">${CITIES.map((x) => `<option value="${x.id}" ${x.id === S.city ? "selected" : ""}>${x.ar} — ${gapOf(x)} ينتظرون</option>`).join("")}</select>
-    <div class="row"><button class="cta" type="button" id="pay">ادعم الآن</button><button class="ghost" type="button" id="back">رجوع</button></div>
-    <p class="note">الدفع هنا تصوّري. في المنصة الحقيقية يمرّ ببوابة الدفع ويُقيَّد بفاتورة وإيصال ببصمة.</p>`);
+    <div class="sect">${U.amount}</div>
+    <div class="amount"><span class="num" id="amtOut">${LX.money(S.amount)}</span></div>
+    <input id="amt" type="range" min="${AMOUNTS.min}" max="${AMOUNTS.max}" step="${AMOUNTS.step}" value="${S.amount}" aria-label="${U.amount}">
+    <div class="presets">${AMOUNT_PRESETS.map((v) => `<button type="button" data-amt="${v}" aria-pressed="${v === S.amount}"><span class="num">${LX.money(v)}</span></button>`).join("")}</div>
+    <div class="sect">${U.dest}</div>
+    <select id="dest" aria-label="${CO.code === "AL" ? U.city : U.region}">${CITIES.map((x) => `<option value="${x.id}" ${x.id === S.city ? "selected" : ""}>${U.option(x.ar, fmt(gapOf(x)))}</option>`).join("")}</select>
+    <div class="row"><button class="cta" type="button" id="pay">${U.pay}</button><button class="ghost" type="button" id="back">${U.back}</button></div>
+    <p class="note">${SAMPLE} ${U.note}</p>`);
     onPanel(() => {
       panel.querySelectorAll("[data-track]").forEach((b) =>
         b.addEventListener("click", () => {
@@ -3651,7 +3754,7 @@ export function mountHall(
           v: S.amount,
           duration: 0.5,
           ease: "power3.out",
-          onUpdate: () => (out.textContent = fmt(shown.v)),
+          onUpdate: () => (out.textContent = LX.money(shown.v)),
         });
         panel
           .querySelectorAll("[data-amt]")
@@ -3679,65 +3782,59 @@ export function mountHall(
   function renderPreview(first = false) {
     const c = city(),
       p = demo ? null : project(),
-      money = `<span class="num">${fmt(S.amount)}</span> ر.س`;
+      P = X?.preview,
+      money = demo ? "" : cash(S.amount);
+    const share = (part, whole) => num(whole ? Math.round((part / whole) * 100) : 0);
     let title, items;
     if (demo) ({ title, items } = trialPreview(c));
     else if (p.track === "qualify") {
-      title = `لو دعمت بـ ${money} تأهيلاً في ${c.ar}`;
+      title = P.qTitle(money, c.ar);
       items = [
         [
-          `<span class="num">${p.kids}</span> طفلاً يبدأون رحلة التأهيل`,
-          `كلّ رحلة <span class="num">600</span> ر.س${p.spill ? ` · والباقي لـ <span class="num">${p.spill}</span> طفلاً يذهب لأقرب فجوة` : ""}`,
+          many(P.qStart, p.kids),
+          `${P.qUnit(cash(TRACKS.qualify.unit))}${p.spill ? P.spill(num(p.spill)) : ""}`,
         ],
         [
           p.groups
-            ? `<span class="num">${p.groups}</span> ${p.groups > 2 ? "مجموعات" : p.groups === 2 ? "مجموعتان" : "مجموعة"} كاملة${p.rest ? ` و<span class="num">${p.rest}</span> في مجموعةٍ قيد التكوين` : ""}`
-            : `<span class="num">${p.kids}</span> في مجموعةٍ قيد التكوين`,
-          "ستّ جلسات لكلّ مجموعة، وقياسٌ للسمات الستّ قبلها وبعدها",
+            ? `${many(P.qGroups, p.groups)}${p.rest ? P.qRest(num(p.rest)) : ""}`
+            : P.qForming(num(p.kids)),
+          P.qSessions,
         ],
         [
-          `فجوة ${c.ar}: <span class="num">${p.gap0}</span> ← <span class="num">${p.gap1}</span> طفلاً`,
-          `تنخفض <span class="num">${p.gap0 ? Math.round((p.kids / p.gap0) * 100) : 0}%</span> · متوسّط السمات المتوقّع <span class="num">15.4</span> ← <span class="num">17.0</span>`,
+          P.qGap(c.ar, num(p.gap0), num(p.gap1)),
+          P.qDrop(
+            share(p.kids, p.gap0),
+            `<span class="num">15.4</span>`,
+            `<span class="num">17.0</span>`,
+          ),
         ],
       ];
     } else if (p.track === "sponsor") {
-      title = `لو كفلت بـ ${money} في ${c.ar}`;
+      title = P.sTitle(money, c.ar);
       items = [
-        [
-          `<span class="num">${p.units}</span> شهر كفالة`,
-          `كلّ شهر <span class="num">300</span> ر.س يصل الطفل بإثبات تسليم`,
-        ],
+        [many(P.sMonths, p.units), P.sUnit(cash(TRACKS.sponsor.unit))],
         [
           p.years
-            ? `<span class="num">${p.years}</span> ${p.years > 2 ? "أطفال" : p.years === 2 ? "طفلان" : "طفل"} لسنةٍ كاملة${p.months ? ` و<span class="num">${p.months}</span> أشهر لطفلٍ آخر` : ""}`
-            : `<span class="num">${p.months}</span> أشهر لطفلٍ واحد`,
-          "يُختار الأطفال ممّن أتمّوا التأهيل ولا كفيل لهم",
+            ? `${many(P.sYears, p.years)}${p.months ? many(P.sMore, p.months) : ""}`
+            : many(P.sOnly, p.months),
+          P.sPick,
         ],
-        [
-          `المكفولون في ${c.ar}: <span class="num">${p.sp0}</span> ← <span class="num">${p.sp1}</span>`,
-          "ارتفاعٌ متوقّع خلال سنة في الصمود والدراية والهمّة (تقديرٌ يضبطه القياس)",
-        ],
+        [P.sCount(c.ar, num(p.sp0), num(p.sp1)), P.sExpect],
       ];
     } else {
-      title = `لو دعمت بـ ${money} كسوةً في ${c.ar}`;
+      title = P.kTitle(money, c.ar);
       items = [
         [
-          `<span class="num">${p.kids}</span> يتيماً يُكسَون`,
-          `كسوة اليتيم <span class="num">300</span> ر.س${p.spill ? ` · والباقي لـ <span class="num">${p.spill}</span> يذهب لأقرب حاجة` : ""}`,
+          many(P.kKids, p.kids),
+          `${P.kUnit(cash(TRACKS.kiswa.unit))}${p.spill ? P.spill(num(p.spill)) : ""}`,
         ],
-        [
-          "تُسلَّم خلال 1–3 أسابيع بإثبات",
-          "يُرفق إثبات التسليم بعدد المستلمين وتاريخه، بلا صورٍ للأطفال",
-        ],
-        [
-          `حاجة الكسوة في ${c.ar}: <span class="num">${p.k0}</span> ← <span class="num">${p.k1}</span>`,
-          `تُسدّ <span class="num">${p.k0 ? Math.round((p.kids / p.k0) * 100) : 0}%</span> من حاجة الموسم`,
-        ],
+        [P.kWhen, P.kProof],
+        [P.kNeed(c.ar, num(p.k0), num(p.k1)), P.kMet(share(p.kids, p.k0))],
       ];
     }
     const key = JSON.stringify(items.map((x) => x[0]));
     showImpact(
-      `<div class="eyebrow">${demo ? T.preview.eyebrow : "شاشة الأثر · قبل الدفع"}</div><h3>${title}</h3>
+      `<div class="eyebrow">${demo ? T.preview.eyebrow : P.eyebrow}</div><h3>${title}</h3>
     <ol class="chain">${items.map(([b, s], i) => `<li><span class="n num">${i + 1}</span><div><b>${b}</b><span>${s}</span></div></li>`).join("")}</ol>`,
       key !== lastKey && !first,
     );
@@ -3759,15 +3856,11 @@ export function mountHall(
   }
 
   /** qualification: six session rings climb the new gold; sponsorship: lanterns join the orbit; clothing: gifts fall onto the children */
-  const SAY = {
-    qualify: (k) => `انظر إلى العمود: ارتفع ما امتلأ منه، والحلقات المضيئة جلسات ${k} طفلاً`,
-    sponsor: (k) => `انظر حول العمود: ${k} فوانيس زمرّدية انضمّت إلى مدار الكفالة`,
-    kiswa: (k) => `انظر إلى الأطفال: ${k} هديةً لؤلؤية نزلت عليهم`,
-  };
+  const SAY = X?.say;
   function arrive(p, o, c) {
     sound.cue(p.track);
     renderLegend();
-    const say = p.say ?? SAY[p.track](fmt(p.kids)); // the trial says it in the catalogue's words
+    const say = p.say ?? manyT(SAY[p.track], p.kids); // the trial says it in the catalogue's words
     hint(say);
     const live = $("#srLive");
     if (live) live.textContent = say;
@@ -3844,14 +3937,14 @@ export function mountHall(
         amount: S.amount,
         kids: p.kids,
         city: c.id,
-        donor: "داعم القاعة",
+        donor: X.donor,
         at: Date.now(),
       });
       if (!FILM) {
         saveEngine(ENGINE, store);
         window.dispatchEvent(new Event(SYNC_EVENT));
       }
-      const fresh = albaniaRegions(ENGINE, regionsFor(CO));
+      const fresh = named(albaniaRegions(ENGINE, regionsFor(CO)));
       CITIES.forEach((r) =>
         Object.assign(
           r,
@@ -3861,7 +3954,7 @@ export function mountHall(
       // the engine charges the gateway fee, so read back how many it actually funded
       if (p.track === "qualify")
         p = { ...p, kids: c.qualified - S.before.qualified, gap1: gapOf(c) };
-      facts = levelFacts(s0, ENGINE, c.id);
+      facts = levelFacts(s0, ENGINE, c.id, LX.lang);
     } else if (!demo) applyTo(p, c);
     root.classList.add("watching");
     controls.setFocalOffset(0, 0, 0, true);
@@ -3946,14 +4039,9 @@ export function mountHall(
           root.dataset.stage = "impactPending";
           return;
         }
-        const label = {
-          qualify: `تأهّل ${p.kids} طفلاً في ${c.ar}`,
-          sponsor: `كفالة ${p.kids} ${p.kids > 2 ? "أطفال" : "طفل"} في ${c.ar}`,
-          kiswa: `كُسي ${p.kids} يتيماً في ${c.ar}`,
-        }[p.track];
         S.history.push({
-          title: label,
-          line: `${fmt(S.amount)} ر.س · ${TRACKS[p.track].name}`,
+          title: manyT(X.did[p.track], p.kids, c.ar),
+          line: X.did.line(LX.money(S.amount), X.tracks[p.track].name),
           amount: S.amount,
           kids: p.kids,
           track: p.track,
@@ -4029,21 +4117,30 @@ export function mountHall(
     n === null || demo.cohortSafe(n) === null ? T.fewer(num(demo.cohortMin)) : num(n);
   const trialLevel = (icon, name, place, rows, meaning) =>
     `<article class="lvl"><header><span class="ic">${icon}</span><div><small>${name}</small><b>${place}</b></div></header>${rows}<p class="mean">${meaning}</p></article>`;
+  /** the recorded pledge's share of its region's fund, as the support sheet words it */
+  const trialReach = (L) =>
+    demo.reach({
+      co: L.entry.co,
+      region: L.entry.region ?? L.city,
+      amount: L.entry.amount,
+      currency: L.entry.currency,
+    });
   /** the two figures the trial's closing panels open with: what was typed, and what it stands on */
   function trialDoneKpis(L) {
     const t = trialCo(),
       c = city(L.city),
       e = L.entry;
-    const [v, l] =
-      L.kind === "qualification"
-        ? [c.qualified, T.enrolled]
-        : L.kind === "monthly"
-          ? [t.sponsored, T.sponsored]
-          : [t.deliveries, T.deliveries];
+    // a pooled pledge is shown as its share of the fund it joined, not as the fund's children
+    const reach = L.kind === "monthly" ? null : trialReach(L);
+    const second = reach
+      ? reach.share
+        ? `<b>${reach.share}</b><span>${reach.shareLabel}</span>`
+        : `<b class="num" data-count="${reach.children}">0</b><span>${reach.childrenLabel}</span>`
+      : `<b class="num" data-count="${t.sponsored}">0</b><span>${T.sponsored}</span>`;
     return `<div class="kpis k2">
-      <div class="kpi"><b class="num" data-count="${e.amount}">0</b><span>${T.impact.perMonth(e.currency)}</span></div>
-      <div class="kpi"><b class="num" data-count="${v}">0</b><span>${l}</span></div>
-    </div>`;
+      <div class="kpi"><b class="num">${e.money}</b><span>${T.impact.perMonth}</span></div>
+      <div class="kpi">${second}</div>
+    </div>${reach ? `<p class="sub" dir="${DIR}">${reach.line}</p>` : ""}`;
   }
   function trialImpact() {
     const L = S.last,
@@ -4082,6 +4179,7 @@ export function mountHall(
           c.ar,
           trialDelta(T.enrolled, b.region.qualified, c.qualified) +
             trialKv([
+              ...(trialReach(L)?.share ? [[trialReach(L).shareLabel, trialReach(L).share]] : []),
               [T.started, trialSafe(c.started)],
               [T.held, `${num(c.sessionsHeld)} ${T.planned(num(c.sessionsPlanned))}`],
             ]),
@@ -4202,19 +4300,21 @@ export function mountHall(
     const L = S.last,
       c = city(L.city),
       b = S.before,
-      money = `<span class="num">${fmt(L.amount)}</span> ر.س`;
+      Y = X.story,
+      AL = CO.code === "AL",
+      money = cash(L.amount);
     const fee = Math.round(L.amount * 0.05),
       net = L.amount - fee,
       inv = `DEMO-INV-2026-${String(S.history.length).padStart(4, "0")}`;
     const bars = (rows, after = true) =>
-      `<div class="traits">${rows.map(([n, a, z]) => `<div class="trait"><span>${n}</span><div class="track"><i class="was" style="width:${(a / 24) * 100}%"></i>${after ? `<i class="now" data-w="${(z / 24) * 100}" style="width:${(a / 24) * 100}%"></i>` : ""}</div><em>${after ? `<span class="num">${a.toFixed(1)}</span> ← <b class="num">${z.toFixed(1)}</b>` : `<b class="num">${a.toFixed(1)}</b>`}</em></div>`).join("")}</div>`;
+      `<div class="traits">${rows.map(([n, a, z]) => `<div class="trait"><span>${n}</span><div class="track"><i class="was" style="width:${(a / 24) * 100}%"></i>${after ? `<i class="now" data-w="${(z / 24) * 100}" style="width:${(a / 24) * 100}%"></i>` : ""}</div><em>${after ? `<span class="num">${a.toFixed(1)}</span> ${ARROW} <b class="num">${z.toFixed(1)}</b>` : `<b class="num">${a.toFixed(1)}</b>`}</em></div>`).join("")}</div>`;
     const big = (label, v0, v1, suf = "", good = "down") => {
       const d = v1 - v0,
         sign = d > 0 ? "+" : "−",
         ok = good === "down" ? d < 0 : d > 0,
         int = Number.isInteger(v0) && Number.isInteger(v1),
         f = (v) => (int ? fmt(v) : v.toFixed(1));
-      return `<div class="delta-row"><div><small>${label}</small><div class="dv"><b class="num was">${f(v0)}${suf}</b><span class="arrow">←</span>${int ? `<b class="num now" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${f(v0)}${suf}</b>` : `<b class="num now">${f(v1)}${suf}</b>`}</div></div><span class="chip-d ${ok ? "ok" : ""}"><span class="num">${sign}${f(Math.abs(d))}${suf}</span></span></div>`;
+      return `<div class="delta-row"><div><small>${label}</small><div class="dv"><b class="num was">${f(v0)}${suf}</b><span class="arrow">${ARROW}</span>${int ? `<b class="num now" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${f(v0)}${suf}</b>` : `<b class="num now">${f(v1)}${suf}</b>`}</div></div><span class="chip-d ${ok ? "ok" : ""}"><span class="num">${sign}${f(Math.abs(d))}${suf}</span></span></div>`;
     };
     const kv = (rows) =>
       `<dl class="kv">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
@@ -4224,104 +4324,93 @@ export function mountHall(
       "rgba(212,175,106,.72)",
       "#f3e3b5",
     ];
-    const lvNames = ["في البداية", "نامٍ", "متمكّن", "متميّز"];
+    const LV = X.levels,
+      lvNames = [LV.start, LV.growing, LV.capable, LV.distinct];
     const lvBar = (v) =>
       `<div class="lv">${v.map((x, i) => `<i style="flex-grow:${x};background:${lvC[i]}"></i>`).join("")}</div>`;
     const legend = `<div class="legend">${lvNames.map((n, i) => `<span><i style="background:${lvC[i]}"></i>${n}</span>`).join("")}</div>`;
-    let base, done, change, details, title;
+    /* the three traits a sponsorship is expected to lift, by the demo's own names */
+    const yearTraits = [
+      [LX.traits[2][0], 14.2, 15.8],
+      [LX.traits[4][0], 16.1, 17.0],
+      [LX.traits[5][0], 15.0, 15.7],
+    ];
+    const ledger = (rows) =>
+      `<div class="sect">${Y.ledger}</div>${kv([[Y.invoice, `<span class="num">${inv}</span>`], [Y.amount, money], ...rows])}`;
+    let base, done, details, title;
     if (L.track === "qualify") {
-      const lv0 = [60, 35, 5, 0],
-        lv1 = [10, 45, 35, 10];
-      title = `تأهّل <span class="num">${L.kids}</span> طفلاً في ${c.ar}`;
-      base = `<p class="lead">قبل دعمك، هذا حال ${c.ar} كما قاسته المنصة التشغيلية.</p>
+      const lv0 = [60, 35, 5, 0];
+      title = many(X.did.qualify, L.kids, c.ar);
+      base = `<p class="lead">${SAMPLE} ${Y.qBase(c.ar)}</p>
       ${kv([
-        ["في الحاجة", `<span class="num">${c.need}</span> يتيماً`],
-        ["ينتظرون التأهيل", `<span class="num">${gapOf(b)}</span>`],
-        ["مموّلٌ تأهيلهم", `<span class="num">${Math.round((b.qualified / b.need) * 100)}%</span>`],
-        ["متوسّط السمات الستّ", `<span class="num">15.4</span> · في البداية`],
+        [Y.need, num(c.need)],
+        [Y.waitingQ, num(gapOf(b))],
+        [Y.fundedQ, `<span class="num">${fmt(Math.round((b.qualified / b.need) * 100))}%</span>`],
+        [Y.traitsAvg, Y.traitsAt(`<span class="num">15.4</span>`, LV.start)],
       ])}
-      <div class="sect">توزيع المستويات · القياس القبلي</div>${lvBar(lv0)}${legend}`;
-      done = `<p class="lead">موّل دعمك ${money} رحلة <span class="num">${L.kids}</span> طفلاً: ${L.groups ? `<span class="num">${L.groups}</span> ${L.groups === 2 ? "مجموعتان" : L.groups > 2 ? "مجموعات" : "مجموعة"}` : "مجموعةٌ قيد التكوين"}، لكلٍّ منها ستّ جلسات بين قياسين.</p>
-      <div class="timeline">${["قياسٌ قبلي", 1, 2, 3, 4, 5, 6, "قياسٌ بعدي"].map((n) => `<i>${typeof n === "number" ? `<span class="num">${n}</span>` : n}</i>`).join("")}</div>
+      <div class="sect">${Y.dist}</div>${lvBar(lv0)}${legend}`;
+      done = `<p class="lead">${Y.qDone(money, many(X.kids, L.kids), L.groups ? many(X.groups, L.groups) : Y.forming)}</p>
+      <div class="timeline">${[Y.before, 1, 2, 3, 4, 5, 6, Y.after].map((n) => `<i>${typeof n === "number" ? `<span class="num">${n}</span>` : n}</i>`).join("")}</div>
       ${kv([
-        ["المدّة", "6–8 أسابيع"],
-        ["المشرف", "مشرف تيرانا · اسمٌ مستعار"],
-        ["الحضور", `<span class="num">94%</span>`],
+        [Y.duration, Y.weeks68],
+        [Y.supervisor, Y.supervisorOf(c.ar)],
+        [Y.attendance, `<span class="num">94%</span>`],
       ])}`;
-      const lvNow = `<div class="lv" id="lvNow">${lv0.map((x, i) => `<i data-g="${lv1[i]}" style="flex-grow:${x};background:${lvC[i]}"></i>`).join("")}</div>`;
-      change = `${big(`فجوة ${c.ar}`, gapOf(b), gapOf(c))}${big(`مموّلٌ تأهيلهم في ${coName()}`, b.totals.pct, totals().pct, "%", "up")}
-      <div class="sect">المستويات · قبل ← الآن</div><div class="levels"><span>قبل</span>${lvBar(lv0)}<span>الآن</span>${lvNow}</div>${legend}
-      <p class="note">متوسّط السمات الستّ: <span class="num">15.4</span> ← <b class="num">17.0</b> · من «في البداية» إلى «نامٍ».</p>`;
-      details = `<div class="sect">السمات الستّ للفئة · قبل ← الآن</div>${bars(TRAITS)}
-      <div class="sect">القيد المالي</div>${kv([
-        ["الفاتورة", `<span class="num">${inv}</span>`],
-        ["المبلغ", money],
-        ["رسوم البوابة", `<span class="num">${fmt(fee)}</span> ر.س`],
-        ["الصافي إلى حساب الندوة", `<span class="num">${fmt(net)}</span> ر.س`],
+      details = `<div class="sect">${Y.traitsSect}</div>${bars(LX.traits)}
+      ${ledger([
+        [Y.fee, cash(fee)],
+        [Y.netWamy, cash(net)],
       ])}`;
     } else if (L.track === "sponsor") {
-      title = `كفالة <span class="num">${L.kids}</span> ${L.kids > 2 ? "أطفال" : "طفل"} في ${c.ar}`;
-      base = `<p class="lead">قبل دعمك: أطفالٌ أتمّوا التأهيل في ${c.ar} ولا كفيل لهم.</p>
+      title = many(X.did.sponsor, L.kids, c.ar);
+      base = `<p class="lead">${SAMPLE} ${Y.sBase(c.ar)}</p>
       ${kv([
-        [
-          "المكفولون",
-          `<span class="num">${b.sponsored}</span> من <span class="num">${c.need}</span>`,
-        ],
-        ["بلا كفيل", `<span class="num">${c.need - b.sponsored}</span>`],
-        ["متوسّط الصمود", `<span class="num">14.2</span>`],
+        [Y.sponsored, Y.of(num(b.sponsored), num(c.need))],
+        [Y.noSponsor, num(c.need - b.sponsored)],
+        [Y.resilience, `<span class="num">14.2</span>`],
       ])}`;
-      done = `<p class="lead">${money} = <span class="num">${L.units}</span> شهر كفالة، يصل كلّ شهرٍ للطفل بإثبات تسليم.</p>
+      done = `<p class="lead">${Y.sDone(money, many(X.preview.sMonths, L.units))}</p>
       <div class="timeline">${Array.from({ length: 12 }, (_, i) => `<i><span class="num">${i + 1}</span></i>`).join("")}</div>
       ${kv([
-        ["الصرف", "شهرياً عبر المكتب"],
-        ["الإثبات", "توقيع المستلم وتاريخه"],
+        [Y.payout, Y.payoutVal],
+        [Y.proof, Y.proofS],
       ])}`;
-      change = `${big("المكفولون", b.sponsored, c.sponsored, "", "up")}${big("بلا كفيل", c.need - b.sponsored, c.need - c.sponsored)}`;
-      details = `<div class="sect">ما يتغيّر في سنة · تقديرٌ يضبطه القياس</div>${bars([
-        ["الصمود", 14.2, 15.8],
-        ["الدراية", 16.1, 17.0],
-        ["الهمّة", 15.0, 15.7],
-      ])}
-      <div class="sect">القيد المالي</div>${kv([
-        ["الفاتورة", `<span class="num">${inv}</span>`],
-        ["المبلغ", money],
-        ["الصافي", `<span class="num">${fmt(net)}</span> ر.س`],
-      ])}`;
+      details = `<div class="sect">${Y.yearSect}</div>${bars(yearTraits)}
+      ${ledger([[Y.net, cash(net)]])}`;
     } else {
-      title = `تمّت كسوة <span class="num">${L.kids}</span> يتيماً في ${c.ar}`;
-      base = `<p class="lead">قبل دعمك: حاجة الكسوة لهذا الموسم في ${c.ar}.</p>
+      title = many(X.did.kiswa, L.kids, c.ar);
+      base = `<p class="lead">${SAMPLE} ${Y.kBase(c.ar)}</p>
       ${kv([
-        ["في الحاجة", `<span class="num">${c.need}</span> يتيماً`],
-        ["كُسوا هذا الموسم", `<span class="num">${b.clothed}</span>`],
-        ["ينتظرون", `<span class="num">${b.need - b.clothed}</span>`],
+        [Y.need, num(c.need)],
+        [Y.clothedSeason, num(b.clothed)],
+        [Y.waiting, num(b.need - b.clothed)],
       ])}`;
-      done = `<p class="lead">${money} = <span class="num">${L.kids}</span> كسوة كاملة، تُشترى وتُجهَّز وتُسلَّم بإثبات.</p>
-      <div class="timeline"><i>الشراء</i><i>التجهيز</i><i>التسليم</i><i>الإثبات</i></div>
+      done = `<p class="lead">${Y.kDone(money, many(Y.kits, L.kids))}</p>
+      <div class="timeline">${Y.steps.map((s) => `<i>${s}</i>`).join("")}</div>
       ${kv([
-        ["المدّة", "1–3 أسابيع"],
-        ["الإثبات", "عدد المستلمين وتاريخه وتوقيع المكتب"],
+        [Y.duration, Y.weeks13],
+        [Y.proof, Y.proofK],
       ])}`;
-      change = `${big("ينتظرون الكسوة", b.need - b.clothed, c.need - c.clothed)}${big("كُسوا هذا الموسم", b.clothed, c.clothed, "", "up")}`;
-      details = `<p class="note">بلا صورٍ ولا أماكن للأطفال؛ يُكتفى بالعدد والتاريخ والتوقيع.</p>
-      <div class="sect">القيد المالي</div>${kv([
-        ["الفاتورة", `<span class="num">${inv}</span>`],
-        ["المبلغ", money],
-        ["الصافي", `<span class="num">${fmt(net)}</span> ر.س`],
-      ])}`;
+      details = `<p class="note">${Y.noPhotos}</p>
+      ${ledger([[Y.net, cash(net)]])}`;
     }
     /* the same support read at four levels: country, region, group, child */
     const T0 = b.totals,
       T1 = totals(),
-      reg = CO.code === "AL" ? "المدينة" : "المنطقة";
+      reg = AL ? X.lvl.city : X.lvl.region,
+      last = L.track === "qualify" ? "student" : "person";
     const hsh = fnv(c.id + ":" + S.history.length),
-      INI = ["س", "ع", "م", "ن", "ر", "ي", "ح", "ل", "ف", "ز"];
+      INI = X.initials;
     const kid = {
-      name: `«${INI[hsh % 10]}. ${INI[(hsh >>> 4) % 10]}.»`,
+      name: X.kidName(INI[hsh % 10], INI[(hsh >>> 4) % 10]),
       age: 8 + ((hsh >>> 8) % 7),
       code: `DEMO-${CO.code}-${1000 + (hsh % 9000)}`,
     };
+    const kidLine = (k) => Y.kidLine(k.name, many(X.age, k.age));
+    const share = (part, whole) =>
+      `<b class="num">${fmt(Math.round((part / Math.max(1, whole)) * 100))}</b>`;
     const nGroups = Math.max(1, Math.ceil(L.kids / 8)),
-      gName = `مجموعة ${c.ar} · ${1 + (hsh % 4)}`;
+      gName = Y.groupName(c.ar, num(1 + (hsh % 4)));
     const level = (icon, name, place, rows, meaning) =>
       `<article class="lvl"><header><span class="ic">${icon}</span><div><small>${name}</small><b>${place}</b></div></header>${rows}<p class="mean">${meaning}</p></article>`;
     let levels;
@@ -4331,161 +4420,161 @@ export function mountHall(
       levels =
         level(
           "1",
-          "البلد",
+          X.lvl.country,
           coName(),
-          big("مموّلٌ تأهيلهم", T0.pct, T1.pct, "%", "up") + big("ينتظرون التأهيل", T0.gap, T1.gap),
-          `اقترب ${coName()} من سدّ حاجته؛ بإيقاع اليوم تُسدّ الفجوة خلال <b class="num">${Math.ceil(T1.gap / pace())}</b> شهراً.`,
+          big(Y.fundedQ, T0.pct, T1.pct, "%", "up") + big(Y.waitingQ, T0.gap, T1.gap),
+          Y.q1(coName(), many(X.months, Math.ceil(T1.gap / pace()))),
         ) +
         level(
           "2",
           reg,
           c.ar,
-          big(`ينتظرون في ${c.ar}`, gapOf(b), gapOf(c)) +
+          big(Y.waitingIn(c.ar), gapOf(b), gapOf(c)) +
             big(
-              "تأهّل من حاجتها",
+              Y.qualifiedOfNeed,
               Math.round((b.qualified / b.need) * 100),
               Math.round((c.qualified / c.need) * 100),
               "%",
               "up",
             ),
-          `دعمك وحده موّل <b class="num">${Math.round((L.kids / Math.max(1, gapOf(b))) * 100)}%</b> ممّا كانت ${c.ar} تنتظره.`,
+          Y.q2(share(L.kids, gapOf(b)), c.ar),
         ) +
         level(
           "3",
-          "المجموعة",
-          `${gName}${nGroups > 1 ? ` و<span class="num">${nGroups - 1}</span> غيرها` : ""}`,
-          big("جلساتٌ منفّذة", 0, 6, "", "up") +
-            big("متوسّط السمات الستّ", 15.4, 17.0, "", "up") +
-            `<div class="levels"><span>قبل</span>${lvBar(lv0)}<span>الآن</span><div class="lv lvNow">${lv0.map((x, i) => `<i data-g="${lv1[i]}" style="flex-grow:${x};background:${lvC[i]}"></i>`).join("")}</div></div>${legend}`,
-          `ثمانية أطفال في كلّ مجموعة؛ انتقل <b class="num">4</b> من <span class="num">8</span> إلى مستوىً أعلى.`,
+          X.lvl.group,
+          `${gName}${nGroups > 1 ? Y.andOthers(num(nGroups - 1)) : ""}`,
+          big(Y.sessions, 0, 6, "", "up") +
+            big(Y.traitsAvg, 15.4, 17.0, "", "up") +
+            `<div class="levels"><span>${Y.was}</span>${lvBar(lv0)}<span>${Y.now}</span><div class="lv lvNow">${lv0.map((x, i) => `<i data-g="${lv1[i]}" style="flex-grow:${x};background:${lvC[i]}"></i>`).join("")}</div></div>${legend}`,
+          Y.q3(`<b class="num">4</b>`, num(8)),
         ) +
         level(
           "4",
-          "الطالب",
-          `${kid.name} · <span class="num">${kid.age}</span> سنة`,
+          X.lvl.student,
+          kidLine(kid),
           bars(
-            TRAITS.map(([n, a, z], i) => [
+            LX.traits.map(([n, a, z], i) => [
               n,
               a - 0.6 + ((hsh >>> i) % 7) / 10,
               z - 0.3 + ((hsh >>> (i + 3)) % 7) / 10,
             ]),
           ),
-          `انتقل من «في البداية» إلى «نامٍ»، وأكبر ارتفاعٍ عنده في الرشد والصمود. اسمٌ مستعار ورمز <span class="num">${kid.code}</span>.`,
+          Y.q4(LV.start, LV.growing, `<span class="num">${kid.code}</span>`),
         );
     } else if (L.track === "sponsor") {
       levels =
         level(
           "1",
-          "البلد",
+          X.lvl.country,
           coName(),
-          big("مكفولون في البلد", T0.sponsored, T1.sponsored, "", "up"),
-          `كفالاتٌ شهرية جديدة تصل بإثبات تسليم كلّ شهر.`,
+          big(Y.sponsoredCountry, T0.sponsored, T1.sponsored, "", "up"),
+          Y.s1,
         ) +
         level(
           "2",
           reg,
           c.ar,
-          big(`مكفولون في ${c.ar}`, b.sponsored, c.sponsored, "", "up") +
-            big("بلا كفيل", b.need - b.sponsored, c.need - c.sponsored),
-          `تقلّص عدد من أتمّوا التأهيل ولا كفيل لهم.`,
+          big(Y.sponsoredIn(c.ar), b.sponsored, c.sponsored, "", "up") +
+            big(Y.noSponsor, b.need - b.sponsored, c.need - c.sponsored),
+          Y.s2,
         ) +
         level(
           "3",
-          "المجموعة",
+          X.lvl.group,
           gName,
-          big("مكفولون من 8", 2, Math.min(8, 2 + L.kids), "", "up"),
-          `الكفالة تُثبّت الطفل في مجموعته ومتابعته الشهرية.`,
+          big(Y.sponsoredOf8, 2, Math.min(8, 2 + L.kids), "", "up"),
+          Y.s3,
         ) +
         level(
           "4",
-          "الفرد",
-          `${kid.name} · <span class="num">${kid.age}</span> سنة`,
-          bars([
-            ["الصمود", 14.2, 15.8],
-            ["الدراية", 16.1, 17.0],
-            ["الهمّة", 15.0, 15.7],
-          ]) +
-            `<div class="kv"><div><dt>يصله شهرياً</dt><dd><span class="num">300</span> ر.س</dd></div><div><dt>المدّة</dt><dd><span class="num">${Math.min(12, L.units)}</span> شهراً</dd></div></div>`,
-          `مبلغٌ ثابت بإثبات تسليمٍ شهري، وارتفاعٌ متوقّع في سماته يضبطه القياس.`,
+          X.lvl.person,
+          kidLine(kid),
+          bars(yearTraits) +
+            `<div class="kv"><div><dt>${Y.monthly}</dt><dd>${cash(TRACKS.sponsor.unit)}</dd></div><div><dt>${Y.duration}</dt><dd>${many(X.months, Math.min(12, L.units))}</dd></div></div>`,
+          Y.s4,
         );
     } else {
       levels =
         level(
           "1",
-          "البلد",
+          X.lvl.country,
           coName(),
-          big("مكسوّون هذا الموسم", T0.clothed, T1.clothed, "", "up"),
-          `تُسدّ حاجة الموسم في ${coName()} بقدر دعمك.`,
+          big(Y.clothedNow, T0.clothed, T1.clothed, "", "up"),
+          Y.k1(coName()),
         ) +
         level(
           "2",
           reg,
           c.ar,
-          big("ينتظرون الكسوة", b.need - b.clothed, c.need - c.clothed),
-          `<b class="num">${Math.round((L.kids / Math.max(1, b.need - b.clothed)) * 100)}%</b> من حاجة ${c.ar} سُدّت بدعمك.`,
+          big(Y.waitingK, b.need - b.clothed, c.need - c.clothed),
+          Y.k2(share(L.kids, b.need - b.clothed), c.ar),
         ) +
         level(
           "3",
-          "المجموعة",
-          `<span class="num">${nGroups}</span> ${nGroups > 2 ? "مجموعات" : nGroups === 2 ? "مجموعتان" : "مجموعة"} في ${c.ar}`,
-          big("مكسوّون من 8 في المجموعة", 0, Math.min(8, L.kids), "", "up"),
-          `تُسلَّم الكسوة للمجموعة كاملةً في يومٍ واحد بإثبات.`,
+          X.lvl.group,
+          many(Y.groupsIn, nGroups, c.ar),
+          big(Y.clothedOf8, 0, Math.min(8, L.kids), "", "up"),
+          Y.k3,
         ) +
         level(
           "4",
-          "الفرد",
-          `${kid.name} · <span class="num">${kid.age}</span> سنة`,
-          `<div class="kv"><div><dt>قبل</dt><dd>بلا كسوة الموسم</dd></div><div><dt>الآن</dt><dd>كسوةٌ كاملة مسلَّمة</dd></div></div>`,
-          `ثوبٌ وحذاءٌ ومعطفٌ للشتاء، بلا صورةٍ ولا مكانٍ للطفل.`,
+          X.lvl.person,
+          kidLine(kid),
+          `<div class="kv"><div><dt>${Y.was}</dt><dd>${Y.kBefore}</dd></div><div><dt>${Y.now}</dt><dd>${Y.kNow}</dd></div></div>`,
+          Y.k4,
         );
     }
     if (L.facts) {
-      const f = L.facts,
-        LV = { start: "في البداية", growing: "نامٍ", capable: "متمكّن", distinct: "متميّز" };
+      const f = L.facts;
       const count = (arr) =>
         ["start", "growing", "capable", "distinct"].map((k) => arr.filter((x) => x === k).length);
       const [c0, c1] = [count(f.group.levels[0]), count(f.group.levels[1])];
       const moved = JSON.stringify(c0) !== JSON.stringify(c1);
       const g3 = level(
         "3",
-        "المجموعة",
+        X.lvl.group,
         f.group.name,
-        `<div class="kv"><div><dt>أطفالها</dt><dd class="num">${f.group.members}</dd></div><div><dt>الجلسات</dt><dd><span class="num">${f.group.sessions}</span> من <span class="num">6</span></dd></div><div><dt>التمويل</dt><dd>${f.group.funded ? "مموّلة كاملةً" : "تنتظر التمويل"}</dd></div><div><dt>المصدر</dt><dd>بيانات تجريبية</dd></div></div>
-         <div class="levels"><span>الآن</span>${lvBar(c0)}${moved ? `<span>بعد القياس</span>${lvBar(c1)}` : ""}</div>${legend}`,
-        moved
-          ? "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها."
-          : "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
+        `<div class="kv"><div><dt>${Y.members}</dt><dd class="num">${fmt(f.group.members)}</dd></div><div><dt>${Y.sessionsOf}</dt><dd>${Y.of(num(f.group.sessions), num(6))}</dd></div><div><dt>${Y.funding}</dt><dd>${f.group.funded ? Y.fundedFull : Y.fundedWait}</dd></div><div><dt>${Y.source}</dt><dd>${X.sample}</dd></div></div>
+         <div class="levels"><span>${Y.now}</span>${lvBar(c0)}${moved ? `<span>${Y.afterMeasure}</span>${lvBar(c1)}` : ""}</div>${legend}`,
+        moved ? Y.moved : Y.pending,
       );
+      const code = `<span class="num">${f.child.code}</span>`;
       const g4 = level(
         "4",
-        L.track === "qualify" ? "الطالب" : "الفرد",
-        `${f.child.name} · <span class="num">${f.child.age}</span> سنة`,
+        X.lvl[last],
+        kidLine(f.child),
         bars(f.child.traits.map(([n, a, z]) => [n, a, z ?? a])),
-        `مستواه الآن «${LV[f.child.from]}»${f.child.to && f.child.to !== f.child.from ? `، وصار «${LV[f.child.to]}»` : f.child.traits.some((t) => t[2] !== null) ? "، وارتفعت سماته بالدعم" : "، وتُقاس سماته بعد الجلسة السادسة"}. رمزه <span class="num">${f.child.code}</span>.`,
+        f.child.to && f.child.to !== f.child.from
+          ? Y.childMoved(LV[f.child.from], LV[f.child.to], code)
+          : f.child.traits.some((t) => t[2] !== null)
+            ? Y.childRose(LV[f.child.from], code)
+            : Y.childLater(LV[f.child.from], code),
       );
       const parts = levels.split('<article class="lvl">');
       levels = parts.slice(0, 3).join('<article class="lvl">') + g3 + g4;
     }
     S.history[S.history.length - 1].levels = levels;
+    const regIn = AL ? X.lvlIn.city : X.lvlIn.region;
     const TABS = [
-      ["الأساس", base],
-      ["ما تمّ", done],
+      [Y.tabs.base, base],
+      [Y.tabs.done, done],
       [
-        "الأثر بالمستويات",
-        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">تجريبي</span> أرقامٌ تجريبية، محسوبةٌ بعد قيد دعمك عليها.` : `<span class="src">افتراضي</span> أرقام ${coName()} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
+        Y.tabs.levels,
+        `<p class="lead">${Y.levelsLead(regIn, X.lvlIn[last])}</p><p class="note">${SAMPLE} ${L.engine ? Y.noteEngine : Y.noteSim(coName())}</p>${levels}`,
       ],
-      ["التفاصيل", details],
+      [Y.tabs.details, details],
     ];
-    story(`<div class="eyebrow">شاشة الأثر · دعمك ${money}</div><h3>${title}</h3>`, TABS);
+    story(`<div class="eyebrow">${Y.eyebrow(money)}</div><h3>${title}</h3>`, TABS);
+    /* a simulated support ends as one: the heading and the lead say nothing was charged */
     showPanel(`
-    <h2>تمّ — شكراً لك</h2>
-    <p class="sub">قُيِّد دعمك بفاتورة، وسلك طريقه إلى التشغيل. اقرأ أثره: الأساس، ثم ما تمّ، ثم أثره على البلد و${CO.code === "AL" ? "المدينة" : "المنطقة"} والمجموعة و${L.track === "qualify" ? "الطالب" : "الفرد"}، ثم التفاصيل.</p>
+    <h2>${X.done.title}</h2>
+    <p class="sub">${SAMPLE} ${X.done.sub(regIn, X.lvlIn[last])}</p>
     <div class="kpis">
-      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
-      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً"}</span></div>
-      <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>رقم الفاتورة</span></div>
+      <div class="kpi"><b class="num">${LX.money(L.amount)}</b><span>${X.done.support}</span></div>
+      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${X.reached[L.track](L.kids)}</span></div>
+      <div class="kpi"><b class="num">${inv.slice(-4)}</b><span>${X.done.invoice}</span></div>
     </div>
-    <div class="row"><button class="cta" type="button" id="toBig">خلاصة أثرك</button><button class="ghost" type="button" id="again">دعمٌ آخر</button></div>`);
+    <div class="row"><button class="cta" type="button" id="toBig">${X.done.summary}</button><button class="ghost" type="button" id="again">${X.done.again}</button></div>`);
     onPanel(wireDone);
   }
   /** the impact told in tabs that advance by themselves until the visitor takes over */
@@ -4651,29 +4740,29 @@ export function mountHall(
       L = S.last,
       months = Math.ceil(t.gap / PACE),
       months0 = Math.ceil(b.gap / PACE);
-    const cmp = (l0, v0, l1, v1, suf = "") =>
-      `<div class="compare"><div><small>${l0}</small><b class="num">${fmt(v0)}${suf}</b></div><span>←</span><div class="after"><small>${l1}</small><b class="num" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div>`;
-    const kidsWord =
-      L.track === "sponsor" ? "مكفولاً" : L.track === "kiswa" ? "مكسوّاً" : "متأهّلاً";
-    const place = city(L.city)?.ar;
-    /* the donor's close: what THEIR support moved, a warm line, and the way to «أثري» */
+    const cmp = (label, v0, v1, suf = "") =>
+      `<div class="compare"><div><small>${label} · ${X.story.was}</small><b class="num">${fmt(v0)}${suf}</b></div><span>${ARROW}</span><div class="after"><small>${X.story.now}</small><b class="num" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div>`;
+    const place = city(L.city)?.ar,
+      B = X.big;
+    /* the close of a simulated support: what it moved in the sample figures, named as a
+       simulation in the heading, the lead and the note; never a result */
     showPanel(`
-    <h2>أثر دعمك</h2>
-    <p class="sub">دعمك وصل ${place ? `${place} في ` : ""}${coName()}. هذا ما تغيّر به، قبله وبعده.</p>
+    <h2>${B.title}</h2>
+    <p class="sub">${SAMPLE} ${place ? B.sub(place, coName()) : B.subCountry(coName())}</p>
     <div class="kpis k2">
-      <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
-      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${kidsWord}</span></div>
+      <div class="kpi"><b class="num">${LX.money(L.amount)}</b><span>${X.done.support}</span></div>
+      <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${X.reached[L.track](L.kids)}</span></div>
     </div>
-    <div class="sect">ما حرّكه دعمك في ${coName()}</div>
-    ${cmp("نسبة التمويل قبل", b.pct, "الآن", t.pct, "%")}
-    ${cmp("ينتظرون التأهيل قبل", b.gap, "الآن", t.gap)}
-    ${L.track === "kiswa" ? cmp("مكسوّون قبل", b.clothed, "الآن", t.clothed) : ""}
-    ${L.track === "sponsor" ? cmp("مكفولون قبل", b.sponsored, "الآن", t.sponsored) : ""}
-    ${months < months0 ? `<p class="sub">وبدعمك اقتربت ${coName()} من سدّ حاجتها: <b class="num">${months}</b> شهراً بدل <span class="num">${months0}</span> بإيقاع اليوم.</p>` : ""}
-    <p class="warm">وراء كلّ رقمٍ هنا طفلٌ اقترب ممّا ينتظره، بفضل الله ثم بعطائك. جزاك الله خيراً.</p>
-    ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${coName()} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
-    <div class="row"><button class="ghost" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>
-    <div class="row pin"><button class="cta" type="button" id="toMine">إلى أثري</button></div>`);
+    <div class="sect">${B.sect(coName())}</div>
+    ${cmp(B.funded, b.pct, t.pct, "%")}
+    ${cmp(B.waiting, b.gap, t.gap)}
+    ${L.track === "kiswa" ? cmp(B.clothed, b.clothed, t.clothed) : ""}
+    ${L.track === "sponsor" ? cmp(B.sponsored, b.sponsored, t.sponsored) : ""}
+    ${months < months0 ? `<p class="sub">${B.closer(coName(), many(X.months, months), num(months0))}</p>` : ""}
+    <p class="warm">${B.warm}</p>
+    <p class="note">${SAMPLE} ${B.note}</p>
+    <div class="row"><button class="ghost" type="button" id="again2">${X.done.again}</button><button class="ghost" type="button" id="otherCo2">${B.another}</button><button class="ghost" type="button" id="hallBack">${B.hall}</button></div>
+    <div class="row pin"><a class="cta" href="/orphans">${B.real}</a></div>`);
   }
   function resetCountry() {
     country.position.set(0, 0, 0);
@@ -4907,7 +4996,7 @@ export function mountHall(
     const H = S.history;
     if (!H.length) {
       showPanel(
-        `<h2>أثرك</h2><p class="sub">لم تدعم بعد. المس الكرة واختر دولةً وادعمها، فيُسجَّل أثرك هنا بمستوياته الأربعة.</p><div class="row"><button class="cta" type="button" id="goWorld">اختر دولة</button><button class="ghost" type="button" id="closeP">إغلاق</button></div>`,
+        `<h2>${X.log.emptyTitle}</h2><p class="sub">${X.log.empty}</p><div class="row"><button class="cta" type="button" id="goWorld">${X.log.pick}</button><button class="ghost" type="button" id="closeP">${X.log.close}</button></div>`,
       );
       onPanel(() => {
         $("#goWorld")?.addEventListener("click", enterWorld);
@@ -4917,11 +5006,11 @@ export function mountHall(
     }
     const r = H[sel];
     showPanel(`
-    <h2>سجلّ أثرك</h2>
-    <p class="sub">كلّ دعمٍ قدّمته، وأثره على البلد والمنطقة والمجموعة والطفل.</p>
-    <div class="co-list">${H.map((x, i) => `<button type="button" data-h="${i}" aria-pressed="${i === sel}">${x.co} · ${TRACKS[x.track].name} · <span class="num">${fmt(x.amount)}</span></button>`).join("")}</div>
-    <article class="co-card"><h3 class="log-h">${r.title}</h3><p class="co-line">${r.line} · ${r.co}</p>${r.levels || ""}</article>
-    <div class="row"><button class="ghost" type="button" id="closeP">إغلاق</button></div>`);
+    <h2>${X.log.title}</h2>
+    <p class="sub">${SAMPLE} ${X.log.sub}</p>
+    <div class="co-list">${H.map((x, i) => `<button type="button" data-h="${i}" aria-pressed="${i === sel}">${X.log.item(x.co, X.tracks[x.track].name, cash(x.amount))}</button>`).join("")}</div>
+    <article class="co-card"><h3 class="log-h">${r.title}</h3><p class="co-line">${X.log.line(r.line, r.co)}</p>${r.levels || ""}</article>
+    <div class="row"><button class="ghost" type="button" id="closeP">${X.log.close}</button></div>`);
     onPanel(() => {
       panel
         .querySelectorAll("[data-h]")
@@ -4960,38 +5049,15 @@ export function mountHall(
   }
   function openTracks() {
     if (demo) return trialTracks();
-    const rows = [
-      [
-        "البلد",
-        "نسبة التمويل والمنتظرون ومدّة سدّ الفجوة",
-        "عدد المكفولين في البلد",
-        "المكسوّون هذا الموسم",
-      ],
-      [
-        "المنطقة",
-        "منتظروها وما تأهّل من حاجتها",
-        "المكفولون ومن بقي بلا كفيل",
-        "ما سُدّ من حاجة الموسم",
-      ],
-      [
-        "المجموعة",
-        "6 جلسات، ومتوسّط السمات، وانتقال المستويات",
-        "المكفولون من أطفالها الثمانية",
-        "كسوة المجموعة كاملةً بإثبات",
-      ],
-      [
-        "الطفل",
-        "سماته الستّ قبل وبعد، ومستواه",
-        "300 ر.س شهرياً وصمودُه ودرايتُه",
-        "كسوةٌ كاملة مسلَّمة",
-      ],
-    ];
+    const K = X.kinds,
+      rows = ["country", "region", "group", "child"].map((k) => K.rows[k]),
+      kinds = Object.keys(TRACKS);
     showPanel(`
-    <h2>أنواع الدعم الثلاثة</h2>
-    <p class="sub">كلّ نوعٍ يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى.</p>
-    <div class="tracks" style="margin-top:14px"><div class="tcell"><b>تأهيل</b><small>رحلة طفل · <span class="num">600</span> ر.س</small></div><div class="tcell"><b>كفالة</b><small>شهر · <span class="num">300</span> ر.س</small></div><div class="tcell"><b>كسوة</b><small>يتيم · <span class="num">300</span> ر.س</small></div></div>
-    ${rows.map(([lv, a, b2, c]) => `<article class="lvl"><header><span class="ic">${["1", "2", "3", "4"][rows.findIndex((x) => x[0] === lv)]}</span><div><small>المستوى</small><b>${lv}</b></div></header><dl class="kv kv3"><div><dt>تأهيل</dt><dd>${a}</dd></div><div><dt>كفالة</dt><dd>${b2}</dd></div><div><dt>كسوة</dt><dd>${c}</dd></div></dl></article>`).join("")}
-    <div class="row"><button class="cta" type="button" id="goWorld">اختر دولةً وادعم</button><button class="ghost" type="button" id="closeP">إغلاق</button></div>`);
+    <h2>${K.title}</h2>
+    <p class="sub">${SAMPLE} ${K.sub}</p>
+    <div class="tracks" style="margin-top:14px">${kinds.map((k) => `<div class="tcell"><b>${X.tracks[k].name}</b><small>${X.trackLine(X.tracks[k].per, cash(TRACKS[k].unit))}</small></div>`).join("")}</div>
+    ${rows.map((r, i) => `<article class="lvl"><header><span class="ic">${i + 1}</span><div><small>${K.level}</small><b>${r.name}</b></div></header><dl class="kv kv3">${kinds.map((k) => `<div><dt>${X.tracks[k].name}</dt><dd>${r[k]}</dd></div>`).join("")}</dl></article>`).join("")}
+    <div class="row"><button class="cta" type="button" id="goWorld">${K.go}</button><button class="ghost" type="button" id="closeP">${X.log.close}</button></div>`);
     onPanel(() => {
       $("#goWorld")?.addEventListener("click", enterWorld);
       $("#closeP")?.addEventListener("click", hidePanel);
@@ -5002,14 +5068,62 @@ export function mountHall(
   function resize() {
     renderer.setSize(innerWidth, innerHeight, false);
     composer.setSize(innerWidth, innerHeight);
+    // the mirror floor's picture follows the window: half its size, as when it was made
+    mirror
+      ?.getRenderTarget()
+      .setSize(
+        Math.max(1, Math.round(innerWidth * 0.5)),
+        Math.max(1, Math.round(innerHeight * 0.5)),
+      );
+    gateDrawn = -1;
     camera.aspect = innerWidth / innerHeight;
     camera.fov = PHONE() ? 55 : 42;
     camera.updateProjectionMatrix();
     placeImpact();
+    sizeEmblem();
   }
+  /* behind the gate the hall is a dim, still backdrop: once it has settled it holds its pose and
+     is redrawn once a second (late textures, a resize), not every frame. `enterHall` lifts this. */
+  const GATE_SETTLE = 2.5,
+    GATE_EVERY = 1;
+  let gateShut = true,
+    gateDrawn = -1;
   on(window, "resize", resize);
   resize();
   const clock = new THREE.Clock();
+  /* a hidden tab draws nothing: the loop stops, and starts again from now when the tab returns */
+  on(document, "visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    } else if (!raf && !disposed && !lost) {
+      clock.getDelta();
+      raf = requestAnimationFrame(frame);
+    }
+  });
+  /* a lost WebGL context (the GPU process restarted, the device ran short of memory) would leave
+     a frozen picture: the loop stops and the hall says so, with a way to reload it and a way on
+     to the same figures on the pages. The message stays if the browser hands a context back: the
+     scene's baked light and render targets went with the old one, so only a reload is whole. */
+  let lost = false;
+  const lostEl = document.createElement("div");
+  lostEl.className = "gl-lost";
+  lostEl.setAttribute("role", "alert");
+  lostEl.hidden = true;
+  root.appendChild(lostEl);
+  on(canvas, "webglcontextlost", (e) => {
+    if (disposed) return;
+    e.preventDefault();
+    lost = true;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    const exit = $(".exits .exit");
+    lostEl.innerHTML = `<div><h2>${HC.lost.title}</h2><p>${HC.lost.body}</p><div class="row"><button class="cta" type="button">${HC.lost.reload}</button>${exit ? `<a class="ghost" href="${exit.getAttribute("href")}">${HC.lost.mine}</a>` : ""}</div></div>`;
+    lostEl.querySelector("button").addEventListener("click", () => location.reload());
+    lostEl.hidden = false;
+    root.classList.add("gl-is-lost");
+    lostEl.querySelector("button").focus();
+  });
   on(canvas, "pointerdown", () => (idle = 0));
   const perf = { n: 0, t: 0, stepped: false, tier: LOW ? HC.perf.low : HC.perf.high };
   /* ?perf — a small meter for real-device testing: frames per second, draw calls, quality tier */
@@ -5018,7 +5132,7 @@ export function mountHall(
     : null;
   const meterStat = { frames: 0, since: performance.now() };
   const counted = !!meter || !!window.__HALL_TEST;
-  const lastInfo = { calls: 0, triangles: 0 };
+  const lastInfo = { calls: 0, triangles: 0, frames: 0 };
   if (counted) renderer.info.autoReset = false; // count every pass of the frame, not only the last
   if (meter) {
     meter.className = "perf";
@@ -5069,10 +5183,14 @@ export function mountHall(
     }
     return ordered;
   }
+  const vLbl = new THREE.Vector3();
   function frame() {
-    if (disposed) return;
+    if (disposed || lost) return;
     const dt = Math.min(window.__DTCAP || 0.05, clock.getDelta()),
-      time = clock.elapsedTime;
+      real = clock.elapsedTime,
+      // the settled backdrop behind the gate holds one moment: nothing in it drifts or jumps
+      backdrop = gateShut && S.stage === "gate" && real > GATE_SETTLE,
+      time = backdrop ? GATE_SETTLE : real;
     if (!window.__HALL_TEST) adapt(dt);
     idle += dt;
     if (
@@ -5097,7 +5215,7 @@ export function mountHall(
       s.sheen.material.uniforms.uHover.value +=
         ((s === scrMap ? hoverScr : 0) - s.sheen.material.uniforms.uHover.value) * 0.1;
     });
-    if (!RM) {
+    if (!RM && !backdrop) {
       crown.rotation.y -= dt * 0.04;
       lamps.forEach((l) => (l.rotation.y += dt * 0.3));
     }
@@ -5204,7 +5322,7 @@ export function mountHall(
     landDots.material.uniforms.uTime.value = time;
     landDots.material.uniforms.uScale.value = globe.scale.x;
     if (globe.visible) {
-      if (!RM)
+      if (!RM && !backdrop)
         globe.rotation.y +=
           dt * (S.stage === "hall" || S.stage === "gate" ? 0.12 : S.stage === "world" ? 0 : 0.04);
       const cu = globe.userData.selCurve;
@@ -5215,11 +5333,20 @@ export function mountHall(
         ),
       );
     }
-    if (counted) renderer.info.reset();
-    composer.render(dt);
-    if (counted) {
-      lastInfo.calls = renderer.info.render.calls;
-      lastInfo.triangles = renderer.info.render.triangles;
+    // the emblem turns slowly: thirty pictures a second carry it, at half the read-back cost
+    if (emblemAt.on && !RM && S.stage === "gate" && real - emblemAt.drawn > 1 / 40) {
+      emblemAt.drawn = real;
+      emblem.render(real, emblemAt);
+    }
+    if (!backdrop || gateDrawn < 0 || real - gateDrawn >= GATE_EVERY) {
+      gateDrawn = real;
+      if (counted) renderer.info.reset();
+      composer.render(dt);
+      if (counted) {
+        lastInfo.calls = renderer.info.render.calls;
+        lastInfo.triangles = renderer.info.render.triangles;
+        lastInfo.frames++;
+      }
     }
     if (meter) tickMeter();
     placed.length = 0;
@@ -5236,7 +5363,7 @@ export function mountHall(
           l.on = false;
           continue;
         }
-        const p = l.getPos().clone().project(camera);
+        const p = vLbl.copy(l.getPos()).project(camera);
         if (p.z > 1) {
           l.el.style.opacity = 0;
           l.on = false;
@@ -5317,6 +5444,8 @@ export function mountHall(
     /** for automated checks: open the impact record, and move the time bar */
     log: () => openImpactLog(),
     time: (m) => setTime(m),
+    /** for automated checks: stand the camera somewhere and look at a point */
+    look: (...at) => controls.setLookAt(...at, false),
     /** for automated checks: pick a country on the globe and enter it */
     visit: (code) => {
       selectCountry(code);
@@ -5378,10 +5507,12 @@ export function mountHall(
     renderer.renderLists.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
+    emblem?.dispose();
     /* what the scene wrote into the page's markup */
     labels.forEach((l) => l.el.remove());
     labels.length = 0;
     meter?.remove();
+    lostEl.remove();
     if (impact.parentNode !== root) root.appendChild(impact); // the page owns it
     for (const el of [panel, impact, legend]) if (el) el.replaceChildren();
     delete window.__hall;

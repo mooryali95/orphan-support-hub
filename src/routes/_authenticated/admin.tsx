@@ -295,7 +295,7 @@ function AdminPage() {
     ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
     ["sponsorships", "الكفالات", null],
     ["pledges", "التعهّدات", null],
-    ["rec_orgs", "جهات الرعاية", null],
+    ["rec_orgs", "الجهات الميدانية", null],
     ["rec_offices", "سجلّ المكاتب", null],
     ["rec_supervisors", "سجلّ المشرفين", null],
     ["rec_documents", "المستندات", null],

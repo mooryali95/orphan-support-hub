@@ -38,6 +38,8 @@ const CRESCENT =
 
 /** the same shapes for the hall's gate, where the mark is the door (src/routes/hall.lazy.tsx) */
 export const MARK2_VIEWBOX = "-102 -102 220 204";
+/** the disc with its two open slots, for the hall's 3D emblem (`components/hall/mark3d.js`) */
+export const MARK2_DISC = DISC;
 export const MARK2_RING = RING;
 export const MARK2_CRESCENT = CRESCENT;
 /**

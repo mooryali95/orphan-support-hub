@@ -45,12 +45,12 @@ export const MUTABLE_KINDS: Array<{ kind: NotificationKind; label: string; hint:
   {
     kind: "orphan_approved",
     label: "اعتماد الملفات",
-    hint: "لجهات الرعاية: قرار الإدارة في ملفّ رفعتَه",
+    hint: "للجهات الميدانية: قرار الإدارة في ملفّ رفعتَه",
   },
   {
     kind: "orphan_rejected",
     label: "إعادة الملفات للتصحيح",
-    hint: "لجهات الرعاية: ملفّ يحتاج تعديلاً",
+    hint: "للجهات الميدانية: ملفّ يحتاج تعديلاً",
   },
 ];
 

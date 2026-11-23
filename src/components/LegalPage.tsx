@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { brandFor } from "@/config/brand";
 import { formatDate } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
@@ -6,12 +7,16 @@ const COPY = defineCopy("components/LegalPage", {
   ar: {
     updated: "آخر تحديث",
     binding: "",
+    operator: (owner: string, partnerWith: string, partner: string) =>
+      `تشغّل هذه المنصّةَ ${owner}، ${partnerWith} ${partner}.`,
   },
   en: {
     updated: "Last updated",
     // ما يُعرض بغير العربية — الإنجليزية الآن، وغيرها حين يُترجم النصّ نفسه.
     binding:
       "This version is provided for convenience. If it differs from the Arabic, the Arabic version prevails.",
+    operator: (owner: string, _partnerWith: string, partner: string) =>
+      `This platform is operated by the ${owner}, in partnership with ${partner}.`,
   },
 });
 
@@ -38,11 +43,17 @@ export function LegalPage({
 }) {
   const locale = useLocale();
   const c = useCopy(COPY);
+  // who operates the platform, by the names in brand.json; no legal particulars are stated here
+  const brand = brandFor(locale);
+  const partner = locale === "ar" ? brand.partner.name : brand.partner.nameLatin;
   return (
     <main id="main" tabIndex={-1} className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-extrabold">{title}</h1>
       <p className="text-muted-foreground mt-2 text-xs">
         {c.updated}: {formatDate(updated, locale)}
+      </p>
+      <p className="mt-4 text-sm leading-7 font-medium" data-brand-owner>
+        {c.operator(brand.ownerName, brand.partner.with, partner)}
       </p>
       {locale !== "ar" && binding && (
         <p className="mt-4 rounded-xl bg-secondary/60 p-3 text-xs leading-6">{c.binding}</p>

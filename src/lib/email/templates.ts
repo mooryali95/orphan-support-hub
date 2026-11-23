@@ -89,7 +89,8 @@ function shell(heading: string, bodyHtml: string, cta?: { label: string; url: st
         : ""
     }
     <tr><td style="padding:20px 24px 24px;font-size:11px;line-height:20px;color:${MUTED};border-top:1px solid ${BORDER};margin-top:16px;">
-      وصلتك هذه الرسالة لأن لديك حساباً في ${BRAND.name}.
+      وصلتك هذه الرسالة لأن لديك حساباً في ${BRAND.name}.<br>
+      ${BRAND.ownerLine}
     </td></tr>
   </table>
 </td></tr></table>
@@ -102,6 +103,8 @@ function plain(heading: string, lines: string[], cta?: { label: string; url: str
     "",
     ...lines,
     ...(cta ? ["", `${cta.label}: ${cta.url}`] : []),
+    "",
+    BRAND.ownerLine,
   ].join("\n");
 }
 
@@ -165,8 +168,8 @@ function kindNote(kind: string): string {
     payment_failed:
       "لا إجراء مطلوب منك الآن؛ يُعيد مزوّد الدفع المحاولة تلقائياً. سنُعلمك إن تعذّر ذلك.",
     sponsorship_started: "ستصلك تقارير الأثر الدورية عن التعليم والصحة والمعيشة.",
-    report_published: "التقرير معتمد من الإدارة بعد مراجعة ما رفعته جهة الرعاية.",
-    welcome: "كل ملف معروض موثَّق من جهة رعاية معتمدة قبل نشره.",
+    report_published: "التقرير معتمد من الإدارة بعد مراجعة ما رفعته الجهة الميدانية.",
+    welcome: "كل ملف معروض توثّقه جهة ميدانية تعمل تحت مظلّة الندوة، وتعتمده الإدارة قبل نشره.",
   };
   const line = note[kind];
   return line ? `<p style="margin:0;color:${MUTED};font-size:13px;">${escapeHtml(line)}</p>` : "";

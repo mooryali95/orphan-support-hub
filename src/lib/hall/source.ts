@@ -17,6 +17,8 @@ export type HallSearch = {
   try?: 1;
   /** the donor's own hall: entered from their dashboard, it shows their real sponsorships */
   me?: 1;
+  /** the concept hall on the real directory's counts: only by this explicit link */
+  live?: 1;
   /** a trial child whose simulated gift is replayed on arrival */
   child?: string;
   cadence?: "monthly" | "one_time";
@@ -44,6 +46,7 @@ export function parseHallSearch(raw: Record<string, unknown>): HallSearch {
   return {
     ...(raw["try"] === 1 || raw["try"] === "1" ? { try: 1 as const } : {}),
     ...(raw["me"] === 1 || raw["me"] === "1" ? { me: 1 as const } : {}),
+    ...(raw["live"] === 1 || raw["live"] === "1" ? { live: 1 as const } : {}),
     ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
     ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
       ? { cadence: raw["cadence"] }
@@ -71,11 +74,14 @@ export type HallSource = {
 /**
  * the one demo/real switch of the hall. The hall follows its source, never the platform-wide
  * mode: `?try=1` (the trial pages' own links) opens the trial hall; `?me=1`, the dashboard's own
- * link, opens the donor's hall on their real sponsorships; anything else is the live hall on the
- * real directory. Everything the page does differently between the three follows from `mode`.
+ * link, opens the donor's hall on their real sponsorships; `?live=1` opens the concept hall on
+ * the real directory's counts; a bare link is the trial. Everything the page does differently between the three follows from `mode`.
  */
 export function hallSource(search: HallSearch): HallSource {
-  const mode = search.try === 1 ? "trial" : search.me === 1 ? "donor" : "live";
+  // a bare /hall is the trial: labelled, and the same catalogue the trial pages read. The concept
+  // hall, whose figures are sample beside one real count, opens only when a link asks for it.
+  const mode =
+    search.try === 1 ? "trial" : search.me === 1 ? "donor" : search.live === 1 ? "live" : "trial";
   const mine = mode === "trial" ? "/try/impact" : "/dashboard";
   const from = hallReturn(search.from);
   return {
@@ -87,12 +93,11 @@ export function hallSource(search: HallSearch): HallSource {
 }
 
 /**
- * the language the hall speaks. The trial hall and the donor's hall follow the interface
- * language; the live concept hall's panels are written in Arabic only so far, so that whole hall
- * stays Arabic (with `lang` and `dir` to match) instead of mixing two languages on one screen.
+ * the language the hall speaks: the interface language, in all three halls. The trial reads its
+ * copy from `./trial`, the donor's hall from `./copy`, and the live hall from `./live`; `lang`
+ * and `dir` follow the same locale, so no hall mixes two languages on one screen.
  */
-export const hallLanguage = (mode: HallSource["mode"], locale: string): string =>
-  mode === "live" ? "ar" : locale;
+export const hallLanguage = (_mode: HallSource["mode"], locale: string): string => locale;
 
 /**
  * what the live hall is given of the directory: the same country rows the map and the directory
@@ -100,6 +105,23 @@ export const hallLanguage = (mode: HallSource["mode"], locale: string): string =
  * directory is unavailable. No other read feeds the live hall's counts.
  */
 export const hallLiveRows = (geo: Geo): GeoCountry[] => (geo.available ? geo.countries : []);
+
+/**
+ * what the live hall writes of one directory row, and nothing else of it: the country's count of
+ * children and how many of them wait for a sponsor, exactly as the map's country sheet derives
+ * them (`total`, and `total − sponsored`), or no number at all when the cohort is small or the
+ * count is withheld. The only real figures in the live hall pass through here.
+ */
+export function hallDirectory(row: GeoCountry) {
+  const counted = !row.small && row.total != null && row.total > 0;
+  return {
+    /** null: the cohort is hidden, and the hall says so instead of a number */
+    total: counted ? row.total : null,
+    waiting: counted && row.sponsored != null ? Math.max(0, row.total! - row.sponsored) : null,
+    /** the directory itself, filtered to this country by the value it filters on */
+    href: `/orphans?country=${encodeURIComponent(row.value)}`,
+  };
+}
 
 type Place = { pathname: string; search: Record<string, unknown> };
 

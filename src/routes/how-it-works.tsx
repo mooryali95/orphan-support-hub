@@ -26,15 +26,15 @@ const COPY = defineCopy("routes/how-it-works", {
   ar: {
     title: "كيف تعمل الكفالة",
     h1: (brand: string) => `كيف تعمل الكفالة في «${brand}»`,
-    lead: "المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
+    lead: "منصّة الندوة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
     actors: [
       [
-        "جهة الرعاية",
-        "جمعية أو دار مرخّصة تسجّل في المنصة، تُعتمد من الإدارة، ثم ترفع ملفات الأيتام مع المستندات وتحدّث بياناتهم دورياً.",
+        "الجهة الميدانية",
+        "مكتبٌ للندوة أو شريكٌ ميداني لها يسجّل في المنصة، فتراجعه الإدارة وتعتمده، ثم يرفع ملفات الأيتام مع المستندات ويحدّث بياناتهم دورياً.",
       ],
       [
         "ولي الأمر",
-        "يزوّد جهة الرعاية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
+        "يزوّد الجهة الميدانية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
       ],
       [
         "الكافل",
@@ -49,8 +49,8 @@ const COPY = defineCopy("routes/how-it-works", {
     stages: [
       [
         "1",
-        "تسجيل جهة الرعاية واعتمادها",
-        "تحقق من الترخيص وبيانات التواصل قبل السماح برفع الملفات.",
+        "تسجيل الجهة الميدانية واعتمادها",
+        "تراجع الإدارة بيانات تسجيل الجهة ووثائقها قبل السماح برفع الملفات.",
       ],
       [
         "2",
@@ -73,15 +73,15 @@ const COPY = defineCopy("routes/how-it-works", {
   en: {
     title: "How sponsorship works",
     h1: (brand: string) => `How sponsorship works on ${brand}`,
-    lead: "The platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
+    lead: "WAMY's platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
     actors: [
       [
-        "Care organization",
-        "A licensed charity or care home registers on the platform, is approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
+        "Field organization",
+        "A WAMY office or field partner registers on the platform, is reviewed and approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
       ],
       [
         "Guardian",
-        "Provides the care organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
+        "Provides the field organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
       ],
       [
         "Sponsor",
@@ -96,8 +96,8 @@ const COPY = defineCopy("routes/how-it-works", {
     stages: [
       [
         "1",
-        "Registering and approving the care organization",
-        "License and contact details are checked before the organization may upload files.",
+        "Registering and approving the field organization",
+        "The administration reviews the organization's registration details and documents before it may upload files.",
       ],
       [
         "2",
@@ -117,7 +117,7 @@ const COPY = defineCopy("routes/how-it-works", {
       [
         "5",
         "Follow-up and reports",
-        "Education and health reports as the care organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
+        "Education and health reports as the field organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
       ],
       [
         "6",

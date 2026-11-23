@@ -275,7 +275,7 @@ const ENTITIES: { [K in RecordKind]: Entity<RowOf<K>> } = {
     actions: (r, run) => <PledgeActions record={r} run={run} />,
   },
   orgs: {
-    title: "جهات الرعاية",
+    title: "الجهات الميدانية",
     lead: "الجهات بحالاتها وعدد أطفالها. الاعتماد والإيقاف من «طابور الاعتماد».",
     searchHint: "الاسم أو المدينة أو البريد أو رقم الترخيص",
     statuses: ORG_STATUS,

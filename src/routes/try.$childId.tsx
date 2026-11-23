@@ -81,7 +81,7 @@ const COPY = defineCopy("routes/try.childId", {
     raisesTo: (from: number, to: number) => `بعطائك ترتفع التغطية من ${from}% إلى ${to}%.`,
     coversTitle: "ما تغطّيه الكفالة",
     coversText: (covers: string) =>
-      `${covers}، عبر جهة رعايةٍ معتمدة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.`,
+      `${covers}، عبر جهةٍ ميدانية تعمل تحت مظلّة الندوة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.`,
     gateNote:
       "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملف افتراضي بالكامل.",
     sponsor: (name: string) => `اكفل ${name}`,
@@ -116,7 +116,7 @@ const COPY = defineCopy("routes/try.childId", {
     raisesTo: (from: number, to: number) => `Your gift raises coverage from ${from}% to ${to}%.`,
     coversTitle: "What the sponsorship covers",
     coversText: (covers: string) =>
-      `${covers}, through an approved care organization that documents each monthly delivery and sends you an impact report.`,
+      `${covers}, through a field organization working under WAMY's umbrella that documents each monthly delivery and sends you an impact report.`,
     gateNote:
       "On the live platform, the child's photo and exact location stay behind a protective access gate. This file is entirely fictional.",
     sponsor: (name: string) => `Sponsor ${name}`,

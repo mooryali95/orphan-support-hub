@@ -16,7 +16,7 @@ import { ThemeSwitch } from "@/components/kit/ThemeSwitch";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 // three doors for a donor: whom, how to give, how it works. Home is the lockup; the trait model
-// and the care organizations live in the footer (SiteFooter).
+// and the field organizations live in the footer (SiteFooter).
 const ROUTES = ["/orphans", "/support", "/how-it-works", "/ask"] as const;
 const COPY = defineCopy("components/SiteHeader", {
   ar: {
@@ -166,6 +166,13 @@ export function SiteHeader() {
               )}
             />
           )}
+          {/* whose platform this is: in the drawer, where it does not crowd the 360px bar */}
+          <p
+            className="border-t border-border/70 px-3 pt-3 pb-1 text-xs text-muted-foreground"
+            data-brand-owner
+          >
+            {brand.ownerLine}
+          </p>
         </nav>
       </div>
       <div className="brand-rule h-[3px] w-full" aria-hidden="true" />

@@ -7,13 +7,13 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 const COPY = defineCopy("components/SiteFooter", {
   ar: {
     about:
-      "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
+      "منصة تربط الكافل باليتيم عبر ملفات توثّقها مكاتب الندوة وشركاؤها الميدانيون، مع متابعة شهرية وتقارير أثر شفافة.",
     platform: "المنصة",
     orphans: "دليل الأيتام",
     support: "ادعم",
     traits: "نموذج السمات",
     how: "كيف تعمل الكفالة",
-    orgs: "جهات الرعاية",
+    orgs: "المكاتب والشركاء الميدانيون",
     account: "الحساب",
     signIn: "تسجيل الدخول",
     dashboard: "لوحتي",
@@ -27,13 +27,13 @@ const COPY = defineCopy("components/SiteFooter", {
   },
   en: {
     about:
-      "A platform that connects sponsors with orphans through files verified by approved care organizations, with monthly follow-up and transparent impact reports.",
+      "A platform that connects sponsors with orphans through files documented by WAMY's offices and field partners, with monthly follow-up and transparent impact reports.",
     platform: "Platform",
     orphans: "Children",
     support: "Support",
     traits: "Trait model",
     how: "How sponsorship works",
-    orgs: "Care organizations",
+    orgs: "Offices and field partners",
     account: "Account",
     signIn: "Sign in",
     dashboard: "My dashboard",
@@ -157,6 +157,9 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
+        <p className="mb-1.5 font-medium text-foreground/80" data-brand-owner>
+          {brand.ownerLine}
+        </p>
         © {new Date().getFullYear()} {brand.name} — {c.rights}
       </div>
     </footer>

@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { BRAND as IDENTITY } from "@/config/brand";
 import { COLORS } from "@/config/brand-colors";
 import {
   Body,
@@ -97,7 +98,7 @@ export function BrandEmail({
                 </tr>
               </tbody>
             </table>
-            <Text style={headerTag}>منظمة الرعاية الدولية لليتيم</Text>
+            <Text style={headerTag}>{IDENTITY.ownerLine}</Text>
           </Section>
 
           <Section style={card}>
@@ -119,6 +120,9 @@ export function BrandEmail({
                 {siteName}
               </Link>
               . لا تُشارك روابطها مع أحد.
+            </Text>
+            <Text style={footerFine}>
+              {IDENTITY.ownerLine} — {IDENTITY.partner.with} {IDENTITY.partner.name}.
             </Text>
             <Text style={footerFine}>كفالة اليتيم استثمار في عمرانٍ قادم، لا إحسان عابر.</Text>
             {unsubscribeUrl && (

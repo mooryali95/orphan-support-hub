@@ -12,19 +12,19 @@ import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("routes/organizations", {
   ar: {
-    title: "جهات الرعاية المعتمدة",
-    lead: "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
-    empty: "لا توجد جهات معتمدة بعد.",
-    ctaTitle: "كلّ كفالةٍ هنا تمرّ عبر جهةٍ معتمدة",
+    title: "مكاتب الندوة وشركاؤها الميدانيون",
+    lead: "كل ملف يتيم في المنصة مرتبط بجهة ميدانية تعمل تحت مظلّة الندوة، راجعتها إدارة المنصّة واعتمدتها، وهي المسؤولة عن توثيق البيانات وتحديثها.",
+    empty: "لم تعتمد إدارة المنصّة جهةً ميدانية بعد.",
+    ctaTitle: "كلّ كفالةٍ هنا تمرّ عبر مكتبٍ للندوة أو شريكٍ ميداني لها",
     ctaText: "تصل كفالتك الطفلَ عبر جهته، ويعود إليك تسليمها بمستندٍ وتقريرِ أثر.",
     cta: "اكفل طفلاً",
     how: "كيف تعمل الكفالة",
   },
   en: {
-    title: "Approved care organizations",
-    lead: "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
-    empty: "No approved organizations yet.",
-    ctaTitle: "Every sponsorship here passes through an approved organization",
+    title: "WAMY's offices and field partners",
+    lead: "Every child's file on the platform is linked to a field organization working under WAMY's umbrella, reviewed and approved by the platform's administration, and responsible for documenting and updating its data.",
+    empty: "The platform's administration has not approved a field organization yet.",
+    ctaTitle: "Every sponsorship here passes through a WAMY office or field partner",
     ctaText:
       "Your sponsorship reaches the child through their organization, and you get back a delivery document and an impact report.",
     cta: "Sponsor a child",

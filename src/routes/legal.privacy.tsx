@@ -101,7 +101,7 @@ function PrivacyAr() {
             بيانات صحّية.
           </li>
           <li>
-            <strong>جهة الرعاية:</strong> ملفّات أيتامها وحدها.
+            <strong>الجهة الميدانية:</strong> ملفّات أيتامها وحدها.
           </li>
           <li>
             <strong>ولي الأمر:</strong> ملف من يرعاه وتقاريره — ولا يرى شيئاً عن الكفلاء.
@@ -151,10 +151,11 @@ function PrivacyAr() {
           يلزمنا الاحتفاظ به نظاماً — وأهمّه السجلّ المالي.
         </p>
         <p>
-          ولطلبات بيانات الأطفال: يُقدّمها <strong>ولي الأمر</strong> أو جهة الرعاية المسؤولة.
+          ولطلبات بيانات الأطفال: يُقدّمها <strong>ولي الأمر</strong> أو الجهة الميدانية المسؤولة.
         </p>
         <p>
-          راسلنا على <span dir="ltr">p.o.m2012@hotmail.com</span> ونردّ خلال ثلاثين يوماً.
+          نموذج التواصل الرسمي قيد الإعداد وسيُتاح في هذه الصفحة، ونردّ على كل طلبٍ يصلنا عبره خلال
+          ثلاثين يوماً.
         </p>
       </Section>
 
@@ -268,7 +269,7 @@ function PrivacyEn() {
             documents, no health data.
           </li>
           <li>
-            <strong>Care organization:</strong> only its own children's files.
+            <strong>Field organization:</strong> only its own children's files.
           </li>
           <li>
             <strong>Guardian:</strong> the file and reports of the child in their care — and nothing
@@ -322,10 +323,11 @@ function PrivacyEn() {
         </p>
         <p>
           Requests about children's data are made by the <strong>guardian</strong> or the
-          responsible care organization.
+          responsible field organization.
         </p>
         <p>
-          Write to us at <span dir="ltr">p.o.m2012@hotmail.com</span>; we reply within thirty days.
+          The official contact form is being prepared and will be available on this page; we reply
+          to every request received through it within thirty days.
         </p>
       </Section>
 
