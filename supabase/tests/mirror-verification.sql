@@ -140,12 +140,13 @@ BEGIN
   RESET ROLE;
   RAISE NOTICE 'PASS — التأهيل يصل المؤسسة أيضاً (مركز، مكتب…)';
 
-  INSERT INTO public.countries (code, name_ar) VALUES ('XK', 'كوسوفو');
+  -- دولةٌ موجودة، لا مفعَّلة ولا في الشبكة (دول الشبكة تبذرها الهجرات معلَّمة).
+  INSERT INTO public.countries (code, name_ar) VALUES ('ZZ', 'دولة غير مفعّلة');
   _ok := false;
   BEGIN
     SET LOCAL ROLE authenticated;
     SET LOCAL request.jwt.claims = '{"sub":"c1000000-0000-4000-8000-000000000003","role":"authenticated"}';
-    PERFORM public.create_support_pledge('qualification', 'country', 'XK', 50);
+    PERFORM public.create_support_pledge('qualification', 'country', 'ZZ', 50);
   EXCEPTION WHEN raise_exception THEN _ok := SQLERRM = 'country_not_active';
   END;
   RESET ROLE;

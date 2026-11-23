@@ -19,7 +19,7 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
 INSERT INTO public.user_roles (user_id, role) VALUES ('b2d00000-0000-4000-8000-000000000003', 'admin');
 INSERT INTO public.countries (code, name_ar, status) VALUES ('XK', 'كوسوفو', 'active'),
   ('ZY', 'بلدٌ مخطَّط', 'planned')
-ON CONFLICT (code) DO NOTHING;
+ON CONFLICT (code) DO UPDATE SET status = EXCLUDED.status;
 UPDATE public.countries SET currency = 'EUR' WHERE code = 'XK' AND currency IS NULL;
 INSERT INTO public.care_organizations (id, owner_id, name, status, country_code) VALUES
   ('b2d10000-0000-4000-8000-000000000001', 'b2d00000-0000-4000-8000-000000000001', 'جهة الإدخال', 'approved', 'AL'),
