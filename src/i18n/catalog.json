@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2879,
+ "count": 2976,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -11306,6 +11306,433 @@
    "hash": "c98f68d4f7b2",
    "file": "src/lib/go-live.ts"
   },
+  "lib/hall/copy.band": {
+   "en": "{0} · {1} · {2}",
+   "ar": "{0} · {1} · {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "455d9b470a4b",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.another": {
+   "en": "Sponsor another child",
+   "ar": "اكفل طفلاً آخر",
+   "kind": "text",
+   "hash": "119ded3561b5",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.back": {
+   "en": "Back to the hall",
+   "ar": "عودة إلى القاعة",
+   "kind": "text",
+   "hash": "6c11606e0091",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.card": {
+   "en": "Your sponsorships in {0}",
+   "ar": "كفالاتك في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0d9d3aed0d70",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.childLine": {
+   "en": "{0} · your share is {1} of the need",
+   "ar": "{0} · حصّتك {1} من حاجته",
+   "kind": "template",
+   "params": 2,
+   "hash": "6d8977969624",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.countries": {
+   "en": "Countries you sponsor in",
+   "ar": "دول كفالاتك",
+   "kind": "text",
+   "hash": "72f32bc2fb18",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.dashboard": {
+   "en": "To my dashboard",
+   "ar": "إلى لوحتي",
+   "kind": "text",
+   "hash": "3da221540e1c",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.elsewhere": {
+   "en": "You have no sponsorship in this country. The countries lit on the globe are the ones you sponsor in.",
+   "ar": "لا كفالة لك في هذه الدولة. الدول المضيئة على الكرة هي دول كفالاتك.",
+   "kind": "text",
+   "hash": "ae89668540d2",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.empty": {
+   "en": "Once your first sponsorship begins, your impact appears here: its country lit on the globe, and your figures as on your dashboard. We do not show sample figures as if they were yours.",
+   "ar": "حين تبدأ كفالتك الأولى يظهر أثرك هنا: دولتها مضيئةً على الكرة، وأرقامك كما في لوحتك. لا نعرض أرقاماً نموذجية على أنّها أرقامك.",
+   "kind": "text",
+   "hash": "26c17377f69e",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.emptyTitle": {
+   "en": "No sponsorships yet",
+   "ar": "لا كفالات لك بعد",
+   "kind": "text",
+   "hash": "0fb63ea1fe30",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.ended": {
+   "en": "Your sponsorships here have ended",
+   "ar": "انتهت كفالاتك هنا",
+   "kind": "text",
+   "hash": "fe95cb010602",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.endedLine": {
+   "en": "{0} · ended",
+   "ar": "{0} · انتهت",
+   "kind": "template",
+   "params": 1,
+   "hash": "ef303f3952e7",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.hint": {
+   "en": "Drag to turn the world · the lit countries are the ones you sponsor in",
+   "ar": "اسحب لتدير العالم · الدول المضيئة دول كفالاتك",
+   "kind": "text",
+   "hash": "dc42a88daffe",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.inCare": {
+   "en": "children in your care",
+   "ar": "طفلاً في رعايتك",
+   "kind": "text",
+   "hash": "53d30418696d",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.inCountry.one": {
+   "en": "{0} child in your care",
+   "ar": "طفلٌ واحد في رعايتك",
+   "kind": "plural",
+   "hash": "b05e907d2541",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.inCountry.other": {
+   "en": "{0} children in your care",
+   "ar": "{0} طفل في رعايتك",
+   "kind": "plural",
+   "hash": "4a7493a7ead0",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.kinds": {
+   "en": "Kinds of support on the platform",
+   "ar": "أنواع الدعم في المنصّة",
+   "kind": "text",
+   "hash": "eaba5c94dea2",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.kindsOpen": {
+   "en": "Tap the globe to see your impact on the world map",
+   "ar": "المس الكرة لترى أثرك على خريطة العالم",
+   "kind": "text",
+   "hash": "9f13fe5c5110",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.loading": {
+   "en": "Loading your impact…",
+   "ar": "يُحمَّل أثرك…",
+   "kind": "text",
+   "hash": "70c8da756d1d",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.months": {
+   "en": "months of care",
+   "ar": "شهراً من الرعاية",
+   "kind": "text",
+   "hash": "da60c9c8eba9",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.monthsOf.one": {
+   "en": "{0} month",
+   "ar": "شهر واحد",
+   "kind": "plural",
+   "hash": "3677c3571fc1",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.monthsOf.other": {
+   "en": "{0} months",
+   "ar": "{0} شهر",
+   "kind": "plural",
+   "hash": "3509a8f952e2",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.note": {
+   "en": "Your figures come from the same sponsorship record your dashboard reads. Nothing here is simulated or sample data.",
+   "ar": "أرقامك من سجلّ كفالاتك نفسه الذي تقرؤه لوحتك. لا محاكاة هنا ولا أرقام نموذجية.",
+   "kind": "text",
+   "hash": "0952f81c2659",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.offGlobe": {
+   "en": "Not among the countries drawn on the hall's globe",
+   "ar": "خارج الدول المرسومة على كرة القاعة",
+   "kind": "text",
+   "hash": "fd641bf82b23",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.open": {
+   "en": "Open the file",
+   "ar": "افتح ملفّه",
+   "kind": "text",
+   "hash": "63321ee7f9ef",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.screenOpen": {
+   "en": "Tap the globe to see the countries you sponsor in",
+   "ar": "المس الكرة لترى دول كفالاتك",
+   "kind": "text",
+   "hash": "a53b36a1e5ea",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.screenTitle": {
+   "en": "Your impact so far",
+   "ar": "أثرك حتى الآن",
+   "kind": "text",
+   "hash": "55c058373649",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.share": {
+   "en": "your share of their need",
+   "ar": "حصّتك من حاجتهم",
+   "kind": "text",
+   "hash": "9c8a96eac843",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.start": {
+   "en": "Sponsor a child",
+   "ar": "اكفل طفلاً",
+   "kind": "text",
+   "hash": "0e7a12799adb",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.sub": {
+   "en": "These are your own sponsorship figures, exactly as on your dashboard: the children in your care today, your months of care, and your share of their monthly need.",
+   "ar": "هذه أرقام كفالاتك أنت كما في لوحتك: الأطفال الذين في رعايتك اليوم، وأشهر رعايتك، وحصّتك من حاجتهم الشهرية.",
+   "kind": "text",
+   "hash": "f0f534cd4e02",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.tag": {
+   "en": "Your real impact",
+   "ar": "أثرك الحقيقي",
+   "kind": "text",
+   "hash": "0cb574d41783",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.title": {
+   "en": "Your impact around the world",
+   "ar": "أثرك حول العالم",
+   "kind": "text",
+   "hash": "0770ba4b71bc",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.unavailable": {
+   "en": "Your impact could not be loaded just now. Your figures are on your dashboard; no sample data is shown in their place.",
+   "ar": "تعذّر تحميل أثرك الآن. أرقامك في لوحتك، ولا نعرض هنا بديلاً نموذجياً.",
+   "kind": "text",
+   "hash": "5c174bc817d4",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.unplaced.one": {
+   "en": "{0} of your children has no country on their public card: counted in your figures, not placed on the globe.",
+   "ar": "طفلٌ واحد من أطفالك لا تنشر بطاقته دولته: هو في أرقامك وليس على الكرة.",
+   "kind": "plural",
+   "hash": "1c79ebb0b8b7",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.donor.unplaced.other": {
+   "en": "{0} of your children have no country on their public card: counted in your figures, not placed on the globe.",
+   "ar": "{0} من أطفالك لا تنشر بطاقاتهم دولهم: هم في أرقامك وليسوا على الكرة.",
+   "kind": "plural",
+   "hash": "7bef523deeff",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.focus.off": {
+   "en": "Scene only",
+   "ar": "عرض المجسّم",
+   "kind": "text",
+   "hash": "0a52aa481152",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.focus.on": {
+   "en": "Show panels",
+   "ar": "إظهار اللوحات",
+   "kind": "text",
+   "hash": "945c7d7a6cd7",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.hall": {
+   "en": "Impact Hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "555b71531ecd",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.hint.hall": {
+   "en": "Tap the globe to open the world map and choose your country",
+   "ar": "المس الكرة لتفتح خريطة العالم وتختار دولتك",
+   "kind": "text",
+   "hash": "29f4aa79f3e2",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.hint.hallAgain": {
+   "en": "Tap the globe to choose a country, or the screen to return to {0}",
+   "ar": "المس الكرة لتختار دولة، أو الشاشة لتعود إلى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7379f3e23d35",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.hint.screens": {
+   "en": "Swipe left and right between the screens · tap the impact screen for details",
+   "ar": "اسحب يميناً ويساراً بين الشاشات · المس شاشة الأثر لتفاصيله",
+   "kind": "text",
+   "hash": "a44aa5f14b23",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.hint.world": {
+   "en": "Drag to turn the world · tap a country to see it",
+   "ar": "اسحب لتدير العالم · المس دولةً لترى صورتها",
+   "kind": "text",
+   "hash": "89c49c6bc0d1",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.choose": {
+   "en": "Headquarters in Riyadh and {0} sites of confirmed presence. Choose where your support goes.",
+   "ar": "المقرّ في الرياض و{0} موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "e6f393b2b8e9",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.field": {
+   "en": "Field sites",
+   "ar": "نشاطاً ميدانياً",
+   "kind": "text",
+   "hash": "4d3e0241507b",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.hq": {
+   "en": "Headquarters",
+   "ar": "مقرّ رئيسي",
+   "kind": "text",
+   "hash": "a291aaf576f1",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.offices": {
+   "en": "Confirmed offices",
+   "ar": "مكتباً مؤكَّداً",
+   "kind": "text",
+   "hash": "d8d166be986a",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.pick": {
+   "en": "Choose a country",
+   "ar": "اختر دولة",
+   "kind": "text",
+   "hash": "d17c8da548c0",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.pickLine": {
+   "en": "Tap a country on the globe or in the list to see its outline and how it stands, then enter it.",
+   "ar": "المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.",
+   "kind": "text",
+   "hash": "a36317517e08",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.sites": {
+   "en": "Headquarters in Riyadh and {0} sites of confirmed presence",
+   "ar": "المقرّ في الرياض و{0} موقعاً مؤكَّد الحضور",
+   "kind": "template",
+   "params": 1,
+   "hash": "d16c9b3cf9bf",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.title": {
+   "en": "The WAMY network worldwide",
+   "ar": "شبكة الندوة حول العالم",
+   "kind": "text",
+   "hash": "d193823e4ff4",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.network.touch": {
+   "en": "Tap the globe or this screen to choose your country",
+   "ar": "المس الكرة أو هذه الشاشة لتختار دولتك على خريطة العالم",
+   "kind": "text",
+   "hash": "1e66a937f37d",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.perf.high": {
+   "en": "High",
+   "ar": "عالية",
+   "kind": "text",
+   "hash": "b9345175b24d",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.perf.low": {
+   "en": "Low (phone)",
+   "ar": "منخفضة (جوال)",
+   "kind": "text",
+   "hash": "a0f0f4f90030",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.perf.stepped": {
+   "en": "Lowered automatically",
+   "ar": "مخفَّضة تلقائياً",
+   "kind": "text",
+   "hash": "2bbd3ab497f5",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.sound.off": {
+   "en": "Sound",
+   "ar": "الصوت",
+   "kind": "text",
+   "hash": "c7f80925c6ce",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.sound.on": {
+   "en": "Sound on",
+   "ar": "الصوت يعمل",
+   "kind": "text",
+   "hash": "b655e60386b9",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.status.field": {
+   "en": "Field activity",
+   "ar": "نشاط ميداني",
+   "kind": "text",
+   "hash": "b3a57410039a",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.status.hq": {
+   "en": "Headquarters",
+   "ar": "المقرّ الرئيسي",
+   "kind": "text",
+   "hash": "cd00a8cb56b7",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.status.office": {
+   "en": "Confirmed office",
+   "ar": "مكتب مؤكَّد",
+   "kind": "text",
+   "hash": "1490e557b34c",
+   "file": "src/lib/hall/copy.ts"
+  },
+  "lib/hall/copy.status.unconfirmed": {
+   "en": "Unconfirmed — staff only",
+   "ar": "غير مؤكَّد — للإدارة فقط",
+   "kind": "text",
+   "hash": "c9d57fcbe573",
+   "file": "src/lib/hall/copy.ts"
+  },
   "lib/hall/trial.after.one": {
    "en": "In {0} month",
    "ar": "بعد شهر",
@@ -14138,11 +14565,60 @@
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
   },
+  "routes/hall.description": {
+   "en": "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
+   "ar": "رحلة الداعم ثلاثية الأبعاد في شبكة الندوة: اختر دولة، وادعمها، وشاهد أثر دعمك على البلد والمنطقة والمجموعة والطفل.",
+   "kind": "text",
+   "hash": "5e5af6f1e386",
+   "file": "src/routes/hall.tsx"
+  },
+  "routes/hall.lazy.back": {
+   "en": "Back",
+   "ar": "عودة",
+   "kind": "text",
+   "hash": "926a33c500f3",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.canvas": {
+   "en": "The Impact Hall in 3D",
+   "ar": "قاعة الأثر ثلاثية الأبعاد",
+   "kind": "text",
+   "hash": "d64c24f84fe9",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.donorLead": {
+   "en": "Step into the hall to see your own impact on the world map: the countries you sponsor in lit on the globe, and your figures exactly as on your dashboard. Nothing here is simulated or sample data.",
+   "ar": "تدخل القاعة فترى أثرك أنت على خريطة العالم: دول كفالاتك مضيئةً على الكرة، وأرقامك كما في لوحتك. لا محاكاة هنا ولا أرقام نموذجية.",
+   "kind": "text",
+   "hash": "eb9f4b68a1d9",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.enter": {
+   "en": "Enter the hall",
+   "ar": "ادخل القاعة",
+   "kind": "text",
+   "hash": "ab90bb6ba340",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.eyebrow": {
+   "en": "The supporter's journey",
+   "ar": "رحلة الداعم",
+   "kind": "text",
+   "hash": "3ad85be66ceb",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.film": {
+   "en": "Watch as a film",
+   "ar": "شاهد كفيلم",
+   "kind": "text",
+   "hash": "35183cb08816",
+   "file": "src/routes/hall.lazy.tsx"
+  },
   "routes/hall.lazy.gate": {
-   "en": "You are now in a virtual journey: everything in the hall is simulated, and nothing is charged.",
+   "en": "This is a virtual journey: everything in the hall is simulated, and nothing is charged.",
    "ar": "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
    "kind": "text",
-   "hash": "f37c9e8bf8df",
+   "hash": "3d65c72b0a4a",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.gateReal": {
@@ -14152,12 +14628,223 @@
    "hash": "21dde7a00ddc",
    "file": "src/routes/hall.lazy.tsx"
   },
+  "routes/hall.lazy.lead": {
+   "en": "Step into the hall, pick a country on the world map and go in to see how it stands. Choose a kind of support and an amount and watch the impact change in front of you. Then give, see what it does for the country, the region, the group and the child, and finish with a summary of what your own support moved.",
+   "ar": "تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه دعمك أنت.",
+   "kind": "text",
+   "hash": "2f4a30e49f08",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.legend": {
+   "en": "Impact key",
+   "ar": "مفتاح الأثر",
+   "kind": "text",
+   "hash": "2f52c2bc2a23",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.links": {
+   "en": "Links",
+   "ar": "روابط",
+   "kind": "text",
+   "hash": "2dd29e1732e7",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.loader": {
+   "en": "Preparing the hall",
+   "ar": "تُجهَّز القاعة",
+   "kind": "text",
+   "hash": "15c3cf1e269e",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.mine": {
+   "en": "My impact",
+   "ar": "إلى أثري",
+   "kind": "text",
+   "hash": "ab604469b6ed",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.mineTrial": {
+   "en": "(trial)",
+   "ar": "(التجربة)",
+   "kind": "text",
+   "hash": "b1e69de2dbe8",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.month": {
+   "en": "Month",
+   "ar": "الشهر",
+   "kind": "text",
+   "hash": "19993f359a79",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.net": {
+   "en": "Headquarters in Riyadh and {0} WAMY sites around the world, yours to choose from on the globe.",
+   "ar": "المقرّ في الرياض و{0} موقعاً للندوة حول العالم، تختار منها على الكرة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "a389c35fcff3",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.next": {
+   "en": "Next screen",
+   "ar": "الشاشة التالية",
+   "kind": "text",
+   "hash": "9ea9bd928682",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.partner": {
+   "en": "In partnership with",
+   "ar": "بالشراكة مع",
+   "kind": "text",
+   "hash": "93f786ff24a5",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.play": {
+   "en": "Watch the year go by",
+   "ar": "شاهد السنة تمرّ",
+   "kind": "text",
+   "hash": "7c781beea72e",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.preparing": {
+   "en": "Preparing the hall…",
+   "ar": "تُجهَّز القاعة…",
+   "kind": "text",
+   "hash": "6a68826e0e3b",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.prev": {
+   "en": "Previous screen",
+   "ar": "الشاشة السابقة",
+   "kind": "text",
+   "hash": "da8571e9f365",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.screens": {
+   "en": "Hall screens",
+   "ar": "شاشات القاعة",
+   "kind": "text",
+   "hash": "2c05b829214a",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.steps.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.steps.impact": {
+   "en": "Impact",
+   "ar": "الأثر",
+   "kind": "text",
+   "hash": "820b53e7f292",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.steps.support": {
+   "en": "Support",
+   "ar": "الدعم",
+   "kind": "text",
+   "hash": "ba3aaee9dae2",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.steps.world": {
+   "en": "World",
+   "ar": "العالم",
+   "kind": "text",
+   "hash": "2f9babf26280",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.stepsLabel": {
+   "en": "Stages of the journey",
+   "ar": "مراحل الرحلة",
+   "kind": "text",
+   "hash": "141f36223b60",
+   "file": "src/routes/hall.lazy.tsx"
+  },
   "routes/hall.lazy.tag": {
    "en": "Virtual journey",
    "ar": "رحلة افتراضية",
    "kind": "text",
    "hash": "9c06e142a9ca",
    "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.timeline": {
+   "en": "Time: the country a year ago, today and a year from now",
+   "ar": "الزمن: الدولة قبل سنة واليوم وبعد سنة",
+   "kind": "text",
+   "hash": "3e68efbd0957",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.title": {
+   "en": "Enter the Impact Hall",
+   "ar": "ادخل قاعة الأثر",
+   "kind": "text",
+   "hash": "8164a7970251",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.unsupported": {
+   "en": "Your browser cannot draw 3D graphics. The impact of your support is in",
+   "ar": "متصفّحك لا يدعم الرسم ثلاثي الأبعاد. تجد أثر دعمك في",
+   "kind": "text",
+   "hash": "8af040d80888",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.unsupportedLink": {
+   "en": "My impact",
+   "ar": "أثري",
+   "kind": "text",
+   "hash": "7f977bf767b5",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.views.impact": {
+   "en": "Impact",
+   "ar": "الأثر",
+   "kind": "text",
+   "hash": "820b53e7f292",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.views.kinds": {
+   "en": "Kinds of support",
+   "ar": "أنواع الدعم",
+   "kind": "text",
+   "hash": "3a04d8125f8a",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.views.map": {
+   "en": "Map",
+   "ar": "الخريطة",
+   "kind": "text",
+   "hash": "6e80bef962c1",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.yearAgo": {
+   "en": "1 yr ago",
+   "ar": "قبل سنة",
+   "kind": "text",
+   "hash": "11b26e78418d",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.yearOn": {
+   "en": "In 1 yr",
+   "ar": "بعد سنة",
+   "kind": "text",
+   "hash": "583a4bfdf24e",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.title": {
+   "en": "Impact Hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "555b71531ecd",
+   "file": "src/routes/hall.tsx"
   },
   "routes/how-it-works.actors.0.0": {
    "en": "Care organization",

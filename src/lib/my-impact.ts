@@ -74,6 +74,22 @@ export function myImpact(list: MySponsorship[], now: Date = new Date()): MyImpac
   };
 }
 
+/** a share of a need as it is written everywhere: a whole percentage */
+export const impactPercent = (share: number) => `${Math.round(share * 100)}%`;
+
+/**
+ * the three figures of «أثري» exactly as they are written: children in care, months of care,
+ * and the donor's share of their need. The dashboard's hero and the immersive hall both write
+ * these and nothing else, so the same sponsorships can never read as two different numbers.
+ */
+export function impactStats(m: MyImpact): { inCare: string; months: string; share: string } {
+  return {
+    inCare: String(m.inCare),
+    months: String(m.months),
+    share: String(Math.round(m.share * 100)),
+  };
+}
+
 /** how far back the time rail reaches: the oldest care, at least a month */
 export const impactSpan = (m: MyImpact) => Math.max(1, ...m.children.map((c) => c.since));
 

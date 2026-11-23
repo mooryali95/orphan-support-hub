@@ -34,7 +34,6 @@ import {
   fitScale,
   regionsFor,
   gapOf,
-  STATUS,
   TRACKS,
   TRAITS,
   totals as totalsOf,
@@ -57,9 +56,27 @@ import { createSound } from "./sound.js";
 const DISPLAY = "Amiri",
   BODY = "Readex Pro";
 
-export function mountHall(root, { brand, linked = [], demo = null, live = null }) {
+export function mountHall(
+  root,
+  {
+    brand,
+    i18n,
+    linked = [],
+    demo = null,
+    live = null,
+    start = null,
+    mine = null,
+    onStage = null,
+    onBack = null,
+  },
+) {
   const $ = (s, r = root) => r.querySelector(s);
-  const fmt = (n) => new Intl.NumberFormat("en").format(Math.round(n));
+  /* the interface language: the hall's own strings, its direction, the platform's numerals and
+     the one country name the pages use (`@/lib/hall/copy`). The scene writes no word of its own. */
+  const HC = i18n.copy,
+    DIR = i18n.dir,
+    LTR = DIR === "ltr";
+  const fmt = i18n.count;
   /* the trial's copy, in the interface language (null in the live hall) */
   const T = demo?.copy ?? null;
   const TRIAL_KINDS = demo?.kinds ?? [];
@@ -75,6 +92,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     navigator.connection?.saveData === true;
   const listeners = [];
   const on = (target, type, fn, opts) => {
+    if (!target) return;
     target.addEventListener(type, fn, opts);
     listeners.push(() => target.removeEventListener(type, fn, opts));
   };
@@ -99,6 +117,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   /* the site map's "needs an office" layer, and operating platforms that are really linked */
   const PRI = new Map(rankPriorities().map((p) => [p.code, p]));
   const TIER = { high: "أولوية عالية", medium: "أولوية متوسطة", data: "تحتاج بيانات" };
+  /* confirmed sites other than the HQ: counted from the network the hall draws, never typed */
+  const SITES = COUNTRIES.filter((c) => c.st !== "unconfirmed").length - 1;
   const LINKED = new Set();
   Promise.resolve(linked)
     .then((codes) => {
@@ -106,6 +126,28 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (S.stage === "world") renderWorld();
     })
     .catch(() => {});
+  /* ── the donor's own hall (`mine`): their real sponsorships as their dashboard reads them
+     (`@/lib/hall/donor`). It shows the hall floor and the world only: their countries lit on the
+     globe and one panel of their own figures. Nothing simulated is reachable in it (no country
+     model, no support sheet, no film), so a real figure never stands beside a sample one. ── */
+  const donor = !!mine && !demo;
+  const D = HC.donor;
+  /** undefined while loading, null when it could not be read, else the donor's hall */
+  let MINE;
+  const mineCodes = new Set();
+  const mineAt = (code) => MINE?.countries.find((c) => c.code === code) ?? null;
+  if (donor)
+    Promise.resolve(mine.data)
+      .catch(() => null)
+      .then((data) => {
+        if (disposed) return;
+        MINE = data ?? null;
+        (MINE?.countries ?? []).forEach((c) => mineCodes.add(c.code));
+        markLand();
+        refreshLabels();
+        drawImpactScreen();
+        if (S.stage === "world") donorFocus(true);
+      });
   /* the real directory, by country: aggregate counts only (small cohorts stay hidden there) */
   const LIVE = new Map();
   Promise.resolve(live)
@@ -116,7 +158,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     .catch(() => {});
   // the trial shows and enters every country the hall draws, confirmed presence or not
   const shown = (c) =>
-    !!demo || VIEW.all || c.st !== "unconfirmed" || (VIEW.layer === "gap" && PRI.has(c.code));
+    !!demo ||
+    VIEW.all ||
+    c.st !== "unconfirmed" ||
+    mineCodes.has(c.code) ||
+    (VIEW.layer === "gap" && PRI.has(c.code));
   let CO = byCode("AL");
   let PICKED = false; // nothing chosen until the visitor picks a country on the globe
   const CITY_CACHE = {};
@@ -150,7 +196,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   let TRIAL = demo ? demo.model(0) : null;
   let TRIAL_MUTE = false; // the hall's own write is already being carried in
   const trialCo = (code = CO.code) => TRIAL?.countries[code] ?? null;
-  const coName = (c = CO) => (demo ? demo.countryName(c.code) : c.ar);
+  const coName = (c = CO) => i18n.countryName(c.code);
   /** the trial's regions of a country, each with where its column stands: the one thing the
       trial takes from the hall's own model, and it is geometry, not a figure */
   function trialColumns(co) {
@@ -744,8 +790,16 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     edge(w, 0, w - 22, 0, 0.18);
     edge(0, h, 0, h - 18, 0.14);
   }
-  function text(ctx, s, x, y, size, color, weight = 500, fam = BODY, align = "right") {
-    ctx.direction = "rtl";
+  /* the screens are composed right-to-left; in a left-to-right language the same page is
+     mirrored: every anchor is reflected across the page and its alignment swapped. `fixed` keeps
+     a position that belongs to geography (a city's name beside its dot), which never mirrors. */
+  const flipX = (ctx, x) => (LTR ? ctx.canvas.lw - x : x);
+  function text(ctx, s, x, y, size, color, weight = 500, fam = BODY, align = "right", fixed) {
+    ctx.direction = DIR;
+    if (LTR && !fixed) {
+      x = flipX(ctx, x);
+      align = align === "right" ? "left" : align === "left" ? "right" : align;
+    }
     ctx.textAlign = align;
     ctx.fillStyle = color;
     ctx.font = `${weight} ${size}px "${fam}", sans-serif`;
@@ -753,57 +807,48 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   /** a screen's heading: flat white display type over one short champagne rule (no foil ramp) */
   function goldText(ctx, s, x, y, size) {
-    ctx.direction = "rtl";
-    ctx.textAlign = "right";
+    ctx.direction = DIR;
+    ctx.textAlign = LTR ? "left" : "right";
+    x = flipX(ctx, x);
     ctx.font = `700 ${size}px "${DISPLAY}", serif`;
     ctx.fillStyle = "#fbf7f0";
     ctx.fillText(s, x, y);
   }
   const rule = (ctx, x, y, len) => {
     ctx.fillStyle = "rgba(205,174,118,.8)";
-    ctx.fillRect(x - len, y, len, 2);
+    ctx.fillRect(LTR ? flipX(ctx, x) : x - len, y, len, 2);
   };
+  /** a large figure, anchored like the text under it */
+  function figure(ctx, v, x, y, size) {
+    ctx.direction = "ltr";
+    ctx.textAlign = LTR ? "left" : "right";
+    ctx.font = `700 ${size}px "${DISPLAY}", serif`;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(v, flipX(ctx, x), y);
+  }
   function drawMap() {
     const { ctx, cv, tex } = scrMap,
       w = cv.lw,
       h = cv.lh,
       t = totals();
     bg(ctx, w, h);
-    if (!PICKED) {
-      goldText(ctx, "شبكة الندوة حول العالم", w - 90, 158, 92);
-      text(
-        ctx,
-        "المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
-        w - 90,
-        238,
-        44,
-        "rgba(246,239,226,.78)",
-      );
+    if (!PICKED || donor) {
+      goldText(ctx, HC.network.title, w - 90, 158, LTR ? 78 : 92);
+      text(ctx, HC.network.sites(fmt(SITES)), w - 90, 238, 44, "rgba(246,239,226,.78)");
       rule(ctx, w - 90, 286, 150);
       [
-        ["1", "مقرّ رئيسي"],
-        ["19", "مكتباً مؤكَّداً"],
-        ["7", "نشاطاً ميدانياً"],
-      ].forEach(([v, l], i) => {
+        ["hq", HC.network.hq],
+        ["office", HC.network.offices],
+        ["field", HC.network.field],
+      ].forEach(([st, l], i) => {
         const x = w - 90 - i * 410;
-        ctx.direction = "ltr";
-        ctx.textAlign = "right";
-        ctx.font = `700 190px "${DISPLAY}", serif`;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText(v, x, 520);
-        text(ctx, l, x, 596, 44, "rgba(246,239,226,.82)", 600);
+        // counted from the network the hall draws, as the world panel counts them
+        figure(ctx, fmt(COUNTRIES.filter((c) => c.st === st).length), x, 520, 190);
+        text(ctx, l, x, 596, LTR ? 38 : 44, "rgba(246,239,226,.82)", 600);
       });
       ctx.fillStyle = "rgba(246,239,226,.16)";
       ctx.fillRect(90, h - 196, w - 180, 2);
-      text(
-        ctx,
-        "المس الكرة أو هذه الشاشة لتختار دولتك على خريطة العالم",
-        w - 90,
-        h - 104,
-        45,
-        "#e2c896",
-        700,
-      );
+      text(ctx, HC.network.touch, w - 90, h - 104, LTR ? 40 : 45, "#e2c896", 700);
       tex.needsUpdate = true;
       return;
     }
@@ -814,7 +859,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       tex.needsUpdate = true;
       return;
     }
-    goldText(ctx, demo ? T.screen.map(tc.name) : `${CO.ar} — الحال الآن`, w - 80, 136, 80);
+    goldText(ctx, demo ? T.screen.map(tc.name) : `${coName()} — الحال الآن`, w - 80, 136, 80);
     text(
       ctx,
       demo
@@ -826,7 +871,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       "rgba(246,239,226,.75)",
     );
     const kk = 265,
-      ox = w * 0.27,
+      ox = LTR ? w * 0.73 : w * 0.27,
       oy = 590;
     const path = () => {
       ctx.beginPath();
@@ -873,7 +918,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           korce: [r + 12, 8, "left"],
           berat: [r + 12, 12, "left"],
         }[c.id] || (c.nx > 0 ? [r + 12, 10, "left"] : [-r - 12, 10, "right"]);
-      text(ctx, c.ar, X + L[0], Y + L[1], 28, "#f6efe2", 600, BODY, L[2]);
+      text(ctx, c.ar, X + L[0], Y + L[1], 28, "#f6efe2", 600, BODY, L[2], true);
     });
     const lx = w - 80;
     let ly = 330;
@@ -893,14 +938,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           30,
           "rgba(246,239,226,.7)",
         );
+        const full = 440 * (c.qualified / c.need);
         ctx.fillStyle = "rgba(246,239,226,.12)";
-        ctx.fillRect(lx - 440, ly + 16, 440, 6);
+        ctx.fillRect(LTR ? flipX(ctx, lx) : lx - 440, ly + 16, 440, 6);
         ctx.fillStyle = "#cdae76";
-        ctx.fillRect(lx - 440 * (c.qualified / c.need), ly + 16, 440 * (c.qualified / c.need), 6);
+        ctx.fillRect(LTR ? flipX(ctx, lx) : lx - full, ly + 16, full, 6);
       });
     text(
       ctx,
-      demo ? T.screen.enter(tc.name) : `المس الشاشة لتدخل ${CO.ar}`,
+      demo ? T.screen.enter(tc.name) : `المس الشاشة لتدخل ${coName()}`,
       w - 80,
       h - 84,
       48,
@@ -913,36 +959,72 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     const { ctx, cv, tex } = scrTracks,
       w = cv.lw;
     bg(ctx, w, cv.lh);
-    goldText(ctx, demo ? demo.giving.heading : "أنواع الدعم الثلاثة", w - 80, 140, 68);
-    (demo
-      ? TRIAL_KINDS.map((k) => [
-          demo.giving.tracks[k].name,
-          T.screen.tracksHow[k],
-          T.screen.tracksSub[k],
-        ])
-      : [
-          ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
-          ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
-          ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
-        ]
+    goldText(
+      ctx,
+      donor ? D.kinds : demo ? demo.giving.heading : "أنواع الدعم الثلاثة",
+      w - 80,
+      140,
+      donor && LTR ? 58 : 68,
+    );
+    (donor
+      ? // the platform's own kinds by their own names: no unit price is quoted to a real donor
+        mine.kinds.map((k) => [k.name, "", ""])
+      : demo
+        ? TRIAL_KINDS.map((k) => [
+            demo.giving.tracks[k].name,
+            T.screen.tracksHow[k],
+            T.screen.tracksSub[k],
+          ])
+        : [
+            ["تأهيل", "رحلة طفل · 600 ر.س", "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ"],
+            ["كفالة", "شهر · 300 ر.س", "مبلغٌ شهري يصل الطفل بإثبات"],
+            ["كسوة", "يتيم · 300 ر.س", "كسوةٌ تُسلَّم بإثبات قبل الموسم"],
+          ]
     ).forEach(([a, b, c], i) => {
       const y = 300 + i * 200;
       ctx.fillStyle = "#cdae76";
       ctx.beginPath();
-      ctx.arc(w - 115, y - 20, 30, 0, Math.PI * 2);
+      ctx.arc(flipX(ctx, w - 115), y - 20, 30, 0, Math.PI * 2);
       ctx.fill();
       text(ctx, String(i + 1), w - 115, y - 6, 36, "#2b0e15", 700, DISPLAY, "center");
       text(ctx, a, w - 170, y, 54, "#f6efe2", 700, DISPLAY);
-      text(ctx, b, w - 400, y, 34, "#cdae76", 600);
+      // the second word stands clear of the name, however long the name is in this language
+      const aw = ctx.measureText(a).width;
+      text(ctx, b, w - 170 - Math.max(230, aw + 30), y, 34, "#cdae76", 600);
       text(ctx, c, w - 170, y + 62, 34, "rgba(246,239,226,.72)");
     });
+    if (donor) text(ctx, D.kindsOpen, w - 80, cv.lh - 60, 36, "#e2c896", 700);
     tex.needsUpdate = true;
   }
+  /** the donor's three figures, written as their dashboard writes them */
+  const donorStats = () => [
+    [MINE.stats.inCare, D.inCare],
+    [MINE.stats.months, D.months],
+    [`${MINE.stats.share}%`, D.share],
+  ];
   function drawImpactScreen() {
     const { ctx, cv, tex } = scrImpact,
       w = cv.lw,
       h = cv.lh;
     bg(ctx, w, h);
+    if (donor) {
+      goldText(ctx, D.screenTitle, w - 80, 140, 68);
+      const say = (t) => text(ctx, t, w - 80, 300, 40, "rgba(246,239,226,.85)");
+      if (MINE === undefined) say(D.loading);
+      else if (!MINE) say(D.dashboard);
+      else if (!MINE.impact.children.length) say(D.emptyTitle);
+      else {
+        donorStats().forEach(([v, l], i) => {
+          const x = w - 80 - i * 400;
+          figure(ctx, v, x, 330, 110);
+          text(ctx, l, x, 390, 30, "rgba(246,239,226,.75)", 600);
+        });
+        text(ctx, D.tag, w - 80, 520, 34, "#b9dcb9", 600);
+      }
+      text(ctx, D.screenOpen, w - 80, h - 60, 36, "#e2c896", 700);
+      tex.needsUpdate = true;
+      return;
+    }
     if (demo) {
       // the trial's record is the visitor's two stores: what the pages wrote shows here too
       const all = TRIAL.history;
@@ -957,11 +1039,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       }
       TRIAL_KINDS.forEach((k, i) => {
         const x = w - 80 - i * 400;
-        ctx.direction = "ltr";
-        ctx.textAlign = "right";
-        ctx.font = `700 96px "${DISPLAY}", serif`;
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText(String(all.filter((e) => e.kind === k).length), x, 300);
+        figure(ctx, fmt(all.filter((e) => e.kind === k).length), x, 300, 96);
         text(ctx, demo.giving.tracks[k].name, x, 350, 32, "rgba(246,239,226,.75)", 600);
       });
       ctx.strokeStyle = "rgba(205,174,118,.38)";
@@ -1004,11 +1082,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       [String(cos), cos > 2 ? "دول" : cos === 2 ? "دولتان" : "دولة"],
     ].forEach(([v, l], i) => {
       const x = w - 80 - i * 400;
-      ctx.direction = "ltr";
-      ctx.textAlign = "right";
-      ctx.font = `700 96px "${DISPLAY}", serif`;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText(v, x, 300);
+      figure(ctx, v, x, 300, 96);
       text(ctx, l, x, 350, 32, "rgba(246,239,226,.75)", 600);
     });
     const by = (t) => H.filter((r) => r.track === t).reduce((a, r) => a + r.kids, 0);
@@ -1166,13 +1240,13 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.strokeStyle = "rgba(205,174,118,.55)";
     x.lineWidth = 2;
     x.strokeRect(0, 10, 4096, 108);
-    x.direction = "rtl";
+    x.direction = DIR;
     x.textAlign = "center";
     x.font = `600 50px "${DISPLAY}", serif`;
     x.fillStyle = "#f6efe2"; // the hand is written in white, as in the mark
     for (let i = 0; i < 3; i++)
       x.fillText(
-        `${coName()} · ${demo ? T.sample : STATUS[CO.st]} · قاعة الأثر`,
+        HC.band(coName(), demo ? T.sample : HC.status[CO.st], HC.hall),
         (4096 * (i + 0.5)) / 3,
         84,
       );
@@ -1796,7 +1870,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const lat = LL[i * 2],
         lon = LL[i * 2 + 1];
       hot[i] =
-        PICKED && near(CO, lat, lon)
+        (PICKED && near(CO, lat, lon)) ||
+        (mineCodes.size && COUNTRIES.some((c) => mineCodes.has(c.code) && near(c, lat, lon)))
           ? 2
           : COUNTRIES.some((c) => shown(c) && near(c, lat, lon))
             ? 1
@@ -1950,12 +2025,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           .dot(camera.position.clone().sub(globe.position)) > 0.4,
       "g " + c.st,
     );
-    // the globe keeps the network's short Arabic names; other languages read the country's own
-    l.el.textContent = demo && demo.dir === "ltr" ? coName(c) : c.ar;
+    // one name for a country everywhere: the globe reads what the lists and the pages read
+    l.el.textContent = coName(c);
     l.globe = c;
-    l.el.addEventListener("click", () => S.stage === "world" && selectCountry(c.code));
+    on(l.el, "click", () => S.stage === "world" && selectCountry(c.code));
   });
   let TOP3 = new Set();
+  let ordered = null,
+    orderedFor = "";
   /* the chosen city's name, written in white on the wine land at the foot of its column */
   const engraveCv = document.createElement("canvas");
   engraveCv.width = 1024;
@@ -1982,7 +2059,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     engraved = o.c.ar;
     const x = engraveCv.getContext("2d");
     x.clearRect(0, 0, 1024, 256);
-    x.direction = "rtl";
+    x.direction = DIR;
     x.textAlign = "center";
     x.textBaseline = "middle";
     x.font = `700 132px "${DISPLAY}", serif`;
@@ -2002,23 +2079,31 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         .map((c) => c.id),
     );
     renderLegend();
-    labels.forEach((l) => l.globe && l.el.classList.toggle("hot", PICKED && l.globe === CO));
+    labels.forEach((l) => {
+      if (!l.globe) return;
+      l.el.classList.toggle("hot", PICKED && l.globe === CO);
+      l.el.classList.toggle("mine", mineCodes.has(l.globe.code));
+    });
+    orderedFor = ""; // the donor's countries keep their names first
     pillars.forEach((o) => {
       o.label.el.classList.toggle("hot", o.c.id === S.city);
-      if (demo) o.label.el.dir = demo.dir;
-      o.label.el.innerHTML = demo
-        ? T.country.label(o.c.ar, num(o.c.need))
-        : `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
+      o.label.el.dir = DIR;
+      // the donor's hall never shows the country model: its columns keep no name
+      o.label.el.innerHTML = donor
+        ? ""
+        : demo
+          ? T.country.label(o.c.ar, num(o.c.need))
+          : `${o.c.ar} · <span class="num">${gapOf(o.c)}</span>`;
     });
   }
   const legend = $("#legend");
   function renderLegend() {
     const c = CITIES.find((x) => x.id === S.city);
     if (!legend || !c) return;
+    legend.dir = DIR;
     const row = (t, n, w, of = true) =>
       `<li class="lg-${t}"><i aria-hidden="true"></i>${w}<b class="num">${fmt(n)}</b>${of ? `<small>/ <span class="num">${fmt(c.need)}</span></small>` : ""}</li>`;
     if (demo) {
-      legend.dir = demo.dir;
       legend.innerHTML = `<p>${c.ar}</p><ul>${row("qualify", c.qualified, T.legend.enrolled)}${row("sponsor", c.sponsored, T.legend.sponsored, false)}${row("kiswa", c.clothed, T.legend.deliveries, false)}</ul>`;
       return;
     }
@@ -2043,8 +2128,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     return ray.intersectObjects(objs, false)[0];
   }
   const pillarMeshes = () => pillars.flatMap((o) => [o.glass, o.fill]);
-  canvas.addEventListener("pointerdown", (e) => (down = { x: e.clientX, y: e.clientY }));
-  canvas.addEventListener("pointerup", (e) => {
+  on(canvas, "pointerdown", (e) => (down = { x: e.clientX, y: e.clientY }));
+  on(canvas, "pointerup", (e) => {
     if (down && S.stage === "hall") {
       const dx = e.clientX - down.x,
         dy = e.clientY - down.y;
@@ -2060,6 +2145,11 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     down = null;
     if (S.stage === "hall") {
+      // the donor's hall has one place to read: every screen opens their impact on the world
+      if (donor) {
+        if (hit(e, [scrImpact.mesh, scrTracks.mesh, globeCore, scrMap.mesh])) enterWorld();
+        return;
+      }
       if (hit(e, [scrImpact.mesh])) return openImpactLog();
       if (hit(e, [scrTracks.mesh])) return openTracks();
       if (hit(e, [globeCore])) return enterWorld();
@@ -2077,7 +2167,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (h) selectCity(h.object.userData.city);
     }
   });
-  canvas.addEventListener("pointermove", (e) => {
+  on(canvas, "pointermove", (e) => {
     let on = false;
     if (S.stage === "hall") on = !!hit(e, [scrMap.mesh, scrImpact.mesh, scrTracks.mesh, globeCore]);
     else if (["country", "support"].includes(S.stage)) on = !!hit(e, pillarMeshes());
@@ -2177,6 +2267,12 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       li.classList.toggle("done", i < j);
     });
     gsap.fromTo("#steps li.on", { scale: 0.86 }, { scale: 1, duration: 0.6, ease: "back.out(2)" });
+    tellStage();
+  }
+  /* the page keeps the browser's history in step with the stage (`@/lib/hall/history`); the film
+     walks the stages by itself, so it reports only where it stopped */
+  function tellStage() {
+    if (!FILM && !disposed) onStage?.(S.stage);
   }
   function hint(t) {
     const h = $("#hint");
@@ -2185,7 +2281,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       return;
     }
     h.textContent = t;
-    if (demo) h.dir = demo.dir === "ltr" && /[A-Za-z]/.test(t) ? "ltr" : "rtl";
+    h.dir = DIR;
     gsap.fromTo(
       h,
       { autoAlpha: 0, y: 14 },
@@ -2231,7 +2327,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   function showPanel(html, dir) {
     // the trial's panels read in the interface language; the live hall's are Arabic as before
-    if (demo) panel.dir = dir ?? "rtl";
+    panel.dir = dir ?? DIR;
     const first = !panel.classList.contains("on");
     swapping = true;
     readyQueue = [];
@@ -2290,7 +2386,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     });
   }
   function showImpact(html, flashKey) {
-    if (demo) impact.dir = demo.dir;
+    impact.dir = DIR;
     const was = impact.hidden;
     impact.hidden = false;
     impact.innerHTML = html;
@@ -2331,18 +2427,18 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   /* ── Direction: authored camera paths, optional sound, film mode ── */
   const sound = createSound();
   const focusBtn = $("#focusBtn");
-  focusBtn?.addEventListener("click", () => {
+  on(focusBtn, "click", () => {
     const v = root.classList.toggle("focus");
     frameForPanel();
     frameView();
     focusBtn.setAttribute("aria-pressed", String(v));
-    focusBtn.textContent = v ? "إظهار اللوحات" : "عرض المجسّم";
+    focusBtn.textContent = v ? HC.focus.on : HC.focus.off;
   });
   const soundBtn = $("#soundBtn");
-  soundBtn?.addEventListener("click", async () => {
+  on(soundBtn, "click", async () => {
     const v = await sound.toggle();
     soundBtn.setAttribute("aria-pressed", String(v));
-    soundBtn.textContent = v ? "الصوت يعمل" : "الصوت";
+    soundBtn.textContent = v ? HC.sound.on : HC.sound.off;
   });
   /** a camera move along a spline (position and look-at), driven by one GSAP tween */
   function flyPath(points, targets, duration, ease = "power2.inOut") {
@@ -2420,6 +2516,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     filmRun++;
     root.classList.remove("film");
     caption("");
+    tellStage();
     if (demo) trialRefresh(); // the film wrote nothing: back to what the stores really hold
   }
   on(
@@ -2431,14 +2528,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     true,
   );
   async function film() {
-    if (FILM || S.stage !== "gate") return;
+    if (FILM || donor || S.stage !== "gate") return;
     const run = ++filmRun;
     FILM = true;
     root.classList.add("film");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const live = [
       [() => enterHall(), "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر", 5200],
-      [() => enterWorld(), "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور", 4600],
+      [() => enterWorld(), `شبكة الندوة: المقرّ في الرياض و${SITES} موقعاً مؤكَّد الحضور`, 4600],
       [
         () => selectCountry("AL"),
         "نختار ألبانيا: نشاطٌ ميداني للندوة، بمدنها ومجموعاتها وأطفالها",
@@ -2487,7 +2584,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     }
     stopFilm();
   }
-  $("#film")?.addEventListener("click", () => film());
+  on($("#film"), "click", () => film());
 
   function enterHall() {
     if (S.stage !== "gate") return;
@@ -2591,25 +2688,30 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           replayStep(0.8, demoFocus);
           return;
         }
-        if (!PHONE())
-          hint(
-            PICKED
-              ? "المس الكرة لتختار دولة، أو الشاشة لتعود إلى " + CO.ar
-              : "المس الكرة لتفتح خريطة العالم وتختار دولتك",
-          );
+        if (donor) {
+          // the donor lands on their own impact: the world, turned to their first country
+          replayStep(0.8, enterWorld);
+          return;
+        }
+        if (startCountry() && !FILM) {
+          replayStep(0.8, startFocus);
+          return;
+        }
+        if (!PHONE()) hint(PICKED ? HC.hint.hallAgain(coName()) : HC.hint.hall);
       }, 3.8);
   }
-  $("#enter")?.addEventListener("click", () => enterHall());
+  on($("#enter"), "click", () => enterHall());
   focus.set(0, 4, 17.6);
 
   /* ── Into the country: push in, flash, rise ─────────────────────── */
   function enterCountry() {
+    if (donor) return; // the donor's hall holds no simulated country to enter
     if (demo && !trialCo()) return; // the trial enters only the countries its catalogue holds
     hint("");
     const fromWorld = S.stage === "world";
     sound.cue("dive");
     buildCountry();
-    const tl = gsap.timeline();
+    const tl = (MOVING = gsap.timeline());
     if (fromWorld) {
       hidePanel();
       globe.updateMatrixWorld();
@@ -2743,12 +2845,21 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       });
     });
     renderWorld();
+    if (donor) donorFocus();
+  }
+  /** turns the globe to the country the donor's hall lands on: the one they were looking at on
+      the pages when it is theirs, else their first; once, and any touch cancels it */
+  let donorLanded = false;
+  function donorFocus(rerender) {
+    if (rerender) renderWorld();
+    if (donorLanded || !MINE) return;
+    donorLanded = true;
+    const code = start && mineCodes.has(start) ? start : MINE.start;
+    if (code && byCode(code)) replayStep(1.6, () => S.stage === "world" && selectCountry(code));
   }
   function selectCountry(code) {
     sound.cue("tick");
-    if (CO.code === code && S.stage === "world" && panel.querySelector(".co-card")) {
-      /* already chosen */
-    }
+    if (!byCode(code)) return; // a country the hall's globe does not draw
     CO = byCode(code);
     PICKED = true;
     markLand();
@@ -2800,7 +2911,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     x.strokeStyle = "#f6efe2";
     x.lineWidth = 2;
     x.stroke();
-    (demo ? trialColumns(co) : regionsFor(co)).forEach((c) => {
+    (donor ? [] : demo ? trialColumns(co) : regionsFor(co)).forEach((c) => {
       x.beginPath();
       x.arc(ox + c.nx * s, oy - c.ny * s, 4 + c.need / 14, 0, Math.PI * 2);
       x.fillStyle = "rgba(243,227,181,.85)";
@@ -2821,15 +2932,15 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       <div class="co-head"><div><h3>${name}</h3><span class="st">${T.sample}</span></div><canvas id="coShape" width="520" height="300" aria-label="${name}"></canvas></div>
       ${
         t
-          ? `<p class="co-line" dir="${demo.dir}">${W.lead}</p>
-      <div class="kv" dir="${demo.dir}">
-        <div><dt>${W.regions}</dt><dd>${t.regions.map((r) => r.ar).join(demo.dir === "rtl" ? "، " : ", ")}</dd></div>
+          ? `<p class="co-line" dir="${DIR}">${W.lead}</p>
+      <div class="kv" dir="${DIR}">
+        <div><dt>${W.regions}</dt><dd>${t.regions.map((r) => r.ar).join(DIR === "rtl" ? "، " : ", ")}</dd></div>
         <div><dt>${T.withFile}</dt><dd class="num">${fmt(t.children)}</dd></div>
         <div><dt>${W.group}</dt><dd>${t.group.name}</dd></div>
         <div><dt>${W.kid}</dt><dd>${kid ? W.kidLine(kid.name, kid.code) : ""}</dd></div>
       </div>
-      <p class="note" dir="${demo.dir}">${W.note}</p>
-      <p class="co-act" dir="${demo.dir}">${W.org[CO.st]}</p>
+      <p class="note" dir="${DIR}">${W.note}</p>
+      <p class="co-act" dir="${DIR}">${W.org[CO.st]}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">${W.enter(name)}</button><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
           : `<div class="row pin"><a class="cta" href="${demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
       }
@@ -2839,7 +2950,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (demo) return trialCard();
     const sim = CO.sim;
     return `<article class="co-card">
-      <div class="co-head"><div><h3>${CO.ar}</h3><span class="st ${CO.st}">${STATUS[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${CO.ar}"></canvas></div>
+      <div class="co-head"><div><h3>${coName()}</h3><span class="st ${CO.st}">${HC.status[CO.st]}</span></div><canvas id="coShape" width="520" height="300" aria-label="شكل ${coName()}"></canvas></div>
       ${CO.type ? `<p class="co-line"><b>${CO.type}</b>${CO.city ? ` · ${CO.city}` : ""}</p>` : `<p class="co-line">لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها، وأرقامها افتراضية.</p>`}
       ${CO.act ? `<p class="co-act">${CO.act}<small> · من البحث العامّ</small></p>` : ""}
       <div class="kv">
@@ -2848,11 +2959,75 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         <div><dt>نسبة التمويل</dt><dd class="num">${sim.funded}%</dd></div>
         <div><dt>مشرفون</dt><dd class="num">${sim.supervisors}</dd></div>
       </div>
-      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${CO.ar} المتّصلة.` : CO.code === "AL" ? `<span class="src">تجريبي</span> مدن ${CO.ar} ومجموعاتها وأطفالها بياناتٌ تجريبية، ودعمك هنا يُقيَّد عليها.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${CO.ar}.`}</p>
-      <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${CO.ar}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
+      <p class="note">${LINKED.has(CO.code) ? `<span class="src real">حقيقي</span> أرقامٌ من منصّة تشغيل ${coName()} المتّصلة.` : CO.code === "AL" ? `<span class="src">تجريبي</span> مدن ${coName()} ومجموعاتها وأطفالها بياناتٌ تجريبية، ودعمك هنا يُقيَّد عليها.` : `<span class="src">افتراضي</span> أرقام التشغيل افتراضية حتى تتّصل منصّة تشغيل ${coName()}.`}</p>
+      <div class="row pin"><button class="cta" type="button" id="enterCo">ادخل ${coName()}</button><button class="ghost" type="button" id="toHall">عودة إلى القاعة</button></div>
     </article>`;
   }
+  /** the donor's panel: their own figures and countries, and the ways on to the real pages */
+  function donorWorld() {
+    const esc = (t) => String(t).replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
+    const ways = `<div class="row"><a class="cta" href="/orphans">${MINE?.impact.children.length ? D.another : D.start}</a><a class="ghost" href="/dashboard">${D.dashboard}</a></div>
+      <div class="row"><button class="ghost" type="button" id="toHall">${D.back}</button></div>`;
+    const head = `<h2>${D.title}</h2>`;
+    let body;
+    if (MINE === undefined) body = `<p class="sub">${D.loading}</p>`;
+    else if (!MINE) body = `<p class="sub">${D.unavailable}</p>${ways}`;
+    else if (!MINE.impact.children.length)
+      body = `<article class="co-card empty"><h3>${D.emptyTitle}</h3><p class="co-line">${D.empty}</p></article>${ways}`;
+    else {
+      const here = PICKED ? mineAt(CO.code) : null;
+      const card = !PICKED
+        ? ""
+        : here
+          ? `<article class="co-card"><div class="co-head"><div><h3>${D.card(coName())}</h3><span class="st">${here.inCare ? D.inCountry(here.inCare) : D.ended}</span></div><canvas id="coShape" width="520" height="300" aria-label="${coName()}"></canvas></div>
+            <ul class="kids">${here.children
+              .map(
+                (k) =>
+                  `<li class="${k.active ? "mine" : ""}"><span><b>${esc(k.name)}</b><small>${k.active ? D.childLine(D.monthsOf(k.months), `<span class="num">${esc(k.share)}</span>`) : D.endedLine(D.monthsOf(k.months))}</small></span><a class="ghost" href="${esc(k.href)}">${D.open}</a></li>`,
+              )
+              .join("")}</ul></article>`
+          : `<article class="co-card empty"><h3>${coName()}</h3><p class="co-line">${D.elsewhere}</p></article>`;
+      body = `<p class="sub"><span class="src real">${D.tag}</span> ${D.sub}</p>
+      <div class="kpis">${donorStats()
+        .map(([v, l]) => `<div class="kpi"><b class="num">${v}</b><span>${l}</span></div>`)
+        .join("")}</div>
+      ${card}
+      ${
+        MINE.countries.length
+          ? `<div class="sect">${D.countries}</div><div class="co-list">${MINE.countries
+              .map((c) =>
+                byCode(c.code)
+                  ? `<button type="button" data-co="${c.code}" aria-pressed="${PICKED && c.code === CO.code}"><i class="dot office"></i>${i18n.countryName(c.code)} · ${num(c.children.length)}</button>`
+                  : `<span class="off-globe" title="${D.offGlobe}">${i18n.countryName(c.code)} · ${num(c.children.length)}</span>`,
+              )
+              .join("")}</div>`
+          : ""
+      }
+      ${
+        MINE.countries.some((c) => !byCode(c.code))
+          ? `<p class="note">${D.offGlobe}: ${MINE.countries
+              .filter((c) => !byCode(c.code))
+              .map((c) => i18n.countryName(c.code))
+              .join(LTR ? ", " : "، ")}</p>`
+          : ""
+      }
+      ${MINE.unplaced ? `<p class="note">${D.unplaced(MINE.unplaced)}</p>` : ""}
+      ${ways}
+      <p class="note">${D.note}</p>`;
+    }
+    showPanel(head + body);
+    onPanel(() => {
+      const cv = $("#coShape");
+      if (cv && PICKED) drawShape(cv, CO);
+      panel
+        .querySelectorAll("[data-co]")
+        .forEach((b) => b.addEventListener("click", () => selectCountry(b.dataset.co)));
+      $("#toHall")?.addEventListener("click", backToHall);
+    });
+    hint(PHONE() ? "" : D.hint);
+  }
   function renderWorld() {
+    if (donor) return donorWorld();
     const n = (st) => COUNTRIES.filter((c) => c.st === st).length,
       sim = CO.sim,
       // the trial shows every country, but only confirmed presence is counted as a site
@@ -2864,25 +3039,25 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ...(VIEW.all ? [["unconfirmed", "غير مؤكَّد — للإدارة فقط"]] : []),
     ];
     showPanel(`
-    <h2>شبكة الندوة حول العالم</h2>
-    ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>اختر دولة</h3><p class="co-line">المس دولةً على الكرة أو من القائمة، فتظهر صورتها وحالها هنا، ثم تدخلها.</p></article>`}
-    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">34</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : `المقرّ في الرياض و<span class="num">${sites}</span> موقعاً مؤكَّد الحضور، تختار منها أين يذهب دعمك.`}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
+    <h2>${HC.network.title}</h2>
+    ${PICKED ? cardHTML() : `<article class="co-card empty"><h3>${HC.network.pick}</h3><p class="co-line">${HC.network.pickLine}</p></article>`}
+    <p class="sub">${VIEW.all ? `النموذج الكامل: المقرّ و<span class="num">${COUNTRIES.length - 1}</span> موقعاً، منها <span class="num">${n("unconfirmed")}</span> غير مؤكَّدة تظهر للإدارة فقط.` : HC.network.choose(num(sites))}${demo ? "" : " أرقامها هنا افتراضية حتى تتّصل منصّة تشغيل كلّ دولة."}</p>
     ${
       demo
-        ? `<p class="sub" dir="${demo.dir}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
+        ? `<p class="sub" dir="${DIR}"><span class="src">${T.sample}</span> ${T.world.sub}</p>
     <div class="sect">${T.world.sect}</div><div class="co-list">${demo.codes
       .map(
         (code) =>
           `<button type="button" data-co="${code}" aria-pressed="${PICKED && code === CO.code}"><i class="dot ${byCode(code).st}"></i>${coName(byCode(code))}</button>`,
       )
       .join("")}</div>
-    <p class="sub" dir="${demo.dir}"><a href="${demo.mapHref}">${T.world.more}</a></p>`
+    <p class="sub" dir="${DIR}"><a href="${demo.mapHref}">${T.world.more}</a></p>`
         : ""
     }
     <div class="kpis ${VIEW.all ? "k4" : ""}">
-      <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>مقرّ رئيسي</span></div>
-      <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>مكتباً مؤكَّداً</span></div>
-      <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>نشاطاً ميدانياً</span></div>
+      <div class="kpi"><b class="num" data-count="${n("hq")}">0</b><span>${HC.network.hq}</span></div>
+      <div class="kpi"><b class="num" data-count="${n("office")}">0</b><span>${HC.network.offices}</span></div>
+      <div class="kpi"><b class="num" data-count="${n("field")}">0</b><span>${HC.network.field}</span></div>
       ${VIEW.all ? `<div class="kpi"><b class="num" data-count="${n("unconfirmed")}">0</b><span>غير مؤكَّد</span></div>` : ""}
     </div>
     ${
@@ -2895,7 +3070,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
             .map((t) => {
               const list = [...PRI.values()].filter((p) => p.tier === t);
               return list.length
-                ? `<div class="sect">${TIER[t]}</div><div class="co-list">${list.map((p) => `<button type="button" data-co="${p.code}" aria-pressed="${PICKED && p.code === CO.code}"><i class="dot gap-${t}"></i>${(byCode(p.code) || { ar: p.code }).ar}</button>`).join("")}</div>`
+                ? `<div class="sect">${TIER[t]}</div><div class="co-list">${list.map((p) => `<button type="button" data-co="${p.code}" aria-pressed="${PICKED && p.code === CO.code}"><i class="dot gap-${t}"></i>${byCode(p.code) ? coName(byCode(p.code)) : p.code}</button>`).join("")}</div>`
                 : "";
             })
             .join("")}`
@@ -2910,7 +3085,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           )
             .map(
               (c) =>
-                `<button type="button" data-co="${c.code}" aria-pressed="${c === CO}"><i class="dot ${c.st}"></i>${c.ar}</button>`,
+                `<button type="button" data-co="${c.code}" aria-pressed="${c === CO}"><i class="dot ${c.st}"></i>${coName(c)}</button>`,
             )
             .join("")}</div>`,
       )
@@ -2942,7 +3117,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         renderWorld();
       });
     });
-    hint(PHONE() ? "" : "اسحب لتدير العالم · المس دولةً لترى صورتها");
+    hint(PHONE() ? "" : HC.hint.world);
   }
   function backToWorld() {
     hideImpact();
@@ -2988,8 +3163,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       demo
         ? trialCountryHtml(c)
         : `
-    <h2>${CO.ar} · الحال الآن</h2>
-    <p class="sub">${STATUS[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والمملوء منه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
+    <h2>${coName()} · الحال الآن</h2>
+    <p class="sub">${HC.status[CO.st]}${CO.city ? ` · ${CO.city}` : ""}. ارتفاع كلّ عمود حاجةُ ${CO.code === "AL" ? "المدينة" : "المنطقة"}، والمملوء منه ما مُوِّل تأهيله.${CO.code === "AL" ? "" : " المناطق وأرقامها افتراضية."}</p>
     <div class="kpis">
       <div class="kpi"><b class="num" data-count="${t.need}">0</b><span>يتيماً في الحاجة</span></div>
       <div class="kpi"><b class="num" data-count="${t.pct}" data-suf="%">0</b><span>مموّلٌ تأهيلهم</span></div>
@@ -2999,7 +3174,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <div class="sect">${CO.code === "AL" ? "المدن" : "المناطق"} · الأكبر فجوةً أوّلاً</div>
     <ul class="cities">${cityRows()}</ul>
     <div class="row"><button class="cta" type="button" id="toSupport">ادعم ${c.ar}</button><button class="ghost" type="button" id="otherCo">دولة أخرى</button></div>`,
-      demo?.dir,
+      DIR,
     );
     onPanel(() => {
       panel
@@ -3137,7 +3312,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       if (head)
         head.textContent = demo
           ? T.country.title(trialCo().name, trialWhen(shown))
-          : `${CO.ar} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
+          : `${coName()} · ${shown === 0 ? "الحال الآن" : timeLabel(shown)}`;
       const list = panel.querySelector("ul.cities");
       if (list && TIME.shown !== shown) {
         list.innerHTML = cityRows();
@@ -3181,8 +3356,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     return `<div class="sect">في الدليل الآن</div>
       <ul class="kids"><li><span><b>${
         counted
-          ? `<span class="num">${fmt(r.total)}</span> ${r.total <= 10 ? "أطفال" : "طفلاً"} في ${CO.ar}`
-          : `أطفال ${CO.ar}`
+          ? `<span class="num">${fmt(r.total)}</span> ${r.total <= 10 ? "أطفال" : "طفلاً"} في ${coName()}`
+          : `أطفال ${coName()}`
       }</b><small>${
         waiting != null
           ? `<span class="num">${fmt(waiting)}</span> منهم ينتظرون كافلاً`
@@ -3248,6 +3423,19 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         });
       });
     });
+  }
+  /** the country the visitor came from on the pages, when this hall shows and can enter it */
+  function startCountry() {
+    const co = start && byCode(start);
+    return co && shown(co) && (!demo || trialCo(co.code)) ? co : null;
+  }
+  /** arriving from a country's page lands on that country: once, and any touch cancels it */
+  function startFocus() {
+    const co = startCountry();
+    if (!co) return;
+    start = null;
+    selectCountry(co.code);
+    replayStep(1.2, enterCountry);
   }
   function selectCity(id) {
     S.city = id;
@@ -3343,7 +3531,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <select id="dest" aria-label="${U.dest}">${CITIES.map((x) => `<option value="${x.id}" ${x.id === S.city ? "selected" : ""}>${U.destOption(x.ar, T.children(x.need))}</option>`).join("")}</select>
     <div class="row">${cta}<button class="ghost" type="button" id="back">${U.back}</button></div>
     <p class="note"><span class="src">${T.sample}</span> ${U.note}</p>`,
-      demo.dir,
+      DIR,
     );
     onPanel(() => {
       panel.querySelectorAll("[data-kind]").forEach((b) =>
@@ -3692,7 +3880,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         true,
       );
     }
-    const tl = gsap.timeline();
+    const tl = (MOVING = gsap.timeline());
     {
       // the one focus pull: from the whole land to the column the gift is about to raise
       const at = o.g.getWorldPosition(new THREE.Vector3());
@@ -3769,7 +3957,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
           amount: S.amount,
           kids: p.kids,
           track: p.track,
-          co: CO.ar,
+          co: coName(),
           place: c.ar,
           levels: "",
         });
@@ -3835,7 +4023,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const trialDelta = (label, v0, v1, suf = "") =>
     v0 === v1
       ? trialKv([[label, `<span class="num">${fmt(v1)}${suf}</span>`]])
-      : `<div class="delta-row"><div><small>${label}</small><div class="dv"><b class="num was">${fmt(v0)}${suf}</b><span class="arrow">${demo.dir === "rtl" ? "←" : "→"}</span><b class="num now" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div><span class="chip-d ok"><span class="num">${v1 > v0 ? "+" : "−"}${fmt(Math.abs(v1 - v0))}${suf}</span></span></div>`;
+      : `<div class="delta-row"><div><small>${label}</small><div class="dv"><b class="num was">${fmt(v0)}${suf}</b><span class="arrow">${DIR === "rtl" ? "←" : "→"}</span><b class="num now" data-count="${v1}" data-from="${v0}" data-suf="${suf}">${fmt(v0)}${suf}</b></div></div><span class="chip-d ok"><span class="num">${v1 > v0 ? "+" : "−"}${fmt(Math.abs(v1 - v0))}${suf}</span></span></div>`;
   /** a count as «أثري» publishes it: below the cohort minimum it is withheld, here too */
   const trialSafe = (n) =>
     n === null || demo.cohortSafe(n) === null ? T.fewer(num(demo.cohortMin)) : num(n);
@@ -3978,7 +4166,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <p class="sub">${I.doneSub}</p>
     ${trialDoneKpis(L)}
     <div class="row"><button class="cta" type="button" id="toBig">${I.summary}</button><button class="ghost" type="button" id="again">${I.again}</button></div>`,
-      demo.dir,
+      DIR,
     );
     onPanel(wireDone);
   }
@@ -3990,7 +4178,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       b = S.before.country,
       B = T.big;
     const cmp = (label, v0, v1) =>
-      `<div class="compare"><div><small>${label} · ${T.was}</small><b class="num">${fmt(v0)}</b></div><span>${demo.dir === "rtl" ? "←" : "→"}</span><div class="after"><small>${T.now}</small><b class="num" data-count="${v1}" data-from="${v0}">${fmt(v0)}</b></div></div>`;
+      `<div class="compare"><div><small>${label} · ${T.was}</small><b class="num">${fmt(v0)}</b></div><span>${DIR === "rtl" ? "←" : "→"}</span><div class="after"><small>${T.now}</small><b class="num" data-count="${v1}" data-from="${v0}">${fmt(v0)}</b></div></div>`;
     showPanel(
       `
     <h2>${B.title}</h2>
@@ -4004,7 +4192,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <p class="note"><span class="src">${T.sample}</span> ${B.note}</p>
     <div class="row"><button class="ghost" type="button" id="again2">${T.impact.again}</button><button class="ghost" type="button" id="otherCo2">${T.country.other}</button><button class="ghost" type="button" id="hallBack">${B.hall}</button></div>
     <div class="row pin"><button class="cta" type="button" id="toMine">${B.mine}</button></div>`,
-      demo.dir,
+      DIR,
     );
   }
 
@@ -4061,7 +4249,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         ["الحضور", `<span class="num">94%</span>`],
       ])}`;
       const lvNow = `<div class="lv" id="lvNow">${lv0.map((x, i) => `<i data-g="${lv1[i]}" style="flex-grow:${x};background:${lvC[i]}"></i>`).join("")}</div>`;
-      change = `${big(`فجوة ${c.ar}`, gapOf(b), gapOf(c))}${big(`مموّلٌ تأهيلهم في ${CO.ar}`, b.totals.pct, totals().pct, "%", "up")}
+      change = `${big(`فجوة ${c.ar}`, gapOf(b), gapOf(c))}${big(`مموّلٌ تأهيلهم في ${coName()}`, b.totals.pct, totals().pct, "%", "up")}
       <div class="sect">المستويات · قبل ← الآن</div><div class="levels"><span>قبل</span>${lvBar(lv0)}<span>الآن</span>${lvNow}</div>${legend}
       <p class="note">متوسّط السمات الستّ: <span class="num">15.4</span> ← <b class="num">17.0</b> · من «في البداية» إلى «نامٍ».</p>`;
       details = `<div class="sect">السمات الستّ للفئة · قبل ← الآن</div>${bars(TRAITS)}
@@ -4144,9 +4332,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         level(
           "1",
           "البلد",
-          CO.ar,
+          coName(),
           big("مموّلٌ تأهيلهم", T0.pct, T1.pct, "%", "up") + big("ينتظرون التأهيل", T0.gap, T1.gap),
-          `اقترب ${CO.ar} من سدّ حاجته؛ بإيقاع اليوم تُسدّ الفجوة خلال <b class="num">${Math.ceil(T1.gap / pace())}</b> شهراً.`,
+          `اقترب ${coName()} من سدّ حاجته؛ بإيقاع اليوم تُسدّ الفجوة خلال <b class="num">${Math.ceil(T1.gap / pace())}</b> شهراً.`,
         ) +
         level(
           "2",
@@ -4189,7 +4377,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         level(
           "1",
           "البلد",
-          CO.ar,
+          coName(),
           big("مكفولون في البلد", T0.sponsored, T1.sponsored, "", "up"),
           `كفالاتٌ شهرية جديدة تصل بإثبات تسليم كلّ شهر.`,
         ) +
@@ -4225,9 +4413,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         level(
           "1",
           "البلد",
-          CO.ar,
+          coName(),
           big("مكسوّون هذا الموسم", T0.clothed, T1.clothed, "", "up"),
-          `تُسدّ حاجة الموسم في ${CO.ar} بقدر دعمك.`,
+          `تُسدّ حاجة الموسم في ${coName()} بقدر دعمك.`,
         ) +
         level(
           "2",
@@ -4284,7 +4472,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       ["ما تمّ", done],
       [
         "الأثر بالمستويات",
-        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">تجريبي</span> أرقامٌ تجريبية، محسوبةٌ بعد قيد دعمك عليها.` : `<span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
+        `<p class="lead">دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم ${reg}، ثم المجموعة، ثم ${L.track === "qualify" ? "الطالب" : "الفرد"}.</p><p class="note">${L.engine ? `<span class="src">تجريبي</span> أرقامٌ تجريبية، محسوبةٌ بعد قيد دعمك عليها.` : `<span class="src">افتراضي</span> أرقام ${coName()} افتراضية حتى تتّصل منصّة تشغيلها.`}</p>${levels}`,
       ],
       ["التفاصيل", details],
     ];
@@ -4408,7 +4596,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     globe.rotation.y = faceY(CO) - 0.6;
     markLand();
     markArcs();
-    const tl = gsap.timeline();
+    const tl = (MOVING = gsap.timeline());
     tl.add(() => {
       const c0 = camera.position.clone();
       flyPath(
@@ -4451,7 +4639,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     onPanel(() => {
       // the page owns the route to «أثري» (the demo's or the donor's dashboard): follow its link
       $("#toMine")?.addEventListener("click", () => $("#hud a.exit")?.click());
-      $("#again2")?.addEventListener("click", backToCountry);
+      $("#again2")?.addEventListener("click", () => backToCountry());
       $("#otherCo2")?.addEventListener("click", enterWorld);
       $("#hallBack")?.addEventListener("click", backToHall);
     });
@@ -4471,19 +4659,19 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     /* the donor's close: what THEIR support moved, a warm line, and the way to «أثري» */
     showPanel(`
     <h2>أثر دعمك</h2>
-    <p class="sub">دعمك وصل ${place ? `${place} في ` : ""}${CO.ar}. هذا ما تغيّر به، قبله وبعده.</p>
+    <p class="sub">دعمك وصل ${place ? `${place} في ` : ""}${coName()}. هذا ما تغيّر به، قبله وبعده.</p>
     <div class="kpis k2">
       <div class="kpi"><b class="num" data-count="${L.amount}">0</b><span>ر.س دعمك</span></div>
       <div class="kpi"><b class="num" data-count="${L.kids}">0</b><span>${kidsWord}</span></div>
     </div>
-    <div class="sect">ما حرّكه دعمك في ${CO.ar}</div>
+    <div class="sect">ما حرّكه دعمك في ${coName()}</div>
     ${cmp("نسبة التمويل قبل", b.pct, "الآن", t.pct, "%")}
     ${cmp("ينتظرون التأهيل قبل", b.gap, "الآن", t.gap)}
     ${L.track === "kiswa" ? cmp("مكسوّون قبل", b.clothed, "الآن", t.clothed) : ""}
     ${L.track === "sponsor" ? cmp("مكفولون قبل", b.sponsored, "الآن", t.sponsored) : ""}
-    ${months < months0 ? `<p class="sub">وبدعمك اقتربت ${CO.ar} من سدّ حاجتها: <b class="num">${months}</b> شهراً بدل <span class="num">${months0}</span> بإيقاع اليوم.</p>` : ""}
+    ${months < months0 ? `<p class="sub">وبدعمك اقتربت ${coName()} من سدّ حاجتها: <b class="num">${months}</b> شهراً بدل <span class="num">${months0}</span> بإيقاع اليوم.</p>` : ""}
     <p class="warm">وراء كلّ رقمٍ هنا طفلٌ اقترب ممّا ينتظره، بفضل الله ثم بعطائك. جزاك الله خيراً.</p>
-    ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${CO.ar} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
+    ${L.engine || LINKED.has(CO.code) ? "" : `<p class="note"><span class="src">افتراضي</span> أرقام ${coName()} افتراضية حتى تتّصل منصّة تشغيلها.</p>`}
     <div class="row"><button class="ghost" type="button" id="again2">دعمٌ آخر</button><button class="ghost" type="button" id="otherCo2">دولة أخرى</button><button class="ghost" type="button" id="hallBack">عودة إلى القاعة</button></div>
     <div class="row pin"><button class="cta" type="button" id="toMine">إلى أثري</button></div>`);
   }
@@ -4491,8 +4679,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     country.position.set(0, 0, 0);
     country.scale.setScalar(1);
   }
-  function backToCountry() {
-    const tl = gsap.timeline();
+  /** from the closing view back into the country, onto the stage asked for (the support sheet,
+      unless the browser's Back asked for the country itself or for the impact just read) */
+  function backToCountry(to = "support") {
+    const tl = (MOVING = gsap.timeline());
     tl.to(globe.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.9, ease: "power3.in" })
       .add(() => {
         screens.forEach((s) => (s.group.visible = false));
@@ -4519,8 +4709,10 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
         "<0.2",
       )
       .add(() => {
-        setStage("support");
-        renderSupport();
+        setStage(to);
+        if (to === "country") renderCountry();
+        else if (to === "impact") renderImpact();
+        else renderSupport();
       }, "<");
   }
   function backToHall() {
@@ -4555,18 +4747,81 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     drawImpactScreen();
     drawMap();
     const left = S.stage;
+    MOVING = performance.now() + 1550;
     setTimeout(() => {
       // the visitor may have gone elsewhere meanwhile (the globe is touchable): do not pull them back
       if (disposed || S.stage !== left) return;
       setStage("hall");
-      hallView((demo ? TRIAL.history : S.history).length ? 0 : 1);
-      hint(PHONE() ? "" : "اسحب يميناً ويساراً بين الشاشات · المس شاشة الأثر لتفاصيله");
+      hallView(donor || (demo ? TRIAL.history : S.history).length ? 0 : 1);
+      hint(PHONE() ? "" : HC.hint.screens);
     }, 1500);
   }
 
+  /* ── Back: one stage at a time, for the browser's Back button and for Escape ────────────
+     The page owns the history; it asks for the stage the visitor should stand on and the hall
+     goes there with the moves it already has. A request that arrives while a move is still
+     playing waits for it, so two transitions never run over each other. */
+  let MOVING = null,
+    WANT = null,
+    wantCall = null;
+  const moving = () =>
+    S.stage === "impactPending" ||
+    (typeof MOVING === "number" ? performance.now() < MOVING : !!MOVING?.isActive());
+  function goTo(stage) {
+    WANT = stage;
+    if (wantCall) return;
+    const run = () => {
+      wantCall = null;
+      if (disposed || !WANT) return;
+      if (moving()) {
+        wantCall = gsap.delayedCall(0.15, run);
+        return;
+      }
+      const to = WANT;
+      WANT = null;
+      stepTo(to);
+      // a step the hall could not take leaves the visitor where they are: say so
+      if (!moving() && S.stage !== to) tellStage();
+    };
+    run();
+  }
+  function stepTo(to) {
+    const from = S.stage;
+    if (from === to || from === "gate") return;
+    cancelReplay();
+    stopFilm();
+    root.classList.remove("watching");
+    const settle = () => pillars.forEach((o) => (o.baseH = o.fillH));
+    if (to === "hall") return backToHall();
+    if (to === "world") return from === "hall" || from === "big" ? enterWorld() : backToWorld();
+    if (to === "country") {
+      if (from === "hall" || from === "world") return PICKED ? enterCountry() : undefined;
+      if (from === "big") return backToCountry("country");
+      settle();
+      setStage("country");
+      return renderCountry();
+    }
+    if (to === "support") {
+      if (from === "big") return backToCountry("support");
+      if (from !== "country" && from !== "impact") return;
+      settle();
+      setStage("support");
+      return renderSupport();
+    }
+    if (to === "impact" && from === "big" && S.last) return backToCountry("impact");
+  }
+  on(window, "keydown", (e) => {
+    if (e.key !== "Escape" || e.defaultPrevented || e.isComposing) return;
+    if (e.target instanceof HTMLSelectElement) return; // Escape there closes the list
+    if (FILM) return stopFilm();
+    if (S.stage === "gate") return;
+    // on the hall floor Escape closes the open record or guide; deeper, it is one step back
+    if (S.stage === "hall") return panel.classList.contains("on") ? hidePanel() : undefined;
+    onBack?.();
+  });
+
   /* ── The hall: turn to each screen (swipe, arrows or dots) ─────── */
-  const VIEWS = [scrImpact, scrMap, scrTracks],
-    VIEW_NAMES = ["الأثر", "الخريطة", "أنواع الدعم"];
+  const VIEWS = [scrImpact, scrMap, scrTracks];
   let hallAt = 1;
   function hallView(i, smooth = true) {
     hallAt = (i + VIEWS.length) % VIEWS.length;
@@ -4578,7 +4833,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       .querySelectorAll("#hallNav [data-v]")
       .forEach((b) => b.setAttribute("aria-current", +b.dataset.v === hallAt ? "true" : "false"));
   }
-  $("#hallNav")?.addEventListener("click", (e) => {
+  on($("#hallNav"), "click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
     sound.cue("tick");
@@ -4592,7 +4847,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     if (!all.length) {
       showPanel(
         `<h2>${G.title}</h2><p class="sub">${G.empty}</p><div class="row"><button class="cta" type="button" id="goWorld">${G.world}</button><button class="ghost" type="button" id="closeP">${G.close}</button></div>`,
-        demo.dir,
+        DIR,
       );
       onPanel(() => {
         $("#goWorld")?.addEventListener("click", enterWorld);
@@ -4638,7 +4893,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <article class="co-card" data-entry="${r.id}"><h3 class="log-h">${T.impact.title(r.kindName, r.label)}</h3><p class="co-line">${(r.kind === "monthly" ? G.gift : G.line)(r.money, r.country, r.date)}</p>${detail}
     <div class="row"><a class="cta" href="${demo.impactHref(r.kind)}">${T.impact.see}</a></div></article>
     <div class="row"><button class="ghost" type="button" id="closeP">${G.close}</button></div>`,
-      demo.dir,
+      DIR,
     );
     onPanel(() => {
       panel
@@ -4696,7 +4951,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     <p class="sub">${T.tracks.sub}</p>
     ${TRIAL_KINDS.map((k, i) => `<article class="lvl"><header><span class="ic">${i + 1}</span><div><small>${T.screen.tracksHow[k]}</small><b>${demo.giving.tracks[k].name}</b></div></header><p class="mean">${demo.giving.tracks[k].promise}</p><p class="mean">${T.impact.next[k]}</p></article>`).join("")}
     <div class="row"><button class="cta" type="button" id="goWorld">${T.tracks.go}</button><button class="ghost" type="button" id="closeP">${T.log.close}</button></div>`,
-      demo.dir,
+      DIR,
     );
     onPanel(() => {
       $("#goWorld")?.addEventListener("click", enterWorld);
@@ -4755,8 +5010,8 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   on(window, "resize", resize);
   resize();
   const clock = new THREE.Clock();
-  canvas.addEventListener("pointerdown", () => (idle = 0));
-  const perf = { n: 0, t: 0, stepped: false, tier: LOW ? "منخفضة (جوال)" : "عالية" };
+  on(canvas, "pointerdown", () => (idle = 0));
+  const perf = { n: 0, t: 0, stepped: false, tier: LOW ? HC.perf.low : HC.perf.high };
   /* ?perf — a small meter for real-device testing: frames per second, draw calls, quality tier */
   const meter = new URLSearchParams(location.search).has("perf")
     ? document.createElement("output")
@@ -4788,7 +5043,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
     perf.stepped = true;
     if (ms > 28) {
       // under ~35fps: drop depth of field and render at a lower resolution
-      perf.tier = "مخفَّضة تلقائياً";
+      perf.tier = HC.perf.stepped;
       renderer.setPixelRatio(1);
       composer.setSize(innerWidth, innerHeight);
       if (dof) dof.blendMode.opacity.value = 0;
@@ -4797,9 +5052,14 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   }
   const placed = [],
     RANK = { hq: 1, office: 2, field: 3, unconfirmed: 4 };
-  const rankOf = (l) => (!l.globe ? 9 : PICKED && l.globe === CO ? 0 : RANK[l.globe.st] || 5);
-  let ordered = null,
-    orderedFor = "";
+  const rankOf = (l) =>
+    !l.globe
+      ? 9
+      : PICKED && l.globe === CO
+        ? 0
+        : mineCodes.has(l.globe.code)
+          ? 0.5
+          : RANK[l.globe.st] || 5;
   /** labels in priority order (stable within a rank), re-sorted only when the choice changes */
   function labelOrder() {
     const key = labels.length + (PICKED ? CO.code : "");
@@ -4950,7 +5210,9 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       const cu = globe.userData.selCurve;
       if (cu) spark.position.copy(cu.getPoint((time * 0.35) % 1));
       gDots.forEach(({ c, m }) =>
-        m.scale.setScalar(PICKED && c === CO ? 1.8 + Math.sin(time * 4) * 0.5 : 1),
+        m.scale.setScalar(
+          PICKED && c === CO ? 1.8 + Math.sin(time * 4) * 0.5 : mineCodes.has(c.code) ? 1.6 : 1,
+        ),
       );
     }
     if (counted) renderer.info.reset();
@@ -5061,16 +5323,69 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
       enterCountry();
     },
   }; // for automated checks
-  return () => {
-    sound.dispose();
+  const dispose = () => {
+    if (disposed) return;
     disposed = true;
     cancelAnimationFrame(raf);
-    listeners.forEach((off) => off());
-    controls.dispose();
-    composer.dispose();
-    renderer.dispose();
-    pmrem.dispose();
+    sound.dispose();
+    /* every tween, timeline and delayed call is the hall's (nothing else on the site animates
+       with GSAP): an endless one left alive would hold the whole scene and its DOM */
+    cancelReplay();
+    gsap.globalTimeline.getChildren(true, true, true).forEach((t) => t.kill());
     gsap.globalTimeline.timeScale(1);
+    listeners.forEach((off) => off());
+    listeners.length = 0;
+    controls.dispose();
+    /* the GPU side: geometries, materials and their textures, render targets, then the context */
+    const freed = new Set();
+    const free = (x) => {
+      if (x && typeof x.dispose === "function" && !freed.has(x)) {
+        freed.add(x);
+        x.dispose();
+      }
+    };
+    const freeMaterial = (m) => {
+      for (const v of Object.values(m)) if (v && v.isTexture) free(v);
+      for (const u of Object.values(m.uniforms || {})) if (u?.value?.isTexture) free(u.value);
+      free(m);
+    };
+    scene.traverse((o) => {
+      free(o.geometry);
+      (Array.isArray(o.material) ? o.material : o.material ? [o.material] : []).forEach(
+        freeMaterial,
+      );
+      if (o.isLight) free(o.shadow);
+      if (typeof o.getRenderTarget === "function") free(o.getRenderTarget()); // the mirror floor
+      if (o.isInstancedMesh) free(o);
+    });
+    free(scene.environment);
+    scene.clear();
+    /* the post-processing libraries draw every pass with one full-screen triangle they keep for
+       the life of the page. Each renderer hangs its GPU buffer and a listener on that shared
+       geometry, so a hall that leaves it alone stays reachable through it (context, canvas and
+       page markup) after every visit. Disposing it lets go of both; the next hall uploads it anew. */
+    for (const pass of composer.passes) {
+      free(pass.screen?.geometry);
+      for (const v of Object.values(pass)) {
+        if (v?._mesh?.geometry) {
+          free(v._mesh.geometry);
+          free(v._mesh.material);
+        } else if (v?.isWebGLRenderTarget) free(v);
+      }
+    }
+    composer.dispose();
+    pmrem.dispose();
+    renderer.renderLists.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    /* what the scene wrote into the page's markup */
+    labels.forEach((l) => l.el.remove());
+    labels.length = 0;
+    meter?.remove();
+    if (impact.parentNode !== root) root.appendChild(impact); // the page owns it
+    for (const el of [panel, impact, legend]) if (el) el.replaceChildren();
     delete window.__hall;
+    delete window.__hallGate;
   };
+  return Object.assign(dispose, { goTo });
 }

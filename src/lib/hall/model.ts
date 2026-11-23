@@ -11,7 +11,7 @@
  * الشبكة والحدود وموضع العمود (`nx`/`ny`) لا غير.
  */
 import { SHAPES } from "@/data/hall-geo";
-import { ALBANIA } from "@/data/vision-demo";
+import { ALBANIA, TRAITS as DEMO_TRAITS } from "@/data/vision-demo";
 import { simFor } from "@/data/vision-network";
 import { WAMY_COUNTRIES } from "@/data/wamy-network";
 
@@ -60,14 +60,12 @@ export const TRACKS: Record<Track, { name: string; unit: number; unitName: strin
   kiswa: { name: "كسوة", unit: 300, unitName: "كسوة يتيم" },
 };
 
-export const TRAITS: Array<[string, number, number]> = [
-  ["الرشد", 17.4, 19.4],
-  ["الأخوّة الإيمانية", 15.9, 17.6],
-  ["الصمود", 14.2, 16.1],
-  ["الكفايات", 13.8, 15.0],
-  ["الدراية", 16.1, 17.3],
-  ["الهمّة", 15.0, 16.8],
-];
+/** السمات الستّ ومتوسّطاها (قبل، بعد) كما في منصة الرؤية: من `vision-demo`، لا نسخةٌ ثانية. */
+export const TRAITS: Array<[string, number, number]> = DEMO_TRAITS.map((t) => [
+  t.name.ar,
+  t.before,
+  t.after,
+]);
 
 export function fnv(s: string) {
   let h = 2166136261;

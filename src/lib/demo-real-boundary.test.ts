@@ -65,8 +65,11 @@ describe("demo/real boundary", () => {
 
 describe("immersive hall follows its source", () => {
   it("opens the trial only from an explicit ?try=1, never from the platform-wide mode", () => {
+    // the switch lives in lib/hall/source.ts; neither it nor the page may read the platform mode
     const hall = readFileSync(join(ROOT, "routes/hall.lazy.tsx"), "utf8");
+    const source = readFileSync(join(ROOT, "lib/hall/source.ts"), "utf8");
     expect(hall).not.toMatch(/isTrial\(/);
-    expect(hall).toMatch(/const trying = search\.try === 1;/);
+    expect(hall + source).not.toMatch(/config\/platform/);
+    expect(source).toMatch(/search\.try === 1 \? "trial"/);
   });
 });
