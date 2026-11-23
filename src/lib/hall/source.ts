@@ -2,6 +2,8 @@
  * قاعة الأثر (الوضع الغامر) والصفحات العادية منتجٌ واحد: هذا الملفّ هو الموضع الواحد الذي
  * يقرّر من أين تقرأ القاعة، وإلى أين تعود.
  *
+ *   - الداعم: من دخل من لوحته (`?me=1`) يرى أثره هو، من كفالاته نفسها التي تقرؤها اللوحة
+ *     (`./donor`). لا كتالوج تجربة ولا أرقام نموذجية في هذا الوضع، أيّاً كان وضع المنصّة.
  *   - التجربة: كتالوج التجربة الواحد (`./trial`، وهو ما تقرؤه صفحات «جرّب»).
  *   - الحقيقي: مصادر الصفحات نفسها — أعداد الدليل من `geoQuery` (ما تقرؤه الخريطة والدليل،
  *     بحجب الأعداد الصغيرة نفسه)، والدول المتّصلة من `getOperatingLinks` (ما تقرؤه شبكة الرؤية).
@@ -14,6 +16,8 @@ import type { Geo, GeoCountry } from "@/lib/geo";
 export type HallSearch = {
   /** opens the hall on the trial catalogue */
   try?: 1;
+  /** the donor's own hall: entered from their dashboard, it shows their real sponsorships */
+  me?: 1;
   /** a trial child whose simulated gift is replayed on arrival */
   child?: string;
   cadence?: "monthly" | "one_time";
@@ -40,6 +44,7 @@ export function parseHallSearch(raw: Record<string, unknown>): HallSearch {
   const from = hallReturn(raw["from"]);
   return {
     ...(raw["try"] === 1 || raw["try"] === "1" ? { try: 1 as const } : {}),
+    ...(raw["me"] === 1 || raw["me"] === "1" ? { me: 1 as const } : {}),
     ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
     ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
       ? { cadence: raw["cadence"] }
@@ -50,8 +55,12 @@ export function parseHallSearch(raw: Record<string, unknown>): HallSearch {
 }
 
 export type HallSource = {
-  /** `trial`: the trial catalogue and the visitor's browser stores; `live`: the directory's counts */
-  mode: "trial" | "live";
+  /**
+   * `donor`: the signed-in donor's own sponsorships, as their dashboard reads them, and nothing
+   * simulated; `trial`: the trial catalogue and the visitor's browser stores; `live`: the
+   * directory's counts
+   */
+  mode: "donor" | "trial" | "live";
   /** «أثري» of the same mode: the trial's impact page, or the donor's dashboard */
   mine: "/try/impact" | "/dashboard";
   /** where the visitor came from, when that is another page than `mine` */
@@ -61,12 +70,21 @@ export type HallSource = {
 };
 
 /**
- * the one demo/real switch of the hall: `?try=1` or the platform's trial mode opens the trial
- * hall; otherwise the live one. Everything the page does differently between the two follows
- * from `mode` here.
+ * the one demo/real switch of the hall. `?try=1` always opens the trial hall (a link that asks
+ * for the trial gets the trial). `?me=1`, the dashboard's own link, opens the donor's hall on
+ * their real sponsorships, whatever the platform's mode: a donor never lands in a demo from
+ * their own dashboard. Otherwise the platform's trial mode opens the trial hall, and the live
+ * one after it. Everything the page does differently between the three follows from `mode`.
  */
 export function hallSource(search: HallSearch, platform: PlatformMode = PLATFORM_MODE): HallSource {
-  const mode = search.try === 1 || platform === "trial" ? "trial" : "live";
+  const mode =
+    search.try === 1
+      ? "trial"
+      : search.me === 1
+        ? "donor"
+        : platform === "trial"
+          ? "trial"
+          : "live";
   const mine = mode === "trial" ? "/try/impact" : "/dashboard";
   const from = hallReturn(search.from);
   return {
@@ -76,6 +94,14 @@ export function hallSource(search: HallSearch, platform: PlatformMode = PLATFORM
     start: search.c ?? null,
   };
 }
+
+/**
+ * the language the hall speaks. The trial hall and the donor's hall follow the interface
+ * language; the live concept hall's panels are written in Arabic only so far, so that whole hall
+ * stays Arabic (with `lang` and `dir` to match) instead of mixing two languages on one screen.
+ */
+export const hallLanguage = (mode: HallSource["mode"], locale: string): string =>
+  mode === "live" ? "ar" : locale;
 
 /**
  * what the live hall is given of the directory: the same country rows the map and the directory

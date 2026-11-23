@@ -149,7 +149,7 @@ function DashboardPage() {
         <MyImpactHero
           impact={myImpact(sponsorships)}
           loading={isLoading}
-          hallSearch={{ from: "/dashboard" }}
+          hallSearch={{ me: 1, from: "/dashboard" }}
         />
       )}
       {/* المحطّات: لمن له كفالةٌ واحدة على الأقل، بما تحقّق فعلاً. */}

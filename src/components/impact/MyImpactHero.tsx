@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HallSearch } from "@/lib/hall/source";
 import { defineCopy, pluralOf, useCopy } from "@/lib/locale";
-import { impactAt, impactSpan, type MyImpact } from "@/lib/my-impact";
+import { impactAt, impactPercent, impactSpan, impactStats, type MyImpact } from "@/lib/my-impact";
 
 /**
  * «كوكبة أثرك»: الداعم في المركز، وكلّ طفلٍ يكفله جوهرةٌ على مدار. حول كلّ طفل
@@ -135,11 +135,13 @@ export function MyImpactHero({
     // names sit outside the orbit: above the upper gems, below the rest
     return { x: CX + Math.cos(a) * RX, y: CY + Math.sin(a) * RY, up: Math.sin(a) < -0.3 };
   });
-  const pct = (v: number) => `${Math.round(v * 100)}%`;
+  const pct = impactPercent;
+  // the figures as written (`impactStats`): the immersive hall writes the very same strings
+  const figures = impactStats(view);
   const stats: [string, string, string, string][] = [
-    [c.inCare[0]!, String(view.inCare), "", c.inCare[1]!],
-    [c.months[0]!, String(view.months), "", c.months[1]!],
-    [c.share[0]!, String(Math.round(view.share * 100)), "%", c.share[1]!],
+    [c.inCare[0]!, figures.inCare, "", c.inCare[1]!],
+    [c.months[0]!, figures.months, "", c.months[1]!],
+    [c.share[0]!, figures.share, "%", c.share[1]!],
   ];
 
   return (

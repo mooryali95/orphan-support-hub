@@ -19,7 +19,18 @@ import { tryChild } from "@/lib/try-demo";
 import { TRY_PLACES, tryChildOf, tryRegionName } from "@/lib/try-places";
 
 import { byCode, COUNTRIES, regionsFor, TRAITS } from "./model";
-import { hallEntry, hallLiveRows, hallReturn, hallSource, parseHallSearch } from "./source";
+import { impactStats, myImpact } from "@/lib/my-impact";
+import type { MySponsorship } from "@/lib/sponsorships.functions";
+
+import { donorHall, donorOrphanIds } from "./donor";
+import {
+  hallEntry,
+  hallLanguage,
+  hallLiveRows,
+  hallReturn,
+  hallSource,
+  parseHallSearch,
+} from "./source";
 import { trialHall } from "./trial";
 
 /** the only child id the money functions accept (`orphanId: z.string().uuid()`) */
@@ -67,7 +78,17 @@ describe("الحقيقي: القاعة تقرأ مسار الصفحات نفسه
         .filter((i) => /supabase|\.functions$|\.server$/.test(i))
         .map((i) => `${f} ← ${i}`),
     );
-    expect(server).toEqual(["src/routes/hall.lazy.tsx ← @/lib/vision-links.functions"]);
+    // the donor's hall adds the dashboard's own list (its gate unchanged) and the public card
+    // any visitor reads; `donor.ts` takes the list's type only
+    expect(server.sort()).toEqual([
+      "src/lib/hall/donor.ts ← @/lib/sponsorships.functions",
+      "src/routes/hall.lazy.tsx ← @/lib/orphans.functions",
+      "src/routes/hall.lazy.tsx ← @/lib/sponsorships.functions",
+      "src/routes/hall.lazy.tsx ← @/lib/vision-links.functions",
+    ]);
+    expect(read("src/lib/hall/donor.ts")).toMatch(
+      /import type \{ MySponsorship \} from "@\/lib\/sponsorships\.functions"/,
+    );
     const page = read("src/routes/hall.lazy.tsx");
     expect(page).toContain("fetchQuery(geoQuery)");
     expect(page).toContain(".then(hallLiveRows)");
@@ -130,7 +151,7 @@ describe("التجربة والعرض: تعريفٌ واحد لما يتكرّر
     const drawn = COUNTRIES.filter((c) => c.st !== "unconfirmed");
     expect(NETWORK_SITES).toBe(NETWORK.length - 1);
     expect(NETWORK_SITES).toBe(drawn.length - 1);
-    expect(read("src/routes/hall.lazy.tsx")).toContain("{NETWORK_SITES} موقعاً");
+    expect(read("src/routes/hall.lazy.tsx")).toContain("c.net(formatCount(NETWORK_SITES, locale))");
     for (const f of ["src/routes/hall.lazy.tsx", "src/components/hall/hall-scene.js"])
       expect(read(f)).not.toMatch(/\d+(<\/span>)?\s*موقعاً/);
   });
@@ -227,7 +248,196 @@ describe("الدخول والخروج يحملان السياق", () => {
     );
     expect(read("src/routes/try.index.tsx")).not.toMatch(/search=\{\{\s*try: 1\s*\}\}/);
     expect(read("src/routes/_authenticated/dashboard.tsx")).toContain(
-      'hallSearch={{ from: "/dashboard" }}',
+      'hallSearch={{ me: 1, from: "/dashboard" }}',
     );
+  });
+});
+
+/* ── قاعة الداعم: أثره الحقيقي من مصدر لوحته، لا من كتالوج التجربة ─────────────────────── */
+
+const NOW = new Date("2026-11-23T00:00:00Z");
+const KID = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
+const sponsorship = (
+  n: number,
+  over: Partial<MySponsorship> = {},
+  need = 100,
+  funded = 60,
+): MySponsorship => ({
+  id: `10000000-0000-4000-8000-00000000000${n}`,
+  amount: 40,
+  currency: "EUR",
+  type: "monthly",
+  status: "active",
+  created_at: "2026-01-10T00:00:00Z",
+  started_at: "2026-01-15T00:00:00Z",
+  ended_at: null,
+  end_reason: null,
+  cancel_effective_at: null,
+  paused_until: null,
+  provider_subscription_id: null,
+  orphan: {
+    id: KID(n),
+    display_name: `طفل ${n}`,
+    code: `KH-${n}`,
+    monthly_need: need,
+    funded_monthly: funded,
+  },
+  ...over,
+});
+/** a donor with every kind of row the dashboard meets */
+const MINE: MySponsorship[] = [
+  sponsorship(1),
+  sponsorship(2, { amount: 25, status: "paused", started_at: "2025-06-01T00:00:00Z" }, 80, 80),
+  sponsorship(3, { type: "one_time", status: "completed", ended_at: "2026-03-01T00:00:00Z" }),
+  sponsorship(4, { status: "cancelled", ended_at: "2026-05-01T00:00:00Z" }),
+  sponsorship(5, { status: "pending_payment" }),
+  sponsorship(6, { amount: 33.3 }, 99, 10),
+  sponsorship(7, { orphan: null }),
+];
+/** the country on each child's public card, as the directory stores it */
+const CARD: Record<string, string | null> = {
+  [KID(1)]: "ألبانيا",
+  [KID(2)]: "AL",
+  [KID(3)]: "Kosovo",
+  [KID(4)]: null,
+  [KID(6)]: "كوسوفو",
+};
+const cardOf = (id: string) => CARD[id];
+
+describe("مفتاح القاعة: الداعم من لوحته يرى أثره هو", () => {
+  it("?me=1 يفتح قاعة الداعم أيّاً كان وضع المنصّة، و?try=1 يبقى تجربة", () => {
+    for (const platform of ["trial", "live"] as const) {
+      expect(hallSource({ me: 1 }, platform)).toMatchObject({ mode: "donor", mine: "/dashboard" });
+      expect(hallSource({ me: 1, try: 1 }, platform).mode).toBe("trial");
+    }
+    expect(parseHallSearch({ me: "1", from: "/dashboard" })).toEqual({
+      me: 1,
+      from: "/dashboard",
+    });
+    expect(parseHallSearch({ me: "yes" })).toEqual({});
+    // returning to the dashboard is «أثري» itself: no second chip
+    expect(hallSource({ me: 1, from: "/dashboard" }, "trial").back).toBeNull();
+  });
+
+  it("اللوحة تدخل القاعة بـme=1، والصفحة لا تحمّل كتالوج التجربة للداعم", () => {
+    expect(read("src/routes/_authenticated/dashboard.tsx")).toContain(
+      'hallSearch={{ me: 1, from: "/dashboard" }}',
+    );
+    const page = read("src/routes/hall.lazy.tsx");
+    expect(page).toContain('trying ? import("@/lib/hall/trial") : null');
+    expect(page).toContain('const donor = source.mode === "donor"');
+    // real and sample never share a view: the scene's donor path exists only without the demo
+    expect(read("src/components/hall/hall-scene.js")).toContain("const donor = !!mine && !demo;");
+  });
+
+  it("لغة القاعة: التجربة والداعم بلغة الواجهة، والحيّة عربية كلّها حتى تُترجم لوحاتها", () => {
+    expect(hallLanguage("trial", "en")).toBe("en");
+    expect(hallLanguage("donor", "en")).toBe("en");
+    expect(hallLanguage("live", "en")).toBe("ar");
+  });
+});
+
+describe("أرقام الداعم في القاعة هي أرقام لوحته: المصدر نفسه والكتابة نفسها", () => {
+  it("للقائمة نفسها: الصورة هي `myImpact` والأرقام هي `impactStats`، حرفاً بحرف", () => {
+    const hall = donorHall(MINE, cardOf, NOW);
+    const dashboard = myImpact(MINE, NOW);
+    expect(hall.impact).toEqual(dashboard);
+    expect(hall.stats).toEqual(impactStats(dashboard));
+    // and the figures are what the hero has always written
+    expect(hall.stats).toEqual({
+      inCare: String(dashboard.inCare),
+      months: String(dashboard.months),
+      share: String(Math.round(dashboard.share * 100)),
+    });
+    expect(dashboard.inCare).toBe(3);
+  });
+
+  it("رأس اللوحة والقاعة يكتبان من `impactStats` وحدها، ولا يحسب أحدهما رقماً ثانياً", () => {
+    const hero = read("src/components/impact/MyImpactHero.tsx");
+    expect(hero).toContain("impactStats(view)");
+    expect(hero).not.toMatch(/String\(view\.(inCare|months)\)|Math\.round\(view\.share/);
+    const donor = read("src/lib/hall/donor.ts");
+    expect(donor).toContain("myImpact(list, now)");
+    expect(donor).toContain("stats: impactStats(impact)");
+    const scene = read("src/components/hall/hall-scene.js");
+    for (const k of ["inCare", "months", "share"]) expect(scene).toContain(`MINE.stats.${k}`);
+    // the scene never derives a figure from the picture: it writes the three strings it is given
+    expect(scene).not.toMatch(/MINE\??\.impact\.(inCare|months|share)/);
+    expect(scene).not.toMatch(/data-count="\$\{MINE/);
+  });
+
+  it("القاعة تقرأ قائمة اللوحة نفسها: الدالّة نفسها والمفتاح نفسه، وببوّابتها", () => {
+    const page = read("src/routes/hall.lazy.tsx");
+    const dashboard = read("src/routes/_authenticated/dashboard.tsx");
+    for (const src of [page, dashboard]) {
+      expect(src).toContain('queryKey: ["my-sponsorships"]');
+      expect(src).toContain("useServerFn(listMySponsorships)");
+    }
+    expect(page).toContain("donorHall(res.sponsorships,");
+    // the gate and the card's columns are the dashboard's, untouched
+    const fn = read("src/lib/sponsorships.functions.ts");
+    expect(fn).toMatch(
+      /listMySponsorships = createServerFn\(\{ method: "GET" \}\)\s*\.middleware\(\[requireSupabaseAuth\]\)/,
+    );
+    expect(fn).toContain("orphan:orphans(id, display_name, code, monthly_need, funded_monthly)");
+  });
+
+  it("الدول من البطاقة العامّة: كلّ طفلٍ في دولةٍ واحدة أو خارج الكرة، والمجموع لا ينقص", () => {
+    const hall = donorHall(MINE, cardOf, NOW);
+    expect(hall.countries.map((c) => [c.code, c.inCare, c.children.length])).toEqual([
+      ["AL", 2, 2],
+      ["XK", 1, 2],
+    ]);
+    const placed = hall.countries.reduce((a, c) => a + c.children.length, 0);
+    expect(placed + hall.unplaced).toBe(hall.impact.children.length);
+    expect(hall.countries.reduce((a, c) => a + c.inCare, 0)).toBeLessThanOrEqual(
+      hall.impact.inCare,
+    );
+    expect(hall.unplaced).toBe(1); // the child whose card names no country
+    expect(hall.start).toBe("AL");
+    // only the public card is asked for, once per real child, never for an unpaid request
+    expect(donorOrphanIds(MINE)).toEqual([KID(1), KID(2), KID(3), KID(4), KID(6)]);
+  });
+
+  it("لا صورة ولا مكان: الطفل اسمه المعروض وأشهره وحصّته ورابط ملفّه العامّ لا غير", () => {
+    const kid = donorHall(MINE, cardOf, NOW).countries[0]!.children[0]!;
+    expect(Object.keys(kid).sort()).toEqual(["active", "href", "months", "name", "share"]);
+    expect(kid).toMatchObject({ name: "طفل 1", share: "40%", href: `/orphans/${KID(1)}` });
+    const code = read("src/lib/hall/donor.ts").replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+    expect(code).not.toMatch(/photo|region|city|story|birth|real_name|supabase/i);
+    // the page takes the country alone from the card
+    expect(read("src/routes/hall.lazy.tsx")).toContain("[id, r.orphan?.country ?? null]");
+  });
+
+  it("بلا كفالات: حالة فارغة صادقة، لا أرقام نموذجية", () => {
+    const hall = donorHall([], cardOf, NOW);
+    expect(hall).toMatchObject({ countries: [], unplaced: 0, start: null });
+    expect(hall.stats).toEqual({ inCare: "0", months: "0", share: "0" });
+    expect(hall.impact.children).toEqual([]);
+    const scene = read("src/components/hall/hall-scene.js");
+    expect(scene).toContain("!MINE.impact.children.length");
+    expect(scene).toContain('href="/orphans"');
+    // the donor's path stops before every simulated stage
+    expect(scene).toMatch(/function enterCountry\(\) \{\s*if \(donor\) return;/);
+    expect(scene).toMatch(/if \(FILM \|\| donor \|\| S\.stage !== "gate"\) return;/);
+  });
+
+  it("معرّف طفلٍ تجريبي لا يصير رابطاً ولا يُطلب: المعرّف القابل للدفع وحده", () => {
+    const trial = Object.values(
+      trialHall({ pledges: [], gifts: [], now: NOW, locale: "ar" }).countries,
+    )[0]!.regions.flatMap((r) => r.kids)[0]!.id;
+    expect(trial).not.toMatch(PAYABLE_ID);
+    const list = [
+      sponsorship(1, {
+        orphan: { ...sponsorship(1).orphan!, id: trial },
+      }),
+    ];
+    expect(donorOrphanIds(list)).toEqual([]);
+    const hall = donorHall(list, () => "AL", NOW);
+    expect(hall.countries).toEqual([]);
+    expect(hall.unplaced).toBe(1);
+    for (const c of donorHall(MINE, cardOf, NOW).countries) {
+      for (const k of c.children) expect(k.href.replace("/orphans/", "")).toMatch(PAYABLE_ID);
+    }
   });
 });

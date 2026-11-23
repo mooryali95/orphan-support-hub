@@ -25,7 +25,7 @@
   color: var(--ivory);
   font-family: var(--body);
   overflow: hidden;
-  direction: rtl;
+  /* the direction is the interface language's: the page sets `dir` on the hall */
   font-size: 14px;
   line-height: 1.5;
 }
@@ -1041,6 +1041,21 @@
 .lbl.g.hq {
   color: #f3e3b5;
   border-color: rgba(243, 227, 181, 0.6);
+}
+/* the donor's hall: the countries they sponsor in keep a lit name on the globe */
+.lbl.g.mine {
+  color: #dff0df;
+  border-color: rgba(155, 197, 157, 0.75);
+  font-weight: 700;
+}
+.hall .co-list .off-globe {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px dashed rgba(246, 239, 226, 0.3);
+  color: var(--mist);
+  font-size: 12px;
 }
 .lbl.g:hover {
   border-color: #e8d8b2;
