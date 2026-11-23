@@ -9,38 +9,41 @@
 BEGIN;
 
 -- ---------------------------------------------------------------------
--- 1) البريد المحميّ: لا admin قبل التأكيد، وadmin عند التأكيد
---    (من يسجّل ببريد غيره يملك صفّاً بالبريد دون صندوقه)
+-- 1) لا إدارة بالبريد: حسابٌ جديد ببريدٍ محميّ لا يأخذ admin، ولا عند تأكيده
 -- ---------------------------------------------------------------------
 INSERT INTO auth.users (id, email, raw_user_meta_data)
-VALUES ('99990000-0000-4000-8000-000000000001', 'p.o.m2012@hotmail.com',
-        '{"full_name":"المالك"}'::jsonb)
-ON CONFLICT (email) DO NOTHING;
-
-DO $$
-DECLARE _id UUID; _confirmed TIMESTAMPTZ;
-BEGIN
-  SELECT id, email_confirmed_at INTO _id, _confirmed
-    FROM auth.users WHERE lower(email) = 'p.o.m2012@hotmail.com';
-  IF _confirmed IS NULL
-     AND EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _id AND role = 'admin') THEN
-    RAISE EXCEPTION 'FAIL — an unconfirmed protected email received the admin role';
-  END IF;
-  RAISE NOTICE 'PASS — no admin role before the email is confirmed';
-END $$;
-
+VALUES ('99990000-0000-4000-8000-0000000000aa', 'Founder.Twin@example.test', '{}'::jsonb);
+INSERT INTO public.protected_admins (email) VALUES ('founder.twin@example.test');
 UPDATE auth.users SET email_confirmed_at = now()
- WHERE lower(email) = 'p.o.m2012@hotmail.com' AND email_confirmed_at IS NULL;
+ WHERE id = '99990000-0000-4000-8000-0000000000aa';
 
 DO $$
-DECLARE _id UUID;
 BEGIN
-  SELECT id INTO _id FROM auth.users WHERE lower(email) = 'p.o.m2012@hotmail.com';
-  IF NOT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _id AND role = 'admin') THEN
-    RAISE EXCEPTION 'FAIL — protected email did not receive the admin role once confirmed';
+  -- الحساب أُنشئ قبل إدراج البريد في القائمة؛ نعيد الإنشاء بعد الإدراج لنفحص الطريقين.
+  INSERT INTO auth.users (id, email, raw_user_meta_data, email_confirmed_at)
+  VALUES ('99990000-0000-4000-8000-0000000000ab', 'founder.twin2@example.test', '{}'::jsonb, now());
+  INSERT INTO public.protected_admins (email) VALUES ('founder.twin2@example.test');
+  UPDATE auth.users SET email_confirmed_at = now() WHERE id = '99990000-0000-4000-8000-0000000000ab';
+  IF EXISTS (SELECT 1 FROM public.user_roles
+             WHERE user_id IN ('99990000-0000-4000-8000-0000000000aa',
+                               '99990000-0000-4000-8000-0000000000ab') AND role = 'admin') THEN
+    RAISE EXCEPTION 'FAIL — a protected email obtained the admin role automatically';
   END IF;
-  RAISE NOTICE 'PASS — protected email holds the admin role once confirmed';
+  RAISE NOTICE 'PASS — no admin role is granted from an email address';
 END $$;
+
+-- الإسناد بمفتاح الخدمة وحده، والحماية تمنع إزالته.
+INSERT INTO public.user_roles (user_id, role)
+VALUES ('99990000-0000-4000-8000-0000000000ab', 'admin');
+
+-- حساب المؤسّس كما هو في الإنتاج: دوره أُسند قديماً (التعبئة الرجعية).
+INSERT INTO auth.users (id, email, raw_user_meta_data, email_confirmed_at)
+VALUES ('99990000-0000-4000-8000-000000000001', 'p.o.m2012@hotmail.com',
+        '{"full_name":"المالك"}'::jsonb, now())
+ON CONFLICT (email) DO NOTHING;
+INSERT INTO public.user_roles (user_id, role)
+SELECT id, 'admin' FROM auth.users WHERE lower(email) = 'p.o.m2012@hotmail.com'
+ON CONFLICT DO NOTHING;
 
 -- ---------------------------------------------------------------------
 -- 2) بريد آخر يطلب admin صراحةً في بيانات التسجيل → sponsor

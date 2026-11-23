@@ -50,7 +50,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000001","role":"authenticated"}';
   PERFORM public.donor_set_member(_e, 'dn-fin@example.test', 'finance');
-  SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000002","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000002","role":"authenticated","amr":[{"method":"otp","timestamp":1}]}';
   PERFORM public.respond_donor_invitation(_e, true);
   RESET ROLE;
   _ok := false;
