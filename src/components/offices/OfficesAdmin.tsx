@@ -8,12 +8,14 @@ import { entityTypeLabel } from "@/lib/plural";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { OFFICE_CATEGORIES, type OfficeCategory } from "@/lib/organizations.functions";
 import {
   assignOfficeMember,
   createOffice,
   getAdminOffices,
   OFFICE_ROLE_LABELS,
   setDonorEntityStatus,
+  updateOffice,
 } from "@/lib/workspaces.functions";
 
 const SELECT =
@@ -30,6 +32,7 @@ export function OfficesAdmin() {
   const doCreate = useServerFn(createOffice);
   const doAssign = useServerFn(assignOfficeMember);
   const doStatus = useServerFn(setDonorEntityStatus);
+  const doUpdate = useServerFn(updateOffice);
   const qc = useQueryClient();
   const { data, isPending } = useQuery({
     queryKey: ["admin-offices"],
@@ -159,6 +162,11 @@ export function OfficesAdmin() {
                     {x.region ?? "الدولة كلّها"} — {countryName(x.country)}
                   </span>
                 </div>
+                <OfficeControls
+                  office={x}
+                  busy={busy}
+                  onSave={(v) => run(doUpdate({ data: { id: x.id, ...v } }), "حُفظ المكتب.")}
+                />
                 <div className="mt-2 flex flex-wrap gap-2">
                   {x.members.length === 0 ? (
                     <span className="text-xs text-muted-foreground">بلا أعضاء</span>
@@ -291,5 +299,110 @@ export function OfficesAdmin() {
         </p>
       )}
     </div>
+  );
+}
+
+const CATEGORY_LABELS: Record<OfficeCategory, string> = {
+  multi_program: "متعددة البرامج",
+  health: "صحة",
+  relief: "إغاثية",
+  youth_education: "شبابية وتعليمية",
+  survey_pending: "يُصنَّف بالمسح",
+  activity_scope: "نطاق نشاط",
+};
+
+type OfficeEdit = {
+  name: string;
+  city?: string;
+  category: OfficeCategory | null;
+  active: boolean;
+  isDemo: boolean;
+};
+
+/** حالة المكتب في سطرٍ واحد: تجريبي أو حقيقي، وفعّال أو موقوف، ومدينته وفئته. */
+function OfficeControls({
+  office,
+  busy,
+  onSave,
+}: {
+  office: {
+    name: string;
+    city?: string | null;
+    category?: string | null;
+    active: boolean;
+    is_demo?: boolean;
+  };
+  busy: boolean;
+  onSave: (v: OfficeEdit) => Promise<boolean>;
+}) {
+  const [v, setV] = useState<OfficeEdit>({
+    name: office.name.replace(/^\[تجريبي\]\s*/, ""),
+    city: office.city ?? "",
+    category: (office.category as OfficeCategory | null) ?? null,
+    active: office.active,
+    isDemo: office.is_demo ?? false,
+  });
+  return (
+    <form
+      className="mt-3 grid gap-2 md:grid-cols-6 md:items-end"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void onSave(v);
+      }}
+    >
+      <div className="md:col-span-2">
+        <Label className="text-xs">الاسم</Label>
+        <Input value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
+      </div>
+      <div>
+        <Label className="text-xs">المدينة</Label>
+        <Input
+          value={v.city}
+          placeholder="الدولة كلّها"
+          onChange={(e) => setV({ ...v, city: e.target.value })}
+        />
+      </div>
+      <div>
+        <Label className="text-xs">الفئة</Label>
+        <select
+          className={SELECT}
+          value={v.category ?? ""}
+          onChange={(e) =>
+            setV({ ...v, category: (e.target.value || null) as OfficeCategory | null })
+          }
+        >
+          <option value="">—</option>
+          {OFFICE_CATEGORIES.map((k) => (
+            <option key={k} value={k}>
+              {CATEGORY_LABELS[k]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-1 text-xs">
+        <label className="inline-flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={v.isDemo}
+            onChange={(e) =>
+              setV({ ...v, isDemo: e.target.checked, active: e.target.checked ? false : v.active })
+            }
+          />
+          تجريبي
+        </label>
+        <label className="inline-flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={v.active}
+            disabled={v.isDemo}
+            onChange={(e) => setV({ ...v, active: e.target.checked })}
+          />
+          فعّال
+        </label>
+      </div>
+      <Button type="submit" size="sm" variant="outline" disabled={busy}>
+        حفظ
+      </Button>
+    </form>
   );
 }

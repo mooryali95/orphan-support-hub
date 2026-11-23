@@ -6,6 +6,7 @@ import { Building2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
+import { OfficesMap } from "@/components/offices/OfficesMap";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
@@ -67,6 +68,8 @@ function OrganizationsPage() {
         <div className="max-w-5xl">
           <h1 className="text-3xl font-extrabold">{c.title}</h1>
           <p className="mt-3 max-w-2xl leading-8 text-muted-foreground">{c.lead}</p>
+
+          <OfficesMap />
 
           {data.error ? (
             // تعذّر الجلب ليس «لا جهات»: القول بأن لا جهة معتمدة يطعن في المنصّة بلا سبب.

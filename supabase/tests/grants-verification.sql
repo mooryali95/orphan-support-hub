@@ -229,6 +229,7 @@ DECLARE _allowed TEXT[] := ARRAY[
     'orphan_trust(uuid)',
     'orphan_view(uuid)',
     'public_operating_links()', -- مجاميع الدول المتّصلة بالتشغيل لمنصة الرؤية (بلا صفوف)
+    'public_offices_map()', -- مكاتب الندوة على الخريطة: الاسم والدولة والمدينة والفئة ووسم التجريبي (بلا أعضاء)
     'public_ui_locales()',
     'published_regions()',
     'published_ui_messages(text)',

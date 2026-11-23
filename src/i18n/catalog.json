@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3443,
+ "count": 3460,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -6401,6 +6401,13 @@
    "hash": "a7ee66770081",
    "file": "src/components/map/network-copy.ts"
   },
+  "components/map/NetworkLayer.demo": {
+   "en": "Sample office — under review",
+   "ar": "مكتب تجريبي — قيد المراجعة",
+   "kind": "text",
+   "hash": "db312ab6c609",
+   "file": "src/components/map/network-copy.ts"
+  },
   "components/map/NetworkLayer.derivedYears": {
    "en": "{0} population × {1} rate",
    "ar": "سكان {0} × نسبة {1}",
@@ -7325,6 +7332,120 @@
    "kind": "text",
    "hash": "632bce9c1388",
    "file": "src/components/offices/OfficePledges.tsx"
+  },
+  "components/offices/OfficesMap.all": {
+   "en": "All",
+   "ar": "الكلّ",
+   "kind": "text",
+   "hash": "5d0d43bf584a",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.activity_scope": {
+   "en": "Activity scope",
+   "ar": "نطاق نشاط",
+   "kind": "text",
+   "hash": "4325f884246b",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.health": {
+   "en": "Health",
+   "ar": "صحة",
+   "kind": "text",
+   "hash": "56663d479724",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.multi_program": {
+   "en": "Multi-programme",
+   "ar": "متعددة البرامج",
+   "kind": "text",
+   "hash": "e08f38481640",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.relief": {
+   "en": "Relief",
+   "ar": "إغاثية",
+   "kind": "text",
+   "hash": "f1a6719d9efd",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.survey_pending": {
+   "en": "To be classified by survey",
+   "ar": "يُصنَّف بالمسح",
+   "kind": "text",
+   "hash": "651a2689c8cc",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.categories.youth_education": {
+   "en": "Youth & education",
+   "ar": "شبابية وتعليمية",
+   "kind": "text",
+   "hash": "ac92a7e1922e",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.count": {
+   "en": "{0} offices",
+   "ar": "{0} مكتباً",
+   "kind": "template",
+   "params": 1,
+   "hash": "8f2b80ba52e7",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.countryLevel": {
+   "en": "Country level",
+   "ar": "على مستوى الدولة",
+   "kind": "text",
+   "hash": "bba8e21acd19",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.demo": {
+   "en": "Sample — under review",
+   "ar": "تجريبي — قيد المراجعة",
+   "kind": "text",
+   "hash": "28207c92144a",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.failed": {
+   "en": "The office register could not be loaded right now.",
+   "ar": "تعذّر تحميل سجلّ المكاتب الآن.",
+   "kind": "text",
+   "hash": "51617c6800d3",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.lead": {
+   "en": "The office register as compiled from public sources. A sample office stays labelled until the administration reviews and approves it.",
+   "ar": "سجلّ المكاتب كما حصرته الأمانة من المصادر العامّة. المكتب التجريبي يبقى موسوماً حتى تراجعه الإدارة وتعتمده.",
+   "kind": "text",
+   "hash": "7f98cc73f066",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.real": {
+   "en": "Approved",
+   "ar": "معتمد",
+   "kind": "text",
+   "hash": "4a6e365b6c64",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.sample": {
+   "en": "Sample data",
+   "ar": "بيانات تجريبية",
+   "kind": "text",
+   "hash": "e80feb93881e",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.source": {
+   "en": "Source: office register, accessed {0}",
+   "ar": "المصدر: سجلّ الحصر، اطّلاع {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "71ec59b50291",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.title": {
+   "en": "Map of WAMY offices",
+   "ar": "خريطة مكاتب الندوة",
+   "kind": "text",
+   "hash": "141698629b4f",
+   "file": "src/components/offices/OfficesMap.tsx"
   },
   "components/orphan/OrphanUnavailable.browse": {
    "en": "Browse the directory",
