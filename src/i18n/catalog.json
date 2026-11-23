@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3450,
+ "count": 3454,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -8794,6 +8794,34 @@
    "kind": "text",
    "hash": "fac664045854",
    "file": "src/components/support/Follow.tsx"
+  },
+  "components/support/MyPledgeImpact.emptyInKind": {
+   "en": "No in-kind pledge yet.",
+   "ar": "لا تعهّد عينياً بعد.",
+   "kind": "text",
+   "hash": "f58aea1a12e5",
+   "file": "src/components/support/MyPledgeImpact.tsx"
+  },
+  "components/support/MyPledgeImpact.emptyQualification": {
+   "en": "No programme has been assigned yet to the child whose qualification you support, or your support went to a group or region: progress shows here once the journey starts.",
+   "ar": "لم يُعيَّن بعدُ برنامجٌ للطفل الذي دعمت تأهيله، أو كان دعمك لمجموعةٍ أو منطقة: يظهر التطوّر هنا حين تبدأ الرحلة.",
+   "kind": "text",
+   "hash": "36af204e9b88",
+   "file": "src/components/support/MyPledgeImpact.tsx"
+  },
+  "components/support/MyPledgeImpact.label": {
+   "en": "Your pledges' impact by kind of giving",
+   "ar": "أثر تعهّداتك بحسب نوع العطاء",
+   "kind": "text",
+   "hash": "03208c5415b4",
+   "file": "src/components/support/MyPledgeImpact.tsx"
+  },
+  "components/support/MyPledgeImpact.lead": {
+   "en": "Qualification is development that is measured; in-kind giving is a documented delivery. Financial sponsorship has its impact under “My sponsorships” below.",
+   "ar": "التأهيل تطوّرٌ يُقاس، والعيني تسليمٌ موثّق. أمّا الكفالة المادية فأثرها في «كفالاتي» أدناه.",
+   "kind": "text",
+   "hash": "67ab01bf31cd",
+   "file": "src/components/support/MyPledgeImpact.tsx"
   },
   "components/support/PendingPaymentBar.close": {
    "en": "Hide the reminder",

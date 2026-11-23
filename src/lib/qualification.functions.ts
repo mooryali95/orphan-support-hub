@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 import {
   withQualification,
@@ -181,3 +182,58 @@ export function compareAssessments(
       base.core_trait !== last.core_trait,
   };
 }
+
+/* ── رحلات تعهّدات التأهيل الموجّهة إلى طفلٍ بعينه ───────────────────── */
+
+/**
+ * لكل تعهّد تأهيلٍ لطفلٍ بعينه سجّله الداعم: رحلةُ ذلك الطفل كما يعرضها
+ * `orphan_qualification` للعامّة — وقوع القياس لا نتيجته، ووجود المشرف
+ * والإذن لا هويّتهما. فلا يرى الداعم هنا أكثر ممّا تعرضه صفحة الطفل.
+ *
+ * والتعهّد نفسه يُقرأ بجلسة الداعم (سياسة `sp_read`: صاحبه وحده)، فلا
+ * يُسأل عن طفلٍ لم يتعهّد له.
+ */
+export const getMyQualificationJourneys = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    type Row = { id: string; orphan_id: string | null };
+    const { data: pledges, error } = await (
+      context.supabase as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
+              eq: (
+                k: string,
+                v: string,
+              ) => {
+                neq: (k: string, v: string) => Promise<{ data: Row[] | null; error: unknown }>;
+              };
+            };
+          };
+        };
+      }
+    )
+      .from("support_pledges")
+      .select("id, orphan_id")
+      .eq("kind", "qualification")
+      .eq("target_type", "orphan")
+      .neq("status", "cancelled");
+    if (error || !pledges)
+      return { ok: false as const, journeys: {} as Record<string, PublicQualification | null> };
+
+    const db = withQualification(publicClient());
+    const byOrphan = new Map<string, PublicQualification | null>();
+    for (const orphan of new Set(pledges.map((p) => p.orphan_id).filter(Boolean) as string[])) {
+      const { data: rows } = await db.rpc("orphan_qualification", { _orphan: orphan });
+      // the latest enrollment is the journey the pledge funds now
+      const list = (rows ?? []) as PublicQualification[];
+      byOrphan.set(orphan, list.at(-1) ?? null);
+    }
+    const journeys: Record<string, PublicQualification | null> = {};
+    for (const p of pledges)
+      journeys[p.id] = p.orphan_id ? (byOrphan.get(p.orphan_id) ?? null) : null;
+    return { ok: true as const, journeys };
+  });

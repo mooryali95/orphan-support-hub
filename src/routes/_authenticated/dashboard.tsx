@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { MyPledges } from "@/components/support/MyPledges";
+import { MyPledgeImpact } from "@/components/support/MyPledgeImpact";
 import { getMyPledges } from "@/lib/support.functions";
 import { TrialProposalCard } from "@/components/try/TrialProposal";
 import { MyJourney } from "@/components/support/MyJourney";
@@ -197,6 +198,7 @@ function DashboardPage() {
       {!listFailed && (
         <div className="mt-8">
           <MyPledges />
+          <MyPledgeImpact />
         </div>
       )}
 

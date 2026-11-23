@@ -172,7 +172,7 @@ BEGIN
     RAISE EXCEPTION 'FAIL — مسار التسليم لا يظهر للداعم كما يجب: %', _j;
   END IF;
   IF (SELECT count(*) FROM public.notifications WHERE user_id = 'a7000000-0000-4000-8000-000000000005'
-        AND title IN ('يُجهَّز دعمك', 'وصل دعمك')) <> 2 THEN
+        AND kind IN ('pledge_preparing', 'pledge_delivered') AND entity = 'pledge') <> 2 THEN
     RAISE EXCEPTION 'FAIL — لم يُبلَّغ الداعم بمرحلتي التسليم';
   END IF;
   RAISE NOTICE 'PASS — التعهّد: تجهيز ← تسليم بمستند من المكتب المختصّ، والداعم يُبلَّغ ولا يرى المستند';
