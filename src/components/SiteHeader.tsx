@@ -17,10 +17,10 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 // three doors for a donor: whom, how to give, how it works. Home is the lockup; the trait model
 // and the care organizations live in the footer (SiteFooter).
-const ROUTES = ["/orphans", "/support", "/how-it-works"] as const;
+const ROUTES = ["/orphans", "/support", "/how-it-works", "/ask"] as const;
 const COPY = defineCopy("components/SiteHeader", {
   ar: {
-    nav: ["دليل الأيتام", "ادعم", "كيف تعمل"],
+    nav: ["دليل الأيتام", "ادعم", "كيف تعمل", "اسأل"],
     skip: "تخطّي إلى المحتوى",
     home: "الصفحة الرئيسية",
     portals: "بواباتي",
@@ -29,7 +29,7 @@ const COPY = defineCopy("components/SiteHeader", {
     menu: "القائمة",
   },
   en: {
-    nav: ["Children", "Support", "How it works"],
+    nav: ["Children", "Support", "How it works", "Ask"],
     skip: "Skip to content",
     home: "Home page",
     portals: "My portals",

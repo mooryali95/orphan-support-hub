@@ -208,6 +208,11 @@ export const Route = createFileRoute("/orphans/$orphanId")({
       return {
         meta: [
           { title: pageTitle(c.unavailable, true, l) },
+          { name: "description", content: c.unavailable },
+          { property: "og:title", content: pageTitle(c.unavailable, true, l) },
+          { property: "og:description", content: c.unavailable },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary" },
           { name: "robots", content: CHILD_PAGE_ROBOTS },
         ],
       };
@@ -229,6 +234,8 @@ export const Route = createFileRoute("/orphans/$orphanId")({
         { name: "description", content: description },
         { property: "og:title", content: shareTitle },
         { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
       ],
     };
   },
@@ -503,6 +510,11 @@ function OrphanDetail() {
                 {detail?.story && (
                   <p className="mt-6 whitespace-pre-line text-base leading-8">{detail.story}</p>
                 )}
+                <Button asChild variant="outline" className="mt-5">
+                  <Link to="/ask" search={{ child: orphanId }}>
+                    {locale === "ar" ? "اسأل عن هذا الملف" : "Ask about this profile"}
+                  </Link>
+                </Button>
               </div>
             </div>
 

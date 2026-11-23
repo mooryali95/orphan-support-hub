@@ -1,9 +1,11 @@
 # Monitoring fixes
 
 ## Supporter questions assistant
-- [ ] Add a single-session AI Gateway assistant grounded only in public child cards and published sponsorship guidance.
-- [ ] Add privacy, authentication, input limits, cancellation and safe failure handling.
-- [ ] Verify answers and privacy boundaries with tests and desktop/mobile browser checks.
+
+- [x] Add a single-session AI Gateway assistant grounded only in public child cards and published sponsorship guidance.
+- [x] Add privacy, authentication, input limits, cancellation and safe failure handling.
+- [x] Verify five privacy tests, lint with no errors, preview build, and a signed-in streaming AI Gateway answer.
+- [ ] Complete signed-in desktop/mobile UI checks: blocked by pending Vite module requests even after clearing the optimizer cache and restarting; the guest page renders but does not hydrate.
 
 ## Demo network
 

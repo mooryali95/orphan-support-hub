@@ -1,6 +1,9 @@
 const LOVABLE_AIG_RUN_ID_HEADER = "X-Lovable-AIG-Run-ID";
 
-export function createLovableAiGatewayRunIdFetch(initialRunId?: string) {
+export function createLovableAiGatewayRunIdFetch(
+  initialRunId?: string,
+  fetcher: typeof fetch = fetch,
+) {
   let runId = initialRunId?.trim() || undefined;
   let resolveRunId: (value: string | undefined) => void = () => {};
   let runIdResolved = false;
@@ -28,7 +31,7 @@ export function createLovableAiGatewayRunIdFetch(initialRunId?: string) {
       }
 
       try {
-        const response = await fetch(input, { ...init, headers });
+        const response = await fetcher(input, { ...init, headers });
         publishRunId(response.headers.get(LOVABLE_AIG_RUN_ID_HEADER) ?? undefined);
         return response;
       } catch (error) {
@@ -45,7 +48,10 @@ export function getLovableAiGatewayRunId(request: Request) {
   return request.headers.get(LOVABLE_AIG_RUN_ID_HEADER)?.trim() || undefined;
 }
 
-export function getLovableAiGatewayResponseHeaders(providerHeaders: HeadersInit | undefined, init?: HeadersInit) {
+export function getLovableAiGatewayResponseHeaders(
+  providerHeaders: HeadersInit | undefined,
+  init?: HeadersInit,
+) {
   const headers = new Headers(init);
   const exposedHeaders = new Set(
     (headers.get("Access-Control-Expose-Headers") ?? "")
@@ -97,7 +103,8 @@ export async function withLovableAiGatewayRunIdHeader(
 
   const reader = response.body.getReader();
   const firstChunk = reader.read();
-  const runId = options.waitForUpstreamHeaders === false ? gateway.getRunId() : await gateway.waitForRunId();
+  const runId =
+    options.waitForUpstreamHeaders === false ? gateway.getRunId() : await gateway.waitForRunId();
   const headers = getLovableAiGatewayResponseHeaders(undefined, response.headers);
   new Headers(init).forEach((value, name) => headers.set(name, value));
   if (runId) headers.set(LOVABLE_AIG_RUN_ID_HEADER, runId);

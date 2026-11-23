@@ -22,3 +22,8 @@
 
 ## Support destinations
 - Training and in-kind support targets follow `countries.in_network` (WAMY office/field countries on the main map) or `active`; keep that flag in sync with `src/data/wamy-network.ts` so the map and support form show one country list.
+
+## Supporter assistant
+- Use the streaming AI SDK Responses boundary with request-local gateway correlation and authenticated, rate-limited access; this keeps credentials server-only and prevents unbounded AI spending.
+- Ground answers in an anonymous `orphan_view` projected through an explicit public-card allowlist and published guidance, never caller-authorized details or privileged child reads; this preserves child privacy even for admin callers.
+- Keep one session-only conversation and durable server-only access-denial state; this avoids storing donor questions and prevents automatic replay after provider or credit blocks.

@@ -1,29 +1,59 @@
 import { z } from "zod";
 
-export const assistantRequestSchema = z.object({
-  orphanId: z.string().uuid().optional(),
-  messages: z.array(z.object({
-    id: z.string().max(150),
-    role: z.enum(["user", "assistant"]),
-    parts: z.array(z.object({ type: z.string(), text: z.string().max(10000).optional() }).passthrough()).max(30),
-  })).min(1).max(20),
-}).superRefine((value, ctx) => {
-  const last = value.messages.at(-1);
-  const question = last?.parts.filter(p => p.type === "text").map(p => p.text ?? "").join("").trim() ?? "";
-  if (last?.role !== "user" || !question || question.length > 2000) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "اكتب سؤالاً من ١ إلى ٢٠٠٠ حرف." });
-  }
-  const total = value.messages.reduce((n, m) => n + m.parts.reduce((s, p) => s + (p.text?.length ?? 0), 0), 0);
-  if (total > 24000) ctx.addIssue({ code: z.ZodIssueCode.custom, message: "ابدأ محادثة جديدة؛ وصلت المحادثة إلى حدّها." });
-});
+export const assistantRequestSchema = z
+  .object({
+    orphanId: z.string().uuid().optional(),
+    messages: z
+      .array(
+        z.object({
+          id: z.string().max(150),
+          role: z.enum(["user", "assistant"]),
+          parts: z
+            .array(
+              z.object({ type: z.string(), text: z.string().max(10000).optional() }).passthrough(),
+            )
+            .max(30),
+        }),
+      )
+      .min(1)
+      .max(20),
+  })
+  .superRefine((value, ctx) => {
+    const last = value.messages.at(-1);
+    const question =
+      last?.parts
+        .filter((p) => p.type === "text")
+        .map((p) => p.text ?? "")
+        .join("")
+        .trim() ?? "";
+    if (last?.role !== "user" || !question || question.length > 2000) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "اكتب سؤالاً من ١ إلى ٢٠٠٠ حرف." });
+    }
+    const total = value.messages.reduce(
+      (n, m) => n + m.parts.reduce((s, p) => s + (p.text?.length ?? 0), 0),
+      0,
+    );
+    if (total > 24000)
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "ابدأ محادثة جديدة؛ وصلت المحادثة إلى حدّها.",
+      });
+  });
 
 // Only explicitly public card fields. Never spread an orphan_view, even for admins.
 const publicCardSchema = z.object({
-  id: z.string().uuid(), code: z.string(), display_name: z.string(),
+  id: z.string().uuid(),
+  code: z.string(),
+  display_name: z.string(),
   status: z.enum(["approved", "fully_sponsored"]),
-  age_band: z.string(), gender: z.string().nullable(), country: z.string().nullable(),
-  region: z.string().nullable(), education_stage: z.string().nullable(),
-  monthly_need: z.number(), funded_monthly: z.number(), currency: z.string(),
+  age_band: z.string(),
+  gender: z.string().nullable(),
+  country: z.string().nullable(),
+  region: z.string().nullable(),
+  education_stage: z.string().nullable(),
+  monthly_need: z.number(),
+  funded_monthly: z.number(),
+  currency: z.string(),
 });
 export function publicAssistantCard(value: unknown) {
   const parsed = publicCardSchema.safeParse(value);
@@ -31,10 +61,22 @@ export function publicAssistantCard(value: unknown) {
 }
 
 export const SPONSORSHIP_GUIDANCE = [
-  { source: "/how-it-works", text: "جهة الرعاية ترفع الملف والمستندات، والإدارة تراجع الملف وتعتمده قبل نشره. البيانات الحساسة محجوبة." },
-  { source: "/orphans", text: "اختر ملفاً منشوراً، ثم نوع العطاء (شهري أو مرة واحدة) والمبلغ، وسجل الدخول وأكمل الدفع. الكفالة تبدأ بعد تأكيد الدفع وليس بمجرد الطلب." },
-  { source: "/how-it-works", text: "تابع الكفالة من لوحتك. التقارير تظهر عندما ترفعها الجهة وتعتمدها الإدارة؛ لا يوجد موعد تقارير مضمون. يمكن إنهاء الكفالة فتنتهي بعد آخر شهر مدفوع، والتحويل البنكي يمكن إيقافه مؤقتاً أو تعديل مبلغه من اللوحة." },
-  { source: "/support", text: "بناء الأهلية والدعم العيني متاحان لدول شبكة المكاتب حتى دون ملفات أطفال منشورة. بيانات التجربة ليست قابلة للكفالة، والربط بمنصة الرواد مستقبلي وليس تكاملاً حياً مؤكداً." },
+  {
+    source: "/how-it-works",
+    text: "جهة الرعاية ترفع الملف والمستندات، والإدارة تراجع الملف وتعتمده قبل نشره. البيانات الحساسة محجوبة.",
+  },
+  {
+    source: "/orphans",
+    text: "اختر ملفاً منشوراً، ثم نوع العطاء (شهري أو مرة واحدة) والمبلغ، وسجل الدخول وأكمل الدفع. الكفالة تبدأ بعد تأكيد الدفع وليس بمجرد الطلب.",
+  },
+  {
+    source: "/how-it-works",
+    text: "تابع الكفالة من لوحتك. التقارير تظهر عندما ترفعها الجهة وتعتمدها الإدارة؛ لا يوجد موعد تقارير مضمون. يمكن إنهاء الكفالة فتنتهي بعد آخر شهر مدفوع، والتحويل البنكي يمكن إيقافه مؤقتاً أو تعديل مبلغه من اللوحة.",
+  },
+  {
+    source: "/support",
+    text: "بناء الأهلية والدعم العيني متاحان لدول شبكة المكاتب حتى دون ملفات أطفال منشورة. بيانات التجربة ليست قابلة للكفالة، والربط بمنصة الرواد مستقبلي وليس تكاملاً حياً مؤكداً.",
+  },
 ];
 
 export function assistantInstructions(card: ReturnType<typeof publicAssistantCard>) {
@@ -50,8 +92,17 @@ ${JSON.stringify(SPONSORSHIP_GUIDANCE)}`;
 }
 
 export function gatewayFailure(status: number, payload: unknown) {
-  const data = payload && typeof payload === "object" ? payload as Record<string, unknown> : {};
-  const nested = data["error"] && typeof data["error"] === "object" ? data["error"] as Record<string, unknown> : {};
+  const data = payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
+  const nested =
+    data["error"] && typeof data["error"] === "object"
+      ? (data["error"] as Record<string, unknown>)
+      : {};
   const message = data["message"] ?? nested["message"];
-  return { status, message: typeof message === "string" ? message.slice(0, 1600) : "تعذّر الحصول على إجابة من خدمة الذكاء الاصطناعي." };
+  return {
+    status,
+    message:
+      typeof message === "string"
+        ? message.slice(0, 1600)
+        : "تعذّر الحصول على إجابة من خدمة الذكاء الاصطناعي.",
+  };
 }

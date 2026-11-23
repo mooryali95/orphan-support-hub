@@ -29,6 +29,8 @@ const buttonVariants = cva(
         sm: "h-9 rounded-full px-3.5 text-sm pointer-coarse:after:absolute pointer-coarse:after:-inset-1 pointer-coarse:after:content-['']",
         lg: "h-12 px-8 text-base",
         icon: "h-10 w-10 pointer-coarse:after:absolute pointer-coarse:after:-inset-0.5 pointer-coarse:after:content-['']",
+        "icon-sm":
+          "size-8 p-0 pointer-coarse:after:absolute pointer-coarse:after:-inset-1.5 pointer-coarse:after:content-['']",
       },
     },
     defaultVariants: {
