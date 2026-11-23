@@ -6,6 +6,7 @@ import {
   Container,
   Head,
   Hr,
+  Img,
   Html,
   Link,
   Preview,
@@ -75,10 +76,17 @@ export function BrandEmail({
       <Body style={main}>
         <Container style={shell}>
           <Section style={header}>
-            {/* اسم العلامة نصّاً لا صورةً: Outlook وGmail يحجبان الصور الخارجية
-                افتراضياً، فتظهر الصورة مربّعاً فارغاً. النص يُرى في كل عميل. */}
+            {/* الشعار صورةً بدقّة مضاعفة (420×90 تُعرض 210×45) لشاشات Retina.
+                وإن حجب العميل الصور (Outlook وGmail افتراضياً لمرسلٍ جديد) يظهر
+                النص البديل منسّقاً بالذهبي وخطّ الهوية، لا مربّعاً فارغاً. */}
             <Link href={siteUrl} style={wordmarkLink}>
-              <Text style={wordmark}>{siteName}</Text>
+              <Img
+                src={assetUrl(siteUrl, "/brand/email-logo-white.png")}
+                alt={siteName}
+                width="210"
+                height="45"
+                style={logo}
+              />
             </Link>
             <table role="presentation" cellPadding={0} cellSpacing={0} style={ornament}>
               <tbody>
@@ -190,15 +198,21 @@ const header = {
   padding: "34px 28px 24px",
   textAlign: "center" as const,
 };
-const DISPLAY_FONT = "'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', 'Times New Roman', serif";
 const wordmarkLink = { textDecoration: "none" };
-const wordmark = {
+const logo = {
+  display: "block",
+  margin: "0 auto",
+  border: 0,
+  outline: "none",
+  height: "45px",
+  width: "210px",
+  maxWidth: "100%",
+  // يُطبَّق على النص البديل حين تُحجب الصورة.
   color: BRAND.goldSoft,
-  fontFamily: DISPLAY_FONT,
-  fontSize: "40px",
+  fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', 'Times New Roman', serif",
+  fontSize: "30px",
   fontWeight: 700 as const,
-  lineHeight: "1.2",
-  margin: "0",
+  lineHeight: "45px",
   textAlign: "center" as const,
 };
 const ornament = { margin: "10px auto 0" };
