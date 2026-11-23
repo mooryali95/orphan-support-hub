@@ -86,6 +86,11 @@ function shapeStyle(kind: NetworkKind): { className: string; style?: React.CSSPr
         className: "fill-transparent stroke-muted-foreground",
         style: { strokeDasharray: "3 2" },
       };
+    case "demo":
+      return {
+        className: "fill-bridge stroke-bridge",
+        style: { fillOpacity: 0.14, strokeDasharray: "3 2" },
+      };
     case "high":
       return { className: "stroke-office-gap", style: { fill: "url(#og-hatch-high)" } };
     case "medium":
@@ -182,6 +187,15 @@ function Marker({ kind }: { kind: NetworkKind }) {
           className="fill-background stroke-muted-foreground"
           strokeWidth={1.5}
           strokeDasharray="2 1.5"
+        />
+      );
+    case "demo":
+      return (
+        <circle
+          r={4}
+          className="fill-bridge/20 stroke-bridge"
+          strokeWidth={1.75}
+          strokeDasharray="2.5 1.5"
         />
       );
     case "high":
@@ -325,7 +339,13 @@ export function NetworkLegend({
   const locale = useLocale();
   const kinds: NetworkKind[] =
     layer === "network"
-      ? ["hq", "office", "field", ...(admin ? (["unconfirmed"] as const) : [])]
+      ? [
+          "hq",
+          "office",
+          "field",
+          ...(admin ? (["unconfirmed"] as const) : []),
+          ...(counts.demo > 0 ? (["demo"] as const) : []),
+        ]
       : ["high", "medium", "data", "covered"];
   return (
     <div className={className}>

@@ -256,6 +256,9 @@ export type AdminOfficesOverview = {
     region: string | null;
     parent_id: string | null;
     active: boolean;
+    city?: string | null;
+    category?: string | null;
+    is_demo?: boolean;
     members: Array<{ email: string; role: string }>;
   }>;
   donor_entities: Array<{
@@ -491,4 +494,49 @@ export const getDonorPledges = createServerFn({ method: "GET" })
       _entity: data.entityId,
     });
     return error ? ([] as DonorPledge[]) : ((rows ?? []) as DonorPledge[]);
+  });
+
+/**
+ * تعديل مكتب: الاسم والمدينة والفئة، والإيقاف والتفعيل، والتحويل من تجريبي إلى حقيقي.
+ * القاعدة ترفض تفعيل مكتبٍ وهو تجريبي، وتكتب كل تغييرٍ في سجلّ التدقيق.
+ */
+export const updateOffice = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        name: z.string().trim().min(2).max(200),
+        city: z.string().trim().max(120).optional(),
+        category: z
+          .enum([
+            "multi_program",
+            "health",
+            "relief",
+            "youth_education",
+            "survey_pending",
+            "activity_scope",
+          ])
+          .nullable(),
+        active: z.boolean(),
+        isDemo: z.boolean(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await rpc(context.supabase).rpc("admin_update_office", {
+      _office: data.id,
+      _name: data.name,
+      _city: data.city ?? null,
+      _category: data.category,
+      _active: data.active,
+      _is_demo: data.isDemo,
+    });
+    if (!error) return { ok: true as const, error: null };
+    return {
+      ok: false as const,
+      error: error.message.includes("demo_office_cannot_be_active")
+        ? "حوّل المكتب إلى حقيقي قبل تفعيله."
+        : error.message,
+    };
   });

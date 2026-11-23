@@ -57,7 +57,7 @@ import {
   metricText,
   rankOf,
 } from "./layers";
-import { interactiveCodes, kindCounts, networkPaint } from "./network-layer";
+import { interactiveCodes, kindCounts, networkPaint, type NetworkKind } from "./network-layer";
 import {
   ExpansionList,
   NetworkCountryCard,
@@ -510,12 +510,21 @@ export function WorldMap({
   onLayer,
   cardCompact = false,
   showUnconfirmed = false,
+  networkPaintOverride,
+  countryCard,
   supportable,
 }: {
   /** دولٌ يُدعم فيها المكان (التأهيل والعيني) وإن لم تكن فيها ملفّات أطفال بعد. */
   supportable?: ReadonlySet<string>;
   /** الإدارة ترى في «الشبكة» ما لم يُؤكَّد بعد (محايداً) لتراجعه؛ الزوّار لا. */
   showUnconfirmed?: boolean;
+  /**
+   * ما يُرسم في طبقة الشبكة بدل ملفّ البحث: سجلّ المكاتب من القاعدة (`public_offices_map`)
+   * على صفحة المكاتب. الخارطة نفسها، والمصدر وحده يتغيّر.
+   */
+  networkPaintOverride?: Map<string, NetworkKind>;
+  /** بطاقة الدولة في طبقة الشبكة حين يكون للصفحة ما تعرضه عنها (مكاتبها من السجلّ). */
+  countryCard?: (code: string) => ReactNode;
   /** بطاقةٌ مختصرة (الاسم والعدد ثم الفعل): حين يكون الفعل نفسه مساراً كاملاً كالدعم. */
   cardCompact?: boolean;
   stats: MapStats;
@@ -545,8 +554,8 @@ export function WorldMap({
   // طبقتا الشبكة: ما يُرسم وما يُفتح من البيانات البحثية لا من أعداد المنصّة.
   const netLayer = isNetworkLayer(layer) ? layer : null;
   const net = useMemo(
-    () => (netLayer ? networkPaint(netLayer, { showUnconfirmed }) : null),
-    [netLayer, showUnconfirmed],
+    () => (netLayer ? (networkPaintOverride ?? networkPaint(netLayer, { showUnconfirmed })) : null),
+    [netLayer, showUnconfirmed, networkPaintOverride],
   );
   const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
   const activeSet = useMemo(() => {
@@ -1972,7 +1981,9 @@ export function WorldMap({
                     </>
                   );
                 })();
-                return net ? (
+                return net && countryCard ? (
+                  countryCard(country.c)
+                ) : net ? (
                   <NetworkCountryCard
                     code={country.c}
                     admin={showUnconfirmed}

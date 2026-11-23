@@ -12,7 +12,7 @@ import { rankPriorities, type Tier } from "@/lib/office-gap";
 import type { NetworkLayer } from "./layers";
 
 export type NetworkKind =
-  "hq" | "office" | "field" | "unconfirmed" | "high" | "medium" | "data" | "covered";
+  "hq" | "office" | "field" | "unconfirmed" | "demo" | "high" | "medium" | "data" | "covered";
 
 /** رمز الدولة ← ما تُرسم به في الطبقة. */
 export function networkPaint(
@@ -40,6 +40,7 @@ export const KIND_ORDER: Record<NetworkKind, number> = {
   office: 1,
   field: 2,
   unconfirmed: 3,
+  demo: 4,
   high: 0,
   medium: 1,
   data: 2,
@@ -58,6 +59,7 @@ export function kindCounts(paint: Map<string, NetworkKind>): Record<NetworkKind,
     office: 0,
     field: 0,
     unconfirmed: 0,
+    demo: 0,
     high: 0,
     medium: 0,
     data: 0,
