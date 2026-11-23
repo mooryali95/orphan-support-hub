@@ -26,7 +26,7 @@ import {
 } from "@/lib/passkey";
 
 /** أطوال رموز الدخول كما يُرسلها مزوّد المصادقة. */
-const EMAIL_OTP_LENGTH = 8;
+const EMAIL_OTP_LENGTH = 6;
 const SMS_OTP_LENGTH = 6;
 
 const COPY = defineCopy("components/auth/AuthPanel", {
@@ -358,8 +358,8 @@ export function AuthPanel({
     setStage({ step: "code", to: method === "phone" ? normalizePhone(to) : to });
   }
 
-  // طول الرمز من إعداد المصادقة: البريد يُرسل ثمانية أرقام، والرسائل النصية ستّة.
-  // كان الحقل ستّ خانات فلا يُكتب رمز البريد كاملاً.
+  // طول الرمز من إعداد المصادقة (Supabase Auth): ستّة أرقام للبريد والرسائل النصية.
+  // إن تغيّر الطول في الإعداد فليتغيّر هنا معه، وإلا لا يُكتب الرمز كاملاً.
   const codeLength = method === "email" ? EMAIL_OTP_LENGTH : SMS_OTP_LENGTH;
 
   async function verify(token: string) {
