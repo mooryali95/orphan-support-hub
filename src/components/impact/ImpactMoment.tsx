@@ -13,7 +13,7 @@ const COPY = defineCopy("components/impact/ImpactMoment", {
     deliveredText: (child: string, month: string) =>
       `${month}: سُلِّمت دفعتك لكفالة ${child} بمستند، وهو محفوظٌ في سجلّك أدناه.`,
     begunTitle: (child: string) => `بدأ عطاؤك لكفالة ${child}`,
-    begunText: "قُيّدت دفعتك الأولى. التالي: تحويلها إلى جهة الرعاية، ثم مستند التسليم.",
+    begunText: "قُيّدت دفعتك الأولى. التالي: تحويلها إلى الجهة الميدانية، ثم مستند التسليم.",
   },
   en: {
     eyebrow: "Entered in your record",
@@ -25,7 +25,7 @@ const COPY = defineCopy("components/impact/ImpactMoment", {
       `${month}: your payment for ${child}'s sponsorship was delivered with a document, kept in your record below.`,
     begunTitle: (child: string) => `Your giving for ${child}'s sponsorship has begun`,
     begunText:
-      "Your first payment is recorded. Next: its transfer to the care organization, then the delivery record.",
+      "Your first payment is recorded. Next: its transfer to the field organization, then the delivery record.",
   },
 });
 

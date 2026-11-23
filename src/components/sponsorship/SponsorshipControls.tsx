@@ -280,7 +280,7 @@ function PauseForm({
         <DialogTitle>إيقاف كفالة {isolate(name)} مؤقّتاً</DialogTitle>
         <DialogDescription className="leading-7">
           يبدأ الإيقاف بعد آخر شهرٍ دفعته، ولا يُنتظر منك تحويلٌ خلاله، ثم تُستأنف الكفالة تلقائياً.
-          يبقى مكانك مع الطفل، وتعلم جهة الرعاية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.
+          يبقى مكانك مع الطفل، وتعلم الجهة الميدانية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.
         </DialogDescription>
       </DialogHeader>
       <fieldset className="mt-4">
@@ -340,7 +340,7 @@ function AmountForm({
         <DialogTitle>تعديل مبلغ كفالة {isolate(name)}</DialogTitle>
         <DialogDescription className="leading-7">
           المبلغ الحالي {formatMoney(s.amount, s.currency)} شهرياً. الجديد يسري من التحويل القادم،
-          وما دُفع قبله لا يتغيّر. تعلم جهة الرعاية بالتعديل.
+          وما دُفع قبله لا يتغيّر. تعلم الجهة الميدانية بالتعديل.
         </DialogDescription>
       </DialogHeader>
       <div className="mt-4">

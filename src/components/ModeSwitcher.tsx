@@ -20,7 +20,7 @@ export const MODE_COPY = defineCopy("components/ModeSwitcher", {
     modes: {
       admin: "الإدارة",
       supporter: "داعم",
-      org: "جهة رعاية",
+      org: "جهة ميدانية",
       guardian: "وليّ",
       supervisor: "مشرف",
       office: "مكتب",
@@ -35,7 +35,7 @@ export const MODE_COPY = defineCopy("components/ModeSwitcher", {
     modes: {
       admin: "Administration",
       supporter: "Supporter",
-      org: "Care organization",
+      org: "Field organization",
       guardian: "Guardian",
       supervisor: "Supervisor",
       office: "Office",

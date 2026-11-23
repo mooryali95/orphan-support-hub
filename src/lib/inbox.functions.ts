@@ -43,7 +43,7 @@ export type InboxItem = {
 export const INBOX_LABELS: Record<InboxKind, string> = {
   orphan: "ملف طفل",
   orphan_edit: "تعديل ملفٍّ منشور",
-  org: "جهة رعاية",
+  org: "جهة ميدانية",
   transfer: "تحويل بنكي",
   access: "طلب اطّلاع",
   circle_role: "دورٌ في دائرة طفل",

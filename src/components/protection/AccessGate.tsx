@@ -28,7 +28,7 @@ const COPY = defineCopy("components/protection/AccessGate", {
     revokedH: "سُحب إذنك على هذا الملفّ",
     rejectedH: "لم يُقبل طلبك",
     stillSponsor:
-      "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ موثَّقٌ من جهةٍ معتمدة، والإدارة راجعته قبل نشره.",
+      "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ وثّقته جهة ميدانية تعمل تحت مظلّة الندوة، والإدارة راجعته قبل نشره.",
     hiddenH: "تفاصيل الملفّ محجوبة",
     hiddenP: (n: string) =>
       `قصّة ${n} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.`,
@@ -56,7 +56,7 @@ const COPY = defineCopy("components/protection/AccessGate", {
     revokedH: "Your access to this file was withdrawn",
     rejectedH: "Your request was not approved",
     stillSponsor:
-      "You can still sponsor from this page without seeing the details: the file is verified by an approved organization and was reviewed by the administration before publishing.",
+      "You can still sponsor from this page without seeing the details: the file was documented by a field organization working under WAMY's umbrella and reviewed by the administration before publishing.",
     hiddenH: "File details are protected",
     hiddenP: (n: string) =>
       `${n}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration — because a child's file isn't a page to browse.`,

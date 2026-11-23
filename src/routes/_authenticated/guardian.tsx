@@ -94,8 +94,8 @@ function GuardianPage() {
           <Users className="text-bridge mx-auto size-8" aria-hidden="true" />
           <p className="mt-4 font-medium">لا ملفات مرتبطة بحسابك</p>
           <p className="text-muted-foreground mt-1 text-sm leading-7">
-            تربط الإدارة حسابك بملف من تحت رعايتك بعد التحقّق من الوصاية. راجع جهة الرعاية التي رفعت
-            الملف.
+            تربط الإدارة حسابك بملف من تحت رعايتك بعد التحقّق من الوصاية. راجع الجهة الميدانية التي
+            رفعت الملف.
           </p>
         </div>
       ) : (

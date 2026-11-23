@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2977,
+ "count": 2978,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -52,10 +52,10 @@
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.org": {
-   "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "626fb702d798",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.signOut": {
@@ -144,6 +144,14 @@
    "hash": "e0904defeb86",
    "file": "src/components/LegalPage.tsx"
   },
+  "components/LegalPage.operator": {
+   "en": "This platform is operated by the {0}, in partnership with {2}.",
+   "ar": "تشغّل هذه المنصّةَ {0}، {1} {2}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "5299672b123f",
+   "file": "src/components/LegalPage.tsx"
+  },
   "components/LegalPage.updated": {
    "en": "Last updated",
    "ar": "آخر تحديث",
@@ -194,10 +202,10 @@
    "file": "src/components/ModeSwitcher.tsx"
   },
   "components/ModeSwitcher.modes.org": {
-   "en": "Care organization",
-   "ar": "جهة رعاية",
+   "en": "Field organization",
+   "ar": "جهة ميدانية",
    "kind": "text",
-   "hash": "a6fa25e0639c",
+   "hash": "03c036719e3c",
    "file": "src/components/ModeSwitcher.tsx"
   },
   "components/ModeSwitcher.modes.supervisor": {
@@ -357,10 +365,10 @@
    "file": "src/components/OrphanCard.tsx"
   },
   "components/SiteFooter.about": {
-   "en": "A platform that connects sponsors with orphans through files verified by approved care organizations, with monthly follow-up and transparent impact reports.",
-   "ar": "منصة تربط الكافل باليتيم عبر ملفات موثّقة من جهات رعاية معتمدة، مع متابعة شهرية وتقارير أثر شفافة.",
+   "en": "A platform that connects sponsors with orphans through files documented by WAMY's offices and field partners, with monthly follow-up and transparent impact reports.",
+   "ar": "منصة تربط الكافل باليتيم عبر ملفات توثّقها مكاتب الندوة وشركاؤها الميدانيون، مع متابعة شهرية وتقارير أثر شفافة.",
    "kind": "text",
-   "hash": "434d34f96874",
+   "hash": "d8ad25f74b22",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.account": {
@@ -406,10 +414,10 @@
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.orgs": {
-   "en": "Care organizations",
-   "ar": "جهات الرعاية",
+   "en": "Offices and field partners",
+   "ar": "المكاتب والشركاء الميدانيون",
    "kind": "text",
-   "hash": "e26fc985d686",
+   "hash": "b970be94186e",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.orphans": {
@@ -2915,10 +2923,10 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.team.roles.org.steps.1": {
-   "en": "They open “Care organization” and fill in the organization's details and documents.",
-   "ar": "يفتح «جهة الرعاية» ويملأ بيانات الجهة ووثائقها.",
+   "en": "They open “Field organization” and fill in the organization's details and documents.",
+   "ar": "يفتح «الجهة الميدانية» ويملأ بيانات الجهة ووثائقها.",
    "kind": "text",
-   "hash": "ce5429029ff6",
+   "hash": "697cb3315328",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.team.roles.org.steps.2": {
@@ -2936,10 +2944,10 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.team.roles.org.title": {
-   "en": "Care organization",
-   "ar": "جهة رعاية",
+   "en": "Field organization",
+   "ar": "جهة ميدانية",
    "kind": "text",
-   "hash": "a6fa25e0639c",
+   "hash": "03c036719e3c",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.team.roles.org.what": {
@@ -3805,10 +3813,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.inbox.org": {
-   "en": "Care organizations awaiting approval",
-   "ar": "جهات رعايةٍ بانتظار الاعتماد",
+   "en": "Field organizations awaiting approval",
+   "ar": "جهاتٍ ميدانية بانتظار الاعتماد",
    "kind": "text",
-   "hash": "fd116df8425c",
+   "hash": "4b47e061a699",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.inbox.orphan": {
@@ -5006,10 +5014,10 @@
    "file": "src/components/brand/SurplusBadge.tsx"
   },
   "components/brand/SurplusBadge.routed": {
-   "en": "Their monthly need is covered, and this surplus goes to an additional program chosen by the care organization and approved by the administration.",
-   "ar": "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره جهة الرعاية وتعتمده الإدارة.",
+   "en": "Their monthly need is covered, and this surplus goes to an additional program chosen by the field organization and approved by the administration.",
+   "ar": "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره الجهة الميدانية وتعتمده الإدارة.",
    "kind": "text",
-   "hash": "37db8fa56931",
+   "hash": "5de2990f231b",
    "file": "src/components/brand/SurplusBadge.tsx"
   },
   "components/brand/SurplusBadge.title": {
@@ -5242,10 +5250,10 @@
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.lead": {
-   "en": "Each month with its chain: your payment, its transfer to the care organization, then delivery with a document. Only what has been recorded is counted here.",
-   "ar": "كلّ شهرٍ بسلسلته: دفعتك، ثم تحويلها إلى جهة الرعاية، ثم تسليمها بمستند. لا يُعدّ هنا إلا ما قُيّد.",
+   "en": "Each month with its chain: your payment, its transfer to the field organization, then delivery with a document. Only what has been recorded is counted here.",
+   "ar": "كلّ شهرٍ بسلسلته: دفعتك، ثم تحويلها إلى الجهة الميدانية، ثم تسليمها بمستند. لا يُعدّ هنا إلا ما قُيّد.",
    "kind": "text",
-   "hash": "3d2400093d4c",
+   "hash": "a717fe5674fd",
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.nextCharge": {
@@ -5257,11 +5265,11 @@
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.nextDocument": {
-   "en": "The delivery record for {0} is added here once the care organization confirms receipt.",
-   "ar": "مستند تسليم {0} يُضاف إلى هذا السجلّ حين تؤكّد جهة الرعاية الوصول.",
+   "en": "The delivery record for {0} is added here once the field organization confirms receipt.",
+   "ar": "مستند تسليم {0} يُضاف إلى هذا السجلّ حين تؤكّد الجهة الميدانية الوصول.",
    "kind": "template",
    "params": 1,
-   "hash": "5e15d8a28600",
+   "hash": "72f973a3bd26",
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.nextTitle": {
@@ -5308,10 +5316,10 @@
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.reports.1": {
-   "en": "from the care organization",
-   "ar": "من جهة الرعاية",
+   "en": "from the field organization",
+   "ar": "من الجهة الميدانية",
    "kind": "text",
-   "hash": "ae3df0d88238",
+   "hash": "c6d342ebc29f",
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.sample": {
@@ -5350,17 +5358,17 @@
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.state.1": {
-   "en": "Your payment is recorded; next, its transfer to the care organization",
-   "ar": "قُيّدت دفعتك، والتالي تحويلها إلى جهة الرعاية",
+   "en": "Your payment is recorded; next, its transfer to the field organization",
+   "ar": "قُيّدت دفعتك، والتالي تحويلها إلى الجهة الميدانية",
    "kind": "text",
-   "hash": "71f36f783974",
+   "hash": "cfde9f6769b0",
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.state.2": {
-   "en": "Transferred to the care organization; awaiting the delivery record",
-   "ar": "حُوِّلت إلى جهة الرعاية، وبانتظار مستند التسليم",
+   "en": "Transferred to the field organization; awaiting the delivery record",
+   "ar": "حُوِّلت إلى الجهة الميدانية، وبانتظار مستند التسليم",
    "kind": "text",
-   "hash": "ce9b6a6d0d1d",
+   "hash": "e635559028ef",
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/EvidenceLedger.state.3": {
@@ -5399,10 +5407,10 @@
    "file": "src/components/impact/EvidenceLedger.tsx"
   },
   "components/impact/ImpactMoment.begunText": {
-   "en": "Your first payment is recorded. Next: its transfer to the care organization, then the delivery record.",
-   "ar": "قُيّدت دفعتك الأولى. التالي: تحويلها إلى جهة الرعاية، ثم مستند التسليم.",
+   "en": "Your first payment is recorded. Next: its transfer to the field organization, then the delivery record.",
+   "ar": "قُيّدت دفعتك الأولى. التالي: تحويلها إلى الجهة الميدانية، ثم مستند التسليم.",
    "kind": "text",
-   "hash": "4c8632e1b742",
+   "hash": "d000ba15a353",
    "file": "src/components/impact/ImpactMoment.tsx"
   },
   "components/impact/ImpactMoment.begunTitle": {
@@ -6595,10 +6603,10 @@
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.research": {
-   "en": "Research data from public sources, updated when the General Secretariat provides official data.",
-   "ar": "بيانات بحثية من مصادر عامة، تُحدَّث عند تزويد الأمانة العامة بالبيانات الرسمية.",
+   "en": "Office locations and activity shown here come from public sources, pending the official register from the General Secretariat.",
+   "ar": "مواقع المكاتب والنشاط المعروضة مأخوذة من مصادر عامّة، إلى أن يصدر السجلّ الرسمي عن الأمانة العامة.",
    "kind": "text",
-   "hash": "dac857a570c6",
+   "hash": "1b5177d4a70d",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.source": {
@@ -7889,10 +7897,10 @@
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.roles.care_org": {
-   "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "626fb702d798",
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.roles.guardian": {
@@ -8001,10 +8009,10 @@
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.sensitiveNote": {
-   "en": "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and care organization.",
+   "en": "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and field organization.",
    "ar": "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه وجهته.",
    "kind": "text",
-   "hash": "f6a332948dec",
+   "hash": "c75544f56b44",
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.stale": {
@@ -8023,10 +8031,10 @@
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.writerNote": {
-   "en": "Written by the people around the child: their guardian, supervisor or care organization. Your role is recorded with what you write, and the date moves only when something changes.",
+   "en": "Written by the people around the child: their guardian, supervisor or field organization. Your role is recorded with what you write, and the date moves only when something changes.",
    "ar": "يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته. وصفتُك تُسجَّل مع ما تكتب، والتاريخ يتحرّك بالتغيير لا باللمس.",
    "kind": "text",
-   "hash": "393ae9575235",
+   "hash": "2448ff59fa7d",
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/protection/AccessGate.granted": {
@@ -8138,10 +8146,10 @@
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.stillSponsor": {
-   "en": "You can still sponsor from this page without seeing the details: the file is verified by an approved organization and was reviewed by the administration before publishing.",
-   "ar": "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ موثَّقٌ من جهةٍ معتمدة، والإدارة راجعته قبل نشره.",
+   "en": "You can still sponsor from this page without seeing the details: the file was documented by a field organization working under WAMY's umbrella and reviewed by the administration before publishing.",
+   "ar": "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ وثّقته جهة ميدانية تعمل تحت مظلّة الندوة، والإدارة راجعته قبل نشره.",
    "kind": "text",
-   "hash": "f6d9cc5b0c65",
+   "hash": "2c261a659aa1",
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.submit": {
@@ -8475,10 +8483,10 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.privacy": {
-   "en": "Trait measurements stay between the child, their supervisor and their care organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
+   "en": "Trait measurements stay between the child, their supervisor and their field organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
    "ar": "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
    "kind": "text",
-   "hash": "325337ed61b1",
+   "hash": "320b3d3c80ce",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.processes": {
@@ -8546,10 +8554,10 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.supNote": {
-   "en": "Supervision is assigned only to someone certified by the administration — not by the care organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
-   "ar": "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من جهة الرعاية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
+   "en": "Supervision is assigned only to someone certified by the administration — not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
+   "ar": "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
    "kind": "text",
-   "hash": "c3d856971ca4",
+   "hash": "4b6e460c5750",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.supYes": {
@@ -9554,10 +9562,10 @@
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.promises.2": {
-   "en": "The trial's children are fictional; there you choose a child from the accredited directory.",
-   "ar": "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من الدليل المعتمد.",
+   "en": "The trial's children are fictional; there you choose a child from the directory of approved files.",
+   "ar": "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
    "kind": "text",
-   "hash": "f4a65225c1fe",
+   "hash": "341c0d04f1f7",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.text": {
@@ -9671,10 +9679,10 @@
    "file": "src/components/try/TryReportPreview.tsx"
   },
   "components/try/TryReportPreview.transferTitle": {
-   "en": "Your gift was transferred to the care organization",
-   "ar": "حُوِّل عطاؤك إلى جهة الرعاية",
+   "en": "Your gift was transferred to the field organization",
+   "ar": "حُوِّل عطاؤك إلى الجهة الميدانية",
    "kind": "text",
-   "hash": "a91157af91cb",
+   "hash": "77d00f7db395",
    "file": "src/components/try/TryReportPreview.tsx"
   },
   "components/try/TryReportPreview.trigger": {
@@ -10982,11 +10990,11 @@
    "file": "src/components/vision/WhatIf.tsx"
   },
   "config/brand.description": {
-   "en": "Sponsor an orphan with a file verified by an approved care organization. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
+   "en": "Sponsor an orphan with a file documented by WAMY's offices and field partners. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
    "ar": "",
    "kind": "template",
    "params": 1,
-   "hash": "a06a1d8b642d",
+   "hash": "b1b4f80434d3",
    "file": "src/config/brand.ts"
   },
   "config/brand.ownerLine": {
@@ -13423,11 +13431,11 @@
    "file": "src/lib/try-demo.ts"
   },
   "lib/try-demo.transferText": {
-   "en": "{0} to the care organization.",
-   "ar": "{0} إلى جهة الرعاية.",
+   "en": "{0} to the field organization.",
+   "ar": "{0} إلى الجهة الميدانية.",
    "kind": "template",
    "params": 1,
-   "hash": "7d17bc32091b",
+   "hash": "29aa7b805e0d",
    "file": "src/lib/try-demo.ts"
   },
   "lib/try-demo.transferTitle": {
@@ -14854,17 +14862,17 @@
    "file": "src/routes/hall.tsx"
   },
   "routes/how-it-works.actors.0.0": {
-   "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "626fb702d798",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.0.1": {
-   "en": "A licensed charity or care home registers on the platform, is approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
-   "ar": "جمعية أو دار مرخّصة تسجّل في المنصة، تُعتمد من الإدارة، ثم ترفع ملفات الأيتام مع المستندات وتحدّث بياناتهم دورياً.",
+   "en": "A WAMY office or field partner registers on the platform, is reviewed and approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
+   "ar": "مكتبٌ للندوة أو شريكٌ ميداني لها يسجّل في المنصة، فتراجعه الإدارة وتعتمده، ثم يرفع ملفات الأيتام مع المستندات ويحدّث بياناتهم دورياً.",
    "kind": "text",
-   "hash": "4f47f2fed951",
+   "hash": "8a8e7097d10a",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.1.0": {
@@ -14875,10 +14883,10 @@
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.1.1": {
-   "en": "Provides the care organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
-   "ar": "يزوّد جهة الرعاية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
+   "en": "Provides the field organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
+   "ar": "يزوّد الجهة الميدانية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
    "kind": "text",
-   "hash": "a8829f26e698",
+   "hash": "7f6cb92660ad",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.2.0": {
@@ -14939,10 +14947,10 @@
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.lead": {
-   "en": "The platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
-   "ar": "المنصة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
+   "en": "WAMY's platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
+   "ar": "منصّة الندوة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
    "kind": "text",
-   "hash": "539844493e6a",
+   "hash": "77d004aff804",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.0": {
@@ -14953,17 +14961,17 @@
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.1": {
-   "en": "Registering and approving the care organization",
-   "ar": "تسجيل جهة الرعاية واعتمادها",
+   "en": "Registering and approving the field organization",
+   "ar": "تسجيل الجهة الميدانية واعتمادها",
    "kind": "text",
-   "hash": "1e9f83a5eb52",
+   "hash": "fe70f7b64971",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.2": {
-   "en": "License and contact details are checked before the organization may upload files.",
-   "ar": "تحقق من الترخيص وبيانات التواصل قبل السماح برفع الملفات.",
+   "en": "The administration reviews the organization's registration details and documents before it may upload files.",
+   "ar": "تراجع الإدارة بيانات تسجيل الجهة ووثائقها قبل السماح برفع الملفات.",
    "kind": "text",
-   "hash": "fb54e0a21d5b",
+   "hash": "354696df9447",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.1.0": {
@@ -15044,10 +15052,10 @@
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.4.2": {
-   "en": "Education and health reports as the care organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
+   "en": "Education and health reports as the field organization files them and the administration approves them. End the sponsorship whenever you like and it stops after the last paid month; a bank-transfer sponsorship can also be paused or have its amount changed from your dashboard.",
    "ar": "تقارير عن التعليم والصحة حين ترفعها الجهة وتعتمدها الإدارة. وتُنهي الكفالة متى شئت فتنتهي بعد آخر شهرٍ مدفوع؛ وكفالة التحويل البنكي تُوقَف مؤقّتاً أو يُعدَّل مبلغها من لوحتك.",
    "kind": "text",
-   "hash": "ea1ac19b71ea",
+   "hash": "d79d22938ddf",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.5.0": {
@@ -15177,10 +15185,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.1.1": {
-   "en": "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
-   "ar": "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
+   "en": "This is where the platform works. WAMY's offices and field partners document the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
+   "ar": "هنا تعمل المنصّة. مكاتب الندوة وشركاؤها الميدانيون يوثّقون الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
    "kind": "text",
-   "hash": "ebb81758e426",
+   "hash": "9ecceceaf245",
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.2.0": {
@@ -15205,17 +15213,17 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.custody.0.0": {
-   "en": "A licensed care organization",
-   "ar": "جهة رعاية مرخّصة",
+   "en": "WAMY's offices and field partners",
+   "ar": "مكاتب الندوة وشركاؤها الميدانيون",
    "kind": "text",
-   "hash": "ca3d8e2e7222",
+   "hash": "381821b907a2",
    "file": "src/routes/index.tsx"
   },
   "routes/index.custody.0.1": {
-   "en": "No individual creates a file. The organization is reviewed and approved first, and stays responsible for the data being accurate and up to date.",
-   "ar": "لا يُنشئ الملفَّ فردٌ. تُراجَع الجهة وتُعتمد أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
+   "en": "No individual creates a file. A field organization working under WAMY's umbrella does: the platform's administration reviews and approves it first, and it stays responsible for the data being accurate and up to date.",
+   "ar": "لا يُنشئ الملفَّ فردٌ، بل جهة ميدانية تعمل تحت مظلّة الندوة: تراجعها إدارة المنصّة وتعتمدها أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
    "kind": "text",
-   "hash": "08f1229167c8",
+   "hash": "77da67b59456",
    "file": "src/routes/index.tsx"
   },
   "routes/index.custody.1.0": {
@@ -15275,10 +15283,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.description": {
-   "en": "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
-   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
+   "en": "We don't offer temporary care; we build systems that let children thrive. A file documented by a WAMY office or field partner, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
+   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
    "kind": "text",
-   "hash": "c51f7141b4d3",
+   "hash": "cec7f41e2eb4",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.0": {
@@ -15394,10 +15402,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.0.2": {
-   "en": "A verified file from an approved care organization captures a whole crisis in one picture — it moves you and reframes how you see it.",
-   "ar": "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
+   "en": "A file documented by a WAMY office or field partner captures a whole crisis in one picture — it moves you and reframes how you see it.",
+   "ar": "ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
    "kind": "text",
-   "hash": "6862f9b1f077",
+   "hash": "d1a44464f57d",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.1.0": {
@@ -15485,10 +15493,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.lead": {
-   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
-   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
+   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
+   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
    "kind": "text",
-   "hash": "1aa5fb79f31d",
+   "hash": "d7588d359830",
    "file": "src/routes/index.tsx"
   },
   "routes/index.logo": {
@@ -15507,10 +15515,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.mapP": {
-   "en": "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
-   "ar": "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
+   "en": "The World Assembly of Muslim Youth network; office locations shown are from public sources pending the official register. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
+   "ar": "شبكة الندوة العالمية للشباب الإسلامي؛ مواقع مكاتبها هنا من مصادر عامّة بانتظار السجلّ الرسمي. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
    "kind": "text",
-   "hash": "a84d8b7148f4",
+   "hash": "0664ae28e7f2",
    "file": "src/routes/index.tsx"
   },
   "routes/index.moneyFunded": {
@@ -15564,10 +15572,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.partners": {
-   "en": "Partner care organizations",
-   "ar": "جهات الرعاية الشريكة",
+   "en": "WAMY's offices and field partners",
+   "ar": "مكاتب الندوة وشركاؤها الميدانيون",
    "kind": "text",
-   "hash": "639a189026d8",
+   "hash": "381821b907a2",
    "file": "src/routes/index.tsx"
   },
   "routes/index.perMonth": {
@@ -15662,10 +15670,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.proofSource": {
-   "en": "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
-   "ar": "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
+   "en": "WAMY's offices and field activity shown here come from cited public sources (2024–2026), pending the official register; file counts are calculated the moment you open this page.",
+   "ar": "مكاتب الندوة ونشاطها الميداني هنا من مصادر عامّة موثّقة (2024–2026) بانتظار السجلّ الرسمي، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
    "kind": "text",
-   "hash": "4f5c8eaf2911",
+   "hash": "3ca4e40b7593",
    "file": "src/routes/index.tsx"
   },
   "routes/index.qualification": {
@@ -15930,17 +15938,17 @@
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.ctaTitle": {
-   "en": "Every sponsorship here passes through an approved organization",
-   "ar": "كلّ كفالةٍ هنا تمرّ عبر جهةٍ معتمدة",
+   "en": "Every sponsorship here passes through a WAMY office or field partner",
+   "ar": "كلّ كفالةٍ هنا تمرّ عبر مكتبٍ للندوة أو شريكٍ ميداني لها",
    "kind": "text",
-   "hash": "5fa6ab30a2af",
+   "hash": "32703b2aa5c5",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.empty": {
-   "en": "No approved organizations yet.",
-   "ar": "لا توجد جهات معتمدة بعد.",
+   "en": "The platform's administration has not approved a field organization yet.",
+   "ar": "لم تعتمد إدارة المنصّة جهةً ميدانية بعد.",
    "kind": "text",
-   "hash": "7912015dd21b",
+   "hash": "f25fb78513af",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.how": {
@@ -15951,17 +15959,17 @@
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.lead": {
-   "en": "Every child's file on the platform is linked to a licensed care organization responsible for documenting and updating its data.",
-   "ar": "كل ملف يتيم في المنصة مرتبط بجهة رعاية مرخّصة مسؤولة عن توثيق البيانات وتحديثها.",
+   "en": "Every child's file on the platform is linked to a field organization working under WAMY's umbrella, reviewed and approved by the platform's administration, and responsible for documenting and updating its data.",
+   "ar": "كل ملف يتيم في المنصة مرتبط بجهة ميدانية تعمل تحت مظلّة الندوة، راجعتها إدارة المنصّة واعتمدتها، وهي المسؤولة عن توثيق البيانات وتحديثها.",
    "kind": "text",
-   "hash": "43660175b7b6",
+   "hash": "9404e0a1b28b",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.title": {
-   "en": "Approved care organizations",
-   "ar": "جهات الرعاية المعتمدة",
+   "en": "WAMY's offices and field partners",
+   "ar": "مكاتب الندوة وشركاؤها الميدانيون",
    "kind": "text",
-   "hash": "e84aa0da2fd6",
+   "hash": "381821b907a2",
    "file": "src/routes/organizations.tsx"
   },
   "routes/orphans.index.active": {
@@ -16196,10 +16204,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.launchText": {
-   "en": "The first files are published once a licensed care organization documents them and the administration approves them. Until then, try the full journey or support a place now.",
-   "ar": "أول الملفات تُنشر بعد توثيقها من جهة رعاية مرخّصة واعتمادها من الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
+   "en": "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, try the full journey or support a place now.",
+   "ar": "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
    "kind": "text",
-   "hash": "efbedafcce66",
+   "hash": "b38c02bba2a8",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.launchTitle": {
@@ -16217,10 +16225,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.lead": {
-   "en": "Every file shown here was approved by the administration after being documented by a licensed care organization",
-   "ar": "جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة",
+   "en": "Every file shown here was approved by the administration after being documented by a WAMY office or field partner",
+   "ar": "جميع الملفات المعروضة معتمدة من الإدارة بعد أن وثّقها مكتبٌ للندوة أو شريكٌ ميداني لها",
    "kind": "text",
-   "hash": "f8abc09b0b41",
+   "hash": "46ca4a789916",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.male": {
@@ -16611,10 +16619,10 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.messagePh": {
-   "en": "A word of encouragement — the care organization reviews it before it arrives",
-   "ar": "كلمة تشجيعية — تراجعها جهة الرعاية قبل أن تصل",
+   "en": "A word of encouragement — the field organization reviews it before it arrives",
+   "ar": "كلمة تشجيعية — تراجعها الجهة الميدانية قبل أن تصل",
    "kind": "text",
-   "hash": "ae4265290310",
+   "hash": "dfc85dac344c",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.monthly": {
@@ -16688,10 +16696,10 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.org": {
-   "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "626fb702d798",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.payLater": {
@@ -17368,11 +17376,11 @@
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.coversText": {
-   "en": "{0}, through an approved care organization that documents each monthly delivery and sends you an impact report.",
-   "ar": "{0}، عبر جهة رعايةٍ معتمدة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.",
+   "en": "{0}, through a field organization working under WAMY's umbrella that documents each monthly delivery and sends you an impact report.",
+   "ar": "{0}، عبر جهةٍ ميدانية تعمل تحت مظلّة الندوة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.",
    "kind": "template",
    "params": 1,
-   "hash": "46feca979605",
+   "hash": "dd166646e644",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.coversTitle": {

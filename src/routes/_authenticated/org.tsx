@@ -26,12 +26,12 @@ export const Route = createFileRoute("/_authenticated/org")({
      قبل اعتماد الإدارة. */
   head: () => ({
     meta: [
-      { title: pageTitle("مساحة جهة الرعاية") },
+      { title: pageTitle("مساحة الجهة الميدانية") },
       {
         name: "description",
         content: BRAND.description,
       },
-      { property: "og:title", content: pageTitle("مساحة جهة الرعاية") },
+      { property: "og:title", content: pageTitle("مساحة الجهة الميدانية") },
       {
         property: "og:description",
         content: BRAND.description,
@@ -72,7 +72,7 @@ function OrgPage() {
 
   if (isLoading || kycLoading) {
     return (
-      <DashboardShell title="جهة الرعاية">
+      <DashboardShell title="الجهة الميدانية">
         <div className="flex justify-center py-16">
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
@@ -83,8 +83,8 @@ function OrgPage() {
   if (!data?.org || data.org.status === "pending" || data.org.status === "rejected") {
     return (
       <DashboardShell
-        title={data?.org ? "طلب اعتماد الجهة" : "تسجيل جهة رعاية"}
-        description="سجّل بيانات الجمعية أو الدار ووثيقة تسجيلها، وتراجعها الإدارة قبل السماح برفع ملفات الأطفال."
+        title={data?.org ? "طلب اعتماد الجهة" : "تسجيل جهة ميدانية"}
+        description="لمكاتب الندوة وشركائها الميدانيين: سجّل بيانات الجهة ووثيقة تسجيلها، وتراجعها الإدارة قبل السماح برفع ملفات الأطفال."
       >
         <OrgRegistration
           key={kyc?.org_id ?? "new"}
@@ -104,7 +104,7 @@ function OrgPage() {
       <div className="flex flex-wrap items-center gap-3">
         <Badge variant={org.status === "approved" ? "default" : "secondary"}>
           {org.status === "approved"
-            ? "جهة معتمدة"
+            ? "اعتمدتها الإدارة"
             : org.status === "pending"
               ? "بانتظار اعتماد الإدارة"
               : "غير مفعّلة"}

@@ -435,11 +435,11 @@ export const COPY = defineCopy("components/admin/data", {
       gapTitle: "ما ليس موجوداً بعد",
       roles: {
         org: {
-          title: "جهة رعاية",
+          title: "جهة ميدانية",
           what: "تُدخل ملفّات أطفالها ووثائقهم وتقدّمها للاعتماد.",
           steps: [
             "أرسل رابط التسجيل إلى مسؤول الجهة فيُنشئ حسابه.",
-            "يفتح «جهة الرعاية» ويملأ بيانات الجهة ووثائقها.",
+            "يفتح «الجهة الميدانية» ويملأ بيانات الجهة ووثائقها.",
             "تعتمد الجهة من «صندوق القرارات»، فيظهر لها «ملفٌّ جديد».",
           ],
           tab: "صندوق القرارات",
@@ -843,11 +843,11 @@ export const COPY = defineCopy("components/admin/data", {
       gapTitle: "What does not exist yet",
       roles: {
         org: {
-          title: "Care organization",
+          title: "Field organization",
           what: "Enters its children's files and documents and submits them for approval.",
           steps: [
             "Send the sign-up link to the organization's contact so they create an account.",
-            "They open “Care organization” and fill in the organization's details and documents.",
+            "They open “Field organization” and fill in the organization's details and documents.",
             "Approve the organization from the decisions inbox; “New file” then appears for it.",
           ],
           tab: "Decisions inbox",

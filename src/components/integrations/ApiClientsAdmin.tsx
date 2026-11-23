@@ -155,7 +155,7 @@ export function ApiClientsAdmin() {
         </div>
         <div className="min-w-48">
           <Label htmlFor="api-org" className="text-xs">
-            جهة الرعاية المسؤولة
+            الجهة الميدانية المسؤولة
           </Label>
           <select
             id="api-org"
@@ -193,7 +193,7 @@ export function ApiClientsAdmin() {
           إصدار مفتاح
         </Button>
         <p className="w-full text-xs text-muted-foreground">
-          الاستيراد يحتاج جهة رعاية مسؤولة: ملفٌّ بلا جهةٍ معتمدة لا صاحب له.
+          الاستيراد يحتاج جهة ميدانية مسؤولة: ملفٌّ بلا جهةٍ معتمدة لا صاحب له.
         </p>
       </form>
 

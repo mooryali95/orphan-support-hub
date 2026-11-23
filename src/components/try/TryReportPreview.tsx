@@ -14,7 +14,7 @@ import { TRY_CURRENCY, type TryChild } from "@/lib/try-demo";
 
 const COPY = defineCopy("components/try/TryReportPreview", {
   ar: {
-    transferTitle: "حُوِّل عطاؤك إلى جهة الرعاية",
+    transferTitle: "حُوِّل عطاؤك إلى الجهة الميدانية",
     transferText: (amount: string) => `${amount} في الأسبوع الأول من الشهر، برقم تحويلٍ تراه.`,
     deliveredTitle: (name: string) => `سُلِّم لـ${name} بمستند`,
     deliveredText: "إيصال استلامٍ موقَّع من وليّ الأمر، مرفوعٌ في ملفّ الكفالة.",
@@ -30,7 +30,7 @@ const COPY = defineCopy("components/try/TryReportPreview", {
     footnote: "نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
   },
   en: {
-    transferTitle: "Your gift was transferred to the care organization",
+    transferTitle: "Your gift was transferred to the field organization",
     transferText: (amount: string) =>
       `${amount} in the first week of the month, with a transfer reference you can see.`,
     deliveredTitle: (name: string) => `Delivered to ${name}, with a receipt`,

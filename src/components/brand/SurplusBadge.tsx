@@ -10,14 +10,14 @@ const COPY = defineCopy("components/brand/SurplusBadge", {
     unlocksA: "اكتمل احتياجه الشهري، وهذا الفائض يفتح له",
     perMonth: "شهرياً",
     routed:
-      "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره جهة الرعاية وتعتمده الإدارة.",
+      "اكتمل احتياجه الشهري، وهذا الفائض يُوجَّه إلى برنامج إضافي تختاره الجهة الميدانية وتعتمده الإدارة.",
   },
   en: {
     title: "Giving beyond the need",
     unlocksA: "Their monthly need is covered, and this surplus opens up",
     perMonth: "per month",
     routed:
-      "Their monthly need is covered, and this surplus goes to an additional program chosen by the care organization and approved by the administration.",
+      "Their monthly need is covered, and this surplus goes to an additional program chosen by the field organization and approved by the administration.",
   },
 });
 

@@ -54,8 +54,8 @@ function TermsAr() {
             <strong>الكافل:</strong> يختار ملفاً وبرامج، ويسدّد شهرياً، ويتابع الأثر.
           </li>
           <li>
-            <strong>جهة الرعاية:</strong> ترفع الملفّات بوثائقها، وتنفّذ البرامج، وترفع التقارير.
-            وهي مسؤولة عن صحّة ما ترفعه.
+            <strong>الجهة الميدانية:</strong> ترفع الملفّات بوثائقها، وتنفّذ البرامج، وترفع
+            التقارير. وهي مسؤولة عن صحّة ما ترفعه.
           </li>
           <li>
             <strong>ولي الأمر:</strong> يمنح الموافقات ويتابع ما يصل من خدمات.
@@ -150,7 +150,7 @@ function TermsEn() {
             impact.
           </li>
           <li>
-            <strong>Care organization:</strong> uploads files with their documents, runs the
+            <strong>Field organization:</strong> uploads files with their documents, runs the
             programs and submits reports. It is responsible for the accuracy of what it uploads.
           </li>
           <li>

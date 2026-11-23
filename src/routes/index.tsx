@@ -68,12 +68,12 @@ const COPY = defineCopy("routes/index", {
   ar: {
     title: (brand: string) => `${brand} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
     description:
-      "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف موثّق من جهة رعاية مرخّصة، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
+      "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
     ladder: [
       [
         "الدراية",
         "أن ترى الصورة",
-        "ملف موثّق من جهة رعاية معتمدة يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
+        "ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
       ],
       [
         "الميقات",
@@ -98,7 +98,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "المضيق",
-        "هنا تعمل المنصّة. جهة رعاية مرخّصة توثّق الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
+        "هنا تعمل المنصّة. مكاتب الندوة وشركاؤها الميدانيون يوثّقون الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
       ],
       [
         "شطّ العمران",
@@ -107,8 +107,8 @@ const COPY = defineCopy("routes/index", {
     ],
     custody: [
       [
-        "جهة رعاية مرخّصة",
-        "لا يُنشئ الملفَّ فردٌ. تُراجَع الجهة وتُعتمد أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
+        "مكاتب الندوة وشركاؤها الميدانيون",
+        "لا يُنشئ الملفَّ فردٌ، بل جهة ميدانية تعمل تحت مظلّة الندوة: تراجعها إدارة المنصّة وتعتمدها أولاً، وتبقى مسؤولةً عن صحّة البيانات وتحديثها.",
       ],
       [
         "وثائق تُرفَع وتُدقَّق",
@@ -135,7 +135,7 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `شعار ${brand}`,
     h1a: "لا نقدّم رعايةً مؤقّتة،",
     h1b: "بل نبني نظم عمران",
-    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ توثّقه جهة رعاية مرخّصة، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
+    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
     supportNow: "ادعم الآن",
     tryIt: "جرّب الرحلة كاملة بلا حساب",
     browse: "تصفّح ملفات الأيتام",
@@ -148,7 +148,7 @@ const COPY = defineCopy("routes/index", {
       "كل دفعةٍ يُسجَّل تسليمها بمستندٍ تراه، وتقارير أثرٍ دورية عن التعليم والصحة والمعيشة تراجعها الإدارة قبل أن تصلك.",
     closeH: "من هنا جاء الاسم",
     startReal: "ابدأ من ملفٍّ حقيقي",
-    partners: "جهات الرعاية الشريكة",
+    partners: "مكاتب الندوة وشركاؤها الميدانيون",
     proofH: "المنصّة اليوم",
     proofOffices: "دول فيها مكتبٌ مؤكَّد للندوة",
     proofField: "دول بنشاطٍ ميداني موثّق",
@@ -156,9 +156,9 @@ const COPY = defineCopy("routes/index", {
     proofFull: "مكفولون بالكامل",
     launching: "قيد الإطلاق",
     proofSource:
-      "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
+      "مكاتب الندوة ونشاطها الميداني هنا من مصادر عامّة موثّقة (2024–2026) بانتظار السجلّ الرسمي، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
     mapH: "أين نعمل",
-    mapP: "شبكة الندوة العالمية للشباب الإسلامي كما وثّقتها المصادر العامّة. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
+    mapP: "شبكة الندوة العالمية للشباب الإسلامي؛ مواقع مكاتبها هنا من مصادر عامّة بانتظار السجلّ الرسمي. بدّل الطبقة لترى من ينتظر كافلاً، أو أين تحتاج الندوة مكتباً.",
     crossingH: "شطّان ومضيق",
     childH: "اليتيم عندنا شخصٌ لا «حالة»",
     childP1:
@@ -200,12 +200,12 @@ const COPY = defineCopy("routes/index", {
     title: (brand: string) =>
       `${brand} — Carrying the orphan from the shore of loss to the shore of thriving`,
     description:
-      "We don't offer temporary care; we build systems that let children thrive. A file verified by a licensed care organization, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
+      "We don't offer temporary care; we build systems that let children thrive. A file documented by a WAMY office or field partner, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
     ladder: [
       [
         "Awareness",
         "Seeing the picture",
-        "A verified file from an approved care organization captures a whole crisis in one picture — it moves you and reframes how you see it.",
+        "A file documented by a WAMY office or field partner captures a whole crisis in one picture — it moves you and reframes how you see it.",
       ],
       [
         "The moment",
@@ -230,7 +230,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "The strait",
-        "This is where the platform works. A licensed care organization documents the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
+        "This is where the platform works. WAMY's offices and field partners document the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
       ],
       [
         "The shore of thriving",
@@ -239,8 +239,8 @@ const COPY = defineCopy("routes/index", {
     ],
     custody: [
       [
-        "A licensed care organization",
-        "No individual creates a file. The organization is reviewed and approved first, and stays responsible for the data being accurate and up to date.",
+        "WAMY's offices and field partners",
+        "No individual creates a file. A field organization working under WAMY's umbrella does: the platform's administration reviews and approves it first, and it stays responsible for the data being accurate and up to date.",
       ],
       [
         "Documents uploaded and checked",
@@ -266,7 +266,7 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `${brand} logo`,
     h1a: "We don't offer temporary care —",
     h1b: "we build systems for thriving",
-    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a licensed care organization and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
+    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
     supportNow: "Support now",
     tryIt: "Try the whole journey, no account",
     browse: "Browse children's files",
@@ -280,7 +280,7 @@ const COPY = defineCopy("routes/index", {
       "Each delivery is recorded with a document you can see, and regular impact reports on education, health and living conditions are reviewed by the administration before they reach you.",
     closeH: "Where the name comes from",
     startReal: "Start with a real file",
-    partners: "Partner care organizations",
+    partners: "WAMY's offices and field partners",
     proofH: "The platform today",
     proofOffices: "countries with a confirmed WAMY office",
     proofField: "countries with documented field activity",
@@ -288,9 +288,9 @@ const COPY = defineCopy("routes/index", {
     proofFull: "fully sponsored",
     launching: "Launching soon",
     proofSource:
-      "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
+      "WAMY's offices and field activity shown here come from cited public sources (2024–2026), pending the official register; file counts are calculated the moment you open this page.",
     mapH: "Where we work",
-    mapP: "The World Assembly of Muslim Youth network as documented in public sources. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
+    mapP: "The World Assembly of Muslim Youth network; office locations shown are from public sources pending the official register. Switch the layer to see who is waiting for a sponsor, or where WAMY needs an office.",
     crossingH: "Two shores and a strait",
     childH: "Here, an orphan is a person, not a “case”",
     childP1:

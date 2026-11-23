@@ -139,6 +139,6 @@ export const NEED_CATEGORY_LABELS: Record<string, string> = {
 export const ROLE_LABELS: Record<string, string> = {
   admin: "الإدارة",
   sponsor: "كافل",
-  care_org: "جهة رعاية",
+  care_org: "جهة ميدانية",
   guardian: "ولي أمر",
 };

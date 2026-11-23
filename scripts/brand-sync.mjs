@@ -5,7 +5,8 @@
 //   ١) يولّد شعار البريد (الاسم مكتوباً بخطّ أميري) — الصورة الوحيدة التي تحمل الاسم.
 //   ٢) يكتب هجرةً تُحدّث الاسم في القاعدة (platform_settings.brand_name)
 //      إن لم تكن مكتوبةً لهذا الاسم من قبل.
-//   ٣) يطبع ما بقي خارج الكود: إعدادات لا يصلها المستودع.
+//   ٣) يتحقّق من اكتمال بيانات صاحب المنصّة (owner) التي يقرؤها البريد والواجهة.
+//   ٤) يطبع ما بقي خارج الكود: إعدادات لا يصلها المستودع.
 // الواجهة كلّها تقرأ الاسم من brand.json مباشرة، وفحص brand.test.ts يفشل
 // إن كُتب الاسم حرفياً في ملفٍ آخر.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -13,6 +14,18 @@ import { createRequire } from "node:module";
 
 const brand = JSON.parse(readFileSync("src/config/brand.json", "utf8"));
 const name = brand.name;
+
+// صاحب المنصّة: يقرؤه البريد والواجهة من brand.json مباشرةً (سطر الترويسة والتذييل)، فلا
+// يُولَّد له ملف. يُتحقَّق هنا من اكتماله فقط، كي لا يخرج بريدٌ بسطرٍ فارغ.
+const owner = brand.owner ?? {};
+const missing = ["name", "nameLatin", "short", "shortLatin", "line"].filter(
+  (k) => typeof owner[k] !== "string" || !owner[k].trim(),
+);
+if (missing.length > 0) {
+  console.error(`✗ brand.json: owner ينقصه ${missing.join("، ")}`);
+  process.exit(1);
+}
+console.log(`✓ صاحب المنصّة: ${owner.line}`);
 
 // ١) شعار البريد — يحتاج Playwright؛ إن غاب يُتخطّى بتنبيهٍ ولا يوقف الباقي.
 let chromium = null;
@@ -67,7 +80,7 @@ if (already) {
 console.log(`
 بقي خارج الكود (مرّة واحدة):
   • Lovable ← إعدادات المشروع: اسم المشروع والنطاق إن تغيّر.
-  • Lovable Cloud ← المتغيّرات: EMAIL_FROM (اسم المرسِل الظاهر).
+  • Lovable Cloud ← المتغيّرات: EMAIL_FROM (اسم المرسِل الظاهر) — راجعه إن تغيّر صاحب المنصّة (${owner.short}).
   • Creem: أسماء المنتجات إن ظهر فيها الاسم.
   • القاعدة الحيّة: الهجرة الجديدة تدخل حزمة النشر (scripts/release-bundle.sh).
 `);

@@ -71,6 +71,13 @@ describe("renderNotificationEmail", () => {
     expect(mail.html).not.toMatch(/\{BRAND\./);
   });
 
+  // whose platform this is: stated in every notification, in both parts of the message
+  it("يحمل سطر صاحب المنصّة في الرسالة ونصّها", () => {
+    const mail = renderNotificationEmail(base);
+    expect(mail.html).toContain(BRAND.ownerLine);
+    expect(mail.text).toContain(BRAND.ownerLine);
+  });
+
   // نصّ الدفعة الفاشلة يجب ألّا يُفزع: المزوّد يُعيد المحاولة تلقائياً.
   it("يضيف سطر سياق حسب نوع الحدث", () => {
     const failed = renderNotificationEmail({ ...base, kind: "payment_failed" });

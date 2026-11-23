@@ -27,7 +27,8 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     medium: "أولوية متوسطة",
     data: "تحتاج بيانات",
     covered: "فيها مكتب",
-    research: "بيانات بحثية من مصادر عامة، تُحدَّث عند تزويد الأمانة العامة بالبيانات الرسمية.",
+    research:
+      "مواقع المكاتب والنشاط المعروضة مأخوذة من مصادر عامّة، إلى أن يصدر السجلّ الرسمي عن الأمانة العامة.",
     blockNeed: "الحاجة الوطنية",
     blockPresence: "حضور الندوة",
     blockPlatform: "على المنصّة الآن",
@@ -95,7 +96,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     data: "Needs data",
     covered: "Has an office",
     research:
-      "Research data from public sources, updated when the General Secretariat provides official data.",
+      "Office locations and activity shown here come from public sources, pending the official register from the General Secretariat.",
     blockNeed: "National need",
     blockPresence: "WAMY presence",
     blockPlatform: "On the platform now",

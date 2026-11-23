@@ -39,7 +39,7 @@ const COPY = defineCopy("components/profile/OrphanProfilePanel", {
       trustee: "الوصيّ",
       jurist: "الفقيه",
       mentor: "المرشد",
-      care_org: "جهة الرعاية",
+      care_org: "الجهة الميدانية",
       admin: "الإدارة",
     } as Record<string, string>,
     sections: SECTION_LABELS as Record<string, string>,
@@ -71,7 +71,7 @@ const COPY = defineCopy("components/profile/OrphanProfilePanel", {
       trustee: "Legal guardian",
       jurist: "Jurist",
       mentor: "Mentor",
-      care_org: "Care organization",
+      care_org: "Field organization",
       admin: "Administration",
     } as Record<string, string>,
     sections: {
@@ -118,9 +118,9 @@ const COPY = defineCopy("components/profile/OrphanProfilePanel", {
     title: (n: string) => `${n}'s profile`,
     count: (a: number, t: number) => `${a} of ${t} sections`,
     sensitiveNote:
-      "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and care organization.",
+      "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and field organization.",
     writerNote:
-      "Written by the people around the child: their guardian, supervisor or care organization. Your role is recorded with what you write, and the date moves only when something changes.",
+      "Written by the people around the child: their guardian, supervisor or field organization. Your role is recorded with what you write, and the date moves only when something changes.",
     sensitive: "Sensitive section",
     stale: " (needs updating)",
     edit: "Edit",

@@ -51,7 +51,7 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
     independent: "مشرف مستقلّ",
     training: "قيد التأهيل — إشرافه مقرونٌ بمتابعة الإدارة",
     supNote:
-      "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من جهة الرعاية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
+      "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
     privacy:
       "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
   },
@@ -108,9 +108,9 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
     independent: "Independent supervisor",
     training: "In training — supervision paired with administrative follow-up",
     supNote:
-      "Supervision is assigned only to someone certified by the administration — not by the care organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
+      "Supervision is assigned only to someone certified by the administration — not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
     privacy:
-      "Trait measurements stay between the child, their supervisor and their care organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
+      "Trait measurements stay between the child, their supervisor and their field organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
   },
 });
 

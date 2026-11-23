@@ -124,7 +124,7 @@ const kycSchema = z.object({
 export type OrgRegistrationInput = z.infer<typeof kycSchema>;
 
 /**
- * تسجيل جهة رعاية — لأيّ حسابٍ مسجَّل (UX-03).
+ * تسجيل جهة ميدانية — لأيّ حسابٍ مسجَّل (UX-03).
  *
  * يمرّ بـ`register_care_organization` في القاعدة: تُنشأ الجهة «بانتظار
  * الاعتماد» ويُمنح صاحبها دور care_org في معاملةٍ واحدة، والحقول

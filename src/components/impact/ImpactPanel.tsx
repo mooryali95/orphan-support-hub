@@ -65,8 +65,8 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
         <h4 className="text-sm font-bold">تقارير الأثر</h4>
         {reports.length === 0 ? (
           <p className="text-muted-foreground border-border mt-2 rounded-lg border border-dashed p-4 text-xs leading-6">
-            لم يصدر تقرير بعد. تُصدر جهة الرعاية تقريراً دورياً، ولا يظهر لك إلا بعد اعتماد الإدارة
-            له.
+            لم يصدر تقرير بعد. تُصدر الجهة الميدانية تقريراً دورياً، ولا يظهر لك إلا بعد اعتماد
+            الإدارة له.
           </p>
         ) : (
           <ul className="mt-2 space-y-3">

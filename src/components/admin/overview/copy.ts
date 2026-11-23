@@ -99,7 +99,7 @@ export const COPY = defineCopy("components/admin/overview", {
     inbox: {
       orphan: "ملفّات أطفالٍ بانتظار المراجعة",
       orphan_edit: "تعديلاتٌ على ملفّاتٍ منشورة",
-      org: "جهات رعايةٍ بانتظار الاعتماد",
+      org: "جهاتٍ ميدانية بانتظار الاعتماد",
       transfer: "تحويلاتٌ بنكية بانتظار التأكيد",
       access: "طلبات اطّلاع",
       circle_role: "أدوارٌ في دوائر الأطفال",
@@ -396,7 +396,7 @@ export const COPY = defineCopy("components/admin/overview", {
     inbox: {
       orphan: "Child files awaiting review",
       orphan_edit: "Edits to published files",
-      org: "Care organizations awaiting approval",
+      org: "Field organizations awaiting approval",
       transfer: "Bank transfers awaiting confirmation",
       access: "Access requests",
       circle_role: "Child-circle roles",

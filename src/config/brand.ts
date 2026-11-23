@@ -42,7 +42,7 @@ const BRAND_COPY = defineCopy("config/brand", {
     tagline: "We sponsor… and we build",
     slogan: "Sponsor an orphan with a verified file",
     description: (name: string) =>
-      `Sponsor an orphan with a file verified by an approved care organization. ${name} connects you with a real child through a transparent monthly sponsorship and regular impact reports.`,
+      `Sponsor an orphan with a file documented by WAMY's offices and field partners. ${name} connects you with a real child through a transparent monthly sponsorship and regular impact reports.`,
     ownerLine: "The World Assembly of Muslim Youth's orphan sponsorship platform",
   },
 });

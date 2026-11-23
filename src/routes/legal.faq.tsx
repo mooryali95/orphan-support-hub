@@ -58,8 +58,9 @@ function FaqAr() {
 
       <Section title="كيف أعرف أن الملف حقيقي؟">
         <p>
-          كل ملف ترفعه جهة رعاية مسجّلة، ومعه شهادة وفاة وإثبات وصاية على الأقل. والإدارة تفتح كل
-          وثيقة وتوثّقها قبل النشر. والملف الذي لا يجتاز ذلك لا يُنشر.
+          كل ملف ترفعه جهة ميدانية مسجّلة — مكتبٌ للندوة أو شريكٌ ميداني لها — ومعه شهادة وفاة
+          وإثبات وصاية على الأقل. والإدارة تفتح كل وثيقة وتوثّقها قبل النشر. والملف الذي لا يجتاز
+          ذلك لا يُنشر.
         </p>
       </Section>
 
@@ -73,13 +74,13 @@ function FaqAr() {
       <Section title="هل يمكنني التواصل مع الطفل؟">
         <p>
           لا. وهذا مقصود: التواصل المباشر يُنشئ علاقة غير محمية لطرفين أحدهما طفل. والتقارير الدورية
-          هي القناة، وتمرّ بجهة الرعاية والإدارة.
+          هي القناة، وتمرّ بالجهة الميدانية والإدارة.
         </p>
       </Section>
 
       <Section title="متى تصلني التقارير؟">
         <p>
-          دورياً من جهة الرعاية، وبعد اعتماد الإدارة لها. ويصلك إشعار في المنصة وبريد عند نشر كل
+          دورياً من الجهة الميدانية، وبعد اعتماد الإدارة لها. ويصلك إشعار في المنصة وبريد عند نشر كل
           تقرير.
         </p>
       </Section>
@@ -102,16 +103,17 @@ function FaqAr() {
 
       <Section title="إلى أين يذهب المال؟">
         <p>
-          إلى البرامج المشترى بها، تُنفّذها جهة الرعاية أو المنصة. ولوحة الإدارة تعرض المحصَّل
+          إلى البرامج المشترى بها، تُنفّذها الجهة الميدانية أو المنصة. ولوحة الإدارة تعرض المحصَّل
           والمصروف والمتبقّي لكل ملف، وكل قرار مالي له أثر تدقيقي.
         </p>
       </Section>
 
-      <Section title="أنا جهة رعاية — كيف أنضمّ؟">
+      <Section title="أنا جهة ميدانية — كيف أنضمّ؟">
         <p>
-          سجّل حساباً، ثم من «بواباتي» اختر «سجّل جهة رعاية». أدخل الاسم القانوني ورقم التسجيل أو
-          الترخيص والدولة والعنوان والممثّل القانوني ووسيلة تواصل، وارفع شهادة التسجيل أو الترخيص.
-          ولا تُعتمد الجهة — ولا تُرفع ملفّات أطفال — قبل أن تراجع الإدارة بياناتها ووثائقها.
+          الباب لمكاتب الندوة وللجهات التي تعمل معها ميدانياً. سجّل حساباً، ثم من «بواباتي» اختر
+          «سجّل جهة ميدانية». أدخل الاسم القانوني ورقم التسجيل أو الترخيص والدولة والعنوان والممثّل
+          القانوني ووسيلة تواصل، وارفع شهادة التسجيل أو الترخيص. ولا تُعتمد الجهة — ولا تُرفع ملفّات
+          أطفال — قبل أن تراجع الإدارة بياناتها ووثائقها.
         </p>
       </Section>
     </LegalPage>
@@ -153,9 +155,9 @@ function FaqEn() {
 
       <Section title="How do I know a file is real?">
         <p>
-          Every file is uploaded by a registered care organization, with at least a death
-          certificate and proof of guardianship. The administration opens and verifies every
-          document before publishing. A file that doesn't pass isn't published.
+          Every file is uploaded by a registered field organization — a WAMY office or field partner
+          — with at least a death certificate and proof of guardianship. The administration opens
+          and verifies every document before publishing. A file that doesn't pass isn't published.
         </p>
       </Section>
 
@@ -177,7 +179,7 @@ function FaqEn() {
 
       <Section title="When will I receive reports?">
         <p>
-          Regularly from the care organization, after the administration approves them. You get a
+          Regularly from the field organization, after the administration approves them. You get a
           notification on the platform and an email whenever a report is published.
         </p>
       </Section>
@@ -202,15 +204,16 @@ function FaqEn() {
 
       <Section title="Where does the money go?">
         <p>
-          To the programs it pays for, delivered by the care organization or the platform. The
+          To the programs it pays for, delivered by the field organization or the platform. The
           administration dashboard shows what was collected, spent and remaining for each file, and
           every financial decision leaves an audit trail.
         </p>
       </Section>
 
-      <Section title="I'm a care organization — how do we join?">
+      <Section title="I'm a field organization — how do we join?">
         <p>
-          Create an account, then choose “Register a care organization” under “My portals”. Enter
+          Registration is for WAMY's offices and the organizations that work with it in the field.
+          Create an account, then choose “Register a field organization” under “My portals”. Enter
           the legal name, registration or licence number, country, address, legal representative and
           a contact, and upload the registration certificate or licence. The organization is not
           approved — and cannot upload children's files — until the administration has reviewed its

@@ -108,7 +108,7 @@ const COPY = defineCopy("routes/orphans.index", {
     any: "الكل",
     building: "برنامج بناء أهلية",
     buildingOn: "برنامج بناء أهلية قائم",
-    lead: "جميع الملفات المعروضة معتمدة من الإدارة بعد توثيقها من جهة رعاية مرخّصة",
+    lead: "جميع الملفات المعروضة معتمدة من الإدارة بعد أن وثّقها مكتبٌ للندوة أو شريكٌ ميداني لها",
     inCountries: (n: number) => ` — في ${arCount(n, COUNTRIES)}.`,
     cardH: "ما يُعرض هنا بطاقةٌ لا ملفّ:",
     cardP:
@@ -137,7 +137,7 @@ const COPY = defineCopy("routes/orphans.index", {
     empty: "لا توجد نتائج مطابقة.",
     launchTitle: "دليل الأيتام قيد الإطلاق",
     launchText:
-      "أول الملفات تُنشر بعد توثيقها من جهة رعاية مرخّصة واعتمادها من الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
+      "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
     launchTry: "جرّب الرحلة كاملة",
     launchSupport: "ادعم مكاناً",
     tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
@@ -172,7 +172,7 @@ const COPY = defineCopy("routes/orphans.index", {
     any: "All",
     building: "Qualification program",
     buildingOn: "Qualification program under way",
-    lead: "Every file shown here was approved by the administration after being documented by a licensed care organization",
+    lead: "Every file shown here was approved by the administration after being documented by a WAMY office or field partner",
     inCountries: pluralOf({ one: " — in {0} country.", other: " — in {0} countries." }),
     cardH: "What you see here is a card, not a file:",
     cardP:
@@ -201,7 +201,7 @@ const COPY = defineCopy("routes/orphans.index", {
     empty: "No matching results.",
     launchTitle: "The children's directory is launching soon",
     launchText:
-      "The first files are published once a licensed care organization documents them and the administration approves them. Until then, try the full journey or support a place now.",
+      "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, try the full journey or support a place now.",
     launchTry: "Try the full journey",
     launchSupport: "Support a place",
     tryA: "Try removing one of the filters above, or",

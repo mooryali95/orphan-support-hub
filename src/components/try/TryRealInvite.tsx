@@ -24,7 +24,7 @@ const COPY = defineCopy("components/try/TryRealInvite", {
     promises: [
       "لا يُنقل شيءٌ تلقائياً: ما اخترته يصير مقترحاً فقط.",
       "تؤكّد كلّ مبلغٍ بنفسك، ولا يتغيّر مبلغٌ دون علمك.",
-      "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من الدليل المعتمد.",
+      "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
     ],
     fields: "حقلٌ واحد: بريدك.",
     after: "هذه رحلةٌ افتراضية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
@@ -46,7 +46,7 @@ const COPY = defineCopy("components/try/TryRealInvite", {
     promises: [
       "Nothing is carried over automatically: what you chose becomes a proposal only.",
       "You confirm every amount yourself; no amount changes without you.",
-      "The trial's children are fictional; there you choose a child from the accredited directory.",
+      "The trial's children are fictional; there you choose a child from the directory of approved files.",
     ],
     fields: "One field: your email.",
     after: "This is a virtual journey: nothing was charged. The real one begins when you register.",
