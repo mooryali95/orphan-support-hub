@@ -115,6 +115,19 @@ export const COUNTRIES: HallCountry[] = WAMY_COUNTRIES.flatMap((c) => {
 
 export const byCode = (code: string) => COUNTRIES.find((c) => c.code === code);
 
+/** حالات ملفّ البحث كما بُنيت، قبل أيّ سجلّ: يعود إليها كلّ تطبيقٍ جديد. */
+const RESEARCH_ST = new Map(COUNTRIES.map((c) => [c.code, c.st] as const));
+
+/**
+ * يطبّق سجلّ المكاتب على دول القاعدة بالقاعدة نفسها التي تطبّقها الخارطة
+ * (`withRegister` في `@/lib/office-presence`). يُستدعى قبل تركيب المشهد؛ ويعيد الأصل أوّلاً،
+ * فلا يتراكم سجلٌّ على سجلّ.
+ */
+export function applyRegister(apply: (base: ReadonlyMap<string, Status>) => Map<string, Status>) {
+  const next = apply(RESEARCH_ST);
+  for (const c of COUNTRIES) c.st = next.get(c.code) ?? RESEARCH_ST.get(c.code)!;
+}
+
 /** Plinth radius the country model must stay inside, in scene units. */
 export const PLINTH_FIT = 6.9;
 /** Farthest point of a country's outline from its centre (shapes are normalised to their bounding box). */

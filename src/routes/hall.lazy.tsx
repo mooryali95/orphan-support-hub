@@ -22,6 +22,7 @@ import { loadHallScene, loadHallTrial } from "@/lib/hall/preload";
 import { hasWebGL2 } from "@/lib/hall/webgl";
 import { hallLanguage, hallLiveRows, hallSource } from "@/lib/hall/source";
 import { enterDemo, useDemo } from "@/lib/demo-mode";
+import { officeRegisterQuery, withRegister } from "@/lib/office-presence";
 import { formatCount } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, useLocale } from "@/lib/locale";
 import { getPublicOrphan } from "@/lib/orphans.functions";
@@ -215,9 +216,20 @@ function HallPage() {
       trying ? loadHallTrial() : null,
       // the live hall's own strings and sample names, in the interface language
       trying || donor ? null : import("@/lib/hall/live"),
+      // سجلّ المكاتب نفسه الذي تقرؤه الخارطة: لا ينتظر المشهدُ أكثر من ثانية ونصف، ودونه
+      // يبقى ملفّ البحث وحده
+      Promise.race([
+        queryClient
+          .fetchQuery(officeRegisterQuery)
+          .then((r) => r.offices)
+          .catch(() => []),
+        new Promise<[]>((resolve) => window.setTimeout(() => resolve([]), 1500)),
+      ]),
+      import("@/lib/hall/model"),
     ])
-      .then(([{ mountHall }, trial, liveHall]) => {
+      .then(([{ mountHall }, trial, liveHall, register, model]) => {
         if (cancelled) return;
+        model.applyRegister((base) => withRegister(base, register));
         hall = mountHall(root, {
           onStage: (stage) => {
             const step = onStage(stack, stage);

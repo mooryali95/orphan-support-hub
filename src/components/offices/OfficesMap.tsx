@@ -7,11 +7,11 @@ import type { NetworkKind } from "@/components/map/network-layer";
 import { Badge } from "@/components/ui/badge";
 import { defineCopy, useCopy } from "@/lib/locale";
 import {
-  listOfficesMap,
   OFFICE_CATEGORIES,
   type OfficeCategory,
   type PublicOffice,
 } from "@/lib/organizations.functions";
+import { officeRegisterQuery } from "@/lib/office-presence";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/offices/OfficesMap", {
@@ -68,10 +68,7 @@ const kindOf = (o: PublicOffice): NetworkKind => (o.demo ? "demo" : "office");
  */
 export function OfficesMap() {
   const c = useCopy(COPY);
-  const { data, isPending } = useQuery({
-    queryKey: ["offices-map"],
-    queryFn: () => listOfficesMap(),
-  });
+  const { data, isPending } = useQuery(officeRegisterQuery);
   const [category, setCategory] = useState<OfficeCategory | null>(null);
   const [selection, setSelection] = useState<MapSelection>({ country: null, region: null });
 
