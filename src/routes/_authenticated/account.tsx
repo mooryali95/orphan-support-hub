@@ -102,7 +102,12 @@ function AccountPage() {
     setAdding(false);
     if (!r.ok) {
       if (r.why === "duplicate") toast.success("هذا الجهاز يحمل بصمةً لحسابك من قبل.");
-      else if (r.why === "disabled") toast.error("البصمة لم تُفعَّل على الخادم بعد.");
+      else if (r.why === "disabled")
+        toast.error(
+          r.source === "client"
+            ? "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة."
+            : "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
+        );
       else if (r.why !== "cancelled") toast.error("تعذّرت إضافة البصمة.");
       return;
     }

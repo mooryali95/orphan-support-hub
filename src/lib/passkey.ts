@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import {
   classifyPasskeyError,
+  passkeyDisabledSource,
   deviceKind,
   passkeyFriendlyName,
   type PasskeyFailure,
@@ -113,7 +114,8 @@ async function guard<T extends { error: unknown }>(
   }
 }
 
-export type PasskeyResult = { ok: true } | { ok: false; why: PasskeyFailure };
+export type PasskeyResult =
+  { ok: true } | { ok: false; why: PasskeyFailure; source?: "client" | "server" };
 
 type SignInOptions = { mediation?: CredentialMediationRequirement; signal?: AbortSignal };
 
@@ -145,6 +147,7 @@ export async function addPasskey(locale = "ar"): Promise<PasskeyResult> {
     if (why === "disabled") markServerDisabled();
     // بصمةٌ مسجّلة سلفاً تعني أنّ الجهاز معروف — وهذا نجاحٌ من وجهة المستخدم.
     if (why === "duplicate") rememberDevicePasskey();
+    if (why === "disabled") return { ok: false, why, source: passkeyDisabledSource(res.error) };
     return { ok: false, why };
   }
   rememberDevicePasskey();

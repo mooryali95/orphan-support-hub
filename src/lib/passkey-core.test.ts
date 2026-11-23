@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { classifyPasskeyError, deviceKind, deviceLabel, passkeyFriendlyName } from "./passkey-core";
+import {
+  classifyPasskeyError,
+  deviceKind,
+  deviceLabel,
+  passkeyDisabledSource,
+  passkeyFriendlyName,
+} from "./passkey-core";
 
 describe("تصنيف أخطاء البصمة", () => {
   it.each([
@@ -70,5 +76,18 @@ describe("اسم الجهاز بلغة الواجهة", () => {
     const name = passkeyFriendlyName("iphone", "ar", new Date("2026-10-31T00:00:00Z"));
     expect(name).toMatch(/^آيفون · /);
     expect(name).toMatch(/31/);
+  });
+});
+
+describe("passkeyDisabledSource", () => {
+  it("tells the client library apart from the server setting", () => {
+    expect(
+      passkeyDisabledSource(
+        new Error("@supabase/auth-js: the passkey API is experimental and disabled by default."),
+      ),
+    ).toBe("client");
+    expect(
+      passkeyDisabledSource({ code: "passkey_disabled", message: "Passkeys are disabled" }),
+    ).toBe("server");
   });
 });
