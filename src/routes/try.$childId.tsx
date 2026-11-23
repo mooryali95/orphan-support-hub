@@ -31,7 +31,12 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/try/$childId")({
   // طفلٌ ليس في التجربة يُرسم داخل الصفحة نفسها (TryChildMissing): يبقى الزائر في رحلته.
-  loader: ({ params }) => ({ child: tryChild(params.childId) ?? null }),
+  // أطفال الكتالوج المولَّد يُسجَّلون حين تُحمَّل `try-world`: تُنتظر هنا قبل البحث، فيُفتح
+  // رابط الطفل مباشرةً (لا من الدليل وحده) — كان رابطٌ مباشر يقول «ليس في التجربة».
+  loader: async ({ params }) => {
+    await import("@/lib/try-places");
+    return { child: tryChild(params.childId) ?? null };
+  },
   head: ({ loaderData, match }) => {
     const l = match.context.locale ?? "ar";
     return {

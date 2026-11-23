@@ -5,8 +5,15 @@
  * الأطفال هناك، وأماكنهم ومجموعاتهم وسماتهم هنا، واختبارٌ يقفل الربط بينهما.
  */
 import { copyOf, defineCopy, type Locale } from "@/lib/locale";
-import { TRY_CHILDREN, type TryChild } from "@/lib/try-demo";
-import { WORLD_CHILDREN, WORLD_PLACES, worldGroupName, worldRegionName } from "@/lib/try-world";
+import { TRY_CHILDREN, TRY_WORLD_EXTRA, type TryChild } from "@/lib/try-demo";
+import {
+  EXTRA_PER_REGION,
+  makeChild,
+  WORLD_CHILDREN,
+  WORLD_PLACES,
+  worldGroupName,
+  worldRegionName,
+} from "@/lib/try-world";
 
 /**
  * كل دولةٍ ترسمها الخريطة دولةٌ كاملة في التجربة: الست المكتوبة هنا باليد (`TRY_FEATURED`، وهي
@@ -96,6 +103,23 @@ export const TRY_FEATURED: readonly TryPlace[] = [
     group: group("ID"),
   },
 ];
+
+// أطفال الدليل الإضافيون للدول الستّ أيضاً، في مناطقها الحقيقية: الدليل بالحجم نفسه في كلّ دولة.
+TRY_WORLD_EXTRA.push(
+  ...TRY_FEATURED.flatMap((p) =>
+    p.regions.flatMap((r, ri) =>
+      Array.from({ length: EXTRA_PER_REGION }, (_, i) =>
+        makeChild(
+          p.co,
+          `${p.co}:r${ri + 1}:${i + 1}`,
+          r.hall,
+          `try-${p.co.toLowerCase()}-${ri + 1}${i + 1}`,
+          `DEMO-TRY-${p.co}-${ri + 1}${i + 1}`,
+        ),
+      ),
+    ),
+  ),
+);
 
 /** every country of the trial: the six written above first, then the generated ones */
 export const TRY_PLACES: readonly TryPlace[] = [...TRY_FEATURED, ...WORLD_PLACES];
