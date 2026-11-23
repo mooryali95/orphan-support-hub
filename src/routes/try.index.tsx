@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
+import { TryDirectory } from "@/components/try/TryDirectory";
+import { TryRoles } from "@/components/try/TryRoles";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
@@ -24,6 +26,11 @@ const COPY = defineCopy("routes/try.index", {
     order: "الترتيب نفسه في الدليل الحقيقي: الأطول انتظاراً أوّلاً.",
     everywhere: "وفي كلّ دولةٍ على خريطة الدعم طفلٌ ومجموعةٌ ومنطقتان",
     fromMap: "ابدأ من الخريطة ثلاثية الأبعاد",
+    cycleEyebrow: "العرض التفاعلي",
+    cycleTitle: "الدورة الكاملة: من جهة الرعاية إلى أثر الكافل",
+    cycleText:
+      "أدخِل ملفّ طفل كجهة رعاية، ووثّقه واعتمده كإدارة، ثم اكفله كداعم، وأرسل تقرير الشهر الأوّل كمكتب — في دقائق، بالخطوات نفسها في المنصّة الحقيقية.",
+    cycleCta: "ابدأ الدورة",
     doors: "ثلاثة أبوابٍ للعطاء، ولكلٍّ أثره",
     doorsLead:
       "اكفل طفلاً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
@@ -58,6 +65,11 @@ const COPY = defineCopy("routes/try.index", {
     order: "The same order as the real directory: longest wait first.",
     everywhere: "And every country on the support map has a child, a group and two regions",
     fromMap: "Start from the 3D map",
+    cycleEyebrow: "Interactive demo",
+    cycleTitle: "The full cycle: from care organization to the supporter's impact",
+    cycleText:
+      "Enter a child's file as a care organization, verify and approve it as the administration, sponsor it as a supporter, and send the first monthly report as an office: in minutes, with the same steps as the real platform.",
+    cycleCta: "Start the cycle",
     doors: "Three doors for giving, each with its own impact",
     doorsLead:
       "Sponsor a child financially from the list below, or support qualification or in-kind giving from the map: for a child, their group, their region or their country. Then compare the impact in “My impact”.",
@@ -113,6 +125,27 @@ function TryHome() {
           </li>
         ))}
       </ol>
+
+      <TryRoles />
+
+      {/* «الدورة الكاملة»: ملفٌّ واحد يُرى ينتقل عبر كلّ الأدوار — أقوى ما يُعرض لصاحب القرار */}
+      <Link
+        to="/try/cycle"
+        className="group mt-12 flex flex-col gap-4 rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:flex-row sm:items-center sm:p-8"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="block text-xs font-bold tracking-wide opacity-80">{c.cycleEyebrow}</span>
+          <span className="mt-2 block text-2xl font-bold">{c.cycleTitle}</span>
+          <span className="mt-2 block max-w-2xl text-sm leading-7 opacity-90">{c.cycleText}</span>
+        </span>
+        <span className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start rounded-full bg-primary-foreground px-5 text-sm font-bold text-primary sm:self-center">
+          {c.cycleCta}
+          <ArrowLeft
+            className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100"
+            aria-hidden="true"
+          />
+        </span>
+      </Link>
 
       {/* the three giving tracks, as on the home page: each door says what its impact looks like */}
       <section aria-labelledby="try-doors" className="mt-14">
@@ -203,6 +236,8 @@ function TryHome() {
           <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
         </Link>
       </section>
+
+      <TryDirectory />
     </>
   );
 }

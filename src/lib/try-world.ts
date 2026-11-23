@@ -10,7 +10,7 @@
  */
 import { continentOf, countryName } from "@/lib/countries";
 import { copyOf, defineCopy, type Locale } from "@/lib/locale";
-import { TRY_WORLD_CHILDREN, type TryChild } from "@/lib/try-demo";
+import { TRY_WORLD_CHILDREN, TRY_WORLD_EXTRA, type TryChild } from "@/lib/try-demo";
 import type { TryPlace } from "@/lib/try-places";
 import { TRY_WORLD_ROWS } from "@/lib/try-world.data";
 
@@ -149,6 +149,42 @@ const regionNames = new Map<string, Names>();
 const groupIndex = new Map<string, number>();
 const places: TryPlace[] = [];
 const children: TryChild[] = [];
+const extras: TryChild[] = [];
+
+/** أطفالٌ إضافيون في كلّ منطقة لدليل التجربة: ثابتون محسوبون، لا عشوائيون. */
+export const EXTRA_PER_REGION = 4;
+
+export function makeChild(
+  co: string,
+  key: string,
+  region: string,
+  id: string,
+  code: string,
+): TryChild {
+  const pool = poolOf(co);
+  const n = seed(`${key}:name`) % AR.names[pool].length;
+  const age = pick(key, "age", 6, 14);
+  const grade = Math.min(age - 6, AR.grades.length - 1);
+  const covers = seed(`${key}:covers`) % AR.covers.length;
+  const need = 10 * pick(key, "need", 8, 15);
+  // always an open need of at least 20, so the child can be sponsored
+  const funded = 5 * pick(key, "funded", 0, (need - 20) / 5);
+  return {
+    id,
+    co,
+    region,
+    code,
+    name: AR.names[pool][n]!,
+    country: countryName(co, "ar"),
+    age,
+    stage: AR.grades[grade]!,
+    need,
+    funded,
+    waitingDays: pick(key, "wait", 30, 320),
+    covers: AR.covers[covers]!,
+    en: { name: EN.names[pool][n]!, stage: EN.grades[grade]!, covers: EN.covers[covers]! },
+  };
+}
 
 for (const line of TRY_WORLD_ROWS.trim().split("\n")) {
   const [co, id1, en1, ar1, id2, en2, ar2] = line.split("|") as [
@@ -174,38 +210,31 @@ for (const line of TRY_WORLD_ROWS.trim().split("\n")) {
   });
 
   // the country's trial child: the first child of its first region, as in the six
-  const pool = poolOf(co);
-  const n = seed(`${co}:name`) % AR.names[pool].length;
-  const age = pick(co, "age", 6, 14);
-  const grade = Math.min(age - 6, AR.grades.length - 1);
-  const covers = seed(`${co}:covers`) % AR.covers.length;
-  const need = 10 * pick(co, "need", 8, 15);
-  // always an open need of at least 20, so the child can be sponsored
-  const funded = 5 * pick(co, "funded", 0, (need - 20) / 5);
-  children.push({
-    id: `try-${co.toLowerCase()}`,
-    co,
-    region: `${co}-r1`,
-    code: `DEMO-TRY-${co}`,
-    name: AR.names[pool][n]!,
-    country: countryName(co, "ar"),
-    age,
-    stage: AR.grades[grade]!,
-    need,
-    funded,
-    waitingDays: pick(co, "wait", 30, 320),
-    covers: AR.covers[covers]!,
-    en: { name: EN.names[pool][n]!, stage: EN.grades[grade]!, covers: EN.covers[covers]! },
-  });
+  children.push(makeChild(co, co, `${co}-r1`, `try-${co.toLowerCase()}`, `DEMO-TRY-${co}`));
+  for (const r of [1, 2]) {
+    for (let i = 1; i <= EXTRA_PER_REGION; i += 1) {
+      extras.push(
+        makeChild(
+          co,
+          `${co}:r${r}:${i}`,
+          `${co}-r${r}`,
+          `try-${co.toLowerCase()}-${r}${i}`,
+          `DEMO-TRY-${co}-${r}${i}`,
+        ),
+      );
+    }
+  }
 }
 
-// the one registration: `tryChild` (in the entry bundle) finds these once this module has loaded
 TRY_WORLD_CHILDREN.splice(0, TRY_WORLD_CHILDREN.length, ...children);
+TRY_WORLD_EXTRA.splice(0, TRY_WORLD_EXTRA.length, ...extras);
 
 /** every generated country, in code order; the six hand-written ones are not here */
 export const WORLD_PLACES: readonly TryPlace[] = places;
 /** each generated country's trial child, in the same order */
 export const WORLD_CHILDREN: readonly TryChild[] = children;
+/** the extra children of each region, for the trial directory (not the map's featured child) */
+export const WORLD_EXTRA_CHILDREN: readonly TryChild[] = extras;
 
 /** a generated region's name as the map file gives it; undefined for an id that is not generated */
 export const worldRegionName = (id: string, locale: Locale) => {

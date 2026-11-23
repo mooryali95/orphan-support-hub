@@ -45,3 +45,19 @@ describe("verification", () => {
     expect(PLEDGE_TRANSITIONS["cancelled"]).toEqual([]);
   });
 });
+
+describe("admin console sample data", () => {
+  it("builds every kind with stable rows and pages like admin_records", async () => {
+    const { RECORD_KINDS } = await import("@/lib/admin-console.functions");
+    const { sampleRows, samplePage } = await import("@/lib/admin-console-sample");
+    for (const kind of RECORD_KINDS) {
+      const rows = sampleRows(kind);
+      expect(rows.length).toBeGreaterThan(20);
+      expect(new Set(rows.map((r) => r.id)).size).toBe(rows.length);
+      expect(sampleRows(kind)).toBe(rows);
+      const page = samplePage(rows, { page: 0, pageSize: 10 });
+      expect(page.rows).toHaveLength(10);
+      expect(Object.values(page.counts).reduce((a, b) => a + b, 0)).toBe(rows.length);
+    }
+  });
+});

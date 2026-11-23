@@ -44,6 +44,7 @@ import {
 } from "@/lib/format";
 import type { AdminOverview } from "@/lib/admin.functions";
 import { BRAND, pageTitle } from "@/config/brand";
+import { isTrial } from "@/config/platform";
 import { getSourcesOverview } from "@/lib/integrity.functions";
 import { getDispatchHealth, getOpsHealth } from "@/lib/monitoring.functions";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -278,6 +279,11 @@ function AdminPage() {
     );
   }
 
+  // البيانات النموذجية في وضع التجربة وحده، كعيّنة «النظرة الشاملة».
+  const consoleSample = isTrial()
+    ? { sample, onSampleChange: (on: boolean) => actions.setSample(on) }
+    : {};
+
   const o = data.overview;
   const cur = o.currency;
   const queueCount = o.pending_orphans.length + o.pending_orgs.length;
@@ -313,7 +319,7 @@ function AdminPage() {
       title="لوحة الإدارة"
       description="صورة النظام كاملة: من يُكفل، وبكم، وكم تبقّى."
     >
-      <AdminTrustStrip />
+      {!(sample && isTrial()) && <AdminTrustStrip />}
       {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
           شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
       <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
@@ -458,15 +464,15 @@ function AdminPage() {
           )}
 
           {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
-          {tab === "orphans" && <RecordsConsole kind="orphans" />}
-          {tab === "sponsorships" && <RecordsConsole kind="sponsorships" />}
-          {tab === "pledges" && <RecordsConsole kind="pledges" />}
-          {tab === "rec_orgs" && <RecordsConsole kind="orgs" />}
-          {tab === "rec_offices" && <RecordsConsole kind="offices" />}
-          {tab === "rec_supervisors" && <RecordsConsole kind="supervisors" />}
-          {tab === "rec_documents" && <RecordsConsole kind="documents" />}
-          {tab === "rec_payments" && <RecordsConsole kind="payments" />}
-          {tab === "rec_access" && <RecordsConsole kind="access_log" />}
+          {tab === "orphans" && <RecordsConsole kind="orphans" {...consoleSample} />}
+          {tab === "sponsorships" && <RecordsConsole kind="sponsorships" {...consoleSample} />}
+          {tab === "pledges" && <RecordsConsole kind="pledges" {...consoleSample} />}
+          {tab === "rec_orgs" && <RecordsConsole kind="orgs" {...consoleSample} />}
+          {tab === "rec_offices" && <RecordsConsole kind="offices" {...consoleSample} />}
+          {tab === "rec_supervisors" && <RecordsConsole kind="supervisors" {...consoleSample} />}
+          {tab === "rec_documents" && <RecordsConsole kind="documents" {...consoleSample} />}
+          {tab === "rec_payments" && <RecordsConsole kind="payments" {...consoleSample} />}
+          {tab === "rec_access" && <RecordsConsole kind="access_log" {...consoleSample} />}
 
           {tab === "monitoring" && (
             <>

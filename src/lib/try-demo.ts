@@ -131,9 +131,17 @@ export const TRY_CHILDREN: TryChild[] = [
  * لا يدخل حزمة الدخول؛ يحمّله مسار التجربة قبل أيّ قراءة (`beforeLoad` في `routes/try`) والقاعة.
  */
 export const TRY_WORLD_CHILDREN: TryChild[] = [];
+/** أطفال الدليل الإضافيون (`try-world`): يُفتح ملفّ كلٍّ منهم ويُدعم، ولا يدخلون القاعة ولا الخارطة. */
+export const TRY_WORLD_EXTRA: TryChild[] = [];
+
+/** ملفّ «الدورة الكاملة» بعد نشره (`try-cycle`): يُفتح ويُدعم كأيّ طفلٍ في التجربة. */
+export const TRY_CYCLE: TryChild[] = [];
 
 export const tryChild = (id: string) =>
-  TRY_CHILDREN.find((c) => c.id === id) ?? TRY_WORLD_CHILDREN.find((c) => c.id === id);
+  TRY_CYCLE.find((c) => c.id === id) ??
+  TRY_CHILDREN.find((c) => c.id === id) ??
+  TRY_WORLD_CHILDREN.find((c) => c.id === id) ??
+  TRY_WORLD_EXTRA.find((c) => c.id === id);
 export const gapOf = (c: Pick<TryChild, "need" | "funded">) => Math.max(0, c.need - c.funded);
 
 /** the longest-waiting first, as in the real directory */
