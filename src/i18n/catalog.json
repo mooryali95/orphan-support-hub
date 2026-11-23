@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3460,
+ "count": 3474,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -7023,6 +7023,13 @@
    "hash": "6d23172d24c3",
    "file": "src/components/map/WorldMap.tsx"
   },
+  "components/map/WorldMap.toHall": {
+   "en": "See it in the impact hall →",
+   "ar": "شاهدها في قاعة الأثر ←",
+   "kind": "text",
+   "hash": "3e7b2da71eb3",
+   "file": "src/components/map/WorldMap.tsx"
+  },
   "components/map/WorldMap.tour": {
    "en": "Explore",
    "ar": "اكتشف",
@@ -7445,6 +7452,13 @@
    "ar": "خريطة مكاتب الندوة",
    "kind": "text",
    "hash": "141698629b4f",
+   "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/offices/OfficesMap.toHall": {
+   "en": "The same network in the 3D impact hall",
+   "ar": "الشبكة نفسها في قاعة الأثر ثلاثية الأبعاد",
+   "kind": "text",
+   "hash": "5c720a19ed1d",
    "file": "src/components/offices/OfficesMap.tsx"
   },
   "components/orphan/OrphanUnavailable.browse": {
@@ -8837,6 +8851,45 @@
    "hash": "fac664045854",
    "file": "src/components/support/Follow.tsx"
   },
+  "components/support/GivingTrackChoice.childPick": {
+   "en": "Support one child in {0}: choose them from the directory, then support them from their page in all three ways.",
+   "ar": "ادعم طفلاً بعينه في {0}: اختره من الدليل، ثم ادعمه من صفحته بالأنواع الثلاثة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "b9e7ad86bbd0",
+   "file": "src/components/support/GivingTrackChoice.tsx"
+  },
+  "components/support/GivingTrackChoice.legend": {
+   "en": "Kind of giving",
+   "ar": "نوع العطاء",
+   "kind": "text",
+   "hash": "a30cb15281dc",
+   "file": "src/components/support/GivingTrackChoice.tsx"
+  },
+  "components/support/GivingTrackChoice.monthlyChild": {
+   "en": "A fixed amount every month for {0}, shown in one table: when it was paid, and when it reached them with a document.",
+   "ar": "مبلغٌ ثابت كلّ شهر لـ{0}، تراه في جدولٍ واحد: متى دُفع، ومتى وصله بمستند.",
+   "kind": "template",
+   "params": 1,
+   "hash": "47c92ddc4e51",
+   "file": "src/components/support/GivingTrackChoice.tsx"
+  },
+  "components/support/GivingTrackChoice.monthlyPlace": {
+   "en": "Financial sponsorship is for one child. Choose a child waiting for a sponsor in {0}, and their card and impact stay with you every month.",
+   "ar": "الكفالة المادية لطفلٍ بعينه. اختر من أطفال {0} من ينتظر كافلاً، فتبقى بطاقته وأثره بين يديك كلّ شهر.",
+   "kind": "template",
+   "params": 1,
+   "hash": "91f58ae5f9f2",
+   "file": "src/components/support/GivingTrackChoice.tsx"
+  },
+  "components/support/GivingTrackChoice.monthlyTitle": {
+   "en": "Financial sponsorship — {0}",
+   "ar": "كفالة مادية — {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "df3abc4848b7",
+   "file": "src/components/support/GivingTrackChoice.tsx"
+  },
   "components/support/MyPledgeImpact.emptyInKind": {
    "en": "No in-kind pledge yet.",
    "ar": "لا تعهّد عينياً بعد.",
@@ -8936,6 +8989,13 @@
    "kind": "text",
    "hash": "a2aedb07e925",
    "file": "src/components/support/SupportPicks.tsx"
+  },
+  "components/support/SupportSheet.aChild": {
+   "en": "One child",
+   "ar": "طفلٌ بعينه",
+   "kind": "text",
+   "hash": "ef713957a453",
+   "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.amount": {
    "en": "Monthly amount",
@@ -9070,6 +9130,27 @@
    "ar": "هذه المنطقة",
    "kind": "text",
    "hash": "c33ae6febd10",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.toChildren": {
+   "en": "Children waiting for a sponsor here",
+   "ar": "أطفالٌ ينتظرون كافلاً هنا",
+   "kind": "text",
+   "hash": "c3047fad36ca",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.toDirectory": {
+   "en": "Choose from the directory",
+   "ar": "اختر من الدليل",
+   "kind": "text",
+   "hash": "c5c4ca9220ba",
+   "file": "src/components/support/SupportSheet.tsx"
+  },
+  "components/support/SupportSheet.toHall": {
+   "en": "See this place in the impact hall",
+   "ar": "شاهد هذا المكان في قاعة الأثر",
+   "kind": "text",
+   "hash": "7af72f4eeaa4",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.whom": {
@@ -10392,6 +10473,13 @@
    "hash": "a558bbeb2695",
    "file": "src/components/try/TrySupportSheet.tsx"
   },
+  "components/try/TrySupportSheet.financialAny": {
+   "en": "Choose a child to sponsor",
+   "ar": "اختر طفلاً لكفالته",
+   "kind": "text",
+   "hash": "fb2bfd8b316e",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
   "components/try/TrySupportSheet.kind": {
    "en": "Kind of support",
    "ar": "نوع الدعم",
@@ -10435,6 +10523,14 @@
    "hash": "0ee05e05b9ca",
    "file": "src/components/try/TrySupportSheet.tsx"
   },
+  "components/try/TrySupportSheet.sponsorChild": {
+   "en": "Sponsor {0} financially",
+   "ar": "اكفل {0} كفالةً مادية",
+   "kind": "template",
+   "params": 1,
+   "hash": "7e8734cbcff7",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
   "components/try/TrySupportSheet.thanks": {
    "en": "Your support is recorded",
    "ar": "سُجّل دعمك",
@@ -10454,6 +10550,13 @@
    "ar": "هذه المنطقة",
    "kind": "text",
    "hash": "c33ae6febd10",
+   "file": "src/components/try/TrySupportSheet.tsx"
+  },
+  "components/try/TrySupportSheet.toHall": {
+   "en": "See your gift in the impact hall",
+   "ar": "شاهد عطاءك في قاعة الأثر",
+   "kind": "text",
+   "hash": "9732b736b3c5",
    "file": "src/components/try/TrySupportSheet.tsx"
   },
   "components/try/TrySupportSheet.whom": {
@@ -14535,10 +14638,10 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.kiswa.name": {
-   "en": "Clothing",
-   "ar": "كسوة",
+   "en": "In-kind giving",
+   "ar": "تبرع عيني",
    "kind": "text",
-   "hash": "a1ba373d336c",
+   "hash": "2c87b5c2f579",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.kiswa.per": {
@@ -14549,17 +14652,17 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.kiswa.unit": {
-   "en": "One orphan clothed",
-   "ar": "كسوة يتيم",
+   "en": "One orphan's in-kind gift",
+   "ar": "عطاء عيني ليتيم",
    "kind": "text",
-   "hash": "f538e88d4794",
+   "hash": "96cdbb10f676",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.qualify.name": {
-   "en": "Qualification",
-   "ar": "تأهيل",
+   "en": "Qualification giving",
+   "ar": "تبرع تأهيل",
    "kind": "text",
-   "hash": "531dade812c1",
+   "hash": "113627a81a3f",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.qualify.per": {
@@ -14577,10 +14680,10 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.sponsor.name": {
-   "en": "Sponsorship",
-   "ar": "كفالة",
+   "en": "Financial sponsorship",
+   "ar": "كفالة مادية",
    "kind": "text",
-   "hash": "35ebddca9b6b",
+   "hash": "f72c55611381",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.tracks.sponsor.per": {

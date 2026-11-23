@@ -8,7 +8,12 @@ import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { TryRealLine } from "@/components/try/TryRealInvite";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useGivingCopy } from "@/config/giving-tracks";
+import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
+import {
+  GivingTrackChoice,
+  MonthlyTrackPanel,
+  TrackArrow,
+} from "@/components/support/GivingTrackChoice";
 import { formatMoney } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { INDIVIDUAL_AMOUNTS } from "@/lib/support-amounts";
@@ -51,6 +56,9 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     sampleRegions: (a: string, b: string) =>
       `منطقتا التجربة هنا: ${a} و${b}. اختر إحداهما لتدعمها، أو ادعم الدولة كلّها.`,
     financial: (name: string) => `أو اكفل ${name} كفالةً مادية`,
+    sponsorChild: (name: string) => `اكفل ${name} كفالةً مادية`,
+    financialAny: "اختر طفلاً لكفالته",
+    toHall: "شاهد عطاءك في قاعة الأثر",
     thanks: "سُجّل دعمك",
     done: {
       qualification: "في «أثري» ترى التأهيل يتقدّم شهراً بشهر: الجلسات، والقياس قبلها وبعدها.",
@@ -74,6 +82,9 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     sampleRegions: (a: string, b: string) =>
       `The trial's regions here are ${a} and ${b}. Choose one to support it, or support the whole country.`,
     financial: (name: string) => `Or sponsor ${name} financially`,
+    sponsorChild: (name: string) => `Sponsor ${name} financially`,
+    financialAny: "Choose a child to sponsor",
+    toHall: "See your gift in the impact hall",
     thanks: "Your support is recorded",
     done: {
       qualification:
@@ -143,6 +154,9 @@ export function TrySupportSheet({
   useEffect(() => {
     if (presetKind) setKind(presetKind);
   }, [presetKind]);
+  // الكفالة المادية لطفلٍ بعينه: تقود إلى صفحة طفل التجربة، ولا تُسجَّل تعهّداً من البطاقة.
+  const [monthly, setMonthly] = useState(false);
+  const track: GivingTrack = monthly ? "monthly" : kind;
 
   // the pledge is recorded in the chosen currency as typed: no conversion, so no rate to show
   const payList = useMemo(() => tryPledgeCurrencies(ctx.code), [ctx.code]);
@@ -175,6 +189,13 @@ export function TrySupportSheet({
             {t.another}
           </Button>
         </div>
+        <a
+          href={`/hall?try=1&c=${ctx.code}`}
+          data-to-hall
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {t.toHall}
+        </a>
         <TryRealLine className="mt-2" />
       </div>
     );
@@ -257,76 +278,84 @@ export function TrySupportSheet({
         )}
       </fieldset>
 
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.kind}</legend>
-        <div className="flex flex-wrap gap-1.5">
-          {(
-            [
-              ["qualification", g.tracks.qualification.name],
-              ["in_kind", g.tracks.in_kind.name],
-            ] as const
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              aria-pressed={kind === k}
-              data-kind={k}
-              onClick={() => setKind(k)}
-              className={chip(kind === k)}
+      <GivingTrackChoice
+        value={track}
+        onChange={(next) => {
+          setMonthly(next === "monthly");
+          if (next !== "monthly") setKind(next);
+        }}
+      />
+
+      {monthly ? (
+        <MonthlyTrackPanel
+          whom={target.label}
+          childName={target.scope === "orphan" ? (child?.name ?? null) : null}
+          action={
+            <Button asChild size="lg" className="w-full" data-monthly-go>
+              {child ? (
+                <Link to="/try/$childId" params={{ childId: child.id }}>
+                  {t.sponsorChild(child.name)}
+                  <TrackArrow />
+                </Link>
+              ) : (
+                <Link to="/try">
+                  {t.financialAny}
+                  <TrackArrow />
+                </Link>
+              )}
+            </Button>
+          }
+        />
+      ) : (
+        <>
+          <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
+
+          <fieldset className="min-w-0">
+            <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.amount}</legend>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {INDIVIDUAL_AMOUNTS.map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  aria-pressed={amount === v}
+                  onClick={() => setAmount(v)}
+                  className={cn(chip(amount === v), "tabular-nums")}
+                >
+                  {formatMoney(v, currency, locale)}
+                </button>
+              ))}
+              <Input
+                aria-label={t.other}
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={100000}
+                className="h-11 w-28 rounded-full"
+                value={amount}
+                onChange={(e) =>
+                  setAmount(Math.min(100_000, Math.max(1, Math.floor(Number(e.target.value)) || 1)))
+                }
+              />
+            </div>
+          </fieldset>
+
+          {reach && (
+            <p
+              className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
+              data-try-reach
             >
-              {kind === k && <Check className="size-3.5" aria-hidden="true" />}
-              {label}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+              <b className="block text-sm text-foreground">{reach.head}</b>
+              <span className="text-muted-foreground">{reach.line}</span>
+            </p>
+          )}
 
-      <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
-
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.amount}</legend>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {INDIVIDUAL_AMOUNTS.map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={amount === v}
-              onClick={() => setAmount(v)}
-              className={cn(chip(amount === v), "tabular-nums")}
-            >
-              {formatMoney(v, currency, locale)}
-            </button>
-          ))}
-          <Input
-            aria-label={t.other}
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={100000}
-            className="h-11 w-28 rounded-full"
-            value={amount}
-            onChange={(e) =>
-              setAmount(Math.min(100_000, Math.max(1, Math.floor(Number(e.target.value)) || 1)))
-            }
-          />
-        </div>
-      </fieldset>
-
-      {reach && (
-        <p
-          className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
-          data-try-reach
-        >
-          <b className="block text-sm text-foreground">{reach.head}</b>
-          <span className="text-muted-foreground">{reach.line}</span>
-        </p>
+          <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
+            {t.confirm(formatMoney(amount, currency, locale))}
+          </Button>
+          <p className="text-xs leading-5 text-muted-foreground">{t.note}</p>
+        </>
       )}
-
-      <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
-        {t.confirm(formatMoney(amount, currency, locale))}
-      </Button>
-      <p className="text-xs leading-5 text-muted-foreground">{t.note}</p>
-      {local && child && (
+      {!monthly && local && child && (
         <Link
           to="/try/$childId"
           params={{ childId: child.id }}

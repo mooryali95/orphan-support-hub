@@ -16,7 +16,13 @@ import { TrialProposalOffer } from "@/components/try/TrialProposal";
 import { normalize } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
-import { useGivingCopy } from "@/config/giving-tracks";
+import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
+import {
+  ChildPickPanel,
+  GivingTrackChoice,
+  MonthlyTrackPanel,
+  TrackArrow,
+} from "@/components/support/GivingTrackChoice";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 import {
@@ -33,6 +39,10 @@ const COPY = defineCopy("components/support/SupportSheet", {
   ar: {
     whom: "إلى من؟",
     thisCountry: "هذه الدولة",
+    aChild: "طفلٌ بعينه",
+    toHall: "شاهد هذا المكان في قاعة الأثر",
+    toDirectory: "اختر من الدليل",
+    toChildren: "أطفالٌ ينتظرون كافلاً هنا",
     thisRegion: "هذه المنطقة",
     children: (n: number) => `${n} طفل`,
     kind: "نوع الدعم",
@@ -54,6 +64,10 @@ const COPY = defineCopy("components/support/SupportSheet", {
   en: {
     whom: "For whom?",
     thisCountry: "This country",
+    aChild: "One child",
+    toHall: "See this place in the impact hall",
+    toDirectory: "Choose from the directory",
+    toChildren: "Children waiting for a sponsor here",
     thisRegion: "This region",
     children: pluralOf({ one: "{0} child", other: "{0} children" }),
     kind: "Kind of support",
@@ -127,6 +141,8 @@ export function SupportSheet({
           ...(i.kind ? { hint: i.kind } : {}),
         });
     }
+    // طفلٌ بعينه: يُختار من الدليل في هذا المكان، ثم يُدعم من صفحته بالأنواع الثلاثة.
+    out.push({ type: "orphan", value: "", label: t.aChild });
     return out;
   }, [ctx.code, ctx.regionValue, ctx.regionName, catalog, t]);
 
@@ -141,6 +157,13 @@ export function SupportSheet({
     );
   }, [targets]);
   const [kind, setKind] = useState<SupportKind>(presetKind ?? "qualification");
+  // الكفالة المادية لطفلٍ بعينه دائماً: في الورقة تقود إلى أطفال المكان، ولا تُسجَّل تعهّداً.
+  const [monthly, setMonthly] = useState(false);
+  const track: GivingTrack = monthly ? "monthly" : kind;
+  function chooseTrack(next: GivingTrack) {
+    setMonthly(next === "monthly");
+    if (next !== "monthly") setKind(next);
+  }
   // المؤسّسة لا تأخذ «بناء الأهلية» (قيدٌ في القاعدة).
   useEffect(() => {
     if (target.type === "institution" && kind === "qualification") setKind("in_kind");
@@ -254,9 +277,38 @@ export function SupportSheet({
             {t.another}
           </Button>
         </div>
+        <a
+          href={`/hall?c=${ctx.code}`}
+          data-to-hall
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {t.toHall}
+        </a>
       </div>
     );
   }
+
+  // الدليل مرشَّحاً بهذا المكان: الدولة والمنطقة، أو المجموعة، ومن ينتظر كافلاً أوّلاً.
+  const directory = (
+    <Button asChild size="lg" className="w-full">
+      <Link
+        to="/orphans"
+        search={{
+          ...(target.type === "group"
+            ? { group: target.value }
+            : {
+                ...(ctx.countryValue ? { country: ctx.countryValue } : {}),
+                ...(ctx.regionValue ? { region: ctx.regionValue } : {}),
+              }),
+          funding: "open",
+        }}
+      >
+        {target.type === "orphan" ? t.toDirectory : t.toChildren}
+        <TrackArrow />
+      </Link>
+    </Button>
+  );
+  const whom = target.type === "orphan" ? (ctx.regionName ?? t.thisCountry) : target.label;
 
   const chip = (on: boolean) =>
     cn(
@@ -279,7 +331,10 @@ export function SupportSheet({
           !(target.type === "institution" && p.track === "qualification")
         }
         onUse={(p) => {
-          if (p.track !== "sponsorship") setKind(p.track);
+          if (p.track !== "sponsorship") {
+            setKind(p.track);
+            setMonthly(false);
+          }
           setChosenCurrency(p.currency);
           chooseAmount(p.amount);
           usedProposal.current = p.id;
@@ -303,99 +358,88 @@ export function SupportSheet({
         </div>
       </fieldset>
 
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.kind}</legend>
-        <div className="flex gap-1.5">
-          {(
-            [
-              // أسماء المسارات من مكانها الواحد (config/giving-tracks).
-              ["qualification", g.tracks.qualification.name],
-              ["in_kind", g.tracks.in_kind.name],
-            ] as const
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              aria-pressed={kind === k}
-              disabled={k === "qualification" && target.type === "institution"}
-              onClick={() => setKind(k)}
-              className={cn(chip(kind === k), "disabled:opacity-40")}
-            >
-              {kind === k && <Check className="size-3.5" aria-hidden="true" />}
-              {label}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <GivingTrackChoice
+        value={track}
+        onChange={chooseTrack}
+        disabled={(k) => k === "qualification" && target.type === "institution"}
+      />
 
-      {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم، والزرّ يعرضه بعملته */}
-      <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
+      {target.type === "orphan" ? (
+        <ChildPickPanel whom={whom} action={directory} />
+      ) : monthly ? (
+        <MonthlyTrackPanel whom={whom} action={directory} />
+      ) : (
+        <>
+          {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم، والزرّ يعرضه بعملته */}
+          <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
 
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
-          {t.amount}
-          {gap && (
-            <span className="ms-1 text-muted-foreground/80">
-              — {t.fromGap(formatMoney(gap.gap, gap.currency, locale))}
-            </span>
-          )}
-        </legend>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {suggested.map((a) => (
-            <button
-              key={a.key}
-              type="button"
-              aria-pressed={amount === a.value}
-              onClick={() => chooseAmount(a.value)}
-              className={cn(chip(amount === a.value), "tabular-nums")}
-            >
-              {a.label}
-              {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
-            </button>
-          ))}
-          <Input
-            aria-label={t.other}
-            type="number"
-            inputMode="numeric"
-            min={1}
-            className="h-11 w-28 rounded-full"
-            value={amount}
-            onChange={(e) => chooseAmount(Math.max(1, Number(e.target.value) || 1))}
-          />
-        </div>
-      </fieldset>
+          <fieldset className="min-w-0">
+            <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
+              {t.amount}
+              {gap && (
+                <span className="ms-1 text-muted-foreground/80">
+                  — {t.fromGap(formatMoney(gap.gap, gap.currency, locale))}
+                </span>
+              )}
+            </legend>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {suggested.map((a) => (
+                <button
+                  key={a.key}
+                  type="button"
+                  aria-pressed={amount === a.value}
+                  onClick={() => chooseAmount(a.value)}
+                  className={cn(chip(amount === a.value), "tabular-nums")}
+                >
+                  {a.label}
+                  {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
+                </button>
+              ))}
+              <Input
+                aria-label={t.other}
+                type="number"
+                inputMode="numeric"
+                min={1}
+                className="h-11 w-28 rounded-full"
+                value={amount}
+                onChange={(e) => chooseAmount(Math.max(1, Number(e.target.value) || 1))}
+              />
+            </div>
+          </fieldset>
 
-      <details className="text-sm">
-        <summary className="cursor-pointer text-xs text-muted-foreground">{t.note}</summary>
-        <Textarea
-          rows={2}
-          className="mt-2"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-        />
-      </details>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-xs text-muted-foreground">{t.note}</summary>
+            <Textarea
+              rows={2}
+              className="mt-2"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </details>
 
-      <SupporterModeGate>
-        {signedIn ? (
-          <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
-            {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-            {t.confirm(formatMoney(amount, currency, locale))}
-          </Button>
-        ) : (
-          <AuthDialog
-            title={t.signIn}
-            hint={t.signInHint}
-            // after signing in the support is recorded as promised, with no second click
-            onDone={() => void confirm()}
-            trigger={(open) => (
-              <Button size="lg" className="w-full" onClick={open}>
-                {t.signIn}
+          <SupporterModeGate>
+            {signedIn ? (
+              <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
+                {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                {t.confirm(formatMoney(amount, currency, locale))}
               </Button>
+            ) : (
+              <AuthDialog
+                title={t.signIn}
+                hint={t.signInHint}
+                // after signing in the support is recorded as promised, with no second click
+                onDone={() => void confirm()}
+                trigger={(open) => (
+                  <Button size="lg" className="w-full" onClick={open}>
+                    {t.signIn}
+                  </Button>
+                )}
+              />
             )}
-          />
-        )}
-      </SupporterModeGate>
-      <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
+          </SupporterModeGate>
+          <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
+        </>
+      )}
       {result && !result.ok && (
         <p role="alert" className="text-sm text-destructive">
           {result.text}

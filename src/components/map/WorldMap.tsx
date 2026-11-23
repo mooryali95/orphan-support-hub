@@ -58,6 +58,7 @@ import {
   rankOf,
 } from "./layers";
 import { interactiveCodes, kindCounts, networkPaint, type NetworkKind } from "./network-layer";
+import { officeRegisterQuery, withRegister } from "@/lib/office-presence";
 import {
   ExpansionList,
   NetworkCountryCard,
@@ -147,6 +148,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     browse: "تصفّح من ينتظر هنا",
     regions: "المناطق",
     listLabel: "الدول والمناطق",
+    toHall: "شاهدها في قاعة الأثر ←",
     regionsOf: (c: string) => `مناطق ${c}`,
     countriesH: "الدول",
     closeList: "إغلاق القائمة",
@@ -207,6 +209,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     browse: "Browse who is waiting here",
     regions: "Regions",
     listLabel: "Countries and regions",
+    toHall: "See it in the impact hall →",
     regionsOf: (c: string) => `Regions of ${c}`,
     countriesH: "Countries",
     closeList: "Close list",
@@ -553,10 +556,17 @@ export function WorldMap({
   const source: MapSourceStatus = status ?? (demo ? "demo" : "ready");
   // طبقتا الشبكة: ما يُرسم وما يُفتح من البيانات البحثية لا من أعداد المنصّة.
   const netLayer = isNetworkLayer(layer) ? layer : null;
-  const net = useMemo(
-    () => (netLayer ? (networkPaintOverride ?? networkPaint(netLayer, { showUnconfirmed })) : null),
-    [netLayer, showUnconfirmed, networkPaintOverride],
-  );
+  // طبقة الشبكة من المصدر الواحد مع القاعة: ملفّ البحث، وفوقه سجلّ المكاتب (`@/lib/office-presence`).
+  const { data: register } = useQuery({
+    ...officeRegisterQuery,
+    enabled: netLayer === "network" && !networkPaintOverride,
+  });
+  const net = useMemo(() => {
+    if (!netLayer) return null;
+    if (networkPaintOverride) return networkPaintOverride;
+    const base = networkPaint(netLayer, { showUnconfirmed });
+    return netLayer === "network" ? withRegister(base, register?.offices ?? []) : base;
+  }, [netLayer, showUnconfirmed, networkPaintOverride, register]);
   const netCounts = useMemo(() => (net ? kindCounts(net) : null), [net]);
   const activeSet = useMemo(() => {
     const set = net ? interactiveCodes(net) : new Set(Object.keys(stats));
@@ -1993,6 +2003,16 @@ export function WorldMap({
                   platform
                 );
               })()}
+              {/* الخارطة والقاعة منظرٌ واحد: الدولة نفسها في قاعة الأثر ثلاثية الأبعاد. */}
+              {!bare && (
+                <a
+                  href={`/hall?c=${country.c}`}
+                  data-to-hall
+                  className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary underline-offset-4 hover:underline"
+                >
+                  {c$.toHall}
+                </a>
+              )}
             </aside>
           )}
 

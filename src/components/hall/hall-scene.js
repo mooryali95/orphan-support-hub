@@ -3023,7 +3023,7 @@ export function mountHall(
       <p class="note" dir="${DIR}">${W.note}</p>
       <p class="co-act" dir="${DIR}">${W.org[CO.st]}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">${W.enter(name)}</button><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
-          : `<div class="row pin"><a class="cta" href="${demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
+          : `<div class="row pin"><a class="cta" href="${demo.mapHrefFor ? demo.mapHrefFor(CO.code) : demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
       }
     </article>`;
   }

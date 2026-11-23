@@ -7,11 +7,11 @@ import type { NetworkKind } from "@/components/map/network-layer";
 import { Badge } from "@/components/ui/badge";
 import { defineCopy, useCopy } from "@/lib/locale";
 import {
-  listOfficesMap,
   OFFICE_CATEGORIES,
   type OfficeCategory,
   type PublicOffice,
 } from "@/lib/organizations.functions";
+import { officeRegisterQuery } from "@/lib/office-presence";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/offices/OfficesMap", {
@@ -34,6 +34,7 @@ const COPY = defineCopy("components/offices/OfficesMap", {
     source: (d: string) => `المصدر: سجلّ الحصر، اطّلاع ${d}`,
     count: (n: number) => `${n} مكتباً`,
     failed: "تعذّر تحميل سجلّ المكاتب الآن.",
+    toHall: "الشبكة نفسها في قاعة الأثر ثلاثية الأبعاد",
   },
   en: {
     title: "Map of WAMY offices",
@@ -54,6 +55,7 @@ const COPY = defineCopy("components/offices/OfficesMap", {
     source: (d: string) => `Source: office register, accessed ${d}`,
     count: (n: number) => `${n} offices`,
     failed: "The office register could not be loaded right now.",
+    toHall: "The same network in the 3D impact hall",
   },
 });
 
@@ -66,10 +68,7 @@ const kindOf = (o: PublicOffice): NetworkKind => (o.demo ? "demo" : "office");
  */
 export function OfficesMap() {
   const c = useCopy(COPY);
-  const { data, isPending } = useQuery({
-    queryKey: ["offices-map"],
-    queryFn: () => listOfficesMap(),
-  });
+  const { data, isPending } = useQuery(officeRegisterQuery);
   const [category, setCategory] = useState<OfficeCategory | null>(null);
   const [selection, setSelection] = useState<MapSelection>({ country: null, region: null });
 
@@ -107,7 +106,16 @@ export function OfficesMap() {
           <span className="text-sm text-muted-foreground">{c.count(offices.length)}</span>
         )}
       </div>
-      <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">{c.lead}</p>
+      <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+        {c.lead}{" "}
+        <a
+          href="/hall"
+          data-to-hall
+          className="font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {c.toHall}
+        </a>
+      </p>
 
       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={c.title}>
         {[null, ...OFFICE_CATEGORIES].map((k) => (
