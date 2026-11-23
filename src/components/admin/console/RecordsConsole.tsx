@@ -19,8 +19,13 @@ import {
   listRecords,
   PAGE_SIZE,
   transitionPledge,
+  type DocumentRecord,
+  type OfficeRecord,
+  type OrgRecord,
   type OrphanRecord,
+  type PaymentRecord,
   type PledgeRecord,
+  type SupervisorRecord,
   type RecordKind,
   type SponsorshipRecord,
 } from "@/lib/admin-console.functions";
@@ -31,6 +36,8 @@ import {
   SPONSORSHIP_STATUS_LABELS,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { DOC_LABELS, verifyDocument } from "@/lib/intake.functions";
+import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { givingCopy } from "@/config/giving-tracks";
 import { PLEDGE_TRANSITIONS, verificationLevel } from "@/lib/verification";
 import { VerificationBadge, VerificationChecklist } from "./VerificationBadge";
@@ -60,6 +67,7 @@ type Entity<T> = {
 type ActionRunner = {
   busy: boolean;
   pledge: (id: string, status: "active" | "fulfilled" | "cancelled", reason: string) => void;
+  verifyDoc: (id: string, verified: boolean, note: string) => void;
 };
 
 const PLEDGE_STATUS: Record<string, string> = {
@@ -73,6 +81,25 @@ const tracks = givingCopy("ar").tracks;
 const PLEDGE_KIND: Record<string, string> = {
   qualification: tracks.qualification.name,
   in_kind: tracks.in_kind.name,
+};
+const ORG_STATUS: Record<string, string> = {
+  pending: "بانتظار الاعتماد",
+  approved: "معتمدة",
+  suspended: "موقوفة",
+  rejected: "مرفوضة",
+};
+const ACTIVE_STATUS: Record<string, string> = { active: "نشط", inactive: "غير نشط" };
+const SUPERVISOR_STATUS: Record<string, string> = {
+  pending: "بانتظار الاعتماد",
+  certified: "معتمد",
+  inactive: "موقوف",
+};
+const DOC_STATUS: Record<string, string> = { verified: "موثّق", unverified: "بانتظار التوثيق" };
+const PAYMENT_STATUS: Record<string, string> = {
+  pending: "معلّقة",
+  paid: "مدفوعة",
+  failed: "فشلت",
+  refunded: "مستردّة",
 };
 const ACTION_LABEL = { active: "تفعيل", fulfilled: "تمّ التنفيذ", cancelled: "إلغاء" } as const;
 
@@ -239,13 +266,191 @@ const ENTITIES: { [K in RecordKind]: Entity<RowOf<K>> } = {
     ],
     actions: (r, run) => <PledgeActions record={r} run={run} />,
   },
+  orgs: {
+    title: "جهات الرعاية",
+    lead: "الجهات بحالاتها وعدد أطفالها. الاعتماد والإيقاف من «طابور الاعتماد».",
+    searchHint: "الاسم أو المدينة أو البريد أو رقم الترخيص",
+    statuses: ORG_STATUS,
+    rowTitle: (r) => r.name,
+    columns: [
+      { label: "الجهة", cell: (r) => <span className="font-bold">{r.name}</span> },
+      { label: "الحالة", cell: (r) => ORG_STATUS[r.status] ?? r.status },
+      { label: "الأطفال", cell: (r) => r.children },
+      { label: "المدينة", cell: (r) => r.city ?? "—", className: "hidden md:table-cell" },
+      {
+        label: "البريد",
+        cell: (r) => <span dir="ltr">{r.email ?? "—"}</span>,
+        className: "hidden lg:table-cell",
+      },
+    ],
+    details: (r) => [
+      ["الحالة", ORG_STATUS[r.status] ?? r.status],
+      ["المدينة", [r.city, r.region].filter(Boolean).join("، ") || "—"],
+      ["رقم الترخيص", r.license ?? "—"],
+      ["البريد", <span dir="ltr">{r.email ?? "—"}</span>],
+      ["الأطفال", r.children],
+      ["سُجّلت", formatDate(r.created_at)],
+    ],
+    actions: () => (
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline">
+          <a href="/admin?tab=queue">طابور الاعتماد</a>
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <a href="/admin?tab=inbox">صندوق القرارات</a>
+        </Button>
+      </div>
+    ),
+  },
+
+  offices: {
+    title: "المكاتب",
+    lead: "مكاتب الشبكة وأعضاؤها. الإنشاء وتعيين الأعضاء من شاشة «المكاتب والجهات».",
+    searchHint: "اسم المكتب أو المنطقة أو رمز الدولة",
+    statuses: ACTIVE_STATUS,
+    rowTitle: (r) => r.name,
+    columns: [
+      { label: "المكتب", cell: (r) => <span className="font-bold">{r.name}</span> },
+      { label: "الدولة", cell: (r) => <span dir="ltr">{r.country}</span> },
+      { label: "المنطقة", cell: (r) => r.region ?? "الدولة كلّها" },
+      { label: "الأعضاء", cell: (r) => r.members },
+      { label: "الحالة", cell: (r) => ACTIVE_STATUS[r.status] ?? r.status },
+    ],
+    details: (r) => [
+      ["الدولة", <span dir="ltr">{r.country}</span>],
+      ["المنطقة", r.region ?? "الدولة كلّها"],
+      ["يتبع", r.parent ?? "—"],
+      ["الأعضاء", r.members],
+      ["الحالة", ACTIVE_STATUS[r.status] ?? r.status],
+      ["أُنشئ", formatDate(r.created_at)],
+    ],
+    actions: (r) => (
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline">
+          <Link to="/office/$officeId" params={{ officeId: r.id }}>
+            لوحة المكتب
+          </Link>
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <a href="/admin?tab=offices">إدارة المكاتب والأعضاء</a>
+        </Button>
+      </div>
+    ),
+  },
+
+  supervisors: {
+    title: "المشرفون",
+    lead: "المشرفون الميدانيون واعتمادهم. الاعتماد والإيقاف من شاشة «المشرفون».",
+    searchHint: "البريد أو الاسم",
+    statuses: SUPERVISOR_STATUS,
+    rowTitle: (r) => r.name || r.email || "مشرف",
+    columns: [
+      { label: "المشرف", cell: (r) => <span className="font-bold">{r.name || "—"}</span> },
+      { label: "البريد", cell: (r) => <span dir="ltr">{r.email ?? "—"}</span> },
+      { label: "الحالة", cell: (r) => SUPERVISOR_STATUS[r.status] ?? r.status },
+      {
+        label: "مؤشّر الاستقلال",
+        cell: (r) => r.independence,
+        className: "hidden md:table-cell",
+      },
+    ],
+    details: (r) => [
+      ["البريد", <span dir="ltr">{r.email ?? "—"}</span>],
+      ["الحالة", SUPERVISOR_STATUS[r.status] ?? r.status],
+      ["مؤشّر الاستقلال", r.independence],
+      ["اعتُمد", r.certified_at ? formatDate(r.certified_at) : "—"],
+      ["ملاحظة", r.note ?? "—"],
+    ],
+    actions: () => (
+      <Button asChild size="sm" variant="outline">
+        <a href="/admin?tab=supervisors">اعتماد المشرفين</a>
+      </Button>
+    ),
+  },
+
+  documents: {
+    title: "المستندات",
+    lead: "مستندات ملفّات الأيتام. التوثيق وسحبه يُسجَّلان في سجلّ التدقيق، ويرفعان مستوى توثيق الملفّ.",
+    searchHint: "رمز الطفل أو اسمه أو اسم الملفّ",
+    statuses: DOC_STATUS,
+    rowTitle: (r) => `${DOC_LABELS[r.doc_type] ?? r.doc_type} · ${r.name}`,
+    columns: [
+      {
+        label: "المستند",
+        cell: (r) => <span className="font-bold">{DOC_LABELS[r.doc_type] ?? r.doc_type}</span>,
+      },
+      { label: "الطفل", cell: (r) => r.name },
+      { label: "الحالة", cell: (r) => DOC_STATUS[r.status] ?? r.status },
+      { label: "رُفع", cell: (r) => formatDate(r.created_at), className: "hidden md:table-cell" },
+    ],
+    details: (r) => [
+      ["النوع", DOC_LABELS[r.doc_type] ?? r.doc_type],
+      ["الطفل", `${r.name} (${r.code})`],
+      ["الملفّ", r.file_name ?? "—"],
+      ["الحالة", DOC_STATUS[r.status] ?? r.status],
+      ["وُثّق", r.verified_at ? formatDate(r.verified_at) : "—"],
+      ["رُفع", formatDate(r.created_at)],
+    ],
+    actions: (r, run) => <DocumentActions record={r} run={run} />,
+  },
+
+  payments: {
+    title: "المدفوعات",
+    lead: "دفعات الكفالات من البوابة والتحويلات. تأكيد التحويلات البنكية من «صندوق القرارات».",
+    searchHint: "البريد أو الطفل أو مرجع الدفع",
+    statuses: PAYMENT_STATUS,
+    rowTitle: (r) => `${r.name} · ${r.sponsor ?? ""}`,
+    columns: [
+      { label: "الطفل", cell: (r) => <span className="font-bold">{r.name}</span> },
+      { label: "المبلغ", cell: (r) => money(r.amount, r.currency) },
+      { label: "الحالة", cell: (r) => PAYMENT_STATUS[r.status] ?? r.status },
+      {
+        label: "الكافل",
+        cell: (r) => <span dir="ltr">{r.sponsor ?? "—"}</span>,
+        className: "hidden lg:table-cell",
+      },
+      {
+        label: "التاريخ",
+        cell: (r) => formatDate(r.paid_at ?? r.created_at),
+        className: "hidden md:table-cell",
+      },
+    ],
+    details: (r) => [
+      ["الطفل", `${r.name} (${r.code})`],
+      ["الكافل", <span dir="ltr">{r.sponsor ?? "—"}</span>],
+      ["المبلغ", money(r.amount, r.currency)],
+      ["الحالة", PAYMENT_STATUS[r.status] ?? r.status],
+      ["الطريقة", r.provider ?? "—"],
+      [
+        "المرجع",
+        <span dir="ltr" className="font-mono text-xs">
+          {r.ref ?? "—"}
+        </span>,
+      ],
+      [
+        "الفترة",
+        r.period_start ? `${formatDate(r.period_start)} ← ${formatDate(r.period_end)}` : "—",
+      ],
+      ["دُفعت", r.paid_at ? formatDate(r.paid_at) : "—"],
+    ],
+    actions: () => (
+      <Button asChild size="sm" variant="outline">
+        <a href="/admin?tab=inbox">صندوق القرارات والتحويلات</a>
+      </Button>
+    ),
+  },
 };
 
-type RowOf<K extends RecordKind> = K extends "orphans"
-  ? OrphanRecord
-  : K extends "sponsorships"
-    ? SponsorshipRecord
-    : PledgeRecord;
+type RowOf<K extends RecordKind> = {
+  orphans: OrphanRecord;
+  sponsorships: SponsorshipRecord;
+  pledges: PledgeRecord;
+  orgs: OrgRecord;
+  offices: OfficeRecord;
+  supervisors: SupervisorRecord;
+  documents: DocumentRecord;
+  payments: PaymentRecord;
+}[K];
 
 function PledgeActions({ record, run }: { record: PledgeRecord; run: ActionRunner }) {
   const [reason, setReason] = useState("");
@@ -285,10 +490,56 @@ function PledgeActions({ record, run }: { record: PledgeRecord; run: ActionRunne
   );
 }
 
+function DocumentActions({ record, run }: { record: DocumentRecord; run: ActionRunner }) {
+  const [note, setNote] = useState("");
+  const verified = record.status === "verified";
+  return (
+    <div className="space-y-3">
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() =>
+          void openPrivateFile(ORPHAN_DOCS, record.path).then((ok) => {
+            if (!ok) toast.error("تعذّر فتح المستند");
+          })
+        }
+      >
+        عرض المستند
+      </Button>
+      <Textarea
+        rows={2}
+        placeholder="ملاحظة (تُسجَّل في سجلّ التدقيق)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+      />
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          variant={verified ? "outline" : "default"}
+          disabled={run.busy || (verified && !note.trim())}
+          onClick={() => run.verifyDoc(record.id, !verified, note)}
+        >
+          {run.busy && <Loader2 className="size-4 animate-spin" />}
+          {verified ? "سحب التوثيق" : "توثيق المستند"}
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <Link to="/orphans/$orphanId" params={{ orphanId: record.orphan_id }}>
+            ملفّ الطفل
+          </Link>
+        </Button>
+      </div>
+      {verified && <p className="text-muted-foreground text-xs">سحب التوثيق يتطلّب ملاحظة.</p>}
+    </div>
+  );
+}
+
+const ORPHAN_DOCS = "orphan-documents";
+
 export function RecordsConsole({ kind }: { kind: RecordKind }) {
   const entity = ENTITIES[kind] as unknown as Entity<{ id: string }>;
   const fetchRows = useServerFn(listRecords);
   const setPledge = useServerFn(transitionPledge);
+  const verifyDoc = useServerFn(verifyDocument);
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [query, setQuery] = useState("");
@@ -319,6 +570,17 @@ export function RecordsConsole({ kind }: { kind: RecordKind }) {
           toast.success("حُفظ وسُجّل في سجلّ التدقيق");
           setOpen(null);
           void qc.invalidateQueries({ queryKey: ["admin-records", kind] });
+        })
+        .finally(() => setBusy(false));
+    },
+    verifyDoc: (id, verified, note) => {
+      setBusy(true);
+      void verifyDoc({ data: { id, verified, note: note.trim() || undefined } })
+        .then((r) => {
+          if (!r.ok) return void toast.error(r.error ?? "تعذّر الحفظ");
+          toast.success(verified ? "وُثّق المستند وسُجّل" : "سُحب التوثيق وسُجّل");
+          setOpen(null);
+          void qc.invalidateQueries({ queryKey: ["admin-records"] });
         })
         .finally(() => setBusy(false));
     },

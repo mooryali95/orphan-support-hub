@@ -17,7 +17,16 @@ type RpcClient = {
 };
 const rpc = (client: unknown) => client as RpcClient;
 
-export const RECORD_KINDS = ["orphans", "sponsorships", "pledges"] as const;
+export const RECORD_KINDS = [
+  "orphans",
+  "sponsorships",
+  "pledges",
+  "orgs",
+  "offices",
+  "supervisors",
+  "documents",
+  "payments",
+] as const;
 export type RecordKind = (typeof RECORD_KINDS)[number];
 
 export type OrphanRecord = {
@@ -63,6 +72,80 @@ export type PledgeRecord = {
   supporter: string | null;
 };
 
+export type OrgRecord = {
+  id: string;
+  name: string;
+  status: string;
+  city: string | null;
+  region: string | null;
+  license: string | null;
+  email: string | null;
+  children: number;
+  created_at: string;
+};
+
+export type OfficeRecord = {
+  id: string;
+  name: string;
+  country: string;
+  region: string | null;
+  status: string;
+  members: number;
+  parent: string | null;
+  created_at: string;
+};
+
+export type SupervisorRecord = {
+  id: string;
+  email: string | null;
+  name: string | null;
+  status: string;
+  independence: number;
+  certified_at: string | null;
+  note: string | null;
+  created_at: string;
+};
+
+export type DocumentRecord = {
+  id: string;
+  doc_type: string;
+  file_name: string | null;
+  path: string;
+  status: string;
+  verified_at: string | null;
+  orphan_id: string;
+  code: string;
+  name: string;
+  created_at: string;
+};
+
+export type PaymentRecord = {
+  id: string;
+  status: string;
+  amount: number;
+  currency: string;
+  provider: string | null;
+  ref: string | null;
+  paid_at: string | null;
+  period_start: string | null;
+  period_end: string | null;
+  sponsor: string | null;
+  name: string;
+  code: string;
+  sponsorship_id: string;
+  created_at: string;
+};
+
+export type AnyRecord =
+  | OrphanRecord
+  | SponsorshipRecord
+  | PledgeRecord
+  | OrgRecord
+  | OfficeRecord
+  | SupervisorRecord
+  | DocumentRecord
+  | PaymentRecord;
+
 export type RecordsPage<T> = {
   total: number;
   counts: Record<string, number>;
@@ -95,7 +178,7 @@ export const listRecords = createServerFn({ method: "GET" })
     return {
       ok: true as const,
       error: null,
-      page: res as RecordsPage<OrphanRecord | SponsorshipRecord | PledgeRecord>,
+      page: res as RecordsPage<AnyRecord>,
     };
   });
 

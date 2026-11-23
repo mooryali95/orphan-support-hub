@@ -72,6 +72,27 @@ BEGIN
                   AND meta->>'reason' = 'تحقّقنا من التواصل') THEN
     RAISE EXCEPTION 'FAIL — تغيير الحالة لم يُسجَّل';
   END IF;
+  -- بقيّة الأنواع بالشكل نفسه.
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims', '{"sub":"ac100000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+  _r := public.admin_records('orgs', 'جهة اللوحة');
+  IF (_r->>'total')::int <> 1 OR (_r->'rows'->0->>'children')::int <> 2 THEN
+    RAISE EXCEPTION 'FAIL — الجهات: %', _r;
+  END IF;
+  _r := public.admin_records('documents', 'AC-1');
+  IF (_r->'counts'->>'verified')::int <> 2 OR (_r->'counts'->>'unverified')::int <> 1 THEN
+    RAISE EXCEPTION 'FAIL — المستندات: %', _r;
+  END IF;
+  PERFORM public.admin_records('offices');
+  PERFORM public.admin_records('supervisors');
+  PERFORM public.admin_records('payments');
+  _ok := false;
+  BEGIN
+    PERFORM public.admin_records('nope');
+  EXCEPTION WHEN invalid_parameter_value THEN _ok := true;
+  END;
+  RESET ROLE;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — نوعٌ غير معروف مرّ'; END IF;
   RAISE NOTICE 'PASS — لوحة البيانات: قراءة موحّدة، وتوثيق، وانتقالات مسجَّلة';
 END $$;
 ROLLBACK;
