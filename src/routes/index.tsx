@@ -154,6 +154,7 @@ const COPY = defineCopy("routes/index", {
     proofField: "دول بنشاطٍ ميداني موثّق",
     proofFiles: "ملفات معتمدة على المنصّة",
     proofFull: "مكفولون بالكامل",
+    launching: "قيد الإطلاق",
     proofSource:
       "حضور الندوة من بياناتٍ بحثية عامّة بمصادرها (2024–2026)، وأعداد الملفات محسوبة لحظة فتحك الصفحة.",
     mapH: "أين نعمل",
@@ -285,6 +286,7 @@ const COPY = defineCopy("routes/index", {
     proofField: "countries with documented field activity",
     proofFiles: "approved files on the platform",
     proofFull: "fully sponsored",
+    launching: "Launching soon",
     proofSource:
       "WAMY's presence comes from sourced public research (2024–2026); file counts are calculated the moment you open this page.",
     mapH: "Where we work",
@@ -442,14 +444,16 @@ function HomePage() {
     });
 
   const g = useGivingCopy();
-  const proof = [
+  // قبل أوّل ملفٍّ معتمد لا تُعرض أصفار: «قيد الإطلاق» صادقةٌ ولا توحي بمنصّةٍ مهجورة.
+  const launching = data.stats?.totalOrphans === 0;
+  const proof: Array<{ value: number; label: string; launch?: boolean }> = [
     { value: NETWORK_COUNTS.offices, label: c.proofOffices },
     { value: NETWORK_COUNTS.field, label: c.proofField },
     // أعداد المنصّة الحيّة: إن تعذّرت لا تُعرض، فلا «صفر» ولا رقمٌ مختلَق.
     ...(data.stats
       ? [
-          { value: data.stats.totalOrphans, label: c.proofFiles },
-          { value: data.stats.fullySponsored, label: c.proofFull },
+          { value: data.stats.totalOrphans, label: c.proofFiles, launch: launching },
+          { value: data.stats.fullySponsored, label: c.proofFull, launch: launching },
         ]
       : []),
   ];
@@ -552,9 +556,15 @@ function HomePage() {
                     <dt className="max-w-[14rem] text-sm leading-6 text-muted-foreground">
                       {item.label}
                     </dt>
-                    <dd className="numeral order-first text-5xl text-primary md:text-6xl">
-                      <CountUp value={item.value} />
-                    </dd>
+                    {item.launch ? (
+                      <dd className="order-first flex min-h-[3.75rem] items-center text-2xl font-bold text-primary md:min-h-[4.5rem] md:text-3xl">
+                        {c.launching}
+                      </dd>
+                    ) : (
+                      <dd className="numeral order-first text-5xl text-primary md:text-6xl">
+                        <CountUp value={item.value} />
+                      </dd>
+                    )}
                   </div>
                 ))}
               </dl>

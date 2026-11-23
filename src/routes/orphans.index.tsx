@@ -135,6 +135,11 @@ const COPY = defineCopy("routes/orphans.index", {
     clearAll: "مسح الكل",
     files: (n: number) => arCount(n, FILES),
     empty: "لا توجد نتائج مطابقة.",
+    launchTitle: "دليل الأيتام قيد الإطلاق",
+    launchText:
+      "أول الملفات تُنشر بعد توثيقها من جهة رعاية مرخّصة واعتمادها من الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
+    launchTry: "جرّب الرحلة كاملة",
+    launchSupport: "ادعم مكاناً",
     tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
     restart: "ابدأ من جديد",
     emptyGo: "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
@@ -194,6 +199,11 @@ const COPY = defineCopy("routes/orphans.index", {
     clearAll: "Clear all",
     files: pluralOf({ one: "{0} file", other: "{0} files" }),
     empty: "No matching results.",
+    launchTitle: "The children's directory is launching soon",
+    launchText:
+      "The first files are published once a licensed care organization documents them and the administration approves them. Until then, try the full journey or support a place now.",
+    launchTry: "Try the full journey",
+    launchSupport: "Support a place",
     tryA: "Try removing one of the filters above, or",
     restart: "start over",
     emptyGo: "Or go to «Support», where we suggest children who are waiting, or support a place.",
@@ -366,6 +376,8 @@ function OrphansPage() {
       ? [{ key: "building", label: t.building, clear: () => set({ building: undefined }) }]
       : []),
   ];
+  // بلا فلترٍ ولا ملفٍّ منشور: الدليل قبل إطلاقه، لا «لا نتائج مطابقة».
+  const prelaunch = !DEMO_MODE && total === 0 && chips.length === 0;
   const panelCount = chips.filter((c) => !["q", "funding"].includes(c.key)).length;
 
   function reset() {
@@ -628,7 +640,7 @@ function OrphansPage() {
           )}
           aria-live="polite"
         >
-          {failed ? "" : t.files(total)}
+          {failed || prelaunch ? "" : t.files(total)}
         </p>
 
         {failed ? (
@@ -641,7 +653,10 @@ function OrphansPage() {
               tone="current"
               className="mx-auto h-10 w-auto text-muted-foreground/30"
             />
-            <p className="mt-4 text-base font-medium text-foreground">{t.empty}</p>
+            <p className="mt-4 text-base font-medium text-foreground">
+              {prelaunch ? t.launchTitle : t.empty}
+            </p>
+            {prelaunch && <p className="mx-auto mt-2 max-w-md leading-7">{t.launchText}</p>}
             {chips.length > 0 && (
               <p className="mt-3">
                 {t.tryA}{" "}
@@ -655,13 +670,32 @@ function OrphansPage() {
                 .
               </p>
             )}
-            <p className="mx-auto mt-4 max-w-md leading-7">{t.emptyGo}</p>
-            <Link
-              to="/support"
-              className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
-            >
-              {t.emptyCta}
-            </Link>
+            {prelaunch ? (
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link
+                  to="/try"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+                >
+                  {t.launchTry}
+                </Link>
+                <Link
+                  to="/support"
+                  className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-5 text-sm font-bold text-foreground"
+                >
+                  {t.launchSupport}
+                </Link>
+              </div>
+            ) : (
+              <>
+                <p className="mx-auto mt-4 max-w-md leading-7">{t.emptyGo}</p>
+                <Link
+                  to="/support"
+                  className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+                >
+                  {t.emptyCta}
+                </Link>
+              </>
+            )}
           </div>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
