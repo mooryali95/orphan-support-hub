@@ -24,6 +24,7 @@ import {
 } from "@/lib/sponsorships.functions";
 import { startCheckout } from "@/lib/payments.functions";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupporterModeGate } from "@/components/SupporterModeGate";
 import { ExcessSuggestion } from "@/components/ExcessSuggestion";
 import { SurplusBadge } from "@/components/brand/SurplusBadge";
 import { getFundingState } from "@/lib/sponsorships.functions";
@@ -56,6 +57,8 @@ import {
 } from "@/lib/pay-options";
 import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { Name } from "@/components/kit/Name";
+import { usePrivateFile } from "@/hooks/usePrivateFile";
+import { CHILD_PHOTO_BUCKET } from "@/lib/child-photo";
 import { FollowButton } from "@/components/support/Follow";
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
@@ -298,6 +301,8 @@ function OrphanDetail() {
   });
   // التفاصيل موجودةٌ في المُعاد أو غائبة — والقاعدة هي من تقرّر، لا هذه الصفحة.
   const detail = orphan.detail ?? null;
+  // الصورة الخاصّة تُنزَّل بجلسة القارئ عند كلّ عرض؛ لا رابط موقَّعاً يبقى بعد سحب الموافقة.
+  const { url: privatePhoto } = usePrivateFile(CHILD_PHOTO_BUCKET, detail?.photo_path);
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
   // عملة الدفع: عملة الملف افتراضاً، ومعها عملة بلد الطفل والعملة الموحّدة حيث
@@ -452,7 +457,7 @@ function OrphanDetail() {
           <div>
             <div className="overflow-hidden rounded-2xl border border-border bg-card">
               <MuralImage
-                photoUrl={detail?.photo_url ?? null}
+                photoUrl={privatePhoto ?? detail?.photo_url ?? null}
                 displayName={orphan.display_name}
                 register={registerFor(orphan.status, percent)}
                 className="aspect-[16/9] bg-secondary"
@@ -779,46 +784,48 @@ function OrphanDetail() {
                     />
                   )}
 
-                  {user ? (
-                    <Button
-                      className="w-full"
-                      size="lg"
-                      onClick={() => void onSponsor()}
-                      disabled={pending}
-                    >
-                      {pending && <Loader2 className="size-4 animate-spin" />}
-                      {cadence === "one_time" ? t.startOnce : t.start}
-                    </Button>
-                  ) : (
-                    // الدخول في الصفحة نفسها، ثم تُسجَّل الكفالة وينتقل إلى الدفع دون نقرةٍ ثانية.
-                    <AuthDialog
-                      title={t.signIn}
-                      hint={t.signInHint}
-                      onDone={() => void onSponsor(false, true)}
-                      trigger={(open) => (
-                        <Button
-                          className="w-full"
-                          size="lg"
-                          disabled={pending}
-                          onClick={() => {
-                            saveDraft({
-                              orphanId,
-                              name: orphan.display_name,
-                              amount,
-                              message,
-                              anonymous,
-                              currency: payCurrency,
-                              cadence,
-                            });
-                            open();
-                          }}
-                        >
-                          {pending && <Loader2 className="size-4 animate-spin" />}
-                          {t.signIn}
-                        </Button>
-                      )}
-                    />
-                  )}
+                  <SupporterModeGate>
+                    {user ? (
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        onClick={() => void onSponsor()}
+                        disabled={pending}
+                      >
+                        {pending && <Loader2 className="size-4 animate-spin" />}
+                        {cadence === "one_time" ? t.startOnce : t.start}
+                      </Button>
+                    ) : (
+                      // الدخول في الصفحة نفسها، ثم تُسجَّل الكفالة وينتقل إلى الدفع دون نقرةٍ ثانية.
+                      <AuthDialog
+                        title={t.signIn}
+                        hint={t.signInHint}
+                        onDone={() => void onSponsor(false, true)}
+                        trigger={(open) => (
+                          <Button
+                            className="w-full"
+                            size="lg"
+                            disabled={pending}
+                            onClick={() => {
+                              saveDraft({
+                                orphanId,
+                                name: orphan.display_name,
+                                amount,
+                                message,
+                                anonymous,
+                                currency: payCurrency,
+                                cadence,
+                              });
+                              open();
+                            }}
+                          >
+                            {pending && <Loader2 className="size-4 animate-spin" />}
+                            {t.signIn}
+                          </Button>
+                        )}
+                      />
+                    )}
+                  </SupporterModeGate>
 
                   {stats && stats.totalOrphans > 0 && stats.fullySponsored > 0 && (
                     <p className="text-center text-xs leading-6 text-muted-foreground">

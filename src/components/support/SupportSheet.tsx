@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupporterModeGate } from "@/components/SupporterModeGate";
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import type { MapActionContext } from "@/components/map/WorldMap";
 import type { MapStats } from "@/components/map/demo-stats";
@@ -24,6 +25,7 @@ import {
   type SupportKind,
   type TargetType,
 } from "@/lib/support.functions";
+import { PledgeReceipt } from "@/components/support/PledgeReceipt";
 import { dismissProposal } from "@/lib/try-handoff";
 import { cn } from "@/lib/utils";
 
@@ -186,7 +188,12 @@ export function SupportSheet({
   const usedProposal = useRef<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [result, setResult] = useState<{
+    ok: boolean;
+    text: string;
+    id?: string;
+    at?: Date;
+  } | null>(null);
 
   async function confirm() {
     setBusy(true);
@@ -205,7 +212,9 @@ export function SupportSheet({
       });
       if (res.ok && usedProposal.current) dismissProposal(usedProposal.current);
       setResult(
-        res.ok ? { ok: true, text: t.pledged } : { ok: false, text: res.error ?? t.failed },
+        res.ok
+          ? { ok: true, text: t.pledged, id: res.id ?? undefined, at: new Date() }
+          : { ok: false, text: res.error ?? t.failed },
       );
     } catch {
       // now also runs straight after the in-place sign-in: a failure must show, not freeze the button
@@ -223,6 +232,20 @@ export function SupportSheet({
           {t.thanks}
         </p>
         <p className="celebrate-text mt-1 text-sm leading-6 text-muted-foreground">{result.text}</p>
+        <PledgeReceipt
+          compact
+          className="celebrate-text mt-3"
+          rows={[
+            [t.whom, target.label],
+            [
+              t.kind,
+              kind === "qualification" ? g.tracks.qualification.name : g.tracks.in_kind.name,
+            ],
+            [t.amount, formatMoney(amount, currency, locale)],
+          ]}
+          id={result.id}
+          at={result.at}
+        />
         <div className="mt-3 flex justify-center gap-2">
           <Button asChild size="sm">
             <Link to="/workspaces">{t.portals}</Link>
@@ -352,24 +375,26 @@ export function SupportSheet({
         />
       </details>
 
-      {signedIn ? (
-        <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
-          {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-          {t.confirm(formatMoney(amount, currency, locale))}
-        </Button>
-      ) : (
-        <AuthDialog
-          title={t.signIn}
-          hint={t.signInHint}
-          // after signing in the support is recorded as promised, with no second click
-          onDone={() => void confirm()}
-          trigger={(open) => (
-            <Button size="lg" className="w-full" onClick={open}>
-              {t.signIn}
-            </Button>
-          )}
-        />
-      )}
+      <SupporterModeGate>
+        {signedIn ? (
+          <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
+            {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            {t.confirm(formatMoney(amount, currency, locale))}
+          </Button>
+        ) : (
+          <AuthDialog
+            title={t.signIn}
+            hint={t.signInHint}
+            // after signing in the support is recorded as promised, with no second click
+            onDone={() => void confirm()}
+            trigger={(open) => (
+              <Button size="lg" className="w-full" onClick={open}>
+                {t.signIn}
+              </Button>
+            )}
+          />
+        )}
+      </SupporterModeGate>
       <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
       {result && !result.ok && (
         <p role="alert" className="text-sm text-destructive">

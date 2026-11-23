@@ -6,8 +6,8 @@ import {
   Container,
   Head,
   Hr,
-  Html,
   Img,
+  Html,
   Link,
   Preview,
   Section,
@@ -76,14 +76,27 @@ export function BrandEmail({
       <Body style={main}>
         <Container style={shell}>
           <Section style={header}>
-            <Link href={siteUrl}>
+            {/* الشعار صورةً بدقّة مضاعفة (420×90 تُعرض 210×45) لشاشات Retina.
+                وإن حجب العميل الصور (Outlook وGmail افتراضياً لمرسلٍ جديد) يظهر
+                النص البديل منسّقاً بالذهبي وخطّ الهوية، لا مربّعاً فارغاً. */}
+            <Link href={siteUrl} style={wordmarkLink}>
               <Img
                 src={assetUrl(siteUrl, "/brand/email-logo-white.png")}
                 alt={siteName}
-                width="168"
+                width="210"
+                height="45"
                 style={logo}
               />
             </Link>
+            <table role="presentation" cellPadding={0} cellSpacing={0} style={ornament}>
+              <tbody>
+                <tr>
+                  <td style={ornamentLine} />
+                  <td style={ornamentDot}>◆</td>
+                  <td style={ornamentLine} />
+                </tr>
+              </tbody>
+            </table>
             <Text style={headerTag}>منظمة الرعاية الدولية لليتيم</Text>
           </Section>
 
@@ -181,23 +194,47 @@ const shell = {
 };
 const header = {
   backgroundColor: BRAND.navyDeep,
-  borderRadius: "14px 14px 0 0",
-  padding: "26px 28px 18px",
+  borderRadius: "16px 16px 0 0",
+  padding: "34px 28px 24px",
   textAlign: "center" as const,
 };
-const logo = { display: "block", margin: "0 auto", maxWidth: "100%" };
+const wordmarkLink = { textDecoration: "none" };
+const logo = {
+  display: "block",
+  margin: "0 auto",
+  border: 0,
+  outline: "none",
+  height: "45px",
+  width: "210px",
+  maxWidth: "100%",
+  // يُطبَّق على النص البديل حين تُحجب الصورة.
+  color: BRAND.goldSoft,
+  fontFamily: "'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', 'Times New Roman', serif",
+  fontSize: "30px",
+  fontWeight: 700 as const,
+  lineHeight: "45px",
+  textAlign: "center" as const,
+};
+const ornament = { margin: "10px auto 0" };
+const ornamentLine = {
+  borderTop: `1px solid ${BRAND.gold}`,
+  width: "44px",
+  height: "1px",
+  lineHeight: "1px",
+};
+const ornamentDot = { color: BRAND.gold, fontSize: "8px", padding: "0 8px", lineHeight: "1px" };
 const headerTag = {
-  color: "#C7D3E2",
+  color: "#E9DCC6",
   fontSize: "12px",
   letterSpacing: "0.04em",
-  margin: "6px 0 0",
+  margin: "10px 0 0",
 };
 const card = {
   backgroundColor: BRAND.card,
-  borderRadius: "0 0 14px 14px",
+  borderRadius: "0 0 16px 16px",
   border: `1px solid ${BRAND.line}`,
   borderTop: `3px solid ${BRAND.gold}`,
-  padding: "30px 28px 26px",
+  padding: "36px 36px 30px",
 };
 const eyebrowStyle = {
   color: BRAND.gold,
@@ -222,13 +259,14 @@ const text = {
 const buttonCell = {
   backgroundColor: BRAND.navy,
   borderRadius: "10px",
+  borderBottom: `2px solid ${BRAND.gold}`,
 };
 const buttonLink = {
   color: "#FFFFFF",
   display: "inline-block",
   fontSize: "15px",
   fontWeight: 700 as const,
-  padding: "13px 30px",
+  padding: "14px 36px",
   textDecoration: "none",
 };
 const fallbackLabel = {
@@ -245,14 +283,15 @@ const fallbackUrl = {
 };
 const code = {
   backgroundColor: BRAND.paper,
-  border: `1px solid ${BRAND.line}`,
-  borderRadius: "10px",
+  border: `1px solid ${BRAND.gold}`,
+  borderRadius: "12px",
   color: BRAND.navyDeep,
-  fontSize: "30px",
+  fontFamily: "'SF Mono', Menlo, Consolas, 'Courier New', monospace",
+  fontSize: "32px",
   fontWeight: 700 as const,
-  letterSpacing: "0.28em",
-  margin: "4px 0 18px",
-  padding: "16px 0",
+  letterSpacing: "0.3em",
+  margin: "6px 0 20px",
+  padding: "20px 0 20px 0.3em",
   textAlign: "center" as const,
 };
 const hr = { borderColor: BRAND.line, margin: "22px 0 14px" };

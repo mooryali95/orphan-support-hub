@@ -7,6 +7,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('ab100000-0000-4000-8000-000000000003', 'dn-out@example.test', '{}'::jsonb),
   ('ab100000-0000-4000-8000-000000000004', 'dn-org@example.test', '{"role":"care_org"}'::jsonb),
   ('ab100000-0000-4000-8000-000000000005', 'dn-admin@example.test', '{}'::jsonb);
+-- حساباتٌ أثبتت بريدها (التأكيد شرطٌ للدعوات والإدارة).
+UPDATE auth.users SET email_confirmed_at = now() WHERE email LIKE 'dn-%@example.test';
 INSERT INTO public.user_roles (user_id, role) VALUES ('ab100000-0000-4000-8000-000000000005', 'admin');
 INSERT INTO public.care_organizations (id, owner_id, name, status)
 VALUES ('ab200000-0000-4000-8000-000000000001', 'ab100000-0000-4000-8000-000000000004', 'جهة المانحين', 'approved');
@@ -48,7 +50,7 @@ BEGIN
   SET LOCAL ROLE authenticated;
   SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000001","role":"authenticated"}';
   PERFORM public.donor_set_member(_e, 'dn-fin@example.test', 'finance');
-  SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000002","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"ab100000-0000-4000-8000-000000000002","role":"authenticated","amr":[{"method":"otp","timestamp":1}]}';
   PERFORM public.respond_donor_invitation(_e, true);
   RESET ROLE;
   _ok := false;

@@ -56,15 +56,14 @@ const importsOf = (path: string) =>
   );
 
 describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => {
-  it("التجربة بـ?try=1 أو بوضع المنصّة، وإلا فالحقيقي؛ و«أثري» من الوضع نفسه", () => {
-    expect(hallSource({}, "trial")).toMatchObject({ mode: "trial", mine: "/try/impact" });
-    expect(hallSource({ try: 1 }, "live")).toMatchObject({ mode: "trial", mine: "/try/impact" });
-    expect(hallSource({}, "live")).toMatchObject({ mode: "live", mine: "/dashboard" });
+  it("التجربة بـ?try=1 وحدها، وإلا فالحقيقي؛ و«أثري» من الوضع نفسه", () => {
+    expect(hallSource({ try: 1 })).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    expect(hallSource({})).toMatchObject({ mode: "live", mine: "/dashboard" });
   });
 
-  it("لا ملفّ في القاعة يقرأ وضع المنصّة إلا source.ts، والصفحة تأخذ قرارها منه", () => {
+  it("لا ملفّ في القاعة يقرأ وضع المنصّة، والصفحة تأخذ قرارها من source.ts", () => {
     const readers = HALL_FILES.filter((f) => importsOf(f).includes("@/config/platform"));
-    expect(readers).toEqual(["src/lib/hall/source.ts"]);
+    expect(readers).toEqual([]);
     const page = read("src/routes/hall.lazy.tsx");
     expect(page).toContain("hallSource(search)");
     expect(page).not.toMatch(/search\.try\b/);
@@ -222,19 +221,14 @@ describe("الدخول والخروج يحملان السياق", () => {
 
   it("القاعة تفتح على الدولة المحمولة، وتعرض «عودة» حين تختلف الصفحة عن «أثري»", () => {
     const from = "/try/support?c=SN&r=SEN-759&kind=in_kind";
-    expect(hallSource({ try: 1, c: "SN", from }, "trial")).toEqual({
+    expect(hallSource({ try: 1, c: "SN", from })).toEqual({
       mode: "trial",
       mine: "/try/impact",
       back: from,
       start: "SN",
     });
-    expect(hallSource({ from: "/dashboard" }, "live").back).toBeNull();
-    // قبل الاعتماد يفتح داعمٌ مسجَّل القاعة من لوحته فيجدها تجربة: طريق العودة إلى لوحته باقٍ
-    expect(hallSource({ from: "/dashboard" }, "trial")).toMatchObject({
-      mode: "trial",
-      back: "/dashboard",
-    });
-    expect(hallSource({ from: "/try/impact?kind=monthly" }, "trial").back).toBeNull();
+    expect(hallSource({ from: "/dashboard" }).back).toBeNull();
+    expect(hallSource({ try: 1, from: "/try/impact?kind=monthly" }).back).toBeNull();
   });
 
   it("كل دولةٍ تحملها الصفحات ترسمها القاعة وتدخلها التجربة", () => {
@@ -305,18 +299,16 @@ const CARD: Record<string, string | null> = {
 const cardOf = (id: string) => CARD[id];
 
 describe("مفتاح القاعة: الداعم من لوحته يرى أثره هو", () => {
-  it("?me=1 يفتح قاعة الداعم أيّاً كان وضع المنصّة، و?try=1 يبقى تجربة", () => {
-    for (const platform of ["trial", "live"] as const) {
-      expect(hallSource({ me: 1 }, platform)).toMatchObject({ mode: "donor", mine: "/dashboard" });
-      expect(hallSource({ me: 1, try: 1 }, platform).mode).toBe("trial");
-    }
+  it("?me=1 يفتح قاعة الداعم، و?try=1 يبقى تجربة", () => {
+    expect(hallSource({ me: 1 })).toMatchObject({ mode: "donor", mine: "/dashboard" });
+    expect(hallSource({ me: 1, try: 1 }).mode).toBe("trial");
     expect(parseHallSearch({ me: "1", from: "/dashboard" })).toEqual({
       me: 1,
       from: "/dashboard",
     });
     expect(parseHallSearch({ me: "yes" })).toEqual({});
     // returning to the dashboard is «أثري» itself: no second chip
-    expect(hallSource({ me: 1, from: "/dashboard" }, "trial").back).toBeNull();
+    expect(hallSource({ me: 1, from: "/dashboard" }).back).toBeNull();
   });
 
   it("اللوحة تدخل القاعة بـme=1، والصفحة لا تحمّل كتالوج التجربة للداعم", () => {

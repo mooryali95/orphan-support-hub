@@ -48,19 +48,19 @@ let token = 0;
 
 const read = (): VisionState => {
   try {
-    return revive(JSON.parse(localStorage.getItem(KEY) ?? "null"));
+    return revive(JSON.parse(sessionStorage.getItem(KEY) ?? "null"));
   } catch {
     return seed();
   }
 };
 function apply(a: Action) {
   const next = reduce(read(), a);
-  localStorage.setItem(KEY, JSON.stringify(next));
+  sessionStorage.setItem(KEY, JSON.stringify(next));
   window.dispatchEvent(new Event(SYNC_EVENT));
   return next;
 }
 function persona(p: Persona) {
-  localStorage.setItem(PERSONA_KEY, JSON.stringify(p));
+  sessionStorage.setItem(PERSONA_KEY, JSON.stringify(p));
   window.dispatchEvent(new Event(SYNC_EVENT));
 }
 

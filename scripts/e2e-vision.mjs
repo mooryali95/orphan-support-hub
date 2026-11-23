@@ -36,8 +36,9 @@ const PAGES = [
   "/vision/payments",
   "/vision/me",
 ];
-// ميزانية الأداء: ما يُنزَّل من JS وCSS مضغوطاً لكلّ صفحة (اليوم نحو 340–350KB).
-const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 380);
+// ميزانية الأداء: ما يُنزَّل من JS وCSS مضغوطاً لكلّ صفحة (اليوم نحو 360–383KB).
+// رُفعت من 380 إلى 385 بعد مساعد «سؤالي» (تنسيقاته في CSS المشتركة).
+const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 385);
 // قاعة الأثر تحمّل three.js والمعالجة السينمائية كسولاً عند فتحها وحدها.
 const PAGE_BUDGET_KB = { "/hall": Number(process.env.HALL_BUDGET_KB ?? 900) };
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i];
@@ -166,7 +167,7 @@ for (const [lang, dir] of [
   await page.getByRole("button", { name: /ادخل كمشرف/ }).click();
   const sessions = () =>
     page.evaluate(() =>
-      (JSON.parse(localStorage.getItem("vision-engine:v1") ?? "{}").groups ?? []).reduce(
+      (JSON.parse(sessionStorage.getItem("vision-engine:v1") ?? "{}").groups ?? []).reduce(
         (a, g) => a + g.sessionsDone,
         0,
       ),
@@ -196,10 +197,10 @@ for (const [lang, dir] of [
   if (!(await page.getByText(/اعتُمد —/).count())) fail("decider", "scenario not applied");
   ok("decider: advanced a month, approved a decision and a scenario");
 
-  // البقاء بعد إعادة التحميل
+  // البقاء بعد إعادة التحميل (في الجلسة نفسها؛ يختفي بإغلاق المتصفّح)
   await page.reload({ waitUntil: "networkidle" });
   const saved = await page.evaluate(() =>
-    JSON.parse(localStorage.getItem("vision-engine:v1") ?? "{}"),
+    JSON.parse(sessionStorage.getItem("vision-engine:v1") ?? "{}"),
   );
   if (!(saved.donations?.length >= 2 && saved.month >= 1)) fail("persistence", "state not kept");
   ok("state persists across reloads");

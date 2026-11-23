@@ -24,6 +24,8 @@ import {
 } from "@/lib/workspaces.functions";
 import { pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
+import { toast } from "sonner";
+import { openPrivateFile, usePrivateFile } from "@/hooks/usePrivateFile";
 
 const COPY = defineCopy("routes/office", {
   ar: {
@@ -57,6 +59,7 @@ const COPY = defineCopy("routes/office", {
     saveFailed: "تعذّر الحفظ.",
     saved: "حُفظ التقرير.",
     photoAlt: "صورة من تقرير المكتب",
+    fileDenied: "تعذّر فتح الملفّ — قد لا تكون عضواً في هذا المكتب الآن.",
   },
   en: {
     title: "Office dashboard",
@@ -89,6 +92,7 @@ const COPY = defineCopy("routes/office", {
     saveFailed: "It could not be saved.",
     saved: "Report saved.",
     photoAlt: "Photo from the office report",
+    fileDenied: "Could not open the file. You may no longer be a member of this office.",
   },
 });
 
@@ -412,40 +416,46 @@ function ReportForm({ officeId, canPublish }: { officeId: string; canPublish: bo
  * الخزنة الخاصّة، لا روابط ثابتة تُتداول.
  */
 function Gallery({ paths }: { paths: string[] }) {
-  const t = useCopy(COPY);
-  const { data: urls = [] } = useQuery({
-    queryKey: ["office-gallery", ...paths],
-    queryFn: async () => {
-      const { data } = await supabase.storage.from("office-media").createSignedUrls(paths, 300);
-      return (data ?? []).flatMap((d) =>
-        d.signedUrl ? [{ path: d.path ?? "", url: d.signedUrl }] : [],
-      );
-    },
-  });
   return (
     <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
-      {urls.map((u) =>
-        /\.pdf$/i.test(u.path ?? "") ? (
-          <a
-            key={u.url}
-            href={u.url}
-            target="_blank"
-            rel="noreferrer"
-            className="flex aspect-square items-center justify-center rounded-lg border border-border text-xs"
-          >
-            PDF
-          </a>
-        ) : (
-          <a key={u.url} href={u.url} target="_blank" rel="noreferrer">
-            <img
-              src={u.url}
-              alt={t.photoAlt}
-              loading="lazy"
-              className="aspect-square w-full rounded-lg object-cover"
-            />
-          </a>
-        ),
-      )}
+      {paths.map((path) => (
+        <GalleryItem key={path} path={path} />
+      ))}
     </div>
   );
 }
+
+/**
+ * مرفقٌ واحد: يُنزَّل بجلسة العضو ويُعرض من ذاكرة الصفحة. لا رابط موقَّعاً
+ * يبقى صالحاً بعد إزالة العضو من المكتب — كلّ فتحٍ تفحصه سياسة الخزنة لحظتها.
+ */
+function GalleryItem({ path }: { path: string }) {
+  const t = useCopy(COPY);
+  const pdf = /\.pdf$/i.test(path);
+  const { url } = usePrivateFile(OFFICE_MEDIA, pdf ? null : path);
+  const open = () => {
+    void openPrivateFile(OFFICE_MEDIA, path).then((ok) => {
+      if (!ok) toast.error(t.fileDenied);
+    });
+  };
+  if (pdf) {
+    return (
+      <button
+        type="button"
+        onClick={open}
+        className="flex aspect-square items-center justify-center rounded-lg border border-border text-xs"
+      >
+        PDF
+      </button>
+    );
+  }
+  if (!url)
+    return <div className="aspect-square w-full rounded-lg bg-secondary" aria-hidden="true" />;
+  return (
+    <button type="button" onClick={open} className="block">
+      <img src={url} alt={t.photoAlt} className="aspect-square w-full rounded-lg object-cover" />
+    </button>
+  );
+}
+
+const OFFICE_MEDIA = "office-media";

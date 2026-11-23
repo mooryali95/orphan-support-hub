@@ -9,6 +9,9 @@ vi.mock("@tanstack/react-start", () => ({ useServerFn: () => submit }));
 vi.mock("@tanstack/react-router", () => ({ Link: "a" }));
 vi.mock("@/lib/support.functions", () => ({ createPledge: vi.fn() }));
 vi.mock("@/components/auth/AuthDialog", () => ({ AuthDialog: () => null }));
+vi.mock("@/components/SupporterModeGate", () => ({
+  SupporterModeGate: ({ children }: { children: unknown }) => children,
+}));
 vi.mock("@/components/kit/Celebrate", () => ({ CelebrateMark: () => null }));
 vi.mock("@/lib/locale", () => ({
   defineCopy: (_key: string, copy: unknown) => copy,

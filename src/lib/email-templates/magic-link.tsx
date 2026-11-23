@@ -6,7 +6,7 @@ interface MagicLinkEmailProps {
   siteName: string;
   siteUrl: string;
   confirmationUrl: string;
-  /** رمزٌ من ستّة أرقام يُكتب في الصفحة نفسها — فلا يغادر الزائر ما كان فيه. */
+  /** رمزٌ من ستّة أرقام (طوله من إعداد المصادقة) يُكتب في الصفحة نفسها — فلا يغادر الزائر ما كان فيه. */
   token?: string;
 }
 

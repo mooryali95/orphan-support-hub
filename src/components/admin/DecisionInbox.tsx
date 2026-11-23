@@ -17,13 +17,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { reviewOrganization } from "@/lib/admin.functions";
-import {
-  createOrgDocumentReadUrl,
-  ORG_DOC_LABELS,
-  ORG_MISSING_LABELS,
-  type OrgDocKind,
-} from "@/lib/org.functions";
+import { ORG_DOC_LABELS, ORG_MISSING_LABELS, type OrgDocKind } from "@/lib/org.functions";
 import { formatDate } from "@/lib/format";
 import { reviewProgressReport } from "@/lib/impact.functions";
 import {
@@ -338,7 +334,6 @@ type OrgDoc = { id: string; kind: OrgDocKind; file_name: string | null; storage_
 
 /** وثائق التحقّق وما ينقص: لا يُعتمد طلبٌ لم تُفتح وثيقته (PRD-16). */
 function OrgEvidence({ documents, missing }: { documents: OrgDoc[]; missing: string[] }) {
-  const read = useServerFn(createOrgDocumentReadUrl);
   return (
     <div className="space-y-3 rounded-xl border border-border p-4 text-sm">
       <h3 className="text-xs font-bold text-muted-foreground">وثائق التحقّق</h3>
@@ -358,9 +353,8 @@ function OrgEvidence({ documents, missing }: { documents: OrgDoc[]; missing: str
                 size="sm"
                 variant="outline"
                 onClick={async () => {
-                  const res = await read({ data: { path: d.storage_path } });
-                  if (res.ok) window.open(res.url, "_blank", "noopener,noreferrer");
-                  else toast.error(res.error);
+                  if (!(await openPrivateFile("org-documents", d.storage_path)))
+                    toast.error("تعذّر فتح الوثيقة");
                 }}
               >
                 <ExternalLink className="size-3" aria-hidden="true" /> فتح

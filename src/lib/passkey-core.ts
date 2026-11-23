@@ -26,6 +26,16 @@ type ErrorLike = { code?: unknown; name?: unknown; message?: unknown; cause?: un
  * يقرأ رمز Supabase (`passkey_disabled` …) أو رمز WebAuthn في المكتبة
  * (`ERROR_CEREMONY_ABORTED` …) أو اسم خطأ المتصفّح (`NotAllowedError`).
  */
+/**
+ * «معطّلة» من أين؟ المكتبة في المتصفّح (نسخةٌ تشترط تفعيلها في العميل)،
+ * أم خادم Supabase (البصمة غير مفعّلة في إعدادات المصادقة). الرسالة للمستخدم
+ * تختلف، والعلاج يختلف.
+ */
+export function passkeyDisabledSource(err: unknown): "client" | "server" {
+  const e = (err ?? {}) as ErrorLike;
+  return /experimental and disabled/i.test(String(e.message ?? "")) ? "client" : "server";
+}
+
 export function classifyPasskeyError(err: unknown): PasskeyFailure {
   const e = (err ?? {}) as ErrorLike;
   const code = String(e.code ?? "");

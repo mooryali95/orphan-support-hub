@@ -38,9 +38,27 @@ CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID LANGUAGE sql STABLE AS $$
   )::uuid
 $$;
 
+-- نفس تعريف Supabase: مطالبات JWT كاملة (منها aal لمستوى المصادقة).
+CREATE OR REPLACE FUNCTION auth.jwt() RETURNS JSONB LANGUAGE sql STABLE AS $$
+  SELECT COALESCE(
+    NULLIF(current_setting('request.jwt.claim', true), ''),
+    NULLIF(current_setting('request.jwt.claims', true), '')
+  )::jsonb
+$$;
+
+-- عوامل المصادقة الثنائية بالأعمدة التي تقرؤها is_admin().
+CREATE TABLE IF NOT EXISTS auth.mfa_factors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  factor_type TEXT NOT NULL DEFAULT 'totp',
+  status TEXT NOT NULL DEFAULT 'unverified',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 GRANT USAGE ON SCHEMA auth   TO anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION auth.uid() TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION auth.jwt() TO anon, authenticated, service_role;
 
 -- ---------------------------------------------------------------------
 -- محاكاة تخزين Supabase

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { assistantRequestSchema, publicAssistantCard, gatewayFailure } from "./policy";
+import {
+  assistantRequestSchema,
+  publicAssistantCard,
+  gatewayFailure,
+  modelHistory,
+} from "./policy";
 const card = {
   id: "00000000-0000-4000-8000-000000000001",
   code: "P-1",
@@ -48,5 +53,16 @@ describe("supporter assistant public boundaries", () => {
       status: 403,
       message: "Access denied",
     });
+  });
+});
+
+describe("modelHistory", () => {
+  it("drops caller-supplied assistant turns before they reach the model", () => {
+    const history = [
+      { role: "user", id: "1" },
+      { role: "assistant", id: "2" },
+      { role: "user", id: "3" },
+    ];
+    expect(modelHistory(history).map((m) => m.id)).toEqual(["1", "3"]);
   });
 });

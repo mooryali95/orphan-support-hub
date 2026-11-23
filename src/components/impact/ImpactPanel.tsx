@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { listReports, listTimeline } from "@/lib/impact.functions";
 import { eventLabel } from "@/lib/event-labels";
-import { createDocumentReadUrl } from "@/lib/intake.functions";
+import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { formatDate } from "@/lib/format";
 import { Name } from "@/components/kit/Name";
 
@@ -33,7 +33,6 @@ import { Name } from "@/components/kit/Name";
 export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphanName: string }) {
   const fetchReports = useServerFn(listReports);
   const fetchTimeline = useServerFn(listTimeline);
-  const readUrl = useServerFn(createDocumentReadUrl);
 
   const { data: rep, isLoading } = useQuery({
     queryKey: ["reports", orphanId],
@@ -48,12 +47,8 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
   const events = tl?.events ?? [];
 
   async function open(path: string) {
-    const res = await readUrl({ data: { path } });
-    if (!res.ok) {
-      toast.error(res.error);
-      return;
-    }
-    window.open(res.url, "_blank", "noopener,noreferrer");
+    // يُنزَّل بجلسة القارئ لحظة الفتح؛ لا رابط موقَّعاً يبقى بعد سحب الإذن.
+    if (!(await openPrivateFile("orphan-documents", path))) toast.error("تعذّر فتح الوثيقة");
   }
 
   if (isLoading) {

@@ -25,6 +25,10 @@ import {
   type PasskeyFailure,
 } from "@/lib/passkey";
 
+/** أطوال رموز الدخول كما يُرسلها مزوّد المصادقة. */
+const EMAIL_OTP_LENGTH = 6;
+const SMS_OTP_LENGTH = 6;
+
 const COPY = defineCopy("components/auth/AuthPanel", {
   ar: {
     title: "ادخل لتكمل",
@@ -52,7 +56,7 @@ const COPY = defineCopy("components/auth/AuthPanel", {
     offerDevice: (device: string) => `سيُحفظ باسم «${device}» ويمكنك حذفه من «حسابي» متى شئت.`,
     addPasskey: "أضف بصمتي",
     later: "لاحقاً",
-    sentTo: "أرسلنا رمزاً من ستّة أرقام إلى",
+    sentTo: "أرسلنا رمز الدخول إلى",
     codeLabel: "رمز الدخول",
     changeEmail: "تغيير البريد",
     changePhone: "تغيير الرقم",
@@ -103,7 +107,7 @@ const COPY = defineCopy("components/auth/AuthPanel", {
       `It will be saved as “${device}”; you can remove it from “My account” at any time.`,
     addPasskey: "Add my passkey",
     later: "Later",
-    sentTo: "We sent a six-digit code to",
+    sentTo: "We sent your sign-in code to",
     codeLabel: "Sign-in code",
     changeEmail: "Change email",
     changePhone: "Change number",
@@ -354,8 +358,12 @@ export function AuthPanel({
     setStage({ step: "code", to: method === "phone" ? normalizePhone(to) : to });
   }
 
+  // طول الرمز من إعداد المصادقة (Supabase Auth): ستّة أرقام للبريد والرسائل النصية.
+  // إن تغيّر الطول في الإعداد فليتغيّر هنا معه، وإلا لا يُكتب الرمز كاملاً.
+  const codeLength = method === "email" ? EMAIL_OTP_LENGTH : SMS_OTP_LENGTH;
+
   async function verify(token: string) {
-    if (stage.step !== "code" || token.length < 6) return;
+    if (stage.step !== "code" || token.length < codeLength) return;
     setBusy(true);
     const { error } =
       method === "email"
@@ -427,11 +435,11 @@ export function AuthPanel({
           </p>
           <div dir="ltr" className="mt-4 flex justify-center">
             <InputOTP
-              maxLength={6}
+              maxLength={codeLength}
               value={code}
               onChange={(v) => {
                 setCode(v);
-                if (v.length === 6) void verify(v);
+                if (v.length === codeLength) void verify(v);
               }}
               autoFocus
               inputMode="numeric"
@@ -440,8 +448,8 @@ export function AuthPanel({
               disabled={busy}
             >
               <InputOTPGroup>
-                {Array.from({ length: 6 }, (_, i) => (
-                  <InputOTPSlot key={i} index={i} className="size-11 text-lg" />
+                {Array.from({ length: codeLength }, (_, i) => (
+                  <InputOTPSlot key={i} index={i} className="size-10 text-lg sm:size-11" />
                 ))}
               </InputOTPGroup>
             </InputOTP>

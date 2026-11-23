@@ -24,8 +24,9 @@ export default defineConfig({
   },
   vite: {
     resolve: {
-      // مطابقة تامّة لا بادئة: parse5 يستورد entities/decode و entities/escape من نسخته
-      // المتداخلة (v6+)، وتحويل كل ما يبدأ بـ entities إلى النسخة الجذرية (v4) يكسر البناء.
+      // مطابقةٌ تامّة لا بادئة: «entities» وحدها تُوجَّه إلى نسخة الجذر (4.x).
+      // كائن الأسماء المستعارة يطابق البادئة، فكان يحوّل «entities/escape» التي
+      // يطلبها parse5 (يحمل entities 9 داخله) إلى نسخة 4 التي لا تملكها فيسقط البناء.
       alias: [
         {
           find: /^entities\/lib\/decode\.js$/,

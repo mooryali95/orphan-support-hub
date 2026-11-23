@@ -183,7 +183,7 @@ export function mountHall(
   const TIME = { m: 0, shown: 0, snap: null, play: null };
   const store = (() => {
     try {
-      return window.localStorage;
+      return window.sessionStorage;
     } catch {
       return null;
     }

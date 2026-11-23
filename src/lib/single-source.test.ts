@@ -187,7 +187,7 @@ describe("العملة: خريطةٌ واحدة وسعرٌ واحد", () => {
       (p) =>
         !SHOWCASE(p) && /[€£﷼]|ر\.س|US\$/.test(code(p).replace(/\.replace\("US\$", "\$"\)/g, "")),
     );
-    expect(offenders).toEqual(["src/components/support/MyPledges.tsx"]);
+    expect(offenders).toEqual([]);
   });
 
   /*
@@ -406,19 +406,12 @@ describe("جاهزية الدفع: تعريفٌ واحد لـ«مهيّأ»", ()
 });
 
 describe("الأدوار: تعريفٌ واحد", () => {
-  it("is_admin معرَّفٌ مرّةً واحدة، ومن has_role", () => {
-    const defs = MIGRATION_FILES.flatMap((f) =>
-      [
-        ...readFileSync(join(MIGRATIONS, f), "utf8").matchAll(
-          /CREATE OR REPLACE FUNCTION public\.is_admin\(\)/g,
-        ),
-      ].map(() => f),
-    );
-    expect(defs.length).toBe(1);
-    expect(latestFunction("is_admin")).toContain("is_admin()");
-    expect(read(`supabase/migrations/${defs[0]}`)).toMatch(
-      /FUNCTION public\.is_admin\(\)[\s\S]{0,200}has_role\(auth\.uid\(\), 'admin'\)/,
-    );
+  it("is_admin: آخر تعريفٍ مبنيٌّ على has_role ويشترط aal2 لمن فعّل عاملاً ثانياً", () => {
+    // أُعيد تعريفه مرّةً مقصودة (هجرة admin_mfa)؛ المرجع آخر تعريف.
+    const latest = latestFunction("is_admin");
+    expect(latest).toMatch(/has_role\(auth\.uid\(\), 'admin'\)/);
+    expect(latest).toContain("aal2");
+    expect(latest).toContain("auth.mfa_factors");
   });
 
   it("أدوار الواجهة هي تعداد القاعدة", () => {

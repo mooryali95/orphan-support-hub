@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { openPrivateFile } from "@/hooks/usePrivateFile";
 import {
   DOC_LABELS,
   REJECTION_CODES,
   REJECTION_LABELS,
   REQUIRED_DOCS,
-  createDocumentReadUrl,
   listOrphanDocuments,
   unverifiedRequiredDocs,
   verifyDocument,
@@ -38,7 +38,6 @@ export function OrphanReviewPanel({
   onDecided: (decision: "approved" | "rejected", code?: string, reason?: string) => void;
 }) {
   const fetchDocs = useServerFn(listOrphanDocuments);
-  const readUrl = useServerFn(createDocumentReadUrl);
   const verify = useServerFn(verifyDocument);
 
   const [code, setCode] = useState<string>("documents_missing");
@@ -56,13 +55,8 @@ export function OrphanReviewPanel({
   const canApprove = !isLoading && unverified.length === 0;
 
   async function open(path: string) {
-    const res = await readUrl({ data: { path } });
-    if (!res.ok) {
-      toast.error(res.error);
-      return;
-    }
-    // الرابط موقّع لدقيقة واحدة: يُفتح ولا يُخزَّن.
-    window.open(res.url, "_blank", "noopener,noreferrer");
+    // يُنزَّل بجلسة القارئ لحظة الفتح؛ لا رابط موقَّعاً يبقى بعد سحب الإذن.
+    if (!(await openPrivateFile("orphan-documents", path))) toast.error("تعذّر فتح الوثيقة");
   }
 
   return (

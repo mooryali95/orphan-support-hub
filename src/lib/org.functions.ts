@@ -245,28 +245,6 @@ export const removeOrgDocument = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-/** رابط قراءةٍ قصير العمر لوثيقة جهة — للإدارة، وسياسة الخزنة تفحص. */
-export const createOrgDocumentReadUrl = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z
-      .object({
-        path: z
-          .string()
-          .trim()
-          .regex(/^[0-9a-f-]{36}\/[^/]+$/i)
-          .max(500),
-      })
-      .parse(input),
-  )
-  .handler(async ({ data, context }) => {
-    const { data: signed, error } = await context.supabase.storage
-      .from("org-documents")
-      .createSignedUrl(data.path, 60);
-    if (error) return { ok: false as const, error: "تعذّر فتح الوثيقة" };
-    return { ok: true as const, url: signed.signedUrl };
-  });
-
 /*
  * حُذفت `createOrphanProfile` هنا.
  *

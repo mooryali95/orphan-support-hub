@@ -1,19 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import {
-  CHILD_PHOTO_BUCKET,
-  CHILD_PHOTO_TTL_SECONDS,
-  isChildPhotoPath,
-  signChildPhoto,
-} from "./child-photo";
+import { CHILD_PHOTO_BUCKET, childPhotoPath, isChildPhotoPath } from "./child-photo";
 
 const ID = "dcc30000-0000-4000-8000-00000000000b";
-
-function fakeClient(result: { data: { signedUrl: string } | null; error: unknown }) {
-  const createSignedUrl = vi.fn(async () => result);
-  const from = vi.fn(() => ({ createSignedUrl }));
-  return { client: { storage: { from } }, from, createSignedUrl };
-}
 
 describe("isChildPhotoPath", () => {
   it("يقبل ملفّاً في مجلّد الطفل نفسه", () => {
@@ -38,34 +27,11 @@ describe("isChildPhotoPath", () => {
   });
 });
 
-describe("signChildPhoto", () => {
-  it("يوقّع من الخزنة الخاصّة بمدّةٍ قصيرة", async () => {
-    const { client, from, createSignedUrl } = fakeClient({
-      data: { signedUrl: "https://signed.example/x" },
-      error: null,
-    });
-    await expect(signChildPhoto(client, ID, `${ID}/face.jpg`)).resolves.toBe(
-      "https://signed.example/x",
-    );
-    expect(from).toHaveBeenCalledWith(CHILD_PHOTO_BUCKET);
-    expect(createSignedUrl).toHaveBeenCalledWith(`${ID}/face.jpg`, CHILD_PHOTO_TTL_SECONDS);
-    expect(CHILD_PHOTO_TTL_SECONDS).toBeLessThanOrEqual(900);
-  });
-
-  it("لا يمرّر رابطاً قديماً ولا يسأل الخزنة عنه", async () => {
-    const { client, from } = fakeClient({ data: null, error: null });
-    await expect(
-      signChildPhoto(
-        client,
-        ID,
-        `https://x.supabase.co/storage/v1/object/public/public-media/${ID}/a.jpg`,
-      ),
-    ).resolves.toBeNull();
-    expect(from).not.toHaveBeenCalled();
-  });
-
-  it("رفضُ الخزنة (لا نطاق، أو سُحبت الموافقة) يعني لا صورة", async () => {
-    const { client } = fakeClient({ data: null, error: { message: "denied" } });
-    await expect(signChildPhoto(client, ID, `${ID}/face.jpg`)).resolves.toBeNull();
+describe("childPhotoPath", () => {
+  it("يمرّر مسار مجلّد الطفل وحده، ولا يصدر رابطاً موقَّعاً", () => {
+    expect(childPhotoPath(ID, `${ID}/face.jpg`)).toBe(`${ID}/face.jpg`);
+    expect(childPhotoPath(ID, "https://evil.example/x.jpg")).toBeNull();
+    expect(childPhotoPath(ID, null)).toBeNull();
+    expect(CHILD_PHOTO_BUCKET).toBe("orphan-photos");
   });
 });

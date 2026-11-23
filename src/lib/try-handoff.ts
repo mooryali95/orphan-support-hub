@@ -3,7 +3,7 @@
  * ودوريّته) يُحمل **مقترحاً** إلى الجهة الحقيقية، ولا شيء غير ذلك.
  *
  * ثلاث قواعد لا تُكسر هنا:
- *  - المقترح يعيش في متصفّح الزائر وحده (`localStorage`)؛ لا تُرسله هذه الوحدة إلى أي خادم، ولا
+ *  - المقترح يعيش في متصفّح الزائر وحده (`sessionStorage`: يختفي بإغلاق المتصفّح)؛ لا تُرسله هذه الوحدة إلى أي خادم، ولا
  *    تُنشئ كفالةً ولا تعهّداً ولا دفعاً. الجهة الحقيقية تعرضه، والزائر يضغط «استعمله» ثم زرّ
  *    التأكيد الحقيقي بنفسه.
  *  - لا يحمل طفلاً: أطفال التجربة افتراضيون، فلا يُنقل معرّفٌ ولا اسمٌ مستعار. الدولة وحدها تعبر،
@@ -140,7 +140,7 @@ export function parseHandoff(raw: string | null | undefined, now = Date.now()): 
 type Store = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const local = (): Store | null => {
   try {
-    return typeof window === "undefined" ? null : window.localStorage;
+    return typeof window === "undefined" ? null : window.sessionStorage;
   } catch {
     return null;
   }

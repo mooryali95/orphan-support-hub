@@ -52,7 +52,7 @@ export const PERSONA_KEY = "vision-persona:v1";
 
 function readPersona(): Persona | null {
   try {
-    const x = JSON.parse(localStorage.getItem(PERSONA_KEY) ?? "null") as Persona | null;
+    const x = JSON.parse(sessionStorage.getItem(PERSONA_KEY) ?? "null") as Persona | null;
     if (
       x &&
       ["supporter", "supervisor", "decider"].includes(x.role) &&
@@ -76,7 +76,7 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = sessionStorage.getItem(KEY);
       if (raw) setState(revive(JSON.parse(raw)));
     } catch {
       /* تخزينٌ محجوب: نبدأ من البذرة */
@@ -95,7 +95,7 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
     const onSync = () => {
       setPersonaState(readPersona());
       try {
-        const raw = localStorage.getItem(KEY);
+        const raw = sessionStorage.getItem(KEY);
         setState(raw ? revive(JSON.parse(raw)) : seed());
       } catch {
         /* تجاهل */
@@ -114,7 +114,7 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
       const next = reduce(prev, { ...a, at: Date.now() } as Action);
       if (next !== prev) {
         try {
-          localStorage.setItem(KEY, JSON.stringify(next));
+          sessionStorage.setItem(KEY, JSON.stringify(next));
         } catch {
           /* تجاهل */
         }
@@ -126,8 +126,8 @@ export function VisionStoreProvider({ children }: { children: ReactNode }) {
   const setPersona = useCallback((p: Persona | null) => {
     setPersonaState(p);
     try {
-      if (p) localStorage.setItem(PERSONA_KEY, JSON.stringify(p));
-      else localStorage.removeItem(PERSONA_KEY);
+      if (p) sessionStorage.setItem(PERSONA_KEY, JSON.stringify(p));
+      else sessionStorage.removeItem(PERSONA_KEY);
     } catch {
       /* تجاهل */
     }

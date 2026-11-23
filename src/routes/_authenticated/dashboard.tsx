@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { MyPledges } from "@/components/support/MyPledges";
+import { getMyPledges } from "@/lib/support.functions";
 import { TrialProposalCard } from "@/components/try/TrialProposal";
 import { MyJourney } from "@/components/support/MyJourney";
 import { FollowedChildren } from "@/components/support/FollowedChildren";
@@ -105,6 +106,13 @@ function DashboardPage() {
     }
   }
 
+  const fetchPledges = useServerFn(getMyPledges);
+  const { data: pledgeRes, isPending: pledgesLoading } = useQuery({
+    queryKey: ["my-pledges"],
+    queryFn: () => fetchPledges(),
+  });
+  const pledgeCount = (pledgeRes?.pledges ?? []).filter((p) => p.status !== "cancelled").length;
+
   const pending = sponsorships.filter((s) => s.status === "pending_payment");
   const others = sponsorships.filter((s) => s.status !== "pending_payment");
   const ready = !isLoading && !listFailed;
@@ -168,8 +176,10 @@ function DashboardPage() {
 
       {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}
       {!listFailed && (
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <StatTile label="عدد الكفالات" value={String(sponsorships.length)} loading={isLoading} />
+          {/* التعهّدات (بناء الأهلية والعيني) جزءٌ من دعمك؛ كانت لا تظهر إلا أسفل الصفحة. */}
+          <StatTile label="تعهّداتك" value={String(pledgeCount)} loading={pledgesLoading} />
           <StatTile
             label="الكفالات النشطة"
             value={String(sponsorships.filter((s) => s.status === "active").length)}
@@ -179,8 +189,14 @@ function DashboardPage() {
             label="التزامك الشهري"
             value={formatMoneyTotals(activeTotals, fallbackCurrency)}
             loading={isLoading}
-            className="col-span-2 sm:col-span-1"
           />
+        </div>
+      )}
+
+      {/* دعمك كلّه في أعلى الصفحة: التعهّدات بعد الأرقام مباشرةً، لا في آخرها. */}
+      {!listFailed && (
+        <div className="mt-8">
+          <MyPledges />
         </div>
       )}
 
@@ -388,7 +404,6 @@ function DashboardPage() {
       {/* 4. ما يُرجع إليه أحياناً: من تتابعهم، والدعم العيني، والبحث عن دفعة، ثم الترشيح. */}
       <div className="mt-12">
         <FollowedChildren />
-        <MyPledges />
         <PaymentLookup />
       </div>
     </DashboardShell>

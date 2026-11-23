@@ -49,6 +49,7 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/inbox-verification.sql \
               supabase/tests/field-verification.sql \
               supabase/tests/donors-verification.sql \
+              supabase/tests/admin-console-verification.sql \
               supabase/tests/mirror-sync-verification.sql \
               supabase/tests/guardian-verification.sql \
               supabase/tests/geo-verification.sql \

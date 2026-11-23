@@ -106,3 +106,14 @@ export function gatewayFailure(status: number, payload: unknown) {
         : "تعذّر الحصول على إجابة من خدمة الذكاء الاصطناعي.",
   };
 }
+
+/**
+ * ما يصل إلى النموذج من تاريخ المحادثة: أسئلة الداعم وحدها.
+ *
+ * التاريخ يحمله المتصفّح (لا تُخزَّن أسئلة الداعمين في الخادم)، فأيّ رسالة
+ * «assistant» فيه يكتبها المتّصل كما يشاء، ويؤطّر بها النموذج بإجاباتٍ لم
+ * يقلها. لذلك تُسقط من سياق النموذج، وتبقى في واجهة المحادثة وحدها.
+ */
+export function modelHistory<T extends { role: string }>(messages: readonly T[]): T[] {
+  return messages.filter((m) => m.role === "user");
+}

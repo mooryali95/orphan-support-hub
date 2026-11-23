@@ -10,7 +10,6 @@
  *
  * خالصٌ وخفيف: يدخل حزمة الدخول مع `routes/hall.tsx`، فلا يستورد كتالوجاً ولا مشهداً.
  */
-import { PLATFORM_MODE, type PlatformMode } from "@/config/platform";
 import type { Geo, GeoCountry } from "@/lib/geo";
 
 export type HallSearch = {
@@ -70,21 +69,13 @@ export type HallSource = {
 };
 
 /**
- * the one demo/real switch of the hall. `?try=1` always opens the trial hall (a link that asks
- * for the trial gets the trial). `?me=1`, the dashboard's own link, opens the donor's hall on
- * their real sponsorships, whatever the platform's mode: a donor never lands in a demo from
- * their own dashboard. Otherwise the platform's trial mode opens the trial hall, and the live
- * one after it. Everything the page does differently between the three follows from `mode`.
+ * the one demo/real switch of the hall. The hall follows its source, never the platform-wide
+ * mode: `?try=1` (the trial pages' own links) opens the trial hall; `?me=1`, the dashboard's own
+ * link, opens the donor's hall on their real sponsorships; anything else is the live hall on the
+ * real directory. Everything the page does differently between the three follows from `mode`.
  */
-export function hallSource(search: HallSearch, platform: PlatformMode = PLATFORM_MODE): HallSource {
-  const mode =
-    search.try === 1
-      ? "trial"
-      : search.me === 1
-        ? "donor"
-        : platform === "trial"
-          ? "trial"
-          : "live";
+export function hallSource(search: HallSearch): HallSource {
+  const mode = search.try === 1 ? "trial" : search.me === 1 ? "donor" : "live";
   const mine = mode === "trial" ? "/try/impact" : "/dashboard";
   const from = hallReturn(search.from);
   return {
