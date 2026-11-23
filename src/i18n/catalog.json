@@ -14082,10 +14082,10 @@
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.hint": {
-   "en": "Your passkey if it's on this device, a code sent to you, or Google. Your account is created the first time you sign in.",
-   "ar": "بصمتك إن كانت على هذا الجهاز، أو رمزٌ يصلك، أو جوجل. والحساب يُنشأ عند أوّل دخول.",
+   "en": "A code sent to your email, no password. Your account is created the first time you sign in.",
+   "ar": "رمزٌ يصل إلى بريدك، بلا كلمة مرور. والحساب يُنشأ عند أوّل دخول.",
    "kind": "text",
-   "hash": "14b666f3065d",
+   "hash": "4924b077410a",
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.home": {

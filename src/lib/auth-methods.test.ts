@@ -7,18 +7,29 @@ describe("parseAuthSettings", () => {
     expect(parseAuthSettings({ external: { email: true, phone: false, google: false } })).toEqual({
       email: true,
       phone: false,
+      google: false,
+      passkey: false,
     });
-    expect(parseAuthSettings({ external: { email: true, phone: true } })).toEqual({
-      email: true,
-      phone: true,
-    });
+    expect(
+      parseAuthSettings({
+        external: { email: true, phone: true, google: true },
+        passkeys_enabled: true,
+      }),
+    ).toEqual({ email: true, phone: true, google: true, passkey: true });
   });
 
   it("offers the phone only when the server says so, and email unless it is switched off", () => {
-    expect(parseAuthSettings({ external: {} })).toEqual({ email: true, phone: false });
+    expect(parseAuthSettings({ external: {} })).toEqual({
+      email: true,
+      phone: false,
+      google: false,
+      passkey: false,
+    });
     expect(parseAuthSettings({ external: { email: false } })).toEqual({
       email: false,
       phone: false,
+      google: false,
+      passkey: false,
     });
   });
 

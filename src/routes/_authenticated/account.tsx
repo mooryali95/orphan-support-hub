@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { serverAuthMethods, type AuthMethods } from "@/lib/auth-methods";
 import { toast } from "sonner";
 import {
   Bell,
@@ -79,6 +80,15 @@ function AccountPage() {
       .map((w) => w[0])
       .join("") || "؟";
   const google = user?.identities?.some((i) => i.provider === "google");
+  // طرق الدخول كما يفعّلها الخادم: لا يُعرض طريقٌ معطّل يفشل عند الضغط.
+  const [methods, setMethods] = useState<AuthMethods | null>(null);
+  useEffect(() => {
+    let live = true;
+    void serverAuthMethods().then((m) => live && setMethods(m));
+    return () => {
+      live = false;
+    };
+  }, []);
 
   async function saveName() {
     if (name.trim() === fullName) return setEditing(false);
@@ -216,105 +226,114 @@ function AccountPage() {
             {user?.phone && (
               <Row icon={<Smartphone />} title="رمزٌ إلى الجوال" text={user.phone} on />
             )}
-            <Row
-              icon={<span className="text-sm font-bold">G</span>}
-              title="حساب جوجل"
-              text={google ? "مربوط" : "غير مربوط — ادخل بجوجل مرّةً ليُربط"}
-              on={!!google}
-            />
+            {(google || methods?.google === true) && (
+              <Row
+                icon={<span className="text-sm font-bold">G</span>}
+                title="حساب جوجل"
+                text={google ? "مربوط" : "غير مربوط — ادخل بجوجل مرّةً ليُربط"}
+                on={!!google}
+              />
+            )}
           </ul>
 
-          <div className="mt-6 rounded-2xl bg-secondary/60 p-4">
-            <div className="flex items-start gap-3">
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold">البصمة</p>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.
-                </p>
+          {/* البصمة حين يفعّلها الخادم، أو لمن له بصمةٌ مسجّلة يديرها */}
+          {(methods?.passkey === true || passkeys.length > 0) && (
+            <div className="mt-6 rounded-2xl bg-secondary/60 p-4">
+              <div className="flex items-start gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">البصمة</p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.
+                  </p>
+                </div>
               </div>
-            </div>
-            {loadingKeys ? (
-              <p className="mt-3 text-sm text-muted-foreground">…</p>
-            ) : passkeys.length > 0 ? (
-              <ul className="mt-3 space-y-2">
-                {passkeys.map((k) => (
-                  <li
-                    key={k.id}
-                    className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
-                  >
-                    <div className="min-w-0 flex-1">
-                      {renaming?.id === k.id ? (
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            void rename();
-                          }}
-                          className="flex gap-2"
-                        >
-                          <Input
-                            autoFocus
-                            aria-label="اسم البصمة"
-                            maxLength={120}
-                            value={renaming.name}
-                            onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
-                            onKeyDown={(e) => e.key === "Escape" && setRenaming(null)}
-                            onBlur={() => void rename()}
-                            className="h-9 text-sm"
-                          />
-                          <Button type="submit" size="icon" className="size-9" aria-label="حفظ">
-                            <Check />
-                          </Button>
-                        </form>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
-                          className="group flex max-w-full items-center gap-2 text-start"
-                          aria-label={`إعادة تسمية ${k.friendly_name || "البصمة"}`}
-                        >
-                          <span className="truncate text-sm font-medium">
-                            {k.friendly_name || "بصمة"}
-                          </span>
-                          <Pencil
-                            className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
-                            aria-hidden="true"
-                          />
-                        </button>
-                      )}
-                      <p className="text-xs text-muted-foreground">
-                        أُضيفت {fmtDate(k.created_at)}
-                        {k.last_used_at ? ` · آخر استعمال ${fmtDate(k.last_used_at)}` : ""}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`حذف ${k.friendly_name || "البصمة"}`}
-                      onClick={() => void remove(k.id)}
-                      className="text-muted-foreground hover:text-destructive"
+              {loadingKeys ? (
+                <p className="mt-3 text-sm text-muted-foreground">…</p>
+              ) : passkeys.length > 0 ? (
+                <ul className="mt-3 space-y-2">
+                  {passkeys.map((k) => (
+                    <li
+                      key={k.id}
+                      className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
                     >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-            {canPasskey ? (
-              <Button className="mt-3" disabled={adding} onClick={() => void add()}>
-                {adding ? <Loader2 className="animate-spin" /> : <Fingerprint aria-hidden="true" />}
-                {adding
-                  ? "أكّد هويتك على جهازك…"
-                  : passkeys.length
-                    ? "أضف بصمة هذا الجهاز"
-                    : "أضف بصمتي"}
-              </Button>
-            ) : (
-              <p className="mt-3 text-xs text-muted-foreground">هذا المتصفّح لا يدعم البصمة.</p>
-            )}
-          </div>
+                      <div className="min-w-0 flex-1">
+                        {renaming?.id === k.id ? (
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              void rename();
+                            }}
+                            className="flex gap-2"
+                          >
+                            <Input
+                              autoFocus
+                              aria-label="اسم البصمة"
+                              maxLength={120}
+                              value={renaming.name}
+                              onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
+                              onKeyDown={(e) => e.key === "Escape" && setRenaming(null)}
+                              onBlur={() => void rename()}
+                              className="h-9 text-sm"
+                            />
+                            <Button type="submit" size="icon" className="size-9" aria-label="حفظ">
+                              <Check />
+                            </Button>
+                          </form>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
+                            className="group flex max-w-full items-center gap-2 text-start"
+                            aria-label={`إعادة تسمية ${k.friendly_name || "البصمة"}`}
+                          >
+                            <span className="truncate text-sm font-medium">
+                              {k.friendly_name || "بصمة"}
+                            </span>
+                            <Pencil
+                              className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          أُضيفت {fmtDate(k.created_at)}
+                          {k.last_used_at ? ` · آخر استعمال ${fmtDate(k.last_used_at)}` : ""}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`حذف ${k.friendly_name || "البصمة"}`}
+                        onClick={() => void remove(k.id)}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {canPasskey ? (
+                <Button className="mt-3" disabled={adding} onClick={() => void add()}>
+                  {adding ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Fingerprint aria-hidden="true" />
+                  )}
+                  {adding
+                    ? "أكّد هويتك على جهازك…"
+                    : passkeys.length
+                      ? "أضف بصمة هذا الجهاز"
+                      : "أضف بصمتي"}
+                </Button>
+              ) : (
+                <p className="mt-3 text-xs text-muted-foreground">هذا المتصفّح لا يدعم البصمة.</p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* ── إلى أين ── */}
