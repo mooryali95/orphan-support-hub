@@ -20,11 +20,12 @@ import { StatTile } from "@/components/kit/StatTile";
 import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import DataBuilding from "@/components/admin/data/DataBuilding";
+import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
 import { AdminMfaGate } from "@/components/admin/AdminMfaGate";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
-import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
+import { AdminExports, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
 import { IntegrityPanel } from "@/components/integrity/IntegrityPanel";
 import { SourcesPanel } from "@/components/integrity/SourcesPanel";
@@ -106,6 +107,8 @@ type Tab =
   | "platform"
   | "overview"
   | "orphans"
+  | "sponsorships"
+  | "pledges"
   | "sponsors"
   | "data"
   | "queue"
@@ -120,7 +123,8 @@ type Tab =
 
 const SECTIONS: Array<[string, Tab[]]> = [
   ["القرارات", ["inbox", "queue", "access", "integrity"]],
-  ["الناس", ["orphans", "sponsors", "data", "supervisors", "offices"]],
+  ["السجلّات", ["orphans", "sponsorships", "pledges", "sponsors"]],
+  ["الناس", ["data", "supervisors", "offices"]],
   ["المنصّة", ["countries", "languages", "platform", "integrations"]],
   ["المراقبة", ["overview", "monitoring"]],
 ];
@@ -263,6 +267,8 @@ function AdminPage() {
     ["platform", "سجلّات المنصّة", null],
     ["overview", "نظرة عامة", null],
     ["orphans", "الأيتام", o.orphan_rows_total ?? o.orphan_rows.length],
+    ["sponsorships", "الكفالات", null],
+    ["pledges", "التعهّدات", null],
     ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
     ["data", copy.dataTab, null],
     ["queue", "طابور الاعتماد", queueCount],
@@ -426,7 +432,9 @@ function AdminPage() {
           )}
 
           {/* صفحاتٌ ببحث لا كتلةٌ بكلّ شيء (PRD-13). */}
-          {tab === "orphans" && <AdminOrphansList currency={cur} />}
+          {tab === "orphans" && <RecordsConsole kind="orphans" />}
+          {tab === "sponsorships" && <RecordsConsole kind="sponsorships" />}
+          {tab === "pledges" && <RecordsConsole kind="pledges" />}
 
           {tab === "monitoring" && (
             <>
