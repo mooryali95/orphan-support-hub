@@ -384,8 +384,9 @@ describe("الكتالوج المولَّد خارج حزمة الدخول وص�
     expect(importers("try-world.data", /from "@\/lib\/try-world\.data"/)).toEqual([
       "src/lib/try-world.ts",
     ]);
+    // the trial route loads it lazily through try-places (which also adds the six countries' extras)
     expect(readFileSync("src/routes/try.tsx", "utf8")).toMatch(
-      /beforeLoad: \(\) => import\("@\/lib\/try-world"\)/,
+      /beforeLoad: \(\) => import\("@\/lib\/try-places"\)/,
     );
   });
 

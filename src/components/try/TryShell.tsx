@@ -11,6 +11,7 @@ import { TryJourneyContext, TryRealButton, useTryJourney } from "@/components/tr
 import { useAuth } from "@/hooks/useAuth";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { loadGifts, resetGifts, TRY_CURRENCY, TRY_EVENT, tryChild } from "@/lib/try-demo";
+import { resetTrialSession } from "@/lib/try-store";
 import {
   firstLeave,
   markResume,
@@ -218,8 +219,10 @@ function TryShellInner() {
           <button
             type="button"
             onClick={() => {
+              // التجربة كلّها: العطاءات والتعهّدات وحالة القاعة والرؤية والمقترحات.
               resetGifts();
               resetPledges();
+              resetTrialSession();
               // بلا هذا لا يتغيّر شيءٌ أمام الزائر خارج «أثري»، فلا يعرف أنّ ضغطته سُجّلت.
               toast.success(c.restarted);
             }}
