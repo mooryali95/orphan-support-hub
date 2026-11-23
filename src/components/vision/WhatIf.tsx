@@ -6,7 +6,7 @@
 import { useDeferredValue, useMemo, useState } from "react";
 
 import { Bar, useNum, useT } from "@/components/vision/VisionKit";
-import { useMoney, useVision } from "@/components/vision/VisionStore";
+import { useCurrencyName, useMoney, useVision } from "@/components/vision/VisionStore";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import { type Strategy, whatIf } from "@/lib/vision-engine";
@@ -15,7 +15,7 @@ const COPY = defineCopy("components/vision/WhatIf", {
   ar: {
     h: "ماذا لو",
     lead: "جرّب ميزانيةً وطريقة توزيع، وانظر أثرها قبل أن تعتمد. لا يتغيّر شيءٌ حتى تضغط «اعتمد».",
-    budget: "الميزانية (ر.س)",
+    budget: "الميزانية",
     how: "طريقة التوزيع",
     gap: "كلّها لأكبر فجوة",
     even: "بنسبة الفجوات",
@@ -37,7 +37,7 @@ const COPY = defineCopy("components/vision/WhatIf", {
   en: {
     h: "What if",
     lead: "Try a budget and a split, and see its effect before approving. Nothing changes until you press “Approve”.",
-    budget: "Budget (SAR)",
+    budget: "Budget",
     how: "Split",
     gap: "All to the largest gap",
     even: "In proportion to gaps",
@@ -63,6 +63,7 @@ export function WhatIf() {
   const tr = useT();
   const num = useNum();
   const money = useMoney();
+  const currency = useCurrencyName();
   const { state, dispatch } = useVision();
   const [amount, setAmount] = useState(30_000);
   const [strategy, setStrategy] = useState<Strategy>("even");
@@ -98,7 +99,7 @@ export function WhatIf() {
         <div className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <label className="block text-sm">
             <span className="flex justify-between">
-              {c.budget}
+              {c.budget} ({currency})
               <b className="font-serif text-gold tabular-nums">{money(amount)}</b>
             </span>
             <input

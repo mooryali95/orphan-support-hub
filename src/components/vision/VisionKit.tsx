@@ -280,11 +280,14 @@ export function Tally({
   to,
   decimals = 0,
   suffix = "",
+  format,
   className,
 }: {
   to: number;
   decimals?: number;
   suffix?: string;
+  /** writes the running number itself (an amount through the shared money formatter) */
+  format?: (n: number) => string;
   className?: string;
 }) {
   const num = useNum();
@@ -312,7 +315,9 @@ export function Tally({
   }, [to]);
   return (
     <span ref={ref} className={cn("font-serif tabular-nums", className)}>
-      {num(n, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
+      {format
+        ? format(n)
+        : num(n, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
       {suffix}
     </span>
   );

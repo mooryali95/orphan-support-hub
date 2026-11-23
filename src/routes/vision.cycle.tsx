@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, User } from "lucide-
 
 import { Bar, Eyebrow, Tally, useNum, useT, VisionShell } from "@/components/vision/VisionKit";
 import { pageTitle } from "@/config/brand";
-import { Feed } from "@/components/vision/VisionStore";
+import { Feed, useMoney } from "@/components/vision/VisionStore";
 import { ALBANIA_GROUPS, CYCLE } from "@/data/vision-demo";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -37,7 +37,6 @@ const COPY = defineCopy("routes/vision.cycle", {
     support: "الدعم",
     supportSees: "يرى الداعم: أسماء مستعارة، والتقدّم",
     toTirana: "دعمٌ لمجموعة تيرانا",
-    sar: "ر.س",
     lines: [
       "وصل دعمك إلى المجموعة",
       "اكتملت جلسات مفهوم «النيّة المثمرة»",
@@ -80,7 +79,6 @@ const COPY = defineCopy("routes/vision.cycle", {
     support: "Support",
     supportSees: "The supporter sees pseudonyms and progress",
     toTirana: "Support for the Tirana group",
-    sar: "SAR",
     lines: [
       "Your support reached the group",
       "The “fruitful intention” sessions are complete",
@@ -142,6 +140,7 @@ const arc = (r: number) => `M${C - r},${C} A${r},${r} 0 0 1 ${C + r},${C}`;
 function CyclePage() {
   const c = useCopy(COPY);
   const tr = useT();
+  const money = useMoney();
   const [i, setI] = useState(0);
   const [playing, setPlaying] = useState(true);
   const step = CYCLE[i]!;
@@ -183,7 +182,9 @@ function CyclePage() {
           <div aria-live="polite" key={step.key} className="vision-rise">
             <p className="text-xs text-gold-ink">{c.step(i + 1, CYCLE.length)}</p>
             <h2 className="mt-1 text-2xl font-extrabold text-wine md:text-3xl">{tr(step.title)}</h2>
-            <p className="mt-2 leading-8 text-muted-foreground">{tr(step.text)}</p>
+            <p className="mt-2 leading-8 text-muted-foreground">
+              {tr(step.text).replace("{amount}", money(step.support.amount))}
+            </p>
           </div>
           <div className="mt-6 flex items-center justify-center gap-2">
             <button
@@ -538,6 +539,7 @@ function Panel({
 
 function SupportCard({ i }: { i: number }) {
   const c = useCopy(COPY);
+  const money = useMoney();
   const s = CYCLE[i]!.support;
   return (
     <Panel
@@ -548,7 +550,7 @@ function SupportCard({ i }: { i: number }) {
       <p className="flex items-baseline justify-between gap-3">
         <span className="text-sm">{c.toTirana}</span>
         <span className="text-2xl text-wine">
-          <Tally to={s.amount} /> <span className="text-sm">{c.sar}</span>
+          <Tally to={s.amount} format={money} />
         </span>
       </p>
       <ul className="mt-3 space-y-2">

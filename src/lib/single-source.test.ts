@@ -52,7 +52,7 @@ function code(path: string): string {
     .replace(/(^|[^:"'`\\])\/\/[^\n]*/g, "$1");
 }
 
-/** العرض النموذجي له عملته الثابتة عمداً (تجربة باليورو، ورؤية بالريال). */
+/** العرض النموذجي له عملته الثابتة عمداً (تجربة باليورو، ورؤية بعملة المنصّة الموحّدة). */
 const SHOWCASE = (p: string) =>
   /^src\/(routes\/(try|vision)[.\w$-]*\.tsx|components\/(try|vision)\/|lib\/(try-[\w-]+|hall\/trial)\.ts|data\/)/.test(
     p,

@@ -19,16 +19,20 @@ import { toast } from "sonner";
 
 import { ALBANIA } from "@/data/vision-demo";
 import { childrenOf } from "@/lib/vision-children";
+import { currencyName } from "@/lib/currency";
+import { formatMoney } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import {
   type Action,
+  OFFICE_CURRENCY,
   isFunded,
   type Method,
   reduce,
   revive,
   seed,
   totals,
+  VISION_CURRENCY,
   type VisionEvent,
   type VisionState,
 } from "@/lib/vision-engine";
@@ -150,7 +154,6 @@ export function useVision() {
 
 const COPY = defineCopy("components/vision/VisionStore", {
   ar: {
-    sar: "ر.س",
     feedH: "سجلّ المنظومة الحيّ",
     feedEmpty: "لا أحداث بعد. جرّب تبرّعاً من «رحلة المال» أو من النموذج.",
     layer: { support: "الدعم", operations: "التشغيل", decision: "القرار" },
@@ -174,7 +177,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     allocGroup: (amt: string, place: string) => `خُصِّص ${amt} لـ${place}`,
     allocFull: (amt: string, place: string) => `خُصِّص ${amt} لـ${place} — اكتمل تمويلها`,
     allocPool: (amt: string, place: string) => `${amt} رصيدٌ حرّ لـ${place} ينتظر قراراً`,
-    disbursed: (eur: string, place: string) => `صرفٌ إلى مكتب ألبانيا: ${eur} € لـ${place}`,
+    disbursed: (eur: string, place: string) => `صرفٌ إلى مكتب ألبانيا: ${eur} لـ${place}`,
     session: (place: string, n: number, of: number) => `${place}: جلسة ${n} من ${of}`,
     cycleDone: (place: string) => `${place}: اكتملت الدورة — جاهزة للقياس البعدي`,
     measuredOps: (place: string, a: string, b: string) => `${place}: السمة من ${a} إلى ${b}`,
@@ -191,7 +194,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     formLead: "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي — ولا يُحصَّل شيء.",
     donor: "اسم الداعم (مستعار)",
     donorPh: "مثال: داعمٌ من الرياض",
-    amount: "المبلغ (ر.س)",
+    amount: "المبلغ",
     target: "الوجهة",
     method: "طريقة الدفع",
     card: "بطاقة",
@@ -203,7 +206,6 @@ const COPY = defineCopy("components/vision/VisionStore", {
     sandbox: "بيئة تجريبية · لا مال حقيقي",
   },
   en: {
-    sar: "SAR",
     feedH: "Live system log",
     feedEmpty: "No events yet. Try a donation from the money journey or the form.",
     layer: { support: "Support", operations: "Operations", decision: "Decision" },
@@ -229,7 +231,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     allocPool: (amt: string, place: string) =>
       `${amt} free balance for ${place}, awaiting a decision`,
     disbursed: (eur: string, place: string) =>
-      `Disbursed to the Albania office: €${eur} for ${place}`,
+      `Disbursed to the Albania office: ${eur} for ${place}`,
     session: (place: string, n: number, of: number) => `${place}: session ${n} of ${of}`,
     cycleDone: (place: string) => `${place}: cycle complete — ready for follow-up measurement`,
     measuredOps: (place: string, a: string, b: string) => `${place}: trait ${a} → ${b}`,
@@ -246,7 +248,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     formLead: "It passes through the three layers as real money will — nothing is collected.",
     donor: "Supporter name (pseudonym)",
     donorPh: "e.g. a supporter from Riyadh",
-    amount: "Amount (SAR)",
+    amount: "Amount",
     target: "Destination",
     method: "Payment method",
     card: "Card",
@@ -281,17 +283,32 @@ export function usePlace() {
   };
 }
 
+/**
+ * every amount on the /vision pages, in the engine's one currency (the platform's unified one)
+ * through the shared formatter: the same number reads the same here and in the impact hall.
+ */
 export function useMoney() {
   const locale = useLocale();
-  const c = useCopy(COPY);
-  return (n: number) =>
-    `${new Intl.NumberFormat(locale === "ar" ? "ar-SA-u-nu-latn" : "en", { maximumFractionDigits: 0 }).format(n)} ${c.sar}`;
+  return (n: number) => formatMoney(n, VISION_CURRENCY, locale);
+}
+
+/** an amount disbursed to the Albania office, in the office's currency */
+export function useOfficeMoney() {
+  const locale = useLocale();
+  return (n: number) => formatMoney(n, OFFICE_CURRENCY, locale);
+}
+
+/** the engine currency's name in the interface language, for the label of an amount field */
+export function useCurrencyName() {
+  const locale = useLocale();
+  return currencyName(VISION_CURRENCY, locale);
 }
 
 export function useEventText() {
   const c = useCopy(COPY);
   const place = usePlace();
   const money = useMoney();
+  const officeMoney = useOfficeMoney();
   const locale = useLocale();
   const num = (n: number) =>
     new Intl.NumberFormat(locale === "ar" ? "ar-SA-u-nu-latn" : "en").format(n);
@@ -311,7 +328,7 @@ export function useEventText() {
           ? c.allocPool(money(n("amount")), place(s("city")))
           : (n("full") === 1 ? c.allocFull : c.allocGroup)(money(n("amount")), place(s("group")));
       case "disbursed":
-        return c.disbursed(num(n("eur")), place(s("city")));
+        return c.disbursed(officeMoney(n("eur")), place(s("city")));
       case "session":
         return c.session(place(s("group")), n("n"), n("of"));
       case "cycleDone":
@@ -467,6 +484,7 @@ export function DonateForm({
 }) {
   const { state, dispatch } = useVision();
   const c = useCopy(COPY);
+  const currency = useCurrencyName();
   const place = usePlace();
   const [donor, setDonor] = useState("");
   const [amount, setAmount] = useState(5000);
@@ -517,7 +535,7 @@ export function DonateForm({
           </label>
         )}
         <label className="text-sm font-semibold text-wine-ink">
-          {c.amount}
+          {c.amount} ({currency})
           <input
             className={cn(field, "tabular-nums")}
             type="number"

@@ -238,6 +238,7 @@ export type CycleStep = {
   key: string;
   ring: LayerKey | "center";
   title: T;
+  /** `{amount}` is filled by the page with the step's amount, in the engine's currency */
   text: T;
   /** حال اللوحات الثلاث بعد هذه الخطوة. */
   support: { amount: number; lines: number };
@@ -267,8 +268,8 @@ export const CYCLE: CycleStep[] = [
     ring: "support",
     title: t("تبرّعٌ لمجموعة تيرانا", "A donation to the Tirana group"),
     text: t(
-      "داعمٌ يختار «تبرّع تأهيل» لمجموعة تيرانا: 5,000 ريال. يُحصَّل ويُقيَّد بفاتورته.",
-      "A supporter chooses a qualification donation for the Tirana group: SAR 5,000 — collected and invoiced.",
+      "داعمٌ يختار «تبرّع تأهيل» لمجموعة تيرانا: {amount}. يُحصَّل ويُقيَّد بفاتورته.",
+      "A supporter chooses a qualification donation for the Tirana group: {amount} — collected and invoiced.",
     ),
     support: { amount: 5000, lines: 0 },
     ops: O0,

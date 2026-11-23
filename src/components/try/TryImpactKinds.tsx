@@ -6,8 +6,10 @@ import { QualificationImpactView } from "@/components/impact/QualificationImpact
 import { TryTimeBar } from "@/components/try/TryTimeBar";
 import { Button } from "@/components/ui/button";
 import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
-import { defineCopy, useCopy } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import type { InKindImpact, QualificationImpact, SupportKind } from "@/lib/support-impact";
+import { tryPledgeReaches } from "@/lib/try-reach";
+import type { TryPledge } from "@/lib/try-support";
 
 const COPY = defineCopy("components/try/TryImpactKinds", {
   ar: {
@@ -15,6 +17,8 @@ const COPY = defineCopy("components/try/TryImpactKinds", {
     kindsLead:
       "لكل نوعٍ أثره: الكفالة المادية سجلّ مالٍ وصل، والتأهيل تطوّرٌ يُقاس، والعيني تسليمٌ موثّق.",
     fromMap: "ادعم من الخريطة",
+    reachTitle: "ما يمثّله مبلغ تعهّدك",
+    reachNote: "أرقامٌ نموذجية، وهي نفسها في ورقة الدعم وفي قاعة الأثر.",
     emptyKind: {
       qualification: {
         title: "لم تبدأ دعم تأهيلٍ بعد في التجربة",
@@ -35,6 +39,8 @@ const COPY = defineCopy("components/try/TryImpactKinds", {
     kindsLead:
       "Each kind has its own impact: financial sponsorship is a record of money delivered, qualification is development that is measured, and in-kind giving is a documented delivery.",
     fromMap: "Support from the map",
+    reachTitle: "What your pledge amount stands for",
+    reachNote: "Sample figures, the same ones the support sheet and the impact hall show.",
     emptyKind: {
       qualification: {
         title: "You have not started qualification support in the trial yet",
@@ -117,17 +123,23 @@ export function TrySupportImpact({
   kind,
   qualification,
   inKind,
+  pledges,
   ahead,
   onAhead,
 }: {
   kind: SupportKind;
   qualification: QualificationImpact[];
   inKind: InKindImpact[];
+  /** the recorded pledges themselves: their reach is worded by `@/lib/try-reach`, as elsewhere */
+  pledges: TryPledge[];
   ahead: number;
   onAhead: (n: number) => void;
 }) {
   const c = useCopy(COPY);
+  const locale = useLocale();
   const count = kind === "qualification" ? qualification.length : inKind.length;
+  // the same function the support sheet and the hall call for the same pledge
+  const reaches = tryPledgeReaches(pledges, kind, locale);
   return (
     <TryKindPanel kind={kind} className="mt-6">
       {count === 0 ? (
@@ -152,6 +164,26 @@ export function TrySupportImpact({
             <InKindImpactView sample items={inKind}>
               <TryTimeBar ahead={ahead} onAhead={onAhead} hint={c.aheadHint.in_kind} />
             </InKindImpactView>
+          )}
+          {reaches.length > 0 && (
+            <section aria-labelledby="try-impact-reach" className="mt-6" data-try-impact-reach>
+              <h3 id="try-impact-reach" className="text-base font-bold">
+                {c.reachTitle}
+              </h3>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{c.reachNote}</p>
+              <ul className="mt-3 space-y-2">
+                {reaches.map((r) => (
+                  <li
+                    key={r.id}
+                    className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
+                    data-try-reach
+                  >
+                    <b className="block text-sm text-foreground">{r.head}</b>
+                    <span className="text-muted-foreground">{r.line}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
           <div className="mt-5">
             <Button asChild variant="outline">
