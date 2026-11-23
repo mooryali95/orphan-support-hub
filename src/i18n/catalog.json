@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2858,
+ "count": 2865,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -16038,6 +16038,13 @@
    "hash": "6660428bf8fb",
    "file": "src/routes/support.tsx"
   },
+  "routes/support.dateLabel": {
+   "en": "Date",
+   "ar": "التاريخ",
+   "kind": "text",
+   "hash": "d69460f8793a",
+   "file": "src/routes/support.tsx"
+  },
   "routes/support.description": {
    "en": "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
    "ar": "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
@@ -16110,10 +16117,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.lead": {
-   "en": "Four short steps. You can go back to any of them by tapping it.",
-   "ar": "أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.",
+   "en": "Three steps: who you support, the amount, then confirmation. Change any choice before you confirm.",
+   "ar": "ثلاث خطوات: من تدعم، ثم المبلغ، ثم التأكيد. وتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
    "kind": "text",
-   "hash": "b0f4eac49f6e",
+   "hash": "2b75c769403d",
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapText": {
@@ -16200,6 +16207,13 @@
    "hash": "bd00a456abba",
    "file": "src/routes/support.tsx"
   },
+  "routes/support.refLabel": {
+   "en": "Reference",
+   "ar": "رقم المرجع",
+   "kind": "text",
+   "hash": "7b802bf9d958",
+   "file": "src/routes/support.tsx"
+  },
   "routes/support.rest": {
    "en": "Cover the remaining need",
    "ar": "سدّ المتبقّي",
@@ -16208,31 +16222,31 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.s1": {
-   "en": "1. Kind of support",
-   "ar": "1. نوع الدعم",
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
    "kind": "text",
-   "hash": "3fcdfbbc1877",
+   "hash": "dfff08619ed0",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s2": {
-   "en": "2. Who is it for?",
-   "ar": "2. إلى من يذهب؟",
+   "en": "Who is it for?",
+   "ar": "إلى من يذهب؟",
    "kind": "text",
-   "hash": "756d2f8c3cc6",
+   "hash": "0de4af4773c3",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s3": {
-   "en": "3. Your choice",
-   "ar": "3. الاختيار",
+   "en": "Your choice",
+   "ar": "الاختيار",
    "kind": "text",
-   "hash": "2990b1e5514d",
+   "hash": "25acf755200c",
    "file": "src/routes/support.tsx"
   },
   "routes/support.s4": {
-   "en": "4. Amount",
-   "ar": "4. المبلغ",
+   "en": "Amount",
+   "ar": "المبلغ",
    "kind": "text",
-   "hash": "c0cc206c2298",
+   "hash": "550cc7896881",
    "file": "src/routes/support.tsx"
   },
   "routes/support.section": {
@@ -16257,31 +16271,24 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.steps.0": {
-   "en": "Kind of support",
-   "ar": "نوع الدعم",
+   "en": "Who you support",
+   "ar": "من تدعم",
    "kind": "text",
-   "hash": "dfff08619ed0",
+   "hash": "e529dff0a9ca",
    "file": "src/routes/support.tsx"
   },
   "routes/support.steps.1": {
-   "en": "Recipient",
-   "ar": "الهدف",
-   "kind": "text",
-   "hash": "096fb37f5b4c",
-   "file": "src/routes/support.tsx"
-  },
-  "routes/support.steps.2": {
-   "en": "Choice",
-   "ar": "الاختيار",
-   "kind": "text",
-   "hash": "a9d2940fca78",
-   "file": "src/routes/support.tsx"
-  },
-  "routes/support.steps.3": {
    "en": "Amount",
    "ar": "المبلغ",
    "kind": "text",
    "hash": "550cc7896881",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.steps.2": {
+   "en": "Confirmation",
+   "ar": "التأكيد",
+   "kind": "text",
+   "hash": "df3d00f74f4f",
    "file": "src/routes/support.tsx"
   },
   "routes/support.stepsLabel": {
@@ -16289,6 +16296,48 @@
    "ar": "الخطوات",
    "kind": "text",
    "hash": "643eb1fefd16",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.sumAmount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.sumEmpty": {
+   "en": "Choose a kind of support to begin.",
+   "ar": "اختر نوع الدعم لتبدأ.",
+   "kind": "text",
+   "hash": "f94452f4fc25",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.sumKind": {
+   "en": "Kind",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "9b81d0a755af",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.sumPending": {
+   "en": "—",
+   "ar": "—",
+   "kind": "text",
+   "hash": "e3913b1621f1",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.sumTarget": {
+   "en": "To",
+   "ar": "إلى",
+   "kind": "text",
+   "hash": "6fd7e2c99350",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.summary": {
+   "en": "Your support",
+   "ar": "ملخّص دعمك",
+   "kind": "text",
+   "hash": "0d629d6d0a62",
    "file": "src/routes/support.tsx"
   },
   "routes/support.supportCountry": {
