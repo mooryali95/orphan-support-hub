@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { TryPresentStart } from "@/components/try/TryPresent";
 import { defineCopy, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("components/try/TryRoles", {
@@ -22,9 +23,12 @@ const COPY = defineCopy("components/try/TryRoles", {
       supporter: ["الكافل", "يتصفّح الأطفال، ويكفل أو يدعم مكاناً، ويرى أثره في «أثري» والقاعة."],
       org: ["جهة الرعاية", "تُدخل ملفّ طفلٍ ومستنداته — ثم تراه ينتقل حتى أوّل تقرير."],
       admin: ["الإدارة", "لوحة البيانات: التوثيق، والاعتماد، والتعهّدات، وسجلّ الاطّلاع."],
-      office: ["المكتب الميداني", "المجموعات والجلسات والتسليم والتقارير في منطقته."],
-      supervisor: ["المشرف", "يسجّل جلسات التأهيل ويقيس أثرها على الأطفال."],
-      decider: ["صاحب القرار", "صورة الشبكة كاملة: القرارات، والسيناريوهات، والمؤشّرات."],
+      office: [
+        "المكتب الميداني",
+        "يراجع ملفّات الجهات، ويرسل التقارير، وينفّذ التأهيل والدعم العيني.",
+      ],
+      supervisor: ["المشرف", "يزور الطفل ويسجّل حاله، فتدخل الزيارة ملفّه وتقرير كافله."],
+      decider: ["صاحب القرار", "صورة الشبكة: الأطفال والتغطية والتوثيق — ونشاط الجلسة كلّه."],
     },
   },
   en: {
@@ -45,12 +49,18 @@ const COPY = defineCopy("components/try/TryRoles", {
         "Administration",
         "The data console: verification, approval, pledges and the access log.",
       ],
-      office: ["Field office", "Groups, sessions, deliveries and reports in its area."],
+      office: [
+        "Field office",
+        "Reviews organizations' files, sends reports, and delivers training and in-kind support.",
+      ],
       supervisor: [
         "Supervisor",
-        "Records qualification sessions and measures their effect on children.",
+        "Visits the child and records how they are, feeding the file and the sponsor's report.",
       ],
-      decider: ["Decision-maker", "The whole network: decisions, scenarios and indicators."],
+      decider: [
+        "Decision-maker",
+        "The network at a glance: children, coverage, verification, and the session's activity.",
+      ],
     },
   },
 });
@@ -60,21 +70,24 @@ const ROUTES = {
   supporter: { to: "/try/support", icon: <HandHeart /> },
   org: { to: "/try/cycle", icon: <Building2 /> },
   admin: { to: "/try/admin", icon: <ShieldCheck /> },
-  office: { to: "/vision/operations", icon: <Compass /> },
-  supervisor: { to: "/vision/me", icon: <UserCheck /> },
-  decider: { to: "/vision/decision", icon: <Landmark /> },
+  office: { to: "/try/office", icon: <Compass /> },
+  supervisor: { to: "/try/supervisor", icon: <UserCheck /> },
+  decider: { to: "/try/decider", icon: <Landmark /> },
 } as const satisfies Record<string, { to: string; icon: ReactNode }>;
 
 /** مدخل العرض التفاعلي: بطاقة لكلّ دور تفتح واجهته ببياناته النموذجية. */
 export function TryRoles() {
   const t = useCopy(COPY);
   return (
-    <section aria-labelledby="try-roles" className="mt-14">
+    <section aria-labelledby="try-roles" id="try-roles" className="mt-12 scroll-mt-32">
       <p className="eyebrow">{t.eyebrow}</p>
       <h2 id="try-roles" className="mt-3 heading-section">
         {t.title}
       </h2>
-      <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{t.lead}</p>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+        <p className="max-w-3xl text-sm leading-7 text-muted-foreground">{t.lead}</p>
+        <TryPresentStart />
+      </div>
       <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {(Object.keys(ROUTES) as Role[]).map((role) => {
           const [name, text] = t.roles[role];

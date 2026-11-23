@@ -152,13 +152,20 @@ export function DashboardShell({
         </header>
       )}
 
-      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
-        <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">{title}</h1>
-        {description && (
-          <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">{description}</p>
-        )}
-        <div className="mt-8">{children}</div>
-      </main>
+      {/* داخل صفحةٍ لها رأسها وعنوانها: لا «main» ثانٍ ولا عنوان مكرّر */}
+      {embedded ? (
+        <div>{children}</div>
+      ) : (
+        <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10">
+          <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">{title}</h1>
+          {description && (
+            <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">
+              {description}
+            </p>
+          )}
+          <div className="mt-8">{children}</div>
+        </main>
+      )}
     </div>
   );
 }

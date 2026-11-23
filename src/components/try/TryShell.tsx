@@ -1,12 +1,14 @@
-import { Outlet, useNavigate, useRouter } from "@tanstack/react-router";
+import { Outlet, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { enterDemo } from "@/lib/demo-mode";
 import { toast } from "sonner";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TryJourneyGuide, TryJourneyRail } from "@/components/try/TryJourneyGuide";
+import { TryRoleChip, usePresenting } from "@/components/try/TryRoleChip";
+import { roleOf } from "@/lib/try-roles";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { TryJourneyContext, TryRealButton, useTryJourney } from "@/components/try/TryRealInvite";
 import { useAuth } from "@/hooks/useAuth";
@@ -65,6 +67,11 @@ const COPY = defineCopy("components/try/TryShell", {
     restart: "Start over",
   },
 });
+
+// شريط وضع العرض يُحمَّل حين يُفعَّل وحده
+const TryPresentBar = lazy(() =>
+  import("@/components/try/TryPresent").then((m) => ({ default: m.TryPresentBar })),
+);
 
 /** the paths that are still the trial, or already the way into the real journey */
 const stillInside = (path: string) =>
@@ -155,6 +162,10 @@ function TryShellInner() {
   const { proposals, has, registered, ready, loaded } = useTryJourney();
   const router = useRouter();
   const navigate = useNavigate();
+  const path = useRouterState({ select: (st) => st.location.pathname });
+  // صفحات الأدوار تُظهر الدور بدل محطّات رحلة الكافل، فلا يقول الشريط «ادعم» في لوحة الإدارة
+  const role = roleOf(path);
+  const present = usePresenting();
 
   /* ما اختاره الزائر يُحفظ مقترحاً في متصفّحه كلّما تغيّر؛ «ابدأ من جديد» يمحوه. لا خادم هنا. */
   useEffect(() => {
@@ -202,11 +213,15 @@ function TryShellInner() {
             <span aria-hidden="true" className="size-2 rotate-45 border border-bridge" />
             {c.mode}
           </span>
-          <TryJourneyRail className="flex-1 overflow-hidden px-1" />
+          {role ? (
+            <TryRoleChip role={role} />
+          ) : (
+            <TryJourneyRail className="flex-1 overflow-hidden px-1" />
+          )}
           <TryRealButton size="sm" variant="outline" short className="shrink-0 bg-card" />
         </div>
       </div>
-      <div className="border-b border-border bg-bridge/8">
+      <div className={present ? "hidden" : "border-b border-border bg-bridge/8"}>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-1.5 text-sm">
           <p className="min-w-0 basis-full py-1 leading-6 text-foreground sm:flex-1 sm:basis-auto">
             {registered ? (
@@ -237,9 +252,22 @@ function TryShellInner() {
           </button>
         </div>
       </div>
-      <main id="main" tabIndex={-1} className="try-page mx-auto max-w-6xl px-4 py-10">
+      <main
+        id="main"
+        tabIndex={-1}
+        className={
+          present
+            ? "try-page mx-auto max-w-6xl px-4 pt-10 pb-32"
+            : "try-page mx-auto max-w-6xl px-4 py-10"
+        }
+      >
         <Outlet />
       </main>
+      {present && (
+        <Suspense fallback={null}>
+          <TryPresentBar />
+        </Suspense>
+      )}
       <SiteFooter />
     </div>
   );

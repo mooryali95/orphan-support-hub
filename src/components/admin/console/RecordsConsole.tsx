@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -575,12 +575,18 @@ function DocumentActions({ record, run }: { record: DocumentRecord; run: ActionR
 
 const ORPHAN_DOCS = "orphan-documents";
 
+/** صفّ صنعه زائر العرض في جلسته (المعرّفات من `try-admin-overlay`) */
+const isMine = (r: { id: string }) => r.id.startsWith("visitor-") || r.id === "try-cycle-1";
+
 export function RecordsConsole({
   kind,
   sample = false,
   onSampleChange,
+  visitor = false,
 }: {
   kind: RecordKind;
+  /** العرض التفاعلي: صفوف الزائر من جلسته (كفالاته وتعهّداته وملفّه) فوق البيانات النموذجية */
+  visitor?: boolean;
   /** بيانات نموذجية: تُولَّد في الصفحة، والإجراءات عليها محاكاةٌ لا تصل الخادم */
   sample?: boolean;
   /** يُعرض زرّ التبديل حين تُمرَّر (وضع التجربة وحده) */
@@ -600,8 +606,23 @@ export function RecordsConsole({
   // تعديلات المحاكاة على الصفوف النموذجية: في الصفحة وحدها، تُنسى عند مغادرتها.
   const [edits, setEdits] = useState<Record<string, Partial<AnyRecord>>>({});
 
+  // صفوف الزائر تتغيّر بأفعاله في الأدوار الأخرى: يُعاد بناؤها عند كلّ حدثٍ في الجلسة.
+  const [visitorTick, setVisitorTick] = useState(0);
+  useEffect(() => {
+    if (!visitor) return;
+    let events: readonly string[] = [];
+    const bump = () => setVisitorTick((n) => n + 1);
+    void import("@/lib/try-admin-overlay").then((m) => {
+      events = m.OVERLAY_EVENTS;
+      for (const e of events) window.addEventListener(e, bump);
+    });
+    return () => {
+      for (const e of events) window.removeEventListener(e, bump);
+    };
+  }, [visitor]);
+
   const res = useQuery({
-    queryKey: ["admin-records", kind, query, status, page, sample, edits],
+    queryKey: ["admin-records", kind, query, status, page, sample, edits, visitorTick],
     queryFn: async () => {
       if (!sample) {
         return fetchRows({
@@ -609,7 +630,10 @@ export function RecordsConsole({
         });
       }
       const { sampleRows, samplePage } = await import("@/lib/admin-console-sample");
-      const rows = sampleRows(kind).map((r) => ({ ...r, ...edits[r.id] }) as AnyRecord);
+      const mine = visitor ? (await import("@/lib/try-admin-overlay")).visitorRows(kind) : [];
+      const rows = [...mine, ...sampleRows(kind)].map(
+        (r) => ({ ...r, ...edits[r.id] }) as AnyRecord,
+      );
       return {
         ok: true as const,
         error: null,
@@ -781,7 +805,10 @@ export function RecordsConsole({
                   tabIndex={0}
                   onClick={() => setOpen(r)}
                   onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setOpen(r)}
-                  className="hover:bg-secondary/40 focus-visible:bg-secondary/40 cursor-pointer outline-none"
+                  className={cn(
+                    "hover:bg-secondary/40 focus-visible:bg-secondary/40 cursor-pointer outline-none",
+                    visitor && isMine(r) && "bg-bridge/8",
+                  )}
                 >
                   {entity.columns.map((c) => (
                     <td key={c.label} className={cn("px-4 py-3", c.className)}>
