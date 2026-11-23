@@ -76,7 +76,9 @@ function TryAdmin() {
         <div className="min-w-0">
           {tab === "home" ? (
             <>
-              <CycleAdminTask />
+              <div className="mb-6">
+                <CycleAdminTask />
+              </div>
               <Suspense fallback={null}>
                 <ManagementOverview
                   sample
