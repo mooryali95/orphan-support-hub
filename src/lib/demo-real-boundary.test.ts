@@ -62,3 +62,11 @@ describe("demo/real boundary", () => {
     },
   );
 });
+
+describe("immersive hall follows its source", () => {
+  it("opens the trial only from an explicit ?try=1, never from the platform-wide mode", () => {
+    const hall = readFileSync(join(ROOT, "routes/hall.lazy.tsx"), "utf8");
+    expect(hall).not.toMatch(/isTrial\(/);
+    expect(hall).toMatch(/const trying = search\.try === 1;/);
+  });
+});

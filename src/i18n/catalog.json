@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2866,
+ "count": 2874,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -21,13 +21,6 @@
    "ar": "دليل الأيتام",
    "kind": "text",
    "hash": "ae3660e62969",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.donorRole": {
-   "en": "Donor entity",
-   "ar": "جهة مانحة",
-   "kind": "text",
-   "hash": "d93a396c6643",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.guardian": {
@@ -58,25 +51,11 @@
    "hash": "5818d8bb798c",
    "file": "src/components/DashboardShell.tsx"
   },
-  "components/DashboardShell.officeRole": {
-   "en": "Office member",
-   "ar": "عضو مكتب",
-   "kind": "text",
-   "hash": "42f34b978384",
-   "file": "src/components/DashboardShell.tsx"
-  },
   "components/DashboardShell.org": {
    "en": "Care organization",
    "ar": "جهة الرعاية",
    "kind": "text",
    "hash": "9f40182b18b8",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.portals": {
-   "en": "My portals",
-   "ar": "بواباتي",
-   "kind": "text",
-   "hash": "b7840c387b58",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.signOut": {
@@ -86,18 +65,11 @@
    "hash": "985bac9856e8",
    "file": "src/components/DashboardShell.tsx"
   },
-  "components/DashboardShell.sponsor": {
-   "en": "Sponsor",
-   "ar": "كافل",
-   "kind": "text",
-   "hash": "44c272ecf017",
-   "file": "src/components/DashboardShell.tsx"
-  },
   "components/DashboardShell.sponsorships": {
-   "en": "My sponsorships",
-   "ar": "كفالاتي",
+   "en": "My impact",
+   "ar": "أثري",
    "kind": "text",
-   "hash": "b965001ea812",
+   "hash": "7f977bf767b5",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.supervisor": {
@@ -107,11 +79,11 @@
    "hash": "8f602a9c3e4e",
    "file": "src/components/DashboardShell.tsx"
   },
-  "components/DashboardShell.supervisorRole": {
-   "en": "Supervisor",
-   "ar": "مشرف",
+  "components/DashboardShell.support": {
+   "en": "Support",
+   "ar": "ادعم",
    "kind": "text",
-   "hash": "659186f1ea9d",
+   "hash": "81bb0b6bce39",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/DashboardShell.translate": {
@@ -119,13 +91,6 @@
    "ar": "الترجمة",
    "kind": "text",
    "hash": "c447791249da",
-   "file": "src/components/DashboardShell.tsx"
-  },
-  "components/DashboardShell.translatorRole": {
-   "en": "Translation reviewer",
-   "ar": "مراجع ترجمة",
-   "kind": "text",
-   "hash": "c2ed3c6ab216",
    "file": "src/components/DashboardShell.tsx"
   },
   "components/ExcessSuggestion.confirm": {
@@ -185,6 +150,83 @@
    "kind": "text",
    "hash": "0cdb5c58d029",
    "file": "src/components/LegalPage.tsx"
+  },
+  "components/ModeSwitcher.hint": {
+   "en": "Each mode shows its own role's pages only.",
+   "ar": "كلّ وضعٍ يعرض أبواب دوره وحده.",
+   "kind": "text",
+   "hash": "0e33b7fdb597",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.label": {
+   "en": "View mode",
+   "ar": "وضع العرض",
+   "kind": "text",
+   "hash": "dc5cbf702d02",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.donor": {
+   "en": "Donor entity",
+   "ar": "جهة مانحة",
+   "kind": "text",
+   "hash": "d93a396c6643",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.guardian": {
+   "en": "Guardian",
+   "ar": "وليّ",
+   "kind": "text",
+   "hash": "7ce81828cf6d",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.office": {
+   "en": "Office",
+   "ar": "مكتب",
+   "kind": "text",
+   "hash": "c5b9ba2cc23b",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.org": {
+   "en": "Care organization",
+   "ar": "جهة رعاية",
+   "kind": "text",
+   "hash": "a6fa25e0639c",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.supervisor": {
+   "en": "Supervisor",
+   "ar": "مشرف",
+   "kind": "text",
+   "hash": "659186f1ea9d",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.supporter": {
+   "en": "Supporter",
+   "ar": "داعم",
+   "kind": "text",
+   "hash": "fefaf5ea7e57",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.modes.translator": {
+   "en": "Translation reviewer",
+   "ar": "مراجع ترجمة",
+   "kind": "text",
+   "hash": "c2ed3c6ab216",
+   "file": "src/components/ModeSwitcher.tsx"
+  },
+  "components/ModeSwitcher.switch": {
+   "en": "Switch mode",
+   "ar": "تبديل الوضع",
+   "kind": "text",
+   "hash": "da0adfb4f2ad",
+   "file": "src/components/ModeSwitcher.tsx"
   },
   "components/OrphanCard.ages.age_12_14": {
    "en": "12–14",
@@ -502,6 +544,21 @@
    "kind": "text",
    "hash": "62fd7babf158",
    "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SupporterModeGate.note": {
+   "en": "You are in the “{0}” mode. Personal support is recorded from the supporter mode, so it never mixes with your role's work.",
+   "ar": "أنت الآن في وضع «{0}». الدعم الشخصي يُسجَّل من وضع الداعم، فلا يختلط بعمل دورك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "b8bc44b1a073",
+   "file": "src/components/SupporterModeGate.tsx"
+  },
+  "components/SupporterModeGate.switch": {
+   "en": "Switch to supporter mode",
+   "ar": "بدّل إلى وضع الداعم",
+   "kind": "text",
+   "hash": "9e9926903529",
+   "file": "src/components/SupporterModeGate.tsx"
   },
   "components/admin/AdminTrustStrip.live": {
    "en": "Live data",

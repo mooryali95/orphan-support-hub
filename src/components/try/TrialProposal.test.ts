@@ -15,6 +15,9 @@ vi.mock("@tanstack/react-start", () => ({ useServerFn: () => submit }));
 vi.mock("@tanstack/react-router", () => ({ Link: "a" }));
 vi.mock("@/lib/support.functions", () => ({ createPledge: vi.fn() }));
 vi.mock("@/components/auth/AuthDialog", () => ({ AuthDialog: () => null }));
+vi.mock("@/components/SupporterModeGate", () => ({
+  SupporterModeGate: ({ children }: { children: unknown }) => children,
+}));
 vi.mock("@/components/kit/Celebrate", () => ({ CelebrateMark: () => null }));
 vi.mock("@/lib/locale", () => ({
   defineCopy: (_key: string, copy: unknown) => copy,
@@ -29,7 +32,7 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const memory = new Map<string, string>();
 const listeners = new Map<string, Set<() => void>>();
 const fakeWindow = {
-  localStorage: {
+  sessionStorage: {
     getItem: (k: string) => memory.get(k) ?? null,
     setItem: (k: string, v: string) => void memory.set(k, v),
     removeItem: (k: string) => void memory.delete(k),
@@ -131,7 +134,7 @@ describe("a trial proposal on the real support sheet", () => {
     expect(amountOf(s)).toBe(37);
     expect(submit).not.toHaveBeenCalled();
     // the proposal stays until a real pledge is actually recorded
-    expect(loadProposals(fakeWindow.localStorage)).toHaveLength(1);
+    expect(loadProposals(fakeWindow.sessionStorage)).toHaveLength(1);
   });
 
   it("hides the proposal only after the visitor's own confirmation succeeds", async () => {
@@ -150,7 +153,7 @@ describe("a trial proposal on the real support sheet", () => {
         country: "AL",
       }),
     });
-    expect(loadProposals(fakeWindow.localStorage)).toEqual([]);
+    expect(loadProposals(fakeWindow.sessionStorage)).toEqual([]);
   });
 
   it("keeps an amount the visitor typed after using the proposal", async () => {

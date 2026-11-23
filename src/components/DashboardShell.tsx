@@ -1,6 +1,4 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,8 +7,8 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { wipeBrowserUserData } from "@/lib/client-state";
 import { useAuth } from "@/hooks/useAuth";
-import { ROLE_LABELS } from "@/lib/format";
-import { getMyWorkspaces } from "@/lib/workspaces.functions";
+import { ModeSwitcher } from "@/components/ModeSwitcher";
+import { useViewMode } from "@/hooks/useViewMode";
 import { BRAND } from "@/config/brand";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -18,41 +16,31 @@ const COPY = defineCopy("components/DashboardShell", {
   ar: {
     home: "الصفحة الرئيسية",
     nav: "التنقّل",
-    portals: "بواباتي",
-    sponsorships: "كفالاتي",
+    sponsorships: "أثري",
     org: "جهة الرعاية",
     guardian: "من أرعاهم",
     admin: "الإدارة",
     directory: "دليل الأيتام",
+    support: "ادعم",
     supervisor: "الإشراف",
     translate: "الترجمة",
     notifications: "الإشعارات",
     account: "حسابي",
-    sponsor: "كافل",
-    supervisorRole: "مشرف",
-    translatorRole: "مراجع ترجمة",
-    officeRole: "عضو مكتب",
-    donorRole: "جهة مانحة",
     signOut: "خروج",
   },
   en: {
     home: "Home",
     nav: "Navigation",
-    portals: "My portals",
-    sponsorships: "My sponsorships",
+    sponsorships: "My impact",
     org: "Care organization",
     guardian: "In my care",
     admin: "Administration",
     directory: "Children's directory",
+    support: "Support",
     supervisor: "Supervision",
     translate: "Translation",
     notifications: "Notifications",
     account: "My account",
-    sponsor: "Sponsor",
-    supervisorRole: "Supervisor",
-    translatorRole: "Translation reviewer",
-    officeRole: "Office member",
-    donorRole: "Donor entity",
     signOut: "Sign out",
   },
 });
@@ -66,27 +54,10 @@ export function DashboardShell({
   description?: string;
   children: ReactNode;
 }) {
-  const { user, roles, isAdmin, isCareOrg, isGuardian } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const t = useCopy(COPY);
-  // الأبواب والعنوان من علاقات الحساب كلّها لا من user_roles وحده (UX-16):
-  // المشرف وعضو المكتب والمترجم كانوا يُقرؤون «كافلاً».
-  const fetchWorkspaces = useServerFn(getMyWorkspaces);
-  const { data: wsRes } = useQuery({
-    queryKey: ["workspaces"],
-    queryFn: () => fetchWorkspaces(),
-    enabled: Boolean(user),
-    staleTime: 5 * 60_000,
-  });
-  const ws = wsRes?.workspaces ?? null;
-  const translatorLocale = ws?.translator_locales?.[0]?.code;
-  const roleLabels = [
-    ...roles.filter((r) => r !== "sponsor").map((r) => ROLE_LABELS[r] ?? r),
-    ...(ws?.supervisor ? [t.supervisorRole] : []),
-    ...((ws?.offices.length ?? 0) > 0 ? [t.officeRole] : []),
-    ...((ws?.translator_locales?.length ?? 0) > 0 ? [t.translatorRole] : []),
-    ...((ws?.donor_entities.length ?? 0) > 0 ? [t.donorRole] : []),
-  ];
+  const { mode, workspaces } = useViewMode();
 
   async function signOut() {
     // يُمحى ما في المتصفّح قبل الخروج نفسه: الجهاز قد يكون مشتركاً (UX-05).
@@ -105,103 +76,69 @@ export function DashboardShell({
           </Link>
 
           {/* على الجوال كان التنقّل مخفياً كلّياً فلا سبيل إلى البوابات؛ صار صفاً
-              يُمرَّر أفقياً تحت الشعار. */}
+              يُمرَّر أفقياً تحت الشعار. والأبواب لوضع العرض الفعّال وحده: لا
+              تختلط أبواب الإدارة بأبواب الداعم (انظر src/lib/view-mode.ts). */}
           <nav
             aria-label={t.nav}
             className="order-last -mx-4 flex w-[calc(100%+2rem)] items-center gap-1 overflow-x-auto whitespace-nowrap border-t border-border px-4 py-2 text-sm md:order-none md:mx-0 md:w-auto md:border-0 md:p-0"
           >
-            <Link
-              to="/workspaces"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-            >
-              {t.portals}
-            </Link>
-            <Link
-              to="/dashboard"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-            >
-              {t.sponsorships}
-            </Link>
-            {isCareOrg && (
-              <Link
-                to="/org"
-                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
-                {t.org}
-              </Link>
+            {mode === "admin" && <NavLink to="/admin">{t.admin}</NavLink>}
+            {mode === "supporter" && (
+              <>
+                <NavLink to="/dashboard">{t.sponsorships}</NavLink>
+                <NavLink to="/orphans">{t.directory}</NavLink>
+                <NavLink to="/support">{t.support}</NavLink>
+              </>
             )}
-            {isGuardian && (
-              <Link
-                to="/guardian"
-                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
-                {t.guardian}
-              </Link>
-            )}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
-                {t.admin}
-              </Link>
-            )}
-            <Link
-              to="/orphans"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              {t.directory}
-            </Link>
-            {/* «الإشراف» للمشرف المعتمد وحده: لغيره كان باباً إلى «لستَ مشرفاً»
-                بلا طريق (UX-16). وطريق الاعتماد مشروحٌ في صفحته لمن يصلها. */}
-            {ws?.supervisor && (
-              <Link
-                to="/supervisor"
-                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
-                {t.supervisor}
-              </Link>
-            )}
-            {translatorLocale && (
-              <Link
-                to="/translate/$locale"
-                params={{ locale: translatorLocale }}
-                className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                activeProps={{ className: "bg-secondary text-foreground" }}
-              >
-                {t.translate}
-              </Link>
-            )}
+            {mode === "org" && <NavLink to="/org">{t.org}</NavLink>}
+            {mode === "guardian" && <NavLink to="/guardian">{t.guardian}</NavLink>}
+            {mode === "supervisor" && <NavLink to="/supervisor">{t.supervisor}</NavLink>}
+            {mode === "office" &&
+              workspaces?.offices.map((o) => (
+                <Link
+                  key={o.id}
+                  to="/office/$officeId"
+                  params={{ officeId: o.id }}
+                  className={NAV_CLASS}
+                  activeProps={{ className: "bg-secondary text-foreground" }}
+                >
+                  {o.name}
+                </Link>
+              ))}
+            {mode === "donor" &&
+              workspaces?.donor_entities.map((e) => (
+                <Link
+                  key={e.id}
+                  to="/donor/$entityId"
+                  params={{ entityId: e.id }}
+                  className={NAV_CLASS}
+                  activeProps={{ className: "bg-secondary text-foreground" }}
+                >
+                  {e.name}
+                </Link>
+              ))}
+            {mode === "translator" &&
+              workspaces?.translator_locales?.map((l) => (
+                <Link
+                  key={l.code}
+                  to="/translate/$locale"
+                  params={{ locale: l.code }}
+                  className={NAV_CLASS}
+                  activeProps={{ className: "bg-secondary text-foreground" }}
+                >
+                  {t.translate} · {l.name}
+                </Link>
+              ))}
             {/* التفضيلات ليست إعداداً ثانوياً: بلا مدخلٍ ظاهر إليها يصير
                 إلغاء الاشتراك حكراً على من وصلته رسالة. */}
-            <Link
-              to="/settings/notifications"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-            >
-              {t.notifications}
-            </Link>
-            <Link
-              to="/account"
-              className="rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-            >
-              {t.account}
-            </Link>
+            <NavLink to="/settings/notifications">{t.notifications}</NavLink>
+            <NavLink to="/account">{t.account}</NavLink>
           </nav>
 
           <div className="ms-auto flex items-center gap-3">
             <NotificationBell />
-            <div className="hidden text-end sm:block">
-              <p className="text-xs font-medium">{user?.email}</p>
-              <p className="text-xs text-muted-foreground">{roleLabels.join("، ") || t.sponsor}</p>
-            </div>
+            <p className="hidden text-xs font-medium sm:block">{user?.email}</p>
+            <ModeSwitcher />
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
               {t.signOut}
@@ -218,5 +155,31 @@ export function DashboardShell({
         <div className="mt-8">{children}</div>
       </main>
     </div>
+  );
+}
+
+const NAV_CLASS =
+  "rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground";
+
+function NavLink({
+  to,
+  children,
+}: {
+  to:
+    | "/admin"
+    | "/dashboard"
+    | "/orphans"
+    | "/support"
+    | "/org"
+    | "/guardian"
+    | "/supervisor"
+    | "/settings/notifications"
+    | "/account";
+  children: ReactNode;
+}) {
+  return (
+    <Link to={to} className={NAV_CLASS} activeProps={{ className: "bg-secondary text-foreground" }}>
+      {children}
+    </Link>
   );
 }

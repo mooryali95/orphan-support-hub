@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { SupporterModeGate } from "@/components/SupporterModeGate";
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import type { MapActionContext } from "@/components/map/WorldMap";
 import type { MapStats } from "@/components/map/demo-stats";
@@ -374,24 +375,26 @@ export function SupportSheet({
         />
       </details>
 
-      {signedIn ? (
-        <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
-          {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-          {t.confirm(formatMoney(amount, currency, locale))}
-        </Button>
-      ) : (
-        <AuthDialog
-          title={t.signIn}
-          hint={t.signInHint}
-          // after signing in the support is recorded as promised, with no second click
-          onDone={() => void confirm()}
-          trigger={(open) => (
-            <Button size="lg" className="w-full" onClick={open}>
-              {t.signIn}
-            </Button>
-          )}
-        />
-      )}
+      <SupporterModeGate>
+        {signedIn ? (
+          <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
+            {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            {t.confirm(formatMoney(amount, currency, locale))}
+          </Button>
+        ) : (
+          <AuthDialog
+            title={t.signIn}
+            hint={t.signInHint}
+            // after signing in the support is recorded as promised, with no second click
+            onDone={() => void confirm()}
+            trigger={(open) => (
+              <Button size="lg" className="w-full" onClick={open}>
+                {t.signIn}
+              </Button>
+            )}
+          />
+        )}
+      </SupporterModeGate>
       <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
       {result && !result.ok && (
         <p role="alert" className="text-sm text-destructive">

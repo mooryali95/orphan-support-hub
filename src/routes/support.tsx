@@ -10,6 +10,7 @@ import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { PledgeReceipt } from "@/components/support/PledgeReceipt";
+import { SupporterModeGate } from "@/components/SupporterModeGate";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 
@@ -697,24 +698,26 @@ function SupportPage() {
                       />
                     </div>
                     <div className="mt-6">
-                      {user ? (
-                        <Button size="lg" disabled={busy} onClick={confirm}>
-                          {busy && <Loader2 className="size-4 animate-spin" />}
-                          {t.confirm(formatMoney(amount, currency, locale))}
-                        </Button>
-                      ) : (
-                        <AuthDialog
-                          title={t.signIn}
-                          hint={t.signInHint}
-                          // after signing in the support is recorded as promised, with no second click
-                          onDone={() => void confirm()}
-                          trigger={(open) => (
-                            <Button size="lg" onClick={open}>
-                              {t.signIn}
-                            </Button>
-                          )}
-                        />
-                      )}
+                      <SupporterModeGate>
+                        {user ? (
+                          <Button size="lg" disabled={busy} onClick={confirm}>
+                            {busy && <Loader2 className="size-4 animate-spin" />}
+                            {t.confirm(formatMoney(amount, currency, locale))}
+                          </Button>
+                        ) : (
+                          <AuthDialog
+                            title={t.signIn}
+                            hint={t.signInHint}
+                            // after signing in the support is recorded as promised, with no second click
+                            onDone={() => void confirm()}
+                            trigger={(open) => (
+                              <Button size="lg" onClick={open}>
+                                {t.signIn}
+                              </Button>
+                            )}
+                          />
+                        )}
+                      </SupporterModeGate>
                       <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
                       {result && !result.ok && (
                         <p role="alert" className="mt-3 text-sm text-destructive">

@@ -6,6 +6,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  */
 export const Route = createFileRoute("/vision/hall")({
   beforeLoad: () => {
-    throw redirect({ to: "/hall", replace: true });
+    throw redirect({ to: "/hall", search: { try: 1 }, replace: true });
   },
 });

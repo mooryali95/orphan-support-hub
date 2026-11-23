@@ -91,7 +91,7 @@ export function Inbox() {
   const [seen, setSeen] = useState<Record<string, string>>({});
   useEffect(() => {
     try {
-      setSeen(JSON.parse(localStorage.getItem(SEEN) ?? "{}") as Record<string, string>);
+      setSeen(JSON.parse(sessionStorage.getItem(SEEN) ?? "{}") as Record<string, string>);
     } catch {
       /* تجاهل */
     }
@@ -103,7 +103,7 @@ export function Inbox() {
     const next = { ...seen, [key]: items[0]?.id ?? "" };
     setSeen(next);
     try {
-      localStorage.setItem(SEEN, JSON.stringify(next));
+      sessionStorage.setItem(SEEN, JSON.stringify(next));
     } catch {
       /* تجاهل */
     }

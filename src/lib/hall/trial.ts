@@ -844,7 +844,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
 type Store = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const safe = (): Store | null => {
   try {
-    return typeof window === "undefined" ? null : window.localStorage;
+    return typeof window === "undefined" ? null : window.sessionStorage;
   } catch {
     return null;
   }
