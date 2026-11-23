@@ -26,6 +26,7 @@ export const RECORD_KINDS = [
   "supervisors",
   "documents",
   "payments",
+  "access_log",
 ] as const;
 export type RecordKind = (typeof RECORD_KINDS)[number];
 
@@ -136,6 +137,17 @@ export type PaymentRecord = {
   created_at: string;
 };
 
+export type AccessRecord = {
+  id: string;
+  status: string;
+  viewer: string | null;
+  scopes: string[];
+  orphan_id: string;
+  code: string;
+  name: string;
+  created_at: string;
+};
+
 export type AnyRecord =
   | OrphanRecord
   | SponsorshipRecord
@@ -144,7 +156,8 @@ export type AnyRecord =
   | OfficeRecord
   | SupervisorRecord
   | DocumentRecord
-  | PaymentRecord;
+  | PaymentRecord
+  | AccessRecord;
 
 export type RecordsPage<T> = {
   total: number;

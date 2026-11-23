@@ -114,6 +114,7 @@ type Tab =
   | "rec_supervisors"
   | "rec_documents"
   | "rec_payments"
+  | "rec_access"
   | "sponsors"
   | "data"
   | "queue"
@@ -140,6 +141,7 @@ const SECTIONS: Array<[string, Tab[]]> = [
       "rec_supervisors",
       "rec_documents",
       "rec_payments",
+      "rec_access",
     ],
   ],
   ["الناس", ["data", "supervisors", "offices"]],
@@ -292,6 +294,7 @@ function AdminPage() {
     ["rec_supervisors", "سجلّ المشرفين", null],
     ["rec_documents", "المستندات", null],
     ["rec_payments", "المدفوعات", null],
+    ["rec_access", "سجلّ الاطّلاع", null],
     ["sponsors", "الكفلاء", o.sponsor_rows_total ?? o.sponsor_rows.length],
     ["data", copy.dataTab, null],
     ["queue", "طابور الاعتماد", queueCount],
@@ -463,6 +466,7 @@ function AdminPage() {
           {tab === "rec_supervisors" && <RecordsConsole kind="supervisors" />}
           {tab === "rec_documents" && <RecordsConsole kind="documents" />}
           {tab === "rec_payments" && <RecordsConsole kind="payments" />}
+          {tab === "rec_access" && <RecordsConsole kind="access_log" />}
 
           {tab === "monitoring" && (
             <>

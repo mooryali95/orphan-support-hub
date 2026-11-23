@@ -19,6 +19,7 @@ import {
   listRecords,
   PAGE_SIZE,
   transitionPledge,
+  type AccessRecord,
   type DocumentRecord,
   type OfficeRecord,
   type OrgRecord,
@@ -100,6 +101,12 @@ const PAYMENT_STATUS: Record<string, string> = {
   paid: "مدفوعة",
   failed: "فشلت",
   refunded: "مستردّة",
+};
+const SCOPE_LABEL: Record<string, string> = {
+  identity: "الهوية والصورة",
+  location: "الموقع",
+  story: "القصّة",
+  traits: "السمات",
 };
 const ACTION_LABEL = { active: "تفعيل", fulfilled: "تمّ التنفيذ", cancelled: "إلغاء" } as const;
 
@@ -439,6 +446,35 @@ const ENTITIES: { [K in RecordKind]: Entity<RowOf<K>> } = {
       </Button>
     ),
   },
+  access_log: {
+    title: "سجلّ الاطّلاع",
+    lead: "كلّ مرّةٍ فُتحت فيها بيانات طفلٍ الخاصّة (القصّة، المدينة، الاسم، الصورة): من، ومتى، وبأيّ نطاق. يُسجَّل في القاعدة ولا يُعدَّل.",
+    searchHint: "البريد أو رمز الطفل أو اسمه",
+    statuses: { admin: "الإدارة", other: "غير الإدارة" },
+    rowTitle: (r) => `${r.name} · ${r.viewer ?? ""}`,
+    columns: [
+      { label: "من", cell: (r) => <span dir="ltr">{r.viewer ?? "—"}</span> },
+      { label: "الطفل", cell: (r) => <span className="font-bold">{r.name}</span> },
+      {
+        label: "النطاق",
+        cell: (r) => r.scopes.map((x) => SCOPE_LABEL[x] ?? x).join("، ") || "—",
+      },
+      { label: "متى", cell: (r) => formatDate(r.created_at) },
+    ],
+    details: (r) => [
+      ["من", <span dir="ltr">{r.viewer ?? "—"}</span>],
+      ["الطفل", `${r.name} (${r.code})`],
+      ["النطاق", r.scopes.map((x) => SCOPE_LABEL[x] ?? x).join("، ") || "—"],
+      ["متى", new Date(r.created_at).toLocaleString("ar", { numberingSystem: "latn" })],
+    ],
+    actions: (r) => (
+      <Button asChild size="sm" variant="outline">
+        <Link to="/orphans/$orphanId" params={{ orphanId: r.orphan_id }}>
+          ملفّ الطفل
+        </Link>
+      </Button>
+    ),
+  },
 };
 
 type RowOf<K extends RecordKind> = {
@@ -450,6 +486,7 @@ type RowOf<K extends RecordKind> = {
   supervisors: SupervisorRecord;
   documents: DocumentRecord;
   payments: PaymentRecord;
+  access_log: AccessRecord;
 }[K];
 
 function PledgeActions({ record, run }: { record: PledgeRecord; run: ActionRunner }) {
