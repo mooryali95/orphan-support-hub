@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useEffect } from "react";
-
 import { TryShell } from "@/components/try/TryShell";
-import { enterDemo } from "@/lib/demo-mode";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy } from "@/lib/locale";
 
@@ -26,14 +23,8 @@ export const Route = createFileRoute("/try")({
       ],
     };
   },
-  component: TryRoot,
+  component: TryShell,
 });
-
-/** كلّ ما تحت «جرّب» داخل الوضع التجريبي: من فتح رابطاً منها مباشرةً يرى شريطه ومخرجه. */
-function TryRoot() {
-  useEffect(() => enterDemo(), []);
-  return <TryShell />;
-}
 
 const COPY = defineCopy("routes/try", {
   ar: {

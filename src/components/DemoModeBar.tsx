@@ -1,6 +1,3 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { FlaskConical, X } from "lucide-react";
-
 import { exitDemo, useDemo } from "@/lib/demo-mode";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -27,47 +24,43 @@ const LINK =
   "inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold hover:bg-background/15";
 
 /**
+ * روابط عاديّة لا روابط الموجّه: الشريط قطعةٌ تُحمَّل وحدها، فلا يشارك صفحاتِ المنصّة وحداتِها.
+ *
  * شريط الوضع التجريبي: يظهر فوق كل صفحةٍ ما دام الزائر في التجربة، فلا تُقرأ أرقام العيّنة
  * نتائجَ حقيقية، ويجمع أبوابها الثلاثة ومخرجها في مكانٍ واحد.
  */
-export function DemoModeBar() {
+export default function DemoModeBar() {
   const demo = useDemo();
   const c = useCopy(COPY);
-  const navigate = useNavigate();
-  const path = useRouterState({ select: (s) => s.location.pathname });
-  // القاعة وضعٌ غامر بملء الشاشة، ولوحاتها تحمل شارة العيّنة نفسها ومخرجها.
-  if (!demo || path === "/hall" || path.startsWith("/hall/")) return null;
+  if (!demo) return null;
   return (
     <div
       role="region"
+      data-demo-bar
       aria-label={c.label}
       className="sticky top-0 z-50 bg-foreground text-background print:hidden"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
-        <span className="inline-flex items-center gap-2 text-sm font-bold">
-          <FlaskConical className="size-4" aria-hidden="true" />
-          {c.label}
-        </span>
+        <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>
         <span className="text-xs opacity-90">{c.note}</span>
         <nav className="ms-auto flex flex-wrap items-center gap-1">
-          <Link to="/try" className={LINK}>
+          <a href="/try" className={LINK}>
             {c.donor}
-          </Link>
-          <Link to="/try/admin" className={LINK}>
+          </a>
+          <a href="/try/admin" className={LINK}>
             {c.admin}
-          </Link>
-          <Link to="/hall" search={{ try: 1 }} className={LINK}>
+          </a>
+          <a href="/hall?try=1" className={LINK}>
             {c.hall}
-          </Link>
+          </a>
           <button
             type="button"
             className={`${LINK} gap-1 border border-current/40`}
             onClick={() => {
               exitDemo();
-              void navigate({ to: "/" });
+              window.location.assign("/");
             }}
           >
-            <X className="size-3.5" aria-hidden="true" />
             {c.exit}
           </button>
         </nav>

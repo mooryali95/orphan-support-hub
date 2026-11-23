@@ -145,6 +145,11 @@ function HallPage() {
   useEffect(() => {
     if (trying) enterDemo();
   }, [trying]);
+  // القاعة وضعٌ غامر بملء الشاشة، ولوحاتها تحمل شارة العيّنة: شريط التجربة يختفي ما دامت مفتوحة.
+  useEffect(() => {
+    document.documentElement.classList.add("hall-open");
+    return () => document.documentElement.classList.remove("hall-open");
+  }, []);
   const donor = source.mode === "donor";
   const locale = hallLanguage(source.mode, appLocale);
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
