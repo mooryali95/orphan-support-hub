@@ -1,5 +1,3 @@
-import { FlaskConical, X } from "lucide-react";
-
 import { exitDemo, useDemo } from "@/lib/demo-mode";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -31,7 +29,7 @@ const LINK =
  * شريط الوضع التجريبي: يظهر فوق كل صفحةٍ ما دام الزائر في التجربة، فلا تُقرأ أرقام العيّنة
  * نتائجَ حقيقية، ويجمع أبوابها الثلاثة ومخرجها في مكانٍ واحد.
  */
-export function DemoModeBar() {
+export default function DemoModeBar() {
   const demo = useDemo();
   const c = useCopy(COPY);
   if (!demo) return null;
@@ -42,10 +40,7 @@ export function DemoModeBar() {
       className="sticky top-0 z-50 bg-foreground text-background print:hidden"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
-        <span className="inline-flex items-center gap-2 text-sm font-bold">
-          <FlaskConical className="size-4" aria-hidden="true" />
-          {c.label}
-        </span>
+        <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>
         <span className="text-xs opacity-90">{c.note}</span>
         <nav className="ms-auto flex flex-wrap items-center gap-1">
           <a href="/try" className={LINK}>
@@ -65,7 +60,6 @@ export function DemoModeBar() {
               window.location.assign("/");
             }}
           >
-            <X className="size-3.5" aria-hidden="true" />
             {c.exit}
           </button>
         </nav>

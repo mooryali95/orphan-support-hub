@@ -264,9 +264,7 @@ function RootShell({ children }: { children: ReactNode }) {
 const DEMO_KEY = "platform-demo-mode";
 
 // شريط التجربة في قطعته: لا يدخل حزمة أيّ صفحة إلا لزائرٍ في الوضع التجريبي.
-const DemoModeBar = lazy(() =>
-  import("@/components/DemoModeBar").then((m) => ({ default: m.DemoModeBar })),
-);
+const DemoModeBar = lazy(() => import("@/components/DemoModeBar"));
 
 /**
  * يقرأ جلسة التجربة بعد التركيب (المفتاح والحدث نفسهما في `@/lib/demo-mode`)، دون استيراد
