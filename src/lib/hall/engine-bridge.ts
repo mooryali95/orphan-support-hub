@@ -134,6 +134,8 @@ export function levelFacts(
   s0: VisionState,
   s1: VisionState,
   city: string,
+  /** the language the sample names are read in: the demo holds each in Arabic and English */
+  lang: "ar" | "en" = "ar",
 ): { group: GroupFact; child: ChildFact } | null {
   const before = new Map(s0.groups.map((g) => [g.id, g]));
   const groups = cityGroups(s1, city);
@@ -150,7 +152,7 @@ export function levelFacts(
   );
   return {
     group: {
-      name: pick.name.ar,
+      name: pick.name[lang],
       members: pick.members,
       sessions: pick.sessionsDone,
       funded: isFunded(pick),
@@ -160,11 +162,11 @@ export function levelFacts(
       ],
     },
     child: {
-      name: kid.pseudonym.ar,
+      name: kid.pseudonym[lang],
       code: kid.code,
       age: kid.age,
       traits: t.map((x, i) => [
-        DEMO_TRAITS[i]?.name.ar ?? x.key,
+        DEMO_TRAITS[i]?.name[lang] ?? x.key,
         x.before,
         x.after === null && x.lift === 0 ? null : x.now,
       ]),

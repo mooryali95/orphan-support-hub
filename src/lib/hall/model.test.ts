@@ -48,7 +48,7 @@ describe("قاعة الأثر — الشبكة", () => {
 describe("قاعة الأثر — حساب الأثر", () => {
   const tirana = () => regionsFor(byCode("AL")!).find((c) => c.id === "tirana")!;
 
-  it("التأهيل: 10,000 ر.س = 16 طفلاً، ومجموعتان، والفجوة تنزل بقدرهم", () => {
+  it("التأهيل: مبلغ 10,000 = 16 طفلاً، ومجموعتان، والفجوة تنزل بقدرهم", () => {
     const c = tirana();
     const p = project("qualify", 10_000, c);
     expect(p).toMatchObject({ kids: 16, groups: 2, rest: 0, gap0: gapOf(c), gap1: gapOf(c) - 16 });

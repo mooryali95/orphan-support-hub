@@ -37,6 +37,7 @@ export const Route = createLazyFileRoute("/hall")({ component: HallPage });
 const COPY = defineCopy("routes/hall.lazy", {
   ar: {
     tag: "رحلة افتراضية",
+    liveTag: "أرقام نموذجية (نموذج توضيحي)",
     gate: "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
     gateReal: "الرحلة الحقيقية تبدأ بتسجيلك",
     canvas: "قاعة الأثر ثلاثية الأبعاد",
@@ -73,6 +74,7 @@ const COPY = defineCopy("routes/hall.lazy", {
   },
   en: {
     tag: "Virtual journey",
+    liveTag: "Sample figures (concept preview)",
     gate: "This is a virtual journey: everything in the hall is simulated, and nothing is charged.",
     gateReal: "The real journey begins when you register",
     canvas: "The Impact Hall in 3D",
@@ -195,8 +197,10 @@ function HallPage() {
     Promise.all([
       import("@/components/hall/hall-scene.js"),
       trying ? import("@/lib/hall/trial") : null,
+      // the live hall's own strings and sample names, in the interface language
+      trying || donor ? null : import("@/lib/hall/live"),
     ])
-      .then(([{ mountHall }, trial]) => {
+      .then(([{ mountHall }, trial, liveHall]) => {
         if (cancelled) return;
         hall = mountHall(root, {
           onStage: (stage) => {
@@ -215,6 +219,7 @@ function HallPage() {
           },
           brand: brand.name,
           i18n: hallLocale(locale),
+          text: liveHall ? liveHall.hallLive(locale) : null,
           /* the gate's emblem in 3D, built from the platform mark's own approved paths
              («الإصبعان», `KahataynMark`): the disc in wine lacquer, the crescent and the hairline
              ring in brushed champagne, light standing behind the two fingers. Another vector
@@ -302,17 +307,19 @@ function HallPage() {
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">
-        <div
-          className="brand"
-          style={trying || donor ? { flexWrap: "wrap", rowGap: 0 } : undefined}
-        >
+        <div className="brand" style={{ flexWrap: "wrap", rowGap: 0 }}>
           <span className="brand-name">{brand.name}</span>
           <span className="brand-sep">·</span>
           <span className="brand-hall">{hc.hall}</span>
-          {/* the persistent mark of the trial, under the hall's name on every stage */}
-          {(trying || donor) && (
+          {/* the persistent mark of what the hall shows, under its name on every stage: the trial,
+              the donor's real figures, or the live concept hall and its sample figures */}
+          {
             <span
-              {...(donor ? { "data-hall-donor": "" } : { "data-hall-trial": "" })}
+              {...(donor
+                ? { "data-hall-donor": "" }
+                : trying
+                  ? { "data-hall-trial": "" }
+                  : { "data-hall-live": "" })}
               style={{
                 flexBasis: "100%",
                 fontFamily: "var(--body)",
@@ -322,9 +329,9 @@ function HallPage() {
                 color: "var(--champagne)",
               }}
             >
-              {donor ? hc.donor.tag : c.tag}
+              {donor ? hc.donor.tag : trying ? c.tag : c.liveTag}
             </span>
-          )}
+          }
         </div>
         <ol id="steps" aria-label={c.stepsLabel}>
           <li data-s="world">{c.steps.world}</li>

@@ -1,6 +1,7 @@
 import type { HallLocale } from "@/lib/hall/copy";
 import type { DonorHall } from "@/lib/hall/donor";
 import type { HallStage, HallStep } from "@/lib/hall/history";
+import type { HallLive } from "@/lib/hall/live";
 import type { TrialDemo } from "@/lib/hall/trial";
 
 /** يركّب قاعة الأثر داخل العنصر ويعيد دالةً تفكّها (المشهد والمستمعون والحلقة). */
@@ -26,6 +27,12 @@ export function mountHall(
         small: boolean;
       }>
     > | null;
+    /**
+     * the live hall's own strings, its one currency and its sample names, in the interface
+     * language (`@/lib/hall/live`). Set for the live hall only: the trial and the donor's hall
+     * never reach its panels.
+     */
+    text?: HallLive | null;
     /** the country the visitor was looking at on the pages: the hall lands on it once, on entry */
     start?: string | null;
     /**
