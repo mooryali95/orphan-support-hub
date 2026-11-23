@@ -10,7 +10,13 @@ import { switchLocale, useAvailableLocales, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 /** قائمة اللغات حين تزيد على اثنتين — في قطعتها، فلا تحمل كلّ صفحةٍ مكتبة القوائم. */
-export default function LanguageMenu({ className, base }: { className?: string; base: string }) {
+export default function LanguageMenu({
+  className,
+  base,
+}: {
+  className?: string | undefined;
+  base: string;
+}) {
   const locale = useLocale();
   const all = useAvailableLocales();
   const current = all.find((l) => l.code === locale) ?? all[0]!;
