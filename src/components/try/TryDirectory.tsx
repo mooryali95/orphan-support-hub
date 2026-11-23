@@ -9,6 +9,7 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import {
   localTryChild,
   TRY_CHILDREN,
+  TRY_CYCLE,
   TRY_WORLD_CHILDREN,
   TRY_WORLD_EXTRA,
   type TryChild,
@@ -68,9 +69,13 @@ export function TryDirectory() {
 
   const all = useMemo<TryChild[]>(
     () =>
-      [...TRY_CHILDREN, ...TRY_WORLD_CHILDREN, ...TRY_WORLD_EXTRA]
-        .map((c) => localTryChild(c, locale))
-        .sort((a, b) => b.waitingDays - a.waitingDays),
+      [
+        // ملفّ «الدورة الكاملة» المنشور أوّلاً، ثم البقيّة بالأطول انتظاراً
+        ...TRY_CYCLE,
+        ...[...TRY_CHILDREN, ...TRY_WORLD_CHILDREN, ...TRY_WORLD_EXTRA].sort(
+          (a, b) => b.waitingDays - a.waitingDays,
+        ),
+      ].map((c) => localTryChild(c, locale)),
     [locale],
   );
   const countries = useMemo(

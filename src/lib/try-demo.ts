@@ -134,7 +134,11 @@ export const TRY_WORLD_CHILDREN: TryChild[] = [];
 /** أطفال الدليل الإضافيون (`try-world`): يُفتح ملفّ كلٍّ منهم ويُدعم، ولا يدخلون القاعة ولا الخارطة. */
 export const TRY_WORLD_EXTRA: TryChild[] = [];
 
+/** ملفّ «الدورة الكاملة» بعد نشره (`try-cycle`): يُفتح ويُدعم كأيّ طفلٍ في التجربة. */
+export const TRY_CYCLE: TryChild[] = [];
+
 export const tryChild = (id: string) =>
+  TRY_CYCLE.find((c) => c.id === id) ??
   TRY_CHILDREN.find((c) => c.id === id) ??
   TRY_WORLD_CHILDREN.find((c) => c.id === id) ??
   TRY_WORLD_EXTRA.find((c) => c.id === id);

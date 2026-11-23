@@ -34,7 +34,7 @@ export const Route = createFileRoute("/try/$childId")({
   // أطفال الكتالوج المولَّد يُسجَّلون حين تُحمَّل `try-world`: تُنتظر هنا قبل البحث، فيُفتح
   // رابط الطفل مباشرةً (لا من الدليل وحده) — كان رابطٌ مباشر يقول «ليس في التجربة».
   loader: async ({ params }) => {
-    await import("@/lib/try-places");
+    await Promise.all([import("@/lib/try-places"), import("@/lib/try-cycle")]);
     return { child: tryChild(params.childId) ?? null };
   },
   head: ({ loaderData, match }) => {

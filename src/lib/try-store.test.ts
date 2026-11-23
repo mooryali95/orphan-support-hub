@@ -75,3 +75,19 @@ describe("resetTrialSession", () => {
     expect([...data.keys()]).toEqual(["unrelated"]);
   });
 });
+
+describe("full cycle", () => {
+  it("publishes a file into the trial lookup only after every document is verified", async () => {
+    const cycle = await import("@/lib/try-cycle");
+    const { tryChild } = await import("@/lib/try-demo");
+    const c = cycle.emptyCycle();
+    c.child.name = "هاجر";
+    expect(cycle.cycleChild(c)).toBeNull();
+    for (const d of cycle.CYCLE_DOCS) c.docs[d] = { uploaded: true, verified: true };
+    expect(cycle.allUploaded(c) && cycle.allVerified(c)).toBe(true);
+    const published = { ...c, stage: "published" as const };
+    expect(cycle.cycleChild(published)?.id).toBe(cycle.CYCLE_CHILD_ID);
+    cycle.saveCycle(published);
+    expect(tryChild(cycle.CYCLE_CHILD_ID)?.name).toBe("هاجر");
+  });
+});
