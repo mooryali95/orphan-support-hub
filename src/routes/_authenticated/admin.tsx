@@ -32,9 +32,7 @@ import { SourcesPanel } from "@/components/integrity/SourcesPanel";
 import { LocalesPanel } from "@/components/i18n/LocalesPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAdminOverview, getPaymentsReady, reviewOrphan } from "@/lib/admin.functions";
-import { getOverviewInbox, getSupportSummary } from "@/lib/admin-overview.functions";
-import { goLiveSteps, linkHealth } from "@/lib/go-live";
+import { getAdminOverview, reviewOrphan } from "@/lib/admin.functions";
 import {
   formatDate,
   formatMoney,
@@ -45,8 +43,6 @@ import {
 import type { AdminOverview } from "@/lib/admin.functions";
 import { BRAND, pageTitle } from "@/config/brand";
 import { isTrial } from "@/config/platform";
-import { getSourcesOverview } from "@/lib/integrity.functions";
-import { getDispatchHealth, getOpsHealth } from "@/lib/monitoring.functions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { defineCopy, dirOf, LocaleProvider, parseLocale, useCopy } from "@/lib/locale";
 
@@ -59,19 +55,8 @@ const COPY = defineCopy("routes/_authenticated/admin", {
   en: { homeShort: "Overview", dataTab: "Data building" },
 });
 
-// دوالّ الإدارة القائمة تُمرَّر إلى اللوحة من هنا: هذه الصفحة تحملها أصلاً، فلا تُشقّ
-// لها قطعٌ مشتركة جديدة تزيد الحزمة الأولى.
-const ADMIN_FNS = {
-  getAdminOverview,
-  getPaymentsReady,
-  getOverviewInbox,
-  getSupportSummary,
-  getSourcesOverview,
-  getDispatchHealth,
-  getOpsHealth,
-  goLiveSteps,
-  linkHealth,
-};
+import { ADMIN_FNS } from "@/components/admin/overview/admin-fns";
+import { useDemo } from "@/lib/demo-mode";
 
 // لوحة الإدارة في قطعتها: تُحمَّل حين تُفتح، ولا تزيد وزن صفحةٍ أخرى.
 const ManagementOverview = lazy(() => import("@/components/admin/overview/ManagementOverview"));
@@ -174,7 +159,9 @@ function AdminPage() {
   const search = useRouterState({ select: (st) => st.location.search as Query });
   const navigate = useNavigate();
   const tab: Tab = isTab(search.tab) ? search.tab : "home";
-  const sample = search.sample === 1 || search.sample === "1" || search.sample === true;
+  const demo = useDemo();
+  // الوضع التجريبي للزائر يفتح اللوحة نفسها على العيّنة؛ وإلا فبطلبها في الرابط.
+  const sample = demo || search.sample === 1 || search.sample === "1" || search.sample === true;
   const go = useCallback(
     (
       patch: { tab?: Tab; sample?: boolean; period?: number | null; area?: string },

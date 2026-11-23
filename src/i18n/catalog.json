@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3437,
+ "count": 3443,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -92,6 +92,48 @@
    "kind": "text",
    "hash": "c447791249da",
    "file": "src/components/DashboardShell.tsx"
+  },
+  "components/DemoModeBar.admin": {
+   "en": "Admin panel",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "e018d4c236d2",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.donor": {
+   "en": "Donor journey",
+   "ar": "رحلة الداعم",
+   "kind": "text",
+   "hash": "3c127aae0c9d",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.exit": {
+   "en": "Back to the real platform",
+   "ar": "العودة إلى المنصّة الحقيقية",
+   "kind": "text",
+   "hash": "6799a76bf157",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.hall": {
+   "en": "Impact hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "a615c42d5729",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.label": {
+   "en": "Demo mode",
+   "ar": "الوضع التجريبي",
+   "kind": "text",
+   "hash": "326e22bcff78",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.note": {
+   "en": "Sample data, no account and nothing charged.",
+   "ar": "بيانات وهمية، بلا حساب ولا خصم.",
+   "kind": "text",
+   "hash": "6cbe2643050a",
+   "file": "src/components/DemoModeBar.tsx"
   },
   "components/ExcessSuggestion.confirm": {
    "en": "Continue for this child",
@@ -18587,10 +18629,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.tryIt": {
-   "en": "Try the whole journey, no account",
-   "ar": "جرّب الرحلة كاملة بلا حساب",
+   "en": "Enter the demo — no account, nothing charged",
+   "ar": "ادخل التجربة — بلا حساب ولا خصم",
    "kind": "text",
-   "hash": "acbf0d126ed6",
+   "hash": "4f665de3adfd",
    "file": "src/routes/index.tsx"
   },
   "routes/office.addMetric": {
