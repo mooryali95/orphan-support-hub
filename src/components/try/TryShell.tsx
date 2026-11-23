@@ -1,6 +1,7 @@
 import { Outlet, useNavigate, useRouter } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { enterDemo } from "@/lib/demo-mode";
 import { toast } from "sonner";
 
 import { SiteFooter } from "@/components/SiteFooter";
@@ -136,6 +137,8 @@ function TryJourneyProvider({ children }: { children: ReactNode }) {
 }
 
 export function TryShell() {
+  // كلّ ما تحت «جرّب» داخل الوضع التجريبي: من فتح رابطاً منها مباشرةً يرى شريطه ومخرجه.
+  useEffect(() => enterDemo(), []);
   return (
     <TryJourneyProvider>
       <TryShellInner />

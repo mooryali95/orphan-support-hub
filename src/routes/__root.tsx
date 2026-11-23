@@ -10,7 +10,6 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
-import { useDemo } from "@/lib/demo-mode";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -262,13 +261,31 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const DEMO_KEY = "platform-demo-mode";
+
 // شريط التجربة في قطعته: لا يدخل حزمة أيّ صفحة إلا لزائرٍ في الوضع التجريبي.
 const DemoModeBar = lazy(() =>
   import("@/components/DemoModeBar").then((m) => ({ default: m.DemoModeBar })),
 );
 
+/**
+ * يقرأ جلسة التجربة بعد التركيب (المفتاح والحدث نفسهما في `@/lib/demo-mode`)، دون استيراد
+ * الوحدة: لا يدخل حزمة الدخول من الوضع التجريبي إلا هذا السطر.
+ */
 function DemoBarSlot() {
-  const demo = useDemo();
+  const [demo, setDemo] = useState(false);
+  useEffect(() => {
+    const read = () => {
+      try {
+        setDemo(window.sessionStorage.getItem(DEMO_KEY) === "1");
+      } catch {
+        setDemo(false);
+      }
+    };
+    read();
+    window.addEventListener(DEMO_KEY, read);
+    return () => window.removeEventListener(DEMO_KEY, read);
+  }, []);
   return demo ? (
     <Suspense fallback={null}>
       <DemoModeBar />
