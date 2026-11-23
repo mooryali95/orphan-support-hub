@@ -137,7 +137,7 @@ export function mountHall(root, { brand, linked = [], demo = null, live = null }
   const TIME = { m: 0, shown: 0, snap: null, play: null };
   const store = (() => {
     try {
-      return window.localStorage;
+      return window.sessionStorage;
     } catch {
       return null;
     }
