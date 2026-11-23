@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2865,
+ "count": 2866,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -14958,6 +14958,13 @@
    "ar": "أُقرّ أن هذه الصور لا تُظهر وجه طفلٍ إلا بموافقةٍ موثّقة على النشر.",
    "kind": "text",
    "hash": "9088e564179c",
+   "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/office.fileDenied": {
+   "en": "Could not open the file. You may no longer be a member of this office.",
+   "ar": "تعذّر فتح الملفّ — قد لا تكون عضواً في هذا المكتب الآن.",
+   "kind": "text",
+   "hash": "a6ca02a951b5",
    "file": "src/routes/_authenticated/office.$officeId.tsx"
   },
   "routes/office.files": {

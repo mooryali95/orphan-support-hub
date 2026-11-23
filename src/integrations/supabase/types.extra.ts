@@ -951,6 +951,8 @@ export type OrphanView = OrphanCardRow & {
     story: string | null;
     real_name?: string | null;
     photo_url: string | null;
+    /** مسار الصورة في الخزنة الخاصّة؛ يُنزَّل بجلسة القارئ (usePrivateFile). */
+    photo_path?: string | null;
     needs: Array<{
       id: string;
       category: string;

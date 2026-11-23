@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { signChildPhoto } from "@/lib/child-photo";
+import { childPhotoPath } from "@/lib/child-photo";
 import {
   withProtection,
   type AccessRequestRow,
@@ -123,14 +123,12 @@ export const getOrphanViewAuthed = createServerFn({ method: "GET" })
     const { data: view, error } = await db.rpc("orphan_view", { _orphan: data.orphanId });
     if (error) return { orphan: null as OrphanView | null, error: error.message };
     const orphan = (view ?? null) as OrphanView | null;
-    /* الصورة مسارٌ في الخزنة الخاصّة: تُوقَّع بجلسة القارئ نفسه، فسياسة
-       الخزنة تفحص «الهوية» والموافقة مرّةً ثانية، والرابط ينقضي بعد دقائق. */
+    /* الصورة مسارٌ في الخزنة الخاصّة: يُسلَّم المسار وحده، والمتصفّح يُنزّلها
+       بجلسة القارئ — فتفحص سياسة الخزنة «الهوية» والموافقة عند كلّ عرض، ولا
+       رابط موقَّعاً يبقى صالحاً بعد سحب الموافقة. */
     if (orphan?.detail) {
-      orphan.detail.photo_url = await signChildPhoto(
-        context.supabase,
-        orphan.id,
-        orphan.detail.photo_url,
-      );
+      orphan.detail.photo_path = childPhotoPath(orphan.id, orphan.detail.photo_url);
+      orphan.detail.photo_url = null;
     }
     return { orphan, error: null as string | null };
   });
