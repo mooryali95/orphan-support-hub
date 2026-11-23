@@ -52,6 +52,10 @@ function createSupabaseClient() {
       storage: brokeredPreviewStorage(),
       persistSession: true,
       autoRefreshToken: true,
+      // البصمة (passkey) في auth-js 2.112 تجريبية ومعطّلة افتراضياً في العميل:
+      // بدون هذا ترمي المكتبة «experimental and disabled» فتظهر للمستخدم
+      // «البصمة لم تُفعَّل على الخادم» والخادم بريء. الإصدارات الأحدث تتجاهله.
+      experimental: { passkey: true },
     }
   });
 }

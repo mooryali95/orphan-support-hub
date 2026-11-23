@@ -82,7 +82,7 @@ const AskRoute = AskRouteImport.update({
   id: '/ask',
   path: '/ask',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/ask.lazy').then((d) => d.Route))
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',

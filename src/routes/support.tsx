@@ -9,6 +9,7 @@ import { SupportPicks } from "@/components/support/SupportPicks";
 import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
+import { PledgeReceipt } from "@/components/support/PledgeReceipt";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 
@@ -78,7 +79,15 @@ const COPY = defineCopy("routes/support", {
   ar: {
     section: "ادعم",
     description: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
-    steps: ["نوع الدعم", "الهدف", "الاختيار", "المبلغ"],
+    steps: ["من تدعم", "المبلغ", "التأكيد"],
+    summary: "ملخّص دعمك",
+    sumKind: "النوع",
+    sumTarget: "إلى",
+    sumAmount: "المبلغ",
+    sumEmpty: "اختر نوع الدعم لتبدأ.",
+    sumPending: "—",
+    realNote:
+      "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
     kinds: KIND_INFO,
     targets: TARGET_INFO,
     children: (n: number) => `${n} طفل`,
@@ -89,16 +98,16 @@ const COPY = defineCopy("routes/support", {
     supportRegion: "ادعم هذه المنطقة",
     supportCountry: "ادعم هذه الدولة",
     h1: "ادعم",
-    lead: "أربع خطوات قصيرة. يمكنك الرجوع إلى أيّها بالضغط عليها.",
+    lead: "ثلاث خطوات: من تدعم، ثم المبلغ، ثم التأكيد. وتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
     stepsLabel: "الخطوات",
     preparingA: "مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح",
     directory: "دليل الأيتام",
     thanks: "شكراً لك",
     portals: "بواباتي",
-    s1: "1. نوع الدعم",
-    s2: "2. إلى من يذهب؟",
-    s3: "3. الاختيار",
-    s4: "4. المبلغ",
+    s1: "نوع الدعم",
+    s2: "إلى من يذهب؟",
+    s3: "الاختيار",
+    s4: "المبلغ",
     country: "الدولة",
     chosenChild: "الطفل المختار:",
     fromDirectory: "من الدليل",
@@ -120,7 +129,15 @@ const COPY = defineCopy("routes/support", {
     section: "Support",
     description:
       "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
-    steps: ["Kind of support", "Recipient", "Choice", "Amount"],
+    steps: ["Who you support", "Amount", "Confirmation"],
+    summary: "Your support",
+    sumKind: "Kind",
+    sumTarget: "To",
+    sumAmount: "Amount",
+    sumEmpty: "Choose a kind of support to begin.",
+    sumPending: "—",
+    realNote:
+      'Real support: recorded in your name and reaching a real child. To explore without commitment, open "Try the platform".',
     kinds: {
       qualification: {
         label: "Building capability",
@@ -151,17 +168,17 @@ const COPY = defineCopy("routes/support", {
     supportRegion: "Support this region",
     supportCountry: "Support this country",
     h1: "Support",
-    lead: "Four short steps. You can go back to any of them by tapping it.",
+    lead: "Three steps: who you support, the amount, then confirmation. Change any choice before you confirm.",
     stepsLabel: "Steps",
     preparingA:
       "The support flow is being prepared and will open soon. Meanwhile, you can browse the",
     directory: "children's directory",
     thanks: "Thank you",
     portals: "My portals",
-    s1: "1. Kind of support",
-    s2: "2. Who is it for?",
-    s3: "3. Your choice",
-    s4: "4. Amount",
+    s1: "Kind of support",
+    s2: "Who is it for?",
+    s3: "Your choice",
+    s4: "Amount",
     country: "Country",
     chosenChild: "Selected child:",
     fromDirectory: "from the directory",
@@ -214,7 +231,12 @@ function SupportPage() {
   const [amount, setAmount] = useState<number>(() => defaultIndividualAmount(null));
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [result, setResult] = useState<{
+    ok: boolean;
+    text: string;
+    id?: string;
+    at?: Date;
+  } | null>(null);
 
   const catalog = data?.catalog ?? null;
   const supportable = useMemo(
@@ -294,7 +316,25 @@ function SupportPage() {
     }
   }, [catalog, targetType, activeCountry, t]);
 
-  const step = !kind ? 0 : !targetType ? 1 : !target ? 2 : 3;
+  // ثلاث مراحل ظاهرة: «من تدعم» (النوع والهدف والاختيار)، ثم المبلغ، ثم التأكيد.
+  const stage = result?.ok ? 2 : kind && targetType && target ? 1 : 0;
+
+  const targetLabel = !targetType
+    ? null
+    : targetType === "orphan"
+      ? orphan
+        ? (name ?? t.fromDirectory)
+        : null
+      : targetType === "country"
+        ? (catalog?.countries.find((c) => c.code === target)?.name ?? null)
+        : (options.find((o) => o.value === target)?.label ?? null);
+  const summaryRows: Array<[string, string]> = kind
+    ? [
+        [t.sumKind, t.kinds[kind].label],
+        [t.sumTarget, targetLabel ?? t.sumPending],
+        [t.sumAmount, target ? formatMoney(amount, currency, locale) : t.sumPending],
+      ]
+    : [];
 
   /** ما اختير على الخارطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
   function applyPlace(code: string | null, region: string | null) {
@@ -361,6 +401,8 @@ function SupportPage() {
           ? {
               ok: true,
               text: t.pledged,
+              id: res.id ?? undefined,
+              at: new Date(),
             }
           : { ok: false, text: res.error ?? t.failed },
       );
@@ -421,20 +463,51 @@ function SupportPage() {
           <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{t.h1}</h1>
           <p className="mt-3 text-base leading-8 text-muted-foreground">{t.lead}</p>
           <OfferingNote className="mt-6" />
+          <p
+            role="note"
+            className="mt-4 flex items-start gap-2 rounded-xl border border-shore-thrive/40 bg-shore-thrive/10 px-4 py-3 text-sm leading-7"
+          >
+            <span
+              className="mt-2.5 size-2 shrink-0 rounded-full bg-shore-thrive"
+              aria-hidden="true"
+            />
+            {t.realNote}
+          </p>
 
-          <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
-            {t.steps.map((s, i) => (
+          <ol className="mt-10 flex items-start" aria-label={t.stepsLabel}>
+            {t.steps.map((label, i) => (
               <li
-                key={s}
-                aria-current={i === step ? "step" : undefined}
-                className={cn(
-                  "rounded-lg border px-2 py-2 text-center text-xs font-medium sm:text-sm",
-                  i < step && "border-primary/40 bg-primary/5 text-primary",
-                  i === step && "border-primary bg-primary text-primary-foreground",
-                  i > step && "border-border text-muted-foreground",
-                )}
+                key={label}
+                aria-current={i === stage ? "step" : undefined}
+                className="relative flex flex-1 flex-col items-center gap-2 text-center"
               >
-                {s}
+                {i > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute top-[1.125rem] end-1/2 h-0.5 w-full -translate-y-1/2",
+                      i <= stage ? "bg-bridge" : "bg-border",
+                    )}
+                  />
+                )}
+                <span
+                  className={cn(
+                    "relative z-10 grid size-9 place-items-center rounded-full border-2 text-sm font-bold tabular-nums transition-colors",
+                    i < stage && "border-bridge bg-bridge text-white",
+                    i === stage && "border-primary bg-primary text-primary-foreground",
+                    i > stage && "border-border bg-background text-muted-foreground",
+                  )}
+                >
+                  {i < stage ? <Check className="size-4" aria-hidden="true" /> : i + 1}
+                </span>
+                <span
+                  className={cn(
+                    "text-xs font-bold sm:text-sm",
+                    i === stage ? "text-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  {label}
+                </span>
               </li>
             ))}
           </ol>
@@ -468,6 +541,12 @@ function SupportPage() {
               <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
                 {result.text}
               </p>
+              <PledgeReceipt
+                rows={summaryRows}
+                id={result.id}
+                at={result.at}
+                className="celebrate-text mx-auto mt-6 max-w-sm"
+              />
               <p className="celebrate-text mx-auto mt-3 max-w-sm text-xs leading-6 text-muted-foreground">
                 {t.pledgeNote}
               </p>
@@ -481,169 +560,191 @@ function SupportPage() {
               </div>
             </div>
           ) : (
-            <div className="mt-8 space-y-8">
-              <Section title={t.s1}>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {(Object.keys(KIND_INFO) as SupportKind[]).map((k) => (
-                    <Choice
-                      key={k}
-                      selected={kind === k}
-                      onClick={() => setKind(k)}
-                      title={t.kinds[k].label}
-                      text={t.kinds[k].text}
-                    />
-                  ))}
-                </div>
-              </Section>
-
-              {kind && (
-                <Section title={t.s2}>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {(Object.keys(TARGET_INFO) as TargetType[]).map((tt) => (
+            <div className="mt-8 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start lg:gap-8">
+              <div className="space-y-8">
+                <Section title={t.s1}>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {(Object.keys(KIND_INFO) as SupportKind[]).map((k) => (
                       <Choice
-                        key={tt}
-                        selected={targetType === tt}
-                        onClick={() => {
-                          setTargetType(tt);
-                          setTarget(tt === "orphan" ? (orphan ?? "") : "");
-                        }}
-                        title={t.targets[tt].label}
-                        text={t.targets[tt].text}
+                        key={k}
+                        selected={kind === k}
+                        onClick={() => setKind(k)}
+                        title={t.kinds[k].label}
+                        text={t.kinds[k].text}
                       />
                     ))}
                   </div>
                 </Section>
-              )}
 
-              {kind && targetType && (
-                <Section title={t.s3}>
-                  {targetType !== "country" && catalog.countries.length > 1 && (
-                    <div className="mb-4 max-w-xs">
-                      <Label htmlFor="sp-country">{t.country}</Label>
-                      <select
-                        id="sp-country"
-                        className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-                        value={activeCountry}
-                        onChange={(e) => {
-                          setCountry(e.target.value);
-                          setTarget("");
-                        }}
-                      >
-                        {catalog.countries.map((c) => (
-                          <option key={c.code} value={c.code}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {targetType === "orphan" ? (
-                    orphan ? (
-                      <p className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
-                        {t.chosenChild} <strong>{name ?? t.fromDirectory}</strong>
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        {t.pickChildA}{" "}
-                        <Link to="/orphans" className="font-medium text-primary underline">
-                          {t.directory}
-                        </Link>
-                        {t.pickChildB}
-                      </p>
-                    )
-                  ) : options.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">{t.noOptions}</p>
-                  ) : (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {options.map((o) => (
+                {kind && (
+                  <Section title={t.s2}>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {(Object.keys(TARGET_INFO) as TargetType[]).map((tt) => (
                         <Choice
-                          key={o.value}
-                          selected={target === o.value}
-                          onClick={() => setTarget(o.value)}
-                          title={o.label}
-                          text={o.hint}
+                          key={tt}
+                          selected={targetType === tt}
+                          onClick={() => {
+                            setTargetType(tt);
+                            setTarget(tt === "orphan" ? (orphan ?? "") : "");
+                          }}
+                          title={t.targets[tt].label}
+                          text={t.targets[tt].text}
                         />
                       ))}
                     </div>
-                  )}
-                </Section>
-              )}
+                  </Section>
+                )}
 
-              {kind && targetType && target && (
-                <Section title={t.s4}>
-                  {gapOf && (
-                    <p className="mb-3 text-sm text-muted-foreground">
-                      {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
-                    </p>
-                  )}
-                  {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم */}
-                  <PayCurrencyChoice
-                    options={payList}
-                    value={currency}
-                    onChange={setChosenCurrency}
-                    className="mb-4 max-w-md"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {suggested.map((a) => (
-                      <Button
-                        key={a.key}
-                        type="button"
-                        className="tabular-nums"
-                        aria-pressed={amount === a.value}
-                        variant={amount === a.value ? "default" : "outline"}
-                        onClick={() => setAmount(a.value)}
-                      >
-                        {a.label}
-                        {a.sub && <span className="opacity-80">{a.sub}</span>}
-                      </Button>
-                    ))}
-                    <Input
-                      aria-label={t.otherAmount}
-                      type="number"
-                      min={1}
-                      className="w-28"
-                      value={amount}
-                      onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <Label htmlFor="sp-note">{t.note}</Label>
-                    <Textarea
-                      id="sp-note"
-                      rows={2}
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                    />
-                  </div>
-                  <div className="mt-6">
-                    {user ? (
-                      <Button size="lg" disabled={busy} onClick={confirm}>
-                        {busy && <Loader2 className="size-4 animate-spin" />}
-                        {t.confirm(formatMoney(amount, currency, locale))}
-                      </Button>
-                    ) : (
-                      <AuthDialog
-                        title={t.signIn}
-                        hint={t.signInHint}
-                        // after signing in the support is recorded as promised, with no second click
-                        onDone={() => void confirm()}
-                        trigger={(open) => (
-                          <Button size="lg" onClick={open}>
-                            {t.signIn}
-                          </Button>
-                        )}
-                      />
+                {kind && targetType && (
+                  <Section title={t.s3}>
+                    {targetType !== "country" && catalog.countries.length > 1 && (
+                      <div className="mb-4 max-w-xs">
+                        <Label htmlFor="sp-country">{t.country}</Label>
+                        <select
+                          id="sp-country"
+                          className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                          value={activeCountry}
+                          onChange={(e) => {
+                            setCountry(e.target.value);
+                            setTarget("");
+                          }}
+                        >
+                          {catalog.countries.map((c) => (
+                            <option key={c.code} value={c.code}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     )}
-                    <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
-                    {result && !result.ok && (
-                      <p role="alert" className="mt-3 text-sm text-destructive">
-                        {result.text}
+
+                    {targetType === "orphan" ? (
+                      orphan ? (
+                        <p className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+                          {t.chosenChild} <strong>{name ?? t.fromDirectory}</strong>
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          {t.pickChildA}{" "}
+                          <Link to="/orphans" className="font-medium text-primary underline">
+                            {t.directory}
+                          </Link>
+                          {t.pickChildB}
+                        </p>
+                      )
+                    ) : options.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">{t.noOptions}</p>
+                    ) : (
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {options.map((o) => (
+                          <Choice
+                            key={o.value}
+                            selected={target === o.value}
+                            onClick={() => setTarget(o.value)}
+                            title={o.label}
+                            text={o.hint}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </Section>
+                )}
+
+                {kind && targetType && target && (
+                  <Section title={t.s4}>
+                    {gapOf && (
+                      <p className="mb-3 text-sm text-muted-foreground">
+                        {t.fromGap(formatMoney(gapOf.gap, gapOf.currency, locale))}
                       </p>
                     )}
-                  </div>
-                </Section>
-              )}
+                    {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم */}
+                    <PayCurrencyChoice
+                      options={payList}
+                      value={currency}
+                      onChange={setChosenCurrency}
+                      className="mb-4 max-w-md"
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      {suggested.map((a) => (
+                        <Button
+                          key={a.key}
+                          type="button"
+                          className="tabular-nums"
+                          aria-pressed={amount === a.value}
+                          variant={amount === a.value ? "default" : "outline"}
+                          onClick={() => setAmount(a.value)}
+                        >
+                          {a.label}
+                          {a.sub && <span className="opacity-80">{a.sub}</span>}
+                        </Button>
+                      ))}
+                      <Input
+                        aria-label={t.otherAmount}
+                        type="number"
+                        min={1}
+                        className="w-28"
+                        value={amount}
+                        onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <Label htmlFor="sp-note">{t.note}</Label>
+                      <Textarea
+                        id="sp-note"
+                        rows={2}
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                      />
+                    </div>
+                    <div className="mt-6">
+                      {user ? (
+                        <Button size="lg" disabled={busy} onClick={confirm}>
+                          {busy && <Loader2 className="size-4 animate-spin" />}
+                          {t.confirm(formatMoney(amount, currency, locale))}
+                        </Button>
+                      ) : (
+                        <AuthDialog
+                          title={t.signIn}
+                          hint={t.signInHint}
+                          // after signing in the support is recorded as promised, with no second click
+                          onDone={() => void confirm()}
+                          trigger={(open) => (
+                            <Button size="lg" onClick={open}>
+                              {t.signIn}
+                            </Button>
+                          )}
+                        />
+                      )}
+                      <p className="mt-2 text-xs text-muted-foreground">{t.pledgeNote}</p>
+                      {result && !result.ok && (
+                        <p role="alert" className="mt-3 text-sm text-destructive">
+                          {result.text}
+                        </p>
+                      )}
+                    </div>
+                  </Section>
+                )}
+              </div>
+              <aside
+                aria-label={t.summary}
+                className="border-border bg-card mt-8 rounded-2xl border p-5 lg:sticky lg:top-24 lg:mt-0"
+              >
+                <div className="brand-rule mb-4 h-[3px] w-10 rounded-full" aria-hidden="true" />
+                <h2 className="font-bold">{t.summary}</h2>
+                {summaryRows.length === 0 ? (
+                  <p className="text-muted-foreground mt-3 text-sm leading-7">{t.sumEmpty}</p>
+                ) : (
+                  <dl className="mt-3 divide-y divide-border text-sm">
+                    {summaryRows.map(([k, v]) => (
+                      <div key={k} className="flex items-baseline justify-between gap-3 py-2.5">
+                        <dt className="text-muted-foreground shrink-0">{k}</dt>
+                        <dd className="min-w-0 truncate text-end font-bold">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                <p className="text-muted-foreground mt-4 text-xs leading-6">{t.pledgeNote}</p>
+              </aside>
             </div>
           )}
         </main>

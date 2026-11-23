@@ -24,6 +24,7 @@ import {
   type SupportKind,
   type TargetType,
 } from "@/lib/support.functions";
+import { PledgeReceipt } from "@/components/support/PledgeReceipt";
 import { dismissProposal } from "@/lib/try-handoff";
 import { cn } from "@/lib/utils";
 
@@ -186,7 +187,12 @@ export function SupportSheet({
   const usedProposal = useRef<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [result, setResult] = useState<{
+    ok: boolean;
+    text: string;
+    id?: string;
+    at?: Date;
+  } | null>(null);
 
   async function confirm() {
     setBusy(true);
@@ -205,7 +211,9 @@ export function SupportSheet({
       });
       if (res.ok && usedProposal.current) dismissProposal(usedProposal.current);
       setResult(
-        res.ok ? { ok: true, text: t.pledged } : { ok: false, text: res.error ?? t.failed },
+        res.ok
+          ? { ok: true, text: t.pledged, id: res.id ?? undefined, at: new Date() }
+          : { ok: false, text: res.error ?? t.failed },
       );
     } catch {
       // now also runs straight after the in-place sign-in: a failure must show, not freeze the button
@@ -223,6 +231,20 @@ export function SupportSheet({
           {t.thanks}
         </p>
         <p className="celebrate-text mt-1 text-sm leading-6 text-muted-foreground">{result.text}</p>
+        <PledgeReceipt
+          compact
+          className="celebrate-text mt-3"
+          rows={[
+            [t.whom, target.label],
+            [
+              t.kind,
+              kind === "qualification" ? g.tracks.qualification.name : g.tracks.in_kind.name,
+            ],
+            [t.amount, formatMoney(amount, currency, locale)],
+          ]}
+          id={result.id}
+          at={result.at}
+        />
         <div className="mt-3 flex justify-center gap-2">
           <Button asChild size="sm">
             <Link to="/workspaces">{t.portals}</Link>

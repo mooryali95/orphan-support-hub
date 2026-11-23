@@ -1,4 +1,5 @@
 import { Download, FlaskConical, Printer, RefreshCw, TriangleAlert } from "lucide-react";
+import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
 import { useEffect, useMemo, useRef } from "react";
 
 import { DashboardShell } from "@/components/DashboardShell";
@@ -305,6 +306,7 @@ export default function ManagementOverview({
     <OverviewActionsContext.Provider value={actions}>
       <div ref={root} className="ov-root">
         <DashboardShell title={t.title} description={t.lead}>
+          {!sample && <AdminTrustStrip />}
           {sample && (
             <div
               role="note"
@@ -419,6 +421,32 @@ export default function ManagementOverview({
                 </div>
               )}
 
+              {/* ما ينتظر قراراً أولاً: من يفتح اللوحة صباحاً يبدأ بما عليه، ثم بالأرقام. */}
+              <div className="ov-mid">
+                <div>
+                  <AttentionPanel
+                    items={model.attention}
+                    pending={queuesPending}
+                    failed={queuesFailed}
+                    onRetry={d.refresh}
+                    now={d.now}
+                    tag={tag}
+                  />
+                </div>
+                <div className="grid content-start gap-5">
+                  <DuePanel
+                    summary={d.summary}
+                    absent={d.summaryAbsent}
+                    donors={model.donors}
+                    rows={model.rows}
+                    now={d.now}
+                    onRetry={d.refresh}
+                    tag={tag}
+                  />
+                  <DonorsPanel donors={model.donors} summary={d.summary} tag={tag} />
+                </div>
+              </div>
+
               <div className="ov-top">
                 <Hero
                   rows={model.rows}
@@ -485,31 +513,6 @@ export default function ManagementOverview({
                   }
                   links={[["sponsors", t.openDonors]]}
                 />
-              </div>
-
-              <div className="ov-mid">
-                <div>
-                  <AttentionPanel
-                    items={model.attention}
-                    pending={queuesPending}
-                    failed={queuesFailed}
-                    onRetry={d.refresh}
-                    now={d.now}
-                    tag={tag}
-                  />
-                </div>
-                <div className="grid content-start gap-5">
-                  <DuePanel
-                    summary={d.summary}
-                    absent={d.summaryAbsent}
-                    donors={model.donors}
-                    rows={model.rows}
-                    now={d.now}
-                    onRetry={d.refresh}
-                    tag={tag}
-                  />
-                  <DonorsPanel donors={model.donors} summary={d.summary} tag={tag} />
-                </div>
               </div>
 
               <SupportPanel
