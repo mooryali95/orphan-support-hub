@@ -2649,8 +2649,8 @@
   }
   .hall #gate a {
     display: inline-block;
-    padding-block: 10px;
-    margin-block: -10px;
+    padding-block: 12px;
+    margin-block: -12px;
   }
 }
 
