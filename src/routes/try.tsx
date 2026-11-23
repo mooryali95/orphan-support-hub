@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { TryShell } from "@/components/try/TryShell";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy } from "@/lib/locale";
 
@@ -8,6 +7,7 @@ import { copyOf, defineCopy } from "@/lib/locale";
  * «جرّب المنصّة»: رحلة الداعم كاملةً للعميل بلا حساب ولا دفعٍ حقيقي — أطفالٌ افتراضيون،
  * ودفعٌ محاكى، و«أثري» من كفالاتٍ محفوظة في المتصفّح. منفصلةٌ عن الدليل والدفع الحقيقيين.
  */
+// الغلاف (TryShell) في try.lazy.tsx: لا يدخل الحزمة المشتركة لكلّ الصفحات.
 export const Route = createFileRoute("/try")({
   // كتالوج بقية الدول يُحمَّل هنا قبل أيّ قراءة، فلا يدخل حزمة الدخول ويجده كل ما تحت «جرّب».
   beforeLoad: () =>
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/try")({
       ],
     };
   },
-  component: TryShell,
 });
 
 const COPY = defineCopy("routes/try", {

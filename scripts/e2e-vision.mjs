@@ -38,7 +38,8 @@ const PAGES = [
 ];
 // ميزانية الأداء: ما يُنزَّل من JS وCSS مضغوطاً لكلّ صفحة (اليوم نحو 360–383KB).
 // رُفعت من 380 إلى 385 بعد مساعد «سؤالي» (تنسيقاته في CSS المشتركة).
-const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 385);
+// ثم إلى 386: صفحات أدوار العرض الأربع (المكتب والمشرف وصاحب القرار والغلاف) في شجرة المسارات المشتركة.
+const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 386);
 // قاعة الأثر تحمّل three.js والمعالجة السينمائية كسولاً عند فتحها وحدها.
 const PAGE_BUDGET_KB = { "/hall": Number(process.env.HALL_BUDGET_KB ?? 900) };
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i];

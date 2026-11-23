@@ -149,6 +149,10 @@ function TryChildPage({ data }: { data: TryChild }) {
   const c = useCopy(COPY);
   const child = localTryChild(data, locale);
   const navigate = useNavigate();
+  // كما في المنصّة الحقيقية: فتح ملفّ طفلٍ يُسجَّل في «سجلّ الاطّلاع» — هنا في الجلسة وحدها.
+  useEffect(() => {
+    void import("@/lib/try-admin-overlay").then((m) => m.recordAccess(data.id));
+  }, [data.id]);
   const giving = useGivingCopy();
   const gap = gapOf(child);
   const pct = Math.round((child.funded / child.need) * 100);

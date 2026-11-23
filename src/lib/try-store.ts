@@ -56,6 +56,9 @@ export const LEGACY_TRIAL_KEYS = [
   "vision-inbox-seen:v1",
   "hall-replayed:v1",
   "try-cycle:v1",
+  "try-access:v1",
+  "try-visits:v1",
+  "try-office:v1",
 ] as const;
 
 let purged = false;
@@ -111,7 +114,14 @@ export function resetTrialSession(
   }
   memory.clear();
   if (typeof window !== "undefined") {
-    for (const name of ["try-demo-change", "try-handoff-change", "vision-sync", "try-cycle-change"])
+    for (const name of [
+      "try-demo-change",
+      "try-handoff-change",
+      "vision-sync",
+      "try-cycle-change",
+      "try-access-change",
+      "try-role-change",
+    ])
       window.dispatchEvent(new Event(name));
   }
 }

@@ -9984,10 +9984,10 @@
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.decider.1": {
-   "en": "The whole network: decisions, scenarios and indicators.",
-   "ar": "صورة الشبكة كاملة: القرارات، والسيناريوهات، والمؤشّرات.",
+   "en": "The network at a glance: children, coverage, verification, and the session's activity.",
+   "ar": "صورة الشبكة: الأطفال والتغطية والتوثيق — ونشاط الجلسة كلّه.",
    "kind": "text",
-   "hash": "e23fda63ee25",
+   "hash": "a93858e7a24c",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.office.0": {
@@ -9998,10 +9998,10 @@
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.office.1": {
-   "en": "Groups, sessions, deliveries and reports in its area.",
-   "ar": "المجموعات والجلسات والتسليم والتقارير في منطقته.",
+   "en": "Reviews organizations' files, sends reports, and delivers training and in-kind support.",
+   "ar": "يراجع ملفّات الجهات، ويرسل التقارير، وينفّذ التأهيل والدعم العيني.",
    "kind": "text",
-   "hash": "f90d0d3b4462",
+   "hash": "75d62a1f332a",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.org.0": {
@@ -10026,10 +10026,10 @@
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.supervisor.1": {
-   "en": "Records qualification sessions and measures their effect on children.",
-   "ar": "يسجّل جلسات التأهيل ويقيس أثرها على الأطفال.",
+   "en": "Visits the child and records how they are, feeding the file and the sponsor's report.",
+   "ar": "يزور الطفل ويسجّل حاله، فتدخل الزيارة ملفّه وتقرير كافله.",
    "kind": "text",
-   "hash": "0efca5513783",
+   "hash": "435073e1494b",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.supporter.0": {

@@ -107,6 +107,8 @@ function TryHome() {
         </div>
       </section>
 
+      <TryRoles />
+
       {/* three steps on one ruled band: the numeral is the ornament, no icon chips */}
       <ol className="mt-14 grid divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         {c.steps.map((s, i) => (
@@ -125,8 +127,6 @@ function TryHome() {
           </li>
         ))}
       </ol>
-
-      <TryRoles />
 
       {/* «الدورة الكاملة»: ملفٌّ واحد يُرى ينتقل عبر كلّ الأدوار — أقوى ما يُعرض لصاحب القرار */}
       <Link

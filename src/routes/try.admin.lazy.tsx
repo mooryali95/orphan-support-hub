@@ -1,9 +1,11 @@
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { AdminNav } from "@/components/admin/AdminNav";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
+import { CycleAdminTask } from "@/components/try/TryCycleTasks";
+import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import type { RecordKind } from "@/lib/admin-console.functions";
 
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
@@ -38,20 +40,12 @@ function TryAdmin() {
   const [tab, setTab] = useState<Key>("home");
   return (
     <div>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow">العرض التفاعلي · الإدارة</p>
-          <h1 className="mt-3 text-4xl leading-[1.3] font-bold">لوحة الإدارة</h1>
-          <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">
-            الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات
-            توثيق، وإجراءات مسجَّلة — هنا ببياناتٍ نموذجية، والإجراءات محاكاة.
-          </p>
-        </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-bold text-muted-foreground">
-          <ShieldCheck className="size-3.5" aria-hidden="true" />
-          في الحقيقة: دخولٌ برمز البريد ومصادقة ثنائية
-        </span>
-      </header>
+      <TryRoleHeader
+        role="الإدارة"
+        title="لوحة الإدارة"
+        lead="الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك — كفالتك وتعهّدك وملفّ جهتك — يظهر هنا مظلَّلاً فوق البيانات النموذجية."
+        real="دخولٌ برمز البريد ومصادقة ثنائية، وكلّ إجراءٍ في سجلّ التدقيق"
+      />
 
       <div className="mt-8 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
         <AdminNav<Key>
@@ -67,14 +61,19 @@ function TryAdmin() {
         <div className="min-w-0">
           {tab === "home" ? (
             <section>
-              <h2 className="text-2xl font-bold">ماذا تجرّب هنا؟</h2>
+              <CycleAdminTask />
+              <h2 className="mt-8 text-2xl font-bold">ماذا تجرّب هنا؟</h2>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 {(
                   [
                     ["orphans", "افتح طفلاً وشاهد شارة توثيقه وما ينقص ملفّه"],
                     ["documents", "وثّق مستنداً، أو اسحب توثيقه بملاحظة"],
                     ["pledges", "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد"],
-                    ["access_log", "من اطّلع على بيانات طفلٍ خاصّة، ومتى، وبأيّ نطاق"],
+                    ["access_log", "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة"],
+                    [
+                      "sponsorships",
+                      "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
+                    ],
                   ] as Array<[RecordKind, string]>
                 ).map(([key, text]) => (
                   <li key={key}>
@@ -110,7 +109,7 @@ function TryAdmin() {
           ) : (
             <>
               <h2 className="text-2xl font-bold">{LABELS[tab]}</h2>
-              <RecordsConsole key={tab} kind={tab} sample />
+              <RecordsConsole key={tab} kind={tab} sample visitor />
             </>
           )}
         </div>
