@@ -87,12 +87,11 @@ export function hallSource(search: HallSearch): HallSource {
 }
 
 /**
- * the language the hall speaks. The trial hall and the donor's hall follow the interface
- * language; the live concept hall's panels are written in Arabic only so far, so that whole hall
- * stays Arabic (with `lang` and `dir` to match) instead of mixing two languages on one screen.
+ * the language the hall speaks: the interface language, in all three halls. The trial reads its
+ * copy from `./trial`, the donor's hall from `./copy`, and the live hall from `./live`; `lang`
+ * and `dir` follow the same locale, so no hall mixes two languages on one screen.
  */
-export const hallLanguage = (mode: HallSource["mode"], locale: string): string =>
-  mode === "live" ? "ar" : locale;
+export const hallLanguage = (_mode: HallSource["mode"], locale: string): string => locale;
 
 /**
  * what the live hall is given of the directory: the same country rows the map and the directory
@@ -100,6 +99,23 @@ export const hallLanguage = (mode: HallSource["mode"], locale: string): string =
  * directory is unavailable. No other read feeds the live hall's counts.
  */
 export const hallLiveRows = (geo: Geo): GeoCountry[] => (geo.available ? geo.countries : []);
+
+/**
+ * what the live hall writes of one directory row, and nothing else of it: the country's count of
+ * children and how many of them wait for a sponsor, exactly as the map's country sheet derives
+ * them (`total`, and `total − sponsored`), or no number at all when the cohort is small or the
+ * count is withheld. The only real figures in the live hall pass through here.
+ */
+export function hallDirectory(row: GeoCountry) {
+  const counted = !row.small && row.total != null && row.total > 0;
+  return {
+    /** null: the cohort is hidden, and the hall says so instead of a number */
+    total: counted ? row.total : null,
+    waiting: counted && row.sponsored != null ? Math.max(0, row.total! - row.sponsored) : null,
+    /** the directory itself, filtered to this country by the value it filters on */
+    href: `/orphans?country=${encodeURIComponent(row.value)}`,
+  };
+}
 
 type Place = { pathname: string; search: Record<string, unknown> };
 

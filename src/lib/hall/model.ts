@@ -23,9 +23,10 @@ export type HallCountry = {
   code: string;
   ar: string;
   st: Status;
-  city: string | null;
-  type: string | null;
-  act: string | null;
+  /** where the presence is, what it is and what it does, in Arabic and English (public research) */
+  city: Named | null;
+  type: Named | null;
+  act: Named | null;
   year: number | null;
   lat: number;
   lon: number;
@@ -35,9 +36,14 @@ export type HallCountry = {
   sim: ReturnType<typeof simFor>;
 };
 
+export type Named = { ar: string; en: string };
+
 export type Region = {
   id: string;
+  /** the name the scene writes: Arabic here, replaced by the interface language's (`./live`) */
   ar: string;
+  /** the Latin name (a city of Albania), or the region's number for the numbered sample regions */
+  en: string;
   nx: number;
   ny: number;
   need: number;
@@ -47,18 +53,18 @@ export type Region = {
   sponsored: number;
 };
 
-export const STATUS: Record<Status, string> = {
-  hq: "المقرّ الرئيسي",
-  office: "مكتب مؤكَّد",
-  field: "نشاط ميداني",
-  unconfirmed: "غير مؤكَّد — للإدارة فقط",
+/**
+ * the sample unit price of each kind of support, in the hall's one currency (the platform's
+ * unified currency, `./live`). Their names are copy, in `./live`, in the interface language.
+ */
+export const TRACKS: Record<Track, { unit: number }> = {
+  qualify: { unit: 600 },
+  sponsor: { unit: 300 },
+  kiswa: { unit: 300 },
 };
-
-export const TRACKS: Record<Track, { name: string; unit: number; unitName: string }> = {
-  qualify: { name: "تأهيل", unit: 600, unitName: "رحلة طفل" },
-  sponsor: { name: "كفالة", unit: 300, unitName: "شهر كفالة" },
-  kiswa: { name: "كسوة", unit: 300, unitName: "كسوة يتيم" },
-};
+/** the sample amounts the support sheet offers, and the one it opens on */
+export const AMOUNTS = { min: 1000, max: 100_000, step: 500, initial: 10_000 } as const;
+export const AMOUNT_PRESETS = [1000, 5000, 10_000, 25_000, 50_000] as const;
 
 /** السمات الستّ ومتوسّطاها (قبل، بعد) كما في منصة الرؤية: من `vision-demo`، لا نسخةٌ ثانية. */
 export const TRAITS: Array<[string, number, number]> = DEMO_TRAITS.map((t) => [
@@ -89,9 +95,9 @@ export const COUNTRIES: HallCountry[] = WAMY_COUNTRIES.flatMap((c) => {
       code: c.code,
       ar: c.nameAr,
       st,
-      city: pub?.city?.ar ?? null,
-      type: pub?.type.ar ?? null,
-      act: pub?.activity.ar ?? null,
+      city: pub?.city ?? null,
+      type: pub?.type ?? null,
+      act: pub?.activity ?? null,
       year: pub?.year ?? null,
       lat: sh.lat,
       lon: sh.lon,
@@ -175,6 +181,7 @@ export function regionsFor(co: HallCountry): Region[] {
         withCounts({
           id: c.id,
           ar: c.name.ar,
+          en: c.name.en,
           nx: ((ll[0] - co.lon - co.off[0]) * k) / h,
           ny: (ll[1] - co.lat - co.off[1]) / h,
           need: c.need,
@@ -196,6 +203,7 @@ export function regionsFor(co: HallCountry): Region[] {
     withCounts({
       id: `${co.code}-r${i + 1}`,
       ar: `المنطقة ${i + 1}`,
+      en: `Region ${i + 1}`,
       nx: x,
       ny: y,
       need: 16 + Math.floor(rnd() * 48),
@@ -216,6 +224,25 @@ export function totals(rs: Region[]) {
     pct: need ? Math.round((q / need) * 100) : 0,
     clothed: rs.reduce((a, c) => a + c.clothed, 0),
     sponsored: rs.reduce((a, c) => a + c.sponsored, 0),
+  };
+}
+
+/**
+ * the country's sample figures as the hall writes them, on the world card and in the country
+ * panel alike. One computation: the share funded is `totals(regions).pct` in both places, so
+ * the card and the panel cannot name two different percentages for one country. `sim` (the
+ * vision network's seeded office figures) gives the card its groups and supervisors only.
+ */
+export function countryFigures(co: Pick<HallCountry, "sim">, regions: Region[]) {
+  const t = totals(regions);
+  return {
+    card: {
+      groups: co.sim.groups,
+      inQualification: co.sim.inQualification,
+      supervisors: co.sim.supervisors,
+      funded: t.pct,
+    },
+    kpis: { need: t.need, funded: t.pct, waiting: t.gap },
   };
 }
 
