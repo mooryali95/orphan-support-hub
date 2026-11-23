@@ -150,7 +150,9 @@ describe("التجربة والعرض: تعريفٌ واحد لما يتكرّر
     const drawn = COUNTRIES.filter((c) => c.st !== "unconfirmed");
     expect(NETWORK_SITES).toBe(NETWORK.length - 1);
     expect(NETWORK_SITES).toBe(drawn.length - 1);
-    expect(read("src/routes/hall.lazy.tsx")).toContain("c.net(formatCount(NETWORK_SITES, locale))");
+    expect(read("src/routes/hall.lazy.tsx")).toContain(
+      "(trying ? c.netTrial : c.net)(formatCount(NETWORK_SITES, locale))",
+    );
     for (const f of ["src/routes/hall.lazy.tsx", "src/components/hall/hall-scene.js"])
       expect(read(f)).not.toMatch(/\d+(<\/span>)?\s*موقعاً/);
   });
@@ -316,7 +318,7 @@ describe("مفتاح القاعة: الداعم من لوحته يرى أثره 
       'hallSearch={{ me: 1, from: "/dashboard" }}',
     );
     const page = read("src/routes/hall.lazy.tsx");
-    expect(page).toContain('trying ? import("@/lib/hall/trial") : null');
+    expect(page).toContain("trying ? loadHallTrial() : null");
     expect(page).toContain('const donor = source.mode === "donor"');
     // real and sample never share a view: the scene's donor path exists only without the demo
     expect(read("src/components/hall/hall-scene.js")).toContain("const donor = !!mine && !demo;");

@@ -40,6 +40,13 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
     },
     band: (country: string, status: string, hall: string) => `${country} · ${status} · ${hall}`,
     perf: { low: "منخفضة (جوال)", high: "عالية", stepped: "مخفَّضة تلقائياً" },
+    /* the browser took the 3D context away (GPU restart, low memory): said plainly, with a way on */
+    lost: {
+      title: "توقّف العرض ثلاثي الأبعاد",
+      body: "أوقف المتصفّح الرسم ثلاثي الأبعاد في هذه الصفحة، وقد يحدث ذلك حين تقلّ ذاكرة الجهاز. لم يضع شيءٌ ممّا سجّلته. أعد تحميل القاعة، أو تابع في الصفحات.",
+      reload: "أعد تحميل القاعة",
+      mine: "تابع في «أثري»",
+    },
     /* what an authenticated donor sees: their own figures, the dashboard's, and nothing simulated */
     donor: {
       tag: "أثرك الحقيقي",
@@ -77,6 +84,8 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
         "ar",
       ),
       offGlobe: "خارج الدول المرسومة على كرة القاعة",
+      offGlobeCard:
+        "هذه الدولة ليست مرسومةً على كرة القاعة، فلا موضع لها تُدار الكرة إليه. أطفالك فيها مذكورون هنا.",
       card: (country: string) => `كفالاتك في ${country}`,
       childLine: (months: string, share: string) => `${months} · حصّتك ${share} من حاجته`,
       endedLine: (months: string) => `${months} · انتهت`,
@@ -132,6 +141,12 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
     },
     band: (country: string, status: string, hall: string) => `${country} · ${status} · ${hall}`,
     perf: { low: "Low (phone)", high: "High", stepped: "Lowered automatically" },
+    lost: {
+      title: "The 3D view has stopped",
+      body: "The browser stopped 3D drawing on this page, which can happen when the device runs short of memory. Nothing you recorded is lost. Reload the hall, or carry on in the pages.",
+      reload: "Reload the hall",
+      mine: "Continue in My impact",
+    },
     donor: {
       tag: "Your real impact",
       title: "Your impact around the world",
@@ -148,6 +163,8 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
           "{0} of your children have no country on their public card: counted in your figures, not placed on the globe.",
       }),
       offGlobe: "Not among the countries drawn on the hall's globe",
+      offGlobeCard:
+        "This country is not drawn on the hall's globe, so there is no marker to turn to. Your children there are listed here.",
       card: (country: string) => `Your sponsorships in ${country}`,
       childLine: (months: string, share: string) =>
         `${months} · your share is ${share} of the need`,

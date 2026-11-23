@@ -121,12 +121,12 @@ describe("قاعة التجربة تُبنى من كتالوج التجربة و
     }
   });
 
-  it("العملات عملات الكتالوج: عملة تشغيل الدولة ثم الموحّدة، ولا ريال", () => {
+  it("العملات عملات الكتالوج: عملة ملفّ التجربة ثم عملة تشغيل الدولة ثم الموحّدة", () => {
     const hall = empty();
     for (const place of TRY_PLACES) {
       const list = hall.countries[place.co]!.currencies;
-      expect(list).toEqual(payableOptions(place.co, null).map((o) => o.currency));
-      expect(list).not.toContain("SAR");
+      expect(list).toEqual(payableOptions(place.co, TRY_CURRENCY).map((o) => o.currency));
+      if (place.co !== "SA") expect(list).not.toContain("SAR");
     }
   });
 
