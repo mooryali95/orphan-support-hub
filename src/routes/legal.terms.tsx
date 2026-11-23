@@ -110,9 +110,7 @@ function TermsAr() {
       </Section>
 
       <Section title="8. التواصل">
-        <p>
-          <span dir="ltr">p.o.m2012@hotmail.com</span>
-        </p>
+        <p>نموذج التواصل الرسمي قيد الإعداد وسيُتاح في هذه الصفحة.</p>
       </Section>
     </LegalPage>
   );
@@ -217,9 +215,7 @@ function TermsEn() {
       </Section>
 
       <Section title="8. Contact">
-        <p>
-          <span dir="ltr">p.o.m2012@hotmail.com</span>
-        </p>
+        <p>The official contact form is being prepared and will be available on this page.</p>
       </Section>
     </LegalPage>
   );

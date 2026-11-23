@@ -154,7 +154,8 @@ function PrivacyAr() {
           ولطلبات بيانات الأطفال: يُقدّمها <strong>ولي الأمر</strong> أو الجهة الميدانية المسؤولة.
         </p>
         <p>
-          راسلنا على <span dir="ltr">p.o.m2012@hotmail.com</span> ونردّ خلال ثلاثين يوماً.
+          نموذج التواصل الرسمي قيد الإعداد وسيُتاح في هذه الصفحة، ونردّ على كل طلبٍ يصلنا عبره خلال
+          ثلاثين يوماً.
         </p>
       </Section>
 
@@ -325,7 +326,8 @@ function PrivacyEn() {
           responsible field organization.
         </p>
         <p>
-          Write to us at <span dir="ltr">p.o.m2012@hotmail.com</span>; we reply within thirty days.
+          The official contact form is being prepared and will be available on this page; we reply
+          to every request received through it within thirty days.
         </p>
       </Section>
 
