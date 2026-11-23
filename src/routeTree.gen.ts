@@ -208,7 +208,7 @@ const TryCycleRoute = TryCycleRouteImport.update({
   id: '/cycle',
   path: '/cycle',
   getParentRoute: () => TryRoute,
-} as any)
+} as any).lazy(() => import('./routes/try.cycle.lazy').then((d) => d.Route))
 const TryImpactRoute = TryImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
