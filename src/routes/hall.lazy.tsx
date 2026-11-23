@@ -10,7 +10,6 @@ import {
   MARK2_SLOTS,
   MARK2_VIEWBOX,
 } from "@/components/brand/KahataynMark";
-import { isTrial } from "@/config/platform";
 import { geoQuery } from "@/lib/geo";
 import { copyOf, defineCopy, useLocale } from "@/lib/locale";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
@@ -49,8 +48,10 @@ function HallPage() {
   const search = Route.useSearch();
   const locale = useLocale();
   const queryClient = useQueryClient();
-  // في وضع التجربة تفتح القاعة على أطفال التجربة؛ وبعد الاعتماد على أعداد الدليل.
-  const trying = search.try === 1 || isTrial();
+  // القاعة تتبع مصدرها لا وضع المنصّة: من «جرّب المنصّة» (`?try=1`) تفتح على أطفال
+  // التجربة المحفوظة في الجلسة، ومن «أثري» الحقيقي على أعداد الدليل الحقيقية. كان
+  // وضع التجربة العامّ يفرض بيانات التجربة على الحساب الحقيقي أيضاً.
+  const trying = search.try === 1;
   const [state, setState] = useState<"loading" | "ready" | "unsupported">("loading");
   const trial = copyOf(TRIAL_COPY, "ar");
 
