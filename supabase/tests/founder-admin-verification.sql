@@ -9,7 +9,8 @@
 BEGIN;
 
 -- ---------------------------------------------------------------------
--- 1) البريد المحميّ يحصل على admin عند التسجيل — لا على sponsor
+-- 1) البريد المحميّ: لا admin قبل التأكيد، وadmin عند التأكيد
+--    (من يسجّل ببريد غيره يملك صفّاً بالبريد دون صندوقه)
 -- ---------------------------------------------------------------------
 INSERT INTO auth.users (id, email, raw_user_meta_data)
 VALUES ('99990000-0000-4000-8000-000000000001', 'p.o.m2012@hotmail.com',
@@ -17,14 +18,28 @@ VALUES ('99990000-0000-4000-8000-000000000001', 'p.o.m2012@hotmail.com',
 ON CONFLICT (email) DO NOTHING;
 
 DO $$
+DECLARE _id UUID; _confirmed TIMESTAMPTZ;
+BEGIN
+  SELECT id, email_confirmed_at INTO _id, _confirmed
+    FROM auth.users WHERE lower(email) = 'p.o.m2012@hotmail.com';
+  IF _confirmed IS NULL
+     AND EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _id AND role = 'admin') THEN
+    RAISE EXCEPTION 'FAIL — an unconfirmed protected email received the admin role';
+  END IF;
+  RAISE NOTICE 'PASS — no admin role before the email is confirmed';
+END $$;
+
+UPDATE auth.users SET email_confirmed_at = now()
+ WHERE lower(email) = 'p.o.m2012@hotmail.com' AND email_confirmed_at IS NULL;
+
+DO $$
 DECLARE _id UUID;
 BEGIN
   SELECT id INTO _id FROM auth.users WHERE lower(email) = 'p.o.m2012@hotmail.com';
   IF NOT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _id AND role = 'admin') THEN
-    -- الحساب كان موجوداً قبل الهجرة؛ التعبئة الرجعية تتكفّل به
-    RAISE EXCEPTION 'FAIL — protected email did not receive the admin role';
+    RAISE EXCEPTION 'FAIL — protected email did not receive the admin role once confirmed';
   END IF;
-  RAISE NOTICE 'PASS — protected email holds the admin role';
+  RAISE NOTICE 'PASS — protected email holds the admin role once confirmed';
 END $$;
 
 -- ---------------------------------------------------------------------

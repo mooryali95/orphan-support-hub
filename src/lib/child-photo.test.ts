@@ -49,7 +49,7 @@ describe("signChildPhoto", () => {
     );
     expect(from).toHaveBeenCalledWith(CHILD_PHOTO_BUCKET);
     expect(createSignedUrl).toHaveBeenCalledWith(`${ID}/face.jpg`, CHILD_PHOTO_TTL_SECONDS);
-    expect(CHILD_PHOTO_TTL_SECONDS).toBeLessThanOrEqual(900);
+    expect(CHILD_PHOTO_TTL_SECONDS).toBeLessThanOrEqual(60);
   });
 
   it("لا يمرّر رابطاً قديماً ولا يسأل الخزنة عنه", async () => {

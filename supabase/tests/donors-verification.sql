@@ -7,6 +7,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('ab100000-0000-4000-8000-000000000003', 'dn-out@example.test', '{}'::jsonb),
   ('ab100000-0000-4000-8000-000000000004', 'dn-org@example.test', '{"role":"care_org"}'::jsonb),
   ('ab100000-0000-4000-8000-000000000005', 'dn-admin@example.test', '{}'::jsonb);
+-- حساباتٌ أثبتت بريدها (التأكيد شرطٌ للدعوات والإدارة).
+UPDATE auth.users SET email_confirmed_at = now() WHERE email LIKE 'dn-%@example.test';
 INSERT INTO public.user_roles (user_id, role) VALUES ('ab100000-0000-4000-8000-000000000005', 'admin');
 INSERT INTO public.care_organizations (id, owner_id, name, status)
 VALUES ('ab200000-0000-4000-8000-000000000001', 'ab100000-0000-4000-8000-000000000004', 'جهة المانحين', 'approved');
