@@ -19,6 +19,7 @@ import { hallEntryOf, onPop, onStage, type HallStep } from "@/lib/hall/history";
 import { hallLocale } from "@/lib/hall/copy";
 import { donorHall, donorOrphanIds } from "@/lib/hall/donor";
 import { loadHallScene, loadHallTrial } from "@/lib/hall/preload";
+import { hasWebGL2 } from "@/lib/hall/webgl";
 import { hallLanguage, hallLiveRows, hallSource } from "@/lib/hall/source";
 import { formatCount } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, useLocale } from "@/lib/locale";
@@ -148,14 +149,12 @@ function HallPage() {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
-    const gl = document.createElement("canvas").getContext("webgl2");
-    if (!gl) {
+    // the answer the route's warm-up already asked for (`@/lib/hall/webgl`): one probe, whose
+    // context is given back at once
+    if (!hasWebGL2()) {
       setState("unsupported");
       return;
     }
-    // the probe only asks whether WebGL 2 is there: its context is given back at once, so a
-    // visitor who enters the hall many times never runs into the browser's context limit
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
     let hall: ReturnType<typeof import("@/components/hall/hall-scene.js").mountHall> | null = null;
     let cancelled = false;
     /* the browser's Back walks the hall one stage at a time (`@/lib/hall/history`): each stage
@@ -313,7 +312,7 @@ function HallPage() {
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">
-        <div className="brand" style={{ flexWrap: "wrap", rowGap: 0 }}>
+        <div className="brand">
           <span className="brand-name">{brand.name}</span>
           <span className="brand-sep">·</span>
           <span className="brand-hall">{hc.hall}</span>
@@ -326,14 +325,7 @@ function HallPage() {
                 : trying
                   ? { "data-hall-trial": "" }
                   : { "data-hall-live": "" })}
-              style={{
-                flexBasis: "100%",
-                fontFamily: "var(--body)",
-                fontSize: 11,
-                lineHeight: 1.5,
-                letterSpacing: 0,
-                color: "var(--champagne)",
-              }}
+              className="brand-mark"
             >
               {donor ? hc.donor.tag : trying ? c.tag : c.liveTag}
             </span>

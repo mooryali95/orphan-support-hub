@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { GIVING_TRACKS, givingCopy } from "@/config/giving-tracks";
+import { NETWORK_SITES } from "@/data/vision-network";
 import { countryName } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
+import { formatCount } from "@/lib/format";
 import { deliveryTotals } from "@/lib/support-impact";
 import {
   gapOf,
@@ -454,5 +456,19 @@ describe("الدعم داخل القاعة يُكتب في مخزنَي الصف
       cadence: "monthly",
     });
     expect(trialDemo({ locale: "ar", store, child: "try-02" }).focus).toBeNull();
+  });
+});
+
+describe("فيلم التجربة: عدد المواقع من مصدر البوّابة ولوحة العالم", () => {
+  it("سطر الشبكة يعدّ `NETWORK_SITES` باللغتين، ولا رقم مكتوباً باليد في النصوص", () => {
+    for (const locale of ["ar", "en"] as const) {
+      const film = demoAt(mem(), locale).copy.film;
+      const n = formatCount(NETWORK_SITES, locale);
+      expect(film[1]).toContain(locale === "ar" ? `و${n} موقعاً` : `and ${n} sites`);
+      expect(film.join(" ")).not.toContain("{sites}");
+      // the copy itself holds the placeholder, never a count of sites
+      expect(TRIAL_COPY[locale].film[1]).toContain("{sites}");
+      expect(JSON.stringify(TRIAL_COPY[locale].film)).not.toMatch(/\d+\s*(موقعاً|sites)/);
+    }
   });
 });

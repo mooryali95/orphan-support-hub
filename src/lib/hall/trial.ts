@@ -8,10 +8,11 @@
  * ما يُسجَّل في القاعة يُكتب في المخزنين نفسيهما (`addPledge` و`addGift`)، فيظهر في «أثري»؛
  * وما سُجِّل في الصفحات يُقرأ هنا عند الدخول. يُحمَّل مع القاعة في وضع التجربة وحده.
  */
+import { NETWORK_SITES } from "@/data/vision-network";
 import { GIVING_TRACKS, givingCopy, type GivingTrack } from "@/config/giving-tracks";
 import { countryName } from "@/lib/countries";
 import { currencyName } from "@/lib/currency";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatCount, formatDate, formatMoney } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, pluralOf, type Locale } from "@/lib/locale";
 import { defaultIndividualAmount, INDIVIDUAL_AMOUNTS } from "@/lib/support-amounts";
 import {
@@ -627,7 +628,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     },
     film: [
       "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر",
-      "شبكة الندوة: المقرّ في الرياض و26 موقعاً مؤكَّد الحضور",
+      "شبكة الندوة: المقرّ في الرياض و{sites} موقعاً مؤكَّد الحضور",
       "نختار ألبانيا، وكلّ دولةٍ هنا تُدخَل، بمنطقتيها ومجموعتها وطفلها",
       "ندخلها: لكلّ منطقةٍ عمودٌ بعدد أطفالها، والمملوء منه من يشملهم تعهّد تأهيل",
       "نتعهّد لتيرانا تأهيلاً شهرياً، فتظهر حصّة التعهّد من صندوقها قبل تسجيله",
@@ -865,7 +866,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
     },
     film: [
       "The impact hall: where a supporter sees where their support goes, and what it changes",
-      "The WAMY network: headquarters in Riyadh and 26 sites of confirmed presence",
+      "The WAMY network: headquarters in Riyadh and {sites} sites of confirmed presence",
       "We choose Albania (every country here can be entered), with its two regions, its group and its child",
       "We enter it: each region has a column as tall as its children, filled by those under a qualification pledge",
       "We pledge monthly for qualification in Tirana, and its share of Tirana's fund shows before it is recorded",
@@ -945,10 +946,18 @@ export function trialDemo(o: {
   const raw = gift && firstReplay(gift.id, store) ? tryChild(gift.childId) : undefined;
   const child = raw ? localTryChild(raw, locale) : undefined;
 
+  // the film's network caption counts the sites from the one source the gate and the world panel
+  // read (`NETWORK_SITES`), never from a number typed into the copy
+  const text = copyOf(TRIAL_COPY, locale);
+  const copy = {
+    ...text,
+    film: text.film.map((line) => line.replace("{sites}", formatCount(NETWORK_SITES, locale))),
+  };
+
   return {
     locale,
     dir: dirOf(locale),
-    copy: copyOf(TRIAL_COPY, locale),
+    copy,
     /** the three kinds of giving, in the platform's order and by the platform's names */
     kinds: [...GIVING_TRACKS],
     giving: { heading: giving.heading, tracks: giving.tracks },
