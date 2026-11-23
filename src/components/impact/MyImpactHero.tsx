@@ -192,7 +192,7 @@ export function MyImpactHero({
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link to="/hall" search={hallSearch ?? {}}>
+              <Link to="/hall" search={hallSearch ?? {}} preload="intent">
                 <Sparkles className="size-4" aria-hidden="true" />
                 {c.immersive}
               </Link>

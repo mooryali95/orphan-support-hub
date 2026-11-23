@@ -176,6 +176,7 @@ function TryHome() {
             <Link
               to="/hall"
               search={hallSearch}
+              preload="intent"
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-input px-5 text-sm font-bold text-foreground transition-colors hover:border-primary/50 hover:bg-secondary/60"
             >
               {c.fromMap}
