@@ -19,6 +19,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('b3000000-0000-4000-8000-000000000003', 'b3-admin@example.test', '{}'::jsonb),
   ('b3000000-0000-4000-8000-000000000004', 'b3-org@example.test', '{"role":"care_org"}'::jsonb),
   ('b3000000-0000-4000-8000-000000000005', 'b3-sponsor@example.test', '{}'::jsonb);
+-- حساباتٌ أثبتت بريدها (التأكيد شرطٌ للدعوات والإدارة).
+UPDATE auth.users SET email_confirmed_at = now() WHERE email LIKE 'b3-%@example.test';
 INSERT INTO public.user_roles (user_id, role) VALUES ('b3000000-0000-4000-8000-000000000003', 'admin');
 
 
@@ -304,4 +306,29 @@ BEGIN
 END $$;
 
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص الدفعة 3B (التشغيل والتقوية) اجتازت ──'; END $$;
+-- من سجّل ببريد مدعوٍّ دون أن يؤكّده لا يرى الدعوة ولا يقبلها.
+INSERT INTO auth.users (id, email, raw_user_meta_data)
+VALUES ('b3000000-0000-4000-8000-0000000000ff', 'nobody@nowhere.test', '{}'::jsonb);
+DO $$
+DECLARE _e UUID; _r JSONB; _ok BOOLEAN := false;
+BEGIN
+  SELECT entity_id INTO _e FROM public.donor_member_invites WHERE email = 'nobody@nowhere.test' LIMIT 1;
+  IF _e IS NULL THEN RAISE EXCEPTION 'FAIL — لا دعوة معلّقة للفحص'; END IF;
+  SET LOCAL ROLE authenticated;
+  PERFORM set_config('request.jwt.claims',
+    '{"sub":"b3000000-0000-4000-8000-0000000000ff","role":"authenticated"}', true);
+  _r := public.my_donor_invitations();
+  BEGIN
+    PERFORM public.respond_donor_invitation(_e, true);
+  EXCEPTION WHEN no_data_found THEN _ok := true;
+  END;
+  RESET ROLE;
+  IF jsonb_array_length(_r) <> 0 THEN RAISE EXCEPTION 'FAIL — بريدٌ غير مؤكَّد يرى الدعوة: %', _r; END IF;
+  IF NOT _ok OR EXISTS (SELECT 1 FROM public.donor_members
+                        WHERE user_id = 'b3000000-0000-4000-8000-0000000000ff') THEN
+    RAISE EXCEPTION 'FAIL — بريدٌ غير مؤكَّد قبل دعوة غيره';
+  END IF;
+  RAISE NOTICE 'PASS — الدعوة لصاحب البريد المؤكَّد وحده';
+END $$;
+
 ROLLBACK;

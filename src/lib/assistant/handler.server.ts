@@ -6,6 +6,7 @@ import {
   assistantRequestSchema,
   gatewayFailure,
   publicAssistantCard,
+  modelHistory,
 } from "./policy";
 import { createResponsesCall } from "./responses.server.ts";
 import { withLovableAiGatewayRunIdHeader } from "./run-id.server.ts";
@@ -122,7 +123,7 @@ export async function handleAssistant(request: Request, reset = false): Promise<
           }
         },
       },
-      await convertToModelMessages(messages),
+      await convertToModelMessages(modelHistory(messages)),
       assistantInstructions(card),
     );
     const stream = call.result.toUIMessageStreamResponse({

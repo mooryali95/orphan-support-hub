@@ -11,7 +11,9 @@
  */
 
 export const CHILD_PHOTO_BUCKET = "orphan-photos";
-export const CHILD_PHOTO_TTL_SECONDS = 600;
+// دقيقة واحدة: الرابط الموقَّع لا يُسحب بعد إصداره، فمدّته هي أقصى ما يبقى فيه
+// ظاهراً بعد سحب الإذن. كانت عشر دقائق.
+export const CHILD_PHOTO_TTL_SECONDS = 60;
 
 /** مسارٌ داخل مجلّد الطفل نفسه — الشرط نفسه في `photo_url_is_platform`. */
 export function isChildPhotoPath(
