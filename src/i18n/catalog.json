@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2976,
+ "count": 2977,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -10987,6 +10987,13 @@
    "kind": "template",
    "params": 1,
    "hash": "a06a1d8b642d",
+   "file": "src/config/brand.ts"
+  },
+  "config/brand.ownerLine": {
+   "en": "The World Assembly of Muslim Youth's orphan sponsorship platform",
+   "ar": "",
+   "kind": "text",
+   "hash": "d71f5c62baad",
    "file": "src/config/brand.ts"
   },
   "config/brand.slogan": {

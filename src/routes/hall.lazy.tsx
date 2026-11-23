@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from "react";
 
 import "@/components/hall/hall.css";
 import { brandFor } from "@/config/brand";
+import { COLORS } from "@/config/brand-colors";
 import {
   MARK2_CRESCENT,
+  MARK2_DISC,
   MARK2_RING,
   MARK2_SLOTS,
   MARK2_VIEWBOX,
@@ -213,6 +215,20 @@ function HallPage() {
           },
           brand: brand.name,
           i18n: hallLocale(locale),
+          /* the gate's emblem in 3D, built from the platform mark's own approved paths
+             («الإصبعان», `KahataynMark`): the disc in wine lacquer, the crescent and the hairline
+             ring in brushed champagne, light standing behind the two fingers. Another vector
+             mark is one more set of paths here. */
+          mark: {
+            viewBox: MARK2_VIEWBOX,
+            parts: [
+              { d: MARK2_DISC, role: "body" },
+              { d: MARK2_CRESCENT, role: "trim" },
+              { d: MARK2_RING, role: "inlay" },
+            ],
+            lightAt: { x: 0, y: 0, r: 96 },
+            colors: { body: COLORS.light.logo, metal: COLORS.light.goldBright, light: "#fff6ea" },
+          },
           // الدول المتّصلة منصّة تشغيلها فعلاً تظهر «حقيقية»؛ غيرها يبقى افتراضياً.
           linked: donor
             ? []
@@ -390,6 +406,10 @@ function HallPage() {
               </div>
             </>
           )}
+          {/* whose hall this is: the owning organisation's line, from the one brand source */}
+          <p className="gate-owner" data-brand-owner>
+            {brand.ownerLine}
+          </p>
           <GatePartner locale={locale} />
         </div>
       </section>

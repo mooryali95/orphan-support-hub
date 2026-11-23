@@ -16,7 +16,16 @@ export const BRAND = {
   tagline: raw.tagline,
   slogan: raw.slogan,
   themeColor: THEME_COLOR,
-  description: raw.descriptionTemplate.replace("{name}", raw.name),
+  // the owner's line leads every description: whose platform this is, then what it does
+  description: `${raw.owner.line}. ${raw.descriptionTemplate.replace("{name}", raw.name)}`,
+  ownerLine: raw.owner.line,
+  ownerName: raw.owner.name,
+  ownerShort: raw.owner.short,
+  /**
+   * the organisation whose platform this is (see brand.json `owner`): its names, and the one
+   * line by which the platform says so. Ownership only: no claim of accreditation or audit.
+   */
+  owner: raw.owner,
   /** the partner whose logo and colours the support platform carries (see brand.json `partner`) */
   partner: raw.partner,
 } as const;
@@ -27,12 +36,14 @@ const BRAND_COPY = defineCopy("config/brand", {
     tagline: raw.tagline,
     slogan: raw.slogan,
     description: (name: string) => raw.descriptionTemplate.replace("{name}", name),
+    ownerLine: raw.owner.line,
   },
   en: {
     tagline: "We sponsor… and we build",
     slogan: "Sponsor an orphan with a verified file",
     description: (name: string) =>
       `Sponsor an orphan with a file verified by an approved care organization. ${name} connects you with a real child through a transparent monthly sponsorship and regular impact reports.`,
+    ownerLine: "The World Assembly of Muslim Youth's orphan sponsorship platform",
   },
 });
 
@@ -45,7 +56,10 @@ export function brandFor(locale: string) {
     name: raw.nameLatin,
     tagline: c.tagline,
     slogan: c.slogan,
-    description: c.description(raw.nameLatin),
+    description: `${c.ownerLine}. ${c.description(raw.nameLatin)}`,
+    ownerLine: c.ownerLine,
+    ownerName: raw.owner.nameLatin,
+    ownerShort: raw.owner.shortLatin,
   };
 }
 

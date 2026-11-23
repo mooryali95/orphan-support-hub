@@ -20,6 +20,7 @@ import { onAuthEvent } from "@/lib/client-state";
 import { BRAND_CSS } from "@/config/brand-colors";
 import { readTheme } from "@/lib/theme";
 import { BRAND, brandFor } from "@/config/brand";
+import { jsonLdScript, siteJsonLd } from "@/lib/json-ld";
 import {
   defineCopy,
   dirOf,
@@ -201,7 +202,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale", content: ogLocale(match.context.locale ?? "ar") },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: BRAND.themeColor },
+      { name: "author", content: brandFor(match.context.locale ?? "ar").ownerName },
+      { property: "og:site_name", content: brandFor(match.context.locale ?? "ar").name },
     ],
+    // whose platform this is, for search engines: the platform as a site, published by its owner
+    scripts: [jsonLdScript(siteJsonLd(match.context.locale ?? "ar"))],
     links: [
       { rel: "stylesheet", href: appCss },
       // الخطوط من أصلنا (src/lib/fonts.ts): تعريفاتها مضمَّنة في RootShell وتحميلها

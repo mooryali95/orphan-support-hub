@@ -3,6 +3,13 @@
   "nameLatin": "Kahatayn",
   "tagline": "نكفل… ونبني",
   "slogan": "اكفل يتيماً بملف موثّق",
+  "owner": {
+    "name": "الندوة العالمية للشباب الإسلامي",
+    "nameLatin": "World Assembly of Muslim Youth",
+    "short": "الندوة",
+    "shortLatin": "WAMY",
+    "line": "منصّة الندوة العالمية للشباب الإسلامي لكفالة الأيتام"
+  },
   "partner": {
     "name": "الأهلية للأيتام",
     "nameLatin": "Al-Ahliya for Orphans",

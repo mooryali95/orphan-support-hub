@@ -35,6 +35,16 @@ export function mountHall(
      * country, support sheet or film.
      */
     mine?: { data: Promise<DonorHall | null>; kinds: Array<{ name: string }> } | null;
+    /**
+     * a vector mark to build in 3D (`./mark3d.js`): the gate's emblem and the seal in the floor.
+     * Path data as in the approved file; `body` is lacquer, `trim` and `inlay` brushed metal.
+     */
+    mark?: {
+      viewBox: string;
+      parts: Array<{ d: string; role: "body" | "trim" | "inlay" }>;
+      lightAt?: { x: number; y: number; r: number };
+      colors: { body: string; metal: string; light: string };
+    } | null;
     /** every stage the visitor reaches (the film reports only where it stopped) */
     onStage?: ((stage: HallStage) => void) | null;
     /** Escape, deeper than the hall floor: the page takes one step back in the history */

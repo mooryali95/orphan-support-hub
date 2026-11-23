@@ -157,6 +157,9 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
         </div>
       </div>
       <div className="relative border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
+        <p className="mb-1.5 font-medium text-foreground/80" data-brand-owner>
+          {brand.ownerLine}
+        </p>
         © {new Date().getFullYear()} {brand.name} — {c.rights}
       </div>
     </footer>

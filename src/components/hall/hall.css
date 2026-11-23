@@ -1619,7 +1619,7 @@
    Final states are the resting styles (reduced motion shows the finished mark at once). */
 #gate .mark {
   position: relative;
-  width: min(260px, 32vh);
+  width: min(260px, 27vh);
   aspect-ratio: 220 / 204;
   margin: 0 auto 24px;
   /* the middle of the opening the two fingers make: the camera goes through here */
@@ -1633,6 +1633,29 @@
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+/* the emblem in 3D (mark3d.js) lies over the flat mark, a little larger for its turn, and takes
+   its place by a cross-fade once drawn; entry fades back to the flat mark, which is the door */
+.mark .mark-3d {
+  position: absolute;
+  left: calc(var(--pad, 0.1) * -100%);
+  top: calc(var(--pad, 0.1) * -100%);
+  width: calc(100% + var(--pad, 0.1) * 200%);
+  height: calc(100% + var(--pad, 0.1) * 200%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.mark .mark-art {
+  transition: opacity 0.3s ease;
+}
+.hall.mark-3d-on .mark .mark-3d {
+  opacity: 1;
+  transition: opacity 1.1s ease;
+}
+.hall.mark-3d-on .mark .mark-art {
+  opacity: 0;
+  transition: opacity 1.1s ease 0.2s;
 }
 /* the light behind the door, centred on the disc: a white core the size of the disc, soft beyond */
 .mark .mark-flood {
@@ -1809,6 +1832,15 @@
   }
 }
 /* the partnership, quietly, under the gate copy: the partner's mark as approved, on its own paper */
+.hall #gate .gate-owner {
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--champagne);
+}
+.hall #gate .gate-owner + .gate-partner {
+  margin-top: 8px;
+}
 .hall #gate .gate-partner {
   display: flex;
   align-items: center;
@@ -1858,6 +1890,7 @@
 #gate h1 .w,
 #gate p,
 #gate .gate-actions,
+#gate .gate-owner,
 #gate .gate-partner,
 #gate .loader {
   animation: g-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) 2.5s both;
@@ -2400,4 +2433,10 @@
   .hall #gate .loader {
     display: none;
   }
+}
+
+/* the journey's stages mean nothing before the door opens, and the emblem stands where they sit */
+.hall[data-stage="gate"] #steps {
+  opacity: 0;
+  pointer-events: none;
 }

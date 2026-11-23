@@ -51,6 +51,7 @@ import {
 } from "@/lib/hall/engine-bridge";
 import { rankPriorities } from "@/lib/office-gap";
 import { buildArchitecture } from "./architecture.js";
+import { buildMark, createEmblem } from "./mark3d.js";
 import { createSound } from "./sound.js";
 
 const DISPLAY = "Amiri",
@@ -66,6 +67,7 @@ export function mountHall(
     live = null,
     start = null,
     mine = null,
+    mark = null,
     onStage = null,
     onBack = null,
   },
@@ -2418,6 +2420,53 @@ export function mountHall(
     });
   }
 
+  /* ── The emblem: the gate's mark in real 3D, laid over the flat one once it can be drawn.
+     The flat SVG paints first and stays the mark on the light tier and wherever the emblem
+     cannot be drawn; it is also what opens as the door, so entry hands back to it. ── */
+  const markEl = $("#gate .mark");
+  const emblem =
+    mark && markEl && !LOW
+      ? createEmblem({ renderer, art: mark, environment: scene.environment, still: RM })
+      : null;
+  const emblemAt = { x: 0, y: 0, on: false };
+  function sizeEmblem() {
+    if (!emblem) return;
+    emblem.setSize(markEl.offsetWidth * (1 + emblem.pad * 2), renderer.getPixelRatio());
+    if (emblemAt.on && RM) emblem.render(0);
+  }
+  if (emblem) {
+    emblem.canvas.className = "mark-3d";
+    emblem.canvas.setAttribute("aria-hidden", "true");
+    emblem.canvas.style.setProperty("--pad", String(emblem.pad));
+    markEl.appendChild(emblem.canvas);
+    sizeEmblem();
+    // after the flat mark has drawn itself (hall.css), and only once a frame has really been drawn
+    gsap.delayedCall(RM ? 0.2 : 2.4, () => {
+      if (S.stage !== "gate" || !emblem.render(clock.elapsedTime)) return;
+      emblemAt.on = true;
+      root.classList.add("mark-3d-on");
+    });
+    on(window, "pointermove", (e) => {
+      if (!emblemAt.on || e.pointerType !== "mouse") return;
+      const r = markEl.getBoundingClientRect();
+      emblemAt.x = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (innerWidth / 2)));
+      emblemAt.y = Math.max(
+        -1,
+        Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight / 2)),
+      );
+    });
+  }
+  /* the same mark set into the floor inside the door, as a threshold seal: lacquer and brushed champagne,
+     lit by the hall, with a low light under the two fingers */
+  if (mark && !LOW) {
+    const seal = buildMark(mark, { envMapIntensity: 0.7 });
+    seal.light.color.setScalar(0.55);
+    seal.group.rotation.x = -Math.PI / 2;
+    seal.group.scale.setScalar(0.016);
+    seal.group.position.set(0, 0.11, 1.5); // crossed on the way in, out of the resting views
+    inlay.add(seal.group); // shown with the floor's inlay: the hall's floor, not a country's
+  }
+
   /* ── Gate: the two-fingers mark is drawn, the words rise, then the mark opens like a door ── */
   const words = $("#gate h1").textContent.trim().split(/\s+/);
   $("#gate h1").innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(" ");
@@ -2594,12 +2643,15 @@ export function mountHall(
     // the two fingers are the key and the disc the door: the two slots fill with light and draw
     // together into one opening, the seam runs down to the rim, the disc parts along it as two
     // leaves, the light behind floods through, and the camera goes in
-    const mark = $("#gate .mark");
-    if (mark) {
+    // the flat mark is the door: the emblem hands back to it before it opens
+    emblemAt.on = false;
+    root.classList.remove("mark-3d-on");
+    const gateMark = $("#gate .mark");
+    if (gateMark) {
       // the idle float would override gsap's transform: stop it where it is, and settle from there
-      const lift = new DOMMatrixReadOnly(getComputedStyle(mark).transform).m42;
-      mark.style.animation = "none";
-      gsap.set(mark, { y: lift });
+      const lift = new DOMMatrixReadOnly(getComputedStyle(gateMark).transform).m42;
+      gateMark.style.animation = "none";
+      gsap.set(gateMark, { y: lift });
     }
     const glow = $("#gate .k-glow");
     if (glow) {
@@ -5006,6 +5058,7 @@ export function mountHall(
     camera.fov = PHONE() ? 55 : 42;
     camera.updateProjectionMatrix();
     placeImpact();
+    sizeEmblem();
   }
   on(window, "resize", resize);
   resize();
@@ -5215,6 +5268,7 @@ export function mountHall(
         ),
       );
     }
+    if (emblemAt.on && !RM && S.stage === "gate") emblem.render(time, emblemAt);
     if (counted) renderer.info.reset();
     composer.render(dt);
     if (counted) {
@@ -5317,6 +5371,8 @@ export function mountHall(
     /** for automated checks: open the impact record, and move the time bar */
     log: () => openImpactLog(),
     time: (m) => setTime(m),
+    /** for automated checks: stand the camera somewhere and look at a point */
+    look: (...at) => controls.setLookAt(...at, false),
     /** for automated checks: pick a country on the globe and enter it */
     visit: (code) => {
       selectCountry(code);
@@ -5378,6 +5434,7 @@ export function mountHall(
     renderer.renderLists.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
+    emblem?.dispose();
     /* what the scene wrote into the page's markup */
     labels.forEach((l) => l.el.remove());
     labels.length = 0;

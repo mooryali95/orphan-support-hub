@@ -480,6 +480,10 @@ function HomePage() {
               <div>
                 {/* the lockup is already in the header just above; here the tagline alone opens the page */}
                 <p className="eyebrow">{brand.tagline}</p>
+                {/* whose platform this is, from the one brand source */}
+                <p className="mt-2 text-sm font-medium text-muted-foreground" data-brand-owner>
+                  {brand.ownerLine}
+                </p>
                 <h1 className="mx-auto mt-6 max-w-4xl text-[2.25rem] leading-[1.4] font-bold md:text-5xl md:leading-[1.35] lg:mx-0 lg:leading-[1.3] rtl:lg:text-[3.75rem] ltr:lg:leading-[1.2]">
                   {c.h1a}
                   <br />
