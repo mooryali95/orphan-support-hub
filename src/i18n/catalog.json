@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3047,
+ "count": 3064,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9770,6 +9770,118 @@
    "hash": "2a35ab384a99",
    "file": "src/components/try/TryReportPreview.tsx"
   },
+  "components/try/TryRoles.eyebrow": {
+   "en": "Interactive demo",
+   "ar": "العرض التفاعلي",
+   "kind": "text",
+   "hash": "490844452d82",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.lead": {
+   "en": "Each role sees its own interface, with the same steps as the real platform. The data here is sample data; money and waiting are simulated.",
+   "ar": "كلّ دورٍ يرى واجهته هو، بالخطوات نفسها في المنصّة الحقيقية — والبيانات هنا نموذجية، والمال والانتظار محاكاة.",
+   "kind": "text",
+   "hash": "2de7b24e1121",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.open": {
+   "en": "Enter",
+   "ar": "ادخل",
+   "kind": "text",
+   "hash": "ffccbd918f48",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.admin.0": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.admin.1": {
+   "en": "The data console: verification, approval, pledges and the access log.",
+   "ar": "لوحة البيانات: التوثيق، والاعتماد، والتعهّدات، وسجلّ الاطّلاع.",
+   "kind": "text",
+   "hash": "f9c6738aa361",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.decider.0": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.decider.1": {
+   "en": "The whole network: decisions, scenarios and indicators.",
+   "ar": "صورة الشبكة كاملة: القرارات، والسيناريوهات، والمؤشّرات.",
+   "kind": "text",
+   "hash": "e23fda63ee25",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.office.0": {
+   "en": "Field office",
+   "ar": "المكتب الميداني",
+   "kind": "text",
+   "hash": "121e18b2e2ae",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.office.1": {
+   "en": "Groups, sessions, deliveries and reports in its area.",
+   "ar": "المجموعات والجلسات والتسليم والتقارير في منطقته.",
+   "kind": "text",
+   "hash": "f90d0d3b4462",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.org.0": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.org.1": {
+   "en": "Enters a child's file and documents, then follows it to the first report.",
+   "ar": "تُدخل ملفّ طفلٍ ومستنداته — ثم تراه ينتقل حتى أوّل تقرير.",
+   "kind": "text",
+   "hash": "4ab60ebba749",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.supervisor.0": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.supervisor.1": {
+   "en": "Records qualification sessions and measures their effect on children.",
+   "ar": "يسجّل جلسات التأهيل ويقيس أثرها على الأطفال.",
+   "kind": "text",
+   "hash": "0efca5513783",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.supporter.0": {
+   "en": "Supporter",
+   "ar": "الكافل",
+   "kind": "text",
+   "hash": "b056bc05a216",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.supporter.1": {
+   "en": "Browses children, sponsors or supports a place, and sees the impact in My impact and the hall.",
+   "ar": "يتصفّح الأطفال، ويكفل أو يدعم مكاناً، ويرى أثره في «أثري» والقاعة.",
+   "kind": "text",
+   "hash": "36a7444778ee",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.title": {
+   "en": "Enter the platform in any role",
+   "ar": "ادخل المنصّة بأيّ دور",
+   "kind": "text",
+   "hash": "72268b178885",
+   "file": "src/components/try/TryRoles.tsx"
+  },
   "components/try/TryShareCard.cardLabel": {
    "en": "Impact card",
    "ar": "بطاقة الأثر",
@@ -17358,6 +17470,13 @@
    "kind": "plural",
    "hash": "a6ddce060012",
    "file": "src/routes/traits.tsx"
+  },
+  "routes/try.admin.title.title": {
+   "en": "Administration: interactive demo",
+   "ar": "الإدارة — عرض تفاعلي",
+   "kind": "text",
+   "hash": "d06c5736ef28",
+   "file": "src/routes/try.admin.tsx"
   },
   "routes/try.childId.activation": {
    "en": "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",

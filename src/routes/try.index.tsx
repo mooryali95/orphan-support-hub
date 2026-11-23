@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { TryChildCard } from "@/components/try/TryChildCard";
 import { TryDirectory } from "@/components/try/TryDirectory";
+import { TryRoles } from "@/components/try/TryRoles";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
@@ -124,6 +125,8 @@ function TryHome() {
           </li>
         ))}
       </ol>
+
+      <TryRoles />
 
       {/* «الدورة الكاملة»: ملفٌّ واحد يُرى ينتقل عبر كلّ الأدوار — أقوى ما يُعرض لصاحب القرار */}
       <Link
