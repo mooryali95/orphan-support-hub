@@ -8,7 +8,8 @@ import { AuthDialog } from "@/components/auth/AuthDialog";
 import { SupportPicks } from "@/components/support/SupportPicks";
 import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { payableOptions } from "@/lib/currency";
-import { formatDate, formatMoney } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
+import { PledgeReceipt } from "@/components/support/PledgeReceipt";
 import { DEFAULT_LAYER } from "@/components/map/layers";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 
@@ -85,8 +86,6 @@ const COPY = defineCopy("routes/support", {
     sumAmount: "المبلغ",
     sumEmpty: "اختر نوع الدعم لتبدأ.",
     sumPending: "—",
-    refLabel: "رقم المرجع",
-    dateLabel: "التاريخ",
     realNote:
       "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
     kinds: KIND_INFO,
@@ -137,8 +136,6 @@ const COPY = defineCopy("routes/support", {
     sumAmount: "Amount",
     sumEmpty: "Choose a kind of support to begin.",
     sumPending: "—",
-    refLabel: "Reference",
-    dateLabel: "Date",
     realNote:
       'Real support: recorded in your name and reaching a real child. To explore without commitment, open "Try the platform".',
     kinds: {
@@ -544,30 +541,12 @@ function SupportPage() {
               <p className="celebrate-text mx-auto mt-2 max-w-sm text-sm leading-7 text-muted-foreground">
                 {result.text}
               </p>
-              <dl className="celebrate-text border-bridge/40 bg-background mx-auto mt-6 max-w-sm divide-y divide-border rounded-2xl border text-sm">
-                {summaryRows.map(([k, v]) => (
-                  <div key={k} className="flex items-center justify-between gap-4 px-4 py-3">
-                    <dt className="text-muted-foreground">{k}</dt>
-                    <dd className="font-bold">{v}</dd>
-                  </div>
-                ))}
-                {result.at && (
-                  <div className="flex items-center justify-between gap-4 px-4 py-3">
-                    <dt className="text-muted-foreground">{t.dateLabel}</dt>
-                    <dd className="font-bold tabular-nums">
-                      {formatDate(result.at.toISOString(), locale)}
-                    </dd>
-                  </div>
-                )}
-                {result.id && (
-                  <div className="flex items-center justify-between gap-4 px-4 py-3">
-                    <dt className="text-muted-foreground">{t.refLabel}</dt>
-                    <dd dir="ltr" className="font-mono text-xs font-bold tracking-wider">
-                      {result.id.slice(0, 8).toUpperCase()}
-                    </dd>
-                  </div>
-                )}
-              </dl>
+              <PledgeReceipt
+                rows={summaryRows}
+                id={result.id}
+                at={result.at}
+                className="celebrate-text mx-auto mt-6 max-w-sm"
+              />
               <p className="celebrate-text mx-auto mt-3 max-w-sm text-xs leading-6 text-muted-foreground">
                 {t.pledgeNote}
               </p>

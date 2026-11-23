@@ -187,7 +187,7 @@ describe("العملة: خريطةٌ واحدة وسعرٌ واحد", () => {
       (p) =>
         !SHOWCASE(p) && /[€£﷼]|ر\.س|US\$/.test(code(p).replace(/\.replace\("US\$", "\$"\)/g, "")),
     );
-    expect(offenders).toEqual(["src/components/support/MyPledges.tsx"]);
+    expect(offenders).toEqual([]);
   });
 
   /*

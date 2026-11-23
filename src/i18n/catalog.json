@@ -8639,6 +8639,20 @@
    "hash": "37ce8defaed1",
    "file": "src/components/support/PendingPaymentBar.tsx"
   },
+  "components/support/PledgeReceipt.date": {
+   "en": "Date",
+   "ar": "التاريخ",
+   "kind": "text",
+   "hash": "d69460f8793a",
+   "file": "src/components/support/PledgeReceipt.tsx"
+  },
+  "components/support/PledgeReceipt.ref": {
+   "en": "Reference",
+   "ar": "رقم المرجع",
+   "kind": "text",
+   "hash": "7b802bf9d958",
+   "file": "src/components/support/PledgeReceipt.tsx"
+  },
   "components/support/SupportPicks.eyebrow": {
    "en": "Start here",
    "ar": "ابدأ من هنا",
@@ -16038,13 +16052,6 @@
    "hash": "6660428bf8fb",
    "file": "src/routes/support.tsx"
   },
-  "routes/support.dateLabel": {
-   "en": "Date",
-   "ar": "التاريخ",
-   "kind": "text",
-   "hash": "d69460f8793a",
-   "file": "src/routes/support.tsx"
-  },
   "routes/support.description": {
    "en": "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
    "ar": "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
@@ -16205,13 +16212,6 @@
    "ar": "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
    "kind": "text",
    "hash": "bd00a456abba",
-   "file": "src/routes/support.tsx"
-  },
-  "routes/support.refLabel": {
-   "en": "Reference",
-   "ar": "رقم المرجع",
-   "kind": "text",
-   "hash": "7b802bf9d958",
    "file": "src/routes/support.tsx"
   },
   "routes/support.rest": {
