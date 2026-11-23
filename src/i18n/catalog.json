@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2977,
+ "count": 3325,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -11740,6 +11740,2509 @@
    "hash": "c9d57fcbe573",
    "file": "src/lib/hall/copy.ts"
   },
+  "lib/hall/live.age.one": {
+   "en": "{1} year old",
+   "ar": "سنة",
+   "kind": "plural",
+   "hash": "63a9254d3951",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.age.other": {
+   "en": "{1} years old",
+   "ar": "{1} سنة",
+   "kind": "plural",
+   "hash": "a2f4b87dd3dd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.another": {
+   "en": "Another country",
+   "ar": "دولة أخرى",
+   "kind": "text",
+   "hash": "c85c6b0b00df",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.closer": {
+   "en": "With this support {0} is closer to meeting its need: {1} instead of {2} at today's pace.",
+   "ar": "وبهذا الدعم تقترب {0} من سدّ حاجتها: {1} بدل {2} بإيقاع اليوم.",
+   "kind": "template",
+   "params": 3,
+   "hash": "60ed2c42502c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.clothed": {
+   "en": "Clothed",
+   "ar": "مكسوّون",
+   "kind": "text",
+   "hash": "7c0218551e33",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.funded": {
+   "en": "Qualification funded",
+   "ar": "مموَّلٌ تأهيلهم",
+   "kind": "text",
+   "hash": "989ca1060d84",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.hall": {
+   "en": "Back to the hall",
+   "ar": "عودة إلى القاعة",
+   "kind": "text",
+   "hash": "6c11606e0091",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.note": {
+   "en": "Everything on this panel is a simulation on sample data: nothing was charged, and these are not real results.",
+   "ar": "كلّ ما في هذه اللوحة محاكاة ببياناتٍ نموذجية: لم يُخصم شيء، وليست هذه نتائج حقيقية.",
+   "kind": "text",
+   "hash": "a8c1f750068e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.real": {
+   "en": "Go to the real directory",
+   "ar": "إلى الدليل الحقيقي",
+   "kind": "text",
+   "hash": "26b3dbedbdbf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.sect": {
+   "en": "What your support moved in {0}",
+   "ar": "ما حرّكه دعمك في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f33911037d79",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.sponsored": {
+   "en": "Sponsored",
+   "ar": "مكفولون",
+   "kind": "text",
+   "hash": "067984e922d1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.sub": {
+   "en": "In this simulation your support reached {0} in {1}. This is what it changed, before and after.",
+   "ar": "في هذه المحاكاة وصل دعمك {0} في {1}. هذا ما تغيّر به، قبله وبعده.",
+   "kind": "template",
+   "params": 2,
+   "hash": "fd2857fd2ee0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.subCountry": {
+   "en": "In this simulation your support reached {0}. This is what it changed, before and after.",
+   "ar": "في هذه المحاكاة وصل دعمك {0}. هذا ما تغيّر به، قبله وبعده.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5f986638559b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.title": {
+   "en": "The impact of your support (simulated)",
+   "ar": "أثر دعمك (محاكاة)",
+   "kind": "text",
+   "hash": "55433c9cef67",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.waiting": {
+   "en": "Waiting for qualification",
+   "ar": "ينتظرون التأهيل",
+   "kind": "text",
+   "hash": "b5e95924a7a9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.big.warm": {
+   "en": "This is how the impact of your real support will read: behind every figure, a child one step closer to what they are waiting for. Thank you.",
+   "ar": "هكذا سيُقرأ أثر دعمك الحقيقي: وراء كلّ رقمٍ طفلٌ يقترب ممّا ينتظره. جزاك الله خيراً.",
+   "kind": "text",
+   "hash": "8b4c06b5239a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.back": {
+   "en": "Back to the hall",
+   "ar": "عودة إلى القاعة",
+   "kind": "text",
+   "hash": "6c11606e0091",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.enter": {
+   "en": "Enter {0}",
+   "ar": "ادخل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "ade6df0a9b03",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.funded": {
+   "en": "Qualification funded",
+   "ar": "مموَّلٌ تأهيلهم",
+   "kind": "text",
+   "hash": "989ca1060d84",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.groups": {
+   "en": "Qualification groups",
+   "ar": "مجموعات تأهيل",
+   "kind": "text",
+   "hash": "1227ffc871c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.inQualification": {
+   "en": "Orphans in qualification",
+   "ar": "أيتامٌ في التأهيل",
+   "kind": "text",
+   "hash": "c67afc7b37cc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.noPresence": {
+   "en": "There is no recent evidence of a WAMY presence here, so it is not shown as an office, and its figures are sample data.",
+   "ar": "لا دليل حديثاً على حضورٍ للندوة هنا، فلا تُعرض مكتباً لها، وأرقامها بياناتٌ نموذجية.",
+   "kind": "text",
+   "hash": "cd4936f14c68",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.noteDemo": {
+   "en": "The cities, groups and children of {0} are sample data, and your support here is a simulation recorded against them.",
+   "ar": "مدن {0} ومجموعاتها وأطفالها بياناتٌ نموذجية، ودعمك هنا محاكاة تُقيَّد عليها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "71610592417f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.noteLinked": {
+   "en": "{0}'s operating platform is connected, but the hall does not read from it yet: these figures are sample data.",
+   "ar": "منصّة تشغيل {0} متّصلة، لكنّ القاعة لا تقرأ منها بعد: هذه الأرقام نموذجية.",
+   "kind": "template",
+   "params": 1,
+   "hash": "d342208c074c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.noteSim": {
+   "en": "The operating figures here are sample data, not results, until {0}'s operating platform is connected.",
+   "ar": "أرقام التشغيل هنا نموذجية، لا نتائج، حتى تتّصل منصّة تشغيل {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "c6b6695151b9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.research": {
+   "en": "from public research",
+   "ar": "من البحث العامّ",
+   "kind": "text",
+   "hash": "25d986440ee3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.shape": {
+   "en": "Outline of {0}",
+   "ar": "شكل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7dd9ab4728f1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.card.supervisors": {
+   "en": "Supervisors",
+   "ar": "مشرفون",
+   "kind": "text",
+   "hash": "b37375357963",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.cities": {
+   "en": "Cities · largest gap first",
+   "ar": "المدن · الأكبر فجوةً أوّلاً",
+   "kind": "text",
+   "hash": "ffb4128b5fa6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.funded": {
+   "en": "Qualification funded",
+   "ar": "مموَّلٌ تأهيلهم",
+   "kind": "text",
+   "hash": "989ca1060d84",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.hint": {
+   "en": "Drag to circle the country · tap a column to choose its city",
+   "ar": "اسحب لتدور حول الدولة · المس عموداً لتختار مدينته",
+   "kind": "text",
+   "hash": "e3f498872f9c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.need": {
+   "en": "In need",
+   "ar": "في الحاجة",
+   "kind": "text",
+   "hash": "7803f2cbb1aa",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.now": {
+   "en": "As it stands",
+   "ar": "الحال الآن",
+   "kind": "text",
+   "hash": "2ff143b0a01e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.other": {
+   "en": "Another country",
+   "ar": "دولة أخرى",
+   "kind": "text",
+   "hash": "c85c6b0b00df",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.regions": {
+   "en": "Regions · largest gap first",
+   "ar": "المناطق · الأكبر فجوةً أوّلاً",
+   "kind": "text",
+   "hash": "6baeddb8f719",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.row": {
+   "en": "{0} of {1} waiting",
+   "ar": "{0} ينتظرون من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "572cbee45018",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.sampleCity": {
+   "en": "The cities and their figures are sample data, not results.",
+   "ar": "المدن وأرقامها بياناتٌ نموذجية، لا نتائج.",
+   "kind": "text",
+   "hash": "ad4862fc20a0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.sampleRegion": {
+   "en": "The regions and their figures are sample data, not results.",
+   "ar": "المناطق وأرقامها بياناتٌ نموذجية، لا نتائج.",
+   "kind": "text",
+   "hash": "94bbe3efde73",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.subCity": {
+   "en": "Each column is as tall as its city's need; the filled part is the qualification already funded.",
+   "ar": "ارتفاع كلّ عمود حاجةُ المدينة، والمملوء منه ما مُوِّل تأهيله.",
+   "kind": "text",
+   "hash": "4a86398e7e71",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.subRegion": {
+   "en": "Each column is as tall as its region's need; the filled part is the qualification already funded.",
+   "ar": "ارتفاع كلّ عمود حاجةُ المنطقة، والمملوء منه ما مُوِّل تأهيله.",
+   "kind": "text",
+   "hash": "aab8b7b9be9f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.support": {
+   "en": "Try supporting {0}",
+   "ar": "جرّب دعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d030ddd31002",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.title": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.country.waiting": {
+   "en": "Waiting",
+   "ar": "ينتظرون",
+   "kind": "text",
+   "hash": "52aaf29e1083",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.kiswa.one": {
+   "en": "{1} orphan clothed in {2}",
+   "ar": "كُسي يتيمٌ واحد في {2}",
+   "kind": "plural",
+   "hash": "112d264511f4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.kiswa.other": {
+   "en": "{1} orphans clothed in {2}",
+   "ar": "كُسي {1} يتيم في {2}",
+   "kind": "plural",
+   "hash": "2204d571966f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.line": {
+   "en": "{0} · {1} · simulated",
+   "ar": "{0} · {1} · محاكاة",
+   "kind": "template",
+   "params": 2,
+   "hash": "e8af4ea77592",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.qualify.one": {
+   "en": "{1} child qualified in {2}",
+   "ar": "تأهّل طفلٌ واحد في {2}",
+   "kind": "plural",
+   "hash": "3d5c06d0f81a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.qualify.other": {
+   "en": "{1} children qualified in {2}",
+   "ar": "تأهّل {1} طفل في {2}",
+   "kind": "plural",
+   "hash": "ceca2d865497",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.sponsor.one": {
+   "en": "{1} child sponsored in {2}",
+   "ar": "كفالة طفلٍ واحد في {2}",
+   "kind": "plural",
+   "hash": "18fc01a12051",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.did.sponsor.other": {
+   "en": "{1} children sponsored in {2}",
+   "ar": "كفالة {1} طفل في {2}",
+   "kind": "plural",
+   "hash": "94cf65866029",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.browse": {
+   "en": "Browse them",
+   "ar": "تصفّحهم",
+   "kind": "text",
+   "hash": "574f0648b900",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.chip": {
+   "en": "From the directory",
+   "ar": "من الدليل",
+   "kind": "text",
+   "hash": "99e3e1f25de3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.count.one": {
+   "en": "{1} child in {2}",
+   "ar": "طفلٌ واحد في {2}",
+   "kind": "plural",
+   "hash": "bd6ced31776b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.count.other": {
+   "en": "{1} children in {2}",
+   "ar": "{1} طفل في {2}",
+   "kind": "plural",
+   "hash": "2c8fbe2c6c2f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.hidden": {
+   "en": "Children in {0}",
+   "ar": "أطفال {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a489c0fae696",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.note": {
+   "en": "Only this count comes from the platform's directory, as the map and the directory show it. Every other figure on this panel is sample data.",
+   "ar": "هذا العدد وحده من دليل المنصّة، كما تعرضه الخريطة والدليل. بقيّة أرقام هذه اللوحة نموذجية.",
+   "kind": "text",
+   "hash": "ef96866d0cbe",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.sect": {
+   "en": "In the directory now",
+   "ar": "في الدليل الآن",
+   "kind": "text",
+   "hash": "9c3993ff58a4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.small": {
+   "en": "Small counts are hidden to protect the children",
+   "ar": "الأعداد الصغيرة تُحجب حمايةً للأطفال",
+   "kind": "text",
+   "hash": "867dd60d953e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.waiting.one": {
+   "en": "{1} of them is waiting for a sponsor",
+   "ar": "واحدٌ منهم ينتظر كافلاً",
+   "kind": "plural",
+   "hash": "9cb29109688c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.directory.waiting.other": {
+   "en": "{1} of them are waiting for a sponsor",
+   "ar": "{1} منهم ينتظرون كافلاً",
+   "kind": "plural",
+   "hash": "4013df0a2321",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.again": {
+   "en": "Simulate again",
+   "ar": "محاكاةٌ أخرى",
+   "kind": "text",
+   "hash": "39bdcebc8174",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.invoice": {
+   "en": "Sample invoice no.",
+   "ar": "رقم الفاتورة النموذجية",
+   "kind": "text",
+   "hash": "5854bf79e8cc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.sub": {
+   "en": "This was a simulation: nothing was charged and no donation was recorded. Read its impact as real support will be read: the baseline, what happened, then the impact on the country, the {0}, the group and the {1}, then the details.",
+   "ar": "هذه محاكاة: لم يُخصم شيء ولم يُسجَّل تبرّع. اقرأ أثرها كما سيُقرأ أثر الدعم الحقيقي: الأساس، ثم ما تمّ، ثم الأثر على البلد و{0} والمجموعة و{1}، ثم التفاصيل.",
+   "kind": "template",
+   "params": 2,
+   "hash": "f959e7365b47",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.summary": {
+   "en": "The impact in summary",
+   "ar": "خلاصة الأثر",
+   "kind": "text",
+   "hash": "c4e8c7180c71",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.support": {
+   "en": "Your support (simulated)",
+   "ar": "دعمك (محاكاة)",
+   "kind": "text",
+   "hash": "a69e32685ca9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.done.title": {
+   "en": "Simulation complete — thank you",
+   "ar": "تمّت المحاكاة — شكراً لك",
+   "kind": "text",
+   "hash": "742e36176b3a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.donor": {
+   "en": "Hall supporter (simulated)",
+   "ar": "داعم القاعة (محاكاة)",
+   "kind": "text",
+   "hash": "8f01e43b06be",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.close": {
+   "en": "And last, what the support moved, before and after. Everything you saw was a simulation on sample data",
+   "ar": "وأخيراً أثر الدعم: ما حرّكه، قبله وبعده. كلّ ما رأيتَه محاكاة ببياناتٍ نموذجية",
+   "kind": "text",
+   "hash": "843c7f419e48",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.enter": {
+   "en": "We go in: each city has a column as tall as its need; the filled part is the qualification already funded",
+   "ar": "ندخلها: لكلّ مدينةٍ عمودٌ بقدر حاجتها، والمملوء منه ما مُوِّل تأهيله",
+   "kind": "text",
+   "hash": "a40dc7fb9a5e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.flow": {
+   "en": "The support flows, and {0}'s column rises by what it funded",
+   "ar": "يتدفّق الدعم، ويرتفع عمود {0} بقدر ما موّل",
+   "kind": "template",
+   "params": 1,
+   "hash": "a5acd421caca",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.hall": {
+   "en": "The Impact Hall: where a supporter sees where their support goes and what it changes",
+   "ar": "قاعة الأثر: هنا يرى الداعم أين يذهب دعمه، وماذا يغيّر",
+   "kind": "text",
+   "hash": "c1b760c19036",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.levels": {
+   "en": "Then the impact at four levels: the country, the city, the group and the student",
+   "ar": "ثم الأثر على أربعة مستويات: البلد، والمدينة، والمجموعة، والطالب",
+   "kind": "text",
+   "hash": "eb1ffbda6cca",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.network": {
+   "en": "The WAMY network: headquarters in Riyadh and {0} sites of confirmed presence",
+   "ar": "شبكة الندوة: المقرّ في الرياض و{0} موقعاً مؤكَّد الحضور",
+   "kind": "template",
+   "params": 1,
+   "hash": "160cbc1bb149",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.pick": {
+   "en": "We choose {0}: WAMY field activity; its cities, groups and children here are sample data",
+   "ar": "نختار {0}: نشاطٌ ميداني للندوة، ومدنها ومجموعاتها وأطفالها هنا بياناتٌ نموذجية",
+   "kind": "template",
+   "params": 1,
+   "hash": "cad4e8175de3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.film.support": {
+   "en": "We simulate {1} for qualification in {0}, and the impact shows before any payment",
+   "ar": "نحاكي دعم {0} بـ {1} تأهيلاً، فيظهر الأثر قبل الدفع",
+   "kind": "template",
+   "params": 2,
+   "hash": "5269fa9c3c16",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.groups.one": {
+   "en": "{1} group",
+   "ar": "مجموعة واحدة",
+   "kind": "plural",
+   "hash": "a9fbf5245846",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.groups.other": {
+   "en": "{1} groups",
+   "ar": "{1} مجموعة",
+   "kind": "plural",
+   "hash": "6e8858e5ff11",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.0": {
+   "en": "S",
+   "ar": "س",
+   "kind": "text",
+   "hash": "bb0bfb210f92",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.1": {
+   "en": "A",
+   "ar": "ع",
+   "kind": "text",
+   "hash": "2ddc8b91c1e8",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.2": {
+   "en": "M",
+   "ar": "م",
+   "kind": "text",
+   "hash": "544eef9e9444",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.3": {
+   "en": "N",
+   "ar": "ن",
+   "kind": "text",
+   "hash": "def592fc05c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.4": {
+   "en": "R",
+   "ar": "ر",
+   "kind": "text",
+   "hash": "1483f0c59784",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.5": {
+   "en": "Y",
+   "ar": "ي",
+   "kind": "text",
+   "hash": "9c4bbd3f2a23",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.6": {
+   "en": "H",
+   "ar": "ح",
+   "kind": "text",
+   "hash": "7e58ec1e4f3f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.7": {
+   "en": "L",
+   "ar": "ل",
+   "kind": "text",
+   "hash": "319ec9b0bc06",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.8": {
+   "en": "F",
+   "ar": "ف",
+   "kind": "text",
+   "hash": "9bcd6b692fc0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.initials.9": {
+   "en": "Z",
+   "ar": "ز",
+   "kind": "text",
+   "hash": "c9bfd46222ee",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kidName": {
+   "en": "“{0}. {1}.”",
+   "ar": "«{0}. {1}.»",
+   "kind": "template",
+   "params": 2,
+   "hash": "c62ecb504310",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kids.one": {
+   "en": "{1} child",
+   "ar": "طفلٌ واحد",
+   "kind": "plural",
+   "hash": "4e7b50767a22",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kids.other": {
+   "en": "{1} children",
+   "ar": "{1} طفل",
+   "kind": "plural",
+   "hash": "7e845bd007d7",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.go": {
+   "en": "Choose a country and try",
+   "ar": "اختر دولةً وجرّب",
+   "kind": "text",
+   "hash": "8d8e355a8883",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.level": {
+   "en": "Level",
+   "ar": "المستوى",
+   "kind": "text",
+   "hash": "cccb63b6b634",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.child.kiswa": {
+   "en": "A full set of clothing, delivered",
+   "ar": "كسوةٌ كاملة مسلَّمة",
+   "kind": "text",
+   "hash": "089b99734225",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.child.name": {
+   "en": "Child",
+   "ar": "الطفل",
+   "kind": "text",
+   "hash": "9b7972644282",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.child.qualify": {
+   "en": "Their six traits before and after, and their level",
+   "ar": "سماته الستّ قبل وبعد، ومستواه",
+   "kind": "text",
+   "hash": "6251d3131adc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.child.sponsor": {
+   "en": "A fixed monthly amount, with their resilience and awareness",
+   "ar": "مبلغٌ شهري ثابت، وصمودُه ودرايتُه",
+   "kind": "text",
+   "hash": "4a55a0ae84df",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.country.kiswa": {
+   "en": "Children clothed this season",
+   "ar": "المكسوّون هذا الموسم",
+   "kind": "text",
+   "hash": "04616e573dea",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.country.name": {
+   "en": "Country",
+   "ar": "البلد",
+   "kind": "text",
+   "hash": "ed9ac8a2fff8",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.country.qualify": {
+   "en": "Share funded, children waiting and time to close the gap",
+   "ar": "نسبة التمويل والمنتظرون ومدّة سدّ الفجوة",
+   "kind": "text",
+   "hash": "c8a9f212c2bb",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.country.sponsor": {
+   "en": "Children sponsored in the country",
+   "ar": "عدد المكفولين في البلد",
+   "kind": "text",
+   "hash": "2554dacf13f4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.group.kiswa": {
+   "en": "The whole group clothed, with proof",
+   "ar": "كسوة المجموعة كاملةً بإثبات",
+   "kind": "text",
+   "hash": "21afadab38e7",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.group.name": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.group.qualify": {
+   "en": "Six sessions, the trait average and the move between levels",
+   "ar": "6 جلسات، ومتوسّط السمات، وانتقال المستويات",
+   "kind": "text",
+   "hash": "3ea0083399d4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.group.sponsor": {
+   "en": "Those sponsored among its eight children",
+   "ar": "المكفولون من أطفالها الثمانية",
+   "kind": "text",
+   "hash": "6eeea7ef9d79",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.region.kiswa": {
+   "en": "The share of the season's need met",
+   "ar": "ما سُدّ من حاجة الموسم",
+   "kind": "text",
+   "hash": "f93d9b06b731",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.region.name": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.region.qualify": {
+   "en": "Its waiting children and the share of its need qualified",
+   "ar": "منتظروها وما تأهّل من حاجتها",
+   "kind": "text",
+   "hash": "668d60277d2d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.rows.region.sponsor": {
+   "en": "Those sponsored and those still without a sponsor",
+   "ar": "المكفولون ومن بقي بلا كفيل",
+   "kind": "text",
+   "hash": "fc91feb55ba8",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.sub": {
+   "en": "Each kind is read at four levels. This is what you see at each level after you give. Unit prices are sample figures.",
+   "ar": "كلّ نوعٍ يُقرأ أثره على أربعة مستويات. هذا ما تراه بعد دعمك في كلّ مستوى. أسعار الوحدات أرقامٌ نموذجية.",
+   "kind": "text",
+   "hash": "7dae2fe9521c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.kinds.title": {
+   "en": "Three kinds of support",
+   "ar": "أنواع الدعم الثلاثة",
+   "kind": "text",
+   "hash": "0bfc148b1998",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.legend.kiswa": {
+   "en": "Clothed",
+   "ar": "مكسوّون",
+   "kind": "text",
+   "hash": "7c0218551e33",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.legend.qualify": {
+   "en": "Qualified",
+   "ar": "تأهّلوا",
+   "kind": "text",
+   "hash": "1eb26e2ca6c9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.legend.sponsor": {
+   "en": "Sponsored",
+   "ar": "مكفولون",
+   "kind": "text",
+   "hash": "067984e922d1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.levels.capable": {
+   "en": "Capable",
+   "ar": "متمكّن",
+   "kind": "text",
+   "hash": "0a76524401dd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.levels.distinct": {
+   "en": "Distinguished",
+   "ar": "متميّز",
+   "kind": "text",
+   "hash": "5c7fa82a72fe",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.levels.growing": {
+   "en": "Growing",
+   "ar": "نامٍ",
+   "kind": "text",
+   "hash": "26879b2035ff",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.levels.start": {
+   "en": "Starting",
+   "ar": "في البداية",
+   "kind": "text",
+   "hash": "c02e7c9655d6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.empty": {
+   "en": "No support yet. Tap the globe, choose a country and try supporting it; the simulation's impact is recorded here at its four levels.",
+   "ar": "لم تدعم بعد. المس الكرة واختر دولةً وجرّب دعمها، فيُسجَّل هنا أثر المحاكاة بمستوياته الأربعة.",
+   "kind": "text",
+   "hash": "3cac98e3ae76",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.emptyTitle": {
+   "en": "Your impact",
+   "ar": "أثرك",
+   "kind": "text",
+   "hash": "debb4d519146",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.item": {
+   "en": "{0} · {1} · {2}",
+   "ar": "{0} · {1} · {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "455d9b470a4b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.line": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.pick": {
+   "en": "Choose a country",
+   "ar": "اختر دولة",
+   "kind": "text",
+   "hash": "d17c8da548c0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.sub": {
+   "en": "Every gift you simulated on this visit, and its impact on the country, the region, the group and the child. None of it is a recorded donation.",
+   "ar": "كلّ دعمٍ حاكيته في هذه الجولة، وأثره على البلد والمنطقة والمجموعة والطفل. لا شيء منه تبرّعٌ مسجَّل.",
+   "kind": "text",
+   "hash": "73d073bf94b2",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.log.title": {
+   "en": "This visit's record",
+   "ar": "سجلّ هذه الجولة",
+   "kind": "text",
+   "hash": "a5f269c9d544",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.city": {
+   "en": "City",
+   "ar": "المدينة",
+   "kind": "text",
+   "hash": "ad8e85b1c36d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.country": {
+   "en": "Country",
+   "ar": "البلد",
+   "kind": "text",
+   "hash": "ed9ac8a2fff8",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.group": {
+   "en": "Group",
+   "ar": "المجموعة",
+   "kind": "text",
+   "hash": "ba469a59db31",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.person": {
+   "en": "Child",
+   "ar": "الفرد",
+   "kind": "text",
+   "hash": "35b7a6b8d30b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvl.student": {
+   "en": "Student",
+   "ar": "الطالب",
+   "kind": "text",
+   "hash": "d3bd7bf668b5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvlIn.city": {
+   "en": "city",
+   "ar": "المدينة",
+   "kind": "text",
+   "hash": "4ca35e7959dd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvlIn.person": {
+   "en": "child",
+   "ar": "الفرد",
+   "kind": "text",
+   "hash": "2491b0be9e9b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvlIn.region": {
+   "en": "region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e4365547a234",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.lvlIn.student": {
+   "en": "student",
+   "ar": "الطالب",
+   "kind": "text",
+   "hash": "f8168d995e88",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.months.one": {
+   "en": "{1} month",
+   "ar": "شهر واحد",
+   "kind": "plural",
+   "hash": "d2cb852b5b81",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.months.other": {
+   "en": "{1} months",
+   "ar": "{1} شهر",
+   "kind": "plural",
+   "hash": "7996b5cf1d2a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.eyebrow": {
+   "en": "Impact screen · before paying · simulated",
+   "ar": "شاشة الأثر · قبل الدفع · محاكاة",
+   "kind": "text",
+   "hash": "ec862a2da637",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kKids.one": {
+   "en": "{1} orphan clothed",
+   "ar": "يتيمٌ واحد يُكسى",
+   "kind": "plural",
+   "hash": "fd19c9269dba",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kKids.other": {
+   "en": "{1} orphans clothed",
+   "ar": "{1} يتيم يُكسَون",
+   "kind": "plural",
+   "hash": "d3a32deac125",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kMet": {
+   "en": "{0}% of the season's need met",
+   "ar": "تُسدّ {0}% من حاجة الموسم",
+   "kind": "template",
+   "params": 1,
+   "hash": "e79cb81cc054",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kNeed": {
+   "en": "Clothing need in {0}: from {1} to {2}",
+   "ar": "حاجة الكسوة في {0}: من {1} إلى {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "b6b93bbb98ee",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kProof": {
+   "en": "Proof of delivery states how many received it and when, with no photos of children",
+   "ar": "يُرفق إثبات التسليم بعدد المستلمين وتاريخه، بلا صورٍ للأطفال",
+   "kind": "text",
+   "hash": "1144c21315b0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kTitle": {
+   "en": "If you gave {0} for clothing in {1}",
+   "ar": "لو دعمت بـ {0} كسوةً في {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "53f3de5a811c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kUnit": {
+   "en": "{0} clothes one orphan",
+   "ar": "كسوة اليتيم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c799700df41e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.kWhen": {
+   "en": "Delivered within 1–3 weeks, with proof",
+   "ar": "تُسلَّم خلال 1–3 أسابيع بإثبات",
+   "kind": "text",
+   "hash": "9c97aa748147",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qDrop": {
+   "en": "Down {0}% · expected trait average from {1} to {2}",
+   "ar": "تنخفض {0}% · متوسّط السمات المتوقّع من {1} إلى {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "586a790af2e0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qForming": {
+   "en": "{0} in a group still forming",
+   "ar": "{0} في مجموعةٍ قيد التكوين",
+   "kind": "template",
+   "params": 1,
+   "hash": "2b3b47255f7b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qGap": {
+   "en": "{0}'s gap: from {1} to {2}",
+   "ar": "فجوة {0}: من {1} إلى {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "06ccb9b5875b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qGroups.one": {
+   "en": "{1} full group",
+   "ar": "مجموعة كاملة",
+   "kind": "plural",
+   "hash": "b7e0ea537428",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qGroups.other": {
+   "en": "{1} full groups",
+   "ar": "{1} مجموعة كاملة",
+   "kind": "plural",
+   "hash": "8c38982dfbc1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qRest": {
+   "en": " and {0} in a group still forming",
+   "ar": " و{0} في مجموعةٍ قيد التكوين",
+   "kind": "template",
+   "params": 1,
+   "hash": "ac2061f390f1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qSessions": {
+   "en": "Six sessions per group, with the six traits measured before and after",
+   "ar": "ستّ جلسات لكلّ مجموعة، وقياسٌ للسمات الستّ قبلها وبعدها",
+   "kind": "text",
+   "hash": "dfd288aba2c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qStart.one": {
+   "en": "{1} child starts the qualification journey",
+   "ar": "طفلٌ واحد يبدأ رحلة التأهيل",
+   "kind": "plural",
+   "hash": "21110f8a2904",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qStart.other": {
+   "en": "{1} children start the qualification journey",
+   "ar": "{1} طفل يبدأون رحلة التأهيل",
+   "kind": "plural",
+   "hash": "97f80e0dba6b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qTitle": {
+   "en": "If you gave {0} for qualification in {1}",
+   "ar": "لو دعمت بـ {0} تأهيلاً في {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "342074468ca3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.qUnit": {
+   "en": "{0} per journey",
+   "ar": "كلّ رحلة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0e3defd9f0bc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sCount": {
+   "en": "Sponsored in {0}: from {1} to {2}",
+   "ar": "المكفولون في {0}: من {1} إلى {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "d46711561836",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sExpect": {
+   "en": "An expected rise within a year in resilience, awareness and drive (an estimate that measurement will correct)",
+   "ar": "ارتفاعٌ متوقّع خلال سنة في الصمود والدراية والهمّة (تقديرٌ يضبطه القياس)",
+   "kind": "text",
+   "hash": "9f92bb170c7c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sMonths.one": {
+   "en": "{1} month of sponsorship",
+   "ar": "شهر كفالة واحد",
+   "kind": "plural",
+   "hash": "a4d7b9f42741",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sMonths.other": {
+   "en": "{1} months of sponsorship",
+   "ar": "{1} شهر كفالة",
+   "kind": "plural",
+   "hash": "091f7df94ee9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sMore.one": {
+   "en": " and {1} month for another child",
+   "ar": " وشهرٌ لطفلٍ آخر",
+   "kind": "plural",
+   "hash": "80fffd6c3cdf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sMore.other": {
+   "en": " and {1} months for another child",
+   "ar": " و{1} شهر لطفلٍ آخر",
+   "kind": "plural",
+   "hash": "bb405eb65b15",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sOnly.one": {
+   "en": "{1} month for one child",
+   "ar": "شهرٌ واحد لطفلٍ واحد",
+   "kind": "plural",
+   "hash": "1d9c63e9e479",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sOnly.other": {
+   "en": "{1} months for one child",
+   "ar": "{1} شهر لطفلٍ واحد",
+   "kind": "plural",
+   "hash": "6e1c7460b88d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sPick": {
+   "en": "Children are chosen from those who completed qualification and have no sponsor",
+   "ar": "يُختار الأطفال ممّن أتمّوا التأهيل ولا كفيل لهم",
+   "kind": "text",
+   "hash": "597f66d054ad",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sTitle": {
+   "en": "If you sponsored with {0} in {1}",
+   "ar": "لو كفلت بـ {0} في {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "6f2ca211e973",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sUnit": {
+   "en": "{0} each month reaches the child, with proof of delivery",
+   "ar": "كلّ شهر {0} يصل الطفل بإثبات تسليم",
+   "kind": "template",
+   "params": 1,
+   "hash": "1f169c171e76",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sYears.one": {
+   "en": "{1} child for a full year",
+   "ar": "طفلٌ واحد لسنةٍ كاملة",
+   "kind": "plural",
+   "hash": "2620222cb423",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.sYears.other": {
+   "en": "{1} children for a full year",
+   "ar": "{1} طفل لسنةٍ كاملة",
+   "kind": "plural",
+   "hash": "46031fb6b54c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.preview.spill": {
+   "en": " · the rest, enough for {0} more, goes to the nearest gap",
+   "ar": " · وما زاد، وهو ما يكفي {0}، يذهب لأقرب فجوة",
+   "kind": "template",
+   "params": 1,
+   "hash": "82fc8a2a252c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.kiswa.one": {
+   "en": "orphan clothed",
+   "ar": "يتيمٌ كُسي",
+   "kind": "plural",
+   "hash": "e14f86b08ed1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.kiswa.other": {
+   "en": "orphans clothed",
+   "ar": "يتيم كُسوا",
+   "kind": "plural",
+   "hash": "c931f76fd84a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.qualify.one": {
+   "en": "child qualified",
+   "ar": "طفلٌ تأهّل",
+   "kind": "plural",
+   "hash": "faf2df8f6c12",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.qualify.other": {
+   "en": "children qualified",
+   "ar": "طفل تأهّلوا",
+   "kind": "plural",
+   "hash": "f0612d4edf18",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.sponsor.one": {
+   "en": "child sponsored",
+   "ar": "طفلٌ كُفل",
+   "kind": "plural",
+   "hash": "794b3cf1df3a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.reached.sponsor.other": {
+   "en": "children sponsored",
+   "ar": "طفل كُفلوا",
+   "kind": "plural",
+   "hash": "bbc8bb53f5b8",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.region": {
+   "en": "Region {0}",
+   "ar": "المنطقة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cbce1176aef2",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.kiswa.one": {
+   "en": "Look at the children: {1} pearl gift has come down to them",
+   "ar": "انظر إلى الأطفال: هديةٌ لؤلؤية نزلت على أحدهم",
+   "kind": "plural",
+   "hash": "44c48a8c847a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.kiswa.other": {
+   "en": "Look at the children: {1} pearl gifts have come down to them",
+   "ar": "انظر إلى الأطفال: {1} هدية لؤلؤية نزلت عليهم",
+   "kind": "plural",
+   "hash": "b44f9def6a84",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.qualify.one": {
+   "en": "Look at the column: its filled part has risen, and the lit rings are the sessions of {1} child",
+   "ar": "انظر إلى العمود: ارتفع ما امتلأ منه، والحلقات المضيئة جلسات طفلٍ واحد",
+   "kind": "plural",
+   "hash": "ee97c677bdcd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.qualify.other": {
+   "en": "Look at the column: its filled part has risen, and the lit rings are the sessions of {1} children",
+   "ar": "انظر إلى العمود: ارتفع ما امتلأ منه، والحلقات المضيئة جلسات {1} طفل",
+   "kind": "plural",
+   "hash": "2fdb5393dccf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.sponsor.one": {
+   "en": "Look around the column: {1} emerald lantern has joined the sponsorship orbit",
+   "ar": "انظر حول العمود: فانوسٌ زمرّدي انضمّ إلى مدار الكفالة",
+   "kind": "plural",
+   "hash": "6d09a56c82a7",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.say.sponsor.other": {
+   "en": "Look around the column: {1} emerald lanterns have joined the sponsorship orbit",
+   "ar": "انظر حول العمود: {1} فانوس زمرّدي انضمّ إلى مدار الكفالة",
+   "kind": "plural",
+   "hash": "32878bc8c76a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.by.kiswa": {
+   "en": "{0} clothed",
+   "ar": "{0} كُسوا",
+   "kind": "template",
+   "params": 1,
+   "hash": "7a7b969edd0c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.by.qualify": {
+   "en": "{0} qualified",
+   "ar": "{0} تأهّلوا",
+   "kind": "template",
+   "params": 1,
+   "hash": "8fb05c057d17",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.by.sponsor": {
+   "en": "{0} sponsored",
+   "ar": "{0} كُفلوا",
+   "kind": "template",
+   "params": 1,
+   "hash": "d71ccae0b89b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.countries.one": {
+   "en": "country",
+   "ar": "دولة",
+   "kind": "plural",
+   "hash": "353ff9781a9f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.countries.other": {
+   "en": "countries",
+   "ar": "دولة",
+   "kind": "plural",
+   "hash": "4811db5289b4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.enter": {
+   "en": "Tap the screen to enter {0}",
+   "ar": "المس الشاشة لتدخل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a4f7fdf064d3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.gaps": {
+   "en": "Largest gaps",
+   "ar": "أكبر الفجوات",
+   "kind": "text",
+   "hash": "feada0949af6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.impactTitle": {
+   "en": "Your impact this visit (simulated)",
+   "ar": "أثر دعمك في هذه الجولة (محاكاة)",
+   "kind": "text",
+   "hash": "c8dc6aa9e65b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.mapLine": {
+   "en": "Sample data · {0} in need · {1}% funded · {2} waiting",
+   "ar": "بيانات نموذجية · في الحاجة {0} · مموَّلٌ تأهيلهم {1}% · ينتظرون {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "45f2ed7583b6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.mapTitle": {
+   "en": "{0}: as it stands",
+   "ar": "{0} — الحال الآن",
+   "kind": "template",
+   "params": 1,
+   "hash": "00f50cac9e92",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.none": {
+   "en": "No support yet.",
+   "ar": "لم تدعم بعد.",
+   "kind": "text",
+   "hash": "ebc7724df94a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.noneSub.0": {
+   "en": "Choose a country and try supporting it:",
+   "ar": "اختر دولةً وجرّب دعمها، فيُكتب هنا ما تمّ",
+   "kind": "text",
+   "hash": "bbeb23d5aeb0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.noneSub.1": {
+   "en": "the result is written here, level by level.",
+   "ar": "على البلد والمنطقة والمجموعة والطفل.",
+   "kind": "text",
+   "hash": "613b5cec3b82",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.open": {
+   "en": "Tap the screen to open each gift's impact, level by level",
+   "ar": "المس الشاشة لتفتح أثر كلّ دعمٍ بمستوياته",
+   "kind": "text",
+   "hash": "0e1b940370cc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.reached.one": {
+   "en": "child reached",
+   "ar": "طفلٌ وصله",
+   "kind": "plural",
+   "hash": "765610dd62ea",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.reached.other": {
+   "en": "children reached",
+   "ar": "طفل وصلهم",
+   "kind": "plural",
+   "hash": "300bdd14e165",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.support": {
+   "en": "simulated support",
+   "ar": "دعمك (محاكاة)",
+   "kind": "text",
+   "hash": "e6c69d847383",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.tracksNote": {
+   "en": "Unit prices are sample figures",
+   "ar": "أسعار الوحدات أرقام نموذجية",
+   "kind": "text",
+   "hash": "cd311f7d1b80",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.tracksSub.kiswa": {
+   "en": "Clothing delivered with proof before the season",
+   "ar": "كسوةٌ تُسلَّم بإثبات قبل الموسم",
+   "kind": "text",
+   "hash": "bfd214de0a81",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.tracksSub.qualify": {
+   "en": "Six sessions, with the six traits measured before and after",
+   "ar": "ستّ جلسات وقياسٌ قبل وبعد في السمات الستّ",
+   "kind": "text",
+   "hash": "22c142c679bc",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.tracksSub.sponsor": {
+   "en": "A monthly amount that reaches the child, with proof",
+   "ar": "مبلغٌ شهري يصل الطفل بإثبات",
+   "kind": "text",
+   "hash": "c0a5cf6cce0b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.tracksTitle": {
+   "en": "Three kinds of support",
+   "ar": "أنواع الدعم الثلاثة",
+   "kind": "text",
+   "hash": "0bfc148b1998",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.screen.waiting": {
+   "en": "{0} waiting",
+   "ar": "{0} ينتظرون",
+   "kind": "template",
+   "params": 1,
+   "hash": "4ef7e08021bd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.after": {
+   "en": "After",
+   "ar": "قياسٌ بعدي",
+   "kind": "text",
+   "hash": "7d69abe914dd",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.afterMeasure": {
+   "en": "After measurement",
+   "ar": "بعد القياس",
+   "kind": "text",
+   "hash": "20d08b19c827",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.andOthers": {
+   "en": " and {0} more",
+   "ar": " و{0} غيرها",
+   "kind": "template",
+   "params": 1,
+   "hash": "fb5be5dad9c2",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.attendance": {
+   "en": "Attendance",
+   "ar": "الحضور",
+   "kind": "text",
+   "hash": "c15780a623f5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.before": {
+   "en": "Before",
+   "ar": "قياسٌ قبلي",
+   "kind": "text",
+   "hash": "31039832e300",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.childLater": {
+   "en": "Now at “{0}”; their traits are measured after the sixth session. Code {1}.",
+   "ar": "مستواه الآن «{0}»، وتُقاس سماته بعد الجلسة السادسة. رمزه {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "475f1ea92a69",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.childMoved": {
+   "en": "Moved from “{0}” to “{1}”. Code {2}.",
+   "ar": "انتقل من «{0}» إلى «{1}». رمزه {2}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "ad5e4db381be",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.childRose": {
+   "en": "At “{0}”, and their traits rose with the support. Code {1}.",
+   "ar": "مستواه «{0}»، وارتفعت سماته بالدعم. رمزه {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "929a7db170ed",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.clothedNow": {
+   "en": "Clothed this season",
+   "ar": "مكسوّون هذا الموسم",
+   "kind": "text",
+   "hash": "54e174867dac",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.clothedOf8": {
+   "en": "Clothed, out of 8 in the group",
+   "ar": "مكسوّون من 8 في المجموعة",
+   "kind": "text",
+   "hash": "50c96bbdbb2f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.clothedSeason": {
+   "en": "Clothed this season",
+   "ar": "كُسوا هذا الموسم",
+   "kind": "text",
+   "hash": "045c76f96057",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.dist": {
+   "en": "Levels · the opening measurement",
+   "ar": "توزيع المستويات · القياس القبلي",
+   "kind": "text",
+   "hash": "17e90fada723",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.duration": {
+   "en": "Duration",
+   "ar": "المدّة",
+   "kind": "text",
+   "hash": "26197ca255d5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.eyebrow": {
+   "en": "Impact screen · simulated · your support of {0}",
+   "ar": "شاشة الأثر · محاكاة · دعمك {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a45d0b677610",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.fee": {
+   "en": "Gateway fee",
+   "ar": "رسوم البوابة",
+   "kind": "text",
+   "hash": "fec565739686",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.forming": {
+   "en": "a group still forming",
+   "ar": "مجموعةٌ قيد التكوين",
+   "kind": "text",
+   "hash": "6c073f8c11f3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.fundedFull": {
+   "en": "Fully funded",
+   "ar": "مموّلة كاملةً",
+   "kind": "text",
+   "hash": "81b90778a651",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.fundedQ": {
+   "en": "Qualification funded",
+   "ar": "مموَّلٌ تأهيلهم",
+   "kind": "text",
+   "hash": "989ca1060d84",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.fundedWait": {
+   "en": "Awaiting funding",
+   "ar": "تنتظر التمويل",
+   "kind": "text",
+   "hash": "d0f98d1a5330",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.funding": {
+   "en": "Funding",
+   "ar": "التمويل",
+   "kind": "text",
+   "hash": "3e7840573cc0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.groupName": {
+   "en": "{0} group · {1}",
+   "ar": "مجموعة {0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "566c2c63e63d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.groupsIn.one": {
+   "en": "{1} group in {2}",
+   "ar": "مجموعة واحدة في {2}",
+   "kind": "plural",
+   "hash": "a30885b7e439",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.groupsIn.other": {
+   "en": "{1} groups in {2}",
+   "ar": "{1} مجموعة في {2}",
+   "kind": "plural",
+   "hash": "c1ed61d1cac1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.invoice": {
+   "en": "Sample invoice",
+   "ar": "الفاتورة النموذجية",
+   "kind": "text",
+   "hash": "367c34ec2ca3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.k1": {
+   "en": "The season's need in {0} is met by as much as you gave.",
+   "ar": "تُسدّ حاجة الموسم في {0} بقدر دعمك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "4e5bb557e804",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.k2": {
+   "en": "{0}% of {1}'s need was met by your support.",
+   "ar": "{0}% من حاجة {1} سُدّت بدعمك.",
+   "kind": "template",
+   "params": 2,
+   "hash": "a388a924860f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.k3": {
+   "en": "The whole group receives its clothing on one day, with proof.",
+   "ar": "تُسلَّم الكسوة للمجموعة كاملةً في يومٍ واحد بإثبات.",
+   "kind": "text",
+   "hash": "23024b60fd6f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.k4": {
+   "en": "A garment, shoes and a winter coat, with no photo or location of the child.",
+   "ar": "ثوبٌ وحذاءٌ ومعطفٌ للشتاء، بلا صورةٍ ولا مكانٍ للطفل.",
+   "kind": "text",
+   "hash": "7df26945cd08",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kBase": {
+   "en": "Before your support: this season's clothing need in {0}.",
+   "ar": "قبل دعمك: حاجة الكسوة لهذا الموسم في {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "e443a85ef538",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kBefore": {
+   "en": "No clothing for the season",
+   "ar": "بلا كسوة الموسم",
+   "kind": "text",
+   "hash": "2cfdbc020dcb",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kDone": {
+   "en": "{0} = {1}, bought, prepared and delivered with proof.",
+   "ar": "{0} = {1}، تُشترى وتُجهَّز وتُسلَّم بإثبات.",
+   "kind": "template",
+   "params": 2,
+   "hash": "d9b12b78471a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kNow": {
+   "en": "A full set delivered",
+   "ar": "كسوةٌ كاملة مسلَّمة",
+   "kind": "text",
+   "hash": "9e9c4a1163ad",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kidLine": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kits.one": {
+   "en": "{1} full set of clothing",
+   "ar": "كسوة كاملة واحدة",
+   "kind": "plural",
+   "hash": "a5042b71c0d9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.kits.other": {
+   "en": "{1} full sets of clothing",
+   "ar": "{1} كسوة كاملة",
+   "kind": "plural",
+   "hash": "8e2ce8798b79",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.ledger": {
+   "en": "Financial record · simulated",
+   "ar": "القيد المالي · محاكاة",
+   "kind": "text",
+   "hash": "e3e08980824c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.levelsLead": {
+   "en": "The same support, read at four levels: the country, then the {0}, then the group, then the {1}.",
+   "ar": "دعمك نفسه، مقروءاً على أربعة مستويات: البلد، ثم {0}، ثم المجموعة، ثم {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "0ebbed8b43b4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.members": {
+   "en": "Children",
+   "ar": "أطفالها",
+   "kind": "text",
+   "hash": "2feaa316cb42",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.monthly": {
+   "en": "Receives each month",
+   "ar": "يصله شهرياً",
+   "kind": "text",
+   "hash": "0eae822f1783",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.moved": {
+   "en": "The group was measured after its six sessions; this is how its levels moved.",
+   "ar": "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها.",
+   "kind": "text",
+   "hash": "cdb1e337977f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.need": {
+   "en": "In need",
+   "ar": "في الحاجة",
+   "kind": "text",
+   "hash": "7803f2cbb1aa",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.net": {
+   "en": "Net",
+   "ar": "الصافي",
+   "kind": "text",
+   "hash": "3513c4031965",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.netWamy": {
+   "en": "Net to WAMY's account",
+   "ar": "الصافي إلى حساب الندوة",
+   "kind": "text",
+   "hash": "80d007dc4947",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.noPhotos": {
+   "en": "No photos or locations of children; the count, the date and the signature are enough.",
+   "ar": "بلا صورٍ ولا أماكن للأطفال؛ يُكتفى بالعدد والتاريخ والتوقيع.",
+   "kind": "text",
+   "hash": "a3695d76ddbf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.noSponsor": {
+   "en": "Without a sponsor",
+   "ar": "بلا كفيل",
+   "kind": "text",
+   "hash": "8ed0c8b83ee3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.noteEngine": {
+   "en": "Sample figures, computed after your simulated support was recorded against them. These are not real results.",
+   "ar": "أرقامٌ نموذجية، محسوبةٌ بعد قيد دعمك المحاكى عليها. لا نتائج حقيقية هنا.",
+   "kind": "text",
+   "hash": "9627e8d31b3f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.noteSim": {
+   "en": "{0}'s figures are sample data, not results, until its operating platform is connected.",
+   "ar": "أرقام {0} نموذجية، لا نتائج، حتى تتّصل منصّة تشغيلها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1050f57e0218",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.now": {
+   "en": "Now",
+   "ar": "الآن",
+   "kind": "text",
+   "hash": "f78c5cf576af",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.of": {
+   "en": "{0} of {1}",
+   "ar": "{0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "f6c620317126",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.payout": {
+   "en": "Paid out",
+   "ar": "الصرف",
+   "kind": "text",
+   "hash": "2e95929921ed",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.payoutVal": {
+   "en": "Monthly, through the office",
+   "ar": "شهرياً عبر المكتب",
+   "kind": "text",
+   "hash": "22a70c3a0697",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.pending": {
+   "en": "Your support funded the group; its six sessions begin on the operating platform, and its move between levels shows after the closing measurement.",
+   "ar": "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
+   "kind": "text",
+   "hash": "11ab19fc871b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.proof": {
+   "en": "Proof",
+   "ar": "الإثبات",
+   "kind": "text",
+   "hash": "21c6a0f73c31",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.proofK": {
+   "en": "Number of recipients, the date and the office's signature",
+   "ar": "عدد المستلمين وتاريخه وتوقيع المكتب",
+   "kind": "text",
+   "hash": "04d47117b80b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.proofS": {
+   "en": "The recipient's signature and the date",
+   "ar": "توقيع المستلم وتاريخه",
+   "kind": "text",
+   "hash": "b1925ee9f442",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.q1": {
+   "en": "{0} is closer to meeting its need; at today's pace the gap closes in {1}.",
+   "ar": "اقتربت {0} من سدّ حاجتها؛ بإيقاع اليوم تُسدّ الفجوة خلال {1}.",
+   "kind": "template",
+   "params": 2,
+   "hash": "302d8203295a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.q2": {
+   "en": "Your support alone funded {0}% of what {1} was waiting for.",
+   "ar": "دعمك وحده موّل {0}% ممّا كانت {1} تنتظره.",
+   "kind": "template",
+   "params": 2,
+   "hash": "0acef6e751e5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.q3": {
+   "en": "Eight children in each group; {0} of {1} moved up a level.",
+   "ar": "ثمانية أطفال في كلّ مجموعة؛ انتقل {0} من {1} إلى مستوىً أعلى.",
+   "kind": "template",
+   "params": 2,
+   "hash": "034e45b4db07",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.q4": {
+   "en": "Moved from “{0}” to “{1}”, with the largest rise in maturity and resilience. A pseudonym and a sample code, {2}.",
+   "ar": "انتقل من «{0}» إلى «{1}»، وأكبر ارتفاعٍ عنده في الرشد والصمود. اسمٌ مستعار ورمزٌ نموذجي {2}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "8e2e3ea7d091",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.qBase": {
+   "en": "Before your support, this is how {0} stands in the sample data.",
+   "ar": "قبل دعمك، هذا حال {0} في البيانات النموذجية.",
+   "kind": "template",
+   "params": 1,
+   "hash": "f1094ec1c311",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.qDone": {
+   "en": "Your support of {0} funded the qualification journey: {1}, {2}, with six sessions per group between two measurements.",
+   "ar": "موّل دعمك {0} رحلة التأهيل: {1}، {2}، لكلّ مجموعةٍ ستّ جلسات بين قياسين.",
+   "kind": "template",
+   "params": 3,
+   "hash": "9b08771f7ce2",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.qualifiedOfNeed": {
+   "en": "Share of its need qualified",
+   "ar": "تأهّل من حاجتها",
+   "kind": "text",
+   "hash": "0e972ffe53bf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.resilience": {
+   "en": "Average resilience",
+   "ar": "متوسّط الصمود",
+   "kind": "text",
+   "hash": "8a34fe38f9c9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.s1": {
+   "en": "New monthly sponsorships, delivered each month with proof.",
+   "ar": "كفالاتٌ شهرية جديدة تصل بإثبات تسليم كلّ شهر.",
+   "kind": "text",
+   "hash": "49c738532b5b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.s2": {
+   "en": "Fewer children who completed qualification are left without a sponsor.",
+   "ar": "تقلّص عدد من أتمّوا التأهيل ولا كفيل لهم.",
+   "kind": "text",
+   "hash": "b7fb5a6ee0a3",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.s3": {
+   "en": "Sponsorship keeps the child in their group and in monthly follow-up.",
+   "ar": "الكفالة تُثبّت الطفل في مجموعته ومتابعته الشهرية.",
+   "kind": "text",
+   "hash": "95122b147554",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.s4": {
+   "en": "A fixed amount with monthly proof of delivery, and an expected rise in their traits that measurement will correct.",
+   "ar": "مبلغٌ ثابت بإثبات تسليمٍ شهري، وارتفاعٌ متوقّع في سماته يضبطه القياس.",
+   "kind": "text",
+   "hash": "90b10473fb0e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sBase": {
+   "en": "Before your support: children in {0} who completed qualification and have no sponsor.",
+   "ar": "قبل دعمك: أطفالٌ أتمّوا التأهيل في {0} ولا كفيل لهم.",
+   "kind": "template",
+   "params": 1,
+   "hash": "2d1011d698ff",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sDone": {
+   "en": "{0} = {1}, reaching the child each month with proof of delivery.",
+   "ar": "{0} = {1}، يصل كلّ شهرٍ للطفل بإثبات تسليم.",
+   "kind": "template",
+   "params": 2,
+   "hash": "e81cfc37d48e",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sessions": {
+   "en": "Sessions held",
+   "ar": "جلساتٌ منفّذة",
+   "kind": "text",
+   "hash": "9bba98bd5f8a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sessionsOf": {
+   "en": "Sessions",
+   "ar": "الجلسات",
+   "kind": "text",
+   "hash": "93aa50640145",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.source": {
+   "en": "Source",
+   "ar": "المصدر",
+   "kind": "text",
+   "hash": "055d731ad559",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sponsored": {
+   "en": "Sponsored",
+   "ar": "المكفولون",
+   "kind": "text",
+   "hash": "33f00a01d78b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sponsoredCountry": {
+   "en": "Sponsored in the country",
+   "ar": "مكفولون في البلد",
+   "kind": "text",
+   "hash": "ef937e6c8604",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sponsoredIn": {
+   "en": "Sponsored in {0}",
+   "ar": "مكفولون في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "73f8fca612b1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.sponsoredOf8": {
+   "en": "Sponsored, out of 8",
+   "ar": "مكفولون من 8",
+   "kind": "text",
+   "hash": "7de2107d37fe",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.steps.0": {
+   "en": "Purchase",
+   "ar": "الشراء",
+   "kind": "text",
+   "hash": "76b48b19428a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.steps.1": {
+   "en": "Preparation",
+   "ar": "التجهيز",
+   "kind": "text",
+   "hash": "7ae3d66391a1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.steps.2": {
+   "en": "Delivery",
+   "ar": "التسليم",
+   "kind": "text",
+   "hash": "591b38bc5e09",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.steps.3": {
+   "en": "Proof",
+   "ar": "الإثبات",
+   "kind": "text",
+   "hash": "21c6a0f73c31",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.supervisor": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.supervisorOf": {
+   "en": "{0}'s supervisor · pseudonym",
+   "ar": "مشرف {0} · اسمٌ مستعار",
+   "kind": "template",
+   "params": 1,
+   "hash": "f63f712f9a53",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.tabs.base": {
+   "en": "Baseline",
+   "ar": "الأساس",
+   "kind": "text",
+   "hash": "0ce386a788d6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.tabs.details": {
+   "en": "Details",
+   "ar": "التفاصيل",
+   "kind": "text",
+   "hash": "472d6e4b89ab",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.tabs.done": {
+   "en": "What happened",
+   "ar": "ما تمّ",
+   "kind": "text",
+   "hash": "f431849fb1ff",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.tabs.levels": {
+   "en": "Impact by level",
+   "ar": "الأثر بالمستويات",
+   "kind": "text",
+   "hash": "8eff03472286",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.traitsAt": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.traitsAvg": {
+   "en": "Average of the six traits",
+   "ar": "متوسّط السمات الستّ",
+   "kind": "text",
+   "hash": "4c0b1a508d91",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.traitsSect": {
+   "en": "The cohort's six traits · before, then now",
+   "ar": "السمات الستّ للفئة · قبل ثم الآن",
+   "kind": "text",
+   "hash": "7009d22e7e62",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.waiting": {
+   "en": "Waiting",
+   "ar": "ينتظرون",
+   "kind": "text",
+   "hash": "52aaf29e1083",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.waitingIn": {
+   "en": "Waiting in {0}",
+   "ar": "ينتظرون في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e214309b6269",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.waitingK": {
+   "en": "Waiting for clothing",
+   "ar": "ينتظرون الكسوة",
+   "kind": "text",
+   "hash": "3024aff15d59",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.waitingQ": {
+   "en": "Waiting for qualification",
+   "ar": "ينتظرون التأهيل",
+   "kind": "text",
+   "hash": "b5e95924a7a9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.was": {
+   "en": "Before",
+   "ar": "قبل",
+   "kind": "text",
+   "hash": "fad11c557c72",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.weeks13": {
+   "en": "1–3 weeks",
+   "ar": "1–3 أسابيع",
+   "kind": "text",
+   "hash": "92c0a7d4c788",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.weeks68": {
+   "en": "6–8 weeks",
+   "ar": "6–8 أسابيع",
+   "kind": "text",
+   "hash": "49efedbee68a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.story.yearSect": {
+   "en": "What changes in a year · an estimate that measurement will correct",
+   "ar": "ما يتغيّر في سنة · تقديرٌ يضبطه القياس",
+   "kind": "text",
+   "hash": "d23c5df7339d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.amount": {
+   "en": "Amount",
+   "ar": "المقدار",
+   "kind": "text",
+   "hash": "3e78ecbcc1f6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.back": {
+   "en": "Back",
+   "ar": "رجوع",
+   "kind": "text",
+   "hash": "af5a3761b8f5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.city": {
+   "en": "City",
+   "ar": "المدينة",
+   "kind": "text",
+   "hash": "ad8e85b1c36d",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.dest": {
+   "en": "Destination",
+   "ar": "الوجهة",
+   "kind": "text",
+   "hash": "cffd204a68c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.kind": {
+   "en": "Kind of support",
+   "ar": "نوع الدعم",
+   "kind": "text",
+   "hash": "dfff08619ed0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.note": {
+   "en": "Payment here is simulated: nothing is charged and no donation is recorded, and the amounts and unit prices are sample figures. On the real platform a payment goes through the payment gateway and is recorded with an invoice and a receipt.",
+   "ar": "الدفع هنا محاكاة: لا يُخصم شيء ولا يُسجَّل تبرّع، والمبالغ وأسعار الوحدات أرقامٌ نموذجية. في المنصّة الحقيقية يمرّ الدفع ببوابة الدفع ويُقيَّد بفاتورة وإيصال.",
+   "kind": "text",
+   "hash": "1c943bdc858c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.option": {
+   "en": "{0} — {1} waiting",
+   "ar": "{0} — {1} ينتظرون",
+   "kind": "template",
+   "params": 2,
+   "hash": "c171b20600be",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.pay": {
+   "en": "Support now (simulated)",
+   "ar": "ادعم الآن (محاكاة)",
+   "kind": "text",
+   "hash": "67e35433b455",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.sub": {
+   "en": "This is a simulation; nothing is charged. Choose a kind of support and an amount, and the impact changes in front of you on the column, the orphans' dots and the impact screen.",
+   "ar": "هذه محاكاة لا يُخصم بها شيء. اختر نوع الدعم ومقداره، فيتغيّر الأثر أمامك على العمود ونقاط الأيتام وشاشة الأثر.",
+   "kind": "text",
+   "hash": "0eae243341cf",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.support.title": {
+   "en": "Try supporting {0}",
+   "ar": "جرّب دعم {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d030ddd31002",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.after.one": {
+   "en": "In {0} month",
+   "ar": "بعد شهر",
+   "kind": "plural",
+   "hash": "0f4c29797e64",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.after.other": {
+   "en": "In {0} months",
+   "ar": "بعد {0} شهر",
+   "kind": "plural",
+   "hash": "84507aa212df",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.before.one": {
+   "en": "{0} month ago",
+   "ar": "قبل شهر",
+   "kind": "plural",
+   "hash": "1c00d44f0758",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.before.other": {
+   "en": "{0} months ago",
+   "ar": "قبل {0} شهر",
+   "kind": "plural",
+   "hash": "cf6c93fa0291",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.estimate": {
+   "en": "Sample estimate at today's pace",
+   "ar": "تقديرٌ نموذجي بإيقاع اليوم",
+   "kind": "text",
+   "hash": "212c11e6bb33",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.past": {
+   "en": "Approximate sample reconstruction",
+   "ar": "استرجاعٌ تقريبي نموذجي",
+   "kind": "text",
+   "hash": "159c53d19967",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.yearAgo": {
+   "en": "A year ago",
+   "ar": "قبل سنة",
+   "kind": "text",
+   "hash": "bdfae4b8f14b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.time.yearOn": {
+   "en": "A year from now",
+   "ar": "بعد سنة",
+   "kind": "text",
+   "hash": "d5bd0c058f63",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.trackLine": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.kiswa.name": {
+   "en": "Clothing",
+   "ar": "كسوة",
+   "kind": "text",
+   "hash": "a1ba373d336c",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.kiswa.per": {
+   "en": "per orphan",
+   "ar": "يتيم",
+   "kind": "text",
+   "hash": "494dbabc0ee9",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.kiswa.unit": {
+   "en": "One orphan clothed",
+   "ar": "كسوة يتيم",
+   "kind": "text",
+   "hash": "f538e88d4794",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.qualify.name": {
+   "en": "Qualification",
+   "ar": "تأهيل",
+   "kind": "text",
+   "hash": "531dade812c1",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.qualify.per": {
+   "en": "per child's journey",
+   "ar": "رحلة طفل",
+   "kind": "text",
+   "hash": "9a090ef70116",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.qualify.unit": {
+   "en": "One child's journey",
+   "ar": "رحلة طفل",
+   "kind": "text",
+   "hash": "2f7fe19e73e6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.sponsor.name": {
+   "en": "Sponsorship",
+   "ar": "كفالة",
+   "kind": "text",
+   "hash": "35ebddca9b6b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.sponsor.per": {
+   "en": "per month",
+   "ar": "شهر",
+   "kind": "text",
+   "hash": "6ccfe5867ac6",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.tracks.sponsor.unit": {
+   "en": "One month",
+   "ar": "شهر كفالة",
+   "kind": "text",
+   "hash": "998460a782f2",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.full": {
+   "en": "The full model: headquarters and {0} sites, {1} of them unconfirmed and shown to staff only.",
+   "ar": "النموذج الكامل: المقرّ و{0} موقعاً، منها {1} غير مؤكَّدة تظهر للإدارة فقط.",
+   "kind": "template",
+   "params": 2,
+   "hash": "a8bd22d0ca63",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.gapLead": {
+   "en": "As in the site map's “needs an office” layer: countries where WAMY has field activity or an unconfirmed presence, ranked by their estimated number of orphans and how reliable that estimate's source is.",
+   "ar": "كطبقة «تحتاج مكتباً» في خريطة الموقع: دولٌ للندوة فيها نشاطٌ ميداني أو حضورٌ غير مؤكَّد، مرتّبةً بتقدير أيتامها وثقة مصدره.",
+   "kind": "text",
+   "hash": "e899d70e44d5",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.groups.field": {
+   "en": "Field activity",
+   "ar": "نشاط ميداني",
+   "kind": "text",
+   "hash": "b3a57410039a",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.groups.hq": {
+   "en": "Headquarters",
+   "ar": "المقرّ الرئيسي",
+   "kind": "text",
+   "hash": "cd00a8cb56b7",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.groups.office": {
+   "en": "Confirmed offices",
+   "ar": "مكاتب مؤكَّدة",
+   "kind": "text",
+   "hash": "c4ad2ced865b",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.groups.unconfirmed": {
+   "en": "Unconfirmed — staff only",
+   "ar": "غير مؤكَّد — للإدارة فقط",
+   "kind": "text",
+   "hash": "c9d57fcbe573",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.simNote": {
+   "en": "Presence comes from public research. Each country's figures here are sample data until its operating platform is connected.",
+   "ar": "الحضور من البحث العامّ. أمّا أرقام كلّ دولةٍ هنا فبياناتٌ نموذجية حتى تتّصل منصّة تشغيلها.",
+   "kind": "text",
+   "hash": "fff961a98216",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.tier.data": {
+   "en": "Needs data",
+   "ar": "تحتاج بيانات",
+   "kind": "text",
+   "hash": "5164677c8e0f",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.tier.high": {
+   "en": "High priority",
+   "ar": "أولوية عالية",
+   "kind": "text",
+   "hash": "c0617f5319b0",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.tier.medium": {
+   "en": "Medium priority",
+   "ar": "أولوية متوسطة",
+   "kind": "text",
+   "hash": "24778def2856",
+   "file": "src/lib/hall/live.ts"
+  },
+  "lib/hall/live.world.unconfirmed": {
+   "en": "Unconfirmed",
+   "ar": "غير مؤكَّد",
+   "kind": "text",
+   "hash": "d79f405bb19a",
+   "file": "src/lib/hall/live.ts"
+  },
   "lib/hall/trial.after.one": {
    "en": "In {0} month",
    "ar": "بعد شهر",
@@ -14654,6 +17157,13 @@
    "ar": "روابط",
    "kind": "text",
    "hash": "2dd29e1732e7",
+   "file": "src/routes/hall.lazy.tsx"
+  },
+  "routes/hall.lazy.liveTag": {
+   "en": "Sample figures (concept preview)",
+   "ar": "أرقام نموذجية (نموذج توضيحي)",
+   "kind": "text",
+   "hash": "f7105a18ca27",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.loader": {
