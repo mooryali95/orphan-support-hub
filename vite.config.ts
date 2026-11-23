@@ -24,11 +24,20 @@ export default defineConfig({
   },
   vite: {
     resolve: {
-      alias: {
-        "entities/lib/decode.js": path.resolve(rootDir, "node_modules/entities/lib/decode.js"),
-        "entities/lib/encode.js": path.resolve(rootDir, "node_modules/entities/lib/encode.js"),
-        entities: path.resolve(rootDir, "node_modules/entities"),
-      },
+      // مطابقةٌ تامّة لا بادئة: «entities» وحدها تُوجَّه إلى نسخة الجذر (4.x).
+      // كائن الأسماء المستعارة يطابق البادئة، فكان يحوّل «entities/escape» التي
+      // يطلبها parse5 (يحمل entities 9 داخله) إلى نسخة 4 التي لا تملكها فيسقط البناء.
+      alias: [
+        {
+          find: /^entities\/lib\/decode\.js$/,
+          replacement: path.resolve(rootDir, "node_modules/entities/lib/decode.js"),
+        },
+        {
+          find: /^entities\/lib\/encode\.js$/,
+          replacement: path.resolve(rootDir, "node_modules/entities/lib/encode.js"),
+        },
+        { find: /^entities$/, replacement: path.resolve(rootDir, "node_modules/entities") },
+      ],
     },
   },
 });

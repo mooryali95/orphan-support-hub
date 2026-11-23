@@ -27,7 +27,7 @@ export const assistantRequestSchema = z
         .join("")
         .trim() ?? "";
     if (last?.role !== "user" || !question || question.length > 2000) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "اكتب سؤالاً من ١ إلى ٢٠٠٠ حرف." });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "اكتب سؤالاً من 1 إلى 2000 حرف." });
     }
     const total = value.messages.reduce(
       (n, m) => n + m.parts.reduce((s, p) => s + (p.text?.length ?? 0), 0),
