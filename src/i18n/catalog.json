@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 2854,
+ "count": 2858,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -468,6 +468,13 @@
    "hash": "f41753ab6f70",
    "file": "src/components/SiteHeader.tsx"
   },
+  "components/SiteHeader.nav.3": {
+   "en": "Ask",
+   "ar": "اسأل",
+   "kind": "text",
+   "hash": "fbb6577a973f",
+   "file": "src/components/SiteHeader.tsx"
+  },
   "components/SiteHeader.portals": {
    "en": "My portals",
    "ar": "بواباتي",
@@ -495,6 +502,20 @@
    "kind": "text",
    "hash": "62fd7babf158",
    "file": "src/components/SiteHeader.tsx"
+  },
+  "components/admin/AdminTrustStrip.live": {
+   "en": "Live data",
+   "ar": "بيانات حقيقية",
+   "kind": "text",
+   "hash": "456f0dc21e54",
+   "file": "src/components/admin/AdminTrustStrip.tsx"
+  },
+  "components/admin/AdminTrustStrip.secured": {
+   "en": "Two-factor session",
+   "ar": "جلسة محمية بعاملين",
+   "kind": "text",
+   "hash": "29c84246bd75",
+   "file": "src/components/admin/AdminTrustStrip.tsx"
   },
   "components/admin/GoLiveReadiness.badgeLive": {
    "en": "Live",
@@ -4836,10 +4857,10 @@
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.sentTo": {
-   "en": "We sent a six-digit code to",
-   "ar": "أرسلنا رمزاً من ستّة أرقام إلى",
+   "en": "We sent your sign-in code to",
+   "ar": "أرسلنا رمز الدخول إلى",
    "kind": "text",
-   "hash": "805065b2c212",
+   "hash": "6fad2eca2d2d",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.signIn": {
@@ -16170,6 +16191,13 @@
    "ar": "مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح",
    "kind": "text",
    "hash": "32398511e20f",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.realNote": {
+   "en": "Real support: recorded in your name and reaching a real child. To explore without commitment, open \"Try the platform\".",
+   "ar": "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
+   "kind": "text",
+   "hash": "bd00a456abba",
    "file": "src/routes/support.tsx"
   },
   "routes/support.rest": {

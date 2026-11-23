@@ -20,6 +20,8 @@ import { StatTile } from "@/components/kit/StatTile";
 import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import DataBuilding from "@/components/admin/data/DataBuilding";
+import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
+import { AdminMfaGate } from "@/components/admin/AdminMfaGate";
 import { DecisionInbox } from "@/components/admin/DecisionInbox";
 import { AdminExports, AdminOrphansList, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { PlatformRegistries } from "@/components/admin/PlatformRegistries";
@@ -82,8 +84,16 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: AdminPage,
+  component: GatedAdminPage,
 });
+
+function GatedAdminPage() {
+  return (
+    <AdminMfaGate>
+      <AdminPage />
+    </AdminMfaGate>
+  );
+}
 
 type Tab =
   | "home"
@@ -266,6 +276,7 @@ function AdminPage() {
       title="لوحة الإدارة"
       description="صورة النظام كاملة: من يُكفل، وبكم، وكم تبقّى."
     >
+      <AdminTrustStrip />
       {/* أربعة أقسام، وتحت كلٍّ تبويباته: من يفتح اللوحة يبحث عن قرار أو
           شخص أو إعداد أو حالة — لا عن تسعة تبويباتٍ متجاورة. */}
       <a

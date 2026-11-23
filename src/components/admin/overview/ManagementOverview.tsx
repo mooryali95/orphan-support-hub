@@ -1,4 +1,5 @@
 import { Download, FlaskConical, Printer, RefreshCw, TriangleAlert } from "lucide-react";
+import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
 import { useEffect, useMemo, useRef } from "react";
 
 import { DashboardShell } from "@/components/DashboardShell";
@@ -305,6 +306,7 @@ export default function ManagementOverview({
     <OverviewActionsContext.Provider value={actions}>
       <div ref={root} className="ov-root">
         <DashboardShell title={t.title} description={t.lead}>
+          {!sample && <AdminTrustStrip />}
           {sample && (
             <div
               role="note"

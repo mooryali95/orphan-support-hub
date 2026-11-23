@@ -79,6 +79,8 @@ const COPY = defineCopy("routes/support", {
     section: "ادعم",
     description: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
     steps: ["نوع الدعم", "الهدف", "الاختيار", "المبلغ"],
+    realNote:
+      "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
     kinds: KIND_INFO,
     targets: TARGET_INFO,
     children: (n: number) => `${n} طفل`,
@@ -121,6 +123,8 @@ const COPY = defineCopy("routes/support", {
     description:
       "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
     steps: ["Kind of support", "Recipient", "Choice", "Amount"],
+    realNote:
+      'Real support: recorded in your name and reaching a real child. To explore without commitment, open "Try the platform".',
     kinds: {
       qualification: {
         label: "Building capability",
@@ -421,6 +425,16 @@ function SupportPage() {
           <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{t.h1}</h1>
           <p className="mt-3 text-base leading-8 text-muted-foreground">{t.lead}</p>
           <OfferingNote className="mt-6" />
+          <p
+            role="note"
+            className="mt-4 flex items-start gap-2 rounded-xl border border-shore-thrive/40 bg-shore-thrive/10 px-4 py-3 text-sm leading-7"
+          >
+            <span
+              className="mt-2.5 size-2 shrink-0 rounded-full bg-shore-thrive"
+              aria-hidden="true"
+            />
+            {t.realNote}
+          </p>
 
           <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={t.stepsLabel}>
             {t.steps.map((s, i) => (
