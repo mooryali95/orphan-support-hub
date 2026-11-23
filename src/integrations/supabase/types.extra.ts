@@ -252,6 +252,8 @@ export type NotificationKind =
   | "payment_failed"
   | "report_published"
   | "report_rejected"
+  | "pledge_preparing"
+  | "pledge_delivered"
   | "other";
 
 export type EmailState = "pending" | "sent" | "failed" | "skipped";

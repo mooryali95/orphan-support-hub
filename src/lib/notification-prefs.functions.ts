@@ -38,6 +38,16 @@ export const MUTABLE_KINDS: Array<{ kind: NotificationKind; label: string; hint:
     hint: "حين لا تتمّ دفعة — إيقافه قد يُنهي كفالتك دون أن تدري",
   },
   {
+    kind: "pledge_delivered",
+    label: "تسليم التبرع العيني والتأهيل",
+    hint: "حين يسلّم المكتب تبرّعك بمستندٍ موثّق",
+  },
+  {
+    kind: "pledge_preparing",
+    label: "تجهيز التبرع العيني والتأهيل",
+    hint: "حين يبدأ المكتب تجهيز تبرّعك",
+  },
+  {
     kind: "sponsorship_started",
     label: "بدء الكفالة",
     hint: "عند تفعيل كفالة جديدة",
