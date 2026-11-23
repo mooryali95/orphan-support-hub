@@ -975,6 +975,8 @@ export function trialDemo(o: {
     },
     /** where the visitor enters the countries the hall does not draw */
     mapHref: "/try/support",
+    /** the support map opened on one country, as the map's own `?c=` */
+    mapHrefFor: (co: string) => `/try/support?c=${encodeURIComponent(co)}`,
     countryName: (co: string) => countryName(co, locale),
     /** the fixed amounts an individual is offered and starts on, as on the support sheet */
     amounts: {

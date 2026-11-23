@@ -40,6 +40,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     whom: "إلى من؟",
     thisCountry: "هذه الدولة",
     aChild: "طفلٌ بعينه",
+    toHall: "شاهد هذا المكان في قاعة الأثر",
     toDirectory: "اختر من الدليل",
     toChildren: "أطفالٌ ينتظرون كافلاً هنا",
     thisRegion: "هذه المنطقة",
@@ -64,6 +65,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     whom: "For whom?",
     thisCountry: "This country",
     aChild: "One child",
+    toHall: "See this place in the impact hall",
     toDirectory: "Choose from the directory",
     toChildren: "Children waiting for a sponsor here",
     thisRegion: "This region",
@@ -275,6 +277,13 @@ export function SupportSheet({
             {t.another}
           </Button>
         </div>
+        <a
+          href={`/hall?c=${ctx.code}`}
+          data-to-hall
+          className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-primary underline-offset-4 hover:underline"
+        >
+          {t.toHall}
+        </a>
       </div>
     );
   }

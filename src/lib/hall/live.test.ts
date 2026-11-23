@@ -289,3 +289,27 @@ describe("الأرقام النموذجية تُسمّى نموذجية في ا�
     expect(fn("renderImpact")).toContain("code: `DEMO-${CO.code}-${1000 + (hsh % 9000)}`");
   });
 });
+
+describe("القاعة والمنصّة: أسماء المسارات واحدة", () => {
+  it("مسارات القاعة الحيّة بأسماء «اختر أثرك» نفسها، بالعربية والإنجليزية", async () => {
+    const { GIVING_COPY } = await import("@/config/giving-tracks");
+    const { copyOf } = await import("@/lib/locale");
+    for (const l of ["ar", "en"] as const) {
+      const hall = copyOf(HALL_LIVE_COPY, l).tracks;
+      const giving = copyOf(GIVING_COPY, l).tracks;
+      expect(hall.qualify.name).toBe(giving.qualification.name);
+      expect(hall.sponsor.name).toBe(giving.monthly.name);
+      expect(hall.kiswa.name).toBe(giving.in_kind.name);
+    }
+  });
+});
+
+describe("القاعة والخارطة: شبكةٌ واحدة", () => {
+  it("كلّ دولةٍ في القاعة بحالتها هي نفسها في طبقة الشبكة على الخارطة", async () => {
+    const { networkPaint } = await import("@/components/map/network-layer");
+    const paint = networkPaint("network", { showUnconfirmed: true });
+    for (const c of COUNTRIES) {
+      expect(paint.get(c.code), c.code).toBe(c.st);
+    }
+  });
+});

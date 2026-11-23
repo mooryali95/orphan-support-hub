@@ -147,6 +147,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     browse: "تصفّح من ينتظر هنا",
     regions: "المناطق",
     listLabel: "الدول والمناطق",
+    toHall: "شاهدها في قاعة الأثر ←",
     regionsOf: (c: string) => `مناطق ${c}`,
     countriesH: "الدول",
     closeList: "إغلاق القائمة",
@@ -207,6 +208,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     browse: "Browse who is waiting here",
     regions: "Regions",
     listLabel: "Countries and regions",
+    toHall: "See it in the impact hall →",
     regionsOf: (c: string) => `Regions of ${c}`,
     countriesH: "Countries",
     closeList: "Close list",
@@ -1993,6 +1995,16 @@ export function WorldMap({
                   platform
                 );
               })()}
+              {/* الخارطة والقاعة منظرٌ واحد: الدولة نفسها في قاعة الأثر ثلاثية الأبعاد. */}
+              {!bare && (
+                <a
+                  href={`/hall?c=${country.c}`}
+                  data-to-hall
+                  className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary underline-offset-4 hover:underline"
+                >
+                  {c$.toHall}
+                </a>
+              )}
             </aside>
           )}
 
