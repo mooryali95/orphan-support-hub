@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3488,
+ "count": 3652,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9410,6 +9410,212 @@
    "hash": "77863e790062",
    "file": "src/components/try/TryChildMissing.tsx"
   },
+  "components/try/TryCycleTasks.adminEyebrow": {
+   "en": "From the full cycle · your organization's file",
+   "ar": "من الدورة الكاملة · ملفّ جهتك",
+   "kind": "text",
+   "hash": "4e8d3c9d61a4",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.afterAdmin": {
+   "en": "It arrives here once administration approves and publishes the file.",
+   "ar": "يصل هنا بعد أن تعتمد الإدارة الملفّ وينشر.",
+   "kind": "text",
+   "hash": "4034117d5ef7",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.approveAdmin": {
+   "en": "Approve it as administration",
+   "ar": "اعتمده بدور الإدارة",
+   "kind": "text",
+   "hash": "cf0624806977",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.asOrg": {
+   "en": "Enter as the organization",
+   "ar": "ادخل بدور الجهة",
+   "kind": "text",
+   "hash": "1f4b40641538",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.asSupporter": {
+   "en": "Open it as the supporter",
+   "ar": "افتحه بعين الكافل",
+   "kind": "text",
+   "hash": "70a8eb208c20",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.docs.birth_certificate": {
+   "en": "Birth certificate",
+   "ar": "شهادة الميلاد",
+   "kind": "text",
+   "hash": "8ab632470145",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.docs.death_certificate": {
+   "en": "Father's death certificate",
+   "ar": "شهادة وفاة الوالد",
+   "kind": "text",
+   "hash": "e9685c5e5307",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.docs.guardianship_proof": {
+   "en": "Proof of guardianship",
+   "ar": "إثبات الولاية",
+   "kind": "text",
+   "hash": "b4f355779533",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.docs.photo_consent": {
+   "en": "Guardian's photo consent",
+   "ar": "موافقة الوليّ على الصورة",
+   "kind": "text",
+   "hash": "66428d079248",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.file": {
+   "en": "{0}'s file",
+   "ar": "ملفّ «{0}»",
+   "kind": "template",
+   "params": 1,
+   "hash": "00532590e92d",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.noChild": {
+   "en": "No child in the cycle yet",
+   "ar": "لا طفل في الدورة بعد",
+   "kind": "text",
+   "hash": "422da0aef21e",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.noFile": {
+   "en": "No file in the queue yet",
+   "ar": "لا ملفّ في الطابور بعد",
+   "kind": "text",
+   "hash": "2c61ee1a387c",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.officeEyebrow": {
+   "en": "From the full cycle · follow-up report",
+   "ar": "من الدورة الكاملة · تقرير المتابعة",
+   "kind": "text",
+   "hash": "e1fe0eb04fb0",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.orgFirst": {
+   "en": "The care organization enters the file and its documents first, then it arrives here.",
+   "ar": "تُدخل جهة الرعاية الملفّ ومستنداته أوّلاً، ثم يصل هنا.",
+   "kind": "text",
+   "hash": "fd10daac4325",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.publish": {
+   "en": "Approve and publish to the directory",
+   "ar": "اعتمد وانشر في الدليل",
+   "kind": "text",
+   "hash": "d9b5f14720ab",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.published": {
+   "en": "Approved and published. The supporter can see it in the directory now.",
+   "ar": "معتمد ومنشور — يراه الكافل الآن في الدليل",
+   "kind": "text",
+   "hash": "3a818e69afd8",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.publishedLog": {
+   "en": "approved and published the file",
+   "ar": "اعتمدت الملفّ ونشرته",
+   "kind": "text",
+   "hash": "0deabfb96068",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.report": {
+   "en": "{0}'s monthly report",
+   "ar": "تقرير «{0}» الشهري",
+   "kind": "template",
+   "params": 1,
+   "hash": "b6bbb0cb92ef",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.seeImpact": {
+   "en": "See it in My impact",
+   "ar": "شاهده في «أثري»",
+   "kind": "text",
+   "hash": "3832b1475daa",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.send": {
+   "en": "Send the first monthly report",
+   "ar": "أرسل تقرير الشهر الأوّل",
+   "kind": "text",
+   "hash": "ccd937c948a0",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.sent": {
+   "en": "Sent. It has reached the supporter's My impact.",
+   "ar": "أُرسل — وصل إلى «أثري» عند الكافل",
+   "kind": "text",
+   "hash": "c4b5f8730278",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.sponsor": {
+   "en": "Sponsor as the supporter",
+   "ar": "اكفله بدور الكافل",
+   "kind": "text",
+   "hash": "db21122b0766",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.startOrg": {
+   "en": "Start as the organization",
+   "ar": "ابدأ بدور الجهة",
+   "kind": "text",
+   "hash": "df0fc83e4dde",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.verified": {
+   "en": "Verified",
+   "ar": "موثّق",
+   "kind": "text",
+   "hash": "3236f9b28010",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.verifiedLog": {
+   "en": "verified {0}",
+   "ar": "وثّقت {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9b3321a51e9e",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.verify": {
+   "en": "Verify",
+   "ar": "وثّق",
+   "kind": "text",
+   "hash": "e931c520dd46",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.waiting": {
+   "en": "Published and waiting for a sponsor.",
+   "ar": "منشورٌ وينتظر كافلاً.",
+   "kind": "text",
+   "hash": "e2d44aafd4e6",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.who.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
+  "components/try/TryCycleTasks.who.office": {
+   "en": "Office",
+   "ar": "المكتب",
+   "kind": "text",
+   "hash": "763556384043",
+   "file": "src/components/try/TryCycleTasks.tsx"
+  },
   "components/try/TryDirectory.all": {
    "en": "All",
    "ar": "الكل",
@@ -9488,6 +9694,49 @@
    "kind": "text",
    "hash": "d881e3628d47",
    "file": "src/components/try/TryDirectory.tsx"
+  },
+  "components/try/TryGiftFollowUp.follow": {
+   "en": "Needs follow-up",
+   "ar": "يحتاج متابعة",
+   "kind": "text",
+   "hash": "2d8b08bbe5f0",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.good": {
+   "en": "Doing well",
+   "ar": "بخير ومستقرّ",
+   "kind": "text",
+   "hash": "e5a9d48100a4",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.report": {
+   "en": "The office's first monthly report has arrived",
+   "ar": "وصل تقرير الشهر الأوّل من المكتب",
+   "kind": "text",
+   "hash": "eb57f63394bd",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.strip": {
+   "en": "New from the field",
+   "ar": "جديدٌ من الميدان",
+   "kind": "text",
+   "hash": "0bed40f62d9b",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.stripLead": {
+   "en": "What the office and the supervisor recorded for your children this session.",
+   "ar": "ما سجّله المكتب والمشرف لأطفالك في هذه الجلسة.",
+   "kind": "text",
+   "hash": "b5cec522f9ff",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.visit": {
+   "en": "Supervisor's visit · {0}",
+   "ar": "زيارة المشرف · {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "110c96e56acb",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
   },
   "components/try/TryImpactKinds.aheadHint.in_kind": {
    "en": "Press “Advance a month” to see the office prepare your pledge, then its delivery document arrive.",
@@ -9898,6 +10147,104 @@
    "hash": "67fc27162c95",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
+  "components/try/TryPresent.close": {
+   "en": "Close presentation mode",
+   "ar": "أغلق وضع العرض",
+   "kind": "text",
+   "hash": "3c15f6da2977",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.next": {
+   "en": "Next",
+   "ar": "التالي",
+   "kind": "text",
+   "hash": "fec227498b7b",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.off": {
+   "en": "Off the tour. Next brings you back to it.",
+   "ar": "خارج مسار الجولة — التالي يعيدك إليها.",
+   "kind": "text",
+   "hash": "b42336d95cea",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.prev": {
+   "en": "Previous stop",
+   "ar": "المحطّة السابقة",
+   "kind": "text",
+   "hash": "673958541a96",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.region": {
+   "en": "Presentation mode",
+   "ar": "وضع العرض",
+   "kind": "text",
+   "hash": "1a68f2ca35e1",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.0": {
+   "en": "One platform, six roles: we follow one child's file from entry to impact.",
+   "ar": "منصّةٌ واحدة، ستّة أدوار: نتبع ملفّ طفلٍ واحد من إدخاله حتى أثره.",
+   "kind": "text",
+   "hash": "a968477ea6f5",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.1": {
+   "en": "The care organization enters the child's file and required documents, and sends it for review.",
+   "ar": "الجهة تُدخل ملفّ الطفل ومستنداته الإلزامية، وترسله للمراجعة.",
+   "kind": "text",
+   "hash": "554832693f65",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.2": {
+   "en": "Administration verifies each document, then approves the file and publishes it to the directory.",
+   "ar": "الإدارة توثّق كلّ مستند، ثم تعتمد الملفّ فيُنشر في الدليل.",
+   "kind": "text",
+   "hash": "aa4e07328e4e",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.3": {
+   "en": "The supporter sees the published child, chooses an amount and sponsors. Payment is simulated here.",
+   "ar": "الكافل يرى الطفل المنشور، ويختار المبلغ، ويكفل — الدفع هنا محاكاة.",
+   "kind": "text",
+   "hash": "17fa55da500a",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.4": {
+   "en": "The office sends the first monthly report, and delivers training and in-kind support in its area.",
+   "ar": "المكتب يرسل تقرير الشهر الأوّل، وينفّذ التأهيل والدعم العيني في منطقته.",
+   "kind": "text",
+   "hash": "cf7fa0d8f251",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.5": {
+   "en": "The independent supervisor visits the child and records how they are, which becomes part of the file.",
+   "ar": "المشرف المستقلّ يزور الطفل ويسجّل حاله — فيصير جزءاً من ملفّه.",
+   "kind": "text",
+   "hash": "0548cf33cd14",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.6": {
+   "en": "The supporter sees the impact in My impact: the office's report, the supervisor's visit, and coverage.",
+   "ar": "الكافل يرى أثره في «أثري»: تقرير المكتب، وزيارة المشرف، والتغطية.",
+   "kind": "text",
+   "hash": "039fdc552019",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.say.7": {
+   "en": "The decision-maker sees the whole network, and everything we just did moves its figures.",
+   "ar": "صاحب القرار يرى الشبكة كلّها — وكلّ ما فعلناه الآن يحرّك أرقامها.",
+   "kind": "text",
+   "hash": "ff30be3d1066",
+   "file": "src/components/try/TryPresent.tsx"
+  },
+  "components/try/TryPresent.start": {
+   "en": "Start the guided demo",
+   "ar": "ابدأ العرض بالترتيب",
+   "kind": "text",
+   "hash": "c04a46d774f6",
+   "file": "src/components/try/TryPresent.tsx"
+  },
   "components/try/TryRealInvite.after": {
    "en": "This is a virtual journey: nothing was charged. The real one begins when you register.",
    "ar": "هذه رحلةٌ افتراضية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
@@ -10119,6 +10466,76 @@
    "kind": "text",
    "hash": "2a35ab384a99",
    "file": "src/components/try/TryReportPreview.tsx"
+  },
+  "components/try/TryRoleChip.all": {
+   "en": "All roles",
+   "ar": "كلّ الأدوار",
+   "kind": "text",
+   "hash": "b3536b7b169c",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.as": {
+   "en": "Browsing as",
+   "ar": "تتصفّح بدور",
+   "kind": "text",
+   "hash": "eaf716d4833e",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.decider": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.office": {
+   "en": "Field office",
+   "ar": "المكتب الميداني",
+   "kind": "text",
+   "hash": "121e18b2e2ae",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.org": {
+   "en": "Care organization",
+   "ar": "جهة الرعاية",
+   "kind": "text",
+   "hash": "9f40182b18b8",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.supervisor": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleChip.role.supporter": {
+   "en": "Supporter",
+   "ar": "الكافل",
+   "kind": "text",
+   "hash": "b056bc05a216",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
+  "components/try/TryRoleHeader.eyebrow": {
+   "en": "Interactive demo",
+   "ar": "العرض التفاعلي",
+   "kind": "text",
+   "hash": "490844452d82",
+   "file": "src/components/try/TryRoleHeader.tsx"
+  },
+  "components/try/TryRoleHeader.real": {
+   "en": "On the live platform:",
+   "ar": "في الحقيقة:",
+   "kind": "text",
+   "hash": "92698cabfa2e",
+   "file": "src/components/try/TryRoleHeader.tsx"
   },
   "components/try/TryRoles.eyebrow": {
    "en": "Interactive demo",
@@ -20540,12 +20957,194 @@
    "hash": "a6ddce060012",
    "file": "src/routes/traits.tsx"
   },
+  "routes/try.admin.cards.access_log": {
+   "en": "Who opened a child's file and when, including your own views this session",
+   "ar": "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة",
+   "kind": "text",
+   "hash": "8ff3df370610",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cards.documents": {
+   "en": "Verify a document, or withdraw its verification with a note",
+   "ar": "وثّق مستنداً، أو اسحب توثيقه بملاحظة",
+   "kind": "text",
+   "hash": "7139859c219b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cards.orphans": {
+   "en": "Open a child and see the verification badge and what the file is missing",
+   "ar": "افتح طفلاً وشاهد شارة توثيقه وما ينقص ملفّه",
+   "kind": "text",
+   "hash": "3df09e1a6e70",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cards.pledges": {
+   "en": "Activate a pledge or cancel it with a reason, and watch the counter change",
+   "ar": "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد",
+   "kind": "text",
+   "hash": "d3e1445133fd",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cards.sponsorships": {
+   "en": "Your sponsorship in the demo appears here as soon as it is made, with its payment",
+   "ar": "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
+   "kind": "text",
+   "hash": "1cda98a71cb6",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cycle": {
+   "en": "open the full cycle",
+   "ar": "افتح «الدورة الكاملة»",
+   "kind": "text",
+   "hash": "a9ff072fa513",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.cycleLead": {
+   "en": "For the whole cycle, from file entry to the first monthly report:",
+   "ar": "وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —",
+   "kind": "text",
+   "hash": "5bc5a2c3fcae",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.home": {
+   "en": "Start here",
+   "ar": "ابدأ من هنا",
+   "kind": "text",
+   "hash": "b0b71dce8207",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.access_log": {
+   "en": "Access log",
+   "ar": "سجلّ الاطّلاع",
+   "kind": "text",
+   "hash": "154fc25f9f1d",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.documents": {
+   "en": "Documents",
+   "ar": "المستندات",
+   "kind": "text",
+   "hash": "7dc68d0cee51",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.offices": {
+   "en": "Offices",
+   "ar": "المكاتب",
+   "kind": "text",
+   "hash": "ee2bd75aec77",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.orgs": {
+   "en": "Care organizations",
+   "ar": "جهات الرعاية",
+   "kind": "text",
+   "hash": "e26fc985d686",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.orphans": {
+   "en": "Orphans",
+   "ar": "الأيتام",
+   "kind": "text",
+   "hash": "64755556739e",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.payments": {
+   "en": "Payments",
+   "ar": "المدفوعات",
+   "kind": "text",
+   "hash": "782740d162ea",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.pledges": {
+   "en": "Pledges",
+   "ar": "التعهّدات",
+   "kind": "text",
+   "hash": "556bfe0efc5b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.sponsorships": {
+   "en": "Sponsorships",
+   "ar": "الكفالات",
+   "kind": "text",
+   "hash": "f2bed03ffd76",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.labels.supervisors": {
+   "en": "Supervisors",
+   "ar": "المشرفون",
+   "kind": "text",
+   "hash": "8ff20010bde2",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.lead": {
+   "en": "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
+   "ar": "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك — كفالتك وتعهّدك وملفّ جهتك — يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+   "kind": "text",
+   "hash": "573b4db5eb69",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.open": {
+   "en": "Open",
+   "ar": "افتح",
+   "kind": "text",
+   "hash": "3e250dfa80df",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.real": {
+   "en": "sign-in with an email code and two-factor authentication, and every action in the audit log",
+   "ar": "دخولٌ برمز البريد ومصادقة ثنائية، وكلّ إجراءٍ في سجلّ التدقيق",
+   "kind": "text",
+   "hash": "a588c35e9b3d",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.role": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.0": {
+   "en": "Records",
+   "ar": "السجلّات",
+   "kind": "text",
+   "hash": "71f8bf15f418",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.1": {
+   "en": "Network",
+   "ar": "الشبكة",
+   "kind": "text",
+   "hash": "599df29e3aa4",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.2": {
+   "en": "Trust and money",
+   "ar": "الثقة والمال",
+   "kind": "text",
+   "hash": "1f738ae6e46d",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.title": {
+   "en": "Administration console",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "8dc117307266",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
   "routes/try.admin.title.title": {
    "en": "Administration: interactive demo",
    "ar": "الإدارة — عرض تفاعلي",
    "kind": "text",
    "hash": "d06c5736ef28",
    "file": "src/routes/try.admin.tsx"
+  },
+  "routes/try.admin.try": {
+   "en": "What to try here",
+   "ar": "ماذا تجرّب هنا؟",
+   "kind": "text",
+   "hash": "44b68d78e93b",
+   "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.childId.activation": {
    "en": "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
@@ -21172,6 +21771,204 @@
    "hash": "b056bc05a216",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
+  "routes/try.decider.aChild": {
+   "en": "a child",
+   "ar": "طفلاً",
+   "kind": "text",
+   "hash": "0d3ca4a22e03",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.activity": {
+   "en": "This session's activity",
+   "ar": "نشاط هذه الجلسة",
+   "kind": "text",
+   "hash": "beb789d54a7e",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.bar": {
+   "en": "{0}% of {1} children",
+   "ar": "{0}% من {1} طفلاً",
+   "kind": "template",
+   "params": 2,
+   "hash": "17952d24b231",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.countries": {
+   "en": "Coverage in the largest countries",
+   "ar": "التغطية في أكبر الدول",
+   "kind": "text",
+   "hash": "b4ca7266d6b0",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.coverage": {
+   "en": "of monthly need covered",
+   "ar": "تغطية الحاجة الشهرية",
+   "kind": "text",
+   "hash": "c17181681940",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.empty": {
+   "en": "No activity yet. Enter as the organization or the supporter, then come back to see the effect.",
+   "ar": "لا نشاط بعد. ادخل بدور الجهة أو الكافل، ثم عد هنا لترى أثره.",
+   "kind": "text",
+   "hash": "9508d2ff6be8",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.gap": {
+   "en": "a gap of €{0} a month",
+   "ar": "الفجوة {0} يورو شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "6d3935f67613",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.inCountries": {
+   "en": "in {0} countries",
+   "ar": "في {0} دولة",
+   "kind": "template",
+   "params": 1,
+   "hash": "c6c2babde4e4",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.kids": {
+   "en": "children in the network",
+   "ar": "طفلاً في الشبكة",
+   "kind": "text",
+   "hash": "e9d84eea910d",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.lead": {
+   "en": "A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
+   "ar": "أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة — كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة — يحرّك الأرقام ويظهر في سجلّ النشاط.",
+   "kind": "text",
+   "hash": "974e17c9cffe",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.pledgedInKind": {
+   "en": "pledged {0} {1} a month for in-kind support",
+   "ar": "تعهّد بدعمٍ عيني {0} {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "21248099d0f4",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.pledgedTraining": {
+   "en": "pledged {0} {1} a month for training",
+   "ar": "تعهّد بتأهيل {0} {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "71d84a94be77",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.real": {
+   "en": "the figures come from the same database, with no manual entry",
+   "ar": "الأرقام من قاعدة البيانات نفسها، بلا إدخالٍ يدوي",
+   "kind": "text",
+   "hash": "ce8322e634c6",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.role": {
+   "en": "Decision-maker",
+   "ar": "صاحب القرار",
+   "kind": "text",
+   "hash": "c4b3647b26a5",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.scenarios": {
+   "en": "Full scenarios and decisions",
+   "ar": "السيناريوهات والقرارات كاملةً",
+   "kind": "text",
+   "hash": "c982d79f1fad",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.sponsoredMonthly": {
+   "en": "sponsored {0} with {1} a month",
+   "ar": "كفل {0} بـ {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "8f9b7550cc78",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.sponsoredOnce": {
+   "en": "sponsored {0} with {1} once",
+   "ar": "كفل {0} بـ {1} مرّة واحدة",
+   "kind": "template",
+   "params": 2,
+   "hash": "90a99fabc338",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.title": {
+   "en": "The network at a glance",
+   "ar": "صورة الشبكة",
+   "kind": "text",
+   "hash": "bcfb8f5562db",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.verified": {
+   "en": "of files fully verified",
+   "ar": "ملفّات موثّقة كاملاً",
+   "kind": "text",
+   "hash": "b8aaf58ef18a",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.verifiedHint": {
+   "en": "five checks per file",
+   "ar": "خمس فحوص لكلّ ملفّ",
+   "kind": "text",
+   "hash": "5d4c6e52ae66",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.visitedFollow": {
+   "en": "visited {0}: needs follow-up",
+   "ar": "زار {0}: يحتاج متابعة",
+   "kind": "template",
+   "params": 1,
+   "hash": "901b367e4bbc",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.visitedGood": {
+   "en": "visited {0}: doing well",
+   "ar": "زار {0}: بخير",
+   "kind": "template",
+   "params": 1,
+   "hash": "12233eef902a",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.waiting": {
+   "en": "children waiting for a sponsor",
+   "ar": "طفلاً ينتظر كافلاً",
+   "kind": "text",
+   "hash": "37cf01f379aa",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.waitingHint": {
+   "en": "the longest-waiting first in the directory",
+   "ar": "أطولهم انتظاراً أوّلاً في الدليل",
+   "kind": "text",
+   "hash": "1c18ede685e6",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.who.donor": {
+   "en": "Donor",
+   "ar": "الداعم",
+   "kind": "text",
+   "hash": "589505d3a11c",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.who.supervisor": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
+  "routes/try.decider.who.supporter": {
+   "en": "Supporter",
+   "ar": "الكافل",
+   "kind": "text",
+   "hash": "b056bc05a216",
+   "file": "src/routes/try.decider.lazy.tsx"
+  },
   "routes/try.description": {
    "en": "The complete sponsorship journey with sample data. No account, and nothing is charged.",
    "ar": "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ افتراضية، دون حسابٍ ودون أي خصم.",
@@ -21462,6 +22259,220 @@
    "hash": "7ca1e6b5247f",
    "file": "src/routes/try.index.tsx"
   },
+  "routes/try.office.approve": {
+   "en": "Pass to admin",
+   "ar": "ارفعه للإدارة",
+   "kind": "text",
+   "hash": "76d85a13de38",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.approved": {
+   "en": "Passed to administration",
+   "ar": "رُفع للإدارة",
+   "kind": "text",
+   "hash": "7e4726e6ede3",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.approvedToast": {
+   "en": "{0}'s file was passed to administration",
+   "ar": "رُفع ملفّ {0} للإدارة",
+   "kind": "template",
+   "params": 1,
+   "hash": "dc9018ea00f8",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.deliver": {
+   "en": "Training and in-kind support in the area",
+   "ar": "التأهيل والدعم العيني في المنطقة",
+   "kind": "text",
+   "hash": "e9adb7844384",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.deliverEmpty": {
+   "en": " Your own pledge appears here first when you support a place as the supporter.",
+   "ar": " تعهّدك يظهر هنا أوّلاً حين تدعم مكاناً بدور الكافل.",
+   "kind": "text",
+   "hash": "232277ec92e3",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.deliverLead": {
+   "en": "Each pledge moves through four steps, and each step shows to the supporter in My impact.",
+   "ar": "كلّ تعهّدٍ يمضي في أربع خطوات، وكلّ خطوةٍ تظهر للداعم في «أثري».",
+   "kind": "text",
+   "hash": "f771ad4982ed",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.docs": {
+   "en": "{0} documents",
+   "ar": "مستندات {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d63c9b2803b5",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.files": {
+   "en": "New files from the area's organizations",
+   "ar": "ملفّات جديدة من جهات المنطقة",
+   "kind": "text",
+   "hash": "96dbd56ec7cf",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.filesLead": {
+   "en": "Review them and pass them to administration, or return them to the organization to complete.",
+   "ar": "راجعها وارفعها للإدارة، أو أعدها للجهة لتستكمل.",
+   "kind": "text",
+   "hash": "b9407973e029",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.kind.in_kind": {
+   "en": "In-kind support",
+   "ar": "دعم عيني",
+   "kind": "text",
+   "hash": "92da4fd07d92",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.kind.qualification": {
+   "en": "Training",
+   "ar": "تأهيل",
+   "kind": "text",
+   "hash": "7751e9f0daad",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.lead": {
+   "en": "The office reviews organizations' files before administration, follows sponsored children with monthly reports, and delivers the training and in-kind support that supporters pledged in its area.",
+   "ar": "المكتب يراجع ملفّات الجهات قبل الإدارة، ويتابع الأطفال المكفولين بتقارير شهرية، وينفّذ ما تعهّد به الداعمون من تأهيلٍ ودعمٍ عيني في منطقته.",
+   "kind": "text",
+   "hash": "2b8e492bbada",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.mine": {
+   "en": "Your pledge in this session · ",
+   "ar": "تعهّدك أنت في هذه الجلسة · ",
+   "kind": "text",
+   "hash": "8b89a26b155e",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.monthly": {
+   "en": "{0} a month",
+   "ar": "{0} شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "abfd4860a842",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.next": {
+   "en": "Next step",
+   "ar": "الخطوة التالية",
+   "kind": "text",
+   "hash": "cbfb6042f27a",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.real": {
+   "en": "an office sees only its own area, and every decision is logged under its author's name",
+   "ar": "المكتب يرى منطقته وحدها، وكلّ قرارٍ باسم صاحبه في السجلّ",
+   "kind": "text",
+   "hash": "26ffc97e8e42",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.return": {
+   "en": "Return",
+   "ar": "أعده للجهة",
+   "kind": "text",
+   "hash": "5b3ea21628db",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.returned": {
+   "en": "Returned to the organization",
+   "ar": "أُعيد للجهة",
+   "kind": "text",
+   "hash": "abdd11463a45",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.returnedToast": {
+   "en": "{0}'s file was returned to the organization with a note",
+   "ar": "أُعيد ملفّ {0} إلى الجهة بملاحظة",
+   "kind": "template",
+   "params": 1,
+   "hash": "353b8636e70d",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.role": {
+   "en": "Field office",
+   "ar": "المكتب الميداني",
+   "kind": "text",
+   "hash": "121e18b2e2ae",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.samples.s-1": {
+   "en": "Dakar region",
+   "ar": "منطقة داكار",
+   "kind": "text",
+   "hash": "9a2f205cc612",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.samples.s-2": {
+   "en": "Tirana group 3",
+   "ar": "مجموعة تيرانا 3",
+   "kind": "text",
+   "hash": "4ff50c94c638",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.samples.s-3": {
+   "en": "Kenya",
+   "ar": "كينيا",
+   "kind": "text",
+   "hash": "9c6886b6fcfb",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.steps.0": {
+   "en": "Received",
+   "ar": "استُلم",
+   "kind": "text",
+   "hash": "463ea3c494c4",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.steps.1": {
+   "en": "Scheduled",
+   "ar": "جُدول",
+   "kind": "text",
+   "hash": "e1d429440611",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.steps.2": {
+   "en": "Delivered",
+   "ar": "نُفِّذ",
+   "kind": "text",
+   "hash": "d218af1523f1",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.steps.3": {
+   "en": "Report sent",
+   "ar": "أُرسل التقرير",
+   "kind": "text",
+   "hash": "6a035b499dc6",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.stepsLabel": {
+   "en": "Delivery steps",
+   "ar": "خطوات التنفيذ",
+   "kind": "text",
+   "hash": "83b5c48c206f",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.title": {
+   "en": "The area office",
+   "ar": "مكتب المنطقة",
+   "kind": "text",
+   "hash": "3858fa2d4e65",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.toastNote": {
+   "en": "Simulated: on the live platform the decision is logged and the other side is notified",
+   "ar": "محاكاة: في الحقيقة يُسجَّل القرار ويُشعَر الطرف الآخر",
+   "kind": "text",
+   "hash": "a6a5922ab6cb",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.pay.amount": {
    "en": "Amount",
    "ar": "المبلغ",
@@ -21609,6 +22620,163 @@
    "kind": "text",
    "hash": "8b2850eaf906",
    "file": "src/routes/try.tsx"
+  },
+  "routes/try.supervisor.age": {
+   "en": "{0} years old",
+   "ar": "{0} سنوات",
+   "kind": "template",
+   "params": 1,
+   "hash": "d69a2651b4b2",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.empty": {
+   "en": "No visits yet. Record a visit and it appears here with its date.",
+   "ar": "لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.",
+   "kind": "text",
+   "hash": "b9cad33b5016",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.follow": {
+   "en": "Needs follow-up",
+   "ar": "يحتاج متابعة",
+   "kind": "text",
+   "hash": "2d8b08bbe5f0",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.good": {
+   "en": "Doing well",
+   "ar": "بخير ومستقرّ",
+   "kind": "text",
+   "hash": "e5a9d48100a4",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.goodShort": {
+   "en": "Well",
+   "ar": "بخير",
+   "kind": "text",
+   "hash": "cdca1b083ed1",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.kids": {
+   "en": "Your assigned children",
+   "ar": "أطفال تكليفك",
+   "kind": "text",
+   "hash": "ca2a2a9e3a8f",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.last": {
+   "en": "Last visit: {0}",
+   "ar": "آخر زيارة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "2c3c8846aeeb",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.lead": {
+   "en": "The supervisor visits the child and records how they are and what they need. The visit joins the child's file and reaches the sponsor in My impact. A child you sponsored appears here first.",
+   "ar": "المشرف يزور الطفل، ويسجّل حاله وما يحتاجه. الزيارة تدخل ملفّ الطفل، وتصل الكافل في «أثري». الطفل الذي كفلته أنت يظهر هنا أوّلاً.",
+   "kind": "text",
+   "hash": "5a094123bfe4",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.log": {
+   "en": "Visit log",
+   "ar": "سجلّ الزيارات",
+   "kind": "text",
+   "hash": "7e2fbfcd2a0c",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.mine": {
+   "en": "You sponsored this child in this session · ",
+   "ar": "كفلته أنت في هذه الجلسة · ",
+   "kind": "text",
+   "hash": "3324754fa5d5",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.never": {
+   "en": "Not visited this month",
+   "ar": "لم يُزر هذا الشهر",
+   "kind": "text",
+   "hash": "6d24e1171ea1",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.note": {
+   "en": "Visit note",
+   "ar": "ملاحظة الزيارة",
+   "kind": "text",
+   "hash": "5651ff2d96da",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.placeholder": {
+   "en": "For example: attending school regularly, needs glasses",
+   "ar": "مثلاً: انتظم في المدرسة، ويحتاج نظّارة طبية",
+   "kind": "text",
+   "hash": "d5e6ccb31143",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.real": {
+   "en": "a certified supervisor, independent of the organization, who sees only assigned children",
+   "ar": "مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم",
+   "kind": "text",
+   "hash": "f2d5cd472c66",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.record": {
+   "en": "Record a visit",
+   "ar": "سجّل زيارة",
+   "kind": "text",
+   "hash": "50fde62421c7",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.role": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.save": {
+   "en": "Save the visit",
+   "ar": "احفظ الزيارة",
+   "kind": "text",
+   "hash": "ece54f4aa9fc",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.saved": {
+   "en": "Visit to {0} recorded",
+   "ar": "سُجّلت زيارة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "a64d118a32a8",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.savedNote": {
+   "en": "Simulated: on the live platform photos are attached and sent to the office",
+   "ar": "محاكاة: في الحقيقة تُرفق صورٌ وتُرسل للمكتب",
+   "kind": "text",
+   "hash": "1cf66d8427f9",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.state": {
+   "en": "How the child is",
+   "ar": "حال الطفل",
+   "kind": "text",
+   "hash": "b6d7752ca7cf",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.title": {
+   "en": "Follow-up visits",
+   "ar": "زيارات المتابعة",
+   "kind": "text",
+   "hash": "d24586b42771",
+   "file": "src/routes/try.supervisor.lazy.tsx"
   },
   "routes/try.support.pageTitle": {
    "en": "Support from the map · Try the platform",
