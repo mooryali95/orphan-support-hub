@@ -310,6 +310,7 @@ function HallPage() {
             : null,
           // الدولة التي كان الزائر ينظر إليها في الصفحات: تُفتح القاعة عليها.
           start: source.start,
+          kind: search.kind ?? null,
         });
         setState("ready");
       })

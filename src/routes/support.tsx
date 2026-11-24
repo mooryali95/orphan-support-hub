@@ -39,6 +39,7 @@ import { useMapStats } from "@/components/map/useMapStats";
 import { normalize, resolveCountry } from "@/lib/countries";
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import { SupportSheet } from "@/components/support/SupportSheet";
+import { MapHallSwitch } from "@/components/support/MapHallSwitch";
 import { useDemo } from "@/lib/demo-mode";
 
 const search = z.object({
@@ -450,7 +451,13 @@ function RealSupportPage() {
         // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخارطة هي المحتوى هنا.
         <main id="main" tabIndex={-1} className="scroll-mt-16 outline-none">
           <h1 className="sr-only">{t.h1}</h1>
-          <div id="support-map" className="scroll-mt-16">
+          <div id="support-map" className="relative scroll-mt-16">
+            {/* منظران لمكانٍ واحد: الخريطة هنا، والقاعة ثلاثية الأبعاد على الدولة ونوع العطاء نفسيهما */}
+            <MapHallSwitch
+              className="absolute start-1/2 top-3 z-20 -translate-x-1/2 rtl:translate-x-1/2"
+              country={selection.country}
+              kind={presetKind}
+            />
             <WorldMap
               stats={stats}
               demo={demo}

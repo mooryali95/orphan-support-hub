@@ -73,6 +73,7 @@ export function mountHall(
     live = null,
     text: liveKit = null, // `text` is the canvas writer below
     start = null,
+    kind = null, // the kind of giving the visitor chose before entering (support page / map)
     mine = null,
     mark = null,
     onStage = null,
@@ -199,7 +200,7 @@ export function mountHall(
     track: "qualify",
     amount: demo ? demo.amounts.initial : AMOUNTS.initial,
     // the trial: the kind of giving as the platform names it, and the currency the pledge is typed in
-    kind: "qualification",
+    kind: kind === "monthly" || kind === "in_kind" ? kind : "qualification",
     currency: null,
     city: "tirana",
     history: [],
@@ -3023,7 +3024,7 @@ export function mountHall(
       <p class="note" dir="${DIR}">${W.note}</p>
       <p class="co-act" dir="${DIR}">${W.org[CO.st]}</p>
       <div class="row pin"><button class="cta" type="button" id="enterCo">${W.enter(name)}</button><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
-          : `<div class="row pin"><a class="cta" href="${demo.mapHrefFor ? demo.mapHrefFor(CO.code) : demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
+          : `<div class="row pin"><a class="cta" href="${demo.mapHrefFor ? demo.mapHrefFor(CO.code, S.kind) : demo.mapHref}">${W.more}</a><button class="ghost" type="button" id="toHall">${W.back}</button></div>`
       }
     </article>`;
   }
