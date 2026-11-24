@@ -1,7 +1,7 @@
 import { Outlet, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
 import { lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { enterDemo } from "@/lib/demo-mode";
+import { enterDemo, exitDemo } from "@/lib/demo-mode";
 import { toast } from "sonner";
 
 import { SiteFooter } from "@/components/SiteFooter";
@@ -135,6 +135,8 @@ function TryJourneyProvider({ children }: { children: ReactNode }) {
         onOpen={markResume}
         onDone={() => {
           takeResume();
+          // الرحلة الحقيقية تبدأ: يُغادَر الوضع التجريبي قبلها
+          exitDemo();
           void navigate({ to: "/dashboard" });
         }}
         trigger={(open) => <OpenOnAsk open={open} ask={ask} />}
@@ -175,7 +177,10 @@ function TryShellInner() {
 
   /* عاد من الدخول بجوجل بعد أن طلب الرحلة الحقيقية: يُكمل إليها */
   useEffect(() => {
-    if (ready && registered && takeResume()) void navigate({ to: "/dashboard" });
+    if (ready && registered && takeResume()) {
+      exitDemo();
+      void navigate({ to: "/dashboard" });
+    }
   }, [ready, registered, navigate]);
 
   /* عند المغادرة، مرّةً واحدة في التبويب ولمن له عطاءٌ محاكى ولم يسجّل: دعوةٌ هادئة لا نافذة */
