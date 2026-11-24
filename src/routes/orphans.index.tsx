@@ -2,10 +2,11 @@ import { KahataynMark } from "@/components/brand/KahataynMark";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FollowedStrip } from "@/components/support/Follow";
 import { queryOptions, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useDemo } from "@/lib/demo-mode";
 import { OrphanCard } from "@/components/OrphanCard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -226,7 +227,33 @@ const PAGE = 24;
  * الصفحة حمّلت كل شيء ثم أخفت بعضه — وما حُمِّل وصل. وهي كذلك لا
  * تُرقّم: خمسون ملفاً تمرّ، وخمسة آلاف لا.
  */
+// الوضع التجريبي: الدليل نفسه في مكانه، ومصدره كتالوج التجربة وبطاقاتها (كما في «جرّب»)، وكلّ
+// بطاقةٍ تقود إلى صفحة طفل التجربة. لا قراءة من القاعدة في هذا الفرع ولا كتابة.
+const DemoDirectory = lazy(() =>
+  Promise.all([
+    import("@/lib/try-places"),
+    import("@/lib/try-cycle"),
+    import("@/components/try/TryDirectory"),
+  ]).then(([, , m]) => ({ default: m.TryDirectory })),
+);
+
 function OrphansPage() {
+  const demo = useDemo();
+  if (!demo) return <RealOrphansPage />;
+  return (
+    <div className="min-h-dvh bg-background">
+      <SiteHeader />
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-8 outline-none">
+        <Suspense fallback={null}>
+          <DemoDirectory />
+        </Suspense>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function RealOrphansPage() {
   const locale = useLocale();
   const t = useCopy(COPY);
   const { data: first } = useSuspenseQuery(firstPageQuery);

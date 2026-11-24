@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3477,
+ "count": 3478,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -133,6 +133,13 @@
    "ar": "بيانات وهمية، بلا حساب ولا خصم.",
    "kind": "text",
    "hash": "6cbe2643050a",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.roles": {
+   "en": "Roles",
+   "ar": "الأدوار",
+   "kind": "text",
+   "hash": "11a555c88642",
    "file": "src/components/DemoModeBar.tsx"
   },
   "components/ExcessSuggestion.confirm": {
