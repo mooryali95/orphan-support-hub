@@ -67,8 +67,9 @@ export const Route = createFileRoute("/auth")({
 });
 
 function safePath(value: string | undefined) {
-  if (!value || !value.startsWith("/") || /^\/[\/\\]/.test(value) || /[\\\u0000-\u001f]/.test(value))
-    return "/dashboard";
+  // a backslash or a control character anywhere is refused, as before; checked by code point
+  const unsafeChar = [...(value ?? "")].some((ch) => ch === "\\" || ch.charCodeAt(0) < 0x20);
+  if (!value || !value.startsWith("/") || /^\/[/\\]/.test(value) || unsafeChar) return "/dashboard";
   try {
     const url = new URL(value, "https://local.invalid");
     if (url.origin !== "https://local.invalid") return "/dashboard";
