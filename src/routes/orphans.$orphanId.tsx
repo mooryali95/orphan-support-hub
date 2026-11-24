@@ -66,15 +66,15 @@ const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification
 const COPY = defineCopy("routes/orphans.orphanId", {
   ar: {
     kinds: KIND_INFO as Record<SupportKind, { label: string; text: string }>,
-    unavailable: "ملف غير متاح",
+    unavailable: "ملفّ غير متاح",
     sponsorOf: (n: string) => `كفالة ${n}`,
-    shareTitle: "ملف كفالة موثّق",
+    shareTitle: "ملفّ كفالة موثّق",
     badAmount: "الرجاء إدخال مبلغ صحيح (5 فأكثر)",
     createFailed: "تعذّر إنشاء الكفالة",
     created: "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
     unexpected: "حدث خطأ غير متوقع",
     back: "→ العودة إلى الدليل",
-    fileNo: (c: string) => `ملف رقم ${c}`,
+    fileNo: (c: string) => `ملفّ رقم ${c}`,
     full: "مكفول بالكامل",
     female: "أنثى",
     male: "ذكر",
@@ -305,8 +305,8 @@ function OrphanDetail() {
   const { url: privatePhoto } = usePrivateFile(CHILD_PHOTO_BUCKET, detail?.photo_path);
 
   const [amount, setAmount] = useState(String(remaining > 0 ? Math.round(remaining) : 50));
-  // عملة الدفع: عملة الملف افتراضاً، ومعها عملة بلد الطفل والعملة الموحّدة حيث
-  // لهما سعرٌ مخزَّن ويحصّل بهما المزوّد. تعذّر القراءة = عملة الملف وحدها كما كان.
+  // عملة الدفع: عملة الملفّ افتراضاً، ومعها عملة بلد الطفل والعملة الموحّدة حيث
+  // لهما سعرٌ مخزَّن ويحصّل بهما المزوّد. تعذّر القراءة = عملة الملفّ وحدها كما كان.
   const fetchPayOptions = useServerFn(getPayOptions);
   const { data: payData } = useQuery({
     queryKey: ["pay-options", orphanId, orphan.currency],
@@ -315,13 +315,13 @@ function OrphanDetail() {
   });
   const payOptions = payData ?? needOnly(orphan.currency);
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
-  // ما اختاره الداعم يُحترم ما دام ممّا يُدفع به؛ وإلا عملة الملف.
+  // ما اختاره الداعم يُحترم ما دام ممّا يُدفع به؛ وإلا عملة الملفّ.
   const payCurrency =
     chosenCurrency && canPayIn(payOptions, chosenCurrency) ? chosenCurrency : orphan.currency;
   const need = Number(orphan.monthly_need);
   const presets = presetsIn(payOptions, payCurrency, need, remaining);
   const quote = quoteFor(payOptions, Number(amount), payCurrency);
-  /** ما يُقيَّد لحاجة الطفل من المبلغ المكتوب، بعملة الملف */
+  /** ما يُقيَّد لحاجة الطفل من المبلغ المكتوب، بعملة الملفّ */
   const credited = quote?.credited.amount ?? 0;
   function switchCurrency(next: string) {
     if (next === payCurrency) return;
@@ -345,7 +345,7 @@ function OrphanDetail() {
   // العائد من الدخول يجد ما اختاره كما تركه (UX-09): المبلغ والرسالة والإخفاء.
   // يُقرأ بعد التركيب (sessionStorage في المتصفّح وحده) ثم يُمحى.
   const [restored, setRestored] = useState(false);
-  /* مقترح الرحلة الافتراضية الذي ضغط الزائر «استعمله»: يُخفى حين تُنشأ الكفالة الحقيقية فعلاً */
+  /* مقترح الوضع التجريبي الذي ضغط الزائر «استعمله»: يُخفى حين تُنشأ الكفالة الحقيقية فعلاً */
   const usedProposal = useRef<string | null>(null);
   useEffect(() => {
     const draft = loadDraft(orphanId);
@@ -517,7 +517,7 @@ function OrphanDetail() {
                 )}
                 <Button asChild variant="outline" className="mt-5">
                   <Link to="/ask" search={{ child: orphanId }}>
-                    {locale === "ar" ? "اسأل عن هذا الملف" : "Ask about this profile"}
+                    {locale === "ar" ? "اسأل عن هذا الملفّ" : "Ask about this profile"}
                   </Link>
                 </Button>
               </div>
@@ -654,7 +654,7 @@ function OrphanDetail() {
                       {t.restored}
                     </p>
                   )}
-                  {/* من الرحلة الافتراضية: مقترحٌ لا يُطبَّق إلا بضغطة، ولا يُعرض بعملةٍ لا تُقبل هنا */}
+                  {/* من الوضع التجريبي: مقترحٌ لا يُطبَّق إلا بضغطة، ولا يُعرض بعملةٍ لا تُقبل هنا */}
                   <TrialProposalOffer
                     tracks={["sponsorship"]}
                     co={resolveCountry(orphan.country)}

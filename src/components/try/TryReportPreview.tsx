@@ -27,7 +27,7 @@ const COPY = defineCopy("components/try/TryReportPreview", {
     title: "تقرير الشهر",
     sample: "نموذج",
     description: (name: string) => `كفالة ${name} · يصلك مثله كل شهر في «أثري» وعلى بريدك.`,
-    footnote: "نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
+    footnote: "نموذجٌ للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
   },
   en: {
     transferTitle: "Your gift was transferred to the field organization",

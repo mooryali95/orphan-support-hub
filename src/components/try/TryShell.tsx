@@ -26,19 +26,19 @@ import {
 import { loadPledges, resetPledges } from "@/lib/try-support";
 
 /*
- * نصوص غلاف التجربة هنا لا في ملف المسار: ما في ملف المسار يدخل حزمة الدخول لكلّ الصفحات
+ * نصوص غلاف التجربة هنا لا في ملفّ المسار: ما في ملفّ المسار يدخل حزمة الدخول لكلّ الصفحات
  * (العنوان والوصف يحتاجهما `head`)، وهذه لا يحتاجها إلا من فتح `/try`.
  */
 const COPY = defineCopy("components/try/TryShell", {
   ar: {
-    mode: "رحلة افتراضية",
-    modeLabel: "أنت الآن في رحلةٍ افتراضية",
-    noteShort: "أنت الآن في رحلةٍ افتراضية: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
+    mode: "الوضع التجريبي",
+    modeLabel: "أنت الآن في الوضع التجريبي",
+    noteShort: "أنت الآن في الوضع التجريبي: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
     noteLong:
-      "أنت الآن في رحلةٍ افتراضية: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
+      "أنت الآن في الوضع التجريبي: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
     noteRegistered:
-      "أنت الآن في رحلةٍ افتراضية، وحسابك جاهز: ما تختاره هنا يبقى محاكاة حتى تؤكّده في «أثري» الحقيقية.",
-    leftTitle: "غادرت الرحلة الافتراضية",
+      "أنت الآن في الوضع التجريبي، وحسابك جاهز: ما تختاره هنا يبقى محاكاة حتى تؤكّده في «أثري» الحقيقية.",
+    leftTitle: "غادرت الوضع التجريبي",
     leftText: "ما اخترته محفوظٌ في متصفّحك مقترحاً. سجّل ببريدك لتدخل الرحلة الحقيقية.",
     leftAction: "ادخل الحقيقية",
     dialogTitle: "ادخل الرحلة الحقيقية",
@@ -48,15 +48,15 @@ const COPY = defineCopy("components/try/TryShell", {
     restart: "ابدأ من جديد",
   },
   en: {
-    mode: "Virtual journey",
-    modeLabel: "You are now in a virtual journey",
+    mode: "Demo mode",
+    modeLabel: "You are now in demo mode",
     noteShort:
-      "You are now in a virtual journey: nothing is charged. The real one begins when you register.",
+      "You are now in demo mode: nothing is charged. The real one begins when you register.",
     noteLong:
-      "You are now in a virtual journey: the children are under pseudonyms and payment is simulated, so nothing is charged or sent. You enter the real journey by registering.",
+      "You are now in demo mode: the children are under pseudonyms and payment is simulated, so nothing is charged or sent. You enter the real journey by registering.",
     noteRegistered:
-      "You are now in a virtual journey, and your account is ready: what you choose here stays simulated until you confirm it in your real “My impact”.",
-    leftTitle: "You have left the virtual journey",
+      "You are now in demo mode, and your account is ready: what you choose here stays simulated until you confirm it in your real “My impact”.",
+    leftTitle: "You have left demo mode",
     leftText:
       "What you chose is kept in your browser as a proposal. Register with your email to enter the real journey.",
     leftAction: "Enter the real one",

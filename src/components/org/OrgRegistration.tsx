@@ -363,7 +363,7 @@ function OrgDocuments({
         body: file,
       });
       if (!put.ok) {
-        toast.error("تعذّر رفع الملف");
+        toast.error("تعذّر رفع الملفّ");
         return;
       }
       const res = await attach({
@@ -408,7 +408,7 @@ function OrgDocuments({
               {have.map((d) => (
                 <span key={d.id} className="inline-flex items-center gap-1 text-xs">
                   <FileCheck2 className="text-shore-thrive size-3" aria-hidden="true" />
-                  <span dir="auto">{d.file_name ?? "ملف"}</span>
+                  <span dir="auto">{d.file_name ?? "ملفّ"}</span>
                   <Button
                     type="button"
                     size="icon"

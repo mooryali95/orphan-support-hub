@@ -200,7 +200,7 @@ export function SupportSheet({
     amountEdited.current = true;
     setAmount(value);
   }
-  /* مقترح الرحلة الافتراضية الذي ضغط الزائر «استعمله»: يُخفى حين يُسجَّل التعهّد الحقيقي فعلاً */
+  /* مقترح الوضع التجريبي الذي ضغط الزائر «استعمله»: يُخفى حين يُسجَّل التعهّد الحقيقي فعلاً */
   const usedProposal = useRef<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -315,7 +315,7 @@ export function SupportSheet({
   return (
     <SupportSheetBody
       lead={
-        /* من الرحلة الافتراضية، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */
+        /* من الوضع التجريبي، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */
         <TrialProposalOffer
           tracks={["qualification", "in_kind"]}
           co={ctx.code}

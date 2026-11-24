@@ -148,11 +148,11 @@ export const gapOf = (c: Pick<TryChild, "need" | "funded">) => Math.max(0, c.nee
 export const tryChildrenByWait = () =>
   [...TRY_CHILDREN].sort((a, b) => b.waitingDays - a.waitingDays);
 
-/** ما دُفع فعلاً حين اختار الداعم عملةً غير عملة الملف، بسعره وتاريخه. */
+/** ما دُفع فعلاً حين اختار الداعم عملةً غير عملة الملفّ، بسعره وتاريخه. */
 export type TryPaid = {
   amount: number;
   currency: string;
-  /** السعر كما طُبّق: وحدةٌ من عملة الدفع بعملة الملف. */
+  /** السعر كما طُبّق: وحدةٌ من عملة الدفع بعملة الملفّ. */
   rate: number;
   asOf: string;
   indicative: boolean;
@@ -161,13 +161,13 @@ export type TryPaid = {
 export type TryGift = {
   id: string;
   childId: string;
-  /** ما قُيِّد لحاجة الطفل، بعملة الملف (`TRY_CURRENCY`) دائماً. */
+  /** ما قُيِّد لحاجة الطفل، بعملة الملفّ (`TRY_CURRENCY`) دائماً. */
   amount: number;
   cadence: "monthly" | "one_time";
   at: string;
   /** whom the donor gives it on behalf of («صدقة جارية عن…»), as they typed it */
   dedication?: string;
-  /** غائبٌ حين دُفع بعملة الملف نفسها. */
+  /** غائبٌ حين دُفع بعملة الملفّ نفسها. */
   paid?: TryPaid;
 };
 

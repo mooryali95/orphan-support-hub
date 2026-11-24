@@ -20,12 +20,12 @@ export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipI
       { title: pageTitle("تعليمات التحويل", false) },
       {
         name: "description",
-        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة ${BRAND.name}.`,
+        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصّة ${BRAND.name}.`,
       },
       { property: "og:title", content: pageTitle("تعليمات التحويل", false) },
       {
         property: "og:description",
-        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصة ${BRAND.name}.`,
+        content: `تعليمات إتمام كفالتك عبر التحويل البنكي، وتأكيد الاستلام من إدارة منصّة ${BRAND.name}.`,
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -84,7 +84,7 @@ function TransferPage() {
               <h2 className="font-bold">تفاصيل الكفالة</h2>
             </div>
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-              <Row label="الملف" value={sponsorship.orphan?.display_name ?? "—"} />
+              <Row label="الملفّ" value={sponsorship.orphan?.display_name ?? "—"} />
               <Row
                 label="المبلغ"
                 value={`${formatMoney(sponsorship.amount, sponsorship.currency)} ${
@@ -101,7 +101,7 @@ function TransferPage() {
             <ol className="mt-3 list-decimal space-y-2 pe-5">
               <li>
                 حوّل مبلغ <strong>{formatMoney(sponsorship.amount, sponsorship.currency)}</strong>{" "}
-                إلى حساب المنصة البنكي المعتمد.
+                إلى حساب المنصّة البنكي المعتمد.
               </li>
               <li>
                 اكتب رقم المرجع <strong>{reference}</strong> في خانة البيان أو الملاحظات، فبه تُربط

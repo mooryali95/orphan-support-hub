@@ -97,7 +97,7 @@ function ReportPage() {
 
       <h1 className="mt-8 text-2xl font-extrabold">تقرير الكفالة لعام {year}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        كفالة <Name>{l.orphan.display_name}</Name> · ملف <Name>{l.orphan.code}</Name> ·{" "}
+        كفالة <Name>{l.orphan.display_name}</Name> · ملفّ <Name>{l.orphan.code}</Name> ·{" "}
         {formatMoney(l.sponsorship.amount, cur)} شهرياً
       </p>
 

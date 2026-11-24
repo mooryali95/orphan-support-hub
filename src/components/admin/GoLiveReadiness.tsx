@@ -12,34 +12,33 @@ const COPY = defineCopy("components/admin/GoLiveReadiness", {
   ar: {
     title: "جاهزية الاعتماد",
     modeLive: "المنصّة في الوضع الحقيقي.",
-    modeTrial: "المنصّة في وضع التجربة: أزرار الكفالة العامّة تقود إلى /try.",
+    modeTrial: "المنصّة في الوضع التجريبي: أزرار الكفالة العامّة تقود إلى التجربة.",
     badgeLive: "حقيقي",
     badgeReady: "جاهزة للتحويل",
     badgeTrial: "تجربة",
     stateDone: "متحقّق",
     stateUnknown: "غير معروف",
     stateOpen: "لم يتحقّق",
-    whenReady:
-      'الشروط متحقّقة. التحويل: PLATFORM_MODE = "live" في src/config/platform.ts، ثم النشر.',
-    whenNot: "حين تتحقّق الشروط الثلاثة يصير التحويل سطراً واحداً في src/config/platform.ts.",
-    contract: "عقد الربط مع منصّة التشغيل وقائمة التحويل: docs/operating-platform-link.md",
+    whenReady: "الشروط متحقّقة. يبقى قرار التحويل إلى التشغيل الحقيقي، ثم النشر.",
+    whenNot:
+      "حين تتحقّق الشروط الثلاثة يصير التحويل إلى التشغيل الحقيقي خطوةً واحدة يتولّاها فريق التقنية.",
+    contract: "عقد الربط مع منصّة التشغيل وقائمة التحويل متاحان لفريق التقنية.",
   },
   en: {
     title: "Go-live readiness",
     modeLive: "The platform is in live mode.",
-    modeTrial: "The platform is in trial mode: the public sponsor buttons lead to /try.",
+    modeTrial: "The platform is in demo mode: the public sponsor buttons lead to the demo.",
     badgeLive: "Live",
     badgeReady: "Ready to switch",
     badgeTrial: "Trial",
     stateDone: "met",
     stateUnknown: "unknown",
     stateOpen: "not met",
-    whenReady:
-      'All conditions are met. To switch: PLATFORM_MODE = "live" in src/config/platform.ts, then publish.',
+    whenReady: "All conditions are met. What remains is the decision to go live, then publishing.",
     whenNot:
-      "Once the three conditions are met, switching is a single line in src/config/platform.ts.",
+      "Once the three conditions are met, going live is a single step handled by the technical team.",
     contract:
-      "Operating platform link contract and switch checklist: docs/operating-platform-link.md",
+      "The operating platform link contract and switch checklist are with the technical team.",
   },
 });
 

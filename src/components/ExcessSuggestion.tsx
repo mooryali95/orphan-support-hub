@@ -9,7 +9,7 @@ import { Name } from "@/components/kit/Name";
 
 const COPY = defineCopy("components/ExcessSuggestion", {
   ar: {
-    needsA: "هذا الملف يحتاج ",
+    needsA: "هذا الملفّ يحتاج ",
     needsB: " فقط لإكمال احتياجه الشهري، فيزيد مبلغك عنه بـ",
     waiting: "وهؤلاء ينتظرون قريباً ممّا يزيد عندك:",
     needs: (m: string) => `يحتاج ${m}`,

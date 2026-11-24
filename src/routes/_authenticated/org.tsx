@@ -115,7 +115,7 @@ function OrgPage() {
           onClick={() => setShowForm((v) => !v)}
           disabled={org.status !== "approved"}
         >
-          <Plus className="size-4" /> ملف يتيم جديد
+          <Plus className="size-4" /> ملفّ يتيم جديد
         </Button>
       </div>
 
@@ -125,7 +125,7 @@ function OrgPage() {
             orgId={org.id}
             userId={user.id}
             onDone={(code) => {
-              toast.success(`أُرسل الملف ${code} للمراجعة`);
+              toast.success(`أُرسل الملفّ ${code} للمراجعة`);
               setShowForm(false);
               refresh();
             }}
@@ -197,7 +197,7 @@ function OrgPage() {
                     onClick={() => setOpenFile(openFile === o.id ? null : o.id)}
                   >
                     <Eye className="size-4" aria-hidden="true" />
-                    {openFile === o.id ? "إغلاق" : "عرض الملف"}
+                    {openFile === o.id ? "إغلاق" : "عرض الملفّ"}
                   </Button>
                 )}
 
@@ -248,7 +248,7 @@ function OrgPage() {
                     userId={user.id}
                     orphanId={o.id}
                     onDone={(code) => {
-                      toast.success(`أُرسل الملف ${code} للمراجعة`);
+                      toast.success(`أُرسل الملفّ ${code} للمراجعة`);
                       setOpenFile(null);
                       refresh();
                     }}

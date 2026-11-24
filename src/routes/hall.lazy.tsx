@@ -39,9 +39,9 @@ export const Route = createLazyFileRoute("/hall")({ component: HallPage });
 /** the hall's chrome, in the interface language (the scene's own strings are in `lib/hall/copy`) */
 const COPY = defineCopy("routes/hall.lazy", {
   ar: {
-    tag: "رحلة افتراضية",
+    tag: "الوضع التجريبي",
     liveTag: "أرقام نموذجية (نموذج توضيحي)",
-    gate: "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
+    gate: "أنت الآن في الوضع التجريبي: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
     gateReal: "الرحلة الحقيقية تبدأ بتسجيلك",
     canvas: "قاعة الأثر ثلاثية الأبعاد",
     stepsLabel: "مراحل الرحلة",
@@ -54,7 +54,7 @@ const COPY = defineCopy("routes/hall.lazy", {
     title: "ادخل قاعة الأثر",
     donorLead:
       "تدخل القاعة فترى أثرك أنت على خريطة العالم: دول كفالاتك مضيئةً على الكرة، وأرقامك كما في لوحتك. لا محاكاة هنا ولا أرقام نموذجية.",
-    lead: "تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه دعمك أنت.",
+    lead: "اختر دولةً من خريطة العالم، ثم نوع العطاء ومقداره، فترى الأثر يتغيّر أمامك على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه عطاؤك أنت.",
     net: (n: string) => `المقرّ في الرياض و${n} موقعاً للندوة حول العالم، تختار منها على الكرة.`,
     netTrial: (n: string) =>
       `للندوة مقرٌّ في الرياض و${n} موقعاً مؤكَّد الحضور حول العالم. والتجربة تفتح معها دولاً لا حضور مؤكَّداً للندوة فيها، وتميّزها القاعة.`,
@@ -78,9 +78,9 @@ const COPY = defineCopy("routes/hall.lazy", {
     partner: "بالشراكة مع",
   },
   en: {
-    tag: "Virtual journey",
+    tag: "Demo mode",
     liveTag: "Sample figures (concept preview)",
-    gate: "This is a virtual journey: everything in the hall is simulated, and nothing is charged.",
+    gate: "This is demo mode: everything in the hall is simulated, and nothing is charged.",
     gateReal: "The real journey begins when you register",
     canvas: "The Impact Hall in 3D",
     stepsLabel: "Stages of the journey",

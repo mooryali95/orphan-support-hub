@@ -13,7 +13,7 @@ export function DemoChildCard({ child }: { child: DemoChild }) {
       <div className="space-y-2 p-5">
         <p className="text-xs font-semibold text-muted-foreground">
           {locale === "ar"
-            ? "ملف تجريبي — غير قابل للكفالة"
+            ? "ملفّ تجريبي — غير قابل للكفالة"
             : "Demo file — not available for sponsorship"}
         </p>
         <h2 className="text-lg font-bold" dir="ltr">

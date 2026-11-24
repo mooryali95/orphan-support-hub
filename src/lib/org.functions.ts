@@ -176,7 +176,7 @@ export const getMyOrgKyc = createServerFn({ method: "GET" })
     return data as OrgKyc;
   });
 
-/** مسار وثيقة الجهة: مجلّدها الأوّل معرّفها، واسم الملف مطهَّر كوثائق الطفل. */
+/** مسار وثيقة الجهة: مجلّدها الأوّل معرّفها، واسم الملفّ مطهَّر كوثائق الطفل. */
 export function orgDocumentPath(orgId: string, kind: string, fileName: string, at: number) {
   const safe = fileName
     .replace(/[^\p{L}\p{N}._-]+/gu, "_")
@@ -248,7 +248,7 @@ export const removeOrgDocument = createServerFn({ method: "POST" })
 /*
  * حُذفت `createOrphanProfile` هنا.
  *
- * كانت تُدرج الملف ثم بياناته السرّية بنداءين منفصلين، والثاني بلا فحص
+ * كانت تُدرج الملفّ ثم بياناته السرّية بنداءين منفصلين، والثاني بلا فحص
  * خطأ (M3)، وتولّد الرمز بعشوائية معرّضة للتصادم (M4). وقد حلّ محلّها
  * `submitOrphanIntake` في `intake.functions.ts` التي تمرّ عبر دالة
  * معامَلاتية واحدة في القاعدة.

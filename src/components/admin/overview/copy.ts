@@ -13,7 +13,7 @@ export const COPY = defineCopy("components/admin/overview", {
     sampleOff: "العودة إلى بيانات المنصّة",
     sampleBanner: "بيانات نموذجية",
     sampleBannerText:
-      "أرقامٌ ورموز افتراضية لعرض اللوحة ممتلئة. ليست أرقام المنصّة، ولا تدخل أيّ مسار دفع.",
+      "أرقامٌ ورموزٌ نموذجية لعرض اللوحة ممتلئة. ليست أرقام المنصّة، ولا تدخل أيّ مسار دفع.",
     sampleTag: "نموذجي",
     exportCsv: "تصدير CSV",
     print: "طباعة",
@@ -313,7 +313,7 @@ export const COPY = defineCopy("components/admin/overview", {
   },
   en: {
     title: "Management overview",
-    lead: "One picture of everything: support, children, donors, and what is waiting on a decision.",
+    lead: "One picture of everything: support, children, supporters, and what is waiting on a decision.",
     workspace: "Admin workspace",
     refresh: "Refresh",
     refreshing: "Refreshing",
@@ -368,9 +368,9 @@ export const COPY = defineCopy("components/admin/overview", {
     ofTotal: (n: string) => `of ${n}`,
     childrenCaption: (pct: string) => `${pct} of published files`,
     childrenEmpty: "No published file yet",
-    donorsLabel: "Active donors",
+    donorsLabel: "Active supporters",
     donorsCaption: (pct: string) => `${pct} hold an active sponsorship`,
-    donorsTotal: "All donors",
+    donorsTotal: "All supporters",
     published: "Published files",
 
     attentionTitle: "Needs attention",
@@ -420,7 +420,7 @@ export const COPY = defineCopy("components/admin/overview", {
       sync_lagging: "Linked countries behind on sync",
       go_live: "Go-live conditions not yet met",
       due_overdue: "Sponsorships past their due date",
-      donors_at_risk: "Donors at risk",
+      donors_at_risk: "Supporters at risk",
     },
     ops: {
       integrity_chain: "The integrity log chain is broken",
@@ -488,7 +488,7 @@ export const COPY = defineCopy("components/admin/overview", {
     openChildren: "Children list",
     openQueue: "Approval queue",
 
-    donorsTitle: "Donors",
+    donorsTitle: "Supporters",
     donorsLead: "Active, new, at risk, and those whose giving has lapsed.",
     donorsAtRisk: "At risk",
     donorsLapsed: "Lapsed",
@@ -498,7 +498,7 @@ export const COPY = defineCopy("components/admin/overview", {
         "At risk: an active recurring sponsorship more than {0} days past due, or one that is paused. Lapsed: paid at least once and has no live sponsorship now.",
     }),
     donorsNoHealth:
-      "At-risk and lapsed donors are read from the database support totals, which are not available right now.",
+      "At-risk and lapsed supporters are read from the database support totals, which are not available right now.",
     donorsActive: "Active",
     donorsInactive: "No active sponsorship",
     donorsNew: "New in 30 days",
@@ -518,8 +518,8 @@ export const COPY = defineCopy("components/admin/overview", {
     dueAmount: "Amount",
     dueNone: "Nothing due right now",
     dueNoSource: "The breakdown by due date needs database totals that do not exist yet.",
-    donorsEmpty: "No donor yet",
-    openDonors: "Donors list",
+    donorsEmpty: "No supporter yet",
+    openDonors: "Supporters list",
 
     countriesTitle: "Children by country",
     countriesLead:

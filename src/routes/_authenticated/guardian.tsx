@@ -95,7 +95,7 @@ function GuardianPage() {
           <p className="mt-4 font-medium">لا ملفات مرتبطة بحسابك</p>
           <p className="text-muted-foreground mt-1 text-sm leading-7">
             تربط الإدارة حسابك بملف من تحت رعايتك بعد التحقّق من الوصاية. راجع الجهة الميدانية التي
-            رفعت الملف.
+            رفعت الملفّ.
           </p>
         </div>
       ) : (
@@ -123,7 +123,7 @@ function GuardianPage() {
                 />
 
                 {/* لا شيء هنا عن الكفلاء: من يكفل وبكم علاقة بين الكافل
-                    والمنصة، وكشفها لولي الأمر يُنشئ التزاماً شخصياً لم
+                    والمنصّة، وكشفها لولي الأمر يُنشئ التزاماً شخصياً لم
                     يطلبه أحد الطرفين. */}
                 <ImpactPanel orphanId={o.id} orphanName={o.display_name} />
               </article>

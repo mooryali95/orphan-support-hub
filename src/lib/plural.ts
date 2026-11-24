@@ -30,11 +30,11 @@ export function arNoun(n: number, forms: ArForms): string {
 
 export const FILES: ArForms = {
   zero: "لا ملفات",
-  one: "ملف واحد",
+  one: "ملفّ واحد",
   two: "ملفان",
   few: "{n} ملفات",
   many: "{n} ملفاً",
-  other: "{n} ملف",
+  other: "{n} ملفّ",
 };
 
 export const SESSIONS: ArForms = {

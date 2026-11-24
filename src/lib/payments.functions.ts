@@ -149,7 +149,7 @@ export const startCheckout = createServerFn({ method: "POST" })
     if (terms && provider.id === "manual") {
       return {
         ok: false as const,
-        error: `هذه الكفالة سُجّلت للدفع بالبطاقة بعملة ${terms.currency}، والدفع الإلكتروني غير متاح الآن. ألغِها وابدأ كفالةً بعملة الملف (${sponsorship.currency}).`,
+        error: `هذه الكفالة سُجّلت للدفع بالبطاقة بعملة ${terms.currency}، والدفع الإلكتروني غير متاح الآن. ألغِها وابدأ كفالةً بعملة الملفّ (${sponsorship.currency}).`,
       };
     }
 

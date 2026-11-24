@@ -24,7 +24,7 @@ type Search = {
   amount: number;
   cadence: "monthly" | "one_time";
   for?: string | undefined;
-  /** عملة الدفع إن اختار الداعم غير عملة الملف؛ وما ليس ممّا يُدفع به للطفل يُهمل عند العرض. */
+  /** عملة الدفع إن اختار الداعم غير عملة الملفّ؛ وما ليس ممّا يُدفع به للطفل يُهمل عند العرض. */
   cur?: string | undefined;
 };
 
@@ -117,8 +117,8 @@ function TryPay() {
       </div>
     );
 
-  /* عملة الدفع من الرابط إن كانت ممّا يُدفع به لهذا الطفل، وإلا عملة الملف. المبلغ بها كما كُتب،
-     وما يُقيَّد لحاجة الطفل بعملة الملف هو ما يُحفظ في «أثري». */
+  /* عملة الدفع من الرابط إن كانت ممّا يُدفع به لهذا الطفل، وإلا عملة الملفّ. المبلغ بها كما كُتب،
+     وما يُقيَّد لحاجة الطفل بعملة الملفّ هو ما يُحفظ في «أثري». */
   const payOptions = tryPayOptions(child);
   const payCurrency = cur && canPayIn(payOptions, cur) ? cur : TRY_CURRENCY;
   const quote = quoteFor(payOptions, amount, payCurrency);
@@ -144,7 +144,7 @@ function TryPay() {
             }
           : {}),
       });
-      // replace: زرّ الرجوع من «أثري» يعود إلى ملف الطفل لا إلى شاشة دفعٍ تمّ،
+      // replace: زرّ الرجوع من «أثري» يعود إلى ملفّ الطفل لا إلى شاشة دفعٍ تمّ،
       // فلا يُسجَّل العطاء مرّتين بضغطةٍ ثانية.
       void navigate({ to: "/try/impact", search: { done: child!.id }, replace: true });
     }, 1400);

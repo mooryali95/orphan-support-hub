@@ -7,8 +7,8 @@ import { defineCopy, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("components/orphan/OrphanUnavailable", {
   ar: {
-    title: "ملف غير متاح",
-    text: "هذا الملف غير معروض الآن: قد تكون كفالته اكتملت، أو سُحب من العرض، أو أنّ الرابط غير صحيح.",
+    title: "ملفّ غير متاح",
+    text: "هذا الملفّ غير معروض الآن: قد تكون كفالته اكتملت، أو سُحب من العرض، أو أنّ الرابط غير صحيح.",
     browse: "تصفّح دليل الأيتام",
     home: "الصفحة الرئيسية",
   },
@@ -20,7 +20,7 @@ const COPY = defineCopy("components/orphan/OrphanUnavailable", {
   },
 });
 
-/** الملف غير متاح (اكتملت كفالته، أو سُحب، أو الرابط خاطئ): يُقال ذلك، ومعه طريقٌ إلى غيره. */
+/** الملفّ غير متاح (اكتملت كفالته، أو سُحب، أو الرابط خاطئ): يُقال ذلك، ومعه طريقٌ إلى غيره. */
 export function OrphanUnavailable() {
   const c = useCopy(COPY);
   return (

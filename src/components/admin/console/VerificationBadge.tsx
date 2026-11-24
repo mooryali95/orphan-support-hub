@@ -9,7 +9,7 @@ import {
 } from "@/lib/verification";
 
 export const LEVEL_LABEL: Record<VerificationLevel, string> = {
-  full: "ملف موثّق",
+  full: "ملفّ موثّق",
   partial: "توثيق جزئي",
   none: "غير موثّق",
 };

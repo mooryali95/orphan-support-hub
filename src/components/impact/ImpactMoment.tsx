@@ -8,7 +8,7 @@ const COPY = defineCopy("components/impact/ImpactMoment", {
   ar: {
     eyebrow: "قُيّد في سجلّك",
     completedTitle: (child: string) => `اكتملت حاجة ${child} الشهرية`,
-    completedText: "بحصّتك بلغت تغطية الحاجة الشهرية 100%، وأنت من الكافلين.",
+    completedText: "بحصّتك بلغت تغطية الحاجة الشهرية 100%، وأنت أحد كافليه.",
     deliveredTitle: "وصل أوّل تسليمٍ موثّق",
     deliveredText: (child: string, month: string) =>
       `${month}: سُلِّمت دفعتك لكفالة ${child} بمستند، وهو محفوظٌ في سجلّك أدناه.`,

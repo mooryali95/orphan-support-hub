@@ -34,7 +34,7 @@ const COPY = defineCopy("routes/try.admin", {
       orphans: "الأيتام",
       sponsorships: "الكفالات",
       pledges: "التعهّدات",
-      orgs: "جهات الرعاية",
+      orgs: "الجهات الميدانية",
       offices: "المكاتب",
       supervisors: "المشرفون",
       documents: "المستندات",

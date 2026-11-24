@@ -52,7 +52,7 @@ const COPY = defineCopy("routes/try.decider", {
     empty: "لا نشاط بعد. ادخل بدور الجهة أو الكافل، ثم عد هنا لترى أثره.",
   },
   en: {
-    who: { supporter: "Supporter", donor: "Donor", supervisor: "Supervisor" },
+    who: { supporter: "Supporter", donor: "Supporter", supervisor: "Supervisor" },
     sponsoredMonthly: (name: string, amount: number) => `sponsored ${name} with ${amount} a month`,
     sponsoredOnce: (name: string, amount: number) => `sponsored ${name} with ${amount} once`,
     pledgedInKind: (amount: number, cur: string) =>

@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 /**
  * زرّ اختيار ملفٍّ بالعربية (UX-17).
  *
- * حقل الملف الأصلي يرسم «Choose File / No file chosen» بلغة المتصفّح
+ * حقل الملفّ الأصلي يرسم «Choose File / No file chosen» بلغة المتصفّح
  * داخل واجهةٍ عربية، ولا يُنسَّق. هنا يبقى الحقل الأصلي — فلوحة المفاتيح
  * وقارئ الشاشة يعملان كما هما — مخفيّاً بصرياً داخل تسميته، وتظهر التسمية
- * زرّاً يحمل اسم الملف المختار.
+ * زرّاً يحمل اسم الملفّ المختار.
  */
 export function FilePicker({
   label,
@@ -28,7 +28,7 @@ export function FilePicker({
   accept?: string;
   busy?: boolean;
   disabled?: boolean;
-  /** يُظهر اسم الملف المختار بجانب الزرّ. */
+  /** يُظهر اسم الملفّ المختار بجانب الزرّ. */
   showName?: boolean;
   className?: string;
   onPick: (file: File | null) => void;
@@ -79,7 +79,7 @@ export function FilePicker({
               </span>
             </>
           ) : (
-            "لم يُختر ملف"
+            "لم يُختر ملفّ"
           )}
         </span>
       )}

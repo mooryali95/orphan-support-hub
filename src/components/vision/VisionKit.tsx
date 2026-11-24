@@ -19,8 +19,8 @@ const COPY = defineCopy("components/vision/VisionKit", {
   ar: {
     concept: "تصوّر · بيانات توضيحية",
     conceptNote:
-      "منصّتا التشغيل والقرار هنا افتراضيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
-    nav: "منصة الرؤية والتوجهات",
+      "منصّتا التشغيل والقرار هنا تجريبيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
+    nav: "منصّة الرؤية والتوجهات",
     hub: "المنظومة",
     ops: "التشغيل",
     decision: "القرار",
@@ -34,7 +34,7 @@ const COPY = defineCopy("components/vision/VisionKit", {
   en: {
     concept: "Concept · illustrative data",
     conceptNote:
-      "The operations and decision platforms here are virtual and run on a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
+      "The operations and decision platforms here are demos running in a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
     nav: "Vision and Directions platform",
     hub: "System",
     ops: "Operations",
@@ -86,7 +86,7 @@ const TABS = [
   { to: "/vision/me", key: "me" },
 ] as const;
 
-/** غلاف صفحات منصة الرؤية والتوجهات: الرأس، وشريط التنقّل بين الصفحات الخمس، والتنبيه. */
+/** غلاف صفحات منصّة الرؤية والتوجهات: الرأس، وشريط التنقّل بين الصفحات الخمس، والتنبيه. */
 export function VisionShell({ children }: { children: ReactNode }) {
   const c = useCopy(COPY);
   const path = useRouterState({ select: (s) => s.location.pathname });

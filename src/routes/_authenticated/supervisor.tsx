@@ -161,7 +161,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
   const idx = QUALIFICATION_JOURNEY.findIndex((s) => s.stage === row.stage);
   const stage = QUALIFICATION_JOURNEY[idx];
 
-  // ما ينتظر فعلاً منه — لا قائمة أعمال عامّة بل ما يلزم هذا الملف الآن.
+  // ما ينتظر فعلاً منه — لا قائمة أعمال عامّة بل ما يلزم هذا الملفّ الآن.
   const pending: string[] = [];
   if (!row.has_consent) pending.push("بانتظار توثيق إذن الولي من الجهة");
   if (!row.has_baseline) pending.push("لم يُسجَّل قياس أوّلي بعد");
@@ -189,7 +189,7 @@ function BeneficiaryCard({ row }: { row: SupervisedEnrollment }) {
         </div>
         <Button asChild size="sm" variant="outline">
           <Link to="/orphans/$orphanId" params={{ orphanId: row.orphan_id }}>
-            الملف العام
+            الملفّ العام
             <ArrowLeft className="ltr:-scale-x-100 size-4" aria-hidden="true" />
           </Link>
         </Button>

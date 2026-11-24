@@ -39,7 +39,7 @@ function AskPage() {
               <SelectContent>
                 <SelectItem value="general">خطوات الكفالة</SelectItem>
                 {child && !data.rows.some((row) => row.id === child) && (
-                  <SelectItem value={child}>الملف المحدد</SelectItem>
+                  <SelectItem value={child}>الملفّ المحدد</SelectItem>
                 )}
                 {data.rows.map((row) => (
                   <SelectItem key={row.id} value={row.id}>

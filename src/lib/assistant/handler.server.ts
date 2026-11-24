@@ -83,9 +83,9 @@ export async function handleAssistant(request: Request, reset = false): Promise<
     if (parsed.data.orphanId) {
       // Anonymous client: never use the caller's child-access privileges for model context.
       const { data: view, error } = await db.rpc("orphan_view", { _orphan: parsed.data.orphanId });
-      if (error) return jsonError("تعذّر تحميل معلومات الملف المنشورة.", 503);
+      if (error) return jsonError("تعذّر تحميل معلومات الملفّ المنشورة.", 503);
       card = publicAssistantCard(view);
-      if (!card) return jsonError("هذا الملف غير منشور أو غير متاح للأسئلة.", 404);
+      if (!card) return jsonError("هذا الملفّ غير منشور أو غير متاح للأسئلة.", 404);
     }
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) return jsonError("مساعد الأسئلة غير مهيّأ حالياً.", 503);

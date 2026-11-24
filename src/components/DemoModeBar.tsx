@@ -14,7 +14,7 @@ const COPY = defineCopy("components/DemoModeBar", {
   en: {
     label: "Demo mode",
     note: "Sample data, no account and nothing charged.",
-    donor: "Donor journey",
+    donor: "Supporter journey",
     roles: "Roles",
     admin: "Admin panel",
     hall: "Impact hall",

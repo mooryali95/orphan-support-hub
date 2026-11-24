@@ -14,7 +14,7 @@ export const ROLE_COPY = defineCopy("components/try/TryRoleChip", {
     all: "كلّ الأدوار",
     role: {
       supporter: "الكافل",
-      org: "جهة الرعاية",
+      org: "الجهة الميدانية",
       admin: "الإدارة",
       office: "المكتب الميداني",
       supervisor: "المشرف",
@@ -26,7 +26,7 @@ export const ROLE_COPY = defineCopy("components/try/TryRoleChip", {
     all: "All roles",
     role: {
       supporter: "Supporter",
-      org: "Care organization",
+      org: "Field organization",
       admin: "Administration",
       office: "Field office",
       supervisor: "Supervisor",

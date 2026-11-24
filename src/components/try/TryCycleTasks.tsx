@@ -29,7 +29,7 @@ const COPY = defineCopy("components/try/TryCycleTasks", {
     adminEyebrow: "من الدورة الكاملة · ملفّ جهتك",
     file: (n: string) => `ملفّ «${n}»`,
     noFile: "لا ملفّ في الطابور بعد",
-    orgFirst: "تُدخل جهة الرعاية الملفّ ومستنداته أوّلاً، ثم يصل هنا.",
+    orgFirst: "تُدخل الجهة الميدانية الملفّ ومستنداته أوّلاً، ثم يصل هنا.",
     asOrg: "ادخل بدور الجهة",
     verified: "موثّق",
     verify: "وثّق",

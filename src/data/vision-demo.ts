@@ -1,5 +1,5 @@
 /**
- * «منصة الرؤية والتوجهات» — بيانات العرض للمنصّتين الافتراضيتين
+ * «منصّة الرؤية والتوجهات» — بيانات العرض للمنصّتين الافتراضيتين
  * (التشغيل: الرواد، والقرار: الرؤية والتوجهات) ودورة اليتيم في قلب
  * المنظومة ورحلة المال.
  *
@@ -35,7 +35,7 @@ export const LAYERS: Array<{
     name: t("التشغيل", "Operations"),
     title: t("أهلية الأيتام", "Orphan capability"),
     lead: t(
-      "منصة الرواد: المشاريع، وما تمّ، وملف كل يتيم — حيث يعمل المشرف مع مجموعته.",
+      "منصّة الرواد: المشاريع، وما تمّ، وملف كل يتيم — حيث يعمل المشرف مع مجموعته.",
       "The Rowad platform: projects, progress and every orphan's file — where supervisors work with their groups.",
     ),
     status: t("تعمل اليوم · تكاملٌ قادم", "Live today · integration coming"),
@@ -198,7 +198,7 @@ export const GROUPS: Array<{
   },
 ];
 
-/** ملف يتيمٍ مثاليّ — اسمٌ مستعار، ولا صورة ولا موقع. */
+/** ملفّ يتيمٍ مثاليّ — اسمٌ مستعار، ولا صورة ولا موقع. */
 export const ORPHAN_FILE = {
   pseudonym: t("«ب. ن.» — 12 سنة", "“B. N.” — 12 years"),
   code: "DEMO-AL-0007",
@@ -430,7 +430,7 @@ export const MONEY: MoneyStage[] = [
       "Spent on sessions and supplies; the delivery document goes to the private vault and is frozen by its fingerprint — never replaced or deleted.",
     ),
     record: t(
-      "تأكيد الوصول مع بصمة الملف (eTag)",
+      "تأكيد الوصول مع بصمة الملفّ (eTag)",
       "Delivery confirmation with the file fingerprint (eTag)",
     ),
     state: "live",

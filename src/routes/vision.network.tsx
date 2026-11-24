@@ -38,7 +38,7 @@ const COPY = defineCopy("routes/vision.network", {
   ar: {
     label: "شبكة الندوة",
     title: "مكاتب الندوة ونشاطها",
-    lead: "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ افتراضية — وتبقى افتراضية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
+    lead: "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية — وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
     countries: "دولة",
     offices: "مكتب مؤكَّد",
     field: "نشاط ميداني",
@@ -51,7 +51,7 @@ const COPY = defineCopy("routes/vision.network", {
     onlyReal: "الحقيقية",
     search: "ابحث عن دولة أو مدينة",
     none: "لا دولة تطابق البحث.",
-    virtual: "افتراضي",
+    virtual: "نموذجي",
     live: "حقيقي · متّصل بالتشغيل",
     sandbox: "بيئتك التجريبية",
     hq: "المقرّ الرئيسي",
@@ -65,13 +65,13 @@ const COPY = defineCopy("routes/vision.network", {
     source: "المصدر",
     openBoard: "افتح لوحة القرار لهذه الدولة",
     virtualNote:
-      "أرقام التشغيل هنا افتراضية توضّح شكل اللوحة؛ الحضور والنشاط من مصادر عامّة موثّقة.",
+      "أرقام التشغيل هنا نموذجية توضّح شكل اللوحة؛ الحضور والنشاط من مصادر عامّة موثّقة.",
     realNote: "هذه الأرقام من منصّة التشغيل المتّصلة، مجمّعةً بلا أسماء.",
   },
   en: {
     label: "WAMY network",
     title: "WAMY offices and activity",
-    lead: "Every country with a WAMY office or documented field activity gets a virtual board — and stays virtual until its operations platform is actually connected, when its real figures appear.",
+    lead: "Every country with a WAMY office or documented field activity gets a sample board — and stays a sample until its operations platform is actually connected, when its real figures appear.",
     countries: "countries",
     offices: "confirmed offices",
     field: "field activity",
@@ -84,7 +84,7 @@ const COPY = defineCopy("routes/vision.network", {
     onlyReal: "Real",
     search: "Search a country or city",
     none: "No country matches.",
-    virtual: "Virtual",
+    virtual: "Sample",
     live: "Real · connected to operations",
     sandbox: "Your sandbox",
     hq: "Headquarters",
@@ -98,7 +98,7 @@ const COPY = defineCopy("routes/vision.network", {
     source: "Source",
     openBoard: "Open this country's decision board",
     virtualNote:
-      "Operations figures here are virtual and show the board's shape; presence and activity come from documented public sources.",
+      "Operations figures here are sample data and show the board's shape; presence and activity come from documented public sources.",
     realNote:
       "These figures come from the connected operations platform, aggregated with no names.",
   },

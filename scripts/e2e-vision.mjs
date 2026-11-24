@@ -147,7 +147,7 @@ for (const [lang, dir] of [
   await page.getByRole("button", { name: /ادخل كداعم/ }).click();
   const form = page.locator("form");
   await form.locator("input[type=number]").fill("6000");
-  await form.getByRole("button", { name: "تبرّع الآن" }).click();
+  await form.getByRole("button", { name: "ادعم الآن" }).click();
   await page.waitForTimeout(800);
   const files = await page.locator("#files-h ~ div li button").count();
   if (files < 1) fail("supporter", "no child files after donating");

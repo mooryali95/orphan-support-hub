@@ -70,7 +70,7 @@ export function OrgInbox() {
         <div className="mt-4">
           <h3 className="text-sm font-semibold">تأكيد وصول دعم الشهر</h3>
           <p className="text-xs text-muted-foreground">
-            ارفع إيصالاً أو صورة استلام — تُحفظ في ملف الطفل الخاص ولا يراها الكافل؛ يرى أنها
+            ارفع إيصالاً أو صورة استلام — تُحفظ في ملفّ الطفل الخاص ولا يراها الكافل؛ يرى أنها
             موثّقة.
           </p>
           <ul className="mt-3 divide-y divide-border">
@@ -178,7 +178,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        {/* زرّ عربيّ يحمل اسم الملف لا «Choose File» المتصفّح (UX-17). */}
+        {/* زرّ عربيّ يحمل اسم الملفّ لا «Choose File» المتصفّح (UX-17). */}
         <FilePicker
           label="مستند الاستلام"
           accessibleLabel={`مستند استلام ${isolate(d.orphan)}`}

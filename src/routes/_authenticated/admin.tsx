@@ -207,7 +207,7 @@ function AdminPage() {
     }),
     [go, sample],
   );
-  // ملف واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
+  // ملفّ واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -362,7 +362,7 @@ function AdminPage() {
               <section>
                 <h2 className="text-sm font-bold">الرحلة</h2>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <Stat label="ملف منشور" value={String(o.orphans.published)} tone="need" />
+                  <Stat label="ملفّ منشور" value={String(o.orphans.published)} tone="need" />
                   <Stat
                     label="مكفول بالكامل"
                     value={String(o.orphans.fully_sponsored)}
@@ -532,7 +532,7 @@ function AdminPage() {
                             });
                             if (res.ok) {
                               toast.success(
-                                decision === "approved" ? "تم اعتماد الملف" : "تم رفض الملف",
+                                decision === "approved" ? "تم اعتماد الملفّ" : "تم رفض الملفّ",
                               );
                               setReviewing(null);
                             } else {

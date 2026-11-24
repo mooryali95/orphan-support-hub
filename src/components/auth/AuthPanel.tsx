@@ -184,7 +184,7 @@ export function AuthPanel({
   title?: string;
   hint?: string;
   className?: string;
-  /** أقصر طريق (التسجيل من الرحلة الافتراضية): جوجل والبصمة ورمز البريد، بلا رابط كلمة المرور */
+  /** أقصر طريق (التسجيل من الوضع التجريبي): جوجل والبصمة ورمز البريد، بلا رابط كلمة المرور */
   simple?: boolean;
 }) {
   const t = useCopy(COPY);

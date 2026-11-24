@@ -15,8 +15,8 @@ const COPY = defineCopy("components/try/TryRealInvite", {
     enterShort: "الرحلة الحقيقية",
     enterTiny: "الحقيقية",
     continue: "أكمل إلى رحلتك الحقيقية",
-    eyebrow: "من الافتراضي إلى الحقيقي",
-    title: "هذه رحلةٌ افتراضية. الحقيقية تبدأ بتسجيلك",
+    eyebrow: "من التجربة إلى الرحلة الحقيقية",
+    title: "هذه رحلةٌ تجريبية. الحقيقية تبدأ بتسجيلك",
     titleRegistered: "حسابك جاهز. رحلتك الحقيقية تنتظرك",
     text: "كلّ ما رأيته هنا محاكاة: لم يُخصم شيء، ولم يُكفل طفل. سجّل ببريدك وحده، فتجد ما اخترته مقترحاً ينتظرك هناك.",
     textRegistered:
@@ -25,20 +25,20 @@ const COPY = defineCopy("components/try/TryRealInvite", {
     promises: [
       "لا يُنقل شيءٌ تلقائياً: ما اخترته يصير مقترحاً فقط.",
       "تؤكّد كلّ مبلغٍ بنفسك، ولا يتغيّر مبلغٌ دون علمك.",
-      "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
+      "أطفال التجربة بأسماءٍ مستعارة؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
     ],
     fields: "حقلٌ واحد: بريدك.",
-    after: "هذه رحلةٌ افتراضية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
-    line: "هذا عطاءٌ افتراضي: لم يُسجَّل شيءٌ حقيقي.",
-    lineRegistered: "هذا عطاءٌ افتراضي. الحقيقي تؤكّده في «أثري».",
+    after: "هذه رحلةٌ تجريبية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
+    line: "هذا عطاءٌ تجريبي: لم يُسجَّل شيءٌ حقيقي.",
+    lineRegistered: "هذا عطاءٌ تجريبي. الحقيقي تؤكّده في «أثري».",
   },
   en: {
     enter: "Enter the real journey",
     enterShort: "The real journey",
     enterTiny: "Go real",
     continue: "Continue to your real journey",
-    eyebrow: "From virtual to real",
-    title: "This is a virtual journey. The real one begins when you register",
+    eyebrow: "From demo to the real journey",
+    title: "This is demo mode. The real one begins when you register",
     titleRegistered: "Your account is ready. Your real journey is waiting",
     text: "Everything you saw here is simulated: nothing was charged, and no child was sponsored. Register with just your email and find what you chose waiting there as a proposal.",
     textRegistered:
@@ -50,9 +50,9 @@ const COPY = defineCopy("components/try/TryRealInvite", {
       "The trial's children are fictional; there you choose a child from the directory of approved files.",
     ],
     fields: "One field: your email.",
-    after: "This is a virtual journey: nothing was charged. The real one begins when you register.",
-    line: "This gift is virtual: nothing real was recorded.",
-    lineRegistered: "This gift is virtual. You confirm the real one in “My impact”.",
+    after: "This is demo mode: nothing was charged. The real one begins when you register.",
+    line: "This is a demo gift: nothing real was recorded.",
+    lineRegistered: "This is a demo gift. You confirm the real one in “My impact”.",
   },
 });
 
@@ -178,7 +178,7 @@ export function TryRealLine({ className }: { className?: string }) {
 }
 
 /**
- * الدعوة كاملةً، في اللحظة الطبيعية (آخر «أثري» التجربة): هذه رحلةٌ افتراضية، وما اخترته فيها،
+ * الدعوة كاملةً، في اللحظة الطبيعية (آخر «أثري» التجربة): هذه رحلةٌ تجريبية، وما اخترته فيها،
  * وما الذي يحدث ولا يحدث حين تسجّل. تظهر بعد أن تُعرف حال الدخول، فلا تنقلب أمام الزائر.
  */
 export function TryRealInvite({ className }: { className?: string }) {

@@ -17,8 +17,8 @@ import { resolveEmailLink } from "./links";
 /** تصنيف الرسالة ونصّ زرّها — بحسب نوع الإشعار. */
 const KIND_FRAME: Record<string, { eyebrow: string; cta: string }> = {
   welcome: { eyebrow: "أهلاً بك", cta: "تصفّح الملفات" },
-  orphan_approved: { eyebrow: "قرار اعتماد", cta: "عرض الملف" },
-  orphan_rejected: { eyebrow: "الملف يحتاج تصحيحاً", cta: "فتح الملف" },
+  orphan_approved: { eyebrow: "قرار اعتماد", cta: "عرض الملفّ" },
+  orphan_rejected: { eyebrow: "الملفّ يحتاج تصحيحاً", cta: "فتح الملفّ" },
   organization_approved: { eyebrow: "اعتماد الجهة الميدانية", cta: "لوحة الجهة" },
   organization_rejected: { eyebrow: "طلب الجهة يحتاج تصحيحاً", cta: "لوحة الجهة" },
   sponsorship_started: { eyebrow: "بدأت الكفالة", cta: "عرض الكفالة" },
