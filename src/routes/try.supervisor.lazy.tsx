@@ -5,14 +5,66 @@ import { toast } from "sonner";
 
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { Button } from "@/components/ui/button";
-import { loadGifts, TRY_CHILDREN, tryChild, type TryChild } from "@/lib/try-demo";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+import { loadGifts, localTryChild, TRY_CHILDREN, tryChild, type TryChild } from "@/lib/try-demo";
 import { addVisit, loadVisits, useTrialValue, type Visit } from "@/lib/try-role-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createLazyFileRoute("/try/supervisor")({ component: TrySupervisor });
 
-const when = (iso: string) =>
-  new Date(iso).toLocaleString("ar", {
+const COPY = defineCopy("routes/try.supervisor", {
+  ar: {
+    saved: (n: string) => `سُجّلت زيارة ${n}`,
+    savedNote: "محاكاة: في الحقيقة تُرفق صورٌ وتُرسل للمكتب",
+    role: "المشرف",
+    title: "زيارات المتابعة",
+    lead: "المشرف يزور الطفل، ويسجّل حاله وما يحتاجه. الزيارة تدخل ملفّ الطفل، وتصل الكافل في «أثري». الطفل الذي كفلته أنت يظهر هنا أوّلاً.",
+    real: "مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم",
+    kids: "أطفال تكليفك",
+    age: (n: number) => `${n} سنوات`,
+    mine: "كفلته أنت في هذه الجلسة · ",
+    last: (d: string) => `آخر زيارة: ${d}`,
+    never: "لم يُزر هذا الشهر",
+    record: "سجّل زيارة",
+    state: "حال الطفل",
+    good: "بخير ومستقرّ",
+    follow: "يحتاج متابعة",
+    goodShort: "بخير",
+    note: "ملاحظة الزيارة",
+    placeholder: "مثلاً: انتظم في المدرسة، ويحتاج نظّارة طبية",
+    save: "احفظ الزيارة",
+    cancel: "إلغاء",
+    log: "سجلّ الزيارات",
+    empty: "لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.",
+  },
+  en: {
+    saved: (n: string) => `Visit to ${n} recorded`,
+    savedNote: "Simulated: on the live platform photos are attached and sent to the office",
+    role: "Supervisor",
+    title: "Follow-up visits",
+    lead: "The supervisor visits the child and records how they are and what they need. The visit joins the child's file and reaches the sponsor in My impact. A child you sponsored appears here first.",
+    real: "a certified supervisor, independent of the organization, who sees only assigned children",
+    kids: "Your assigned children",
+    age: (n: number) => `${n} years old`,
+    mine: "You sponsored this child in this session · ",
+    last: (d: string) => `Last visit: ${d}`,
+    never: "Not visited this month",
+    record: "Record a visit",
+    state: "How the child is",
+    good: "Doing well",
+    follow: "Needs follow-up",
+    goodShort: "Well",
+    note: "Visit note",
+    placeholder: "For example: attending school regularly, needs glasses",
+    save: "Save the visit",
+    cancel: "Cancel",
+    log: "Visit log",
+    empty: "No visits yet. Record a visit and it appears here with its date.",
+  },
+});
+
+const whenIn = (locale: string) => (iso: string) =>
+  new Date(iso).toLocaleString(locale, {
     numberingSystem: "latn",
     dateStyle: "medium",
     timeStyle: "short",
@@ -20,16 +72,18 @@ const when = (iso: string) =>
 
 /** أطفال المشرف: من كفلهم الزائر في جلسته أوّلاً، ثم أطفالٌ نموذجيون في منطقته */
 function useChildren(): Array<TryChild & { mine: boolean }> {
+  const locale = useLocale();
   const gifts = useTrialValue(loadGifts, []);
   const mine = [...new Set(gifts.map((g) => g.childId))]
     .map((id) => tryChild(id))
-    .filter((k): k is TryChild => !!k);
+    .filter((k): k is TryChild => !!k)
+    .map((k) => localTryChild(k, locale));
   const ids = new Set(mine.map((k) => k.id));
   return [
     ...mine.map((k) => ({ ...k, mine: true })),
     ...TRY_CHILDREN.filter((k) => !ids.has(k.id))
       .slice(0, 4)
-      .map((k) => ({ ...k, mine: false })),
+      .map((k) => ({ ...localTryChild(k, locale), mine: false })),
   ];
 }
 
@@ -38,6 +92,9 @@ function useChildren(): Array<TryChild & { mine: boolean }> {
  * في الحقيقة المشرف معتمدٌ مستقلّ، ولا يرى إلا أطفال تكليفه.
  */
 function TrySupervisor() {
+  const t = useCopy(COPY);
+  const locale = useLocale();
+  const when = whenIn(locale);
   const kids = useChildren();
   const visits = useTrialValue<Visit[]>(loadVisits, []);
   const [open, setOpen] = useState<string | null>(null);
@@ -46,8 +103,8 @@ function TrySupervisor() {
 
   const save = (k: TryChild) => {
     addVisit({ childId: k.id, at: new Date().toISOString(), state, note: note.trim() });
-    toast.success(`سُجّلت زيارة ${k.name}`, {
-      description: "محاكاة: في الحقيقة تُرفق صورٌ وتُرسل للمكتب",
+    toast.success(t.saved(k.name), {
+      description: t.savedNote,
     });
     setOpen(null);
     setNote("");
@@ -56,17 +113,12 @@ function TrySupervisor() {
 
   return (
     <div>
-      <TryRoleHeader
-        role="المشرف"
-        title="زيارات المتابعة"
-        lead="المشرف يزور الطفل، ويسجّل حاله وما يحتاجه. الزيارة تدخل ملفّ الطفل، ويُبنى عليها تقرير الكافل الشهري. الطفل الذي كفلته أنت يظهر هنا أوّلاً."
-        real="مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم"
-      />
+      <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section aria-labelledby="sup-kids">
           <h2 id="sup-kids" className="text-lg font-bold">
-            أطفال تكليفك
+            {t.kids}
           </h2>
           <ul className="mt-4 grid gap-3">
             {kids.map((k) => {
@@ -85,17 +137,17 @@ function TrySupervisor() {
                       <span className="font-bold">{k.name}</span>
                       <span className="text-sm text-muted-foreground">
                         {" "}
-                        · {k.age} سنوات · {k.country}
+                        · {t.age(k.age)} · {k.country}
                       </span>
                       <span className="block text-xs text-muted-foreground">
-                        {k.mine ? "كفلته أنت في هذه الجلسة · " : ""}
-                        {last ? `آخر زيارة: ${when(last.at)}` : "لم يُزر هذا الشهر"}
+                        {k.mine ? t.mine : ""}
+                        {last ? t.last(when(last.at)) : t.never}
                       </span>
                     </span>
                     {!editing && (
                       <Button size="sm" onClick={() => setOpen(k.id)}>
                         <ClipboardCheck className="size-4" aria-hidden="true" />
-                        سجّل زيارة
+                        {t.record}
                       </Button>
                     )}
                   </div>
@@ -108,11 +160,11 @@ function TrySupervisor() {
                       }}
                     >
                       <fieldset className="flex flex-wrap gap-2">
-                        <legend className="mb-2 text-sm font-bold">حال الطفل</legend>
+                        <legend className="mb-2 text-sm font-bold">{t.state}</legend>
                         {(
                           [
-                            ["good", "بخير ومستقرّ"],
-                            ["follow", "يحتاج متابعة"],
+                            ["good", t.good],
+                            ["follow", t.follow],
                           ] as const
                         ).map(([v, label]) => (
                           <button
@@ -132,19 +184,19 @@ function TrySupervisor() {
                         ))}
                       </fieldset>
                       <label className="block text-sm">
-                        <span className="font-bold">ملاحظة الزيارة</span>
+                        <span className="font-bold">{t.note}</span>
                         <textarea
                           value={note}
                           onChange={(e) => setNote(e.target.value)}
                           rows={2}
-                          placeholder="مثلاً: انتظم في المدرسة، ويحتاج نظّارة طبية"
+                          placeholder={t.placeholder}
                           className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2"
                         />
                       </label>
                       <div className="flex gap-2">
-                        <Button type="submit">احفظ الزيارة</Button>
+                        <Button type="submit">{t.save}</Button>
                         <Button type="button" variant="ghost" onClick={() => setOpen(null)}>
-                          إلغاء
+                          {t.cancel}
                         </Button>
                       </div>
                     </form>
@@ -160,24 +212,27 @@ function TrySupervisor() {
           className="self-start rounded-2xl border border-border bg-card p-5 shadow-soft"
         >
           <h2 id="sup-log" className="text-lg font-bold">
-            سجلّ الزيارات
+            {t.log}
           </h2>
           {visits.length === 0 ? (
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
-              لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.
-            </p>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">{t.empty}</p>
           ) : (
             <ol className="mt-3 space-y-3">
               {visits.map((v) => (
                 <li key={v.at + v.childId} className="border-s-2 border-primary/30 ps-3 text-sm">
-                  <span className="font-bold">{tryChild(v.childId)?.name ?? "—"}</span>
+                  <span className="font-bold">
+                    {(() => {
+                      const k = tryChild(v.childId);
+                      return k ? localTryChild(k, locale).name : "—";
+                    })()}
+                  </span>
                   <span
                     className={cn(
                       "ms-2 text-xs font-bold",
                       v.state === "good" ? "text-shore-thrive" : "text-bridge-ink",
                     )}
                   >
-                    {v.state === "good" ? "بخير" : "يحتاج متابعة"}
+                    {v.state === "good" ? t.goodShort : t.follow}
                   </span>
                   <span className="block text-xs text-muted-foreground tabular-nums">
                     {when(v.at)}

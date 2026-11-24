@@ -14,14 +14,76 @@ import {
   withLog,
   type Cycle,
 } from "@/lib/try-cycle";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { loadGifts, TRY_EVENT } from "@/lib/try-demo";
 
-const DOC: Record<(typeof CYCLE_DOCS)[number], string> = {
-  death_certificate: "شهادة وفاة الوالد",
-  birth_certificate: "شهادة الميلاد",
-  guardianship_proof: "إثبات الولاية",
-  photo_consent: "موافقة الوليّ على الصورة",
-};
+const COPY = defineCopy("components/try/TryCycleTasks", {
+  ar: {
+    docs: {
+      death_certificate: "شهادة وفاة الوالد",
+      birth_certificate: "شهادة الميلاد",
+      guardianship_proof: "إثبات الولاية",
+      photo_consent: "موافقة الوليّ على الصورة",
+    },
+    who: { admin: "الإدارة", office: "المكتب" },
+    adminEyebrow: "من الدورة الكاملة · ملفّ جهتك",
+    file: (n: string) => `ملفّ «${n}»`,
+    noFile: "لا ملفّ في الطابور بعد",
+    orgFirst: "تُدخل جهة الرعاية الملفّ ومستنداته أوّلاً، ثم يصل هنا.",
+    asOrg: "ادخل بدور الجهة",
+    verified: "موثّق",
+    verify: "وثّق",
+    verifiedLog: (d: string) => `وثّقت ${d}`,
+    publishedLog: "اعتمدت الملفّ ونشرته",
+    publish: "اعتمد وانشر في الدليل",
+    published: "معتمد ومنشور — يراه الكافل الآن في الدليل",
+    asSupporter: "افتحه بعين الكافل",
+    officeEyebrow: "من الدورة الكاملة · تقرير المتابعة",
+    report: (n: string) => `تقرير «${n}» الشهري`,
+    noChild: "لا طفل في الدورة بعد",
+    afterAdmin: "يصل هنا بعد أن تعتمد الإدارة الملفّ وينشر.",
+    startOrg: "ابدأ بدور الجهة",
+    approveAdmin: "اعتمده بدور الإدارة",
+    waiting: "منشورٌ وينتظر كافلاً.",
+    sponsor: "اكفله بدور الكافل",
+    sent: "أُرسل — وصل إلى «أثري» عند الكافل",
+    seeImpact: "شاهده في «أثري»",
+    send: "أرسل تقرير الشهر الأوّل",
+  },
+  en: {
+    docs: {
+      death_certificate: "Father's death certificate",
+      birth_certificate: "Birth certificate",
+      guardianship_proof: "Proof of guardianship",
+      photo_consent: "Guardian's photo consent",
+    },
+    who: { admin: "Administration", office: "Office" },
+    adminEyebrow: "From the full cycle · your organization's file",
+    file: (n: string) => `${n}'s file`,
+    noFile: "No file in the queue yet",
+    orgFirst:
+      "The care organization enters the file and its documents first, then it arrives here.",
+    asOrg: "Enter as the organization",
+    verified: "Verified",
+    verify: "Verify",
+    verifiedLog: (d: string) => `verified ${d}`,
+    publishedLog: "approved and published the file",
+    publish: "Approve and publish to the directory",
+    published: "Approved and published. The supporter can see it in the directory now.",
+    asSupporter: "Open it as the supporter",
+    officeEyebrow: "From the full cycle · follow-up report",
+    report: (n: string) => `${n}'s monthly report`,
+    noChild: "No child in the cycle yet",
+    afterAdmin: "It arrives here once administration approves and publishes the file.",
+    startOrg: "Start as the organization",
+    approveAdmin: "Approve it as administration",
+    waiting: "Published and waiting for a sponsor.",
+    sponsor: "Sponsor as the supporter",
+    sent: "Sent. It has reached the supporter's My impact.",
+    seeImpact: "See it in My impact",
+    send: "Send the first monthly report",
+  },
+});
 
 /** حال «الدورة الكاملة» وكفالتها، تُقرأ من الجلسة وتتجدّد بأيّ تغيير في أيّ دور */
 export function useCycle() {
@@ -70,21 +132,18 @@ function Waiting({
  * الحال نفسها التي تقرؤها صفحة الدورة والدليل: ما يُوثَّق هنا يظهر هناك.
  */
 export function CycleAdminTask() {
+  const t = useCopy(COPY);
   const { c, update } = useCycle();
   const name = c.child.name.trim();
   return (
     <section aria-labelledby="cycle-admin" className={card}>
-      <p className="text-xs font-bold text-bridge-ink">من الدورة الكاملة · ملفّ جهتك</p>
+      <p className="text-xs font-bold text-bridge-ink">{t.adminEyebrow}</p>
       <h3 id="cycle-admin" className="mt-1">
-        {name ? `ملفّ «${name}»` : "لا ملفّ في الطابور بعد"}
+        {name ? t.file(name) : t.noFile}
       </h3>
       <div className="mt-3">
         {c.stage === "draft" ? (
-          <Waiting
-            text="تُدخل جهة الرعاية الملفّ ومستنداته أوّلاً، ثم يصل هنا."
-            to="/try/cycle"
-            cta="ادخل بدور الجهة"
-          />
+          <Waiting text={t.orgFirst} to="/try/cycle" cta={t.asOrg} />
         ) : c.stage === "submitted" ? (
           <div className="space-y-3">
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -93,11 +152,11 @@ export function CycleAdminTask() {
                   key={d}
                   className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-3 py-2 text-sm"
                 >
-                  <span>{DOC[d]}</span>
+                  <span>{t.docs[d]}</span>
                   {c.docs[d].verified ? (
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-shore-thrive">
                       <FileCheck2 className="size-3.5" aria-hidden="true" />
-                      موثّق
+                      {t.verified}
                     </span>
                   ) : (
                     <Button
@@ -106,13 +165,13 @@ export function CycleAdminTask() {
                         update(
                           withLog(
                             { ...c, docs: { ...c.docs, [d]: { uploaded: true, verified: true } } },
-                            "الإدارة",
-                            `وثّقت ${DOC[d]}`,
+                            t.who.admin,
+                            t.verifiedLog(t.docs[d]),
                           ),
                         )
                       }
                     >
-                      وثّق
+                      {t.verify}
                     </Button>
                   )}
                 </li>
@@ -124,28 +183,28 @@ export function CycleAdminTask() {
                 update(
                   withLog(
                     { ...c, stage: "published", publishedAt: new Date().toISOString() },
-                    "الإدارة",
-                    "اعتمدت الملفّ ونشرته",
+                    t.who.admin,
+                    t.publishedLog,
                   ),
                 )
               }
             >
               <ShieldCheck className="size-4" aria-hidden="true" />
-              اعتمد وانشر في الدليل
+              {t.publish}
             </Button>
           </div>
         ) : (
           <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
             <span className="inline-flex items-center gap-1 font-bold text-shore-thrive">
               <ShieldCheck className="size-4" aria-hidden="true" />
-              معتمد ومنشور — يراه الكافل الآن في الدليل
+              {t.published}
             </span>
             <Link
               to="/try/$childId"
               params={{ childId: CYCLE_CHILD_ID }}
               className="inline-flex items-center gap-1 font-bold text-primary underline-offset-4 hover:underline"
             >
-              افتحه بعين الكافل
+              {t.asSupporter}
               <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
             </Link>
           </p>
@@ -157,53 +216,50 @@ export function CycleAdminTask() {
 
 /** مهمّة المكتب من الدورة: بعد الكفالة يُرسل تقرير الشهر الأوّل، فيظهر في «أثري» عند الكافل. */
 export function CycleOfficeTask() {
+  const t = useCopy(COPY);
   const { c, sponsored, update } = useCycle();
   const name = c.child.name.trim();
   return (
     <section aria-labelledby="cycle-office" className={card}>
-      <p className="text-xs font-bold text-bridge-ink">من الدورة الكاملة · تقرير المتابعة</p>
+      <p className="text-xs font-bold text-bridge-ink">{t.officeEyebrow}</p>
       <h3 id="cycle-office" className="mt-1">
-        {name ? `تقرير «${name}» الشهري` : "لا طفل في الدورة بعد"}
+        {name ? t.report(name) : t.noChild}
       </h3>
       <div className="mt-3">
         {c.stage !== "published" ? (
           <Waiting
-            text="يصل هنا بعد أن تعتمد الإدارة الملفّ وينشر."
+            text={t.afterAdmin}
             to={c.stage === "draft" ? "/try/cycle" : "/try/admin"}
-            cta={c.stage === "draft" ? "ابدأ بدور الجهة" : "اعتمده بدور الإدارة"}
+            cta={c.stage === "draft" ? t.startOrg : t.approveAdmin}
           />
         ) : !sponsored ? (
           <p className="text-sm leading-7 text-muted-foreground">
-            منشورٌ وينتظر كافلاً.{" "}
+            {t.waiting}{" "}
             <Link
               to="/try/$childId"
               params={{ childId: CYCLE_CHILD_ID }}
               className="font-bold text-primary underline-offset-4 hover:underline"
             >
-              اكفله بدور الكافل
+              {t.sponsor}
             </Link>
           </p>
         ) : c.reportSent ? (
           <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
             <span className="inline-flex items-center gap-1 font-bold text-shore-thrive">
               <ScrollText className="size-4" aria-hidden="true" />
-              أُرسل — وصل إلى «أثري» عند الكافل
+              {t.sent}
             </span>
             <Link
               to="/try/impact"
               className="font-bold text-primary underline-offset-4 hover:underline"
             >
-              شاهده في «أثري»
+              {t.seeImpact}
             </Link>
           </p>
         ) : (
-          <Button
-            onClick={() =>
-              update(withLog({ ...c, reportSent: true }, "المكتب", "أرسل تقرير الشهر الأوّل"))
-            }
-          >
+          <Button onClick={() => update(withLog({ ...c, reportSent: true }, t.who.office, t.send))}>
             <ScrollText className="size-4" aria-hidden="true" />
-            أرسل تقرير الشهر الأوّل
+            {t.send}
           </Button>
         )}
       </div>
