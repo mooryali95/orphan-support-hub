@@ -1141,3 +1141,11 @@ html.try-present {
 .hall-open [data-demo-bar] {
   display: none;
 }
+
+/* دعوة القاعة في الصفحة الأولى: أقواس القاعة بالتدرّج وحده، بألوان الهوية (routes/index.tsx) */
+.hall-invite-arches {
+  background:
+    radial-gradient(60% 120% at 85% 110%, color-mix(in oklab, var(--primary) 70%, white 10%), transparent 60%),
+    radial-gradient(40% 80% at 15% -10%, color-mix(in oklab, var(--bridge) 22%, transparent), transparent 60%),
+    repeating-radial-gradient(circle at 80% 130%, transparent 0 46px, color-mix(in oklab, var(--bridge) 10%, transparent) 46px 47px);
+}
