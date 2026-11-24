@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, DoorOpen } from "lucide-react";
 import { createContext, useContext } from "react";
+import { exitDemo } from "@/lib/demo-mode";
 
 import { ProposalLine } from "@/components/try/TrialProposal";
 import { Button } from "@/components/ui/button";
@@ -102,7 +103,7 @@ export function TryRealButton({
   if (registered)
     return (
       <Button asChild size={size} variant={variant} className={className}>
-        <Link to="/dashboard" data-try-real="continue">
+        <Link to="/dashboard" data-try-real="continue" onClick={exitDemo}>
           {short ? (
             <>
               <span className="sm:hidden" aria-hidden="true">

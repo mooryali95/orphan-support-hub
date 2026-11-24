@@ -1493,30 +1493,48 @@ export type Database = {
       offices: {
         Row: {
           active: boolean
+          category: string | null
+          city: string | null
           country_code: string
           created_at: string
           id: string
+          is_demo: boolean
           name: string
           parent_id: string | null
           region: string | null
+          source_seen_at: string | null
+          source_url: string | null
+          updated_at: string
         }
         Insert: {
           active?: boolean
+          category?: string | null
+          city?: string | null
           country_code: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           name: string
           parent_id?: string | null
           region?: string | null
+          source_seen_at?: string | null
+          source_url?: string | null
+          updated_at?: string
         }
         Update: {
           active?: boolean
+          category?: string | null
+          city?: string | null
           country_code?: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           name?: string
           parent_id?: string | null
           region?: string | null
+          source_seen_at?: string | null
+          source_url?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -3705,6 +3723,17 @@ export type Database = {
       admin_sources_overview: { Args: never; Returns: Json }
       admin_supervisors: { Args: never; Returns: Json }
       admin_transfer_context: { Args: { _id: string }; Returns: Json }
+      admin_update_office: {
+        Args: {
+          _active: boolean
+          _category: string
+          _city: string
+          _is_demo: boolean
+          _name: string
+          _office: string
+        }
+        Returns: undefined
+      }
       age_band_of: {
         Args: { _birth: string }
         Returns: Database["public"]["Enums"]["age_band"]
@@ -4202,6 +4231,7 @@ export type Database = {
       }
       ops_health: { Args: never; Returns: Json }
       ops_record_run: { Args: never; Returns: Json }
+      org_incoming_pledges: { Args: { _org: string }; Returns: Json }
       org_orphans: { Args: never; Returns: Json }
       org_pending_deliveries: { Args: never; Returns: Json }
       orphan_enrollments: { Args: { _orphan: string }; Returns: Json }
@@ -4274,6 +4304,7 @@ export type Database = {
       }
       prune_rate_limits: { Args: never; Returns: number }
       public_edit_fields: { Args: never; Returns: string[] }
+      public_offices_map: { Args: never; Returns: Json }
       public_operating_links: { Args: never; Returns: Json }
       public_platform_stats: { Args: never; Returns: Json }
       public_ui_locales: { Args: never; Returns: Json }
@@ -4432,6 +4463,7 @@ export type Database = {
         Returns: Json
       }
       send_due_exit_followups: { Args: never; Returns: number }
+      session_proved_email: { Args: never; Returns: string }
       set_enrollment_stage: {
         Args: { _enrollment: string; _stage: string }
         Returns: Database["public"]["Enums"]["qualification_stage"]
@@ -4624,6 +4656,8 @@ export type Database = {
         | "report_published"
         | "report_rejected"
         | "other"
+        | "pledge_preparing"
+        | "pledge_delivered"
       org_status: "pending" | "approved" | "suspended" | "rejected"
       orphan_doc_type:
         | "death_certificate"
@@ -4866,6 +4900,8 @@ export const Constants = {
         "report_published",
         "report_rejected",
         "other",
+        "pledge_preparing",
+        "pledge_delivered",
       ],
       org_status: ["pending", "approved", "suspended", "rejected"],
       orphan_doc_type: [

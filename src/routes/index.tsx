@@ -13,6 +13,7 @@ import {
   Sprout,
   Package,
   type LucideIcon,
+  Box,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -138,6 +139,13 @@ const COPY = defineCopy("routes/index", {
     h1b: "بل نبني نظم عمران",
     lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
     supportNow: "ادعم الآن",
+    hallHero: "ادخل قاعة الأثر",
+    hallEyebrow: "قاعة الأثر · ثلاثية الأبعاد",
+    hallH: "العالم كما يتحرّك به عطاؤك",
+    hallP:
+      "ادخل القاعة، واختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، فترى الأثر يتغيّر أمامك على البلد والمنطقة والمجموعة والطفل. المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
+    hallCta: "ادخل القاعة",
+    hallNote: "تجربةٌ ببياناتٍ نموذجية، بلا حسابٍ ولا خصم.",
     tryIt: "ادخل التجربة — بلا حساب ولا خصم",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
@@ -269,6 +277,13 @@ const COPY = defineCopy("routes/index", {
     h1b: "we build systems for thriving",
     lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
     supportNow: "Support now",
+    hallHero: "Enter the impact hall",
+    hallEyebrow: "The impact hall · 3D",
+    hallH: "The world as your giving moves it",
+    hallP:
+      "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
+    hallCta: "Enter the hall",
+    hallNote: "A walkthrough on sample data, with no account and nothing charged.",
     tryIt: "Enter the demo — no account, nothing charged",
     browse: "Browse children's files",
     hadithMeaning:
@@ -521,6 +536,15 @@ function HomePage() {
                   >
                     {c.supportNow}
                   </Link>
+                  {/* القاعة ثلاثية الأبعاد: رابطٌ عاديّ — المشهد يُحمَّل عند الدخول وحده */}
+                  <a
+                    href="/hall?try=1"
+                    data-to-hall
+                    className="inline-flex min-h-11 items-center gap-1.5 px-3 text-sm font-bold text-bridge-ink underline decoration-bridge/40 underline-offset-[6px] transition-colors hover:decoration-bridge"
+                  >
+                    <Box className="size-4" aria-hidden="true" />
+                    {c.hallHero}
+                  </a>
                 </div>
                 {showTrialLink() && (
                   <Link
@@ -825,6 +849,41 @@ function HomePage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        {/* ── دعوة القاعة: لوحةٌ بالألوان وحدها (لا مشهد ولا صورة)؛ القاعة تُحمَّل عند الدخول ── */}
+        <section aria-labelledby="hall-invite" className="border-t border-border/70">
+          <div className="mx-auto max-w-6xl px-4 py-14">
+            <div className="hall-invite relative overflow-hidden rounded-[2rem] bg-primary px-6 py-12 text-primary-foreground shadow-soft sm:px-12">
+              <div
+                aria-hidden="true"
+                className="hall-invite-arches pointer-events-none absolute inset-0"
+              />
+              <div className="relative max-w-2xl">
+                <p className="text-sm font-bold tracking-wide text-bridge-bright">
+                  {c.hallEyebrow}
+                </p>
+                <h2
+                  id="hall-invite"
+                  className="mt-3 font-serif text-3xl leading-[1.35] font-bold sm:text-4xl"
+                >
+                  {c.hallH}
+                </h2>
+                <p className="mt-4 text-base leading-8 opacity-90">{c.hallP}</p>
+                <div className="mt-7 flex flex-wrap items-center gap-4">
+                  <a
+                    href="/hall?try=1"
+                    data-to-hall
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-background px-7 text-base font-bold text-primary shadow-soft transition-transform active:scale-[0.97]"
+                  >
+                    <Box className="size-5" aria-hidden="true" />
+                    {c.hallCta}
+                  </a>
+                  <span className="text-sm opacity-75">{c.hallNote}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ── 5 · أين: الخارطة، «الشبكة» افتراضياً ── */}

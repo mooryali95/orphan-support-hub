@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { WorldMap, type MapSelection } from "@/components/map/WorldMap";
+import { MapHallSwitch } from "@/components/support/MapHallSwitch";
 import { TrySupportSheet } from "@/components/try/TrySupportSheet";
 import { countryName } from "@/lib/countries";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -106,7 +107,9 @@ export function TrySupportMap({
         </div>
       </section>
 
-      <div className="-mx-4 mt-6 overflow-hidden border-y border-border sm:mx-0 sm:rounded-3xl sm:border">
+      {/* منظران لمكانٍ واحد: الدولة المختارة ونوع العطاء ينتقلان إلى القاعة، ومنها يعود إلى هنا */}
+      <MapHallSwitch className="mt-6" country={selection.country} kind={kind} trial />
+      <div className="-mx-4 mt-3 overflow-hidden border-y border-border sm:mx-0 sm:rounded-3xl sm:border">
         <WorldMap
           stats={stats}
           demo

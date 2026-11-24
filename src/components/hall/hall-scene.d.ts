@@ -35,6 +35,8 @@ export function mountHall(
     text?: HallLive | null;
     /** the country the visitor was looking at on the pages: the hall lands on it once, on entry */
     start?: string | null;
+    /** the kind of giving chosen before entering (the support page's track): the trial hall opens on it */
+    kind?: "qualification" | "monthly" | "in_kind" | null;
     /**
      * the donor's own hall (`@/lib/hall/donor`): their real sponsorships as their dashboard reads
      * them (null when they could not be read), and the platform's kinds of giving by name. When

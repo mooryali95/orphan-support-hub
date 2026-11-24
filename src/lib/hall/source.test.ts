@@ -501,3 +501,14 @@ describe("أرقام الداعم في القاعة هي أرقام لوحته: 
     }
   });
 });
+
+describe("الخريطة والقاعة: نوع العطاء ينتقل بينهما", () => {
+  it("القاعة تقرأ نوع العطاء من الرابط، وتهمل ما ليس منه", () => {
+    expect(parseHallSearch({ kind: "in_kind", c: "SN" })).toMatchObject({
+      kind: "in_kind",
+      c: "SN",
+    });
+    expect(parseHallSearch({ kind: "monthly" })).toMatchObject({ kind: "monthly" });
+    expect(parseHallSearch({ kind: "zakat" })).not.toHaveProperty("kind");
+  });
+});

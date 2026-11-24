@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { SupporterModeGate } from "@/components/SupporterModeGate";
@@ -9,20 +9,13 @@ import { CelebrateMark } from "@/components/kit/Celebrate";
 import type { MapActionContext } from "@/components/map/WorldMap";
 import type { MapStats } from "@/components/map/demo-stats";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { TrialProposalOffer } from "@/components/try/TrialProposal";
 import { normalize } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
 import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
-import {
-  ChildPickPanel,
-  GivingTrackChoice,
-  MonthlyTrackPanel,
-  TrackArrow,
-} from "@/components/support/GivingTrackChoice";
+import { TrackArrow } from "@/components/support/GivingTrackChoice";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { defaultIndividualAmount, gapOfTarget, individualPresets } from "@/lib/support-amounts";
 import {
@@ -32,8 +25,8 @@ import {
   type TargetType,
 } from "@/lib/support.functions";
 import { PledgeReceipt } from "@/components/support/PledgeReceipt";
+import { SupportSheetBody, type SheetTarget } from "@/components/support/SupportSheetBody";
 import { dismissProposal } from "@/lib/try-handoff";
-import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/support/SupportSheet", {
   ar: {
@@ -310,141 +303,105 @@ export function SupportSheet({
   );
   const whom = target.type === "orphan" ? (ctx.regionName ?? t.thisCountry) : target.label;
 
-  const chip = (on: boolean) =>
-    cn(
-      "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
-      on
-        ? "border-primary bg-primary text-primary-foreground"
-        : "border-border bg-background hover:border-primary/60",
-    );
+  const key = (x: Target) => `${x.type}:${x.value}`;
+  const sheetTargets: SheetTarget[] = targets.map((x) => ({
+    key: key(x),
+    label: x.label,
+    ...(x.hint ? { hint: x.hint } : {}),
+    ...(x.type === "orphan" ? { pickChild: true } : {}),
+    scope: x.type,
+  }));
 
   return (
-    // عمودٌ بعرض البطاقة: صفّ «إلى من؟» يتمرّر داخلها ولا يمدّها (كان يفيض خارجها).
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
-      {/* من الرحلة الافتراضية، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */}
-      <TrialProposalOffer
-        tracks={["qualification", "in_kind"]}
-        co={ctx.code}
-        sameCountryOnly
-        usable={(p) =>
-          payList.some((o) => o.currency === p.currency) &&
-          !(target.type === "institution" && p.track === "qualification")
-        }
-        onUse={(p) => {
-          if (p.track !== "sponsorship") {
-            setKind(p.track);
-            setMonthly(false);
+    <SupportSheetBody
+      lead={
+        /* من الرحلة الافتراضية، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */
+        <TrialProposalOffer
+          tracks={["qualification", "in_kind"]}
+          co={ctx.code}
+          sameCountryOnly
+          usable={(p) =>
+            payList.some((o) => o.currency === p.currency) &&
+            !(target.type === "institution" && p.track === "qualification")
           }
-          setChosenCurrency(p.currency);
-          chooseAmount(p.amount);
-          usedProposal.current = p.id;
-        }}
-      />
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.whom}</legend>
-        <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
-          {targets.map((x) => (
-            <button
-              key={`${x.type}:${x.value}`}
-              type="button"
-              aria-pressed={target.type === x.type && target.value === x.value}
-              onClick={() => setTarget(x)}
-              className={chip(target.type === x.type && target.value === x.value)}
-            >
-              {x.label}
-              {x.hint && <span className="text-xs opacity-75">{x.hint}</span>}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
-      <GivingTrackChoice
-        value={track}
-        onChange={chooseTrack}
-        disabled={(k) => k === "qualification" && target.type === "institution"}
-      />
-
-      {target.type === "orphan" ? (
-        <ChildPickPanel whom={whom} action={directory} />
-      ) : monthly ? (
-        <MonthlyTrackPanel whom={whom} action={directory} />
-      ) : (
-        <>
-          {/* تبديل العملة لا يمسّ المبلغ: الرقم يبقى كما اختاره الداعم، والزرّ يعرضه بعملته */}
-          <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
-
-          <fieldset className="min-w-0">
-            <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
-              {t.amount}
-              {gap && (
-                <span className="ms-1 text-muted-foreground/80">
-                  — {t.fromGap(formatMoney(gap.gap, gap.currency, locale))}
-                </span>
+          onUse={(p) => {
+            if (p.track !== "sponsorship") {
+              setKind(p.track);
+              setMonthly(false);
+            }
+            setChosenCurrency(p.currency);
+            chooseAmount(p.amount);
+            usedProposal.current = p.id;
+          }}
+        />
+      }
+      targets={sheetTargets}
+      target={sheetTargets.find((x) => x.key === key(target)) ?? sheetTargets[0]!}
+      onTarget={(x) => {
+        const next = targets.find((y) => key(y) === x.key);
+        if (next) setTarget(next);
+      }}
+      track={track}
+      onTrack={chooseTrack}
+      trackDisabled={(k) => k === "qualification" && target.type === "institution"}
+      monthly={directory}
+      childPick={directory}
+      monthlyWhom={whom}
+      payList={payList}
+      currency={currency}
+      onCurrency={setChosenCurrency}
+      amountLegend={
+        gap && (
+          <span className="ms-1 text-muted-foreground/80">
+            — {t.fromGap(formatMoney(gap.gap, gap.currency, locale))}
+          </span>
+        )
+      }
+      amounts={suggested}
+      amount={amount}
+      onAmount={chooseAmount}
+      extra={
+        <details className="text-sm">
+          <summary className="cursor-pointer text-xs text-muted-foreground">{t.note}</summary>
+          <Textarea
+            rows={2}
+            className="mt-2"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </details>
+      }
+      confirm={
+        <SupporterModeGate>
+          {signedIn ? (
+            <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
+              {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+              {t.confirm(formatMoney(amount, currency, locale))}
+            </Button>
+          ) : (
+            <AuthDialog
+              title={t.signIn}
+              hint={t.signInHint}
+              // after signing in the support is recorded as promised, with no second click
+              onDone={() => void confirm()}
+              trigger={(open) => (
+                <Button size="lg" className="w-full" onClick={open}>
+                  {t.signIn}
+                </Button>
               )}
-            </legend>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {suggested.map((a) => (
-                <button
-                  key={a.key}
-                  type="button"
-                  aria-pressed={amount === a.value}
-                  onClick={() => chooseAmount(a.value)}
-                  className={cn(chip(amount === a.value), "tabular-nums")}
-                >
-                  {a.label}
-                  {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
-                </button>
-              ))}
-              <Input
-                aria-label={t.other}
-                type="number"
-                inputMode="numeric"
-                min={1}
-                className="h-11 w-28 rounded-full"
-                value={amount}
-                onChange={(e) => chooseAmount(Math.max(1, Number(e.target.value) || 1))}
-              />
-            </div>
-          </fieldset>
-
-          <details className="text-sm">
-            <summary className="cursor-pointer text-xs text-muted-foreground">{t.note}</summary>
-            <Textarea
-              rows={2}
-              className="mt-2"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
             />
-          </details>
-
-          <SupporterModeGate>
-            {signedIn ? (
-              <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
-                {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-                {t.confirm(formatMoney(amount, currency, locale))}
-              </Button>
-            ) : (
-              <AuthDialog
-                title={t.signIn}
-                hint={t.signInHint}
-                // after signing in the support is recorded as promised, with no second click
-                onDone={() => void confirm()}
-                trigger={(open) => (
-                  <Button size="lg" className="w-full" onClick={open}>
-                    {t.signIn}
-                  </Button>
-                )}
-              />
-            )}
-          </SupporterModeGate>
-          <p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>
-        </>
-      )}
-      {result && !result.ok && (
-        <p role="alert" className="text-sm text-destructive">
-          {result.text}
-        </p>
-      )}
-    </div>
+          )}
+        </SupporterModeGate>
+      }
+      footnote={<p className="text-xs leading-5 text-muted-foreground">{t.pledgeNote}</p>}
+      after={
+        result &&
+        !result.ok && (
+          <p role="alert" className="text-sm text-destructive">
+            {result.text}
+          </p>
+        )
+      }
+    />
   );
 }

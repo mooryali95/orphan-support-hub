@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { exitDemo } from "@/lib/demo-mode";
 import {
   Box,
   Check,
@@ -416,7 +417,7 @@ export function TryJourneyGuide({ variant = "bar" }: { variant?: "bar" | "hero" 
           {/* the door out of the trial: the last step is the real journey itself */}
           <li className="pt-1">
             {registered ? (
-              <Link to="/dashboard" className={realRow}>
+              <Link to="/dashboard" onClick={exitDemo} className={realRow}>
                 {realBody}
               </Link>
             ) : (
