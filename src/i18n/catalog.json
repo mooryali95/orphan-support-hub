@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3478,
+ "count": 3482,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -8896,6 +8896,34 @@
    "params": 1,
    "hash": "df3abc4848b7",
    "file": "src/components/support/GivingTrackChoice.tsx"
+  },
+  "components/support/MapHallSwitch.hall": {
+   "en": "3D impact hall",
+   "ar": "قاعة الأثر ثلاثية الأبعاد",
+   "kind": "text",
+   "hash": "8d28430b7f79",
+   "file": "src/components/support/MapHallSwitch.tsx"
+  },
+  "components/support/MapHallSwitch.hallShort": {
+   "en": "Hall",
+   "ar": "القاعة",
+   "kind": "text",
+   "hash": "cf6dedacb7fa",
+   "file": "src/components/support/MapHallSwitch.tsx"
+  },
+  "components/support/MapHallSwitch.label": {
+   "en": "View",
+   "ar": "طريقة العرض",
+   "kind": "text",
+   "hash": "32a7c667e0f3",
+   "file": "src/components/support/MapHallSwitch.tsx"
+  },
+  "components/support/MapHallSwitch.map": {
+   "en": "Map",
+   "ar": "الخريطة",
+   "kind": "text",
+   "hash": "6e80bef962c1",
+   "file": "src/components/support/MapHallSwitch.tsx"
   },
   "components/support/MyPledgeImpact.emptyInKind": {
    "en": "No in-kind pledge yet.",

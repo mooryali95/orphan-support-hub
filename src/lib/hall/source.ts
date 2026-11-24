@@ -22,6 +22,8 @@ export type HallSearch = {
   /** a trial child whose simulated gift is replayed on arrival */
   child?: string;
   cadence?: "monthly" | "one_time";
+  /** the kind of giving chosen before entering (the support page's track): the hall opens on it */
+  kind?: "qualification" | "monthly" | "in_kind";
   /** the country the visitor was looking at: the hall lands on it */
   c?: string;
   /** where the visitor came from, an internal path with its search: leaving returns there */
@@ -50,6 +52,9 @@ export function parseHallSearch(raw: Record<string, unknown>): HallSearch {
     ...(typeof raw["child"] === "string" ? { child: raw["child"] } : {}),
     ...(raw["cadence"] === "one_time" || raw["cadence"] === "monthly"
       ? { cadence: raw["cadence"] }
+      : {}),
+    ...(raw["kind"] === "qualification" || raw["kind"] === "monthly" || raw["kind"] === "in_kind"
+      ? { kind: raw["kind"] }
       : {}),
     ...(typeof c === "string" && /^[A-Z]{2}$/.test(c) ? { c } : {}),
     ...(from ? { from } : {}),
