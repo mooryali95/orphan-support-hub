@@ -8,26 +8,82 @@ import { Button } from "@/components/ui/button";
 import { sampleRows } from "@/lib/admin-console-sample";
 import type { OrphanRecord } from "@/lib/admin-console.functions";
 import { countryName } from "@/lib/countries";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { loadPledges, targetLabel, type TryPledge } from "@/lib/try-support";
 import { loadOffice, saveOffice, useTrialValue } from "@/lib/try-role-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createLazyFileRoute("/try/office")({ component: TryOffice });
 
-const STEPS = ["استُلم", "جُدول", "نُفِّذ", "أُرسل التقرير"] as const;
-const KIND: Record<string, string> = { qualification: "تأهيل", in_kind: "دعم عيني" };
+const COPY = defineCopy("routes/try.office", {
+  ar: {
+    steps: ["استُلم", "جُدول", "نُفِّذ", "أُرسل التقرير"],
+    kind: { qualification: "تأهيل", in_kind: "دعم عيني" } as Record<string, string>,
+    samples: { "s-1": "منطقة داكار", "s-2": "مجموعة تيرانا 3", "s-3": "كينيا" } as Record<
+      string,
+      string
+    >,
+    approvedToast: (n: string) => `رُفع ملفّ ${n} للإدارة`,
+    returnedToast: (n: string) => `أُعيد ملفّ ${n} إلى الجهة بملاحظة`,
+    toastNote: "محاكاة: في الحقيقة يُسجَّل القرار ويُشعَر الطرف الآخر",
+    role: "المكتب الميداني",
+    title: "مكتب المنطقة",
+    lead: "المكتب يراجع ملفّات الجهات قبل الإدارة، ويتابع الأطفال المكفولين بتقارير شهرية، وينفّذ ما تعهّد به الداعمون من تأهيلٍ ودعمٍ عيني في منطقته.",
+    real: "المكتب يرى منطقته وحدها، وكلّ قرارٍ باسم صاحبه في السجلّ",
+    files: "ملفّات جديدة من جهات المنطقة",
+    filesLead: "راجعها وارفعها للإدارة، أو أعدها للجهة لتستكمل.",
+    docs: (n: number) => `مستندات ${n}`,
+    approved: "رُفع للإدارة",
+    returned: "أُعيد للجهة",
+    approve: "ارفعه للإدارة",
+    return: "أعده للجهة",
+    deliver: "التأهيل والدعم العيني في المنطقة",
+    deliverLead: "كلّ تعهّدٍ يمضي في أربع خطوات، وكلّ خطوةٍ تظهر للداعم في «أثري».",
+    deliverEmpty: " تعهّدك يظهر هنا أوّلاً حين تدعم مكاناً بدور الكافل.",
+    mine: "تعهّدك أنت في هذه الجلسة · ",
+    monthly: (n: number) => `${n} شهرياً`,
+    stepsLabel: "خطوات التنفيذ",
+    next: "الخطوة التالية",
+  },
+  en: {
+    steps: ["Received", "Scheduled", "Delivered", "Report sent"],
+    kind: { qualification: "Training", in_kind: "In-kind support" } as Record<string, string>,
+    samples: { "s-1": "Dakar region", "s-2": "Tirana group 3", "s-3": "Kenya" } as Record<
+      string,
+      string
+    >,
+    approvedToast: (n: string) => `${n}'s file was passed to administration`,
+    returnedToast: (n: string) => `${n}'s file was returned to the organization with a note`,
+    toastNote:
+      "Simulated: on the live platform the decision is logged and the other side is notified",
+    role: "Field office",
+    title: "The area office",
+    lead: "The office reviews organizations' files before administration, follows sponsored children with monthly reports, and delivers the training and in-kind support that supporters pledged in its area.",
+    real: "an office sees only its own area, and every decision is logged under its author's name",
+    files: "New files from the area's organizations",
+    filesLead:
+      "Review them and pass them to administration, or return them to the organization to complete.",
+    docs: (n: number) => `${n} documents`,
+    approved: "Passed to administration",
+    returned: "Returned to the organization",
+    approve: "Pass to admin",
+    return: "Return",
+    deliver: "Training and in-kind support in the area",
+    deliverLead:
+      "Each pledge moves through four steps, and each step shows to the supporter in My impact.",
+    deliverEmpty: " Your own pledge appears here first when you support a place as the supporter.",
+    mine: "Your pledge in this session · ",
+    monthly: (n: number) => `${n} a month`,
+    stepsLabel: "Delivery steps",
+    next: "Next step",
+  },
+});
 
 /** تعهّداتٌ نموذجية في المنطقة، بشكل تعهّدات الزائر نفسه */
-const SAMPLE_PLEDGES: Array<{
-  id: string;
-  kind: string;
-  label: string;
-  place: string;
-  amount: number;
-}> = [
-  { id: "s-1", kind: "qualification", label: "منطقة داكار", place: "السنغال", amount: 120 },
-  { id: "s-2", kind: "in_kind", label: "مجموعة تيرانا 3", place: "ألبانيا", amount: 60 },
-  { id: "s-3", kind: "qualification", label: "كينيا", place: "", amount: 200 },
+const SAMPLE_PLEDGES = [
+  { id: "s-1", kind: "qualification", co: "SN", amount: 120 },
+  { id: "s-2", kind: "in_kind", co: "AL", amount: 60 },
+  { id: "s-3", kind: "qualification", co: "", amount: 200 },
 ];
 
 /**
@@ -35,6 +91,8 @@ const SAMPLE_PLEDGES: Array<{
  * وتعهّدات التأهيل والدعم العيني (ومنها تعهّد الزائر) تمضي في خطوات التنفيذ. كلّه في الجلسة.
  */
 function TryOffice() {
+  const t = useCopy(COPY);
+  const locale = useLocale();
   const office = useTrialValue(loadOffice, { files: {}, deliveries: {} });
   const pledges = useTrialValue<TryPledge[]>(loadPledges, []);
   const files = (sampleRows("orphans") as OrphanRecord[])
@@ -43,41 +101,40 @@ function TryOffice() {
 
   const decide = (id: string, d: "approved" | "returned", name: string) => {
     saveOffice({ ...office, files: { ...office.files, [id]: d } });
-    toast.success(
-      d === "approved" ? `رُفع ملفّ ${name} للإدارة` : `أُعيد ملفّ ${name} إلى الجهة بملاحظة`,
-      { description: "محاكاة: في الحقيقة يُسجَّل القرار ويُشعَر الطرف الآخر" },
-    );
+    toast.success(d === "approved" ? t.approvedToast(name) : t.returnedToast(name), {
+      description: t.toastNote,
+    });
   };
   const advance = (id: string) => {
-    const at = Math.min(STEPS.length - 1, (office.deliveries[id] ?? 0) + 1);
+    const at = Math.min(t.steps.length - 1, (office.deliveries[id] ?? 0) + 1);
     saveOffice({ ...office, deliveries: { ...office.deliveries, [id]: at } });
   };
 
   const rows = [
     ...pledges.map((p) => {
-      const t = targetLabel(p, "ar");
+      const tl = targetLabel(p, locale);
       return {
         id: p.id,
         kind: p.kind,
-        label: t.label,
-        place: t.place ?? "",
+        label: tl.label,
+        place: tl.place ?? "",
         amount: p.amount,
         mine: true,
       };
     }),
-    ...SAMPLE_PLEDGES.map((p) => ({ ...p, mine: false })),
+    ...SAMPLE_PLEDGES.map((p) => ({
+      ...p,
+      label: t.samples[p.id] ?? "",
+      place: p.co && p.id !== "s-3" ? countryName(p.co, locale) : "",
+      mine: false,
+    })),
   ];
 
   return (
     <div>
-      <TryRoleHeader
-        role="المكتب الميداني"
-        title="مكتب المنطقة"
-        lead="المكتب يراجع ملفّات الجهات قبل الإدارة، ويتابع الأطفال المكفولين بتقارير شهرية، وينفّذ ما تعهّد به الداعمون من تأهيلٍ ودعمٍ عيني في منطقته."
-        real="المكتب يرى منطقته وحدها، وكلّ قرارٍ باسم صاحبه في السجلّ"
-      />
+      <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
 
-      <div className="mt-8 grid items-start gap-6 lg:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <CycleOfficeTask />
 
         <section
@@ -85,24 +142,22 @@ function TryOffice() {
           className="rounded-2xl border border-border bg-card p-5 shadow-soft"
         >
           <h2 id="office-files" className="text-lg font-bold">
-            ملفّات جديدة من جهات المنطقة
+            {t.files}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            راجعها وارفعها للإدارة، أو أعدها للجهة لتستكمل.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{t.filesLead}</p>
           <ul className="mt-4 divide-y divide-border">
             {files.map((o) => {
               const d = office.files[o.id];
               return (
-                <li key={o.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
-                  <span className="min-w-0 flex-1">
+                <li key={o.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 text-sm">
+                  <span className="min-w-0 basis-full">
                     <span className="font-bold">{o.name}</span>
                     <span className="text-muted-foreground">
                       {" "}
-                      · {o.org} · {countryName(o.country ?? "", "ar")}
+                      · {o.org} · {countryName(o.country ?? "", locale)}
                     </span>
                     <span className="block text-xs text-muted-foreground tabular-nums">
-                      {o.code} · مستندات {o.verification.documents}
+                      {o.code} · {t.docs(o.verification.documents)}
                     </span>
                   </span>
                   {d ? (
@@ -117,19 +172,19 @@ function TryOffice() {
                       ) : (
                         <RotateCcw className="size-3.5" aria-hidden="true" />
                       )}
-                      {d === "approved" ? "رُفع للإدارة" : "أُعيد للجهة"}
+                      {d === "approved" ? t.approved : t.returned}
                     </span>
                   ) : (
-                    <span className="flex gap-2">
+                    <span className="flex flex-wrap gap-2">
                       <Button size="sm" onClick={() => decide(o.id, "approved", o.name)}>
-                        ارفعه للإدارة
+                        {t.approve}
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => decide(o.id, "returned", o.name)}
                       >
-                        أعده للجهة
+                        {t.return}
                       </Button>
                     </span>
                   )}
@@ -145,11 +200,11 @@ function TryOffice() {
         className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft"
       >
         <h2 id="office-deliver" className="text-lg font-bold">
-          التأهيل والدعم العيني في المنطقة
+          {t.deliver}
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          كلّ تعهّدٍ يمضي في أربع خطوات، وكلّ خطوةٍ تظهر للداعم في «أثري».
-          {pledges.length === 0 && " تعهّدك يظهر هنا أوّلاً حين تدعم مكاناً بدور الكافل."}
+          {t.deliverLead}
+          {pledges.length === 0 && t.deliverEmpty}
         </p>
         <ul className="mt-4 grid gap-3">
           {rows.map((p) => {
@@ -164,16 +219,16 @@ function TryOffice() {
               >
                 <span className="min-w-0 flex-1">
                   <span className="font-bold">
-                    {KIND[p.kind] ?? p.kind} · {p.label}
+                    {t.kind[p.kind] ?? p.kind} · {p.label}
                   </span>
                   {p.place && <span className="text-muted-foreground"> · {p.place}</span>}
                   <span className="block text-xs text-muted-foreground">
-                    {p.mine ? "تعهّدك أنت في هذه الجلسة · " : ""}
-                    {p.amount} شهرياً
+                    {p.mine ? t.mine : ""}
+                    {t.monthly(p.amount)}
                   </span>
                 </span>
-                <ol className="flex items-center gap-1" aria-label="خطوات التنفيذ">
-                  {STEPS.map((s, i) => (
+                <ol className="flex flex-wrap items-center gap-1" aria-label={t.stepsLabel}>
+                  {t.steps.map((s, i) => (
                     <li
                       key={s}
                       aria-current={i === at ? "step" : undefined}
@@ -194,10 +249,10 @@ function TryOffice() {
                 <Button
                   size="sm"
                   variant="outline"
-                  disabled={at >= STEPS.length - 1}
+                  disabled={at >= t.steps.length - 1}
                   onClick={() => advance(p.id)}
                 >
-                  الخطوة التالية
+                  {t.next}
                 </Button>
               </li>
             );

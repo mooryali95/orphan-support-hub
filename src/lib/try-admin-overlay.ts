@@ -15,8 +15,8 @@ import type {
   RecordKind,
   SponsorshipRecord,
 } from "@/lib/admin-console.functions";
-import { CYCLE_CHILD_ID, CYCLE_DOCS, loadCycle } from "@/lib/try-cycle";
-import { loadGifts, TRY_CURRENCY, tryChild } from "@/lib/try-demo";
+import { CYCLE_CHILD_ID, CYCLE_DOCS, loadCycle, trialChild } from "@/lib/try-cycle";
+import { loadGifts, TRY_CURRENCY } from "@/lib/try-demo";
 import { tryStore } from "@/lib/try-store";
 import { loadPledges, targetLabel } from "@/lib/try-support";
 
@@ -122,7 +122,7 @@ export function visitorRows(kind: RecordKind): AnyRecord[] {
     }
     case "sponsorships":
       return gifts.flatMap((g): SponsorshipRecord[] => {
-        const k = tryChild(g.childId);
+        const k = trialChild(g.childId);
         if (!k) return [];
         return [
           {
@@ -142,7 +142,7 @@ export function visitorRows(kind: RecordKind): AnyRecord[] {
       });
     case "payments":
       return gifts.flatMap((g): PaymentRecord[] => {
-        const k = tryChild(g.childId);
+        const k = trialChild(g.childId);
         if (!k) return [];
         return [
           {
@@ -178,7 +178,7 @@ export function visitorRows(kind: RecordKind): AnyRecord[] {
       }));
     case "access_log":
       return loadAccess().flatMap((s, i): AccessRecord[] => {
-        const k = tryChild(s.childId);
+        const k = trialChild(s.childId);
         if (!k) return [];
         return [
           {

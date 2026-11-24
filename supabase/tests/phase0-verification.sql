@@ -236,7 +236,8 @@ BEGIN
     UPDATE public.sponsorships SET amount = 999999
     WHERE id = '11110000-0000-4000-8000-00000000000b';
     RAISE EXCEPTION 'FAIL C2 — sponsor rewrote the pledged amount';
-  EXCEPTION WHEN insufficient_privilege THEN
+  -- 999999 تتجاوز حدود المبلغ أيضاً (drizzle 0008): أيّ الحارسين رفض أوّلاً، التلاعب مرفوض
+  EXCEPTION WHEN insufficient_privilege OR invalid_parameter_value THEN
     RAISE NOTICE 'PASS C2c — amount tampering rejected';
   END;
   BEGIN

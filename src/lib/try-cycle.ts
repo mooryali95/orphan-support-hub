@@ -9,7 +9,7 @@
  * عليه بالمسار نفسه الذي يعمل على كلّ أطفال التجربة.
  */
 import { countryName } from "@/lib/countries";
-import { TRY_CYCLE, type TryChild } from "@/lib/try-demo";
+import { TRY_CYCLE, tryChild, type TryChild } from "@/lib/try-demo";
 import { tryPlace } from "@/lib/try-places";
 import { tryStore } from "@/lib/try-store";
 
@@ -95,6 +95,13 @@ export function cycleChild(c: Cycle): TryChild | null {
     covers: c.child.story.trim() || "الدراسة والغذاء والرعاية الصحية",
   };
 }
+
+/**
+ * أيّ طفلٍ في التجربة بمعرّفه، ومنه طفل «الدورة الكاملة» مقروءاً من الجلسة مباشرةً — فلا
+ * يتوقّف على ترتيب تحميل الوحدات حين تُفتح صفحةٌ ما مباشرةً.
+ */
+export const trialChild = (id: string): TryChild | undefined =>
+  id === CYCLE_CHILD_ID ? (cycleChild(loadCycle()) ?? undefined) : tryChild(id);
 
 function sync(c: Cycle) {
   const child = cycleChild(c);
