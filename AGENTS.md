@@ -14,6 +14,7 @@
 - Dispatch queue totals use a dynamically loaded privileged client only after an authenticated `is_admin` check; this counts all recipients without exposing their notification rows.
 
 ## Ownership
+- Render the hall title's platform logo with the shared `KahataynMark`, not a copied image or partner mark, so logo updates propagate automatically.
 - The platform is WAMY's own (الندوة العالمية للشباب الإسلامي); the owner's names and its one identifying line live only in `src/config/brand.json` (`owner`) and are read through `brandFor`, which states ownership without claiming accreditation, audit or live integration.
 
 ## Demonstration boundaries

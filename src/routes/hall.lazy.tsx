@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { brandFor } from "@/config/brand";
 import { COLORS } from "@/config/brand-colors";
 import {
+  KahataynMark,
   MARK2_CRESCENT,
   MARK2_DISC,
   MARK2_RING,
@@ -337,6 +338,7 @@ function HallPage() {
 
       <header id="hud">
         <div className="brand">
+          <KahataynMark compact tone="current" className="hall-platform-logo" title={brand.name} />
           <span className="brand-name">{brand.name}</span>
           <span className="brand-sep">·</span>
           <span className="brand-hall">{hc.hall}</span>

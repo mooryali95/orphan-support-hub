@@ -2096,6 +2096,12 @@
 .hall .brand-sep {
   color: var(--champagne);
 }
+.hall .hall-platform-logo {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  align-self: center;
+}
 /* the persistent mark of what the hall shows (the trial, the donor's real figures, or the concept
    hall's sample figures), on its own line under the hall's name. It is the honesty marker: it is
    never cut. Where the bar is too narrow for one line it wraps to a second (phones, below). */

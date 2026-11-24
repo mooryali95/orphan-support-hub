@@ -49,6 +49,10 @@ export const Route = createFileRoute("/hall")({
       meta: [
         { title: pageTitle(c.title, false, locale) },
         { name: "description", content: c.description },
+        { property: "og:title", content: pageTitle(c.title, false, locale) },
+        { property: "og:description", content: c.description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "stylesheet", href: hallCss }],
     };
