@@ -119,7 +119,7 @@ function DashboardPage() {
   const ready = !isLoading && !listFailed;
 
   return (
-    <DashboardShell title="أثري" description="أثر كفالاتك، ومتابعة كلّ كفالة وحالة كلّ ملف.">
+    <DashboardShell title="أثري" description="أثر كفالاتك، ومتابعة كلّ كفالة وحالة كلّ ملفّ.">
       {payment === "done" && (
         <CelebrateOverlay
           title="بدأت كفالتك"
@@ -150,7 +150,7 @@ function DashboardPage() {
         </div>
       )}
 
-      {/* ما اختاره في الرحلة الافتراضية: مقترحٌ من متصفّحه، يؤكّده هو في موضعه الحقيقي. لا يُنشأ عنه شيء. */}
+      {/* ما اختاره في الوضع التجريبي: مقترحٌ من متصفّحه، يؤكّده هو في موضعه الحقيقي. لا يُنشأ عنه شيء. */}
       <TrialProposalCard className="mb-8" />
 
       {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
@@ -218,7 +218,7 @@ function DashboardPage() {
           </p>
           {mode?.onHold && (
             // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
-            // والكافل الذي يظنّ المنصة معطوبة لا يعود.
+            // والكافل الذي يظنّ المنصّة معطوبة لا يعود.
             <p className="mt-3 text-sm leading-7">
               <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason}
             </p>
@@ -233,7 +233,7 @@ function DashboardPage() {
                 >
                   <div className="flex-1">
                     <p className="font-bold">
-                      <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                      <Name>{orphan?.display_name ?? "ملفّ محذوف"}</Name>
                     </p>
                     <p className="mt-0.5 text-sm text-muted-foreground">
                       {formatMoney(s.amount, s.currency)}{" "}
@@ -249,7 +249,7 @@ function DashboardPage() {
                     {orphan && (
                       <Button asChild variant="outline">
                         <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
-                          الملف
+                          الملفّ
                         </Link>
                       </Button>
                     )}
@@ -339,7 +339,7 @@ function DashboardPage() {
                       <div className="flex min-w-0 flex-1 basis-full items-center gap-4 sm:basis-auto">
                         <MuralImage
                           photoUrl={null}
-                          displayName={orphan?.display_name ?? "ملف محذوف"}
+                          displayName={orphan?.display_name ?? "ملفّ محذوف"}
                           register={registerFor("", percent)}
                           className="size-16 shrink-0 rounded-xl bg-secondary"
                         />
@@ -347,7 +347,7 @@ function DashboardPage() {
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-lg font-bold">
-                              <Name>{orphan?.display_name ?? "ملف محذوف"}</Name>
+                              <Name>{orphan?.display_name ?? "ملفّ محذوف"}</Name>
                             </h3>
                             <Badge variant={s.status === "active" ? "default" : "secondary"}>
                               {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
@@ -374,7 +374,7 @@ function DashboardPage() {
                         {orphan && (
                           <Button asChild variant="outline" size="sm">
                             <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
-                              الملف
+                              الملفّ
                             </Link>
                           </Button>
                         )}

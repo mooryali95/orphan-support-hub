@@ -583,7 +583,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       afterMeasure: "بعد القياس",
       moved: "قيست المجموعة بعد جلساتها الستّ، وهذا انتقال مستوياتها.",
       pending:
-        "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
+        "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصّة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
       childMoved: (from: string, to: string, code: string) =>
         `انتقل من «${from}» إلى «${to}». رمزه ${code}.`,
       childRose: (from: string, code: string) =>

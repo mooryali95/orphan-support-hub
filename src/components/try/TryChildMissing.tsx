@@ -6,7 +6,7 @@ import { defineCopy, useCopy } from "@/lib/locale";
 const COPY = defineCopy("components/try/TryChildMissing", {
   ar: {
     title: "هذا الطفل ليس في التجربة",
-    text: "الرابط لا يطابق أحد أطفال التجربة الافتراضيين. اختر واحداً من القائمة.",
+    text: "الرابط لا يطابق أحد أطفال التجربة. اختر واحداً من القائمة.",
     choose: "اختر طفلاً من التجربة",
   },
   en: {
@@ -16,7 +16,7 @@ const COPY = defineCopy("components/try/TryChildMissing", {
   },
 });
 
-/** رابطٌ لطفلٍ ليس في التجربة: يبقى الزائر داخل الرحلة الافتراضية ويختار غيره. */
+/** رابطٌ لطفلٍ ليس في التجربة: يبقى الزائر داخل الوضع التجريبي ويختار غيره. */
 export function TryChildMissing() {
   const c = useCopy(COPY);
   return (

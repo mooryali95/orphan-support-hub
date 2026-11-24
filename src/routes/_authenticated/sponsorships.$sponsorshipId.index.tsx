@@ -71,7 +71,7 @@ function SponsorshipPage() {
   return (
     <DashboardShell
       title={`كفالة ${isolate(l.orphan.display_name)}`}
-      description={`ملف ${l.orphan.code} · ${formatMoney(s.amount, s.currency)} ${s.type === "monthly" ? "شهرياً" : "لمرة واحدة"}`}
+      description={`ملفّ ${l.orphan.code} · ${formatMoney(s.amount, s.currency)} ${s.type === "monthly" ? "شهرياً" : "لمرة واحدة"}`}
     >
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant={s.status === "active" ? "default" : "secondary"}>
@@ -92,7 +92,7 @@ function SponsorshipPage() {
         </Button>
         <Button asChild variant="outline" size="sm">
           <Link to="/orphans/$orphanId" params={{ orphanId: l.orphan.id }}>
-            ملف الطفل
+            ملفّ الطفل
           </Link>
         </Button>
       </div>

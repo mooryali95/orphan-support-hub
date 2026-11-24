@@ -129,7 +129,7 @@ export function toSuggestions(rows: unknown): SuggestedOrphan[] {
 }
 
 /**
- * حال تمويل ملف — يُقرأ للزائر أيضاً، فالفائض جزء ممّا يُعرض.
+ * حال تمويل ملفّ — يُقرأ للزائر أيضاً، فالفائض جزء ممّا يُعرض.
  * بمفتاح الزائر لا بمفتاح الخدمة: ما يُقرأ بلا دخول يمرّ بمنح الزائر.
  */
 export const getFundingState = createServerFn({ method: "GET" })
@@ -159,7 +159,7 @@ export const previewSponsorship = createServerFn({ method: "POST" })
 
     const { data: raw } = await db.rpc("orphan_funding_state", { _orphan: data.orphanId });
     const state = raw as FundingState | null;
-    if (!state) return { ok: false as const, error: "الملف غير متاح", excess: 0, suggestions: [] };
+    if (!state) return { ok: false as const, error: "الملفّ غير متاح", excess: 0, suggestions: [] };
 
     const excess = Math.max(0, data.amount - state.gap);
     if (excess <= 0) {
@@ -214,7 +214,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
 
     if (orphanError) return { ok: false as const, error: orphanError.message };
     if (!orphan || !["approved", "fully_sponsored"].includes(orphan.status)) {
-      return { ok: false as const, error: "الملف غير متاح للكفالة حالياً" };
+      return { ok: false as const, error: "الملفّ غير متاح للكفالة حالياً" };
     }
 
     // عملة دفعٍ غير عملة الحاجة: يُتحقَّق أنها ممّا يُدفع به لهذا الطفل، ويُحسب
@@ -231,7 +231,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
       if (!quote) {
         return {
           ok: false as const,
-          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملف الآن. اختر عملة الملف (${orphan.currency}).`,
+          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملفّ الآن. اختر عملة الملفّ (${orphan.currency}).`,
         };
       }
       // الاشتراك الشهري لدى المزوّد وحداتٌ كاملة من عملة الدفع.
@@ -265,7 +265,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
           gap,
           excess: credited - gap,
           suggestions: toSuggestions(alts),
-          error: "المبلغ يتجاوز المتبقّي لهذا الملف",
+          error: "المبلغ يتجاوز المتبقّي لهذا الملفّ",
         };
       }
     }
@@ -294,7 +294,7 @@ export const createSponsorship = createServerFn({ method: "POST" })
       if (payCurrency && /currency_not_payable|charge_currency|charge_amount/.test(error.message)) {
         return {
           ok: false as const,
-          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملف الآن. اختر عملة الملف (${orphan.currency}).`,
+          error: `الدفع بعملة ${payCurrency} غير متاح لهذا الملفّ الآن. اختر عملة الملفّ (${orphan.currency}).`,
         };
       }
       return { ok: false as const, error: error.message };

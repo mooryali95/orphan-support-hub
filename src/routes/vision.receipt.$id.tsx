@@ -35,7 +35,7 @@ const COPY = defineCopy("routes/vision.receipt", {
     title: "إيصال تبرّع",
     back: "عودة",
     print: "اطبع أو احفظ PDF",
-    brand: "منصة الرؤية والتوجهات",
+    brand: "منصّة الرؤية والتوجهات",
     org: "الندوة العالمية للشباب الإسلامي",
     watermark: "تجريبي — ليس إيصالاً رسمياً",
     invoice: "رقم الفاتورة",

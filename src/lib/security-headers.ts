@@ -2,7 +2,7 @@
  * الرؤوس الأمنية (M1).
  *
  * تُطبَّق في مدخل الخادم فتمرّ بها كل استجابة — صفحةً كانت أو مسار API.
- * ووضعها هناك لا في إعداد الاستضافة مقصود: الإعداد يتبع المنصة ويضيع عند
+ * ووضعها هناك لا في إعداد الاستضافة مقصود: الإعداد يتبع المنصّة ويضيع عند
  * أي انتقال، وهذا يسافر مع الشيفرة.
  */
 
@@ -45,7 +45,7 @@ function contentSecurityPolicy(
     "font-src 'self' data:",
     `img-src 'self' data: blob: ${supabaseOrigin ?? ""}`.trim(),
     `connect-src ${connect}`,
-    // لا إطارات على الإطلاق: المنصة لا تُضمّن شيئاً ولا تُضمَّن.
+    // لا إطارات على الإطلاق: المنصّة لا تُضمّن شيئاً ولا تُضمَّن.
     "frame-src 'none'",
     "frame-ancestors 'none'",
     "object-src 'none'",
@@ -74,9 +74,9 @@ export function securityHeaders(
     "x-frame-options": "DENY",
     "x-content-type-options": "nosniff",
     // المُحيل لا يُرسل عبر النطاقات: مسارات مثل /orphans/<id> تكشف
-    // أن هذا الزائر يطالع ملف طفل بعينه.
+    // أن هذا الزائر يطالع ملفّ طفل بعينه.
     "referrer-policy": "strict-origin-when-cross-origin",
-    // المنصة لا تحتاج شيئاً من هذه، فتُغلق كلّها.
+    // المنصّة لا تحتاج شيئاً من هذه، فتُغلق كلّها.
     "permissions-policy": [
       "camera=()",
       "microphone=()",

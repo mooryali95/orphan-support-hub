@@ -17,7 +17,7 @@ const STATUS: Record<string, string> = {
 
 /**
  * «من أتابعهم» — أذوناتي: لكل طفلٍ ما مُنح من نطاقاته ومتى ينقضي.
- * والصفحة نفسها (ملف الطفل) هي اللوحة: تتشكّل أقسامها بما مُنح.
+ * والصفحة نفسها (ملفّ الطفل) هي اللوحة: تتشكّل أقسامها بما مُنح.
  */
 export function FollowedChildren() {
   const fetchMine = useServerFn(getMyAccess);
@@ -34,7 +34,7 @@ export function FollowedChildren() {
     <PageSection
       id="followed"
       title="من أتابعهم"
-      description="ما أذنت لك الإدارة برؤيته، ومتى ينقضي. افتح الملف لترى الأقسام الممنوحة."
+      description="ما أذنت لك الإدارة برؤيته، ومتى ينقضي. افتح الملفّ لترى الأقسام الممنوحة."
       className="mb-10"
     >
       <ul className="grid gap-3 md:grid-cols-2">

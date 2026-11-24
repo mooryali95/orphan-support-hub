@@ -3,7 +3,7 @@ import { defineCopy, useCopy } from "@/lib/locale";
 const COPY = defineCopy("components/auth/GivingOnceLine", {
   ar: {
     line: (name: string, amount: string) =>
-      `أنت على وشك دعم ${name} بـ${amount} مرّةً واحدة. بعد الدخول تعود إلى الملف بما اخترته.`,
+      `أنت على وشك دعم ${name} بـ${amount} مرّةً واحدة. بعد الدخول تعود إلى الملفّ بما اخترته.`,
   },
   en: {
     line: (name: string, amount: string) =>

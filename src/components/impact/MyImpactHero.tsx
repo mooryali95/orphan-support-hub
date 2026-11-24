@@ -34,12 +34,12 @@ const COPY = defineCopy("components/impact/MyImpactHero", {
     ),
     eyebrow: "أثرك",
     title: "كوكبة أثرك",
-    lead: "أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه الكافلون جميعاً.",
+    lead: "أنت في المركز، وحولك كلّ طفلٍ تكفله: الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه كافلوه جميعاً.",
     inCare: ["في رعايتك", "طفلاً"],
     months: ["أشهر الرعاية", "شهراً"],
     share: ["حصّتك", "من حاجتهم"],
     immersive: "الوضع الغامر",
-    another: "اكفل طفلاً آخر",
+    another: "اكفل يتيماً آخر",
     figure: (list: string) => `كوكبة أثرك: ${list}`,
     sep: "، ",
     figureEmpty: "كوكبة أثرك فارغة بعد",
@@ -95,7 +95,7 @@ export function MyImpactHero({
 }: {
   impact: MyImpact;
   loading: boolean;
-  /** where «اكفل طفلاً آخر» leads; the client demo keeps the visitor inside /try */
+  /** where «اكفل يتيماً آخر» leads; the client demo keeps the visitor inside /try */
   anotherTo?: "/orphans" | "/try";
   /** the demo opens the hall in demo mode, on the visitor's latest gift; `from` is the way back */
   hallSearch?: HallSearch;

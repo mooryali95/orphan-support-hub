@@ -83,7 +83,7 @@ const COPY = defineCopy("routes/try.childId", {
     coversText: (covers: string) =>
       `${covers}، عبر جهةٍ ميدانية تعمل تحت مظلّة الندوة تسلّم كل شهرٍ بمستند، ويعود إليك تقرير الأثر.`,
     gateNote:
-      "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملف افتراضي بالكامل.",
+      "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملفّ نموذجيٌّ بالكامل.",
     sponsor: (name: string) => `اكفل ${name}`,
     cadence: "نوع العطاء",
     monthly: "شهرياً",
@@ -157,8 +157,8 @@ function TryChildPage({ data }: { data: TryChild }) {
   const gap = gapOf(child);
   const pct = Math.round((child.funded / child.need) * 100);
   const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
-  /* عملة الدفع: عملة الملف افتراضاً، أو عملة بلد الطفل، أو العملة الموحّدة. المبلغ يُكتب بها،
-     وما يُقيَّد لحاجة الطفل (بعملة الملف) هو ما تجيب به الشرائط والنسب أدناه. */
+  /* عملة الدفع: عملة الملفّ افتراضاً، أو عملة بلد الطفل، أو العملة الموحّدة. المبلغ يُكتب بها،
+     وما يُقيَّد لحاجة الطفل (بعملة الملفّ) هو ما تجيب به الشرائط والنسب أدناه. */
   const co = child.co;
   const payOptions = useMemo(() => tryPayOptions({ co }), [co]);
   const [payCurrency, setPayCurrency] = useState(payOptions.needCurrency);
@@ -222,7 +222,7 @@ function TryChildPage({ data }: { data: TryChild }) {
     e.currentTarget.querySelector<HTMLElement>(`[data-cadence="${next}"]`)?.focus();
   }
 
-  /* على الجوال النموذج تحت الملف بشاشتين: شريطٌ ثابت يوصل إليه ما دام تحت مرمى النظر */
+  /* على الجوال النموذج تحت الملفّ بشاشتين: شريطٌ ثابت يوصل إليه ما دام تحت مرمى النظر */
   const formRef = useRef<HTMLElement>(null);
   const [formBelow, setFormBelow] = useState(false);
   useEffect(() => {

@@ -578,7 +578,7 @@ function NewRequest() {
       <h2 className="font-bold">طلبٌ رسمي على ملفٍّ مقفول</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <Label htmlFor="nr-code">رقم الملف</Label>
+          <Label htmlFor="nr-code">رقم الملفّ</Label>
           <Input
             id="nr-code"
             dir="ltr"
@@ -589,7 +589,7 @@ function NewRequest() {
           />
           <p className="mt-1 text-xs text-muted-foreground" aria-live="polite">
             {code.trim().length < 3
-              ? "اكتب رقم الملف"
+              ? "اكتب رقم الملفّ"
               : found === undefined
                 ? "…"
                 : !found

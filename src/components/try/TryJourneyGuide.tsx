@@ -36,7 +36,7 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
   ar: {
     choose: {
       title: "اختر طفلاً",
-      text: "ستة أطفالٍ افتراضيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
+      text: "ستة أطفالٍ تجريبيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
     },
     hall: {
       title: "ادخل قاعة الأثر",
@@ -47,7 +47,7 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
       text: "داخل الدولة: شريطٌ من قبل سنة إلى بعد سنة، وزر «شاهد السنة تمرّ».",
     },
     file: {
-      title: (name: string) => `افتح ملف ${name}`,
+      title: (name: string) => `افتح ملفّ ${name}`,
       text: "حاجته الشهرية وما غُطّي منها، واختر شهرياً أو مرّةً واحدة، وترى الأثر قبل الدفع.",
     },
     pay: {
@@ -72,7 +72,7 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
       textRegistered: "حسابك جاهز: في «أثري» الحقيقية تجد ما اخترته مقترحاً ينتظر تأكيدك.",
     },
     stages: { choose: "اختر", give: "ادعم", impact: "شاهد أثرك", real: "الرحلة الحقيقية" },
-    railLabel: "أين أنت في الرحلة الافتراضية",
+    railLabel: "أين أنت في الوضع التجريبي",
     stateDone: "تمّت",
     stateCurrent: "أنت هنا",
     stateAhead: "لاحقاً",
@@ -81,9 +81,9 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
     trigger: "الرحلة كاملة",
     title: "رحلة التجربة كاملة",
     description:
-      "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا افتراضي، ولا يُخصم أي مبلغ.",
+      "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا ببياناتٍ نموذجية، ولا يُخصم أي مبلغ.",
     fromMap: "ابدأ الرحلة من الخريطة",
-    fromFile: "ابدأ من ملف طفل",
+    fromFile: "ابدأ من ملفّ طفل",
   },
   en: {
     choose: {
@@ -125,7 +125,7 @@ const COPY = defineCopy("components/try/TryJourneyGuide", {
         "Your account is ready: your real “My impact” holds what you chose as a proposal awaiting your confirmation.",
     },
     stages: { choose: "Choose", give: "Give", impact: "See your impact", real: "The real journey" },
-    railLabel: "Where you are in the virtual journey",
+    railLabel: "Where you are in demo mode",
     stateDone: "Done",
     stateCurrent: "You are here",
     stateAhead: "Ahead",
@@ -165,7 +165,7 @@ const dot = (state: TryStageState, real: boolean) =>
   );
 
 /**
- * «أين أنا»: المحطّات الأربع في سطرٍ واحد داخل شريط الرحلة الافتراضية: ما تمّ، وأين أنت، وما
+ * «أين أنا»: المحطّات الأربع في سطرٍ واحد داخل شريط الوضع التجريبي: ما تمّ، وأين أنت، وما
  * بعده، وآخرها «الرحلة الحقيقية» التي يفتحها التسجيل. على الجوال تبقى النقاط واسم المحطّة الحالية.
  */
 export function TryJourneyRail({ className }: { className?: string }) {

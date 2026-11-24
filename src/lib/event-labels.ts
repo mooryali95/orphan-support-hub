@@ -27,9 +27,9 @@ export type EventType = (typeof EVENT_TYPES)[number];
 const COPY = defineCopy("lib/event-labels", {
   ar: {
     labels: {
-      "orphan.submitted": "رُفع الملف للمراجعة",
-      "orphan.approved": "اعتُمد الملف ونُشر",
-      "orphan.rejected": "أُعيد الملف للتصحيح",
+      "orphan.submitted": "رُفع الملفّ للمراجعة",
+      "orphan.approved": "اعتُمد الملفّ ونُشر",
+      "orphan.rejected": "أُعيد الملفّ للتصحيح",
       "report.submitted": "رُفع تقرير دوري",
       "report.published": "نُشر تقرير أثر",
       "report.rejected": "أُعيد التقرير للتصحيح",
@@ -40,7 +40,7 @@ const COPY = defineCopy("lib/event-labels", {
       "unit.accepted": "اجتاز جلسة",
       "trait.measured": "قياسٌ جديد لسمة",
     } satisfies Record<EventType, string>,
-    fallback: "تحديثٌ في الملف",
+    fallback: "تحديثٌ في الملفّ",
   },
   en: {
     labels: {

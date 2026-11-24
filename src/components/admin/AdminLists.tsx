@@ -146,7 +146,7 @@ export function AdminOrphansList({ currency }: { currency: string }) {
     <>
       <Toolbar label="ابحث بالرمز أو الاسم أو الجهة أو المدينة" paged={paged} />
       <Grid
-        head={["الملف", "الجهة", "الاحتياج", "المموَّل", "المتبقّي", "الكفلاء", "التغطية"]}
+        head={["الملفّ", "الجهة", "الاحتياج", "المموَّل", "المتبقّي", "الكفلاء", "التغطية"]}
         empty={paged.loading ? "يُحمَّل…" : "لا توجد ملفات منشورة."}
         rows={paged.rows.map((r) => {
           const cur = str(r["currency"]) || currency;

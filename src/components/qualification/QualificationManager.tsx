@@ -53,7 +53,7 @@ export function QualificationManager({ orphanId }: { orphanId: string }) {
   if (enrollments.length === 0) {
     return (
       <p className="mt-4 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-        لا برنامج بناء أهلية على هذا الملف بعد. تُنشئه الإدارة من الكتالوج.
+        لا برنامج بناء أهلية على هذا الملفّ بعد. تُنشئه الإدارة من الكتالوج.
       </p>
     );
   }
@@ -274,7 +274,7 @@ function EnrollmentBoard({
       )}
       {!detail.is_supervisor && (
         <p className="mt-5 border-t border-border pt-4 text-xs leading-6 text-muted-foreground">
-          القياس يكتبه المشرف المعتمَد لهذا الالتحاق — إدارة الملف لا تُخوّل الحكم عليه.
+          القياس يكتبه المشرف المعتمَد لهذا الالتحاق — إدارة الملفّ لا تُخوّل الحكم عليه.
         </p>
       )}
     </div>

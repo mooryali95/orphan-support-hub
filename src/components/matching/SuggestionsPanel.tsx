@@ -258,7 +258,7 @@ function SuggestionCard({ row }: { row: SuggestedOrphan }) {
 
       <Button asChild size="sm" variant="outline" className="mt-3 w-full">
         <Link to="/orphans/$orphanId" params={{ orphanId: row.id }}>
-          الملف
+          الملفّ
         </Link>
       </Button>
     </li>

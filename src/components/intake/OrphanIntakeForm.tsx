@@ -39,9 +39,9 @@ import { cn } from "@/lib/utils";
 import { clearDraft } from "./intake-draft";
 
 /**
- * نموذج إدخال ملف اليتيم — سبع خطوات.
+ * نموذج إدخال ملفّ اليتيم — سبع خطوات.
  *
- * التقسيم ليس تجميلاً: الملف الكامل يطلب نحو عشرين حقلاً ووثيقتين على
+ * التقسيم ليس تجميلاً: الملفّ الكامل يطلب نحو عشرين حقلاً ووثيقتين على
  * الأقلّ، وعرضها دفعةً واحدة يجعل المُدخِل يهجر النموذج أو يملأه على
  * عجل — وكلاهما يُنتج ملفّاً ناقصاً يُردّ من المراجعة.
  *
@@ -162,7 +162,7 @@ function fromRecord(rec: OrphanIntakeRecord): Draft {
     documents: rec.documents.map((d) => ({
       kind: d.kind,
       storagePath: d.storage_path,
-      fileName: d.file_name ?? "ملف",
+      fileName: d.file_name ?? "ملفّ",
       ...(d.mime_type ? { mimeType: d.mime_type } : {}),
       ...(d.size_bytes ? { sizeBytes: d.size_bytes } : {}),
       verified: d.verified,
@@ -314,14 +314,17 @@ export function OrphanIntakeForm({
   if (orphanId && recordLoading) {
     return (
       <div className="flex justify-center py-10">
-        <Loader2 className="text-muted-foreground size-5 animate-spin" aria-label="يُحمَّل الملف" />
+        <Loader2
+          className="text-muted-foreground size-5 animate-spin"
+          aria-label="يُحمَّل الملفّ"
+        />
       </div>
     );
   }
   if (orphanId && !record) {
     return (
       <p role="alert" className="text-destructive text-sm">
-        تعذّر فتح الملف.
+        تعذّر فتح الملفّ.
       </p>
     );
   }
@@ -381,14 +384,14 @@ export function OrphanIntakeForm({
         return;
       }
 
-      // الملف يذهب إلى التخزين مباشرةً لا عبر خادمنا.
+      // الملفّ يذهب إلى التخزين مباشرةً لا عبر خادمنا.
       const put = await fetch(signed.signedUrl, {
         method: "PUT",
         headers: { "content-type": file.type || "application/octet-stream" },
         body: file,
       });
       if (!put.ok) {
-        toast.error("تعذّر رفع الملف");
+        toast.error("تعذّر رفع الملفّ");
         return;
       }
 
@@ -396,7 +399,7 @@ export function OrphanIntakeForm({
         ...d,
         orphanId,
         documents: [
-          // نوع واحد لكل ملف: إعادة الرفع تستبدل ولا تُراكم — والقديم غير
+          // نوع واحد لكل ملفّ: إعادة الرفع تستبدل ولا تُراكم — والقديم غير
           // الموثَّق يُحذف من القاعدة عند الحفظ.
           ...d.documents.filter((x) => x.kind !== kind || x.verified),
           {
@@ -560,7 +563,7 @@ export function OrphanIntakeForm({
           <>
             <p className="text-muted-foreground bg-secondary/50 rounded-lg p-3 text-xs leading-6">
               بيانات هذه الخطوة <strong>سرّية</strong>: لا تظهر للكافل ولا للزائر، وتُقرأ من الإدارة
-              والجهة وولي الأمر فقط. وتُحفظ في الخزنة مع الملف عند كلّ انتقال — لا في المتصفّح.
+              والجهة وولي الأمر فقط. وتُحفظ في الخزنة مع الملفّ عند كلّ انتقال — لا في المتصفّح.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="الاسم الكامل">
@@ -727,7 +730,7 @@ export function OrphanIntakeForm({
                       ))}
                       {!verified && (
                         <FilePicker
-                          label={has.length > 0 ? "استبدال الملف" : "اختر ملفاً"}
+                          label={has.length > 0 ? "استبدال الملفّ" : "اختر ملفاً"}
                           accessibleLabel={`رفع ${DOC_LABELS[kind]}`}
                           busy={uploading === kind}
                           disabled={uploading !== null}
@@ -975,7 +978,7 @@ function IntakeReadOnly({ record, onClose }: { record: OrphanIntakeRecord; onClo
   return (
     <section
       className="border-border bg-card rounded-2xl border p-5"
-      aria-label={`ملف ${record.code}`}
+      aria-label={`ملفّ ${record.code}`}
     >
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-lg font-bold">{record.display_name}</h3>
@@ -983,7 +986,7 @@ function IntakeReadOnly({ record, onClose }: { record: OrphanIntakeRecord; onClo
         <span className="text-muted-foreground text-xs tabular-nums">{record.code}</span>
       </div>
       <p className="text-muted-foreground mt-2 text-xs leading-6">
-        الملف عند الإدارة: يُقرأ هنا ولا يُعدَّل حتى يصدر القرار. إن أُعيد إليكم فُتح للتصحيح.
+        الملفّ عند الإدارة: يُقرأ هنا ولا يُعدَّل حتى يصدر القرار. إن أُعيد إليكم فُتح للتصحيح.
       </p>
       <dl className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
         {rows

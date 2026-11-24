@@ -101,10 +101,10 @@
    "file": "src/components/DemoModeBar.tsx"
   },
   "components/DemoModeBar.donor": {
-   "en": "Donor journey",
+   "en": "Supporter journey",
    "ar": "رحلة الداعم",
    "kind": "text",
-   "hash": "3c127aae0c9d",
+   "hash": "f880d107aa56",
    "file": "src/components/DemoModeBar.tsx"
   },
   "components/DemoModeBar.exit": {
@@ -167,9 +167,9 @@
   },
   "components/ExcessSuggestion.needsA": {
    "en": "This file needs only ",
-   "ar": "هذا الملف يحتاج ",
+   "ar": "هذا الملفّ يحتاج ",
    "kind": "text",
-   "hash": "3736120bdce3",
+   "hash": "de2edba3e0cb",
    "file": "src/components/ExcessSuggestion.tsx"
   },
   "components/ExcessSuggestion.needsB": {
@@ -415,9 +415,9 @@
   },
   "components/SiteFooter.about": {
    "en": "A platform that connects sponsors with orphans through files documented by WAMY's offices and field partners, with monthly follow-up and transparent impact reports.",
-   "ar": "منصة تربط الكافل باليتيم عبر ملفات توثّقها مكاتب الندوة وشركاؤها الميدانيون، مع متابعة شهرية وتقارير أثر شفافة.",
+   "ar": "منصّةٌ تصل الداعم باليتيم عبر ملفّاتٍ توثّقها مكاتب الندوة وشركاؤها الميدانيون، بمتابعةٍ شهرية وتقارير أثرٍ موثّقة.",
    "kind": "text",
-   "hash": "d8ad25f74b22",
+   "hash": "56b67b5acbee",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.account": {
@@ -464,9 +464,9 @@
   },
   "components/SiteFooter.orgs": {
    "en": "Offices and field partners",
-   "ar": "المكاتب والشركاء الميدانيون",
+   "ar": "مكاتب الندوة وشركاؤها الميدانيون",
    "kind": "text",
-   "hash": "b970be94186e",
+   "hash": "a8fa60c87c7b",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.orphans": {
@@ -478,9 +478,9 @@
   },
   "components/SiteFooter.platform": {
    "en": "Platform",
-   "ar": "المنصة",
+   "ar": "المنصّة",
    "kind": "text",
-   "hash": "b9133877f81d",
+   "hash": "b67fa0969046",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.privacy": {
@@ -653,10 +653,10 @@
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.contract": {
-   "en": "Operating platform link contract and switch checklist: docs/operating-platform-link.md",
-   "ar": "عقد الربط مع منصّة التشغيل وقائمة التحويل: docs/operating-platform-link.md",
+   "en": "The operating platform link contract and switch checklist are with the technical team.",
+   "ar": "عقد الربط مع منصّة التشغيل وقائمة التحويل متاحان لفريق التقنية.",
    "kind": "text",
-   "hash": "063e3b21ceef",
+   "hash": "c03b877a8686",
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.modeLive": {
@@ -667,10 +667,10 @@
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.modeTrial": {
-   "en": "The platform is in trial mode: the public sponsor buttons lead to /try.",
-   "ar": "المنصّة في وضع التجربة: أزرار الكفالة العامّة تقود إلى /try.",
+   "en": "The platform is in demo mode: the public sponsor buttons lead to the demo.",
+   "ar": "المنصّة في الوضع التجريبي: أزرار الكفالة العامّة تقود إلى التجربة.",
    "kind": "text",
-   "hash": "fc8aef988d0e",
+   "hash": "8ff277b9fa02",
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.stateDone": {
@@ -702,17 +702,17 @@
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.whenNot": {
-   "en": "Once the three conditions are met, switching is a single line in src/config/platform.ts.",
-   "ar": "حين تتحقّق الشروط الثلاثة يصير التحويل سطراً واحداً في src/config/platform.ts.",
+   "en": "Once the three conditions are met, going live is a single step handled by the technical team.",
+   "ar": "حين تتحقّق الشروط الثلاثة يصير التحويل إلى التشغيل الحقيقي خطوةً واحدة يتولّاها فريق التقنية.",
    "kind": "text",
-   "hash": "73f05917caaf",
+   "hash": "9512bac9dd5a",
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/GoLiveReadiness.whenReady": {
-   "en": "All conditions are met. To switch: PLATFORM_MODE = \"live\" in src/config/platform.ts, then publish.",
-   "ar": "الشروط متحقّقة. التحويل: PLATFORM_MODE = \"live\" في src/config/platform.ts، ثم النشر.",
+   "en": "All conditions are met. What remains is the decision to go live, then publishing.",
+   "ar": "الشروط متحقّقة. يبقى قرار التحويل إلى التشغيل الحقيقي، ثم النشر.",
    "kind": "text",
-   "hash": "067b55cf4285",
+   "hash": "3fda408d7e4c",
    "file": "src/components/admin/GoLiveReadiness.tsx"
   },
   "components/admin/data.add": {
@@ -3507,10 +3507,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsEmpty": {
-   "en": "No donor yet",
+   "en": "No supporter yet",
    "ar": "لا داعم بعد",
    "kind": "text",
-   "hash": "de1444e02c0e",
+   "hash": "0b0d7cb91ed2",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsInactive": {
@@ -3521,10 +3521,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsLabel": {
-   "en": "Active donors",
+   "en": "Active supporters",
    "ar": "داعمون نشطون",
    "kind": "text",
-   "hash": "dccde825ad88",
+   "hash": "7834c1dd5bcf",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsLapsed": {
@@ -3556,10 +3556,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsNoHealth": {
-   "en": "At-risk and lapsed donors are read from the database support totals, which are not available right now.",
+   "en": "At-risk and lapsed supporters are read from the database support totals, which are not available right now.",
    "ar": "المتعثّرون والمنقطعون يُقرآن من مجاميع الدعم في القاعدة، وهي غير متاحة الآن.",
    "kind": "text",
-   "hash": "4a586901e747",
+   "hash": "db3fc2b6a786",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsRule.one": {
@@ -3577,17 +3577,17 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsTitle": {
-   "en": "Donors",
+   "en": "Supporters",
    "ar": "الداعمون",
    "kind": "text",
-   "hash": "c1f08a23d171",
+   "hash": "52d349031758",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.donorsTotal": {
-   "en": "All donors",
+   "en": "All supporters",
    "ar": "كلّ الداعمين",
    "kind": "text",
-   "hash": "ef8e556c7409",
+   "hash": "b1d63c9c89bd",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.due": {
@@ -3963,10 +3963,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.lead": {
-   "en": "One picture of everything: support, children, donors, and what is waiting on a decision.",
+   "en": "One picture of everything: support, children, supporters, and what is waiting on a decision.",
    "ar": "صورةٌ واحدة لكلّ شيء: الدعم، والأطفال، والداعمون، وما ينتظر قراراً.",
    "kind": "text",
-   "hash": "13f7d0e3cbea",
+   "hash": "f19baebac08d",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.listJoin": {
@@ -4020,10 +4020,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.openDonors": {
-   "en": "Donors list",
+   "en": "Supporters list",
    "ar": "قائمة الداعمين",
    "kind": "text",
-   "hash": "65980aa777dd",
+   "hash": "217d6dfbadeb",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.openQueue": {
@@ -4258,9 +4258,9 @@
   },
   "components/admin/overview.sampleBannerText": {
    "en": "Fictional figures and codes that show the dashboard populated. They are not the platform's numbers and never enter a payment flow.",
-   "ar": "أرقامٌ ورموز افتراضية لعرض اللوحة ممتلئة. ليست أرقام المنصّة، ولا تدخل أيّ مسار دفع.",
+   "ar": "أرقامٌ ورموزٌ نموذجية لعرض اللوحة ممتلئة. ليست أرقام المنصّة، ولا تدخل أيّ مسار دفع.",
    "kind": "text",
-   "hash": "659b31bf9552",
+   "hash": "6fb2d0376020",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.sampleOff": {
@@ -4552,10 +4552,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.topics.donors_at_risk": {
-   "en": "Donors at risk",
+   "en": "Supporters at risk",
    "ar": "داعمون متعثّرون",
    "kind": "text",
-   "hash": "b43ed20bd33c",
+   "hash": "f3b05628c7d3",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.topics.due_overdue": {
@@ -5049,10 +5049,10 @@
   },
   "components/auth/GivingOnceLine.line": {
    "en": "You're about to give {0} {1} once. After signing in you'll return to their file with what you chose.",
-   "ar": "أنت على وشك دعم {0} بـ{1} مرّةً واحدة. بعد الدخول تعود إلى الملف بما اخترته.",
+   "ar": "أنت على وشك دعم {0} بـ{1} مرّةً واحدة. بعد الدخول تعود إلى الملفّ بما اخترته.",
    "kind": "template",
    "params": 2,
-   "hash": "2094e42a597e",
+   "hash": "0825bb9028ca",
    "file": "src/components/auth/GivingOnceLine.tsx"
   },
   "components/brand/SurplusBadge.perMonth": {
@@ -5472,9 +5472,9 @@
   },
   "components/impact/ImpactMoment.completedText": {
    "en": "With your share, the monthly need is 100% covered, and you are among the sponsors.",
-   "ar": "بحصّتك بلغت تغطية الحاجة الشهرية 100%، وأنت من الكافلين.",
+   "ar": "بحصّتك بلغت تغطية الحاجة الشهرية 100%، وأنت أحد كافليه.",
    "kind": "text",
-   "hash": "7aea0f9ea9e0",
+   "hash": "59c447c25b68",
    "file": "src/components/impact/ImpactMoment.tsx"
   },
   "components/impact/ImpactMoment.completedTitle": {
@@ -5680,9 +5680,9 @@
   },
   "components/impact/MyImpactHero.another": {
    "en": "Sponsor another child",
-   "ar": "اكفل طفلاً آخر",
+   "ar": "اكفل يتيماً آخر",
    "kind": "text",
-   "hash": "119ded3561b5",
+   "hash": "9a0cb9240163",
    "file": "src/components/impact/MyImpactHero.tsx"
   },
   "components/impact/MyImpactHero.empty": {
@@ -5744,9 +5744,9 @@
   },
   "components/impact/MyImpactHero.lead": {
    "en": "You are at the centre, and each child you sponsor is a gem around you. The clear ring is your share of the child's monthly need; the faint one is what all sponsors have covered.",
-   "ar": "أنت في المركز، وكلّ طفلٍ تكفله جوهرةٌ حولك. الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه الكافلون جميعاً.",
+   "ar": "أنت في المركز، وحولك كلّ طفلٍ تكفله: الحلقة الواضحة حصّتك من حاجته الشهرية، والخافتة ما غطّاه كافلوه جميعاً.",
    "kind": "text",
-   "hash": "95a944c3a212",
+   "hash": "2024e6fb9844",
    "file": "src/components/impact/MyImpactHero.tsx"
   },
   "components/impact/MyImpactHero.months.0": {
@@ -7427,9 +7427,9 @@
   },
   "components/offices/OfficesMap.lead": {
    "en": "The office register as compiled from public sources. A sample office stays labelled until the administration reviews and approves it.",
-   "ar": "سجلّ المكاتب كما حصرته الأمانة من المصادر العامّة. المكتب التجريبي يبقى موسوماً حتى تراجعه الإدارة وتعتمده.",
+   "ar": "سجلّ المكاتب كما حصرته الأمانة العامّة للندوة من المصادر العامّة. المكتب التجريبي يبقى موسوماً حتى تراجعه الإدارة وتعتمده.",
    "kind": "text",
-   "hash": "7f98cc73f066",
+   "hash": "5cd229a62197",
    "file": "src/components/offices/OfficesMap.tsx"
   },
   "components/offices/OfficesMap.real": {
@@ -7484,16 +7484,16 @@
   },
   "components/orphan/OrphanUnavailable.text": {
    "en": "This file is not on show right now: its sponsorship may be complete, it may have been withdrawn, or the link is wrong.",
-   "ar": "هذا الملف غير معروض الآن: قد تكون كفالته اكتملت، أو سُحب من العرض، أو أنّ الرابط غير صحيح.",
+   "ar": "هذا الملفّ غير معروض الآن: قد تكون كفالته اكتملت، أو سُحب من العرض، أو أنّ الرابط غير صحيح.",
    "kind": "text",
-   "hash": "fed60429341c",
+   "hash": "0e708bc473cc",
    "file": "src/components/orphan/OrphanUnavailable.tsx"
   },
   "components/orphan/OrphanUnavailable.title": {
    "en": "File unavailable",
-   "ar": "ملف غير متاح",
+   "ar": "ملفّ غير متاح",
    "kind": "text",
-   "hash": "f3a88eba8621",
+   "hash": "cefdb90bbbe4",
    "file": "src/components/orphan/OrphanUnavailable.tsx"
   },
   "components/orphan/ScopedSections.education": {
@@ -8948,9 +8948,9 @@
   },
   "components/support/MyPledgeImpact.lead": {
    "en": "Qualification is development that is measured; in-kind giving is a documented delivery. Financial sponsorship has its impact under “My sponsorships” below.",
-   "ar": "التأهيل تطوّرٌ يُقاس، والعيني تسليمٌ موثّق. أمّا الكفالة المادية فأثرها في «كفالاتي» أدناه.",
+   "ar": "التأهيل تطوّرٌ يُقاس، والعيني تسليمٌ موثّق. أمّا الكفالة المادية فأثرها في «كفالاتك» أدناه.",
    "kind": "text",
-   "hash": "67ab01bf31cd",
+   "hash": "29d0972de670",
    "file": "src/components/support/MyPledgeImpact.tsx"
   },
   "components/support/PendingPaymentBar.close": {
@@ -9231,10 +9231,10 @@
    "file": "src/components/try/KafalaPromise.tsx"
   },
   "components/try/TrialProposal.authText": {
-   "en": "What you chose in the virtual journey is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
-   "ar": "ما اخترته في الرحلة الافتراضية ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
+   "en": "What you chose in demo mode is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
+   "ar": "ما اخترته في الوضع التجريبي ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
    "kind": "text",
-   "hash": "9e7b92fb709c",
+   "hash": "2844df1d1935",
    "file": "src/components/try/TrialProposal.tsx"
   },
   "components/try/TrialProposal.authTitle": {
@@ -9260,17 +9260,17 @@
    "file": "src/components/try/TrialProposal.tsx"
   },
   "components/try/TrialProposal.eyebrow": {
-   "en": "From your virtual journey",
-   "ar": "من رحلتك الافتراضية",
+   "en": "From demo mode",
+   "ar": "من الوضع التجريبي",
    "kind": "text",
-   "hash": "6c3e240ddea3",
+   "hash": "22cf918a5ab9",
    "file": "src/components/try/TrialProposal.tsx"
   },
   "components/try/TrialProposal.lead": {
    "en": "These are proposals only: no sponsorship or pledge was created, and nothing was charged. The trial's children are fictional, so choose a real child or place here, then confirm the amount yourself.",
-   "ar": "هذه مقترحاتٌ فقط: لم تُنشأ كفالةٌ ولا تعهّد، ولم يُخصم شيء. أطفال التجربة افتراضيون؛ فاختر هنا طفلاً أو مكاناً حقيقياً، ثم أكّد المبلغ بنفسك.",
+   "ar": "هذه مقترحاتٌ فقط: لم تُنشأ كفالةٌ ولا تعهّد، ولم يُخصم شيء. أطفال التجربة بأسماءٍ مستعارة؛ فاختر هنا طفلاً أو مكاناً حقيقياً، ثم أكّد المبلغ بنفسك.",
    "kind": "text",
-   "hash": "9f50e50dc410",
+   "hash": "d3546b4e2a0a",
    "file": "src/components/try/TrialProposal.tsx"
   },
   "components/try/TrialProposal.monthly": {
@@ -9398,9 +9398,9 @@
   },
   "components/try/TryChildMissing.text": {
    "en": "The link does not match any of the trial's fictional children. Choose one from the list.",
-   "ar": "الرابط لا يطابق أحد أطفال التجربة الافتراضيين. اختر واحداً من القائمة.",
+   "ar": "الرابط لا يطابق أحد أطفال التجربة. اختر واحداً من القائمة.",
    "kind": "text",
-   "hash": "c078b4c8a4f2",
+   "hash": "b71d5d2c2deb",
    "file": "src/components/try/TryChildMissing.tsx"
   },
   "components/try/TryChildMissing.title": {
@@ -9426,10 +9426,10 @@
   },
   "components/try/TryDirectory.lead": {
    "en": "{0} sample children across the network's countries, with pseudonyms. Search, filter and support as in the real directory. Everything is simulated; nothing is charged.",
-   "ar": "{0} طفلاً افتراضياً في كلّ دول الشبكة، بأسماء مستعارة. ابحث وصفِّ وادعم كما في الدليل الحقيقي — كلّه محاكاة لا يُخصم منه شيء.",
+   "ar": "{0} طفلاً بأسماءٍ مستعارة في كلّ دول الشبكة. ابحث وصفِّ وادعم كما في الدليل الحقيقي — كلّه محاكاة لا يُخصم منه شيء.",
    "kind": "template",
    "params": 1,
-   "hash": "1af8f97d17b7",
+   "hash": "024582588694",
    "file": "src/components/try/TryDirectory.tsx"
   },
   "components/try/TryDirectory.next": {
@@ -9661,9 +9661,9 @@
   },
   "components/try/TryJourneyGuide.choose.text": {
    "en": "Six fictional children, longest wait first, as in the real directory.",
-   "ar": "ستة أطفالٍ افتراضيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
+   "ar": "ستة أطفالٍ تجريبيين، الأطول انتظاراً أوّلاً، كما في الدليل الحقيقي.",
    "kind": "text",
-   "hash": "bd06cf66fe2d",
+   "hash": "28ef51f1eb17",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.choose.title": {
@@ -9675,9 +9675,9 @@
   },
   "components/try/TryJourneyGuide.description": {
    "en": "From opening the site to seeing your impact, in about three minutes. Everything here is sample data, and nothing is charged.",
-   "ar": "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا افتراضي، ولا يُخصم أي مبلغ.",
+   "ar": "من أوّل فتح الموقع إلى ظهور الأثر، في نحو ثلاث دقائق. كلّ ما هنا ببياناتٍ نموذجية، ولا يُخصم أي مبلغ.",
    "kind": "text",
-   "hash": "2b67f9ef7bac",
+   "hash": "d7dc039728bc",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.file.text": {
@@ -9689,17 +9689,17 @@
   },
   "components/try/TryJourneyGuide.file.title": {
    "en": "Open {0}'s file",
-   "ar": "افتح ملف {0}",
+   "ar": "افتح ملفّ {0}",
    "kind": "template",
    "params": 1,
-   "hash": "182b7be9c19f",
+   "hash": "3eb98ee47526",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.fromFile": {
    "en": "Start from a child's file",
-   "ar": "ابدأ من ملف طفل",
+   "ar": "ابدأ من ملفّ طفل",
    "kind": "text",
-   "hash": "c03da1e2e459",
+   "hash": "956eaa9c429e",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.fromMap": {
@@ -9780,10 +9780,10 @@
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.railLabel": {
-   "en": "Where you are in the virtual journey",
-   "ar": "أين أنت في الرحلة الافتراضية",
+   "en": "Where you are in demo mode",
+   "ar": "أين أنت في الوضع التجريبي",
    "kind": "text",
-   "hash": "f4176a8d378e",
+   "hash": "3245f2e0fb32",
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryJourneyGuide.real.text": {
@@ -9899,10 +9899,10 @@
    "file": "src/components/try/TryJourneyGuide.tsx"
   },
   "components/try/TryRealInvite.after": {
-   "en": "This is a virtual journey: nothing was charged. The real one begins when you register.",
-   "ar": "هذه رحلةٌ افتراضية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
+   "en": "This is demo mode: nothing was charged. The real one begins when you register.",
+   "ar": "هذه رحلةٌ تجريبية: لم يُخصم شيء. الحقيقية تبدأ بتسجيلك.",
    "kind": "text",
-   "hash": "5a9a56d3d8a3",
+   "hash": "17d5ee6b8b39",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.chosen": {
@@ -9941,10 +9941,10 @@
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.eyebrow": {
-   "en": "From virtual to real",
-   "ar": "من الافتراضي إلى الحقيقي",
+   "en": "From demo to the real journey",
+   "ar": "من التجربة إلى الرحلة الحقيقية",
    "kind": "text",
-   "hash": "c0ed09810e53",
+   "hash": "e2b98dafb9c9",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.fields": {
@@ -9955,17 +9955,17 @@
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.line": {
-   "en": "This gift is virtual: nothing real was recorded.",
-   "ar": "هذا عطاءٌ افتراضي: لم يُسجَّل شيءٌ حقيقي.",
+   "en": "This is a demo gift: nothing real was recorded.",
+   "ar": "هذا عطاءٌ تجريبي: لم يُسجَّل شيءٌ حقيقي.",
    "kind": "text",
-   "hash": "729332b8d5c8",
+   "hash": "a54b1d47f3ec",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.lineRegistered": {
-   "en": "This gift is virtual. You confirm the real one in “My impact”.",
-   "ar": "هذا عطاءٌ افتراضي. الحقيقي تؤكّده في «أثري».",
+   "en": "This is a demo gift. You confirm the real one in “My impact”.",
+   "ar": "هذا عطاءٌ تجريبي. الحقيقي تؤكّده في «أثري».",
    "kind": "text",
-   "hash": "c5694a2516ed",
+   "hash": "caf670f9a12e",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.promises.0": {
@@ -9984,9 +9984,9 @@
   },
   "components/try/TryRealInvite.promises.2": {
    "en": "The trial's children are fictional; there you choose a child from the directory of approved files.",
-   "ar": "أطفال التجربة افتراضيون؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
+   "ar": "أطفال التجربة بأسماءٍ مستعارة؛ هناك تختار طفلاً من دليل الملفات المعتمدة.",
    "kind": "text",
-   "hash": "341c0d04f1f7",
+   "hash": "2dc1c45b4ea9",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.text": {
@@ -10004,10 +10004,10 @@
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.title": {
-   "en": "This is a virtual journey. The real one begins when you register",
-   "ar": "هذه رحلةٌ افتراضية. الحقيقية تبدأ بتسجيلك",
+   "en": "This is demo mode. The real one begins when you register",
+   "ar": "هذه رحلةٌ تجريبية. الحقيقية تبدأ بتسجيلك",
    "kind": "text",
-   "hash": "6bf73d3403a0",
+   "hash": "fd2d6a4b4181",
    "file": "src/components/try/TryRealInvite.tsx"
   },
   "components/try/TryRealInvite.titleRegistered": {
@@ -10042,9 +10042,9 @@
   },
   "components/try/TryReportPreview.footnote": {
    "en": "An illustrative sample. On the live platform, the report carries its actual dates and documents.",
-   "ar": "نموذجٌ افتراضي للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
+   "ar": "نموذجٌ للتوضيح. في المنصّة الحقيقية يحمل التقرير تواريخه ومستنداته الفعلية.",
    "kind": "text",
-   "hash": "24f03284881b",
+   "hash": "f06ea5766671",
    "file": "src/components/try/TryReportPreview.tsx"
   },
   "components/try/TryReportPreview.noteText": {
@@ -10185,9 +10185,9 @@
   },
   "components/try/TryRoles.roles.org.0": {
    "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "758fcc0dbce8",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.org.1": {
@@ -10353,45 +10353,45 @@
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.leftTitle": {
-   "en": "You have left the virtual journey",
-   "ar": "غادرت الرحلة الافتراضية",
+   "en": "You have left demo mode",
+   "ar": "غادرت الوضع التجريبي",
    "kind": "text",
-   "hash": "1926efdc8401",
+   "hash": "f47bd4de08d9",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.mode": {
-   "en": "Virtual journey",
-   "ar": "رحلة افتراضية",
+   "en": "Demo mode",
+   "ar": "الوضع التجريبي",
    "kind": "text",
-   "hash": "9c06e142a9ca",
+   "hash": "326e22bcff78",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.modeLabel": {
-   "en": "You are now in a virtual journey",
-   "ar": "أنت الآن في رحلةٍ افتراضية",
+   "en": "You are now in demo mode",
+   "ar": "أنت الآن في الوضع التجريبي",
    "kind": "text",
-   "hash": "2130f6af9e08",
+   "hash": "503ebfa35bc1",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.noteLong": {
-   "en": "You are now in a virtual journey: the children are under pseudonyms and payment is simulated, so nothing is charged or sent. You enter the real journey by registering.",
-   "ar": "أنت الآن في رحلةٍ افتراضية: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
+   "en": "You are now in demo mode: the children are under pseudonyms and payment is simulated, so nothing is charged or sent. You enter the real journey by registering.",
+   "ar": "أنت الآن في الوضع التجريبي: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
    "kind": "text",
-   "hash": "d63372dc5d8e",
+   "hash": "87b3a0f2bca1",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.noteRegistered": {
-   "en": "You are now in a virtual journey, and your account is ready: what you choose here stays simulated until you confirm it in your real “My impact”.",
-   "ar": "أنت الآن في رحلةٍ افتراضية، وحسابك جاهز: ما تختاره هنا يبقى محاكاة حتى تؤكّده في «أثري» الحقيقية.",
+   "en": "You are now in demo mode, and your account is ready: what you choose here stays simulated until you confirm it in your real “My impact”.",
+   "ar": "أنت الآن في الوضع التجريبي، وحسابك جاهز: ما تختاره هنا يبقى محاكاة حتى تؤكّده في «أثري» الحقيقية.",
    "kind": "text",
-   "hash": "3cc60cf933df",
+   "hash": "59670470d93b",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.noteShort": {
-   "en": "You are now in a virtual journey: nothing is charged. The real one begins when you register.",
-   "ar": "أنت الآن في رحلةٍ افتراضية: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
+   "en": "You are now in demo mode: nothing is charged. The real one begins when you register.",
+   "ar": "أنت الآن في الوضع التجريبي: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
    "kind": "text",
-   "hash": "e574e01b65af",
+   "hash": "9b0d88ae5872",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.restart": {
@@ -10438,9 +10438,9 @@
   },
   "components/try/TrySupportMap.mapText": {
    "en": "Every country on the map can be entered and supported in the trial: each has two regions, a group and a child, all fictional.",
-   "ar": "كلّ دولةٍ على الخريطة تُدخَل وتُدعَم في التجربة: في كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها افتراضية.",
+   "ar": "كلّ دولةٍ على الخريطة تُدخَل وتُدعَم في التجربة: في كلٍّ منها منطقتان ومجموعةٌ وطفل، كلّها نموذجية.",
    "kind": "text",
-   "hash": "06d7611f7845",
+   "hash": "a87dbdaeeba5",
    "file": "src/components/try/TrySupportMap.tsx"
   },
   "components/try/TrySupportMap.mapTitle": {
@@ -10736,9 +10736,9 @@
   },
   "components/vision/ImpactCard.title": {
    "en": "My impact on the Vision and Directions platform",
-   "ar": "أثري في منصة الرؤية والتوجهات",
+   "ar": "أثري في منصّة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "86bbb57cdc34",
+   "hash": "a6ba4f3c8d66",
    "file": "src/components/vision/ImpactCard.tsx"
   },
   "components/vision/Inbox.alert": {
@@ -10843,9 +10843,9 @@
   },
   "components/vision/Story.caps.intro": {
    "en": "Three layers around one orphan: operations, support and decision. Let's follow one donation.",
-   "ar": "ثلاث طبقاتٍ حول يتيمٍ واحد: التشغيل، والدعم، والقرار. لنتبع تبرّعاً واحداً.",
+   "ar": "ثلاث طبقاتٍ حول يتيمٍ واحد: التشغيل، والدعم، والقرار. لنتبع عطاءً واحداً.",
    "kind": "text",
-   "hash": "59ced5c6b685",
+   "hash": "20f655513613",
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.caps.measure": {
@@ -10940,10 +10940,10 @@
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.conceptNote": {
-   "en": "The operations and decision platforms here are virtual and run on a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
-   "ar": "منصّتا التشغيل والقرار هنا افتراضيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
+   "en": "The operations and decision platforms here are demos running in a sandbox in your browser: every donation, session or decision you make moves all three layers as the real integration will. No money is collected, no child is identified, and names are pseudonyms.",
+   "ar": "منصّتا التشغيل والقرار هنا تجريبيتان تعملان على بيئةٍ تجريبية في متصفّحك: كلّ تبرّعٍ أو جلسةٍ أو قرارٍ تجريه هنا يحرّك الطبقات الثلاث كما سيحرّكها التكامل الحقيقي. لا يُحصَّل مالٌ ولا يُكشف طفل، والأسماء مستعارة.",
    "kind": "text",
-   "hash": "04f21ba3a077",
+   "hash": "6bcb16a498f0",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.cycle": {
@@ -10997,9 +10997,9 @@
   },
   "components/vision/VisionKit.nav": {
    "en": "Vision and Directions platform",
-   "ar": "منصة الرؤية والتوجهات",
+   "ar": "منصّة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "e8b8e8936f8b",
+   "hash": "df833645b48c",
    "file": "src/components/vision/VisionKit.tsx"
   },
   "components/vision/VisionKit.network": {
@@ -11169,9 +11169,9 @@
   },
   "components/vision/VisionStore.formH": {
    "en": "Test donation",
-   "ar": "تبرّعٌ تجريبي",
+   "ar": "عطاءٌ تجريبي",
    "kind": "text",
-   "hash": "936695c7c33d",
+   "hash": "84ac9d5f3e3b",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.formLead": {
@@ -11183,9 +11183,9 @@
   },
   "components/vision/VisionStore.give": {
    "en": "Donate now",
-   "ar": "تبرّع الآن",
+   "ar": "ادعم الآن",
    "kind": "text",
-   "hash": "591986f41f97",
+   "hash": "7c544a2db000",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.kitsDelivered": {
@@ -11355,9 +11355,9 @@
   },
   "components/vision/VisionTeaser.h": {
    "en": "The Vision and Directions platform",
-   "ar": "منصة الرؤية والتوجهات",
+   "ar": "منصّة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "9db25298ce26",
+   "hash": "50d6a52bf585",
    "file": "src/components/vision/VisionTeaser.tsx"
   },
   "components/vision/VisionTeaser.lead": {
@@ -11666,9 +11666,9 @@
   },
   "lib/event-labels.fallback": {
    "en": "File update",
-   "ar": "تحديثٌ في الملف",
+   "ar": "تحديثٌ في الملفّ",
    "kind": "text",
-   "hash": "15057edb990b",
+   "hash": "cabb91d2fa4a",
    "file": "src/lib/event-labels.ts"
   },
   "lib/event-labels.labels.disbursement_delivered": {
@@ -11680,23 +11680,23 @@
   },
   "lib/event-labels.labels.orphan.approved": {
    "en": "File approved and published",
-   "ar": "اعتُمد الملف ونُشر",
+   "ar": "اعتُمد الملفّ ونُشر",
    "kind": "text",
-   "hash": "721368bd32a5",
+   "hash": "bf29a383fe55",
    "file": "src/lib/event-labels.ts"
   },
   "lib/event-labels.labels.orphan.rejected": {
    "en": "File returned for correction",
-   "ar": "أُعيد الملف للتصحيح",
+   "ar": "أُعيد الملفّ للتصحيح",
    "kind": "text",
-   "hash": "e31501bec71c",
+   "hash": "b7691c17cad3",
    "file": "src/lib/event-labels.ts"
   },
   "lib/event-labels.labels.orphan.submitted": {
    "en": "File submitted for review",
-   "ar": "رُفع الملف للمراجعة",
+   "ar": "رُفع الملفّ للمراجعة",
    "kind": "text",
-   "hash": "cd5234993033",
+   "hash": "612cdaf06ead",
    "file": "src/lib/event-labels.ts"
   },
   "lib/event-labels.labels.pledge.delivered": {
@@ -11879,9 +11879,9 @@
   },
   "lib/hall/copy.donor.another": {
    "en": "Sponsor another child",
-   "ar": "اكفل طفلاً آخر",
+   "ar": "اكفل يتيماً آخر",
    "kind": "text",
-   "hash": "119ded3561b5",
+   "hash": "9a0cb9240163",
    "file": "src/lib/hall/copy.ts"
   },
   "lib/hall/copy.donor.back": {
@@ -12078,9 +12078,9 @@
   },
   "lib/hall/copy.donor.start": {
    "en": "Sponsor a child",
-   "ar": "اكفل طفلاً",
+   "ar": "اكفل يتيماً",
    "kind": "text",
-   "hash": "0e7a12799adb",
+   "hash": "62fd7babf158",
    "file": "src/lib/hall/copy.ts"
   },
   "lib/hall/copy.donor.sub": {
@@ -14211,9 +14211,9 @@
   },
   "lib/hall/live.story.pending": {
    "en": "Your support funded the group; its six sessions begin on the operating platform, and its move between levels shows after the closing measurement.",
-   "ar": "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
+   "ar": "موّل دعمك المجموعة؛ تبدأ جلساتها الستّ في منصّة التشغيل، ويظهر انتقال مستوياتها بعد القياس البعدي.",
    "kind": "text",
-   "hash": "11ab19fc871b",
+   "hash": "f9de553fef4b",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.story.proof": {
@@ -17727,9 +17727,9 @@
   },
   "routes/auth.note": {
    "en": ". This platform handles children's data, so please read them.",
-   "ar": ". وهذه منصة تعالج بيانات أطفال، فاقرأهما.",
+   "ar": ". وهذه منصّة تعالج بيانات أطفال، فاقرأهما.",
    "kind": "text",
-   "hash": "d8e100a4278c",
+   "hash": "5c75f499c09e",
    "file": "src/routes/auth.tsx"
   },
   "routes/auth.privacy": {
@@ -17770,9 +17770,9 @@
   },
   "routes/hall.description": {
    "en": "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
-   "ar": "رحلة الداعم ثلاثية الأبعاد في شبكة الندوة: اختر دولة، وادعمها، وشاهد أثر دعمك على البلد والمنطقة والمجموعة والطفل.",
+   "ar": "قاعة الأثر ثلاثية الأبعاد: اختر دولةً من شبكة الندوة، وشاهد أثر عطائك على البلد والمنطقة والمجموعة والطفل.",
    "kind": "text",
-   "hash": "5e5af6f1e386",
+   "hash": "2d8e5e6c701e",
    "file": "src/routes/hall.tsx"
   },
   "routes/hall.lazy.back": {
@@ -17818,10 +17818,10 @@
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.gate": {
-   "en": "This is a virtual journey: everything in the hall is simulated, and nothing is charged.",
-   "ar": "أنت الآن في رحلةٍ افتراضية: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
+   "en": "This is demo mode: everything in the hall is simulated, and nothing is charged.",
+   "ar": "أنت الآن في الوضع التجريبي: كلّ ما في القاعة محاكاة، ولا يُخصم شيء.",
    "kind": "text",
-   "hash": "3d65c72b0a4a",
+   "hash": "e0af7158c70d",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.gateReal": {
@@ -17833,9 +17833,9 @@
   },
   "routes/hall.lazy.lead": {
    "en": "Step into the hall, pick a country on the world map and go in to see how it stands. Choose a kind of support and an amount and watch the impact change in front of you. Then give, see what it does for the country, the region, the group and the child, and finish with a summary of what your own support moved.",
-   "ar": "تدخل القاعة، فتختار دولةً من خريطة العالم وتدخلها لترى حالها. تختار نوع الدعم ومقداره فيتغيّر الأثر أمامك، ثم تدعم وترى أثره على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه دعمك أنت.",
+   "ar": "اختر دولةً من خريطة العالم، ثم نوع العطاء ومقداره، فترى الأثر يتغيّر أمامك على البلد والمنطقة والمجموعة والطفل، وتنتهي بخلاصة ما حرّكه عطاؤك أنت.",
    "kind": "text",
-   "hash": "2f4a30e49f08",
+   "hash": "2f2880e76e7a",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.legend": {
@@ -17981,10 +17981,10 @@
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.tag": {
-   "en": "Virtual journey",
-   "ar": "رحلة افتراضية",
+   "en": "Demo mode",
+   "ar": "الوضع التجريبي",
    "kind": "text",
-   "hash": "9c06e142a9ca",
+   "hash": "326e22bcff78",
    "file": "src/routes/hall.lazy.tsx"
   },
   "routes/hall.lazy.timeline": {
@@ -18073,9 +18073,9 @@
   },
   "routes/how-it-works.actors.0.1": {
    "en": "A WAMY office or field partner registers on the platform, is reviewed and approved by the administration, then uploads children's files with their documents and keeps their data up to date.",
-   "ar": "مكتبٌ للندوة أو شريكٌ ميداني لها يسجّل في المنصة، فتراجعه الإدارة وتعتمده، ثم يرفع ملفات الأيتام مع المستندات ويحدّث بياناتهم دورياً.",
+   "ar": "مكتبٌ للندوة أو شريكٌ ميداني لها يسجّل في المنصّة، فتراجعه الإدارة وتعتمده، ثم يرفع ملفات الأيتام مع المستندات ويحدّث بياناتهم دورياً.",
    "kind": "text",
-   "hash": "8a8e7097d10a",
+   "hash": "fe220a0d4595",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.1.0": {
@@ -18087,9 +18087,9 @@
   },
   "routes/how-it-works.actors.1.1": {
    "en": "Provides the field organization with the data, documents the family relationship, and can see the status of the file and the sponsorship.",
-   "ar": "يزوّد الجهة الميدانية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملف والكفالة.",
+   "ar": "يزوّد الجهة الميدانية بالبيانات ويوثّق صلة القرابة، ويطّلع على حالة الملفّ والكفالة.",
    "kind": "text",
-   "hash": "7f6cb92660ad",
+   "hash": "f86ded84a2fa",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.actors.2.0": {
@@ -18129,16 +18129,16 @@
   },
   "routes/how-it-works.ctaH": {
    "en": "Ready to stand by an orphan?",
-   "ar": "جاهز لتكون سنداً ليتيم؟",
+   "ar": "كن سنداً ليتيم",
    "kind": "text",
-   "hash": "8ad2992cdcef",
+   "hash": "1a6e54a3f157",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.ctaP": {
    "en": "Choose an approved file and start your monthly sponsorship today.",
-   "ar": "اختر ملفاً معتمداً وابدأ كفالتك الشهرية اليوم.",
+   "ar": "اختر ملفّاً معتمداً، وابدأ عطاءك بأحد المسارات الثلاثة.",
    "kind": "text",
-   "hash": "7a5fa3bf8a22",
+   "hash": "5f6d6da31ccf",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.h1": {
@@ -18151,9 +18151,9 @@
   },
   "routes/how-it-works.lead": {
    "en": "WAMY's platform organizes the relationship between four parties in one documented path, so no file reaches a sponsor before it has been verified and approved.",
-   "ar": "منصّة الندوة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، بحيث لا يصل أي ملف إلى الكافل قبل التحقق منه واعتماده.",
+   "ar": "منصّة الندوة تنظّم العلاقة بين أربعة أطراف داخل مسار واحد موثّق، فلا يصل ملفٌّ إلى الداعم قبل التحقّق منه واعتماده.",
    "kind": "text",
-   "hash": "77d004aff804",
+   "hash": "97fe9a0488cb",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.0.0": {
@@ -18186,9 +18186,9 @@
   },
   "routes/how-it-works.stages.1.1": {
    "en": "Creating the child's file",
-   "ar": "إنشاء ملف اليتيم",
+   "ar": "إنشاء ملفّ اليتيم",
    "kind": "text",
-   "hash": "fcd2e9de5297",
+   "hash": "d77242d656ac",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.1.2": {
@@ -18214,9 +18214,9 @@
   },
   "routes/how-it-works.stages.2.2": {
    "en": "The file is approved or rejected with a clear reason, then published in the public directory.",
-   "ar": "اعتماد الملف أو رفضه مع سبب واضح، ثم نشره في الدليل العام.",
+   "ar": "اعتماد الملفّ أو رفضه مع سبب واضح، ثم نشره في الدليل العام.",
    "kind": "text",
-   "hash": "f1af88e2aa74",
+   "hash": "266161fa2bf7",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/how-it-works.stages.3.0": {
@@ -18389,9 +18389,9 @@
   },
   "routes/index.crossing.1.1": {
    "en": "This is where the platform works. WAMY's offices and field partners document the file, the administration approves it, then a monthly sponsorship is spent on the child's stated needs, and each delivery is recorded with a document you can see.",
-   "ar": "هنا تعمل المنصّة. مكاتب الندوة وشركاؤها الميدانيون يوثّقون الملف، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
+   "ar": "هنا تعمل المنصّة. مكاتب الندوة وشركاؤها الميدانيون يوثّقون الملفّ، والإدارة تعتمده، ثم كفالة شهرية تُصرَف على احتياج الطفل المعلَن، ويُسجَّل تسليمها بمستندٍ تراه.",
    "kind": "text",
-   "hash": "9ecceceaf245",
+   "hash": "8fe7d064c7e6",
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.2.0": {
@@ -18452,9 +18452,9 @@
   },
   "routes/index.custody.2.1": {
    "en": "No file is published without an approval decision. A rejection carries a coded reason, so every decision is accountable.",
-   "ar": "لا يُنشر ملف إلا بقرار اعتماد. والرفض يحمل سبباً مُرمَّزاً، فالقرار مُساءَل لا مُبهَم.",
+   "ar": "لا يُنشر ملفّ إلا بقرار اعتماد. والرفض يحمل سبباً مُرمَّزاً، فالقرار مُساءَل لا مُبهَم.",
    "kind": "text",
-   "hash": "4248c84dad1c",
+   "hash": "296237ffc2fc",
    "file": "src/routes/index.tsx"
   },
   "routes/index.custody.3.0": {
@@ -18487,9 +18487,9 @@
   },
   "routes/index.description": {
    "en": "We don't offer temporary care; we build systems that let children thrive. A file documented by a WAMY office or field partner, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
-   "ar": "لا نقدّم رعاية مؤقتة بل نبني نظم عمران. ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، واعتماد إداري، ودعمٌ شهري بحسب احتياج الطفل يُسجَّل تسليمه بمستند، وتقارير أثر دورية.",
+   "ar": "لا نقدّم رعايةً مؤقّتة بل نبني نظم عمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، واعتمادٌ إداري، وثلاثة مساراتٍ للعطاء يُسجَّل تسليمها بمستند، وتقارير أثرٍ دورية.",
    "kind": "text",
-   "hash": "cec7f41e2eb4",
+   "hash": "efc83c33bc07",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.0": {
@@ -18501,9 +18501,9 @@
   },
   "routes/index.dignity.1": {
    "en": "Painful photos are shown in monochrome without faces; only uplifting photos appear in full color — and that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
-   "ar": "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملف آلياً، لا يختاره من يرفع الصورة.",
+   "ar": "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملفّ آلياً، لا يختاره من يرفع الصورة.",
    "kind": "text",
-   "hash": "c99782027ef5",
+   "hash": "379adc33221d",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.2": {
@@ -18613,9 +18613,9 @@
   },
   "routes/index.hallP": {
    "en": "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
-   "ar": "ادخل القاعة، واختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، فترى الأثر يتغيّر أمامك على البلد والمنطقة والمجموعة والطفل. المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
+   "ar": "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل — المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
    "kind": "text",
-   "hash": "290362586277",
+   "hash": "a67e27165c47",
    "file": "src/routes/index.tsx"
   },
   "routes/index.impactH": {
@@ -18648,9 +18648,9 @@
   },
   "routes/index.ladder.0.2": {
    "en": "A file documented by a WAMY office or field partner captures a whole crisis in one picture — it moves you and reframes how you see it.",
-   "ar": "ملف يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
+   "ar": "ملفّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
    "kind": "text",
-   "hash": "d1a44464f57d",
+   "hash": "ff16b43fc125",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.1.0": {
@@ -18739,9 +18739,9 @@
   },
   "routes/index.lead": {
    "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
-   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، وتعتمده الإدارة، ثم كفالة شهرية تُصرَف على احتياجه المعلَن ويُسجَّل تسليمها بمستند — ويعود إليك أثرها تقريراً.",
+   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ موثّق، واعتمادٌ إداري، وعطاءٌ يُسلَّم بمستند — ويعود إليك أثرُه تقريراً.",
    "kind": "text",
-   "hash": "d7588d359830",
+   "hash": "ad37ba4378d5",
    "file": "src/routes/index.tsx"
   },
   "routes/index.logo": {
@@ -19170,9 +19170,9 @@
   },
   "routes/organizations.cta": {
    "en": "Sponsor a child",
-   "ar": "اكفل طفلاً",
+   "ar": "اكفل يتيماً",
    "kind": "text",
-   "hash": "0e7a12799adb",
+   "hash": "62fd7babf158",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.ctaText": {
@@ -19205,9 +19205,9 @@
   },
   "routes/organizations.lead": {
    "en": "Every child's file on the platform is linked to a field organization working under WAMY's umbrella, reviewed and approved by the platform's administration, and responsible for documenting and updating its data.",
-   "ar": "كل ملف يتيم في المنصة مرتبط بجهة ميدانية تعمل تحت مظلّة الندوة، راجعتها إدارة المنصّة واعتمدتها، وهي المسؤولة عن توثيق البيانات وتحديثها.",
+   "ar": "كلّ ملفٍّ في المنصّة مرتبطٌ بجهةٍ ميدانية تعمل تحت مظلّة الندوة، اعتمدتها إدارة المنصّة، وهي المسؤولة عن توثيقه وتحديثه.",
    "kind": "text",
-   "hash": "9404e0a1b28b",
+   "hash": "d014d2bb3a87",
    "file": "src/routes/organizations.tsx"
   },
   "routes/organizations.title": {
@@ -19359,9 +19359,9 @@
   },
   "routes/orphans.index.emptyCta": {
    "en": "Suggest for me",
-   "ar": "اقترح لي",
+   "ar": "اقترح عليّ طفلاً",
    "kind": "text",
-   "hash": "694a80d34407",
+   "hash": "c0e3124bd705",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.emptyGo": {
@@ -19471,9 +19471,9 @@
   },
   "routes/orphans.index.lead": {
    "en": "Every file shown here was approved by the administration after being documented by a WAMY office or field partner",
-   "ar": "جميع الملفات المعروضة معتمدة من الإدارة بعد أن وثّقها مكتبٌ للندوة أو شريكٌ ميداني لها",
+   "ar": "كلّ ملفٍّ هنا اعتمدته إدارة المنصّة بعد أن وثّقه مكتبٌ للندوة أو شريكٌ ميداني لها",
    "kind": "text",
-   "hash": "46ca4a789916",
+   "hash": "033fab7b2826",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.male": {
@@ -19557,9 +19557,9 @@
   },
   "routes/orphans.index.search": {
    "en": "Search by pseudonym or file number",
-   "ar": "ابحث بالاسم المستعار أو رقم الملف",
+   "ar": "ابحث بالاسم المستعار أو رقم الملفّ",
    "kind": "text",
-   "hash": "fd812a0ac50a",
+   "hash": "82a00360b3d1",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.searchLabel": {
@@ -19756,10 +19756,10 @@
   },
   "routes/orphans.orphanId.fileNo": {
    "en": "File no. {0}",
-   "ar": "ملف رقم {0}",
+   "ar": "ملفّ رقم {0}",
    "kind": "template",
    "params": 1,
-   "hash": "332a740230fc",
+   "hash": "f4bcf561f298",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.follow": {
@@ -19978,9 +19978,9 @@
   },
   "routes/orphans.orphanId.shareTitle": {
    "en": "A verified sponsorship file",
-   "ar": "ملف كفالة موثّق",
+   "ar": "ملفّ كفالة موثّق",
    "kind": "text",
-   "hash": "a1e917cea415",
+   "hash": "964acf0b9d37",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.signIn": {
@@ -20036,9 +20036,9 @@
   },
   "routes/orphans.orphanId.unavailable": {
    "en": "File unavailable",
-   "ar": "ملف غير متاح",
+   "ar": "ملفّ غير متاح",
    "kind": "text",
-   "hash": "f3a88eba8621",
+   "hash": "cefdb90bbbe4",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.unexpected": {
@@ -20057,9 +20057,9 @@
   },
   "routes/support.another": {
    "en": "Sponsor a child",
-   "ar": "اكفل طفلاً",
+   "ar": "اكفل يتيماً",
    "kind": "text",
-   "hash": "0e7a12799adb",
+   "hash": "62fd7babf158",
    "file": "src/routes/support.tsx"
   },
   "routes/support.children.one": {
@@ -20100,9 +20100,9 @@
   },
   "routes/support.description": {
    "en": "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
-   "ar": "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
+   "ar": "اختر نوع العطاء وجهته: طفلٌ بعينه، أو مجموعة، أو منطقة، أو دولة، أو مؤسسة.",
    "kind": "text",
-   "hash": "4ad91b2be897",
+   "hash": "070a7a2e4a99",
    "file": "src/routes/support.tsx"
   },
   "routes/support.directory": {
@@ -20135,10 +20135,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.h1": {
-   "en": "Support",
-   "ar": "ادعم",
+   "en": "Choose your impact",
+   "ar": "اختر أثرك",
    "kind": "text",
-   "hash": "81bb0b6bce39",
+   "hash": "555091b5f6de",
    "file": "src/routes/support.tsx"
   },
   "routes/support.kinds.in_kind.label": {
@@ -20171,9 +20171,9 @@
   },
   "routes/support.lead": {
    "en": "Three steps: who you support, the amount, then confirmation. Change any choice before you confirm.",
-   "ar": "ثلاث خطوات: من تدعم، ثم المبلغ، ثم التأكيد. وتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
+   "ar": "ثلاث خطوات: إلى من، ثم نوع العطاء ومبلغه، ثم التأكيد. ويتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
    "kind": "text",
-   "hash": "2b75c769403d",
+   "hash": "a4d93264fef7",
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapText": {
@@ -20296,10 +20296,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.section": {
-   "en": "Support",
-   "ar": "ادعم",
+   "en": "Choose your impact",
+   "ar": "اختر أثرك",
    "kind": "text",
-   "hash": "81bb0b6bce39",
+   "hash": "555091b5f6de",
    "file": "src/routes/support.tsx"
   },
   "routes/support.signIn": {
@@ -20672,9 +20672,9 @@
   },
   "routes/try.childId.gateNote": {
    "en": "On the live platform, the child's photo and exact location stay behind a protective access gate. This file is entirely fictional.",
-   "ar": "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملف افتراضي بالكامل.",
+   "ar": "في المنصّة الحقيقية تبقى صورة الطفل ومكانه الدقيق خلف بوابة إذنٍ تحميه؛ وهذا الملفّ نموذجيٌّ بالكامل.",
    "kind": "text",
-   "hash": "a85e23efa14a",
+   "hash": "0a1d736ad83d",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.impactCompletes": {
@@ -20863,9 +20863,9 @@
   },
   "routes/try.cycle.lead": {
    "en": "One child's file moving through every role: the care organization enters it, the administration verifies and approves it, it is published in the directory, a supporter sponsors it, and the first monthly report arrives. The same steps as the real platform, without waiting or a server.",
-   "ar": "ملفّ طفلٍ واحد تراه ينتقل عبر كلّ الأدوار: جهة الرعاية تُدخله، والإدارة توثّقه وتعتمده، فيُنشر في الدليل، فيكفله داعم، فيصل تقرير الشهر الأوّل. الخطوات نفسها في المنصّة الحقيقية — بلا انتظارٍ ولا خادم.",
+   "ar": "ملفّ طفلٍ واحد تراه ينتقل عبر كلّ الأدوار: الجهة الميدانية تُدخله، والإدارة توثّقه وتعتمده، فيُنشر في الدليل، فيكفله داعم، فيصل تقرير الشهر الأوّل. الخطوات نفسها في المنصّة الحقيقية — بلا انتظارٍ ولا خادم.",
    "kind": "text",
-   "hash": "832780fecb49",
+   "hash": "723d65ccd926",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.locked": {
@@ -20898,9 +20898,9 @@
   },
   "routes/try.cycle.published": {
    "en": "The file is published in the directory with a 'documented file' badge.",
-   "ar": "نُشر الملفّ في الدليل بشارة «ملف موثّق».",
+   "ar": "نُشر الملفّ في الدليل بشارة «ملفّ موثّق».",
    "kind": "text",
-   "hash": "fb5e42f0167d",
+   "hash": "0141ead8b1b4",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.queued": {
@@ -20947,9 +20947,9 @@
   },
   "routes/try.cycle.roles.org": {
    "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "758fcc0dbce8",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.roles.supporter": {
@@ -21160,9 +21160,9 @@
   },
   "routes/try.cycle.who.org": {
    "en": "Care organization",
-   "ar": "جهة الرعاية",
+   "ar": "الجهة الميدانية",
    "kind": "text",
-   "hash": "9f40182b18b8",
+   "hash": "758fcc0dbce8",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.who.supporter": {
@@ -21174,9 +21174,9 @@
   },
   "routes/try.description": {
    "en": "The complete sponsorship journey with sample data. No account, and nothing is charged.",
-   "ar": "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ افتراضية، دون حسابٍ ودون أي خصم.",
+   "ar": "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ نموذجية، دون حسابٍ ودون أي خصم.",
    "kind": "text",
-   "hash": "16ef0a8edc77",
+   "hash": "83f63327d587",
    "file": "src/routes/try.tsx"
   },
   "routes/try.impact.celebrateDedication": {
@@ -21296,16 +21296,16 @@
   },
   "routes/try.index.cycleText": {
    "en": "Enter a child's file as a care organization, verify and approve it as the administration, sponsor it as a supporter, and send the first monthly report as an office: in minutes, with the same steps as the real platform.",
-   "ar": "أدخِل ملفّ طفل كجهة رعاية، ووثّقه واعتمده كإدارة، ثم اكفله كداعم، وأرسل تقرير الشهر الأوّل كمكتب — في دقائق، بالخطوات نفسها في المنصّة الحقيقية.",
+   "ar": "أدخِل ملفّ طفل كجهة ميدانية، ووثّقه واعتمده كإدارة، ثم اكفله كداعم، وأرسل تقرير الشهر الأوّل كمكتب — في دقائق، بالخطوات نفسها في المنصّة الحقيقية.",
    "kind": "text",
-   "hash": "81ef3537b31f",
+   "hash": "b57eb1a9e3e4",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.cycleTitle": {
    "en": "The full cycle: from care organization to the supporter's impact",
-   "ar": "الدورة الكاملة: من جهة الرعاية إلى أثر الكافل",
+   "ar": "الدورة الكاملة: من الجهة الميدانية إلى أثر الداعم",
    "kind": "text",
-   "hash": "415144d1017a",
+   "hash": "af1d18d0e7d9",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.doorCta.in_kind": {
@@ -21359,9 +21359,9 @@
   },
   "routes/try.index.doorsLead": {
    "en": "Sponsor a child financially from the list below, or support qualification or in-kind giving from the map: for a child, their group, their region or their country. Then compare the impact in “My impact”.",
-   "ar": "اكفل طفلاً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
+   "ar": "اكفل يتيماً كفالةً مادية من القائمة أدناه، أو ادعم من الخريطة تأهيلاً أو عيناً: لطفلٍ أو مجموعته أو منطقته أو دولته. ثم قارن الأثر في «أثري».",
    "kind": "text",
-   "hash": "9d41970fe133",
+   "hash": "9cee2143b26f",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.everywhere": {
@@ -21387,9 +21387,9 @@
   },
   "routes/try.index.lead": {
    "en": "Choose a child, sponsor them, and watch your impact take shape. Everything here is sample data, so explore freely.",
-   "ar": "اختر طفلاً، واكفله، ثم شاهد أثر كفالتك يتشكّل أمامك. كل ما هنا افتراضي، فجرّب بلا قلق.",
+   "ar": "اختر طفلاً، واكفله، ثم شاهد أثر كفالتك يتشكّل أمامك. كلّ ما هنا ببياناتٍ نموذجية، ولا يُخصم شيء.",
    "kind": "text",
-   "hash": "86b1a7ae84e6",
+   "hash": "64062bed5441",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.order": {
@@ -21703,9 +21703,9 @@
   },
   "routes/vision.cycle.lead": {
    "en": "One donation passes through all three layers: it reaches the group, its impact returns from around the orphan, the number moves, and the decision returns to the field.",
-   "ar": "تبرّعٌ واحد يمرّ بالطبقات الثلاث: يصل إلى المجموعة، ويعود أثرُه من حول اليتيم، ثم يتحرّك الرقم ويعود القرار إلى الميدان.",
+   "ar": "عطاءٌ واحد يمرّ بالطبقات الثلاث: يصل إلى المجموعة، ويعود أثرُه من حول اليتيم، ثم يتحرّك الرقم ويعود القرار إلى الميدان.",
    "kind": "text",
-   "hash": "3ead9953c334",
+   "hash": "8102647234de",
    "file": "src/routes/vision.cycle.tsx"
   },
   "routes/vision.cycle.legendDecision": {
@@ -21908,9 +21908,9 @@
   },
   "routes/vision.decision.campaignText": {
    "en": "Appears in the support platform as its own door, “Complete the Tirana groups”, with a target that closes the gap.",
-   "ar": "تظهر في منصة الدعم بابًا مستقلاً «أكمل مجموعات تيرانا»، بهدفٍ يضيّق الفجوة.",
+   "ar": "تظهر في منصّة الدعم بابًا مستقلاً «أكمل مجموعات تيرانا»، بهدفٍ يضيّق الفجوة.",
    "kind": "text",
-   "hash": "bf611335426f",
+   "hash": "7f13debf7839",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.childrenNeed": {
@@ -21937,9 +21937,9 @@
   },
   "routes/vision.decision.countryLead": {
    "en": "Need from the operations platform, donations from the support platform — on one map.",
-   "ar": "الحاجة من منصة التشغيل، والتبرعات من منصة الدعم — على خريطةٍ واحدة.",
+   "ar": "الحاجة من منصّة التشغيل، والعطاء من منصّة الدعم — على خريطةٍ واحدة.",
    "kind": "text",
-   "hash": "e4ff12a51645",
+   "hash": "9b43d921fa72",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.decideH": {
@@ -22017,9 +22017,9 @@
   },
   "routes/vision.decision.lead": {
    "en": "WAMY's board: where we stand and where the next support should go. Aggregates only — no names, no files.",
-   "ar": "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها — لا اسم ولا ملف.",
+   "ar": "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها — لا اسم ولا ملفّ.",
    "kind": "text",
-   "hash": "0e1c1eaad941",
+   "hash": "d6dc26a0d96a",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.liveDonors": {
@@ -22095,9 +22095,9 @@
   },
   "routes/vision.decision.newGroupText": {
    "en": "A fifth supervised group opens in Tirana in the operations platform, led by a qualified supervisor.",
-   "ar": "تُفتح في منصة التشغيل مجموعةٌ إشرافية خامسة في تيرانا بمشرفٍ من المؤهَّلين.",
+   "ar": "تُفتح في منصّة التشغيل مجموعةٌ إشرافية خامسة في تيرانا بمشرفٍ من المؤهَّلين.",
    "kind": "text",
-   "hash": "d5ee357c092e",
+   "hash": "a9015efe06d3",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.noRecs": {
@@ -22618,10 +22618,10 @@
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.virtual": {
-   "en": "Virtual",
-   "ar": "افتراضي",
+   "en": "Sample",
+   "ar": "نموذجي",
    "kind": "text",
-   "hash": "b030223c1189",
+   "hash": "2954f115de87",
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.index.cycleH": {
@@ -22717,9 +22717,9 @@
   },
   "routes/vision.index.title": {
    "en": "The Vision and Directions platform",
-   "ar": "منصة الرؤية والتوجهات",
+   "ar": "منصّة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "9db25298ce26",
+   "hash": "50d6a52bf585",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.watch": {
@@ -22766,9 +22766,9 @@
   },
   "routes/vision.journey.bigH": {
    "en": "The big picture on the decision platform",
-   "ar": "الصورة الكلية في منصة القرار",
+   "ar": "الصورة الكلية في منصّة القرار",
    "kind": "text",
-   "hash": "1837d4a874a1",
+   "hash": "61a9820b2cc2",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.bigLead": {
@@ -23228,9 +23228,9 @@
   },
   "routes/vision.me.file": {
    "en": "Child file",
-   "ar": "ملف الطفل",
+   "ar": "ملفّ الطفل",
    "kind": "text",
-   "hash": "a32ef1721fcc",
+   "hash": "d88be58df5f8",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.filesH": {
@@ -23488,9 +23488,9 @@
   },
   "routes/vision.me.roles.decider.text": {
    "en": "See aggregate indicators and gaps, and approve decisions — no names, no files.",
-   "ar": "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات — بلا اسمٍ ولا ملف.",
+   "ar": "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات — بلا اسمٍ ولا ملفّ.",
    "kind": "text",
-   "hash": "eb9883e6bf3a",
+   "hash": "613a7055aa86",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.roles.supervisor.cta": {
@@ -23509,9 +23509,9 @@
   },
   "routes/vision.me.roles.supervisor.text": {
    "en": "Run the Tirana groups: record sessions and measurement, and see each child's file in your group.",
-   "ar": "تدير مجموعات تيرانا: تسجّل الجلسات والقياس، وترى ملف كلّ طفل في مجموعتك.",
+   "ar": "تدير مجموعات تيرانا: تسجّل الجلسات والقياس، وترى ملفّ كلّ طفل في مجموعتك.",
    "kind": "text",
-   "hash": "5bc3c7051715",
+   "hash": "c0b10201bccc",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.roles.supporter.cta": {
@@ -23732,10 +23732,10 @@
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.lead": {
-   "en": "Every country with a WAMY office or documented field activity gets a virtual board — and stays virtual until its operations platform is actually connected, when its real figures appear.",
-   "ar": "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ افتراضية — وتبقى افتراضية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
+   "en": "Every country with a WAMY office or documented field activity gets a sample board — and stays a sample until its operations platform is actually connected, when its real figures appear.",
+   "ar": "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية — وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
    "kind": "text",
-   "hash": "9bdf09d16ae0",
+   "hash": "79131400b1f8",
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.live": {
@@ -23859,17 +23859,17 @@
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.virtual": {
-   "en": "Virtual",
-   "ar": "افتراضي",
+   "en": "Sample",
+   "ar": "نموذجي",
    "kind": "text",
-   "hash": "b030223c1189",
+   "hash": "2954f115de87",
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.virtualNote": {
-   "en": "Operations figures here are virtual and show the board's shape; presence and activity come from documented public sources.",
-   "ar": "أرقام التشغيل هنا افتراضية توضّح شكل اللوحة؛ الحضور والنشاط من مصادر عامّة موثّقة.",
+   "en": "Operations figures here are sample data and show the board's shape; presence and activity come from documented public sources.",
+   "ar": "أرقام التشغيل هنا نموذجية توضّح شكل اللوحة؛ الحضور والنشاط من مصادر عامّة موثّقة.",
    "kind": "text",
-   "hash": "647909f9dbe4",
+   "hash": "c883687e4221",
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.operations.after": {
@@ -23930,9 +23930,9 @@
   },
   "routes/vision.operations.commandH": {
    "en": "Platform command centre",
-   "ar": "مركز قيادة المنصة",
+   "ar": "مركز قيادة المنصّة",
    "kind": "text",
-   "hash": "b85477e78d66",
+   "hash": "8c226f79fe4e",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.commandLead": {
@@ -23965,9 +23965,9 @@
   },
   "routes/vision.operations.fileH": {
    "en": "A complete educational file",
-   "ar": "ملف تربوي شامل",
+   "ar": "ملفّ تربوي شامل",
    "kind": "text",
-   "hash": "702d7fe4a8ca",
+   "hash": "4e40f3b9fb01",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.fileLead": {
@@ -24029,9 +24029,9 @@
   },
   "routes/vision.operations.lead": {
    "en": "The Rowad platform as it will connect to the system: the command centre, the groups, every orphan's file and the live report — all updated from the field.",
-   "ar": "منصة الرواد كما ستتّصل بالمنظومة: مركز القيادة، والمجموعات، وملف كل يتيم، والتقرير الحي — كلّه يتحدّث من الميدان أولاً بأول.",
+   "ar": "منصّة الرواد كما ستتّصل بالمنظومة: مركز القيادة، والمجموعات، وملف كل يتيم، والتقرير الحي — كلّه يتحدّث من الميدان أولاً بأول.",
    "kind": "text",
-   "hash": "816ab52bc1a3",
+   "hash": "42d8dbab8157",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.measure": {
@@ -24088,9 +24088,9 @@
   },
   "routes/vision.operations.reportHero": {
    "en": "Impact as the platform records it",
-   "ar": "الأثر كما تسجّله المنصة",
+   "ar": "الأثر كما تسجّله المنصّة",
    "kind": "text",
-   "hash": "4b003aad6822",
+   "hash": "f9d29c0e3074",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.reportHeroLead": {
@@ -24102,9 +24102,9 @@
   },
   "routes/vision.operations.reportKind": {
    "en": "Official report · platform administration",
-   "ar": "تقرير رسمي · إدارة المنصة",
+   "ar": "تقرير رسمي · إدارة المنصّة",
    "kind": "text",
-   "hash": "11bf68eabe68",
+   "hash": "9f28edd4eda3",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.runSession": {
@@ -24180,9 +24180,9 @@
   },
   "routes/vision.operations.tabFile": {
    "en": "Orphan file",
-   "ar": "ملف اليتيم",
+   "ar": "ملفّ اليتيم",
    "kind": "text",
-   "hash": "28c47bcc3fdc",
+   "hash": "8f826253a5cc",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.tabGroups": {
@@ -24670,9 +24670,9 @@
   },
   "routes/vision.receipt.brand": {
    "en": "Vision and Directions platform",
-   "ar": "منصة الرؤية والتوجهات",
+   "ar": "منصّة الرؤية والتوجهات",
    "kind": "text",
-   "hash": "e8b8e8936f8b",
+   "hash": "df833645b48c",
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.card": {

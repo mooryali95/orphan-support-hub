@@ -81,7 +81,7 @@ export function CycleAdminTask() {
       <div className="mt-3">
         {c.stage === "draft" ? (
           <Waiting
-            text="تُدخل جهة الرعاية الملفّ ومستنداته أوّلاً، ثم يصل هنا."
+            text="تُدخل الجهة الميدانية الملفّ ومستنداته أوّلاً، ثم يصل هنا."
             to="/try/cycle"
             cta="ادخل بدور الجهة"
           />

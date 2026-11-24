@@ -9,7 +9,7 @@ import { PRESENT_EVENT, presenting, type TryRole } from "@/lib/try-roles";
  */
 export const ROLE_NAME: Record<TryRole, string> = {
   supporter: "الكافل",
-  org: "جهة الرعاية",
+  org: "الجهة الميدانية",
   admin: "الإدارة",
   office: "المكتب الميداني",
   supervisor: "المشرف",

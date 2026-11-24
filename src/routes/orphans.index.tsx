@@ -109,12 +109,12 @@ const COPY = defineCopy("routes/orphans.index", {
     any: "الكل",
     building: "برنامج بناء أهلية",
     buildingOn: "برنامج بناء أهلية قائم",
-    lead: "جميع الملفات المعروضة معتمدة من الإدارة بعد أن وثّقها مكتبٌ للندوة أو شريكٌ ميداني لها",
+    lead: "كلّ ملفٍّ هنا اعتمدته إدارة المنصّة بعد أن وثّقه مكتبٌ للندوة أو شريكٌ ميداني لها",
     inCountries: (n: number) => ` — في ${arCount(n, COUNTRIES)}.`,
     cardH: "ما يُعرض هنا بطاقةٌ لا ملفّ:",
     cardP:
       "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
-    search: "ابحث بالاسم المستعار أو رقم الملف",
+    search: "ابحث بالاسم المستعار أو رقم الملفّ",
     searchLabel: "بحث",
     allCountries: "كل البلدان",
     pickCountry: "اختر دولة",
@@ -144,7 +144,7 @@ const COPY = defineCopy("routes/orphans.index", {
     tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
     restart: "ابدأ من جديد",
     emptyGo: "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
-    emptyCta: "اقترح لي",
+    emptyCta: "اقترح عليّ طفلاً",
     pagesLabel: "صفحات الدليل",
     prev: "السابق",
     next: "التالي",
@@ -435,7 +435,7 @@ function RealOrphansPage() {
         <p className="mt-3 max-w-2xl text-base leading-8 text-muted-foreground">
           {DEMO_MODE
             ? locale === "ar"
-              ? "بطاقات افتراضية للتجربة فقط"
+              ? "بطاقاتٌ نموذجية للتجربة فقط"
               : "Fictional example cards only"
             : t.lead}
           {countries.length > 1 ? t.inCountries(countries.length) : "."}

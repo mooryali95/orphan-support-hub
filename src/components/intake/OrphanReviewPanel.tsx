@@ -20,7 +20,7 @@ import {
 } from "@/lib/intake.functions";
 
 /**
- * لوحة مراجعة ملف يتيم.
+ * لوحة مراجعة ملفّ يتيم.
  *
  * قبلها كان القرار زرَّي «اعتماد» و«رفض» وسبب الرفض يُكتب في
  * `window.prompt` — أي اعتماد بلا نظر في وثيقة، ورفض بنصّ حرّ لا تفهم
@@ -69,7 +69,7 @@ export function OrphanReviewPanel({
         </p>
       ) : docs.length === 0 ? (
         <p className="text-bridge-ink mt-2 text-xs font-medium">
-          لا مستندات مرفوعة — لا يُعتمد ملف بلا وثيقة تُثبته.
+          لا مستندات مرفوعة — لا يُعتمد ملفّ بلا وثيقة تُثبته.
         </p>
       ) : (
         <ul className="mt-2 space-y-2">
@@ -157,7 +157,7 @@ export function OrphanReviewPanel({
               سبب الرفض
             </Label>
             {/* السبب المُهيكل إلزامي في القاعدة: «مرفوض» وحدها لا تُمكّن
-                الجهة من التصحيح، فيعود الملف مرفوضاً مرّة بعد مرّة. */}
+                الجهة من التصحيح، فيعود الملفّ مرفوضاً مرّة بعد مرّة. */}
             <select
               id={`code-${orphanId}`}
               value={code}
@@ -173,7 +173,7 @@ export function OrphanReviewPanel({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor={`reason-${orphanId}`} className="text-xs">
-              تفصيل (اختياري) — يقرؤه من رفع الملف
+              تفصيل (اختياري) — يقرؤه من رفع الملفّ
             </Label>
             <Textarea
               id={`reason-${orphanId}`}

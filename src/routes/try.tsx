@@ -28,7 +28,7 @@ export const Route = createFileRoute("/try")({
 const COPY = defineCopy("routes/try", {
   ar: {
     section: "جرّب المنصّة",
-    description: "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ افتراضية، دون حسابٍ ودون أي خصم.",
+    description: "تجربةٌ كاملة لرحلة الكفالة ببياناتٍ نموذجية، دون حسابٍ ودون أي خصم.",
   },
   en: {
     section: "Try the platform",

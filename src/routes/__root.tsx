@@ -297,7 +297,7 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    // متصفّحٌ يحجب التخزين يرمي عند إنشاء عميل الدخول: الصفحات العامّة والرحلة الافتراضية
+    // متصفّحٌ يحجب التخزين يرمي عند إنشاء عميل الدخول: الصفحات العامّة والوضع التجريبي
     // لا تحتاج دخولاً، فتبقى تعمل بزائرٍ غير داخل بدل صفحة خطأ.
     try {
       const { data } = supabase.auth.onAuthStateChange((event, session) => {

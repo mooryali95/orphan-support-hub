@@ -25,7 +25,7 @@ const COPY = defineCopy("routes/auth", {
     terms: "شروط الاستخدام",
     and: " و",
     privacy: "سياسة الخصوصية",
-    note: ". وهذه منصة تعالج بيانات أطفال، فاقرأهما.",
+    note: ". وهذه منصّة تعالج بيانات أطفال، فاقرأهما.",
     sponsoring: (name: string, amount: string) =>
       `أنت على وشك كفالة ${name} بـ${amount} شهرياً. بعد الدخول تعود إلى ملفّه بما اخترته.`,
   },

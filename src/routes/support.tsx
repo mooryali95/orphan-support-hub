@@ -80,8 +80,8 @@ export const Route = createFileRoute("/support")({
 
 const COPY = defineCopy("routes/support", {
   ar: {
-    section: "ادعم",
-    description: "اختر نوع الدعم وهدفه: يتيم، مجموعة، منطقة، دولة، أو مؤسسة.",
+    section: "اختر أثرك",
+    description: "اختر نوع العطاء وجهته: طفلٌ بعينه، أو مجموعة، أو منطقة، أو دولة، أو مؤسسة.",
     steps: ["من تدعم", "المبلغ", "التأكيد"],
     summary: "ملخّص دعمك",
     sumKind: "النوع",
@@ -100,8 +100,8 @@ const COPY = defineCopy("routes/support", {
     mapText: "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
     supportRegion: "ادعم هذه المنطقة",
     supportCountry: "ادعم هذه الدولة",
-    h1: "ادعم",
-    lead: "ثلاث خطوات: من تدعم، ثم المبلغ، ثم التأكيد. وتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
+    h1: "اختر أثرك",
+    lead: "ثلاث خطوات: إلى من، ثم نوع العطاء ومبلغه، ثم التأكيد. ويتغيّر أيّ اختيارٍ متى شئت قبل التأكيد.",
     stepsLabel: "الخطوات",
     preparingA: "مسار الدعم يتجهّز الآن، وسيُفتح قريباً. يمكنك في الأثناء تصفّح",
     directory: "دليل الأيتام",
@@ -126,10 +126,10 @@ const COPY = defineCopy("routes/support", {
     signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
     toImpact: "إلى أثري",
-    another: "اكفل طفلاً",
+    another: "اكفل يتيماً",
   },
   en: {
-    section: "Support",
+    section: "Choose your impact",
     description:
       "Choose the kind of support and where it goes: a child, a group, a region, a country, or an organization.",
     steps: ["Who you support", "Amount", "Confirmation"],
@@ -170,7 +170,7 @@ const COPY = defineCopy("routes/support", {
       "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
     supportRegion: "Support this region",
     supportCountry: "Support this country",
-    h1: "Support",
+    h1: "Choose your impact",
     lead: "Three steps: who you support, the amount, then confirmation. Change any choice before you confirm.",
     stepsLabel: "Steps",
     preparingA:

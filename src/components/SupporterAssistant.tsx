@@ -264,7 +264,7 @@ function AssistantConversation({ orphanId, signedIn }: { orphanId?: string; sign
             onChange={(event) => setQuestion(event.target.value)}
             aria-label="سؤالك"
             placeholder={
-              orphanId ? "اسأل عن المعلومات المنشورة لهذا الملف…" : "اكتب سؤالك عن الكفالة…"
+              orphanId ? "اسأل عن المعلومات المنشورة لهذا الملفّ…" : "اكتب سؤالك عن الكفالة…"
             }
             maxLength={2000}
             className="min-h-24 text-base"
@@ -295,7 +295,7 @@ function AssistantConversation({ orphanId, signedIn }: { orphanId?: string; sign
         </div>
       )}
       <p className="mt-3 text-xs leading-6 text-muted-foreground">
-        إجابات آلية قد تخطئ؛ المرجع هو الملف المنشور وشروط الكفالة. المحادثة لهذه الجلسة فقط ولا
+        إجابات آلية قد تخطئ؛ المرجع هو الملفّ المنشور وشروط الكفالة. المحادثة لهذه الجلسة فقط ولا
         تُحفظ في حسابك.
       </p>
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-primary">
@@ -304,7 +304,7 @@ function AssistantConversation({ orphanId, signedIn }: { orphanId?: string; sign
         </Link>
         {orphanId && (
           <Link to="/orphans/$orphanId" params={{ orphanId }}>
-            الملف المنشور
+            الملفّ المنشور
           </Link>
         )}
       </div>

@@ -68,7 +68,7 @@ const COPY = defineCopy("routes/vision.impact", {
     cityLine: (q: number, n: number) => `${q} تأهّلوا · ${n} ينتظرون`,
     measuredIn: (n: string) => `${n} في رحلةٍ مقيسة`,
     allCountries: "كلّ الدول",
-    virtual: "افتراضي",
+    virtual: "نموذجي",
     emptyH: "لم يُقَس أحدٌ بعد في بيئتك",
     emptyText:
       "الأثر يظهر بعد القياس البعدي. شاهد القصّة، أو ادخل مشرفاً وسجّل جلسات مجموعةٍ ثم قياسها.",
@@ -110,7 +110,7 @@ const COPY = defineCopy("routes/vision.impact", {
     cityLine: (q: number, n: number) => `${q} qualified · ${n} waiting`,
     measuredIn: (n: string) => `${n} in a measured journey`,
     allCountries: "All countries",
-    virtual: "Virtual",
+    virtual: "Sample",
     emptyH: "No one has been measured in your sandbox yet",
     emptyText:
       "Impact appears after follow-up measurement. Watch the story, or enter as a supervisor and record a group's sessions and measurement.",

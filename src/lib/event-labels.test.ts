@@ -35,7 +35,7 @@ describe("أسماء الأحداث", () => {
 
   it("المجهول لا يُعرض مفتاحاً خاماً", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    expect(eventLabel("orphan.created", "ar")).toBe("تحديثٌ في الملف");
+    expect(eventLabel("orphan.created", "ar")).toBe("تحديثٌ في الملفّ");
     expect(eventLabel("orphan.created", "en")).toBe("File update");
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();

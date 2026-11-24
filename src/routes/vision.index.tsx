@@ -22,7 +22,7 @@ export const Route = createFileRoute("/vision/")({
 
 const COPY = defineCopy("routes/vision.index", {
   ar: {
-    title: "منصة الرؤية والتوجهات",
+    title: "منصّة الرؤية والتوجهات",
     lead: "رؤيةٌ من ثلاث طبقات، أولاها تعمل اليوم: التشغيل حيث يُبنى اليتيم، والدعم حيث يختار الداعم أثره، والقرار حيث تُرى المنظومة كلّها.",
     tagline: "رعايةٌ تبني الأهليّة",
     open: "افتح",

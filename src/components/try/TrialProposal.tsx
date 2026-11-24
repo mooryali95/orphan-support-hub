@@ -22,9 +22,9 @@ const COPY = defineCopy("components/try/TrialProposal", {
     monthly: "شهرياً",
     oneTime: "مرّة واحدة",
     oneTimeKind: "عطاءٌ لمرّة واحدة",
-    eyebrow: "من رحلتك الافتراضية",
+    eyebrow: "من الوضع التجريبي",
     title: "ما اخترته في التجربة ينتظر تأكيدك",
-    lead: "هذه مقترحاتٌ فقط: لم تُنشأ كفالةٌ ولا تعهّد، ولم يُخصم شيء. أطفال التجربة افتراضيون؛ فاختر هنا طفلاً أو مكاناً حقيقياً، ثم أكّد المبلغ بنفسك.",
+    lead: "هذه مقترحاتٌ فقط: لم تُنشأ كفالةٌ ولا تعهّد، ولم يُخصم شيء. أطفال التجربة بأسماءٍ مستعارة؛ فاختر هنا طفلاً أو مكاناً حقيقياً، ثم أكّد المبلغ بنفسك.",
     chooseChild: (country: string) => `اختر طفلاً في ${country}`,
     supportIn: (country: string) => `ادعم في ${country}`,
     notNow: "ليس الآن",
@@ -35,13 +35,13 @@ const COPY = defineCopy("components/try/TrialProposal", {
     offerNote: "لا يتغيّر شيء حتى تضغط.",
     authTitle: "تدخل الآن الرحلة الحقيقية",
     authText:
-      "ما اخترته في الرحلة الافتراضية ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
+      "ما اخترته في الوضع التجريبي ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
   },
   en: {
     monthly: "monthly",
     oneTime: "one-time",
     oneTimeKind: "One-time gift",
-    eyebrow: "From your virtual journey",
+    eyebrow: "From demo mode",
     title: "What you chose in the trial awaits your confirmation",
     lead: "These are proposals only: no sponsorship or pledge was created, and nothing was charged. The trial's children are fictional, so choose a real child or place here, then confirm the amount yourself.",
     chooseChild: (country: string) => `Choose a child in ${country}`,
@@ -54,7 +54,7 @@ const COPY = defineCopy("components/try/TrialProposal", {
     offerNote: "Nothing changes until you press.",
     authTitle: "You are entering the real journey",
     authText:
-      "What you chose in the virtual journey is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
+      "What you chose in demo mode is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
   },
 });
 
@@ -100,7 +100,7 @@ export function ProposalLine({ p, className }: { p: TrialProposal; className?: s
   );
 }
 
-/** في صفحة الدخول، للقادم من الرحلة الافتراضية: ما ينتظره هناك مقترحٌ يؤكّده هو، لا شيء يُنشأ عنه */
+/** في صفحة الدخول، للقادم من الوضع التجريبي: ما ينتظره هناك مقترحٌ يؤكّده هو، لا شيء يُنشأ عنه */
 export function TrialAuthNotice({ className }: { className?: string }) {
   const c = useCopy(COPY);
   const list = useTrialProposals();

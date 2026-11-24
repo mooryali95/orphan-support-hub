@@ -171,7 +171,7 @@ function kindNote(kind: string): string {
     pledge_preparing: "يجهّز المكتب تبرّعك الآن، وتصلك رسالة حين يُسلَّم بمستنده.",
     pledge_delivered: "مستند التسليم محفوظ في لوحتك، تحت «أثر تعهّداتك».",
     report_published: "التقرير معتمد من الإدارة بعد مراجعة ما رفعته الجهة الميدانية.",
-    welcome: "كل ملف معروض توثّقه جهة ميدانية تعمل تحت مظلّة الندوة، وتعتمده الإدارة قبل نشره.",
+    welcome: "كل ملفّ معروض توثّقه جهة ميدانية تعمل تحت مظلّة الندوة، وتعتمده الإدارة قبل نشره.",
   };
   const line = note[kind];
   return line ? `<p style="margin:0;color:${MUTED};font-size:13px;">${escapeHtml(line)}</p>` : "";
