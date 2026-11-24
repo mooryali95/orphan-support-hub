@@ -57,6 +57,13 @@
       "when": 1795296420597,
       "tag": "0007_supporter_assistant_circuit",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795489795663,
+      "tag": "0008_sponsor_access_and_amount_bounds",
+      "breakpoints": true
     }
   ]
 }

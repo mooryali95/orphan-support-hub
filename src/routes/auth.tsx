@@ -67,8 +67,15 @@ export const Route = createFileRoute("/auth")({
 });
 
 function safePath(value: string | undefined) {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
-  return value;
+  if (!value || !value.startsWith("/") || /^\/[\/\\]/.test(value) || /[\\\u0000-\u001f]/.test(value))
+    return "/dashboard";
+  try {
+    const url = new URL(value, "https://local.invalid");
+    if (url.origin !== "https://local.invalid") return "/dashboard";
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return "/dashboard";
+  }
 }
 
 function AuthPage() {

@@ -140,6 +140,10 @@ export const startCheckout = createServerFn({ method: "POST" })
       amount: Number(sponsorship.amount),
       currency: sponsorship.currency,
     };
+    // الحدود يفرضها الخادم: مبلغٌ خارجها لا يبلغ المزوّد مهما كان مصدره.
+    if (!Number.isFinite(charge.amount) || charge.amount < 5 || charge.amount > 100000) {
+      return { ok: false as const, error: "مبلغ الكفالة خارج الحدود المسموح بها" };
+    }
     // التحويل اليدوي يُطابَق بمبلغ الكفالة وعملتها؛ كفالةٌ اتُّفق على تحصيلها
     // بعملةٍ أخرى لا تُحوَّل يدوياً بمبلغٍ غير المتّفق عليه.
     if (terms && provider.id === "manual") {
