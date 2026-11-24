@@ -54,7 +54,7 @@ export function GivingTrackChoice({
 }: {
   value: GivingTrack;
   onChange: (track: GivingTrack) => void;
-  disabled?: (track: GivingTrack) => boolean;
+  disabled?: ((track: GivingTrack) => boolean) | undefined;
 }) {
   const t = useCopy(COPY);
   const g = useGivingCopy();

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { z } from "zod";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
@@ -39,6 +39,7 @@ import { useMapStats } from "@/components/map/useMapStats";
 import { normalize, resolveCountry } from "@/lib/countries";
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import { SupportSheet } from "@/components/support/SupportSheet";
+import { useDemo } from "@/lib/demo-mode";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
@@ -200,7 +201,34 @@ const COPY = defineCopy("routes/support", {
   },
 });
 
+// الوضع التجريبي: الصفحة نفسها بخريطتها وورقتها، ومصدرها كتالوج التجربة — لا قراءة من القاعدة
+// ولا كتابة فيها. في قطعتها، فلا تدخل حزمة الصفحة الحقيقية.
+const DemoSupportMap = lazy(() =>
+  // كتالوج التجربة يُحمَّل قبل أيّ قراءة، كما تفعل مسارات «جرّب» نفسها (routes/try.tsx)
+  Promise.all([
+    import("@/lib/try-places"),
+    import("@/lib/try-cycle"),
+    import("@/components/try/TrySupportMap"),
+  ]).then(([, , m]) => ({ default: m.TrySupportMap })),
+);
+
 function SupportPage() {
+  const demo = useDemo();
+  const { c, r, kind } = Route.useSearch();
+  if (!demo) return <RealSupportPage />;
+  return (
+    <div className="min-h-dvh bg-background">
+      <SiteHeader />
+      <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-8 outline-none">
+        <Suspense fallback={null}>
+          <DemoSupportMap country={c} region={r} kind={kind} />
+        </Suspense>
+      </main>
+    </div>
+  );
+}
+
+function RealSupportPage() {
   const {
     orphan,
     name,

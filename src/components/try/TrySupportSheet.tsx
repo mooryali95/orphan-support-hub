@@ -1,19 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { CelebrateMark } from "@/components/kit/Celebrate";
 import type { MapActionContext } from "@/components/map/WorldMap";
-import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { TryRealLine } from "@/components/try/TryRealInvite";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
-import {
-  GivingTrackChoice,
-  MonthlyTrackPanel,
-  TrackArrow,
-} from "@/components/support/GivingTrackChoice";
+import type { GivingTrack } from "@/config/giving-tracks";
+import { TrackArrow } from "@/components/support/GivingTrackChoice";
 import { formatMoney } from "@/lib/format";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { INDIVIDUAL_AMOUNTS } from "@/lib/support-amounts";
@@ -28,7 +22,7 @@ import {
 } from "@/lib/try-places";
 import { tryPledgeCurrencies, tryReachText } from "@/lib/try-reach";
 import { addPledge, tryRegionByName, type TryScope } from "@/lib/try-support";
-import { cn } from "@/lib/utils";
+import { SupportSheetBody, type SheetTarget } from "@/components/support/SupportSheetBody";
 
 const COPY = defineCopy("components/try/TrySupportSheet", {
   ar: {
@@ -117,7 +111,6 @@ export function TrySupportSheet({
   onPickRegion?: (regionId: string) => void;
 }) {
   const t = useCopy(COPY);
-  const g = useGivingCopy();
   const locale = useLocale();
   const place = tryPlace(ctx.code);
   const region = tryRegionByName(ctx.code, ctx.regionValue);
@@ -201,14 +194,6 @@ export function TrySupportSheet({
     );
   }
 
-  const chip = (on: boolean) =>
-    cn(
-      "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm transition-[background-color,border-color,transform] active:scale-[0.97]",
-      on
-        ? "border-primary bg-primary text-primary-foreground"
-        : "border-border bg-background hover:border-primary/60",
-    );
-
   // what the amount stands for, in the words the impact hall shows for the same input
   const reach = tryReachText(
     { scope: target.scope, target: target.target, co: place.co },
@@ -230,141 +215,114 @@ export function TrySupportSheet({
     if (saved) setDone(kind);
   }
 
-  return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
-      <fieldset className="min-w-0">
-        <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.whom}</legend>
-        <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
-          {targets.map((x) => {
-            const on = x.scope === target.scope && x.target === target.target;
-            return (
-              <button
-                key={`${x.scope}:${x.target}`}
-                type="button"
-                aria-pressed={on}
-                data-scope={x.scope}
-                onClick={() => setPicked({ scope: x.scope, target: x.target })}
-                className={chip(on)}
-              >
-                {x.label}
-                {x.hint && <span className="text-xs opacity-75">{x.hint}</span>}
-              </button>
-            );
-          })}
-        </div>
-        {!onRegion && onPickRegion && (
-          <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-            <span>{t.orRegion}</span>
-            {place.regions.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                data-pick-region={r.id}
-                onClick={() => onPickRegion(r.id)}
-                className="inline-flex min-h-11 items-center rounded-full border border-bridge/60 px-3.5 text-sm font-bold text-bridge-ink transition-colors hover:bg-bridge/10"
-              >
-                {tryRegionName(r.id, locale)}
-              </button>
-            ))}
-          </p>
-        )}
-        {onRegion && !region && (
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            {t.sampleRegions(
-              tryRegionName(place.regions[0].id, locale),
-              tryRegionName(place.regions[1].id, locale),
-            )}
-          </p>
-        )}
-      </fieldset>
-
-      <GivingTrackChoice
-        value={track}
-        onChange={(next) => {
-          setMonthly(next === "monthly");
-          if (next !== "monthly") setKind(next);
-        }}
-      />
-
-      {monthly ? (
-        <MonthlyTrackPanel
-          whom={target.label}
-          childName={target.scope === "orphan" ? (child?.name ?? null) : null}
-          action={
-            <Button asChild size="lg" className="w-full" data-monthly-go>
-              {child ? (
-                <Link to="/try/$childId" params={{ childId: child.id }}>
-                  {t.sponsorChild(child.name)}
-                  <TrackArrow />
-                </Link>
-              ) : (
-                <Link to="/try">
-                  {t.financialAny}
-                  <TrackArrow />
-                </Link>
-              )}
-            </Button>
-          }
-        />
+  const key = (x: Target) => `${x.scope}:${x.target}`;
+  const sheetTargets: SheetTarget[] = targets.map((x) => ({
+    key: key(x),
+    label: x.label,
+    ...(x.hint ? { hint: x.hint } : {}),
+    scope: x.scope,
+  }));
+  const sponsorGo = (
+    <Button asChild size="lg" className="w-full" data-monthly-go>
+      {child ? (
+        <Link to="/try/$childId" params={{ childId: child.id }}>
+          {t.sponsorChild(child.name)}
+          <TrackArrow />
+        </Link>
       ) : (
-        <>
-          <PayCurrencyChoice options={payList} value={currency} onChange={setChosenCurrency} />
-
-          <fieldset className="min-w-0">
-            <legend className="mb-1.5 text-xs font-medium text-muted-foreground">{t.amount}</legend>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {INDIVIDUAL_AMOUNTS.map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  aria-pressed={amount === v}
-                  onClick={() => setAmount(v)}
-                  className={cn(chip(amount === v), "tabular-nums")}
-                >
-                  {formatMoney(v, currency, locale)}
-                </button>
-              ))}
-              <Input
-                aria-label={t.other}
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={100000}
-                className="h-11 w-28 rounded-full"
-                value={amount}
-                onChange={(e) =>
-                  setAmount(Math.min(100_000, Math.max(1, Math.floor(Number(e.target.value)) || 1)))
-                }
-              />
-            </div>
-          </fieldset>
-
-          {reach && (
-            <p
-              className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
-              data-try-reach
-            >
-              <b className="block text-sm text-foreground">{reach.head}</b>
-              <span className="text-muted-foreground">{reach.line}</span>
-            </p>
-          )}
-
-          <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
-            {t.confirm(formatMoney(amount, currency, locale))}
-          </Button>
-          <p className="text-xs leading-5 text-muted-foreground">{t.note}</p>
-        </>
-      )}
-      {!monthly && local && child && (
-        <Link
-          to="/try/$childId"
-          params={{ childId: child.id }}
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary underline-offset-4 hover:underline"
-        >
-          {t.financial(child.name)}
-          <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+        <Link to="/try">
+          {t.financialAny}
+          <TrackArrow />
         </Link>
       )}
-    </div>
+    </Button>
+  );
+
+  return (
+    <SupportSheetBody
+      targets={sheetTargets}
+      target={sheetTargets.find((x) => x.key === key(target)) ?? sheetTargets[0]!}
+      onTarget={(x) => {
+        const next = targets.find((y) => key(y) === x.key);
+        if (next) setPicked({ scope: next.scope, target: next.target });
+      }}
+      afterTargets={
+        <>
+          {!onRegion && onPickRegion && (
+            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+              <span>{t.orRegion}</span>
+              {place.regions.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  data-pick-region={r.id}
+                  onClick={() => onPickRegion(r.id)}
+                  className="inline-flex min-h-11 items-center rounded-full border border-bridge/60 px-3.5 text-sm font-bold text-bridge-ink transition-colors hover:bg-bridge/10"
+                >
+                  {tryRegionName(r.id, locale)}
+                </button>
+              ))}
+            </p>
+          )}
+          {onRegion && !region && (
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {t.sampleRegions(
+                tryRegionName(place.regions[0].id, locale),
+                tryRegionName(place.regions[1].id, locale),
+              )}
+            </p>
+          )}
+        </>
+      }
+      track={track}
+      onTrack={(next) => {
+        setMonthly(next === "monthly");
+        if (next !== "monthly") setKind(next);
+      }}
+      monthly={sponsorGo}
+      monthlyWhom={target.label}
+      monthlyChild={target.scope === "orphan" ? (child?.name ?? null) : null}
+      payList={payList}
+      currency={currency}
+      onCurrency={setChosenCurrency}
+      amounts={INDIVIDUAL_AMOUNTS.map((v) => ({
+        key: String(v),
+        label: formatMoney(v, currency, locale),
+        value: v,
+      }))}
+      amount={amount}
+      onAmount={setAmount}
+      reach={
+        reach && (
+          <p
+            className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-xs leading-5"
+            data-try-reach
+          >
+            <b className="block text-sm text-foreground">{reach.head}</b>
+            <span className="text-muted-foreground">{reach.line}</span>
+          </p>
+        )
+      }
+      confirm={
+        <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
+          {t.confirm(formatMoney(amount, currency, locale))}
+        </Button>
+      }
+      footnote={<p className="text-xs leading-5 text-muted-foreground">{t.note}</p>}
+      after={
+        !monthly &&
+        local &&
+        child && (
+          <Link
+            to="/try/$childId"
+            params={{ childId: child.id }}
+            className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary underline-offset-4 hover:underline"
+          >
+            {t.financial(child.name)}
+            <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+          </Link>
+        )
+      }
+    />
   );
 }
