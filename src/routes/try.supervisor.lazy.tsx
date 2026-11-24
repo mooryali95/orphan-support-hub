@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { Button } from "@/components/ui/button";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
-import { loadGifts, localTryChild, TRY_CHILDREN, tryChild, type TryChild } from "@/lib/try-demo";
+import { loadGifts, localTryChild, TRY_CHILDREN, type TryChild } from "@/lib/try-demo";
+import { trialChild } from "@/lib/try-cycle";
 import { addVisit, loadVisits, useTrialValue, type Visit } from "@/lib/try-role-state";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,7 @@ function useChildren(): Array<TryChild & { mine: boolean }> {
   const locale = useLocale();
   const gifts = useTrialValue(loadGifts, []);
   const mine = [...new Set(gifts.map((g) => g.childId))]
-    .map((id) => tryChild(id))
+    .map((id) => trialChild(id))
     .filter((k): k is TryChild => !!k)
     .map((k) => localTryChild(k, locale));
   const ids = new Set(mine.map((k) => k.id));
@@ -222,7 +223,7 @@ function TrySupervisor() {
                 <li key={v.at + v.childId} className="border-s-2 border-primary/30 ps-3 text-sm">
                   <span className="font-bold">
                     {(() => {
-                      const k = tryChild(v.childId);
+                      const k = trialChild(v.childId);
                       return k ? localTryChild(k, locale).name : "—";
                     })()}
                   </span>

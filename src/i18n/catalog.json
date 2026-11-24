@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3650,
+ "count": 3652,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9714,6 +9714,20 @@
    "ar": "وصل تقرير الشهر الأوّل من المكتب",
    "kind": "text",
    "hash": "eb57f63394bd",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.strip": {
+   "en": "New from the field",
+   "ar": "جديدٌ من الميدان",
+   "kind": "text",
+   "hash": "0bed40f62d9b",
+   "file": "src/components/try/TryGiftFollowUp.tsx"
+  },
+  "components/try/TryGiftFollowUp.stripLead": {
+   "en": "What the office and the supervisor recorded for your children this session.",
+   "ar": "ما سجّله المكتب والمشرف لأطفالك في هذه الجلسة.",
+   "kind": "text",
+   "hash": "b5cec522f9ff",
    "file": "src/components/try/TryGiftFollowUp.tsx"
   },
   "components/try/TryGiftFollowUp.visit": {

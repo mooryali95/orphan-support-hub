@@ -11,12 +11,16 @@ const COPY = defineCopy("components/try/TryGiftFollowUp", {
     good: "بخير ومستقرّ",
     follow: "يحتاج متابعة",
     report: "وصل تقرير الشهر الأوّل من المكتب",
+    strip: "جديدٌ من الميدان",
+    stripLead: "ما سجّله المكتب والمشرف لأطفالك في هذه الجلسة.",
   },
   en: {
     visit: (date: string) => `Supervisor's visit · ${date}`,
     good: "Doing well",
     follow: "Needs follow-up",
     report: "The office's first monthly report has arrived",
+    strip: "New from the field",
+    stripLead: "What the office and the supervisor recorded for your children this session.",
   },
 });
 
@@ -55,5 +59,46 @@ export function TryGiftFollowUp({ childId }: { childId: string }) {
         </span>
       )}
     </span>
+  );
+}
+
+/**
+ * «جديدٌ من الميدان» في أعلى «أثري»: ما سجّله المكتب والمشرف لأطفال الكافل في الجلسة،
+ * فيراه الحاضر فور وصوله إلى الصفحة دون أن يبحث عنه في قائمة الكفالات.
+ */
+export function TryFollowUpStrip({
+  children: kids,
+  className,
+}: {
+  children: Array<{ id: string; name: string }>;
+  className?: string;
+}) {
+  const c = useCopy(COPY);
+  const visits = useTrialValue<Visit[]>(loadVisits, []);
+  const reported = useTrialValue(() => !!loadCycle().reportSent, false);
+  const shown = kids.filter(
+    (k, i, all) =>
+      all.findIndex((x) => x.id === k.id) === i &&
+      (visits.some((v) => v.childId === k.id) || (k.id === CYCLE_CHILD_ID && reported)),
+  );
+  if (shown.length === 0) return null;
+  return (
+    <section
+      aria-labelledby="try-field"
+      className={`rounded-2xl border border-bridge/60 bg-bridge/8 p-5 shadow-soft ${className ?? ""}`}
+    >
+      <h2 id="try-field" className="text-lg font-bold">
+        {c.strip}
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">{c.stripLead}</p>
+      <ul className="mt-3 space-y-3">
+        {shown.map((k) => (
+          <li key={k.id} className="flex flex-wrap gap-x-3">
+            <span className="font-bold">{k.name}</span>
+            <TryGiftFollowUp childId={k.id} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

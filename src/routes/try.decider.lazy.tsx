@@ -6,7 +6,7 @@ import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { sampleRows } from "@/lib/admin-console-sample";
 import type { OrphanRecord } from "@/lib/admin-console.functions";
 import { countryName } from "@/lib/countries";
-import { loadCycle } from "@/lib/try-cycle";
+import { loadCycle, trialChild } from "@/lib/try-cycle";
 import { defineCopy, useCopy, useLocale, type Locale } from "@/lib/locale";
 import {
   loadGifts,
@@ -95,7 +95,7 @@ type Activity = { at: string; who: string; what: string };
 /** كلّ ما حدث في جلسة العرض، من كلّ الأدوار، في خطٍّ زمنيٍّ واحد */
 function loadActivity(t: Copy, locale: Locale): Activity[] {
   const name = (id: string) => {
-    const k = tryChild(id);
+    const k = trialChild(id);
     return k ? localTryChild(k, locale).name : t.aChild;
   };
   const out: Activity[] = loadCycle().log.map((l) => ({ ...l }));

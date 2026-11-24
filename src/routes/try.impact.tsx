@@ -6,7 +6,7 @@ import { ImpactMoment } from "@/components/impact/ImpactMoment";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryKindPanel, TryKindSwitch, TrySupportImpact } from "@/components/try/TryImpactKinds";
-import { TryGiftFollowUp } from "@/components/try/TryGiftFollowUp";
+import { TryFollowUpStrip, TryGiftFollowUp } from "@/components/try/TryGiftFollowUp";
 import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
 import { TryRealInvite, TryVirtualNote } from "@/components/try/TryRealInvite";
 import { TryShareCard } from "@/components/try/TryShareCard";
@@ -169,6 +169,12 @@ function TryImpact() {
         <TryKindPanel kind="monthly">
           {gifts && gifts.length > 0 && !doneChild && (
             <ImpactMoment moments={impactMoments(impact, rows)} className="mt-6" />
+          )}
+
+          {gifts && gifts.length > 0 && (
+            <TryFollowUpStrip className="mt-6">
+              {gifts.map((g) => ({ id: g.childId, name: local(g.childId)?.name ?? "" }))}
+            </TryFollowUpStrip>
           )}
 
           <div>
