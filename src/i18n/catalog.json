@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3482,
+ "count": 3488,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -18574,6 +18574,48 @@
    "ar": "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
    "kind": "text",
    "hash": "357084714a51",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallCta": {
+   "en": "Enter the hall",
+   "ar": "ادخل القاعة",
+   "kind": "text",
+   "hash": "ab90bb6ba340",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallEyebrow": {
+   "en": "The impact hall · 3D",
+   "ar": "قاعة الأثر · ثلاثية الأبعاد",
+   "kind": "text",
+   "hash": "46914c28c9f8",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallH": {
+   "en": "The world as your giving moves it",
+   "ar": "العالم كما يتحرّك به عطاؤك",
+   "kind": "text",
+   "hash": "eebfefee6c40",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallHero": {
+   "en": "Enter the impact hall",
+   "ar": "ادخل قاعة الأثر",
+   "kind": "text",
+   "hash": "d62f3e545d9a",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallNote": {
+   "en": "A walkthrough on sample data, with no account and nothing charged.",
+   "ar": "تجربةٌ ببياناتٍ نموذجية، بلا حسابٍ ولا خصم.",
+   "kind": "text",
+   "hash": "d235f9338dcb",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.hallP": {
+   "en": "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
+   "ar": "ادخل القاعة، واختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، فترى الأثر يتغيّر أمامك على البلد والمنطقة والمجموعة والطفل. المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
+   "kind": "text",
+   "hash": "290362586277",
    "file": "src/routes/index.tsx"
   },
   "routes/index.impactH": {
