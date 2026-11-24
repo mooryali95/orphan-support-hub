@@ -6,6 +6,7 @@ const COPY = defineCopy("components/DemoModeBar", {
     label: "الوضع التجريبي",
     note: "بيانات وهمية، بلا حساب ولا خصم.",
     donor: "رحلة الداعم",
+    roles: "الأدوار",
     admin: "لوحة الإدارة",
     hall: "قاعة الأثر",
     exit: "العودة إلى المنصّة الحقيقية",
@@ -14,6 +15,7 @@ const COPY = defineCopy("components/DemoModeBar", {
     label: "Demo mode",
     note: "Sample data, no account and nothing charged.",
     donor: "Donor journey",
+    roles: "Roles",
     admin: "Admin panel",
     hall: "Impact hall",
     exit: "Back to the real platform",
@@ -46,6 +48,9 @@ export default function DemoModeBar() {
         <nav className="ms-auto flex flex-wrap items-center gap-1">
           <a href="/try" className={LINK}>
             {c.donor}
+          </a>
+          <a href="/try#try-roles" className={LINK}>
+            {c.roles}
           </a>
           <a href="/try/admin" className={LINK}>
             {c.admin}
