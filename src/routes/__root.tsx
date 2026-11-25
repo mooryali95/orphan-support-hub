@@ -9,6 +9,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { warmHallWhenIdle } from "@/lib/hall/idle-warm";
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -313,6 +314,9 @@ function RootComponent() {
       return;
     }
   }, [router, queryClient]);
+
+  // تحميلٌ هادئ لقاعة الأثر في الخلفية بعد استقرار الصفحة الأولى، فلا يشعر الزائر بثقلٍ عند وصولها
+  useEffect(() => warmHallWhenIdle(() => router.preloadRoute({ to: "/hall" })), [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
