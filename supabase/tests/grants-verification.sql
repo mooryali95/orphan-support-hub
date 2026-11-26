@@ -293,6 +293,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'countries|anon|SELECT|',
     'countries|authenticated|DELETE,INSERT,SELECT,UPDATE|',
     'country_data_sources|authenticated|SELECT|',
+    'country_staff|authenticated|SELECT|',
     'data_alerts|authenticated|SELECT|',
     'data_conflicts|authenticated|SELECT|',
     'data_retention_policy|authenticated|SELECT|',

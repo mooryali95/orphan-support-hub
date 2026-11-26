@@ -410,3 +410,42 @@ export function showValue(
   if (typeof v === "boolean") return v ? yes : no;
   return String(v);
 }
+
+/* ── صلاحيات الدول (country_staff) ───────────────────────────── */
+
+export type CountryRole = "supervisor" | "data_entry" | "viewer";
+export type CountryNeed = "read" | "import" | "approve" | "manage";
+
+/** ما يعيده `my_country_access`: الإدارة، أو أدوار الدول. */
+export type CountryAccess = {
+  admin: boolean;
+  countries: Array<{ code: string; name_ar: string; role: CountryRole }>;
+};
+
+export const ADMIN_ACCESS: CountryAccess = { admin: true, countries: [] };
+
+/**
+ * نسخة الواجهة من `country_can`: تُخفي ما لا يحقّ، والقاعدة تحرس. (العينان
+ * وجلسة aal2 تفحصهما القاعدة وحدها.)
+ */
+export function canDo(access: CountryAccess, country: string, need: CountryNeed): boolean {
+  if (access.admin) return true;
+  const role = access.countries.find((c) => c.code === country)?.role;
+  if (!role) return false;
+  if (need === "read") return true;
+  if (need === "import") return role === "supervisor" || role === "data_entry";
+  return role === "supervisor";
+}
+
+/** الأدوار التي يمنحها صاحب الصلاحية: الإدارة كلّها، والمشرف ما دونه. */
+export function grantableRoles(access: CountryAccess, country: string): CountryRole[] {
+  if (access.admin) return ["supervisor", "data_entry", "viewer"];
+  return canDo(access, country, "manage") ? ["data_entry", "viewer"] : [];
+}
+
+export type StaffMember = {
+  user_id: string;
+  email: string;
+  role: CountryRole;
+  created_at: string;
+};

@@ -26,6 +26,7 @@ import { Route as TryRouteImport } from './routes/try'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCountryDataRouteImport } from './routes/_authenticated/country-data'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
@@ -152,6 +153,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCountryDataRoute =
+  AuthenticatedCountryDataRouteImport.update({
+    id: '/country-data',
+    path: '/country-data',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -431,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/country-data': typeof AuthenticatedCountryDataRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
@@ -496,6 +504,7 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/country-data': typeof AuthenticatedCountryDataRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
@@ -564,6 +573,7 @@ export interface FileRoutesById {
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/country-data': typeof AuthenticatedCountryDataRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
@@ -632,6 +642,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/account'
     | '/admin'
+    | '/country-data'
     | '/dashboard'
     | '/guardian'
     | '/org'
@@ -697,6 +708,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/account'
     | '/admin'
+    | '/country-data'
     | '/dashboard'
     | '/guardian'
     | '/org'
@@ -764,6 +776,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/_authenticated/account'
     | '/_authenticated/admin'
+    | '/_authenticated/country-data'
     | '/_authenticated/dashboard'
     | '/_authenticated/guardian'
     | '/_authenticated/org'
@@ -964,6 +977,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/country-data': {
+      id: '/_authenticated/country-data'
+      path: '/country-data'
+      fullPath: '/country-data'
+      preLoaderRoute: typeof AuthenticatedCountryDataRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -1322,6 +1342,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCountryDataRoute: typeof AuthenticatedCountryDataRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
@@ -1340,6 +1361,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCountryDataRoute: AuthenticatedCountryDataRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,

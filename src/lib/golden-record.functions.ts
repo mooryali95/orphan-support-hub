@@ -6,9 +6,11 @@ import { isMissingObject } from "@/lib/data-entry";
 import {
   MAX_GOLDEN_ROWS,
   type Conflict,
+  type CountryAccess,
   type CountryHealth,
   type DataAlert,
   type PublicVerification,
+  type StaffMember,
   type IngestResult,
   type LinkItem,
 } from "@/lib/golden-record";
@@ -219,3 +221,35 @@ export const getPublicVerification = createServerFn({ method: "GET" })
     if (error || !res) return null;
     return res as PublicVerification;
   });
+
+/* ── صلاحيات الدول ──────────────────────────────────────────────── */
+
+export const getMyCountryAccess = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(({ context }) => call<CountryAccess>(context.supabase, "my_country_access"));
+
+export const listCountryStaff = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ country: code2 }).parse(input))
+  .handler(({ data, context }) =>
+    call<StaffMember[]>(context.supabase, "country_staff_list", { _country: data.country }),
+  );
+
+export const setCountryStaff = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        country: code2,
+        email: z.string().trim().email().max(254),
+        role: z.enum(["supervisor", "data_entry", "viewer"]).nullable(),
+      })
+      .parse(input),
+  )
+  .handler(({ data, context }) =>
+    call<{ ok: true }>(context.supabase, "country_staff_set", {
+      _country: data.country,
+      _email: data.email,
+      _role: data.role,
+    }),
+  );

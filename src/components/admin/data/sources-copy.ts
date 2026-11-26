@@ -148,6 +148,16 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     alertsCount: (critical: number, warning: number) =>
       `تنبيهات: ${critical} حرج، ${warning} تحذير`,
     scoreLabel: "درجة الثقة",
+    readOnly: "تطّلع على هذه الدولة دون حسم. الحسم لمشرف الدولة.",
+    teamTitle: "فريق الدولة",
+    teamHint:
+      "مشرف الدولة يحسم التعارضات والتنبيهات ويربط السجلّات، ومدخل البيانات يرفع الملفات، والمطّلع يرى فقط. ما يرفعه عضوٌ من تغييرٍ حرج يحسمه غيره.",
+    teamEmail: "البريد الإلكتروني (لحسابٍ مسجّل)",
+    teamRole: "الدور",
+    teamAdd: "أضف",
+    teamRemove: "أزل",
+    teamEmpty: "لا أعضاء بعد.",
+    staffRoles: { supervisor: "مشرف الدولة", data_entry: "مدخل بيانات", viewer: "مطّلع" },
     conflictsTitle: "صندوق التعارضات",
     conflictsHint:
       "الحرج أوّلاً. القرار يُسجَّل في سجلّ التدقيق، والاعتماد اليدوي يثبت حتى يصل تحديثٌ أحدث من المالك.",
@@ -218,6 +228,11 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       gender_required: "السجلّ بلا جنسٍ صالح.",
       note_required: "التأكيد يحتاج سبباً مكتوباً.",
       alert_closed: "حُسم هذا التنبيه من قبل.",
+      country_forbidden: "لا صلاحية لك على هذه الدولة لهذا الإجراء.",
+      four_eyes_required: "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو الإدارة.",
+      user_not_found: "لا حساب مسجّل بهذا البريد. اطلب من صاحبه إنشاء حساب أوّلاً.",
+      role_forbidden: "لا تملك منح هذا الدور أو تعديل هذا العضو.",
+      role_unknown: "دورٌ غير معروف.",
     } as Record<string, string>,
   },
   en: {
@@ -354,6 +369,17 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     alertsCount: (critical: number, warning: number) =>
       `Alerts: ${critical} critical, ${warning} warnings`,
     scoreLabel: "Trust score",
+    readOnly:
+      "You can view this country but not settle items. Settling is for the country supervisor.",
+    teamTitle: "Country team",
+    teamHint:
+      "The country supervisor settles conflicts and alerts and links records, data entry uploads files, and viewers only read. A critical change a member uploads is settled by someone else.",
+    teamEmail: "Email (of a registered account)",
+    teamRole: "Role",
+    teamAdd: "Add",
+    teamRemove: "Remove",
+    teamEmpty: "No members yet.",
+    staffRoles: { supervisor: "Country supervisor", data_entry: "Data entry", viewer: "Viewer" },
     conflictsTitle: "Conflict inbox",
     conflictsHint:
       "Critical first. Every decision is audited; a manual choice holds until the owner sends a newer update.",
@@ -427,6 +453,12 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       gender_required: "The record has no valid gender.",
       note_required: "Confirming needs a written reason.",
       alert_closed: "This alert was already settled.",
+      country_forbidden: "You don't have this permission for this country.",
+      four_eyes_required:
+        "You uploaded this change yourself: another supervisor or the admin team settles it.",
+      user_not_found: "No registered account with this email. Ask its owner to sign up first.",
+      role_forbidden: "You can't grant this role or change this member.",
+      role_unknown: "Unknown role.",
     } as Record<string, string>,
   },
 });

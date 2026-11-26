@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useState } from "react";
 
 import { getDataOverview } from "@/lib/data-entry.functions";
+import { ADMIN_ACCESS } from "@/lib/golden-record";
 import { useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
@@ -127,7 +128,9 @@ export default function DataBuilding({
             {area === "groups" && <GroupsPanel shared={shared} />}
             {area === "persons" && <PersonForm shared={shared} />}
             {area === "bulk" && <BulkImport shared={shared} />}
-            {area === "sources" && <SourcesPanel shared={shared} />}
+            {area === "sources" && (
+              <SourcesPanel country={country} setCountry={setCountry} access={ADMIN_ACCESS} />
+            )}
             {area === "team" && <TeamPanel openTab={openTab} />}
           </>
         )}

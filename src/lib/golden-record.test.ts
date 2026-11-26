@@ -2,7 +2,10 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
+  ADMIN_ACCESS,
   authorityNow,
+  canDo,
+  grantableRoles,
   effectiveOwner,
   FIELD_RULES,
   fieldsFrom,
@@ -121,5 +124,34 @@ describe("نسبة التوثيق", () => {
         flagged: 1,
       }),
     ).toBe(75);
+  });
+});
+
+describe("صلاحيات الدول", () => {
+  const access = {
+    admin: false,
+    countries: [
+      { code: "SD", name_ar: "السودان", role: "supervisor" as const },
+      { code: "TH", name_ar: "تايلاند", role: "data_entry" as const },
+      { code: "SN", name_ar: "السنغال", role: "viewer" as const },
+    ],
+  };
+  it("كما في country_can: المشرف يحسم، والمدخل يرفع، والمطّلع يرى", () => {
+    expect(canDo(access, "SD", "approve")).toBe(true);
+    expect(canDo(access, "TH", "import")).toBe(true);
+    expect(canDo(access, "TH", "approve")).toBe(false);
+    expect(canDo(access, "SN", "read")).toBe(true);
+    expect(canDo(access, "SN", "import")).toBe(false);
+    expect(canDo(access, "LK", "read")).toBe(false);
+    expect(canDo(ADMIN_ACCESS, "LK", "manage")).toBe(true);
+  });
+  it("المشرف يمنح ما دونه، والإدارة كلّ الأدوار", () => {
+    expect(grantableRoles(access, "SD")).toEqual(["data_entry", "viewer"]);
+    expect(grantableRoles(access, "TH")).toEqual([]);
+    expect(grantableRoles(ADMIN_ACCESS, "TH")).toContain("supervisor");
+  });
+  it("الأدوار نفسها في الهجرة", () => {
+    const sql = readFileSync("supabase/migrations/20261126130000_country_staff.sql", "utf8");
+    expect(sql).toContain("role IN ('supervisor', 'data_entry', 'viewer')");
   });
 });

@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/countries";
 import {
   authorityNow,
+  canDo,
   goldenTemplate,
+  grantableRoles,
   readGoldenSheet,
   showValue,
   verifiedShare,
   type Conflict,
+  type CountryAccess,
   type CountryHealth,
+  type CountryRole,
   type DataAlert,
   type GoldenSheet,
   type LinkItem,
@@ -26,11 +30,13 @@ import {
   getDataHealth,
   importGolden,
   listAlerts,
+  listCountryStaff,
   listConflicts,
   listLinkQueue,
   resolveAlert,
   resolveConflict,
   resolveLink,
+  setCountryStaff,
   setCountrySource,
 } from "@/lib/golden-record.functions";
 import { useCopy } from "@/lib/locale";
@@ -46,7 +52,6 @@ import {
   Pill,
   SectionHead,
   SELECT,
-  type Shared,
 } from "./shared";
 import { SOURCES_COPY } from "./sources-copy";
 
@@ -69,12 +74,21 @@ function useErr() {
  * مصادر التحقق: صحة كل دولة، ووضع منصّة مكتبها، والرفع، والتعارضات، والربط.
  * القاعدة تقرّر؛ هذه الخانة تعرض وتسأل المشرف حيث يلزم قرار بشري.
  */
-export function SourcesPanel({ shared }: { shared: Shared }) {
+export function SourcesPanel({
+  country,
+  setCountry,
+  access,
+}: {
+  country: string;
+  setCountry: (code: string) => void;
+  /** الإدارة، أو أدوار الدول لعضو فريقٍ (`my_country_access`). القاعدة تحرس على كل حال. */
+  access: CountryAccess;
+}) {
   const c = useCopy(SOURCES_COPY);
   const fetchHealth = useServerFn(getDataHealth);
   const health = useQuery({ queryKey: ["data-health"], queryFn: () => fetchHealth() });
   const rows = health.data?.ok ? health.data.data : [];
-  const code = rows.some((r) => r.code === shared.country) ? shared.country : (rows[0]?.code ?? "");
+  const code = rows.some((r) => r.code === country) ? country : (rows[0]?.code ?? "");
   const selected = rows.find((r) => r.code === code) ?? null;
 
   if (health.isPending) return <Busy />;
@@ -100,11 +114,7 @@ export function SourcesPanel({ shared }: { shared: Shared }) {
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((r) => (
               <li key={r.code}>
-                <HealthCard
-                  row={r}
-                  active={r.code === code}
-                  onPick={() => shared.setCountry(r.code)}
-                />
+                <HealthCard row={r} active={r.code === code} onPick={() => setCountry(r.code)} />
               </li>
             ))}
           </ul>
@@ -113,11 +123,31 @@ export function SourcesPanel({ shared }: { shared: Shared }) {
 
       {selected && (
         <>
-          <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
-          <UploadCard key={`up-${selected.code}`} row={selected} />
-          <Alerts country={selected.code} />
-          <Conflicts country={selected.code} />
-          <LinkQueue country={selected.code} />
+          {access.admin ? (
+            <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
+          ) : (
+            <section className={cn(CARD, "p-5")}>
+              <p className="text-sm">
+                <span className="font-bold">{c.modeTitle}: </span>
+                {c.modes[selected.office_mode]}
+              </p>
+              <Matrix mode={selected.office_mode} />
+            </section>
+          )}
+          {canDo(access, selected.code, "import") && (
+            <UploadCard key={`up-${selected.code}`} row={selected} />
+          )}
+          {!canDo(access, selected.code, "approve") && (
+            <p role="note" className="rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
+              {c.readOnly}
+            </p>
+          )}
+          <Alerts country={selected.code} canApprove={canDo(access, selected.code, "approve")} />
+          <Conflicts country={selected.code} canApprove={canDo(access, selected.code, "approve")} />
+          <LinkQueue country={selected.code} canApprove={canDo(access, selected.code, "approve")} />
+          {canDo(access, selected.code, "manage") && (
+            <Team key={`team-${selected.code}`} country={selected.code} access={access} />
+          )}
         </>
       )}
     </div>
@@ -473,7 +503,7 @@ function UploadCard({ row }: { row: CountryHealth }) {
   );
 }
 
-function Conflicts({ country }: { country: string }) {
+function Conflicts({ country, canApprove }: { country: string; canApprove: boolean }) {
   const c = useCopy(SOURCES_COPY);
   const err = useErr();
   const qc = useQueryClient();
@@ -539,7 +569,7 @@ function Conflicts({ country }: { country: string }) {
               {d.kind === "held_locked" && (
                 <p className="mt-2 text-xs text-muted-foreground">{c.lockedHint}</p>
               )}
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2" hidden={!canApprove}>
                 {d.kind === "disagreement" ? (
                   <>
                     <Button
@@ -589,7 +619,7 @@ function Conflicts({ country }: { country: string }) {
   );
 }
 
-function LinkQueue({ country }: { country: string }) {
+function LinkQueue({ country, canApprove }: { country: string; canApprove: boolean }) {
   const c = useCopy(SOURCES_COPY);
   const err = useErr();
   const qc = useQueryClient();
@@ -631,7 +661,7 @@ function LinkQueue({ country }: { country: string }) {
         title={c.linkTitle}
         hint={c.linkHint}
         action={
-          unmatched ? (
+          unmatched && canApprove ? (
             <Button
               type="button"
               variant="outline"
@@ -665,7 +695,7 @@ function LinkQueue({ country }: { country: string }) {
               <p className="mt-3 text-xs text-muted-foreground">
                 {q.candidates.length ? c.candidates : c.noCandidates}
               </p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-2" hidden={!canApprove}>
                 {q.candidates.map((o) => (
                   <Button
                     key={o.id}
@@ -737,7 +767,7 @@ function AlertDetail({ a }: { a: DataAlert }) {
   ) : null;
 }
 
-function Alerts({ country }: { country: string }) {
+function Alerts({ country, canApprove }: { country: string; canApprove: boolean }) {
   const c = useCopy(SOURCES_COPY);
   const err = useErr();
   const qc = useQueryClient();
@@ -799,7 +829,7 @@ function Alerts({ country }: { country: string }) {
                 </span>
               </div>
               <AlertDetail a={a} />
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2" hidden={!canApprove}>
                 <Button
                   size="sm"
                   variant="outline"
@@ -831,6 +861,103 @@ function Alerts({ country }: { country: string }) {
                   {c.confirmFraud}
                 </Button>
               </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function Team({ country, access }: { country: string; access: CountryAccess }) {
+  const c = useCopy(SOURCES_COPY);
+  const err = useErr();
+  const qc = useQueryClient();
+  const fetchList = useServerFn(listCountryStaff);
+  const save = useServerFn(setCountryStaff);
+  const list = useQuery({
+    queryKey: ["country-staff", country],
+    queryFn: () => fetchList({ data: { country } }),
+  });
+  const roles = grantableRoles(access, country);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<CountryRole>(roles[roles.length - 1] ?? "viewer");
+  const m = useMutation({
+    mutationFn: (v: { email: string; role: CountryRole | null }) =>
+      save({ data: { country, ...v } }),
+    onSuccess: (res) => {
+      if (!res.ok) return void toast.error(err(res.error));
+      toast.success(c.done);
+      setEmail("");
+      void qc.invalidateQueries({ queryKey: ["country-staff", country] });
+    },
+  });
+  const items = list.data?.ok ? list.data.data : [];
+
+  return (
+    <section aria-labelledby="team-title">
+      <SectionHead title={c.teamTitle} hint={c.teamHint} />
+      <form
+        className="mt-4 grid gap-3 sm:grid-cols-[1fr_12rem_auto] sm:items-end"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (email.trim()) m.mutate({ email: email.trim(), role });
+        }}
+      >
+        <Field label={c.teamEmail} htmlFor="staff-email">
+          <input
+            id="staff-email"
+            type="email"
+            dir="ltr"
+            autoComplete="off"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={SELECT}
+          />
+        </Field>
+        <Field label={c.teamRole} htmlFor="staff-role">
+          <select
+            id="staff-role"
+            value={role}
+            onChange={(e) => setRole(e.target.value as CountryRole)}
+            className={SELECT}
+          >
+            {roles.map((r) => (
+              <option key={r} value={r}>
+                {c.staffRoles[r]}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Button type="submit" className="min-h-11" disabled={!email.trim() || m.isPending}>
+          {c.teamAdd}
+        </Button>
+      </form>
+      {list.isPending ? (
+        <Busy />
+      ) : !list.data?.ok ? (
+        <Failed onRetry={() => void list.refetch()} />
+      ) : items.length === 0 ? (
+        <p className="mt-3 text-sm text-muted-foreground">{c.teamEmpty}</p>
+      ) : (
+        <ul className="mt-4 divide-y divide-border rounded-2xl border border-border">
+          {items.map((u) => (
+            <li key={u.user_id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
+              <bdi dir="ltr" className="min-w-0 truncate">
+                {u.email}
+              </bdi>
+              <Pill tone={u.role === "supervisor" ? "wine" : "quiet"}>{c.staffRoles[u.role]}</Pill>
+              {roles.includes(u.role) && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="ms-auto min-h-11"
+                  disabled={m.isPending}
+                  onClick={() => m.mutate({ email: u.email, role: null })}
+                >
+                  {c.teamRemove}
+                </Button>
+              )}
             </li>
           ))}
         </ul>
