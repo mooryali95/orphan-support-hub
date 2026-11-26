@@ -449,5 +449,7 @@ export type StaffMember = {
   user_id: string;
   email: string;
   role: CountryRole;
+  /** دُعي ولم يدخل بعد */
+  pending?: boolean;
   created_at: string;
 };

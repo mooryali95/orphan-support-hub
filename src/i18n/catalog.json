@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3841,
+ "count": 3871,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3122,6 +3122,14 @@
    "hash": "241fd24f6fab",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.alertOlder": {
+   "en": "{0} years older",
+   "ar": "أكبر بـ{0} سنة",
+   "kind": "template",
+   "params": 1,
+   "hash": "72d5c2d49b45",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.alertOther": {
    "en": "Other file",
    "ar": "الملف الآخر",
@@ -3134,6 +3142,14 @@
    "ar": "صار",
    "kind": "text",
    "hash": "4f6bb82a56ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertYounger": {
+   "en": "{0} years younger",
+   "ar": "أصغر بـ{0} سنة",
+   "kind": "template",
+   "params": 1,
+   "hash": "76acfcd9a868",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.alertsCount": {
@@ -3158,11 +3174,32 @@
    "hash": "a3df81fc37de",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.allClear": {
+   "en": "Nothing open",
+   "ar": "لا شيء مفتوح",
+   "kind": "text",
+   "hash": "dca864d38389",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.candidates": {
    "en": "Candidates",
    "ar": "مرشّحون",
    "kind": "text",
    "hash": "50eb061c0695",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.chooseFile": {
+   "en": "Choose a CSV file",
+   "ar": "اختر ملف CSV",
+   "kind": "text",
+   "hash": "7b6052f74a81",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.choosePlatform": {
@@ -3191,6 +3228,20 @@
    "ar": "اكتب سبب التأكيد (يُحفظ في سجل التدقيق)",
    "kind": "text",
    "hash": "f05a0d9a39e9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmSubmit": {
+   "en": "Confirm",
+   "ar": "أكّد",
+   "kind": "text",
+   "hash": "e9465eeb3367",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmTitle": {
+   "en": "Confirm tampering or error",
+   "ar": "تأكيد التلاعب أو الخطأ",
+   "kind": "text",
+   "hash": "2e752b85cb49",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.conflictsHint": {
@@ -3252,10 +3303,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.criticalOpen.other": {
-   "en": "{1} critical items",
-   "ar": "{1} بند حرج",
+   "en": "{0} critical items",
+   "ar": "{0} بند حرج",
    "kind": "plural",
-   "hash": "f783191bf0ab",
+   "hash": "438ae2ad879b",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.criticalOpen.zero": {
@@ -3349,6 +3400,13 @@
    "hash": "e856a229a295",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.errors.invite_failed": {
+   "en": "The invitation couldn't be sent. Check the email and try again.",
+   "ar": "تعذّر إرسال الدعوة. تحقّق من البريد وأعد المحاولة.",
+   "kind": "text",
+   "hash": "2f30b88360eb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.errors.link_closed": {
    "en": "This record was already handled.",
    "ar": "عولج هذا السجلّ من قبل.",
@@ -3427,10 +3485,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.user_not_found": {
-   "en": "No registered account with this email. Ask its owner to sign up first.",
-   "ar": "لا حساب مسجّل بهذا البريد. اطلب من صاحبه إنشاء حساب أوّلاً.",
+   "en": "No registered account with this email.",
+   "ar": "لا حساب مسجّل بهذا البريد.",
    "kind": "text",
-   "hash": "37fe454b5beb",
+   "hash": "89da9371cb68",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.value_invalid": {
@@ -3615,6 +3673,13 @@
    "hash": "c94245e64b76",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.hitsPlural.other": {
+   "en": "Received {0} times",
+   "ar": "وصل {0} مرة",
+   "kind": "plural",
+   "hash": "08a9f249b597",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.ignore": {
    "en": "Ignore",
    "ar": "تجاهل",
@@ -3636,6 +3701,14 @@
    "kind": "template",
    "params": 1,
    "hash": "29e0766f886c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.invited": {
+   "en": "Invitation sent to {0}; their role is saved.",
+   "ar": "أُرسلت دعوةٌ إلى {0}، ودوره محفوظ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "73da474d499b",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.keep": {
@@ -3673,6 +3746,13 @@
    "hash": "1bef97f4fb65",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.lastSync": {
+   "en": "Last update",
+   "ar": "آخر تحديث",
+   "kind": "text",
+   "hash": "22a0861a22c2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.lastWamy": {
    "en": "Last from WAMY",
    "ar": "آخر وصولٍ من الندوة",
@@ -3695,10 +3775,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.linkPending.other": {
-   "en": "{1} records awaiting a link",
-   "ar": "{1} سجلّ بانتظار الربط",
+   "en": "{0} records awaiting a link",
+   "ar": "{0} سجلّ بانتظار الربط",
    "kind": "plural",
-   "hash": "e31e8beca8e2",
+   "hash": "12afac252510",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.linkPending.zero": {
@@ -3809,6 +3889,41 @@
    "hash": "564ad123c984",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.modesShort.active": {
+   "en": "Office: active",
+   "ar": "مكتب: فعّال",
+   "kind": "text",
+   "hash": "938cb09f4929",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modesShort.none": {
+   "en": "WAMY only",
+   "ar": "الندوة وحدها",
+   "kind": "text",
+   "hash": "540940950e37",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modesShort.shadow": {
+   "en": "Office: compare",
+   "ar": "مكتب: مقارنة",
+   "kind": "text",
+   "hash": "64be39166b02",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.needsDecision.one": {
+   "en": "1 critical item needs your decision",
+   "ar": "بندٌ حرج ينتظر قرارك",
+   "kind": "plural",
+   "hash": "f25252c05c6e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.needsDecision.other": {
+   "en": "{0} critical items need your decision",
+   "ar": "{0} بند حرج ينتظر قرارك",
+   "kind": "plural",
+   "hash": "961d1f258c00",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.never": {
    "en": "Not yet",
    "ar": "لم يصل بعد",
@@ -3851,6 +3966,13 @@
    "hash": "65e766e79daa",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.noFile": {
+   "en": "No file chosen",
+   "ar": "لم يُختر ملف",
+   "kind": "text",
+   "hash": "7519e4762b92",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.noLinks": {
    "en": "Nothing awaiting a link.",
    "ar": "لا شيء بانتظار الربط.",
@@ -3886,6 +4008,20 @@
    "hash": "15a64db2fb16",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.openItems.one": {
+   "en": "1 open item",
+   "ar": "بندٌ واحد مفتوح",
+   "kind": "plural",
+   "hash": "17db1cf84aca",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.openItems.other": {
+   "en": "{0} open items",
+   "ar": "{0} بند مفتوح",
+   "kind": "plural",
+   "hash": "091224627848",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.otherOpen.one": {
    "en": "1 difference",
    "ar": "فرقٌ واحد",
@@ -3894,10 +4030,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.otherOpen.other": {
-   "en": "{1} differences",
-   "ar": "{1} فرق",
+   "en": "{0} differences",
+   "ar": "{0} فرق",
    "kind": "plural",
-   "hash": "2722e8278e44",
+   "hash": "79db8973a929",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.otherOpen.zero": {
@@ -3912,6 +4048,13 @@
    "ar": "المالك",
    "kind": "text",
    "hash": "f6b89bc01ca3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.pendingInvite": {
+   "en": "Invited, not signed in yet",
+   "ar": "دُعي ولم يدخل بعد",
+   "kind": "text",
+   "hash": "b500831f6712",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.platform": {
@@ -3991,6 +4134,13 @@
    "ar": "درجة الثقة",
    "kind": "text",
    "hash": "49daa56cd2bb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.sectionsLabel": {
+   "en": "Country sections",
+   "ar": "أقسام الدولة",
+   "kind": "text",
+   "hash": "25a71bb48f43",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.send": {
@@ -4126,18 +4276,67 @@
    "hash": "b21d89862317",
    "file": "src/components/admin/data/sources-copy.ts"
   },
-  "components/admin/data/sources.teamAdd": {
-   "en": "Add",
-   "ar": "أضف",
+  "components/admin/data/sources.tabs.alerts": {
+   "en": "Alerts",
+   "ar": "التنبيهات",
    "kind": "text",
-   "hash": "ec3c7adaba97",
+   "hash": "93161231a159",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.conflicts": {
+   "en": "Conflicts",
+   "ar": "التعارضات",
+   "kind": "text",
+   "hash": "7a7e583f9f36",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.links": {
+   "en": "Linking",
+   "ar": "الربط",
+   "kind": "text",
+   "hash": "cccacd9ea60f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.mode": {
+   "en": "Sources",
+   "ar": "المصادر",
+   "kind": "text",
+   "hash": "34f433b6368b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.team": {
+   "en": "Team",
+   "ar": "الفريق",
+   "kind": "text",
+   "hash": "5d4b710047e0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.upload": {
+   "en": "Upload",
+   "ar": "رفع ملف",
+   "kind": "text",
+   "hash": "ec9a426889ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamAdd": {
+   "en": "Add or invite",
+   "ar": "أضف أو ادعُ",
+   "kind": "text",
+   "hash": "05259e98c792",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.teamEmail": {
-   "en": "Email (of a registered account)",
-   "ar": "البريد الإلكتروني (لحسابٍ مسجّل)",
+   "en": "Email",
+   "ar": "البريد الإلكتروني",
    "kind": "text",
-   "hash": "b98e1704a552",
+   "hash": "b47b33fa0a51",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamEmailHint": {
+   "en": "Without an account they get an email invitation, and their role is kept for when they accept.",
+   "ar": "إن لم يكن له حساب تصله دعوةٌ بالبريد، ويُسند دوره حين يقبلها.",
+   "kind": "text",
+   "hash": "1588e0a3cbb4",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.teamEmpty": {
@@ -4299,6 +4498,27 @@
    "ar": "اعتمد قيمة الندوة",
    "kind": "text",
    "hash": "3ceb9fa47c7b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.one": {
+   "en": "of 1 file",
+   "ar": "من ملفٍّ واحد",
+   "kind": "plural",
+   "hash": "ea91dbd5312a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.other": {
+   "en": "of {0} files",
+   "ar": "من {0} ملف",
+   "kind": "plural",
+   "hash": "182d455f4b83",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.zero": {
+   "en": "no files",
+   "ar": "لا ملفات",
+   "kind": "plural",
+   "hash": "412f5ef053f9",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.verifiedShare": {
@@ -9100,14 +9320,6 @@
    "ar": "طابقت المنصّة بيانات الملف بين الندوة ومكتبها في الدولة.",
    "kind": "text",
    "hash": "1ebfce50bd11",
-   "file": "src/components/orphans/VerificationBadge.tsx"
-  },
-  "components/orphans/VerificationBadge.month": {
-   "en": "Last verified {0}",
-   "ar": "آخر تحقّق {0}",
-   "kind": "template",
-   "params": 1,
-   "hash": "0d7cabe0b883",
    "file": "src/components/orphans/VerificationBadge.tsx"
   },
   "components/orphans/VerificationBadge.primary_source": {

@@ -42,6 +42,13 @@ BEGIN
      OR public.country_staff_set('SD', 'cs-sup2@example.test', 'viewer')->>'code' <> 'role_forbidden' THEN
     RAISE EXCEPTION 'FAIL — المشرف تجاوز حدّه';
   END IF;
+  -- بريدٌ بلا حساب لدورٍ لا يملكه: يُرفض قبل أن يُبحث عنه، فلا تُرسل دعوة
+  IF public.country_staff_set('SD', 'stranger@example.test', 'supervisor')->>'code' <> 'role_forbidden'
+     OR public.country_staff_set('SD', 'stranger@example.test', 'viewer')->>'code' <> 'user_not_found'
+     OR NOT (SELECT (x->>'pending')::boolean FROM jsonb_array_elements(public.country_staff_list('SD')) x
+              WHERE x->>'email' = 'cs-viewer@example.test') THEN
+    RAISE EXCEPTION 'FAIL — ترتيب فحص الدعوة أو علامة «لم يدخل بعد»';
+  END IF;
   IF NOT pg_temp.denied($q$SELECT public.country_staff_set('TH', 'cs-viewer@example.test', 'viewer')$q$)
      OR NOT pg_temp.denied($q$SELECT public.admin_country_source_set('SD', NULL, 'none')$q$) THEN
     RAISE EXCEPTION 'FAIL — المشرف أدار دولةً أخرى أو غيّر وضع المكتب';

@@ -224,15 +224,27 @@ export const setCountryStaff = createServerFn({ method: "POST" })
     z
       .object({
         country: code2,
-        email: z.string().trim().email().max(254),
+        email: z.string().trim().toLowerCase().email().max(254),
         role: z.enum(["supervisor", "data_entry", "viewer"]).nullable(),
       })
       .parse(input),
   )
-  .handler(({ data, context }) =>
-    call<{ ok: true }>(context.supabase, "country_staff_set", {
-      _country: data.country,
-      _email: data.email,
-      _role: data.role,
-    }),
-  );
+  .handler(async ({ data, context }) => {
+    const args = { _country: data.country, _email: data.email, _role: data.role };
+    const first = await call<{ ok: true }>(context.supabase, "country_staff_set", args);
+    // بريدٌ بلا حساب: القاعدة تقول ذلك لمن يملك الإدارة وحده، وبعد فحص الدور. فتُرسل
+    // دعوة المصادقة (قالب «invite») ويُسند الدور للحساب الجديد في الخطوة نفسها.
+    if (first.ok || first.error !== "user_not_found" || data.role === null) {
+      return { ...first, invited: false };
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { appBaseUrl } = await import("@/lib/env.server");
+    const base = appBaseUrl();
+    const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
+      ...(base ? { redirectTo: `${base}/country-data` } : {}),
+    });
+    if (error)
+      return { ok: false as const, missing: false, error: "invite_failed", invited: false };
+    const second = await call<{ ok: true }>(context.supabase, "country_staff_set", args);
+    return { ...second, invited: second.ok };
+  });

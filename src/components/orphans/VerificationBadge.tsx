@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ShieldCheck } from "lucide-react";
+import { Clock, ShieldCheck } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { getPublicVerification } from "@/lib/public-verification.functions";
-import { defineCopy, useCopy } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/orphans/VerificationBadge", {
   ar: {
@@ -14,7 +14,6 @@ const COPY = defineCopy("components/orphans/VerificationBadge", {
     hintTwo: "طابقت المنصّة بيانات الملف بين الندوة ومكتبها في الدولة.",
     hintPrimary: "طابقت المنصّة بيانات الملف مع سجلّ الندوة.",
     hintReview: "يُراجَع الملف الآن قبل استقبال كفالةٍ جديدة.",
-    month: (m: string) => `آخر تحقّق ${m}`,
   },
   en: {
     two_sources: "Verified by two sources",
@@ -23,7 +22,6 @@ const COPY = defineCopy("components/orphans/VerificationBadge", {
     hintTwo: "The platform matched this file between WAMY and its country office.",
     hintPrimary: "The platform matched this file against WAMY's record.",
     hintReview: "This file is being reviewed before it takes a new sponsorship.",
-    month: (m: string) => `Last verified ${m}`,
   },
 });
 
@@ -33,6 +31,7 @@ const COPY = defineCopy("components/orphans/VerificationBadge", {
  */
 export function VerificationBadge({ orphanId }: { orphanId: string }) {
   const c = useCopy(COPY);
+  const locale = useLocale();
   const fetchIt = useServerFn(getPublicVerification);
   const { data } = useQuery({
     queryKey: ["public-verification", orphanId],
@@ -46,14 +45,30 @@ export function VerificationBadge({ orphanId }: { orphanId: string }) {
       : data.level === "primary_source"
         ? c.hintPrimary
         : c.hintReview;
+  // «نوفمبر 2026» بلغة الواجهة، لا «2026-11».
+  const month = data.verified_month
+    ? new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(
+        new Date(`${data.verified_month}-01T00:00:00Z`),
+      )
+    : null;
   return (
-    <Badge
-      variant={data.level === "under_review" ? "outline" : "secondary"}
-      title={data.verified_month ? `${hint} ${c.month(data.verified_month)}` : hint}
-      className="gap-1"
+    <span
+      className={cn(
+        "inline-flex min-h-7 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold",
+        data.level === "two_sources" && "bg-shore-thrive/12 text-shore-thrive",
+        data.level === "primary_source" && "bg-secondary text-foreground",
+        data.level === "under_review" && "border border-border text-muted-foreground",
+      )}
     >
-      {data.level !== "under_review" && <ShieldCheck className="size-3.5" aria-hidden="true" />}
+      {data.level === "under_review" ? (
+        <Clock className="size-3.5" strokeWidth={2} aria-hidden="true" />
+      ) : (
+        <ShieldCheck className="size-3.5" strokeWidth={2} aria-hidden="true" />
+      )}
       {c[data.level]}
-    </Badge>
+      {month && <span className="font-normal opacity-80">· {month}</span>}
+      {/* الشرح لقارئ الشاشة واللمس كذلك، لا في تلميحٍ يظهر بالمؤشّر وحده */}
+      <span className="sr-only">. {hint}</span>
+    </span>
   );
 }
