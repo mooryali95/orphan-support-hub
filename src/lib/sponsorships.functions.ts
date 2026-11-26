@@ -129,6 +129,25 @@ export function toSuggestions(rows: unknown): SuggestedOrphan[] {
 }
 
 /**
+ * أطفالٌ جاهزون للكفالة بدل ملفٍّ قيد التحقق: بالاقتراح نفسه الذي يستبعد ما
+ * لا يقبل كفالةً جديدة (`golden_accepts_new_support`)، وبمفتاح الزائر فلا يخرج
+ * إلا ما في البطاقة العامّة.
+ */
+export const suggestReadyOrphans = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) =>
+    z.object({ orphanId: z.string().uuid(), amount: z.number().min(0).max(100000) }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { data: rows, error } = await withM5(publicClient()).rpc("suggest_orphans_for_amount", {
+      _amount: data.amount,
+      _exclude: data.orphanId,
+      _limit: 3,
+    });
+    if (error) return { suggestions: [] as SuggestedOrphan[], error: error.message };
+    return { suggestions: toSuggestions(rows), error: null as string | null };
+  });
+
+/**
  * حال تمويل ملفّ — يُقرأ للزائر أيضاً، فالفائض جزء ممّا يُعرض.
  * بمفتاح الزائر لا بمفتاح الخدمة: ما يُقرأ بلا دخول يمرّ بمنح الزائر.
  */

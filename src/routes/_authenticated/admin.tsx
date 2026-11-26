@@ -20,6 +20,7 @@ import { StatTile } from "@/components/kit/StatTile";
 import { Name } from "@/components/kit/Name";
 import { OfficesAdmin } from "@/components/offices/OfficesAdmin";
 import DataBuilding from "@/components/admin/data/DataBuilding";
+import TrustCenter from "@/components/admin/trust/TrustCenter";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminTrustStrip } from "@/components/admin/AdminTrustStrip";
@@ -111,7 +112,8 @@ type Tab =
   | "integrity"
   | "countries"
   | "languages"
-  | "monitoring";
+  | "monitoring"
+  | "trust";
 
 const SECTIONS: Array<[string, Tab[]]> = [
   ["القرارات", ["inbox", "queue", "access", "integrity"]],
@@ -132,7 +134,7 @@ const SECTIONS: Array<[string, Tab[]]> = [
   ],
   ["الناس", ["data", "supervisors", "offices"]],
   ["المنصّة", ["countries", "languages", "platform", "integrations"]],
-  ["المراقبة", ["overview", "monitoring"]],
+  ["المراقبة", ["trust", "overview", "monitoring"]],
 ];
 
 /** ما تقرؤه الصفحة من عنوانها؛ وما عداه يبقى كما هو. */
@@ -141,6 +143,7 @@ type Query = {
   sample?: unknown;
   period?: unknown;
   area?: unknown;
+  country?: unknown;
   [key: string]: unknown;
 };
 
@@ -164,7 +167,13 @@ function AdminPage() {
   const sample = demo || search.sample === 1 || search.sample === "1" || search.sample === true;
   const go = useCallback(
     (
-      patch: { tab?: Tab; sample?: boolean; period?: number | null; area?: string },
+      patch: {
+        tab?: Tab;
+        sample?: boolean;
+        period?: number | null;
+        area?: string;
+        country?: string;
+      },
       replace = false,
     ) => {
       void navigate({
@@ -177,8 +186,11 @@ function AdminPage() {
             else next.tab = patch.tab;
             // خانة «بناء البيانات» تخصّ تبويبها وحده.
             if (patch.tab !== "data") delete next.area;
+            // الدولة المفتوحة من «مركز الثقة» تخصّ «مصادر التحقق» وحدها.
+            delete next.country;
           }
           if (patch.area !== undefined) next.area = patch.area;
+          if (patch.country !== undefined) next.country = patch.country;
           if (patch.sample !== undefined) {
             if (patch.sample) next.sample = 1;
             else delete next.sample;
@@ -299,6 +311,7 @@ function AdminPage() {
     ["countries", "الدول والمصادر", null],
     ["languages", "اللغات والترجمة", null],
     ["monitoring", "المراقبة", null],
+    ["trust", "مركز الثقة", null],
   ];
 
   return (
@@ -468,6 +481,15 @@ function AdminPage() {
             </>
           )}
 
+          {tab === "trust" && (
+            <TrustCenter
+              openCountry={(code) => {
+                go({ tab: "data", area: "sources", country: code });
+                window.scrollTo({ top: 0 });
+              }}
+            />
+          )}
+
           {tab === "sponsors" && <AdminSponsorsList currency={cur} />}
 
           {/* بناء البيانات داخل قطعة الإدارة نفسها: قطعةٌ مستقلّة له كانت تزيد حزمة
@@ -475,6 +497,7 @@ function AdminPage() {
           {tab === "data" && (
             <DataBuilding
               area={search.area}
+              initialCountry={typeof search.country === "string" ? search.country : undefined}
               onArea={(area) => go({ area })}
               openTab={(next) => setTab(next)}
             />
