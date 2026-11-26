@@ -15,6 +15,8 @@
  * تُحدَّث عند تزويد الأمانة العامة بالبيانات الرسمية.
  */
 
+import { WAMY_PRESENCE } from "@/data/wamy-presence";
+
 export type Confidence = "high" | "medium" | "low";
 export type OfficeStatus = "office" | "field" | "unconfirmed";
 /** نتيجة التحقّق المستقلّ: مؤكَّد، أو تعذّر التحقّق، أو لم يُفحص. */
@@ -92,55 +94,13 @@ export const WAMY_META = {
   },
 } as const;
 
-export const WAMY_COUNTRIES: NetworkCountry[] = [
-  {
-    code: "SA",
-    nameAr: "السعودية",
-    presence: {
-      status: "office",
-      hq: true,
-      city: {
-        ar: "الرياض",
-        en: "Riyadh",
-      },
-      type: {
-        ar: "المقر الرئيسي — الأمانة العامة",
-        en: "Headquarters — General Secretariat",
-      },
-      activity: {
-        ar: "حفل الإفطار السنوي بحضور الأمين العام (فبراير 2026)",
-        en: "Annual iftar attended by the Secretary-General (Feb 2026)",
-      },
-      year: 2026,
-      source: "واس",
-      url: "https://www.spa.gov.sa/N2522908",
-      confidence: "high",
-    },
-    need: [],
-    context: null,
-  },
-  {
-    code: "TD",
-    nameAr: "تشاد",
-    presence: {
-      status: "office",
-      city: {
-        ar: "أنجمينا",
-        en: "N'Djamena",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "وزيرة الدولة للمرأة والطفولة تستقبل وفد المكتب وتشيد بكفالة الأيتام (يونيو 2026)، وحجر أساس مستوصف في أنجمينا (أبريل 2026)",
-        en: "Minister of State for Women and Children receives the office and praises its orphan sponsorship (Jun 2026); clinic foundation stone in N'Djamena (Apr 2026)",
-      },
-      year: 2026,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/lmirxd4",
-      confidence: "high",
-    },
+/**
+ * مؤشّرات الحاجة وسياقها بحسب رمز الدولة — يُعدَّل هنا يدوياً. الحضور ليس هنا:
+ * مصدره الوحيد `WAMY_PRESENCE` في `wamy-presence.ts`. الدولة الغائبة هنا بلا مؤشّرات
+ * ولا سياق، والرمز هنا بلا دولةٍ في الحضور يُفشل wamy-presence.test.ts.
+ */
+export const WAMY_NEED: Record<string, { need: Indicator[]; context: string | null }> = {
+  TD: {
     need: [
       {
         key: "orphans_total",
@@ -186,28 +146,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "NE",
-    nameAr: "النيجر",
-    presence: {
-      status: "office",
-      city: {
-        ar: "نيامي",
-        en: "Niamey",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "لقاء مع أمين عام وزارة الداخلية (أكتوبر 2026)، وصرف مستحقات معلمي القرآن (يوليو 2026)",
-        en: "Meeting with the Interior Ministry's secretary-general (Oct 2026); Quran teachers paid (Jul 2026)",
-      },
-      year: 2026,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/p5sni5i",
-      confidence: "high",
-    },
+  NE: {
     need: [
       {
         key: "orphans_total",
@@ -266,28 +205,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "SD",
-    nameAr: "السودان",
-    presence: {
-      status: "office",
-      city: {
-        ar: "الخرطوم",
-        en: "Khartoum",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "ندوة الشراكات الاستراتيجية (سبتمبر 2026)، و3,400 سلة غذائية ومنظومات طاقة شمسية للمياه (ديسمبر 2025)",
-        en: "Strategic partnerships seminar (Sep 2026); 3,400 food baskets and solar water systems (Dec 2025)",
-      },
-      year: 2026,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/i8b3494",
-      confidence: "high",
-    },
+  SD: {
     need: [
       {
         key: "child_pop_u18",
@@ -320,28 +238,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أكبر أزمة نزوح للأطفال في العالم منذ اندلاع الحرب في أبريل 2023: نحو 5 ملايين طفل نازح، وأكثر من 4,300 طفل قُتلوا أو شُوّهوا (تحقّقت منها الأمم المتحدة)، ونحو 33 مليون شخص بحاجة إلى المساعدة أكثر من نصفهم أطفال (يونيسف 2026). نداء يونيسف لعام 2026 ممول بنسبة 16% فقط.",
   },
-  {
-    code: "KE",
-    nameAr: "كينيا",
-    presence: {
-      status: "office",
-      city: {
-        ar: "نيروبي",
-        en: "Nairobi",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "برنامج للأيتام في إسيولو ومويالي وأوكوندا (يونيو 2026)",
-        en: "Orphan programme in Isiolo, Moyale and Okunda (Jun 2026)",
-      },
-      year: 2026,
-      source: "واس عبر أردو بوينت؛ واس",
-      url: "https://www.urdupoint.com/arabic/story/2211464.html",
-      confidence: "high",
-    },
+  KE: {
     need: [
       {
         key: "orphans_total",
@@ -399,28 +296,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "نحو 9% من الأطفال أيتام (أحد الوالدين أو كلاهما) وفق مسح 2022، أي ما يقارب 2.2 مليون طفل. 42.4% من الأطفال يعيشون في فقر نقدي (2022). مقاطعة هوما باي الأعلى في اليُتم المزدوج.",
   },
-  {
-    code: "DJ",
-    nameAr: "جيبوتي",
-    presence: {
-      status: "office",
-      city: {
-        ar: "جيبوتي",
-        en: "Djibouti",
-      },
-      type: {
-        ar: "مكتب وطني وقاعدة إغاثية لليمن والصومال",
-        en: "Country office and relief base for Yemen and Somalia",
-      },
-      activity: {
-        ar: "رئيس الوزراء يزور أكاديمية العلوم والتكنولوجيا الصناعية التابعة للندوة (مارس 2026)",
-        en: "Prime Minister visits WAMY's Academy of Industrial Science and Technology (Mar 2026)",
-      },
-      year: 2026,
-      source: "واس",
-      url: "https://www.spa.gov.sa/N2533732",
-      confidence: "high",
-    },
+  DJ: {
     need: [
       {
         key: "child_pop_u18",
@@ -452,28 +328,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أصغر دولة في المجموعة سكانياً. نحو 21% في فقر مدقع (2017)، ودراسة متعددة الأبعاد مع يونيسف وجدت أن طفلاً من كل أربعة يعاني حرماناً في أربعة أبعاد أو أكثر.",
   },
-  {
-    code: "SN",
-    nameAr: "السنغال",
-    presence: {
-      status: "office",
-      city: {
-        ar: "داكار",
-        en: "Dakar",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "مسابقة القرآن والسنة لأفريقيا في داكار، والمنتدى الخامس للنخب (أبريل 2026)",
-        en: "Africa Quran and Sunnah competition in Dakar and the 5th elites forum (Apr 2026)",
-      },
-      year: 2026,
-      source: "جريدة المدينة؛ واس",
-      url: "https://www.al-madina.com/article/986760",
-      confidence: "high",
-    },
+  SN: {
     need: [
       {
         key: "child_pop_u18",
@@ -504,28 +359,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "GN",
-    nameAr: "غينيا",
-    presence: {
-      status: "office",
-      city: {
-        ar: "كوناكري",
-        en: "Conakry",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "حملة جراحة عيون (يناير 2026)، وقافلة جراحية أجرت 221 عملية (نوفمبر 2025)",
-        en: "Eye-surgery campaign (Jan 2026); surgical caravan with 221 operations (Nov 2025)",
-      },
-      year: 2026,
-      source: "صحيفة سبق / موقع الندوة",
-      url: "https://sabq.org/saudia/regions/j9guxjjowd",
-      confidence: "medium",
-    },
+  GN: {
     need: [
       {
         key: "child_pop_u18",
@@ -558,28 +392,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "MR",
-    nameAr: "موريتانيا",
-    presence: {
-      status: "office",
-      city: {
-        ar: "نواكشوط",
-        en: "Nouakchott",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "حجر أساس مجمع تعليمي في أغوركيت بولاية البراكنة (يوليو 2026)",
-        en: "Foundation stone of an education complex in Aghorguit, Brakna (Jul 2026)",
-      },
-      year: 2026,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/tjru6hl",
-      confidence: "medium",
-    },
+  MR: {
     need: [
       {
         key: "child_pop_u18",
@@ -612,28 +425,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "EG",
-    nameAr: "مصر",
-    presence: {
-      status: "office",
-      city: {
-        ar: "القاهرة",
-        en: "Cairo",
-      },
-      type: {
-        ar: "مكتب وطني يرعى طلاب الأزهر الوافدين",
-        en: "Country office for international Al-Azhar students",
-      },
-      activity: {
-        ar: "الملتقى الشبابي العاشر في الجلالة (أكتوبر 2026)",
-        en: "10th youth forum in Galala (Oct 2026)",
-      },
-      year: 2026,
-      source: "المجلس الإسلامي العالمي للدعوة والإغاثة؛ اليوم السابع",
-      url: "https://iicdr.com/ar/%D8%A7%D9%84%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1-%D8%A7%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA-%D8%A7%D9%84%D8%A3%D8%B9%D8%B6%D8%A7%D8%A1.html",
-      confidence: "medium",
-    },
+  EG: {
     need: [
       {
         key: "child_pop_u18",
@@ -666,25 +458,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أكبر عدد أطفال في المنطقة العربية (~39.5 مليون طفل دون 18 سنة، 37.3% من السكان بداية 2024). معدل الفقر الوطني 29.7% والفقر المدقع 4.5% (2019/2020).",
   },
-  {
-    code: "NG",
-    nameAr: "نيجيريا",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "حجر أساس مستوصف ضمن مركز تنموي في منطقة جيجاوا",
-        en: "Clinic foundation stone in a development centre in Jigawa",
-      },
-      year: 2026,
-      source: "موقع الندوة wamy.org",
-      url: "https://wamy.org/en/blog/shy-4/lndw-l-lmy-twss-mstwsfan-tbyan-ywfr-l-lj-llmrd-wykfh-ntshr-lwby-fy-nyjyry-7",
-      confidence: "medium",
-    },
+  NG: {
     need: [
       {
         key: "orphans_total",
@@ -744,25 +518,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "KG",
-    nameAr: "قيرغيزستان",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "البرلمان القيرغيزي يكرّم المكتب بوسام (أغسطس 2026)، ومدرسة قرآنية في أوزغن (يوليو 2026)",
-        en: "Kyrgyz parliament honours the office with a medal (Aug 2026); Quran school in Uzgen (Jul 2026)",
-      },
-      year: 2026,
-      source: "واس عبر أردو بوينت؛ سبق",
-      url: "https://www.urdupoint.com/arabic/story/2231616.html",
-      confidence: "high",
-    },
+  KG: {
     need: [
       {
         key: "child_pop_u18",
@@ -795,25 +551,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "ثلث الأطفال تقريباً تحت خط الفقر الوطني (33.1% عام 2024). اليُتم ليس المشكلة الكبرى هنا. المشكلة هي الأطفال الذين تركهم آباؤهم المهاجرون للعمل: أكثر من 277 ألف طفل بلا رعاية والدية.",
   },
-  {
-    code: "TH",
-    nameAr: "تايلاند",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "550 سلة إغاثية لمتضرري الفيضانات، والحفل السنوي الـ17 لتكريم الأيتام المتفوقين (يناير 2026)",
-        en: "550 relief baskets for flood victims and the 17th annual ceremony for high-achieving orphans (Jan 2026)",
-      },
-      year: 2026,
-      source: "صحيفة سبق؛ واس عبر أردو بوينت",
-      url: "https://sabq.org/article/QzQCCTa",
-      confidence: "high",
-    },
+  TH: {
     need: [
       {
         key: "child_pop_u18",
@@ -859,25 +597,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "CM",
-    nameAr: "الكاميرون",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "القافلة الجراحية الـ23 في ماروا بأقصى الشمال (ديسمبر 2025)",
-        en: "23rd surgical caravan in Maroua, Far North (Dec 2025)",
-      },
-      year: 2025,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/ehM4yLP",
-      confidence: "high",
-    },
+  CM: {
     need: [
       {
         key: "child_pop_u18",
@@ -910,25 +630,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "ML",
-    nameAr: "مالي",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "افتتاح مستوصف في سيقو يخدم أكثر من 800 أسرة",
-        en: "Clinic opened in Ségou serving more than 800 families",
-      },
-      year: 2025,
-      source: "صحيفة سبق (التاريخ مستنتج من مسار الصورة)",
-      url: "https://sabq.org/article/p2ic-qc",
-      confidence: "medium",
-    },
+  ML: {
     need: [
       {
         key: "orphans_total",
@@ -986,28 +688,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "ID",
-    nameAr: "إندونيسيا",
-    presence: {
-      status: "office",
-      city: {
-        ar: "جاكرتا",
-        en: "Jakarta",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "كسوة 700 يتيم في جاكرتا وتاسكمالايا وسوبانغ وسولو (أكتوبر 2025)",
-        en: "Clothing for 700 orphans in Jakarta, Tasikmalaya, Subang and Solo (Oct 2025)",
-      },
-      year: 2025,
-      source: "واس عبر أردو بوينت / مدونة الندوة",
-      url: "https://www.urdupoint.com/arabic/story/2064070.html",
-      confidence: "high",
-    },
+  ID: {
     need: [
       {
         key: "child_pop_u18",
@@ -1053,28 +734,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أكبر عدد من الأطفال بين دول المجموعة (نحو 79.5 مليون طفل). لا يوجد مسح DHS/MICS حديث يقيس اليُتم. يعيش أكثر من 106 آلاف طفل في مؤسسات رعاية مسجّلة، وخلّفت جائحة كوفيد-19 موجة جديدة من الأيتام.",
   },
-  {
-    code: "BD",
-    nameAr: "بنغلاديش",
-    presence: {
-      status: "office",
-      city: {
-        ar: "دكا",
-        en: "Dhaka",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "افتتاح مستوصف في باغيرهات (ديسمبر 2025)",
-        en: "Clinic opened in Bagerhat (Dec 2025)",
-      },
-      year: 2025,
-      source: "صحيفة سبق؛ حساب السفارة السعودية على X",
-      url: "https://sabq.org/article/JTvn7mq",
-      confidence: "high",
-    },
+  BD: {
     need: [
       {
         key: "orphans_total",
@@ -1134,28 +794,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "نحو 59 مليون طفل. فقد قرابة 4% منهم أحد الوالدين أو كليهما (MICS 2019)، أي نحو 2.4 مليون يتيم تقديرياً. الفقر المدقع 5.6%.",
   },
-  {
-    code: "BA",
-    nameAr: "البوسنة والهرسك",
-    presence: {
-      status: "office",
-      city: {
-        ar: "سراييفو",
-        en: "Sarajevo",
-      },
-      type: {
-        ar: "مكتب وطني ينسّق أنشطة البلقان",
-        en: "Country office coordinating Balkan programmes",
-      },
-      activity: {
-        ar: "تخطيط لتعليم العربية (نوفمبر 2025)، وتصريح بعد مسابقة قرآنية (فبراير 2026)",
-        en: "Arabic-teaching plans (Nov 2025); statement after a Quran competition (Feb 2026)",
-      },
-      year: 2025,
-      source: "واس",
-      url: "https://www.spa.gov.sa/N2448195",
-      confidence: "high",
-    },
+  BA: {
     need: [
       {
         key: "child_pop_u18",
@@ -1188,28 +827,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "لا تُنشر بيانات وطنية موحدة عن الأيتام. آخر رقم رسمي لدى اليونيسف هو 2,435 طفلاً محروماً من الرعاية الوالدية (2015)، يعيش نحو نصفهم في مؤسسات رعاية. ويعيش قرابة طفل من كل ثلاثة في فقر (30.6% عام 2011).",
   },
-  {
-    code: "BR",
-    nameAr: "البرازيل",
-    presence: {
-      status: "office",
-      city: {
-        ar: "ساو برناردو دو كامبو",
-        en: "São Bernardo do Campo",
-      },
-      type: {
-        ar: "مكتب إقليمي لأمريكا اللاتينية",
-        en: "Regional office for Latin America",
-      },
-      activity: {
-        ar: "ختام الملتقى الإقليمي لشباب أمريكا اللاتينية في ساو باولو (يناير 2025)",
-        en: "Latin American regional youth forum closes in São Paulo (Jan 2025)",
-      },
-      year: 2025,
-      source: "واس؛ wamybr.org",
-      url: "https://www.spa.gov.sa/N2248091",
-      confidence: "high",
-    },
+  BR: {
     need: [
       {
         key: "child_pop_u18",
@@ -1242,28 +860,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "نحو 51.5 مليون طفل ومراهق، 55.9% منهم يعيشون فقراً متعدد الأبعاد (2023). تيتّم نحو 149 ألف طفل بسبب كوفيد-19 في عامي 2020 و2021، وفقد نحو 1.3 مليون طفل أحد مقدّمي الرعاية لأسباب مختلفة خلال الفترة نفسها.",
   },
-  {
-    code: "PS",
-    nameAr: "فلسطين",
-    presence: {
-      status: "office",
-      city: {
-        ar: "غزة",
-        en: "Gaza",
-      },
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "حملة إغاثية في غزة بأكثر من 1,200 سلة غذائية ومياه شرب (أغسطس 2024)",
-        en: "Gaza relief campaign with more than 1,200 food baskets and drinking water (Aug 2024)",
-      },
-      year: 2024,
-      source: "حساب الندوة الرسمي على X؛ صحيفة عناوين",
-      url: "https://x.com/wamy/status/1825798791628280275",
-      confidence: "high",
-    },
+  PS: {
     need: [
       {
         key: "conflict_orphans",
@@ -1295,25 +892,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أزمة يُتم غير مسبوقة في قطاع غزة منذ أكتوبر 2023: أحصى الجهاز المركزي للإحصاء الفلسطيني 39,384 طفلاً فقدوا أحد الوالدين أو كليهما حتى أبريل 2025، منهم نحو 17 ألفاً فقدوا الوالدين معاً. ونقل الجهاز في أبريل 2026 عن اليونيسف أن العدد تجاوز 58 ألف طفل. وكان عدد الأيتام في غزة قبل الحرب 26,349 طفلاً (2020). الفقر في غزة يقارب 100% حسب تقديرات البنك الدولي لعام 2024.",
   },
-  {
-    code: "AL",
-    nameAr: "ألبانيا",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني — المكتب غير مؤكد",
-        en: "Field activity — office not confirmed",
-      },
-      activity: {
-        ar: "ضمن دول برنامج إفطار الصائم (مارس 2025)",
-        en: "Included in the iftar programme (Mar 2025)",
-      },
-      year: 2025,
-      source: "مدونة الندوة o.wamy.org",
-      url: "https://o.wamy.org/blog/%D8%A7%D9%84%D9%86%D8%AF%D9%88%D8%A9-3/%D8%A7%D9%84%D9%86%D8%AF%D9%88%D8%A9-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9-%D8%AA%D8%B7%D9%84%D9%82-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-%D8%A7%D9%81%D8%B7%D8%A7%D8%B1-%D8%A7%D9%84%D8%B5%D8%A7%D9%8A%D9%85-%D9%81%D9%8A-%D8%B9%D8%AF%D8%AF-%D9%85%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84-%D8%A8%D8%AB%D9%84%D8%A7%D8%AB-%D9%82%D8%A7%D8%B1%D8%A7%D8%AA-68",
-      confidence: "medium",
-    },
+  AL: {
     need: [
       {
         key: "orphans_total",
@@ -1386,25 +965,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "عدد الأطفال (0-17) في ألبانيا نحو 460 ألفاً بحسب تعداد 2023، أي 19.1% من السكان بعد أن كانوا 26.4% في 2011، والسبب تراجع الخصوبة والهجرة. نحو 27% من الأطفال معرّضون لخطر الفقر النسبي (2024) مقابل 19.2% لعموم السكان. بلغ عدد الأطفال في الرعاية البديلة الرسمية 897 طفلاً في نهاية 2021، منهم 508 في مؤسسات إيوائية و370 في أسر حاضنة أو لدى الأقارب. اعتمدت البلاد خطة وطنية لإنهاء الإيواء المؤسسي في سبتمبر 2020، وقُدّم أول مشروع قانون للحضانة الأسرية في يوليو 2025.",
   },
-  {
-    code: "XK",
-    nameAr: "كوسوفو",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني — المكتب غير مؤكد",
-        en: "Field activity — office not confirmed",
-      },
-      activity: {
-        ar: "ضمن دول برنامج إفطار الصائم (مارس 2025)",
-        en: "Included in the iftar programme (Mar 2025)",
-      },
-      year: 2025,
-      source: "مدونة الندوة o.wamy.org",
-      url: "https://o.wamy.org/blog/%D8%A7%D9%84%D9%86%D8%AF%D9%88%D8%A9-3/%D8%A7%D9%84%D9%86%D8%AF%D9%88%D8%A9-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9-%D8%AA%D8%B7%D9%84%D9%82-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-%D8%A7%D9%81%D8%B7%D8%A7%D8%B1-%D8%A7%D9%84%D8%B5%D8%A7%D9%8A%D9%85-%D9%81%D9%8A-%D8%B9%D8%AF%D8%AF-%D9%85%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84-%D8%A8%D8%AB%D9%84%D8%A7%D8%AB-%D9%82%D8%A7%D8%B1%D8%A7%D8%AA-68",
-      confidence: "medium",
-    },
+  XK: {
     need: [
       {
         key: "child_pop_u18",
@@ -1462,25 +1023,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "MK",
-    nameAr: "مقدونيا الشمالية",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني — المكتب غير مؤكد",
-        en: "Field activity — office not confirmed",
-      },
-      activity: {
-        ar: "أول برنامج غمرٍ لغوي لخريجي أقسام العربية (نحو يناير 2026)",
-        en: "First Arabic immersion programme for Arabic-department graduates (around Jan 2026)",
-      },
-      year: 2026,
-      source: "موقع الندوة wamy.org (التاريخ تقريبي، نحو يناير 2026)",
-      url: "https://wamy.org/en/blog/t-lymy-2/lwl-mr-fy-dwl-mqdwny-lshmly-lndw-l-lmy-tqym-brnmj-lgmr-llgwy-lkhryjy-qsm-llg-l-rby-157",
-      confidence: "medium",
-    },
+  MK: {
     need: [
       {
         key: "child_pop_u18",
@@ -1514,25 +1057,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "نحو 373 ألف طفل (تعداد 2021)، وانخفض عدد الأطفال 18% بين 2011 و2023. ويعيش طفل من كل ثلاثة تحت خط الفقر الوطني (32.8%).",
   },
-  {
-    code: "ET",
-    nameAr: "إثيوبيا",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني — المكتب غير مؤكد",
-        en: "Field activity — office not confirmed",
-      },
-      activity: {
-        ar: "اختتام القافلة الجراحية الثانية بـ440 عملية (سبتمبر 2026)، والأولى في جيجيغا (أغسطس 2025)",
-        en: "Second surgical caravan closes with 440 operations (Sep 2026); the first was in Jijiga (Aug 2025)",
-      },
-      year: 2026,
-      source: "واس (بالإنجليزية)",
-      url: "https://www.spa.gov.sa/en/N2675749",
-      confidence: "high",
-    },
+  ET: {
     need: [
       {
         key: "orphans_total",
@@ -1603,25 +1128,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أكبر عدد أطفال في المجموعة (~59.5 مليون). نحو 7% أيتام وفق مسح 2016، والتقدير المشتق أكثر من 4.2 مليون يتيم، ومن المرجح أنه أقل من الواقع بعد نزاعات تيغراي وأمهرة. الفقر متوقع أن يرتفع إلى 43% في 2025.",
   },
-  {
-    code: "TZ",
-    nameAr: "تنزانيا",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني — المكتب غير مؤكد",
-        en: "Field activity — office not confirmed",
-      },
-      activity: {
-        ar: "القافلة الجراحية السابعة في جزيرة بمبا (نحو 250 عملية)",
-        en: "Seventh surgical caravan on Pemba island (about 250 operations)",
-      },
-      year: 2025,
-      source: "جريدة المدينة (السنة مستنتجة من تسلسل أرقام المقالات)؛ السفارة السعودية في تنزانيا",
-      url: "https://www.al-madina.com/article/966689",
-      confidence: "medium",
-    },
+  TZ: {
     need: [
       {
         key: "orphans_total",
@@ -1693,25 +1200,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "تعداد 2022 أحصى 3.13 مليون طفل يتيم (10.4% من الأطفال دون 18). الفقر الغذائي (المدقع) 8% والفقر في الاحتياجات الأساسية 26.4% (2017/18، البر الرئيسي).",
   },
-  {
-    code: "RW",
-    nameAr: "رواندا",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني وشراكة — المكتب غير مؤكد",
-        en: "Field activity and partnership — office not confirmed",
-      },
-      activity: {
-        ar: "مذكرة تفاهم مع المجلس الأعلى للشؤون الإسلامية في رواندا (أبريل 2025)",
-        en: "Memorandum of understanding with Rwanda's Muslim council (Apr 2025)",
-      },
-      year: 2025,
-      source: "المجلس الإسلامي العالمي للدعوة والإغاثة؛ حساب الندوة على X (27 أبريل 2025)",
-      url: "https://x.com/wamy/status/1916573725291323690",
-      confidence: "medium",
-    },
+  RW: {
     need: [
       {
         key: "orphan_rate_pct",
@@ -1769,25 +1258,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "تراجع الفقر بشكل ملحوظ (27.4% فقر و5.4% فقر مدقع في 2023/24). نحو 13% من الأطفال لا يعيشون مع أي من والديهم البيولوجيين (2014-15)، والإرث الطويل لإبادة 1994 والإيدز يفسر نسب اليُتم التاريخية المرتفعة.",
   },
-  {
-    code: "CI",
-    nameAr: "كوت ديفوار",
-    presence: {
-      status: "field",
-      city: null,
-      type: {
-        ar: "نشاط ميداني عبر شريك — المكتب غير مؤكد",
-        en: "Field activity through a partner — office not confirmed",
-      },
-      activity: {
-        ar: "مشروع الحقيبة المدرسية (أبريل 2026)",
-        en: "School-bag project (Apr 2026)",
-      },
-      year: 2026,
-      source: "صحيفة سبق",
-      url: "https://sabq.org/article/SEbR9LR",
-      confidence: "high",
-    },
+  CI: {
     need: [
       {
         key: "orphans_total",
@@ -1834,15 +1305,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "SO",
-    nameAr: "الصومال",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: 2023,
-      source: "صحيفة سبق (التاريخ تقريبي)",
-      url: "https://sabq.org/saudia/regions/4290mf2jtq",
-    },
+  SO: {
     need: [
       {
         key: "double_orphans",
@@ -1875,15 +1338,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "أكثر من نصف السكان تحت خط الفقر الوطني (54.4% في 2022)، والفقر أعلى في الأسر الكبيرة (63.4%) وبين الرحّل. نحو 9.8 مليون طفل دون 18 سنة.",
   },
-  {
-    code: "YE",
-    nameAr: "اليمن",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: 2025,
-      source: "فيديو على يوتيوب للجهة المنفذة",
-      url: "https://www.youtube.com/watch?v=Ocoe3tWrQcA",
-    },
+  YE: {
     need: [
       {
         key: "orphans_total",
@@ -1928,15 +1383,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "PH",
-    nameAr: "الفلبين",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: 2022,
-      source: "حساب المكتب @wamyph",
-      url: "https://x.com/wamyph",
-    },
+  PH: {
     need: [
       {
         key: "orphan_rate_pct",
@@ -1982,15 +1429,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "نحو 6% من الأطفال فقدوا أحد الوالدين أو كليهما، و0.3% فقدوا الاثنين (NDHS 2022). 11% لا يعيشون مع أي من والديهم. فقر الأطفال 23.4% (2023).",
   },
-  {
-    code: "IQ",
-    nameAr: "العراق",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: 2017,
-      source: "المجلس الإسلامي العالمي للدعوة والإغاثة",
-      url: "https://iicdr.com/ar/%D8%A7%D9%84%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1-%D8%A7%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA-%D8%A7%D9%84%D8%A3%D8%B9%D8%B6%D8%A7%D8%A1/item/4200",
-    },
+  IQ: {
     need: [
       {
         key: "orphans_total",
@@ -2023,15 +1462,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "تعداد 2024 هو الأول منذ 1987، وبلغ عدد السكان 46.1 مليون نسمة، نحو 36% منهم دون 15 سنة. لا يوجد عدّ رسمي موثوق للأيتام، وتتراوح تقديرات وزارة التخطيط المتداولة بين 700 ألف ومليون يتيم. نحو 23% من الأطفال يعيشون تحت خط الفقر الوطني (2020).",
   },
-  {
-    code: "ZA",
-    nameAr: "جنوب أفريقيا",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: null,
-      source: "wamy.co.za",
-      url: "https://www.wamy.co.za/contact.html",
-    },
+  ZA: {
     need: [
       {
         key: "orphans_total",
@@ -2102,15 +1533,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "قرابة 11.7% من الأطفال فقدوا أحد الوالدين أو كليهما (2024)، أي نحو 2.3 مليون طفل، و1.5% أيتام الأبوين. 51% من الأطفال تحت خط الفقر الأدنى (10.8 مليون طفل).",
   },
-  {
-    code: "MY",
-    nameAr: "ماليزيا",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: 2010,
-      source: "واس",
-      url: "https://www.spa.gov.sa/775998",
-    },
+  MY: {
     need: [
       {
         key: "child_pop_u18",
@@ -2142,15 +1565,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "TJ",
-    nameAr: "طاجيكستان",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: null,
-      source: null,
-      url: null,
-    },
+  TJ: {
     need: [
       {
         key: "orphan_rate_pct",
@@ -2183,15 +1598,7 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     ],
     context: null,
   },
-  {
-    code: "UG",
-    nameAr: "أوغندا",
-    presence: {
-      status: "unconfirmed",
-      lastEvidenceYear: null,
-      source: null,
-      url: null,
-    },
+  UG: {
     need: [
       {
         key: "orphans_total",
@@ -2236,50 +1643,11 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "تعداد 2024: نحو 2.9 مليون طفل يتيم (12.9% من الأطفال)، والعدد تضاعف منذ 2002 (1.3 مليون). أعلى التركّزات في غرب النيل وماديو كاراموجا. أكثر من 12% من الأسر يرأسها أطفال أو شباب.",
   },
-  {
-    code: "LK",
-    nameAr: "سريلانكا",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "دولة أساسية في المنصّة: كفالة الأيتام وتأهيلهم",
-        en: "A core platform country: orphan sponsorship and qualification",
-      },
-      year: 2026,
-      // إفادة مالك المنصّة لا مصدرٌ عامّ منشور: بلا رابط، وتُستبدل بالمصدر الرسمي حين يُزوَّد.
-      source: "إفادة إدارة الندوة للمنصّة (نوفمبر 2026)",
-      url: "",
-      confidence: "medium",
-    },
-    need: [],
-    context: null,
-  },
-  {
-    code: "PK",
-    nameAr: "باكستان",
-    presence: {
-      status: "office",
-      city: null,
-      type: {
-        ar: "مكتب وطني",
-        en: "Country office",
-      },
-      activity: {
-        ar: "دولة أساسية في المنصّة عبر برامج كشمير: كفالة الأيتام وتأهيلهم",
-        en: "A core platform country through its Kashmir programs: orphan sponsorship and qualification",
-      },
-      year: 2026,
-      // إفادة مالك المنصّة لا مصدرٌ عامّ منشور: بلا رابط، وتُستبدل بالمصدر الرسمي حين يُزوَّد.
-      source: "إفادة إدارة الندوة للمنصّة (نوفمبر 2026)",
-      url: "",
-      confidence: "medium",
-    },
-    need: [],
-    context: null,
-  },
-];
+};
+
+/** الدول بترتيب الحضور: الحضور من `wamy-presence.ts`، والحاجة والسياق من `WAMY_NEED`. */
+export const WAMY_COUNTRIES: NetworkCountry[] = WAMY_PRESENCE.map((p) => ({
+  ...p,
+  need: WAMY_NEED[p.code]?.need ?? [],
+  context: WAMY_NEED[p.code]?.context ?? null,
+}));

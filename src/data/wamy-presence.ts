@@ -1,4 +1,11 @@
-// مولَّد بـ scripts/gen-wamy-presence.mjs من src/data/wamy-network.ts — لا يُعدَّل يدوياً.
+/**
+ * حضور الندوة في كلّ دولة — **المصدر الوحيد** للرمز والاسم والحضور، ويُعدَّل هنا يدوياً.
+ *
+ * `wamy-network.ts` يبني منه قائمة الدول ويضيف إليها مؤشّرات الحاجة وسياقها
+ * (`WAMY_NEED`)، فلا يتكرّر الحضور في الحزمة. صفحات الرؤية تستورد هذا الملفّ وحده
+ * فتبقى خفيفة (ميزانية الحجم في CI)، والقاعة تحمل الاثنين بلا تكرار.
+ * الترتيب هنا ترتيب الدول في كلّ مكان. (wamy-presence.test.ts، scripts/gen-wamy-presence.mjs)
+ */
 import type { Presence } from "@/data/wamy-network";
 
 export type PresenceCountry = { code: string; nameAr: string; presence: Presence };

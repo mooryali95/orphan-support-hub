@@ -1,21 +1,19 @@
 #!/usr/bin/env node
-// يولّد src/data/wamy-presence.ts من src/data/wamy-network.ts: الرمز والاسم والحضور وحدها.
-// صفحات الرؤية تحتاج الحضور لا مؤشّرات الحاجة ومصادرها، فلا تحمل ملفّ البحث كلّه
-// (ميزانية الحجم في CI). wamy-presence.test.ts يفشل إن اختلف الملفّان.
+// لم يعد يولّد شيئاً: الحضور مصدره الوحيد src/data/wamy-presence.ts ويُعدَّل يدوياً،
+// وsrc/data/wamy-network.ts يبني منه WAMY_COUNTRIES ويضيف الحاجة والسياق (WAMY_NEED).
+// يبقى الأمر للتحقّق بعد التعديل (والقاعدة نفسها في wamy-presence.test.ts):
+// رموزٌ فريدة، وكلّ رمزٍ في WAMY_NEED له دولةٌ في الحضور.
 //
 //   npx tsx scripts/gen-wamy-presence.mjs
-import { writeFileSync } from "node:fs";
+const { WAMY_PRESENCE } = await import("../src/data/wamy-presence.ts");
+const { WAMY_NEED } = await import("../src/data/wamy-network.ts");
 
-const { WAMY_COUNTRIES } = await import("../src/data/wamy-network.ts");
-const rows = WAMY_COUNTRIES.map((c) => ({ code: c.code, nameAr: c.nameAr, presence: c.presence }));
-writeFileSync(
-  "src/data/wamy-presence.ts",
-  `// مولَّد بـ scripts/gen-wamy-presence.mjs من src/data/wamy-network.ts — لا يُعدَّل يدوياً.
-import type { Presence } from "@/data/wamy-network";
-
-export type PresenceCountry = { code: string; nameAr: string; presence: Presence };
-
-export const WAMY_PRESENCE: PresenceCountry[] = ${JSON.stringify(rows, null, 2)};
-`,
-);
-console.log(`wamy-presence: ${rows.length} دولة`);
+const codes = WAMY_PRESENCE.map((c) => c.code);
+const dup = codes.filter((c, i) => codes.indexOf(c) !== i);
+const stray = Object.keys(WAMY_NEED).filter((c) => !codes.includes(c));
+if (dup.length || stray.length) {
+  if (dup.length) console.error(`رموزٌ مكرّرة في wamy-presence.ts: ${dup.join(", ")}`);
+  if (stray.length) console.error(`WAMY_NEED لدولٍ ليست في الحضور: ${stray.join(", ")}`);
+  process.exit(1);
+}
+console.log(`wamy-presence: ${codes.length} دولة، منها ${Object.keys(WAMY_NEED).length} بمؤشّرات`);
