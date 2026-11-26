@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import type { PublicVerification } from "@/lib/golden-record";
+import { untypedRpc } from "@/lib/rpc-call";
 
 /**
  * شارة الكافل وشرط الثقة: درجةٌ من ثلاث، وهل يقبل الملف كفالةً جديدة، وشهر آخر
@@ -17,12 +18,7 @@ export const getPublicVerification = createServerFn({ method: "GET" })
     const req = getRequest();
     if (req && (await guardApiRate(req))) return null;
     const { publicClient } = await import("@/lib/protection.functions");
-    const rpc = publicClient() as unknown as {
-      rpc: (
-        fn: string,
-        args: Record<string, unknown>,
-      ) => PromiseLike<{ data: unknown; error: unknown }>;
-    };
+    const rpc = untypedRpc(publicClient());
     const { data: res, error } = await rpc.rpc("public_verification", { _orphan: data.orphanId });
     if (error || !res) return null;
     return res as PublicVerification;

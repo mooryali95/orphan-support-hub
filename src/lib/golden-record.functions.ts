@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isMissingObject } from "@/lib/data-entry";
+import { callRpc, type RpcFailure } from "@/lib/rpc-call";
 import {
   MAX_BULK,
   MAX_GOLDEN_ROWS,
@@ -25,34 +25,7 @@ import {
  * تُطبَّق هجرته بعد يعود `missing: true` فتعرض الواجهة «تحتاج تحديث القاعدة».
  */
 
-type DbError = { message: string; code?: string | null };
-type Rpc = {
-  rpc: (
-    fn: string,
-    args?: Record<string, unknown>,
-  ) => PromiseLike<{ data: unknown; error: DbError | null }>;
-};
-
-export type GoldenFailure = { ok: false; missing: boolean; error: string };
-
-async function call<T>(
-  client: unknown,
-  fn: string,
-  args?: Record<string, unknown>,
-): Promise<{ ok: true; data: T } | GoldenFailure> {
-  const { data, error } = await (client as Rpc).rpc(fn, args);
-  if (error) {
-    return {
-      ok: false,
-      missing: isMissingObject(error),
-      error: /^[a-z_]{3,40}$/.test(error.message) ? error.message : "failed",
-    };
-  }
-  // الدوالّ تعيد { ok:false, code } لرفضٍ مفهوم؛ يُسمّى ولا يُخفى.
-  const d = data as { ok?: boolean; code?: string } | null;
-  if (d && d.ok === false) return { ok: false, missing: false, error: d.code ?? "failed" };
-  return { ok: true, data: data as T };
-}
+export type GoldenFailure = RpcFailure;
 
 const code2 = z.string().regex(/^[A-Z]{2}$/);
 const sourceKey = z.string().regex(/^[a-z0-9-]{2,40}$/);
@@ -60,7 +33,7 @@ const uuid = z.string().uuid();
 
 export const getDataHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(({ context }) => call<CountryHealth[]>(context.supabase, "admin_data_health"));
+  .handler(({ context }) => callRpc<CountryHealth[]>(context.supabase, "admin_data_health"));
 
 export const setCountrySource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -75,7 +48,7 @@ export const setCountrySource = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<{ ok: true; from: string; to: string; reevaluated: number }>(
+    callRpc<{ ok: true; from: string; to: string; reevaluated: number }>(
       context.supabase,
       "admin_country_source_set",
       {
@@ -109,7 +82,7 @@ export const importGolden = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<IngestResult>(context.supabase, "admin_golden_import", {
+    callRpc<IngestResult>(context.supabase, "admin_golden_import", {
       _role: data.role,
       _country: data.country,
       _source: data.role === "wamy" ? null : data.source,
@@ -121,7 +94,10 @@ export const listConflicts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
   .handler(({ data, context }) =>
-    call<Conflict[]>(context.supabase, "admin_conflicts", { _country: data.country, _limit: 200 }),
+    callRpc<Conflict[]>(context.supabase, "admin_conflicts", {
+      _country: data.country,
+      _limit: 200,
+    }),
   );
 
 export const resolveConflict = createServerFn({ method: "POST" })
@@ -136,7 +112,7 @@ export const resolveConflict = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<{ ok: true }>(context.supabase, "admin_conflict_resolve", {
+    callRpc<{ ok: true }>(context.supabase, "admin_conflict_resolve", {
       _id: data.id,
       _choice: data.choice,
       _value: data.value === undefined ? null : data.value,
@@ -155,7 +131,7 @@ export const resolveConflictsBulk = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<BulkResult>(context.supabase, "admin_conflicts_resolve_bulk", {
+    callRpc<BulkResult>(context.supabase, "admin_conflicts_resolve_bulk", {
       _ids: data.ids,
       _choice: data.choice,
     }),
@@ -166,14 +142,17 @@ export const getChildFile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: uuid }).parse(input))
   .handler(({ data, context }) =>
-    call<ChildFile>(context.supabase, "country_child_file", { _orphan: data.id }),
+    callRpc<ChildFile>(context.supabase, "country_child_file", { _orphan: data.id }),
   );
 
 export const listLinkQueue = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
   .handler(({ data, context }) =>
-    call<LinkItem[]>(context.supabase, "admin_link_queue", { _country: data.country, _limit: 200 }),
+    callRpc<LinkItem[]>(context.supabase, "admin_link_queue", {
+      _country: data.country,
+      _limit: 200,
+    }),
   );
 
 export const resolveLink = createServerFn({ method: "POST" })
@@ -188,7 +167,7 @@ export const resolveLink = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<{ ok: true }>(context.supabase, "admin_link_resolve", {
+    callRpc<{ ok: true }>(context.supabase, "admin_link_resolve", {
       _id: data.id,
       _action: data.action,
       _orphan: data.orphanId ?? null,
@@ -199,7 +178,7 @@ export const createUnmatched = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ country: code2 }).parse(input))
   .handler(({ data, context }) =>
-    call<{ ok: true; created: number; failed: number }>(
+    callRpc<{ ok: true; created: number; failed: number }>(
       context.supabase,
       "admin_link_create_unmatched",
       { _country: data.country },
@@ -212,7 +191,7 @@ export const listAlerts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
   .handler(({ data, context }) =>
-    call<DataAlert[]>(context.supabase, "admin_alerts", { _country: data.country, _limit: 200 }),
+    callRpc<DataAlert[]>(context.supabase, "admin_alerts", { _country: data.country, _limit: 200 }),
   );
 
 export const resolveAlert = createServerFn({ method: "POST" })
@@ -227,7 +206,7 @@ export const resolveAlert = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(({ data, context }) =>
-    call<{ ok: true }>(context.supabase, "admin_alert_resolve", {
+    callRpc<{ ok: true }>(context.supabase, "admin_alert_resolve", {
       _id: data.id,
       _status: data.status,
       _note: data.note ?? null,
@@ -238,13 +217,13 @@ export const resolveAlert = createServerFn({ method: "POST" })
 
 export const getMyCountryAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(({ context }) => call<CountryAccess>(context.supabase, "my_country_access"));
+  .handler(({ context }) => callRpc<CountryAccess>(context.supabase, "my_country_access"));
 
 export const listCountryStaff = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ country: code2 }).parse(input))
   .handler(({ data, context }) =>
-    call<StaffMember[]>(context.supabase, "country_staff_list", { _country: data.country }),
+    callRpc<StaffMember[]>(context.supabase, "country_staff_list", { _country: data.country }),
   );
 
 export const setCountryStaff = createServerFn({ method: "POST" })
@@ -260,7 +239,7 @@ export const setCountryStaff = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const args = { _country: data.country, _email: data.email, _role: data.role };
-    const first = await call<{ ok: true }>(context.supabase, "country_staff_set", args);
+    const first = await callRpc<{ ok: true }>(context.supabase, "country_staff_set", args);
     // بريدٌ بلا حساب: القاعدة تقول ذلك لمن يملك الإدارة وحده، وبعد فحص الدور. فتُرسل
     // دعوة المصادقة (قالب «invite») ويُسند الدور للحساب الجديد في الخطوة نفسها.
     if (first.ok || first.error !== "user_not_found" || data.role === null) {
@@ -274,6 +253,6 @@ export const setCountryStaff = createServerFn({ method: "POST" })
     });
     if (error)
       return { ok: false as const, missing: false, error: "invite_failed", invited: false };
-    const second = await call<{ ok: true }>(context.supabase, "country_staff_set", args);
+    const second = await callRpc<{ ok: true }>(context.supabase, "country_staff_set", args);
     return { ...second, invited: second.ok };
   });
