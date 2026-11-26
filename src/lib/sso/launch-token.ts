@@ -45,6 +45,8 @@ export type VerifyFailure =
   | "email_unverified";
 
 export const AUDIENCE = "kahatayn";
+/** كعكة تربط إكمال الدخول بالمتصفّح الذي بدأه (ضدّ إرسال رابط /sso لضحية). */
+export const NONCE_COOKIE = "kh_sso_nonce";
 /** أقصى عمرٍ للرمز (exp − iat)، وسماحية الساعة بين الخادمين. */
 export const MAX_LIFETIME_S = 120;
 export const CLOCK_SKEW_S = 30;

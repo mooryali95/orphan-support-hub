@@ -7,6 +7,8 @@ import { pageTitle } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { safeNext } from "@/lib/sso/launch-token";
+import { checkSsoNonce } from "@/lib/sso/nonce.functions";
+import { useServerFn } from "@tanstack/react-start";
 
 const COPY = defineCopy("routes/sso", {
   ar: {
@@ -21,6 +23,7 @@ const COPY = defineCopy("routes/sso", {
       email_unverified: "بريدك غير موثَّق في منصّة الندوة.",
       subject_taken: "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
       not_configured: "الدخول من منصّة الندوة لم يُفعَّل بعد.",
+      not_this_browser: "هذا الرابط لم يبدأ من هذا المتصفّح. افتح كهاتين من منصّة الندوة مباشرة.",
     } as Record<string, string>,
   },
   en: {
@@ -35,6 +38,8 @@ const COPY = defineCopy("routes/sso", {
       email_unverified: "Your email isn't verified on WAMY's platform.",
       subject_taken: "This email is linked to another WAMY account. Contact the admin team.",
       not_configured: "Sign-in from WAMY's platform isn't enabled yet.",
+      not_this_browser:
+        "This link didn't start in this browser. Open Kahatayn from WAMY's platform directly.",
     } as Record<string, string>,
   },
 });
@@ -57,21 +62,27 @@ function SsoPage() {
   const c = useCopy(COPY);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const checkNonce = useServerFn(checkSsoNonce);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     window.history.replaceState(null, "", window.location.pathname);
     const err = params.get("error");
     const th = params.get("th");
-    if (err || !th) {
+    const nonce = params.get("n");
+    if (err || !th || !nonce) {
       setError(err ?? "missing");
       return;
     }
-    void supabase.auth.verifyOtp({ token_hash: th, type: "email" }).then(({ error: e }) => {
+    void (async () => {
+      // الرابط لا يُكمَل إلا في المتصفّح الذي بدأ الدخول من منصّة الندوة.
+      const bound = await checkNonce({ data: { nonce } }).catch(() => ({ ok: false }));
+      if (!bound.ok) return setError("not_this_browser");
+      const { error: e } = await supabase.auth.verifyOtp({ token_hash: th, type: "email" });
       if (e) return setError("session_failed");
       void navigate({ to: safeNext(params.get("next")) as "/workspaces", replace: true });
-    });
-  }, [navigate]);
+    })();
+  }, [navigate, checkNonce]);
 
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
