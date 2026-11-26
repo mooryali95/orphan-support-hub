@@ -45,7 +45,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       lead: (money: string) =>
         `${money} شهرياً. لا تنتهي الكفالة فوراً: تبقى جاريةً حتى آخر الشهر الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها.`,
       card: "ويُلغى اشتراك البطاقة لدى مزوّد الدفع عند نهاية الدورة نفسها.",
-      notify: "تُبلَّغ جهة الرعاية والإدارة بموعد الانتهاء.",
+      notify: "تُبلَّغ الجهة الميدانية والإدارة بموعد الانتهاء.",
       alternatives: "إن كان الظرف مؤقّتاً أو المبلغ ثقيلاً، فهناك بديلان:",
       pauseInstead: "أوقفها مؤقّتاً",
       lowerAmount: "خفّض المبلغ",
@@ -102,7 +102,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       lead: (money: string) =>
         `${money} a month. The sponsorship does not end at once: it continues until the end of the month you paid for, so the child receives it in full, then it ends and nothing more is charged.`,
       card: "Your card subscription with the payment provider is cancelled at the end of the same cycle.",
-      notify: "The care organization and the administration are told the end date.",
+      notify: "The field organization and the administration are told the end date.",
       alternatives:
         "If the situation is temporary or the amount feels heavy, there are two alternatives:",
       pauseInstead: "Pause it",

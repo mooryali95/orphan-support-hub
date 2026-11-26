@@ -12589,10 +12589,10 @@
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.cancel.notify": {
-   "en": "The care organization and the administration are told the end date.",
-   "ar": "تُبلَّغ جهة الرعاية والإدارة بموعد الانتهاء.",
+   "en": "The field organization and the administration are told the end date.",
+   "ar": "تُبلَّغ الجهة الميدانية والإدارة بموعد الانتهاء.",
    "kind": "text",
-   "hash": "8fd44908399e",
+   "hash": "4dac956cb227",
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.cancel.pauseInstead": {
