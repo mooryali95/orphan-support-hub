@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -478,6 +479,7 @@ function OrphanDetail() {
                     </span>
                   )}
                   <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
+                  <VerificationBadge orphanId={orphan.id} />
                   {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
                 </div>
 

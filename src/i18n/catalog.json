@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3780,
+ "count": 3821,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -3076,6 +3076,88 @@
    "hash": "ea97c8abfa9d",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.alertAdult": {
+   "en": "Crosses age 18",
+   "ar": "يعبر سنّ 18",
+   "kind": "text",
+   "hash": "388f214e0f4e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertDays": {
+   "en": "{0} days",
+   "ar": "{0} يوماً",
+   "kind": "template",
+   "params": 1,
+   "hash": "dee9f1101c84",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertDistance": {
+   "en": "{0} letters apart after normalization",
+   "ar": "فرق {0} حرف بعد التطبيع",
+   "kind": "template",
+   "params": 1,
+   "hash": "199913ea32f0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertFiles": {
+   "en": "{0} of {1} files within an hour",
+   "ar": "{0} ملف من {1} خلال ساعة",
+   "kind": "template",
+   "params": 2,
+   "hash": "87136b909951",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertFrom": {
+   "en": "Was",
+   "ar": "كان",
+   "kind": "text",
+   "hash": "0858802c8b99",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertHits": {
+   "en": "Seen {0} times",
+   "ar": "تكرّر {0} مرة",
+   "kind": "template",
+   "params": 1,
+   "hash": "241fd24f6fab",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertOther": {
+   "en": "Other file",
+   "ar": "الملف الآخر",
+   "kind": "text",
+   "hash": "44b4d5eaeb67",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertTo": {
+   "en": "Now",
+   "ar": "صار",
+   "kind": "text",
+   "hash": "4f6bb82a56ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsCount": {
+   "en": "Alerts: {0} critical, {1} warnings",
+   "ar": "تنبيهات: {0} حرج، {1} تحذير",
+   "kind": "template",
+   "params": 2,
+   "hash": "43956f1e3282",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsHint": {
+   "en": "Every incoming value is checked: hidden characters, mixed scripts, one-letter name edits, birth-date shifts, flip-flops, duplicate files, bulk changes, and edits after sponsorship. A critical alert flags the file and blocks new sponsorship until you settle it.",
+   "ar": "المنصّة تفحص كل قيمةٍ تصل: المحارف الخفية، وخلط الأبجديات، وتعديل حرفٍ في اسم، وإزاحة العمر، والتذبذب، والملفات المكرّرة، والتغيير بالجملة، والتعديل بعد الكفالة. التنبيه الحرج يسم الملف ويمنع الكفالة الجديدة حتى تحسمه.",
+   "kind": "text",
+   "hash": "832cfbbe80ce",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsTitle": {
+   "en": "Automatic verification alerts",
+   "ar": "تنبيهات التحقق الآلي",
+   "kind": "text",
+   "hash": "a3df81fc37de",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.candidates": {
    "en": "Candidates",
    "ar": "مرشّحون",
@@ -3097,6 +3179,20 @@
    "hash": "3a5f1ecd20f6",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.confirmFraud": {
+   "en": "Confirmed tampering or error",
+   "ar": "تلاعب أو خطأ مؤكَّد",
+   "kind": "text",
+   "hash": "2d876095e8d0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmNote": {
+   "en": "Write why you confirm it (kept in the audit log)",
+   "ar": "اكتب سبب التأكيد (يُحفظ في سجل التدقيق)",
+   "kind": "text",
+   "hash": "f05a0d9a39e9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.conflictsHint": {
    "en": "Critical first. Every decision is audited; a manual choice holds until the owner sends a newer update.",
    "ar": "الحرج أوّلاً. القرار يُسجَّل في سجلّ التدقيق، والاعتماد اليدوي يثبت حتى يصل تحديثٌ أحدث من المالك.",
@@ -3109,6 +3205,13 @@
    "ar": "صندوق التعارضات",
    "kind": "text",
    "hash": "5dbd02c55190",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.countryWide": {
+   "en": "Country-wide",
+   "ar": "على مستوى الدولة",
+   "kind": "text",
+   "hash": "718d87fd213b",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.create": {
@@ -3183,6 +3286,13 @@
    "hash": "cd12b3c9cbe5",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.errors.alert_closed": {
+   "en": "This alert was already settled.",
+   "ar": "حُسم هذا التنبيه من قبل.",
+   "kind": "text",
+   "hash": "9366f5ae5c27",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.errors.already_linked": {
    "en": "That file is already linked to another record from the same source.",
    "ar": "هذا الملف مربوطٌ بسجلٍّ آخر من المصدر نفسه.",
@@ -3246,6 +3356,13 @@
    "hash": "f646b6dee69c",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.errors.note_required": {
+   "en": "Confirming needs a written reason.",
+   "ar": "التأكيد يحتاج سبباً مكتوباً.",
+   "kind": "text",
+   "hash": "c981b7bd7094",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.errors.office_source_inactive": {
    "en": "The office platform isn't in shadow or active mode for this country.",
    "ar": "منصّة المكتب ليست في وضع الظلّ أو الفعّال لهذه الدولة.",
@@ -3286,6 +3403,13 @@
    "ar": "القيمة غير صالحة لهذا الحقل.",
    "kind": "text",
    "hash": "d5a12f47e9bd",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.falsePositive": {
+   "en": "False alarm",
+   "ar": "إنذار كاذب",
+   "kind": "text",
+   "hash": "850e463c4c72",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.fields.birth_date": {
@@ -3664,6 +3788,13 @@
    "hash": "b720e1c6f5d2",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.noAlerts": {
+   "en": "No open alerts.",
+   "ar": "لا تنبيهات مفتوحة.",
+   "kind": "text",
+   "hash": "0eb9a5cc1a75",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.noCandidates": {
    "en": "No candidate by name and birth date.",
    "ar": "لا مرشّح بالاسم والميلاد.",
@@ -3778,6 +3909,13 @@
    "hash": "ba0a48776b0e",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.reviewed": {
+   "en": "Reviewed, no issue",
+   "ar": "روجِع ولا إشكال",
+   "kind": "text",
+   "hash": "8440d29f4dc1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.roles.office": {
    "en": "Office",
    "ar": "المكتب",
@@ -3806,6 +3944,13 @@
    "hash": "4dcd2fb3c18c",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.scoreLabel": {
+   "en": "Trust score",
+   "ar": "درجة الثقة",
+   "kind": "text",
+   "hash": "49daa56cd2bb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.send": {
    "en": "Send",
    "ar": "أرسل",
@@ -3818,6 +3963,90 @@
    "ar": "جارٍ الإرسال",
    "kind": "text",
    "hash": "45bb72ae6a6a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.critical": {
+   "en": "Critical",
+   "ar": "حرج",
+   "kind": "text",
+   "hash": "fa39deee3489",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.info": {
+   "en": "Info",
+   "ar": "معلومة",
+   "kind": "text",
+   "hash": "2e2ac02f6b73",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.warning": {
+   "en": "Warning",
+   "ar": "تحذير",
+   "kind": "text",
+   "hash": "62b31e1eef1e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.age_shift": {
+   "en": "Birth date shifted",
+   "ar": "إزاحة في تاريخ الميلاد",
+   "kind": "text",
+   "hash": "fa3138529b35",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.bulk_change": {
+   "en": "Bulk change from a source",
+   "ar": "تغيير بالجملة من مصدر",
+   "kind": "text",
+   "hash": "e3cb3cdcc49f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.change_after_sponsorship": {
+   "en": "Critical field changed after sponsorship",
+   "ar": "تغيير حقل حرج بعد الكفالة",
+   "kind": "text",
+   "hash": "d5305cbac1a6",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.cosmetic_change": {
+   "en": "Cosmetic change folded by normalization",
+   "ar": "تغيير شكليّ طواه التطبيع",
+   "kind": "text",
+   "hash": "d8a5e288bc91",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.flip_flop": {
+   "en": "Returned to an earlier value",
+   "ar": "عودة إلى قيمة سابقة",
+   "kind": "text",
+   "hash": "7240d5ba6e25",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.hidden_characters": {
+   "en": "Hidden characters in the value",
+   "ar": "محارف خفية في القيمة",
+   "kind": "text",
+   "hash": "db635a29e46d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.mixed_script": {
+   "en": "Mixed scripts in one word",
+   "ar": "خلط أبجديات في كلمة",
+   "kind": "text",
+   "hash": "cf24cfa265ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.possible_duplicate": {
+   "en": "Possible duplicate file",
+   "ar": "ملف مكرّر محتمل",
+   "kind": "text",
+   "hash": "ccc08590e5b9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.subtle_edit": {
+   "en": "One or two letters edited",
+   "ar": "تعديل حرف أو حرفين",
+   "kind": "text",
+   "hash": "2c9dbefc3e33",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.sourceRole": {
@@ -3855,6 +4084,13 @@
    "hash": "363900be1c98",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.trust.flagged": {
+   "en": "Flagged by an alert",
+   "ar": "موسوم بتنبيه",
+   "kind": "text",
+   "hash": "7aaba69676df",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.trust.legacy": {
    "en": "Pre-dates this layer",
    "ar": "سابق للطبقة",
@@ -3888,6 +4124,13 @@
    "ar": "فيه بندٌ مفتوح: يُجمَّد على آخر نسخةٍ معتمدة.",
    "kind": "text",
    "hash": "72e39618f3f1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.flagged": {
+   "en": "Open critical alert or confirmed tampering: no new sponsorship.",
+   "ar": "تنبيهٌ حرج مفتوح أو تلاعبٌ مؤكَّد: لا كفالة جديدة.",
+   "kind": "text",
+   "hash": "37080624fbfd",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.trustHint.legacy": {
@@ -8725,6 +8968,56 @@
    "kind": "text",
    "hash": "ca27dd23cbc1",
    "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphans/VerificationBadge.hintPrimary": {
+   "en": "The platform matched this file against WAMY's record.",
+   "ar": "طابقت المنصّة بيانات الملف مع سجلّ الندوة.",
+   "kind": "text",
+   "hash": "cdc1742be4e9",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.hintReview": {
+   "en": "This file is being reviewed before it takes a new sponsorship.",
+   "ar": "يُراجَع الملف الآن قبل استقبال كفالةٍ جديدة.",
+   "kind": "text",
+   "hash": "cc4c0bbc4d2f",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.hintTwo": {
+   "en": "The platform matched this file between WAMY and its country office.",
+   "ar": "طابقت المنصّة بيانات الملف بين الندوة ومكتبها في الدولة.",
+   "kind": "text",
+   "hash": "1ebfce50bd11",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.month": {
+   "en": "Last verified {0}",
+   "ar": "آخر تحقّق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0d7cabe0b883",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.primary_source": {
+   "en": "Verified by WAMY",
+   "ar": "موثّق من الندوة",
+   "kind": "text",
+   "hash": "33d47d297400",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.two_sources": {
+   "en": "Verified by two sources",
+   "ar": "موثّق من مصدرين",
+   "kind": "text",
+   "hash": "0377850a7669",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.under_review": {
+   "en": "Under verification",
+   "ar": "قيد التحقق",
+   "kind": "text",
+   "hash": "d050b3dcba89",
+   "file": "src/components/orphans/VerificationBadge.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
    "en": "Cancel",

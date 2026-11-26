@@ -7,6 +7,8 @@ import {
   MAX_GOLDEN_ROWS,
   type Conflict,
   type CountryHealth,
+  type DataAlert,
+  type PublicVerification,
   type IngestResult,
   type LinkItem,
 } from "@/lib/golden-record";
@@ -173,3 +175,47 @@ export const createUnmatched = createServerFn({ method: "POST" })
       { _country: data.country },
     ),
   );
+
+/* ── محرّك التحقق: التنبيهات وشارة الكافل ───────────────────────── */
+
+export const listAlerts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
+  .handler(({ data, context }) =>
+    call<DataAlert[]>(context.supabase, "admin_alerts", { _country: data.country, _limit: 200 }),
+  );
+
+export const resolveAlert = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        id: uuid,
+        status: z.enum(["reviewed", "false_positive", "confirmed"]),
+        note: z.string().trim().max(500).optional(),
+      })
+      .parse(input),
+  )
+  .handler(({ data, context }) =>
+    call<{ ok: true }>(context.supabase, "admin_alert_resolve", {
+      _id: data.id,
+      _status: data.status,
+      _note: data.note ?? null,
+    }),
+  );
+
+/**
+ * شارة الكافل: درجةٌ من ثلاث وشهر آخر تحقّق، لملفٍّ منشور وحده. لا حقول ولا
+ * أسباب تنبيه؛ وما لم تُطبَّق هجرته يعيد null فلا تظهر الشارة.
+ */
+export const getPublicVerification = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) => z.object({ orphanId: uuid }).parse(input))
+  .handler(async ({ data }): Promise<PublicVerification | null> => {
+    const { publicClient } = await import("@/lib/protection.functions");
+    const { data: res, error } = await (publicClient() as unknown as Rpc).rpc(
+      "public_verification",
+      { _orphan: data.orphanId },
+    );
+    if (error || !res) return null;
+    return res as PublicVerification;
+  });

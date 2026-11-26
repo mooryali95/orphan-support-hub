@@ -52,6 +52,7 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/admin-console-verification.sql \
               supabase/tests/mirror-sync-verification.sql \
               supabase/tests/golden-record-verification.sql \
+              supabase/tests/golden-integrity-verification.sql \
               supabase/tests/guardian-verification.sql \
               supabase/tests/geo-verification.sql \
               supabase/tests/geo-layers-verification.sql \

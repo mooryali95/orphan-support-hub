@@ -231,6 +231,7 @@ DECLARE _allowed TEXT[] := ARRAY[
     'public_operating_links()', -- مجاميع الدول المتّصلة بالتشغيل لمنصة الرؤية (بلا صفوف)
     'public_offices_map()', -- مكاتب الندوة على الخريطة: الاسم والدولة والمدينة والفئة ووسم التجريبي (بلا أعضاء)
     'public_ui_locales()',
+    'public_verification(uuid)', -- شارة الكافل: درجةٌ من ثلاث وشهر آخر تحقّق لملفٍّ منشور (بلا حقول ولا أسباب)
     'published_regions()',
     'published_ui_messages(text)',
     'sponsorship_pay_options(uuid)', -- عملات الدفع لملفٍّ منشور وسعرها المعروض (بلا بيانات طفل)
@@ -291,6 +292,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'countries|anon|SELECT|',
     'countries|authenticated|DELETE,INSERT,SELECT,UPDATE|',
     'country_data_sources|authenticated|SELECT|',
+    'data_alerts|authenticated|SELECT|',
     'data_conflicts|authenticated|SELECT|',
     'data_retention_policy|authenticated|SELECT|',
     'disbursements|authenticated|INSERT,SELECT,UPDATE|',
@@ -319,6 +321,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'ops_runs|authenticated|SELECT|',
     'orphan_access_requests|authenticated|SELECT|',
     'orphan_documents|authenticated|INSERT,SELECT,UPDATE|',
+    'orphan_field_history|authenticated|SELECT|',
     'orphan_field_observations|authenticated|SELECT|',
     'orphan_field_state|authenticated|SELECT|',
     'orphan_locks|authenticated|SELECT|',

@@ -37,3 +37,5 @@
 - WAMY is the primary source and the office operating platform verifies; authority is per field in `field_authority`, mirrored by `FIELD_RULES` in `src/lib/golden-record.ts` (locked by its test), so neither source silently overrides the other.
 - Each country's office platform moves `none` → `shadow` → `active` through `admin_country_source_set`, which re-evaluates stored observations; never write `orphan_field_state` or orphan identity columns around `golden_evaluate`, so critical fields keep human approval and the sponsorship lock.
 - Unlinked records wait in `source_link_queue`; files are created only from WAMY records and only by an admin, so names never auto-merge children.
+- Source comparison and link matching run on `golden_canon` text, and every observation passes the `golden_detect` trigger; keep new comparisons on canonical text so spelling variants never become conflicts and tampering always raises an alert.
+- Sponsors see only `public_verification` (three levels and a month); alert reasons and field values stay admin-only, preserving child privacy.

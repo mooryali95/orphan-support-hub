@@ -18,6 +18,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       conflict: "متعارض",
       stale: "متقادم",
       legacy: "سابق للطبقة",
+      flagged: "موسوم بتنبيه",
     },
     trustHint: {
       verified: "المصدران متفقان، أو الندوة وحدها حين لا منصّة تشغيل.",
@@ -25,6 +26,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       conflict: "فيه بندٌ مفتوح: يُجمَّد على آخر نسخةٍ معتمدة.",
       stale: "لا تحديث منذ المدة المحددة.",
       legacy: "ملفٌّ أُدخل قبل هذه الطبقة ولم يصله استيراد.",
+      flagged: "تنبيهٌ حرج مفتوح أو تلاعبٌ مؤكَّد: لا كفالة جديدة.",
     },
     criticalOpen: pluralOf(
       {
@@ -114,6 +116,38 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       `سُجّلت ${observed} قيمة، و${unlinked} سجلّ ينتظر الربط، وتُخطّي ${skipped}.`,
     officeNeedsMode: "رفع المكتب يعمل في وضع الظلّ أو الفعّال.",
 
+    alertsTitle: "تنبيهات التحقق الآلي",
+    alertsHint:
+      "المنصّة تفحص كل قيمةٍ تصل: المحارف الخفية، وخلط الأبجديات، وتعديل حرفٍ في اسم، وإزاحة العمر، والتذبذب، والملفات المكرّرة، والتغيير بالجملة، والتعديل بعد الكفالة. التنبيه الحرج يسم الملف ويمنع الكفالة الجديدة حتى تحسمه.",
+    noAlerts: "لا تنبيهات مفتوحة.",
+    severities: { critical: "حرج", warning: "تحذير", info: "معلومة" },
+    signals: {
+      hidden_characters: "محارف خفية في القيمة",
+      mixed_script: "خلط أبجديات في كلمة",
+      cosmetic_change: "تغيير شكليّ طواه التطبيع",
+      subtle_edit: "تعديل حرف أو حرفين",
+      age_shift: "إزاحة في تاريخ الميلاد",
+      flip_flop: "عودة إلى قيمة سابقة",
+      change_after_sponsorship: "تغيير حقل حرج بعد الكفالة",
+      possible_duplicate: "ملف مكرّر محتمل",
+      bulk_change: "تغيير بالجملة من مصدر",
+    },
+    alertFrom: "كان",
+    alertTo: "صار",
+    alertOther: "الملف الآخر",
+    alertFiles: (n: number, pop: number) => `${n} ملف من ${pop} خلال ساعة`,
+    alertDistance: (n: number) => `فرق ${n} حرف بعد التطبيع`,
+    alertAdult: "يعبر سنّ 18",
+    alertDays: (n: number) => `${n} يوماً`,
+    alertHits: (n: number) => `تكرّر ${n} مرة`,
+    countryWide: "على مستوى الدولة",
+    reviewed: "روجِع ولا إشكال",
+    falsePositive: "إنذار كاذب",
+    confirmFraud: "تلاعب أو خطأ مؤكَّد",
+    confirmNote: "اكتب سبب التأكيد (يُحفظ في سجل التدقيق)",
+    alertsCount: (critical: number, warning: number) =>
+      `تنبيهات: ${critical} حرج، ${warning} تحذير`,
+    scoreLabel: "درجة الثقة",
     conflictsTitle: "صندوق التعارضات",
     conflictsHint:
       "الحرج أوّلاً. القرار يُسجَّل في سجلّ التدقيق، والاعتماد اليدوي يثبت حتى يصل تحديثٌ أحدث من المالك.",
@@ -182,6 +216,8 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       create_primary_only: "إنشاء الملفات من سجلّات الندوة وحدها؛ سجلّ المكتب يُربط.",
       name_required: "السجلّ بلا اسم.",
       gender_required: "السجلّ بلا جنسٍ صالح.",
+      note_required: "التأكيد يحتاج سبباً مكتوباً.",
+      alert_closed: "حُسم هذا التنبيه من قبل.",
     } as Record<string, string>,
   },
   en: {
@@ -200,6 +236,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       conflict: "Conflict",
       stale: "Stale",
       legacy: "Pre-dates this layer",
+      flagged: "Flagged by an alert",
     },
     trustHint: {
       verified: "Both sources agree, or WAMY alone when there is no operating platform.",
@@ -207,6 +244,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       conflict: "Has an open item: held at the last approved version.",
       stale: "No update within the set period.",
       legacy: "Entered before this layer and not yet imported.",
+      flagged: "Open critical alert or confirmed tampering: no new sponsorship.",
     },
     criticalOpen: pluralOf(
       { zero: "No critical items", one: "1 critical item", other: "{1} critical items" },
@@ -284,6 +322,38 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       `${observed} values recorded, ${unlinked} records awaiting a link, ${skipped} skipped.`,
     officeNeedsMode: "Office uploads work in shadow or active mode.",
 
+    alertsTitle: "Automatic verification alerts",
+    alertsHint:
+      "Every incoming value is checked: hidden characters, mixed scripts, one-letter name edits, birth-date shifts, flip-flops, duplicate files, bulk changes, and edits after sponsorship. A critical alert flags the file and blocks new sponsorship until you settle it.",
+    noAlerts: "No open alerts.",
+    severities: { critical: "Critical", warning: "Warning", info: "Info" },
+    signals: {
+      hidden_characters: "Hidden characters in the value",
+      mixed_script: "Mixed scripts in one word",
+      cosmetic_change: "Cosmetic change folded by normalization",
+      subtle_edit: "One or two letters edited",
+      age_shift: "Birth date shifted",
+      flip_flop: "Returned to an earlier value",
+      change_after_sponsorship: "Critical field changed after sponsorship",
+      possible_duplicate: "Possible duplicate file",
+      bulk_change: "Bulk change from a source",
+    },
+    alertFrom: "Was",
+    alertTo: "Now",
+    alertOther: "Other file",
+    alertFiles: (n: number, pop: number) => `${n} of ${pop} files within an hour`,
+    alertDistance: (n: number) => `${n} letters apart after normalization`,
+    alertAdult: "Crosses age 18",
+    alertDays: (n: number) => `${n} days`,
+    alertHits: (n: number) => `Seen ${n} times`,
+    countryWide: "Country-wide",
+    reviewed: "Reviewed, no issue",
+    falsePositive: "False alarm",
+    confirmFraud: "Confirmed tampering or error",
+    confirmNote: "Write why you confirm it (kept in the audit log)",
+    alertsCount: (critical: number, warning: number) =>
+      `Alerts: ${critical} critical, ${warning} warnings`,
+    scoreLabel: "Trust score",
     conflictsTitle: "Conflict inbox",
     conflictsHint:
       "Critical first. Every decision is audited; a manual choice holds until the owner sends a newer update.",
@@ -355,6 +425,8 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       create_primary_only: "Files are created from WAMY records only; office records are linked.",
       name_required: "The record has no name.",
       gender_required: "The record has no valid gender.",
+      note_required: "Confirming needs a written reason.",
+      alert_closed: "This alert was already settled.",
     } as Record<string, string>,
   },
 });

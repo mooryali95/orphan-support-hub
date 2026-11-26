@@ -89,10 +89,37 @@ describe("ملف الرفع", () => {
 describe("نسبة التوثيق", () => {
   it("لا تحسب الإرث، ولا نسبة بلا ملفّات مُدارة", () => {
     expect(
-      verifiedShare({ verified: 3, single_source: 1, conflict: 0, stale: 0, legacy: 50 }),
+      verifiedShare({
+        verified: 3,
+        single_source: 1,
+        conflict: 0,
+        stale: 0,
+        legacy: 50,
+        flagged: 0,
+      }),
     ).toBe(75);
     expect(
-      verifiedShare({ verified: 0, single_source: 0, conflict: 0, stale: 0, legacy: 9 }),
+      verifiedShare({
+        verified: 0,
+        single_source: 0,
+        conflict: 0,
+        stale: 0,
+        legacy: 9,
+        flagged: 0,
+      }),
     ).toBeNull();
+  });
+
+  it("الموسوم ملفٌّ مُدار غير موثّق", () => {
+    expect(
+      verifiedShare({
+        verified: 3,
+        single_source: 0,
+        conflict: 0,
+        stale: 0,
+        legacy: 0,
+        flagged: 1,
+      }),
+    ).toBe(75);
   });
 });

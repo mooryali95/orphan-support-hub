@@ -13,7 +13,7 @@ export type SourceRole = "wamy" | "office";
 export type Owner = SourceRole | "platform";
 export type Risk = "low" | "medium" | "critical";
 export type OfficeMode = "none" | "shadow" | "active";
-export type TrustState = "verified" | "single_source" | "conflict" | "stale" | "legacy";
+export type TrustState = "verified" | "single_source" | "conflict" | "stale" | "legacy" | "flagged";
 export type FieldGroup =
   "identity" | "eligibility" | "current" | "reports" | "qualification" | "finance";
 
@@ -304,6 +304,7 @@ export type CountryHealth = {
   platforms: Array<{ key: string; name: string }>;
   trust: Record<TrustState, number>;
   conflicts: { critical: number; other: number };
+  alerts: { critical: number; warning: number; info: number };
   link_pending: number;
   last_wamy: string | null;
   last_office: string | null;
@@ -327,6 +328,40 @@ export type Conflict = {
   wamy: FieldValue;
   office: FieldValue;
   created_at: string;
+};
+
+export type AlertSignal =
+  | "hidden_characters"
+  | "mixed_script"
+  | "cosmetic_change"
+  | "subtle_edit"
+  | "age_shift"
+  | "flip_flop"
+  | "change_after_sponsorship"
+  | "possible_duplicate"
+  | "bulk_change";
+
+export type DataAlert = {
+  id: string;
+  orphan_id: string | null;
+  code: string | null;
+  name: string | null;
+  country: string;
+  field: string;
+  signal: AlertSignal;
+  severity: "info" | "warning" | "critical";
+  role: SourceRole | null;
+  source: string | null;
+  detail: Record<string, string | number | boolean | null>;
+  hits: number;
+  created_at: string;
+  updated_at: string;
+};
+
+/** شارة الكافل كما تعيدها `public_verification`: لا حقول ولا أسباب. */
+export type PublicVerification = {
+  level: "two_sources" | "primary_source" | "under_review";
+  verified_month: string | null;
 };
 
 export type LinkItem = {
@@ -359,7 +394,8 @@ export type IngestResult = {
 
 /** نسبة الملفّات الموثّقة من الملفّات المُدارة (بلا الإرث الذي سبق الطبقة). */
 export function verifiedShare(trust: Record<TrustState, number>): number | null {
-  const managed = trust.verified + trust.single_source + trust.conflict + trust.stale;
+  const managed =
+    trust.verified + trust.single_source + trust.conflict + trust.stale + trust.flagged;
   return managed === 0 ? null : Math.round((trust.verified / managed) * 100);
 }
 

@@ -14,6 +14,7 @@ import {
   verifiedShare,
   type Conflict,
   type CountryHealth,
+  type DataAlert,
   type GoldenSheet,
   type LinkItem,
   type OfficeMode,
@@ -24,8 +25,10 @@ import {
   createUnmatched,
   getDataHealth,
   importGolden,
+  listAlerts,
   listConflicts,
   listLinkQueue,
+  resolveAlert,
   resolveConflict,
   resolveLink,
   setCountrySource,
@@ -47,7 +50,14 @@ import {
 } from "./shared";
 import { SOURCES_COPY } from "./sources-copy";
 
-const TRUST_ORDER: TrustState[] = ["verified", "single_source", "conflict", "stale", "legacy"];
+const TRUST_ORDER: TrustState[] = [
+  "verified",
+  "single_source",
+  "flagged",
+  "conflict",
+  "stale",
+  "legacy",
+];
 const MODES: OfficeMode[] = ["none", "shadow", "active"];
 
 function useErr() {
@@ -105,6 +115,7 @@ export function SourcesPanel({ shared }: { shared: Shared }) {
         <>
           <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
           <UploadCard key={`up-${selected.code}`} row={selected} />
+          <Alerts country={selected.code} />
           <Conflicts country={selected.code} />
           <LinkQueue country={selected.code} />
         </>
@@ -173,6 +184,14 @@ function HealthCard({
         )}
       >
         {c.criticalOpen(row.conflicts.critical)} · {c.otherOpen(row.conflicts.other)}
+      </p>
+      <p
+        className={cn(
+          "mt-1 text-xs",
+          row.alerts.critical > 0 ? "font-bold text-destructive" : "text-muted-foreground",
+        )}
+      >
+        {c.alertsCount(row.alerts.critical, row.alerts.warning)}
       </p>
       <p className="mt-1 text-xs text-muted-foreground">{c.linkPending(row.link_pending)}</p>
       <p className="mt-2 text-xs text-muted-foreground">
@@ -681,6 +700,135 @@ function LinkQueue({ country }: { country: string }) {
                   onClick={() => m.mutate({ id: q.id, action: "ignore" })}
                 >
                   {c.ignore}
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function AlertDetail({ a }: { a: DataAlert }) {
+  const c = useCopy(SOURCES_COPY);
+  const d = a.detail;
+  const str = (k: string) => (d[k] === undefined || d[k] === null ? null : String(d[k]));
+  const parts: string[] = [];
+  if (str("from") !== null) parts.push(`${c.alertFrom}: ${str("from")}`);
+  if (str("to") !== null) parts.push(`${c.alertTo}: ${str("to")}`);
+  if (str("back_to") !== null) parts.push(`${c.alertTo}: ${str("back_to")}`);
+  if (typeof d["distance"] === "number") parts.push(c.alertDistance(d["distance"]));
+  if (typeof d["days"] === "number") parts.push(c.alertDays(d["days"]));
+  if (d["crosses_adulthood"] === true) parts.push(c.alertAdult);
+  if (str("other_code") !== null)
+    parts.push(`${c.alertOther}: ${str("other_code")} · ${str("other_name") ?? ""}`);
+  if (typeof d["files"] === "number" && typeof d["population"] === "number")
+    parts.push(c.alertFiles(d["files"], d["population"]));
+  if (a.hits > 1) parts.push(c.alertHits(a.hits));
+  return parts.length ? (
+    <ul className="mt-2 space-y-0.5 text-sm">
+      {parts.map((p) => (
+        <li key={p}>
+          <bdi>{p}</bdi>
+        </li>
+      ))}
+    </ul>
+  ) : null;
+}
+
+function Alerts({ country }: { country: string }) {
+  const c = useCopy(SOURCES_COPY);
+  const err = useErr();
+  const qc = useQueryClient();
+  const fetchList = useServerFn(listAlerts);
+  const list = useQuery({
+    queryKey: ["golden-alerts", country],
+    queryFn: () => fetchList({ data: { country } }),
+  });
+  const resolve = useServerFn(resolveAlert);
+  const m = useMutation({
+    mutationFn: (v: {
+      id: string;
+      status: "reviewed" | "false_positive" | "confirmed";
+      note?: string;
+    }) => resolve({ data: v }),
+    onSuccess: (res) => {
+      if (!res.ok) return void toast.error(err(res.error));
+      toast.success(c.done);
+      void qc.invalidateQueries({ queryKey: ["golden-alerts"] });
+      void qc.invalidateQueries({ queryKey: ["data-health"] });
+    },
+  });
+  const items = list.data?.ok ? list.data.data : [];
+
+  return (
+    <section aria-labelledby="alerts-title">
+      <SectionHead title={c.alertsTitle} hint={c.alertsHint} />
+      {list.isPending ? (
+        <Busy />
+      ) : !list.data?.ok ? (
+        <Failed onRetry={() => void list.refetch()} />
+      ) : items.length === 0 ? (
+        <p className="mt-3 text-sm text-muted-foreground">{c.noAlerts}</p>
+      ) : (
+        <ul className="mt-4 space-y-3">
+          {items.map((a) => (
+            <li
+              key={a.id}
+              className={cn(CARD, "p-4", a.severity === "critical" && "ring-1 ring-destructive/40")}
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                {a.severity === "critical" && (
+                  <ShieldAlert className="size-4 text-destructive" aria-hidden="true" />
+                )}
+                <span className="font-bold">{c.signals[a.signal]}</span>
+                <Pill
+                  tone={
+                    a.severity === "critical" ? "wine" : a.severity === "warning" ? "gold" : "quiet"
+                  }
+                >
+                  {c.severities[a.severity]}
+                </Pill>
+                <span className="text-xs text-muted-foreground">
+                  {c.fields[a.field] ?? (a.field === "identity" ? c.groups.identity : a.field)}
+                  {a.role ? ` · ${c.roles[a.role]}` : ""}
+                </span>
+                <span className="ms-auto text-xs text-muted-foreground">
+                  {a.code ? `${a.code} · ${a.name ?? ""}` : c.countryWide}
+                </span>
+              </div>
+              <AlertDetail a={a} />
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="min-h-11"
+                  disabled={m.isPending}
+                  onClick={() => m.mutate({ id: a.id, status: "reviewed" })}
+                >
+                  {c.reviewed}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="min-h-11"
+                  disabled={m.isPending}
+                  onClick={() => m.mutate({ id: a.id, status: "false_positive" })}
+                >
+                  {c.falsePositive}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="min-h-11"
+                  disabled={m.isPending}
+                  onClick={() => {
+                    const note = window.prompt(c.confirmNote)?.trim();
+                    if (note) m.mutate({ id: a.id, status: "confirmed", note });
+                  }}
+                >
+                  {c.confirmFraud}
                 </Button>
               </div>
             </li>

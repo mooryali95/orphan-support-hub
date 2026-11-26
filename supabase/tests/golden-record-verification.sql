@@ -62,7 +62,7 @@ BEGIN
      OR EXISTS (SELECT 1 FROM public.orphan_field_observations WHERE orphan_id = _o AND field = 'sponsorship') THEN
     RAISE EXCEPTION 'FAIL — المصدر أو الحقل المالي';
   END IF;
-  IF public.golden_trust(_o) <> '{"state":"verified","basis":"primary_only","mode":"none"}'::jsonb THEN
+  IF NOT public.golden_trust(_o) @> '{"state":"verified","basis":"primary_only","mode":"none","score":100}'::jsonb THEN
     RAISE EXCEPTION 'FAIL — الثقة بلا منصّة تشغيل: %', public.golden_trust(_o);
   END IF;
   RAISE NOTICE 'PASS — بلا منصّة تشغيل: الندوة تملك كل الحقول والملف موثّقٌ بمصدرها';
