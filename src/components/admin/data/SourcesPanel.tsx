@@ -789,7 +789,7 @@ function OpenFile({ id, onOpen }: { id: string | null; onOpen: (id: string) => v
   );
 }
 
-function Conflicts({
+export function Conflicts({
   country,
   canApprove,
   onOpen,
@@ -1125,7 +1125,7 @@ function Conflicts({
   );
 }
 
-function LinkQueue({
+export function LinkQueue({
   country,
   canApprove,
   onOpen,
@@ -1471,7 +1471,7 @@ function AlertActions({
   );
 }
 
-function Alerts({
+export function Alerts({
   country,
   canApprove,
   onOpen,
