@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4165,
+ "count": 4187,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -14086,10 +14086,24 @@
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.admin.1": {
-   "en": "The data console: verification, approval, pledges and the access log.",
-   "ar": "لوحة البيانات: التوثيق، والاعتماد، والتعهّدات، وسجلّ الاطّلاع.",
+   "en": "The data console: verification, pledges, verification sources and the trust center.",
+   "ar": "لوحة البيانات: التوثيق، والتعهّدات، ومصادر التحقق، ومركز الثقة.",
    "kind": "text",
-   "hash": "f9c6738aa361",
+   "hash": "90ca48051b75",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.country.0": {
+   "en": "Country team",
+   "ar": "فريق الدولة",
+   "kind": "text",
+   "hash": "2023396c61b9",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.country.1": {
+   "en": "Settles alerts and conflicts and uploads the country's files; switch between supervisor, data entry and viewer.",
+   "ar": "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته — بدّل بين المشرف والمدخل والمطّلع.",
+   "kind": "text",
+   "hash": "27fd2ecc3d2e",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.decider.0": {
@@ -14600,6 +14614,76 @@
    "kind": "text",
    "hash": "565dc525e754",
    "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryVerification.countryLabel": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.data_entry": {
+   "en": "Uploads the country's files and reads the alerts, but cannot settle.",
+   "ar": "يرفع ملفّات الدولة ويقرأ التنبيهات، ولا يحسم.",
+   "kind": "text",
+   "hash": "9c032b32fe0d",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.supervisor": {
+   "en": "Settles, uploads and manages the team, except changes they uploaded, which someone else settles.",
+   "ar": "يحسم ويرفع ويدير فريقه — إلا ما رفعه بنفسه، فيحسمه غيره.",
+   "kind": "text",
+   "hash": "6711978f17d9",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.viewer": {
+   "en": "Reads data health and the queues; cannot upload or settle.",
+   "ar": "يقرأ صحة البيانات وطوابيرها، ولا يرفع ولا يحسم.",
+   "kind": "text",
+   "hash": "6db0cf953a1f",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleLabel": {
+   "en": "Enter as",
+   "ar": "ادخل بدور",
+   "kind": "text",
+   "hash": "5c9de2968da5",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.data_entry": {
+   "en": "Data entry",
+   "ar": "مدخل بيانات",
+   "kind": "text",
+   "hash": "7bd738023f51",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.viewer": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.sampleLead": {
+   "en": "Five countries with fictional files (DEMO-…) and demo office platforms. Settling, uploading and linking are simulated in this session only; nothing reaches the server or touches a child or a payment.",
+   "ar": "دولٌ خمس بملفّاتٍ مستعارة (DEMO-…) ومنصّات مكاتب تجريبية. الحسم والرفع والربط محاكاةٌ في هذه الجلسة وحدها، لا تصل الخادم ولا تمسّ طفلاً أو دفعة.",
+   "kind": "text",
+   "hash": "6db6b79e9cbc",
+   "file": "src/components/try/TryVerification.tsx"
   },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",
@@ -24757,6 +24841,13 @@
    "hash": "1f738ae6e46d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
+  "routes/try.admin.sections.3": {
+   "en": "Verification",
+   "ar": "التحقق",
+   "kind": "text",
+   "hash": "dcf128bde2be",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
   "routes/try.admin.title": {
    "en": "Administration console",
    "ar": "لوحة الإدارة",
@@ -24776,6 +24867,34 @@
    "ar": "ماذا تجرّب هنا؟",
    "kind": "text",
    "hash": "44b68d78e93b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verify.sources": {
+   "en": "Verification sources",
+   "ar": "مصادر التحقق",
+   "kind": "text",
+   "hash": "05c6e55557c7",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verify.trust": {
+   "en": "Trust center",
+   "ar": "مركز الثقة",
+   "kind": "text",
+   "hash": "1214c4f2cb38",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verifyCards.sources": {
+   "en": "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
+   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
+   "kind": "text",
+   "hash": "9dfd1ef6a330",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verifyCards.trust": {
+   "en": "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
+   "ar": "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+   "kind": "text",
+   "hash": "042836eb154d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.childId.activation": {
@@ -25007,6 +25126,41 @@
    "kind": "text",
    "hash": "f429a89a1ce4",
    "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.country.lead": {
+   "en": "Each country's team sees only its own files: what arrived from WAMY and from the office platform, where they disagree, and what the platform flagged. Switch roles to see what each one may do.",
+   "ar": "فريق كلّ دولةٍ يرى ملفّات دولته وحدها: ما وصل من الندوة ومن منصّة المكتب، وما اختلفا عليه، وما نبّهت إليه المنصّة. بدّل الدور لترى ما يحقّ لكلٍّ منهم.",
+   "kind": "text",
+   "hash": "e21d4b073c5d",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.real": {
+   "en": "each member signs in with their own account and role, and nobody settles a change they uploaded",
+   "ar": "كلّ عضوٍ يدخل بحسابه ودوره، ولا يحسم أحدٌ تغييراً رفعه بنفسه",
+   "kind": "text",
+   "hash": "93a28c150f44",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.role": {
+   "en": "Country team",
+   "ar": "فريق الدولة",
+   "kind": "text",
+   "hash": "2023396c61b9",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.title": {
+   "en": "Verification in your country",
+   "ar": "التحقق في دولتك",
+   "kind": "text",
+   "hash": "a7a6ed45c68f",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.title.title": {
+   "en": "Country team: interactive demo",
+   "ar": "فريق الدولة — عرض تفاعلي",
+   "kind": "text",
+   "hash": "6a22234786d2",
+   "file": "src/routes/try.country.tsx"
   },
   "routes/try.cycle.age": {
    "en": "Age",

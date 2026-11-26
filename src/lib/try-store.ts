@@ -59,6 +59,7 @@ export const LEGACY_TRIAL_KEYS = [
   "try-access:v1",
   "try-visits:v1",
   "try-office:v1",
+  "try-verification:v1",
 ] as const;
 
 let purged = false;

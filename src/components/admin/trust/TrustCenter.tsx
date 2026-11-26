@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useCopy } from "@/lib/locale";
 import { getTrustAging, getTrustOverview, getTrustTeam } from "@/lib/trust-center.functions";
 import { cn } from "@/lib/utils";
@@ -30,18 +30,21 @@ export default function TrustCenter({
 }) {
   const c = useCopy(TRUST_COPY);
   const [section, setSection] = useState<TrustSection>(initialSection);
-  const fetchOverview = useServerFn(getTrustOverview);
-  const fetchAging = useServerFn(getTrustAging);
-  const fetchTeam = useServerFn(getTrustTeam);
+  const fetchOverview = useDataFn("trust.overview", getTrustOverview);
+  const fetchAging = useDataFn("trust.aging", getTrustAging);
+  const fetchTeam = useDataFn("trust.team", getTrustTeam);
   // النظرة تُحمَّل دائماً: منها قائمة الدول لمرشّحات السجلّ والتقرير.
-  const overview = useQuery({ queryKey: ["trust-overview"], queryFn: () => fetchOverview() });
+  const overview = useQuery({
+    queryKey: useDataKey(["trust-overview"]),
+    queryFn: () => fetchOverview(),
+  });
   const aging = useQuery({
-    queryKey: ["trust-aging"],
+    queryKey: useDataKey(["trust-aging"]),
     queryFn: () => fetchAging(),
     enabled: section === "aging",
   });
   const team = useQuery({
-    queryKey: ["trust-team"],
+    queryKey: useDataKey(["trust-team"]),
     queryFn: () => fetchTeam(),
     enabled: section === "team",
   });

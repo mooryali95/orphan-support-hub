@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { History, Lock, Search, ShieldAlert, X } from "lucide-react";
 import { useRef, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 
@@ -10,6 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { formatDate } from "@/lib/format";
 import {
   changesOf,
@@ -348,8 +348,11 @@ export function ChildFileSheet({ id, onClose }: { id: string | null; onClose: ()
 function ChildFileBody({ id, onClose }: { id: string; onClose: () => void }) {
   const s = useCopy(SOURCES_COPY);
   const w = useCopy(WORK_COPY);
-  const fetchFile = useServerFn(getChildFile);
-  const q = useQuery({ queryKey: ["child-file", id], queryFn: () => fetchFile({ data: { id } }) });
+  const fetchFile = useDataFn("golden.childFile", getChildFile);
+  const q = useQuery({
+    queryKey: useDataKey(["child-file", id]),
+    queryFn: () => fetchFile({ data: { id } }),
+  });
   const file = q.data?.ok ? q.data.data : null;
   let body: ReactNode;
   if (q.isPending) body = <Busy />;

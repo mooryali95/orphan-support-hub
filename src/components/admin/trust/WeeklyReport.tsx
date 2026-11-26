@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Download, Info } from "lucide-react";
 import { useState } from "react";
 
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { useCopy, useLocale } from "@/lib/locale";
@@ -24,11 +24,11 @@ export function WeeklyReport({
 }) {
   const c = useCopy(TRUST_COPY);
   const label = useCountryLabel();
-  const fetch = useServerFn(getTrustWeekly);
+  const fetch = useDataFn("trust.weekly", getTrustWeekly);
   const [picked, setPicked] = useState("");
   const country = countries.some((k) => k.code === picked) ? picked : (countries[0]?.code ?? "");
   const query = useQuery({
-    queryKey: ["trust-weekly", country],
+    queryKey: useDataKey(["trust-weekly", country]),
     queryFn: () => fetch({ data: { country } }),
     enabled: country !== "",
   });
