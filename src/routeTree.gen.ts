@@ -58,6 +58,7 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
 import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
+import { Route as ApiIntegrationsRecordsRouteImport } from './routes/api/integrations/records'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
 import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/reconcile'
@@ -331,6 +332,11 @@ const ApiIntegrationsOrphansRoute = ApiIntegrationsOrphansRouteImport.update({
   path: '/api/integrations/orphans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiIntegrationsRecordsRoute = ApiIntegrationsRecordsRouteImport.update({
+  id: '/api/integrations/records',
+  path: '/api/integrations/records',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNotificationsDispatchRoute =
   ApiNotificationsDispatchRouteImport.update({
     id: '/api/notifications/dispatch',
@@ -460,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
@@ -524,6 +531,7 @@ export interface FileRoutesByTo {
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
@@ -591,6 +599,7 @@ export interface FileRoutesById {
   '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
@@ -658,6 +667,7 @@ export interface FileRouteTypes {
     | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
@@ -722,6 +732,7 @@ export interface FileRouteTypes {
     | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
@@ -788,6 +799,7 @@ export interface FileRouteTypes {
     | '/_authenticated/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
@@ -835,6 +847,7 @@ export interface RootRouteChildren {
   VisionIndexRoute: typeof VisionIndexRoute
   ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
+  ApiIntegrationsRecordsRoute: typeof ApiIntegrationsRecordsRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiOpsHealthRoute: typeof ApiOpsHealthRoute
   ApiPaymentsReconcileRoute: typeof ApiPaymentsReconcileRoute
@@ -1198,6 +1211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiIntegrationsOrphansRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/integrations/records': {
+      id: '/api/integrations/records'
+      path: '/api/integrations/records'
+      fullPath: '/api/integrations/records'
+      preLoaderRoute: typeof ApiIntegrationsRecordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/notifications/dispatch': {
       id: '/api/notifications/dispatch'
       path: '/api/notifications/dispatch'
@@ -1401,6 +1421,7 @@ const rootRouteChildren: RootRouteChildren = {
   VisionIndexRoute: VisionIndexRoute,
   ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
+  ApiIntegrationsRecordsRoute: ApiIntegrationsRecordsRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiOpsHealthRoute: ApiOpsHealthRoute,
   ApiPaymentsReconcileRoute: ApiPaymentsReconcileRoute,

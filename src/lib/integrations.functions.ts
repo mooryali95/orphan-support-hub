@@ -38,7 +38,17 @@ export const issueApiClient = createServerFn({ method: "POST" })
       .object({
         name: z.string().trim().min(2).max(120),
         orgId: z.string().uuid().nullable(),
-        scopes: z.array(z.enum(["orphans:read", "orphans:import", "mirror:write"])).min(1),
+        scopes: z
+          .array(
+            z.enum([
+              "orphans:read",
+              "orphans:import",
+              "mirror:write",
+              "records:primary",
+              "records:verify",
+            ]),
+          )
+          .min(1),
         source: z
           .string()
           .regex(/^[a-z0-9-]{2,40}$/)
@@ -56,7 +66,20 @@ export const issueApiClient = createServerFn({ method: "POST" })
       };
     }
 
-    if (data.scopes.includes("mirror:write") && !data.source) {
+    if (data.scopes.includes("records:primary") && data.scopes.includes("records:verify")) {
+      return {
+        ok: false as const,
+        error: "مفتاح الندوة ومفتاح المكتب منفصلان: اختر أحدهما.",
+        credentials: null,
+      };
+    }
+    // مفتاح الندوة لا يرتبط بمنصّة تشغيل؛ القاعدة تمنع الجمع أيضاً.
+    if (data.scopes.includes("records:primary")) delete data.source;
+
+    if (
+      (data.scopes.includes("mirror:write") || data.scopes.includes("records:verify")) &&
+      !data.source
+    ) {
       return {
         ok: false as const,
         error: "مفتاح المزامنة يحتاج منصّة تشغيلٍ يرتبط بها.",

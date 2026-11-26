@@ -32,3 +32,8 @@
 - Use the streaming AI SDK Responses boundary with request-local gateway correlation and authenticated, rate-limited access; this keeps credentials server-only and prevents unbounded AI spending.
 - Ground answers in an anonymous `orphan_view` projected through an explicit public-card allowlist and published guidance, never caller-authorized details or privileged child reads; this preserves child privacy even for admin callers.
 - Keep one session-only conversation and durable server-only access-denial state; this avoids storing donor questions and prevents automatic replay after provider or credit blocks.
+
+## Golden record
+- WAMY is the primary source and the office operating platform verifies; authority is per field in `field_authority`, mirrored by `FIELD_RULES` in `src/lib/golden-record.ts` (locked by its test), so neither source silently overrides the other.
+- Each country's office platform moves `none` → `shadow` → `active` through `admin_country_source_set`, which re-evaluates stored observations; never write `orphan_field_state` or orphan identity columns around `golden_evaluate`, so critical fields keep human approval and the sponsorship lock.
+- Unlinked records wait in `source_link_queue`; files are created only from WAMY records and only by an admin, so names never auto-merge children.

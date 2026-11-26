@@ -21,6 +21,8 @@ const SCOPES = [
   ["orphans:read", "قراءة البطاقات"],
   ["orphans:import", "استيراد المستفيدين"],
   ["mirror:write", "مزامنة منصّة التشغيل (الرواد)"],
+  ["records:primary", "السجلّ الذهبي: مصدر الندوة الرئيس"],
+  ["records:verify", "السجلّ الذهبي: تأكيد منصّة المكتب (الرواد)"],
 ] as const;
 
 type Scope = (typeof SCOPES)[number][0];
@@ -82,7 +84,9 @@ export function ApiClientsAdmin() {
           orgId: orgId || null,
           scopes,
           // مفتاح المزامنة يرتبط بمنصّة التشغيل الوحيدة المفعّلة اليوم.
-          ...(scopes.includes("mirror:write") ? { source: "rowad-albania" } : {}),
+          ...(scopes.includes("mirror:write") || scopes.includes("records:verify")
+            ? { source: "rowad-albania" }
+            : {}),
         },
       });
       if (!res.ok || !res.credentials) {
