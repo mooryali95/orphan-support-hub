@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { agingTotal, shareOf, teamFlag, verificationHref, weeklyCsv } from "./trust-center";
+import {
+  agingTotal,
+  shareOf,
+  shareRuns,
+  teamFlag,
+  verificationHref,
+  weekShare,
+  weeklyCsv,
+} from "./trust-center";
 
 const team = {
   code: "SD",
@@ -53,7 +61,18 @@ describe("trust center", () => {
         country: "SN",
         files: 2,
         verified_now: 1,
+        recorded_from: "2026-11-23",
         weeks: [
+          {
+            week: "2026-11-16",
+            opened: 0,
+            opened_critical: 0,
+            settled: 0,
+            open_at_end: 0,
+            files_observed: 0,
+            verified_share: null,
+            recorded: false,
+          },
           {
             week: "2026-11-23",
             opened: 3,
@@ -61,6 +80,8 @@ describe("trust center", () => {
             settled: 2,
             open_at_end: 4,
             files_observed: 9,
+            verified_share: 50,
+            recorded: true,
           },
         ],
       },
@@ -71,8 +92,28 @@ describe("trust center", () => {
         settled: "S",
         openAtEnd: "E",
         filesObserved: "F",
+        verifiedShare: "V",
       },
     );
-    expect(csv).toBe("﻿W,O,C,S,E,F\r\n2026-11-23,3,1,2,4,9\r\n");
+    expect(csv).toBe("﻿W,O,C,S,E,F,V\r\n2026-11-16,0,0,0,0,0,\r\n2026-11-23,3,1,2,4,9,50\r\n");
+  });
+
+  it("reads a week's share only when it was recorded", () => {
+    expect(weekShare({ recorded: true, verified_share: 0 })).toBe(0);
+    expect(weekShare({ recorded: true, verified_share: null })).toBeNull();
+    expect(weekShare({ recorded: false, verified_share: 40 })).toBeNull();
+    // قاعدةٌ قبل الحزمة لا تُرسل الحقلين.
+    expect(weekShare({} as never)).toBeNull();
+  });
+
+  it("splits the line at unrecorded weeks", () => {
+    expect(shareRuns([null, null, 40, 42, null, 50])).toEqual([
+      [
+        { i: 2, v: 40 },
+        { i: 3, v: 42 },
+      ],
+      [{ i: 5, v: 50 }],
+    ]);
+    expect(shareRuns([null, null])).toEqual([]);
   });
 });

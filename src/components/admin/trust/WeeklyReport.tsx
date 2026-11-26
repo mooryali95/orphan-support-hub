@@ -6,16 +6,18 @@ import { useDataFn, useDataKey } from "@/lib/data-port";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { useCopy, useLocale } from "@/lib/locale";
-import { shareOf, weeklyCsv, type TrustWeekly } from "@/lib/trust-center";
+import { shareOf, weekShare, weeklyCsv, type TrustWeekly } from "@/lib/trust-center";
 import { getTrustWeekly } from "@/lib/trust-center.functions";
 import { cn } from "@/lib/utils";
 
 import { TRUST_COPY } from "./copy";
+import { ShareTrend } from "./ShareTrend";
 import { CARD, Loadable, NUM, SectionHead, TD, TH, useCountryLabel } from "./ui";
 
 /**
- * التقرير الأسبوعي لدولة: ما يُعاد بناؤه حقّاً من الطوابع وحده. حصّة الموثَّق
- * لا تُخزَّن أسبوعاً بأسبوع، فتظهر بقيمة اليوم وحدها ولا يُرسم لها خطّ.
+ * التقرير الأسبوعي لدولة: ما يُعاد بناؤه من الطوابع، وحصّة الموثَّق من اللقطة
+ * الأسبوعية (`trust_snapshots`) حيث أُخذت. ما قبل أوّل لقطة «لم يُسجَّل»: فجوةٌ
+ * في الخطّ وخانةٌ صريحة في الجدول، لا رقمٌ مختلَق.
  */
 export function WeeklyReport({
   countries,
@@ -83,6 +85,7 @@ function WeeklyBody({ w, name }: { w: TrustWeekly; name: string }) {
       settled: c.colSettled,
       openAtEnd: c.colOpenAtEnd,
       filesObserved: c.colObserved,
+      verifiedShare: c.colShare,
     });
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
@@ -112,12 +115,20 @@ function WeeklyBody({ w, name }: { w: TrustWeekly; name: string }) {
             strokeWidth={2}
             aria-hidden="true"
           />
-          <span>{c.weeklyHonest}</span>
+          <span>
+            {w.recorded_from
+              ? c.weeklyHonestFrom(formatDate(w.recorded_from, locale))
+              : c.weeklyHonest}
+          </span>
         </p>
       </div>
 
+      <div className={cn(CARD, "p-4")}>
+        <ShareTrend weeks={w.weeks} />
+      </div>
+
       <div className={cn(CARD, "relative overflow-x-auto")}>
-        <table className="w-full min-w-[40rem] text-sm">
+        <table className="w-full min-w-[46rem] text-sm">
           <thead className="border-border border-b">
             <tr>
               <th scope="col" className={TH}>
@@ -138,6 +149,9 @@ function WeeklyBody({ w, name }: { w: TrustWeekly; name: string }) {
               <th scope="col" className={cn(TH, "text-end")}>
                 {c.colObserved}
               </th>
+              <th scope="col" className={cn(TH, "text-end")}>
+                {c.colShare}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-border divide-y">
@@ -153,6 +167,7 @@ function WeeklyBody({ w, name }: { w: TrustWeekly; name: string }) {
                 <td className={cn(TD, NUM)}>{r.settled}</td>
                 <td className={cn(TD, NUM, "font-bold")}>{r.open_at_end}</td>
                 <td className={cn(TD, NUM)}>{r.files_observed}</td>
+                <ShareCell share={weekShare(r)} />
               </tr>
             ))}
           </tbody>
@@ -167,4 +182,12 @@ function WeeklyBody({ w, name }: { w: TrustWeekly; name: string }) {
       </div>
     </div>
   );
+}
+
+function ShareCell({ share }: { share: number | null }) {
+  const c = useCopy(TRUST_COPY);
+  if (share === null) {
+    return <td className={cn(TD, "text-muted-foreground text-end text-xs")}>{c.notRecorded}</td>;
+  }
+  return <td className={cn(TD, NUM, "font-bold")}>{c.percent(share)}</td>;
 }

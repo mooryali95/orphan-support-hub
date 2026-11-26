@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4302,
+ "count": 4308,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -7233,6 +7233,13 @@
    "hash": "22600c40d7c4",
    "file": "src/components/admin/trust/copy.ts"
   },
+  "components/admin/trust.colShare": {
+   "en": "Verified",
+   "ar": "الموثَّق",
+   "kind": "text",
+   "hash": "f7a8acbb4118",
+   "file": "src/components/admin/trust/copy.ts"
+  },
   "components/admin/trust.colStatus": {
    "en": "Status",
    "ar": "الحال",
@@ -7499,6 +7506,13 @@
    "hash": "e3913b1621f1",
    "file": "src/components/admin/trust/copy.ts"
   },
+  "components/admin/trust.notRecorded": {
+   "en": "Not recorded",
+   "ar": "لم يُسجَّل",
+   "kind": "text",
+   "hash": "36117ec1d4c8",
+   "file": "src/components/admin/trust/copy.ts"
+  },
   "components/admin/trust.older": {
    "en": "Older",
    "ar": "الأقدم",
@@ -7676,6 +7690,28 @@
    "hash": "5c1194ee3cdd",
    "file": "src/components/admin/trust/copy.ts"
   },
+  "components/admin/trust.trendEmpty": {
+   "en": "No snapshot recorded in these weeks yet.",
+   "ar": "لا لقطة مسجَّلة في هذه الأسابيع بعد.",
+   "kind": "text",
+   "hash": "a7e12525b3b9",
+   "file": "src/components/admin/trust/copy.ts"
+  },
+  "components/admin/trust.trendPoint": {
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "869f6c298bef",
+   "file": "src/components/admin/trust/copy.ts"
+  },
+  "components/admin/trust.trendTitle": {
+   "en": "Verified share by week",
+   "ar": "حصّة الموثَّق أسبوعاً بأسبوع",
+   "kind": "text",
+   "hash": "1e92e47cf047",
+   "file": "src/components/admin/trust/copy.ts"
+  },
   "components/admin/trust.unknownActor": {
    "en": "System",
    "ar": "النظام",
@@ -7714,10 +7750,18 @@
    "file": "src/components/admin/trust/copy.ts"
   },
   "components/admin/trust.weeklyHonest": {
-   "en": "The verified share is not stored week by week, so no made-up trend is drawn. It shows today's value only, next to what can truly be rebuilt.",
-   "ar": "حصّة الموثَّق لا تُخزَّن أسبوعاً بأسبوع، فلا يُرسم لها اتجاهٌ مُختلَق. تظهر بقيمة اليوم وحدها، ويظهر بجانبها ما يُعاد بناؤه حقّاً.",
+   "en": "The verified share is stored in a weekly snapshot since this release, and none has been recorded for this country yet. It shows today's value only; no made-up trend is drawn.",
+   "ar": "حصّة الموثَّق تُحفظ بلقطةٍ أسبوعية من تطبيق هذه الحزمة، ولم تُسجَّل لهذه الدولة لقطةٌ بعد. تظهر بقيمة اليوم وحدها، ولا يُرسم اتجاهٌ مُختلَق.",
    "kind": "text",
-   "hash": "6b2f8590febb",
+   "hash": "44302b2b065c",
+   "file": "src/components/admin/trust/copy.ts"
+  },
+  "components/admin/trust.weeklyHonestFrom": {
+   "en": "The verified share is recorded week by week from {0}. Earlier weeks are \"not recorded\" and get no made-up figure.",
+   "ar": "حصّة الموثَّق مسجَّلةٌ أسبوعاً بأسبوع منذ {0}. الأسابيع قبلها «لم تُسجَّل» ولا يُختلَق لها رقم.",
+   "kind": "template",
+   "params": 1,
+   "hash": "957cb3e05775",
    "file": "src/components/admin/trust/copy.ts"
   },
   "components/admin/trust.weeklyQuiet": {
