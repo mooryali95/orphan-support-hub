@@ -27,10 +27,13 @@ const isArea = (v: unknown): v is Area => AREAS.includes(v as Area);
  */
 export default function DataBuilding({
   area: areaIn,
+  initialCountry,
   onArea,
   openTab,
 }: {
   area: unknown;
+  /** دولةٌ تُفتح بها الخانة (من رابط «مركز الثقة»). */
+  initialCountry?: string | undefined;
   onArea: (area: Area) => void;
   openTab: (tab: "inbox" | "offices" | "supervisors") => void;
 }) {
@@ -39,7 +42,7 @@ export default function DataBuilding({
   const fetchOverview = useServerFn(getDataOverview);
   const qc = useQueryClient();
   const overview = useQuery({ queryKey: ["data-overview"], queryFn: () => fetchOverview() });
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState(initialCountry ?? "");
 
   const go = useCallback(
     (next: Area, code?: string) => {
