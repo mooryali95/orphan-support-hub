@@ -353,6 +353,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'source_link_queue|authenticated|SELECT|',
     'sponsorship_payments|authenticated|SELECT|',
     'sponsorships|authenticated|INSERT,SELECT,UPDATE|',
+    'sso_identities|authenticated|SELECT|',
     'supervisor_profiles|authenticated|SELECT|',
     'support_pledges|authenticated|SELECT|',
     'timeline_events|authenticated|SELECT|',

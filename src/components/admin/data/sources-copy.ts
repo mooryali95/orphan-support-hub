@@ -148,6 +148,44 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     alertsCount: (critical: number, warning: number) =>
       `تنبيهات: ${critical} حرج، ${warning} تحذير`,
     scoreLabel: "درجة الثقة",
+    startLabel: "ابدأ من هنا",
+    yourRole: "دورك",
+    roleNames: {
+      admin: "الإدارة",
+      supervisor: "مشرف الدولة",
+      data_entry: "مدخل بيانات",
+      viewer: "مطّلع",
+    },
+    roleCan: {
+      admin: "ترى كل الدول، وتحسم، وتعيّن المشرفين، وتنقل منصّة المكتب بين الأوضاع.",
+      supervisor: "تحسم تنبيهات دولتك وتعارضاتها وتربط سجلّاتها، وتضيف مدخلي البيانات والمطّلعين.",
+      data_entry: "ترفع ملفات الندوة والمكتب لدولتك، وترى نتيجتها. الحسم لمشرف الدولة.",
+      viewer: "ترى صحة بيانات دولتك وتنبيهاتها دون رفعٍ أو حسم.",
+    },
+    startUrgent: pluralOf(
+      {
+        one: "{0}: احسم بنداً حرجاً",
+        two: "{0}: احسم بندين حرجين",
+        few: "{0}: احسم {1} بنود حرجة",
+        many: "{0}: احسم {1} بنداً حرجاً",
+        other: "{0}: احسم {1} بند حرج",
+      },
+      1,
+      "ar",
+    ),
+    startLinks: pluralOf(
+      {
+        one: "{0}: اربط سجلّاً واحداً",
+        two: "{0}: اربط سجلّين",
+        few: "{0}: اربط {1} سجلّات",
+        many: "{0}: اربط {1} سجلّاً",
+        other: "{0}: اربط {1} سجلّ",
+      },
+      1,
+      "ar",
+    ),
+    startUpload: (country: string) => `ارفع ملف ${country}`,
+    startNothing: "لا شيء ينتظرك الآن.",
     sectionsLabel: "أقسام الدولة",
     tabs: {
       alerts: "التنبيهات",
@@ -431,6 +469,31 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     alertsCount: (critical: number, warning: number) =>
       `Alerts: ${critical} critical, ${warning} warnings`,
     scoreLabel: "Trust score",
+    startLabel: "Start here",
+    yourRole: "Your role",
+    roleNames: {
+      admin: "Admin team",
+      supervisor: "Country supervisor",
+      data_entry: "Data entry",
+      viewer: "Viewer",
+    },
+    roleCan: {
+      admin:
+        "You see every country, settle items, assign supervisors, and move office platforms between modes.",
+      supervisor:
+        "You settle your country's alerts and conflicts, link its records, and add data entry staff and viewers.",
+      data_entry:
+        "You upload WAMY and office files for your country and see their results. Settling is for the country supervisor.",
+      viewer: "You see your country's data health and alerts without uploading or settling.",
+    },
+    startUrgent: pluralOf(
+      { one: "{0}: settle 1 critical item", other: "{0}: settle {1} critical items" },
+      1,
+      "en",
+    ),
+    startLinks: pluralOf({ one: "{0}: link 1 record", other: "{0}: link {1} records" }, 1, "en"),
+    startUpload: (country: string) => `Upload a file for ${country}`,
+    startNothing: "Nothing is waiting for you.",
     sectionsLabel: "Country sections",
     tabs: {
       alerts: "Alerts",

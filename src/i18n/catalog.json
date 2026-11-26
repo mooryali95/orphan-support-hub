@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3871,
+ "count": 3897,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -4101,6 +4101,62 @@
    "hash": "8440d29f4dc1",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.roleCan.admin": {
+   "en": "You see every country, settle items, assign supervisors, and move office platforms between modes.",
+   "ar": "ترى كل الدول، وتحسم، وتعيّن المشرفين، وتنقل منصّة المكتب بين الأوضاع.",
+   "kind": "text",
+   "hash": "62608ebe80c3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.data_entry": {
+   "en": "You upload WAMY and office files for your country and see their results. Settling is for the country supervisor.",
+   "ar": "ترفع ملفات الندوة والمكتب لدولتك، وترى نتيجتها. الحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "c406d2e9c2d3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.supervisor": {
+   "en": "You settle your country's alerts and conflicts, link its records, and add data entry staff and viewers.",
+   "ar": "تحسم تنبيهات دولتك وتعارضاتها وتربط سجلّاتها، وتضيف مدخلي البيانات والمطّلعين.",
+   "kind": "text",
+   "hash": "d564e4282ca2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.viewer": {
+   "en": "You see your country's data health and alerts without uploading or settling.",
+   "ar": "ترى صحة بيانات دولتك وتنبيهاتها دون رفعٍ أو حسم.",
+   "kind": "text",
+   "hash": "f4b24a6cf355",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.admin": {
+   "en": "Admin team",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "9ee173ff263a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.data_entry": {
+   "en": "Data entry",
+   "ar": "مدخل بيانات",
+   "kind": "text",
+   "hash": "7bd738023f51",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.viewer": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.roles.office": {
    "en": "Office",
    "ar": "المكتب",
@@ -4274,6 +4330,56 @@
    "ar": "يُعدّ الملف متقادماً بعد (يوماً)",
    "kind": "text",
    "hash": "b21d89862317",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLabel": {
+   "en": "Start here",
+   "ar": "ابدأ من هنا",
+   "kind": "text",
+   "hash": "b0b71dce8207",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLinks.one": {
+   "en": "{0}: link 1 record",
+   "ar": "{0}: اربط سجلّاً واحداً",
+   "kind": "plural",
+   "hash": "70472537e715",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLinks.other": {
+   "en": "{0}: link {1} records",
+   "ar": "{0}: اربط {1} سجلّ",
+   "kind": "plural",
+   "hash": "1cd65782a33f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startNothing": {
+   "en": "Nothing is waiting for you.",
+   "ar": "لا شيء ينتظرك الآن.",
+   "kind": "text",
+   "hash": "d542a57b4e1f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUpload": {
+   "en": "Upload a file for {0}",
+   "ar": "ارفع ملف {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "b2057ad26302",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUrgent.one": {
+   "en": "{0}: settle 1 critical item",
+   "ar": "{0}: احسم بنداً حرجاً",
+   "kind": "plural",
+   "hash": "c584214b3c5e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUrgent.other": {
+   "en": "{0}: settle {1} critical items",
+   "ar": "{0}: احسم {1} بند حرج",
+   "kind": "plural",
+   "hash": "2d1652a8230a",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.tabs.alerts": {
@@ -4541,6 +4647,13 @@
    "ar": "نعم",
    "kind": "text",
    "hash": "ea4f193f5078",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.yourRole": {
+   "en": "Your role",
+   "ar": "دورك",
+   "kind": "text",
+   "hash": "c5a4bed2d9ec",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/overview.attentionAll": {
@@ -22022,6 +22135,76 @@
    "kind": "text",
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/sso.failed": {
+   "en": "We couldn't complete your sign-in from WAMY's platform.",
+   "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
+   "kind": "text",
+   "hash": "d65c0cfb1c1d",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.email_unverified": {
+   "en": "Your email isn't verified on WAMY's platform.",
+   "ar": "بريدك غير موثَّق في منصّة الندوة.",
+   "kind": "text",
+   "hash": "d6a16cbc5344",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.expired": {
+   "en": "The link expired. It works for two minutes only.",
+   "ar": "انتهت صلاحية الرابط. الرابط يعمل دقيقتين فقط.",
+   "kind": "text",
+   "hash": "fca9a7d1b994",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.not_configured": {
+   "en": "Sign-in from WAMY's platform isn't enabled yet.",
+   "ar": "الدخول من منصّة الندوة لم يُفعَّل بعد.",
+   "kind": "text",
+   "hash": "2d60d00840f1",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.subject_taken": {
+   "en": "This email is linked to another WAMY account. Contact the admin team.",
+   "ar": "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
+   "kind": "text",
+   "hash": "b8d624ac0238",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.token_used": {
+   "en": "This link was already used. Each link works once.",
+   "ar": "استُعمل هذا الرابط من قبل. كل رابطٍ يعمل مرّةً واحدة.",
+   "kind": "text",
+   "hash": "84858f54e092",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.retry": {
+   "en": "Go back to WAMY's platform and open the link again, or sign in here directly.",
+   "ar": "عد إلى منصّة الندوة وافتح الرابط من جديد، أو سجّل الدخول هنا مباشرة.",
+   "kind": "text",
+   "hash": "f957697ce868",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.title": {
+   "en": "Sign in from WAMY",
+   "ar": "الدخول من منصّة الندوة",
+   "kind": "text",
+   "hash": "421563bb5bf6",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.working": {
+   "en": "Completing your sign-in from WAMY's platform…",
+   "ar": "نُكمل دخولك من منصّة الندوة…",
+   "kind": "text",
+   "hash": "88e8d6cb3e6b",
+   "file": "src/routes/sso.tsx"
   },
   "routes/support.another": {
    "en": "Sponsor a child",

@@ -20,6 +20,7 @@ import { Route as HallRouteImport } from './routes/hall'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SsoRouteImport } from './routes/sso'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TraitsRouteImport } from './routes/traits'
 import { Route as TryRouteImport } from './routes/try'
@@ -65,6 +66,7 @@ import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
 import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/reconcile'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as ApiPublicSupporterAssistantRouteImport } from './routes/api/public.supporter-assistant'
+import { Route as ApiSsoWamyRouteImport } from './routes/api/sso/wamy'
 import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
@@ -121,6 +123,11 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SsoRoute = SsoRouteImport.update({
+  id: '/sso',
+  path: '/sso',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SupportRoute = SupportRouteImport.update({
@@ -371,6 +378,11 @@ const ApiPublicSupporterAssistantRoute =
     path: '/api/public/supporter-assistant',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiSsoWamyRoute = ApiSsoWamyRouteImport.update({
+  id: '/api/sso/wamy',
+  path: '/api/sso/wamy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionReceiptIdRoute = VisionReceiptIdRouteImport.update({
   id: '/vision/receipt/$id',
   path: '/vision/receipt/$id',
@@ -432,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/try': typeof TryRouteWithChildren
@@ -480,6 +493,7 @@ export interface FileRoutesByFullPath {
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -499,6 +513,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -546,6 +561,7 @@ export interface FileRoutesByTo {
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -567,6 +583,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/try': typeof TryRouteWithChildren
@@ -615,6 +632,7 @@ export interface FileRoutesById {
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -636,6 +654,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/try'
@@ -684,6 +703,7 @@ export interface FileRouteTypes {
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -703,6 +723,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/unsubscribe'
@@ -750,6 +771,7 @@ export interface FileRouteTypes {
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -770,6 +792,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/try'
@@ -818,6 +841,7 @@ export interface FileRouteTypes {
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
@@ -839,6 +863,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SsoRoute: typeof SsoRoute
   SupportRoute: typeof SupportRoute
   TraitsRoute: typeof TraitsRoute
   TryRoute: typeof TryRouteWithChildren
@@ -866,6 +891,7 @@ export interface RootRouteChildren {
   ApiPaymentsReconcileRoute: typeof ApiPaymentsReconcileRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
   ApiPublicSupporterAssistantRoute: typeof ApiPublicSupporterAssistantRoute
+  ApiSsoWamyRoute: typeof ApiSsoWamyRoute
   VisionReceiptIdRoute: typeof VisionReceiptIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -935,6 +961,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sso': {
+      id: '/sso'
+      path: '/sso'
+      fullPath: '/sso'
+      preLoaderRoute: typeof SsoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/support': {
@@ -1273,6 +1306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSupporterAssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/sso/wamy': {
+      id: '/api/sso/wamy'
+      path: '/api/sso/wamy'
+      fullPath: '/api/sso/wamy'
+      preLoaderRoute: typeof ApiSsoWamyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vision/receipt/$id': {
       id: '/vision/receipt/$id'
       path: '/vision/receipt/$id'
@@ -1422,6 +1462,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SsoRoute: SsoRoute,
   SupportRoute: SupportRoute,
   TraitsRoute: TraitsRoute,
   TryRoute: TryRouteWithChildren,
@@ -1449,6 +1490,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPaymentsReconcileRoute: ApiPaymentsReconcileRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
   ApiPublicSupporterAssistantRoute: ApiPublicSupporterAssistantRoute,
+  ApiSsoWamyRoute: ApiSsoWamyRoute,
   VisionReceiptIdRoute: VisionReceiptIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

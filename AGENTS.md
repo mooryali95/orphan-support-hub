@@ -45,3 +45,6 @@
 - Sri Lanka and Pakistan entries in `src/data/wamy-network.ts` rest on WAMY management's statement (no public URL); replace `source`/`url` with the official source when supplied, keeping the `in_network` migration list in sync.
 - Country teams (`country_staff`: supervisor, data_entry, viewer) reach the verification layer only through `country_can`, checked before an item's status so other countries learn nothing; critical changes and alerts are settled by someone other than their uploader (`received_by`, `raised_by`), so no single staff member can push and approve the same change.
 - New sponsorships pass `golden_accepts_new_support` (insert trigger, both suggestion functions, `public_verification.accepts`); keep it an indexed check that matches `golden_trust` (locked by `golden-gate-verification`), so flagged files never take new money and suggestions stay fast at 10,000 files.
+
+## WAMY sign-in
+- WAMY's platform launches users into Kahatayn with a short-lived signed token to `/api/sso/wamy` (`src/lib/sso/launch-token.ts`, `docs/wamy-sso.ar.md`): single-use `jti`, identities bound by WAMY `sub` in `sso_identities`, session handed over in the URL fragment, and no role granted by the token, so a stolen link or a reused email never yields access beyond the country team and admin roles.
