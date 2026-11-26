@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { ArrowLeft } from "lucide-react";
@@ -6,6 +7,7 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { CycleAdminTask } from "@/components/try/TryCycleTasks";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
+import { TryAdminSources, TryAdminTrust } from "@/components/try/TryVerification";
 import type { RecordKind } from "@/lib/admin-console.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { ADMIN_FNS } from "@/components/admin/overview/admin-fns";
@@ -26,7 +28,8 @@ const TAB_TO_RECORDS: Partial<Record<AdminTab, RecordKind>> = {
 
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
 
-type Key = RecordKind | "home";
+type Verify = "sources" | "trust";
+type Key = RecordKind | Verify | "home";
 
 const COPY = defineCopy("routes/try.admin", {
   ar: {
@@ -41,7 +44,13 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "المدفوعات",
       access_log: "سجلّ الاطّلاع",
     } satisfies Record<RecordKind, string>,
-    sections: ["السجلّات", "الشبكة", "الثقة والمال"],
+    sections: ["السجلّات", "الشبكة", "الثقة والمال", "التحقق"],
+    verify: { sources: "مصادر التحقق", trust: "مركز الثقة" } satisfies Record<Verify, string>,
+    verifyCards: {
+      sources:
+        "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
+      trust: "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+    } satisfies Record<Verify, string>,
     role: "الإدارة",
     title: "لوحة الإدارة",
     lead: "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك — كفالتك وتعهّدك وملفّ جهتك — يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
@@ -71,7 +80,17 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "Payments",
       access_log: "Access log",
     } satisfies Record<RecordKind, string>,
-    sections: ["Records", "Network", "Trust and money"],
+    sections: ["Records", "Network", "Trust and money", "Verification"],
+    verify: { sources: "Verification sources", trust: "Trust center" } satisfies Record<
+      Verify,
+      string
+    >,
+    verifyCards: {
+      sources:
+        "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
+      trust:
+        "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
+    } satisfies Record<Verify, string>,
     role: "Administration",
     title: "Administration console",
     lead: "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
@@ -108,17 +127,35 @@ const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "s
 function TryAdmin() {
   const t = useCopy(COPY);
   const LABELS = t.labels;
-  const [tab, setTab] = useState<Key>("home");
+  const [tab, setTabState] = useState<Key>("home");
+  const [country, setCountry] = useState("LK");
+  const qc = useQueryClient();
+  // ما حُسم في لسانٍ يظهر في الآخر فوراً: ذاكرة التجربة تُقرأ من جديد عند كل انتقال.
+  const setTab = (k: Key) => {
+    setTabState(k);
+    void qc.invalidateQueries({ queryKey: ["demo"] });
+  };
+  const VERIFY: Verify[] = ["sources", "trust"];
   return (
     <div>
       <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
 
       <div className="mt-8 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
         <AdminNav<Key>
-          sections={SECTIONS.map((items, i) => ({
-            label: t.sections[i] ?? "",
-            items: items.map((key) => ({ key, label: LABELS[key], count: null })),
-          }))}
+          sections={[
+            ...SECTIONS.map((items, i) => ({
+              label: t.sections[i] ?? "",
+              items: items.map((key): { key: Key; label: string; count: null } => ({
+                key,
+                label: LABELS[key],
+                count: null,
+              })),
+            })),
+            {
+              label: t.sections[3] ?? "",
+              items: VERIFY.map((key) => ({ key, label: t.verify[key], count: null })),
+            },
+          ]}
           active={tab}
           onSelect={setTab}
           homeLabel={t.home}
@@ -152,14 +189,17 @@ function TryAdmin() {
               <section className="mt-10">
                 <h2 className="text-2xl font-bold">{t.try}</h2>
                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {CARDS.map((key) => [key, t.cards[key] ?? ""] as const).map(([key, text]) => (
+                  {[
+                    ...VERIFY.map((key) => [key, t.verify[key], t.verifyCards[key]] as const),
+                    ...CARDS.map((key) => [key, LABELS[key], t.cards[key] ?? ""] as const),
+                  ].map(([key, label, text]) => (
                     <li key={key}>
                       <button
                         type="button"
                         onClick={() => setTab(key)}
                         className="group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-5 text-start transition-colors hover:border-primary/50"
                       >
-                        <span className="font-bold">{LABELS[key]}</span>
+                        <span className="font-bold">{label}</span>
                         <span className="mt-1 text-sm leading-7 text-muted-foreground">{text}</span>
                         <span className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary">
                           {t.open}
@@ -184,6 +224,16 @@ function TryAdmin() {
                 </p>
               </section>
             </>
+          ) : tab === "sources" ? (
+            <TryAdminSources country={country} setCountry={setCountry} />
+          ) : tab === "trust" ? (
+            <TryAdminTrust
+              openCountry={(code) => {
+                setCountry(code);
+                setTab("sources");
+                window.scrollTo({ top: 0 });
+              }}
+            />
           ) : (
             <>
               <h2 className="text-2xl font-bold">{LABELS[tab]}</h2>

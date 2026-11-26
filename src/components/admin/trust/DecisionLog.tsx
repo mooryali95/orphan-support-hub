@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
 
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/lib/locale";
 import { DECISION_ACTIONS, type Decision, type DecisionAction } from "@/lib/trust-center";
@@ -25,13 +25,19 @@ export function DecisionLog({
 }) {
   const c = useCopy(TRUST_COPY);
   const label = useCountryLabel();
-  const fetch = useServerFn(getTrustDecisions);
+  const fetch = useDataFn("trust.decisions", getTrustDecisions);
   const [country, setCountry] = useState<string>("");
   const [action, setAction] = useState<DecisionAction | "">("");
   const [stack, setStack] = useState<Cursor[]>([null]);
   const cursor = stack[stack.length - 1] ?? null;
   const query = useQuery({
-    queryKey: ["trust-decisions", country, action, cursor?.at ?? null, cursor?.id ?? null],
+    queryKey: useDataKey([
+      "trust-decisions",
+      country,
+      action,
+      cursor?.at ?? null,
+      cursor?.id ?? null,
+    ]),
     queryFn: () =>
       fetch({
         data: {
