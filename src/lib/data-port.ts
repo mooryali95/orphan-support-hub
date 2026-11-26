@@ -13,7 +13,9 @@
  */
 import { useServerFn } from "@tanstack/react-start";
 
-import { useDemo } from "@/lib/demo-mode";
+import { useCallback } from "react";
+
+import { isDemoSession, useDemo } from "@/lib/demo-mode";
 
 /** عمليةٌ كما تناديها الشاشة: مدخلٌ واحد اختياري، ونتيجةٌ موعودة. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,9 +42,16 @@ export function resetDemoRegistry() {
  */
 export function useDataFn<F extends PortFn>(name: string, serverFn: F): F {
   const real = useServerFn(serverFn) as unknown as F;
-  const inDemo = useDemo();
-  const fake = demo.get(name);
-  return (inDemo && fake ? fake : real) as F;
+  // يُعاد رسم الشاشة حين تتغيّر الجلسة، لكن المصدر يُقرَّر لحظة النداء: في أوّل تحميلٍ
+  // تجريبي يقرأ الرسم «حقيقي» قبل أن يتّصل المتصفّح، فلا يُنادى الخادم خطأً.
+  useDemo();
+  return useCallback(
+    ((input?: unknown) => {
+      const fake = isDemoSession() ? demo.get(name) : undefined;
+      return fake ? fake(input) : real(input);
+    }) as F,
+    [name, real],
+  );
 }
 
 /** مفتاح الاستعلام يميّز المصدرين، فلا تختلط ذاكرة التجربة بذاكرة الخادم. */
