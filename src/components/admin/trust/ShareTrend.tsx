@@ -61,7 +61,7 @@ export function ShareTrend({ weeks }: { weeks: WeekRow[] }) {
   return (
     <figure className="space-y-2">
       <figcaption className="text-muted-foreground text-xs font-bold">{c.trendTitle}</figcaption>
-      <div className="flex gap-2">
+      <div className="flex gap-2 pt-6">
         <div
           aria-hidden="true"
           className="text-muted-foreground relative h-32 w-9 shrink-0 text-[0.6875rem] tabular-nums"
