@@ -361,6 +361,8 @@ export type DataAlert = {
 /** شارة الكافل كما تعيدها `public_verification`: لا حقول ولا أسباب. */
 export type PublicVerification = {
   level: "two_sources" | "primary_source" | "under_review";
+  /** يقبل كفالةً جديدة الآن (`golden_accepts_new_support`، الحارس نفسه على الإدراج). */
+  accepts: boolean;
   verified_month: string | null;
 };
 

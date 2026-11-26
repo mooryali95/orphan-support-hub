@@ -9,7 +9,6 @@ import {
   type CountryAccess,
   type CountryHealth,
   type DataAlert,
-  type PublicVerification,
   type StaffMember,
   type IngestResult,
   type LinkItem,
@@ -205,22 +204,6 @@ export const resolveAlert = createServerFn({ method: "POST" })
       _note: data.note ?? null,
     }),
   );
-
-/**
- * شارة الكافل: درجةٌ من ثلاث وشهر آخر تحقّق، لملفٍّ منشور وحده. لا حقول ولا
- * أسباب تنبيه؛ وما لم تُطبَّق هجرته يعيد null فلا تظهر الشارة.
- */
-export const getPublicVerification = createServerFn({ method: "GET" })
-  .inputValidator((input: unknown) => z.object({ orphanId: uuid }).parse(input))
-  .handler(async ({ data }): Promise<PublicVerification | null> => {
-    const { publicClient } = await import("@/lib/protection.functions");
-    const { data: res, error } = await (publicClient() as unknown as Rpc).rpc(
-      "public_verification",
-      { _orphan: data.orphanId },
-    );
-    if (error || !res) return null;
-    return res as PublicVerification;
-  });
 
 /* ── صلاحيات الدول ──────────────────────────────────────────────── */
 

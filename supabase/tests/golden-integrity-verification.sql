@@ -110,7 +110,7 @@ BEGIN
   IF public.public_verification(_o) IS NOT NULL THEN RAISE EXCEPTION 'FAIL — شارةٌ لملفٍّ غير منشور'; END IF;
   UPDATE public.orphans SET status = 'approved' WHERE id = _o;
   _r := public.public_verification(_o);
-  IF _r->>'level' <> 'under_review' OR (SELECT count(*) FROM jsonb_object_keys(_r)) <> 2 THEN
+  IF _r->>'level' <> 'under_review' OR (_r->>'accepts')::boolean OR (SELECT count(*) FROM jsonb_object_keys(_r)) <> 3 THEN
     RAISE EXCEPTION 'FAIL — الشارة: %', _r;
   END IF;
   _ok := false;

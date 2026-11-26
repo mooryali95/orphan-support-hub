@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ShieldCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { getPublicVerification } from "@/lib/golden-record.functions";
+import { getPublicVerification } from "@/lib/public-verification.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("components/orphans/VerificationBadge", {

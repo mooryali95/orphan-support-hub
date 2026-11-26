@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
+import { getPublicVerification } from "@/lib/public-verification.functions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -72,6 +73,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     shareTitle: "ملفّ كفالة موثّق",
     badAmount: "الرجاء إدخال مبلغ صحيح (5 فأكثر)",
     createFailed: "تعذّر إنشاء الكفالة",
+    verifying:
+      "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
     created: "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
     unexpected: "حدث خطأ غير متوقع",
     back: "→ العودة إلى الدليل",
@@ -132,6 +135,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     shareTitle: "A verified sponsorship file",
     badAmount: "Please enter a valid amount (5 or more)",
     createFailed: "The sponsorship could not be created",
+    verifying:
+      "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
     created: "Your sponsorship request is registered — complete the payment from your dashboard",
     unexpected: "Something unexpected went wrong",
     back: "← Back to the directory",
@@ -272,6 +277,14 @@ function OrphanDetail() {
   });
   const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
+  // شرط الثقة: ملفٌّ قيد التحقق لا يقبل كفالةً جديدة (الحارس في القاعدة؛ هنا يُشرح بدل أن يفشل).
+  const fetchVerification = useServerFn(getPublicVerification);
+  const { data: verification } = useQuery({
+    queryKey: ["public-verification", orphanId],
+    queryFn: () => fetchVerification({ data: { orphanId } }),
+    staleTime: 10 * 60_000,
+  });
+  const verifying = verification?.accepts === false;
   const pay = useServerFn(startCheckout);
   // إثباتٌ اجتماعي صادق: من أرقام المنصّة الحقيقية فقط، ويُخفى إن غابت.
   const fetchStats = useServerFn(getPlatformStats);
@@ -648,6 +661,14 @@ function OrphanDetail() {
                 )}
 
                 <div className="mt-6 space-y-4">
+                  {verifying && (
+                    <p
+                      role="status"
+                      className="rounded-xl border border-border bg-secondary/60 px-3 py-2 text-sm leading-7"
+                    >
+                      {t.verifying}
+                    </p>
+                  )}
                   {restored && (
                     <p
                       role="status"
@@ -792,7 +813,7 @@ function OrphanDetail() {
                         className="w-full"
                         size="lg"
                         onClick={() => void onSponsor()}
-                        disabled={pending}
+                        disabled={pending || verifying}
                       >
                         {pending && <Loader2 className="size-4 animate-spin" />}
                         {cadence === "one_time" ? t.startOnce : t.start}

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3840,
+ "count": 3841,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -21795,6 +21795,13 @@
    "ar": "حدث خطأ غير متوقع",
    "kind": "text",
    "hash": "53e40a898c1b",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/orphans.orphanId.verifying": {
+   "en": "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
+   "ar": "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
+   "kind": "text",
+   "hash": "023783fc63ac",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.years": {
