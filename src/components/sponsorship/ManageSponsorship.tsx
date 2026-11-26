@@ -26,6 +26,7 @@ import { formatDate, formatMoney, isolate, SPONSORSHIP_STATUS_LABELS } from "@/l
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
@@ -171,10 +172,9 @@ export function ManageSponsorshipLink({ s }: { s: MySponsorship }) {
     <Button asChild size="sm" variant="outline">
       <Link
         // في التجربة شاشة الإدارة نفسها تحت «جرّب»، على كفالات الجلسة.
-        to={
-          demo ? "/try/sponsorships/$sponsorshipId/manage" : "/sponsorships/$sponsorshipId/manage"
-        }
-        params={{ sponsorshipId: s.id }}
+        {...(demo
+          ? { to: trialRoute(`/try/sponsorships/${encodeURIComponent(s.id)}/manage`) }
+          : { to: "/sponsorships/$sponsorshipId/manage", params: { sponsorshipId: s.id } })}
       >
         <SlidersHorizontal className="size-4" strokeWidth={1.75} aria-hidden="true" />
         {c.manage}
@@ -220,7 +220,7 @@ export function ManageSponsorship({ sponsorshipId }: { sponsorshipId: string }) 
       <div className="rounded-2xl border border-dashed border-border p-8 text-center">
         <p className="text-muted-foreground">{c.notFound}</p>
         <Button asChild variant="outline" className="mt-3">
-          <Link to={demo ? "/try/impact" : "/dashboard"}>{c.back}</Link>
+          <Link to={demo ? trialRoute("/try/impact") : "/dashboard"}>{c.back}</Link>
         </Button>
       </div>
     );
@@ -258,7 +258,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
   return (
     <div className="space-y-8">
       <Link
-        to={demo ? "/try/impact" : "/dashboard"}
+        to={demo ? trialRoute("/try/impact") : "/dashboard"}
         className="inline-flex min-h-11 items-center text-sm font-semibold text-primary"
       >
         {c.back}
@@ -298,7 +298,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
             <Button asChild size="sm" variant="ghost">
               <Link
                 {...(demo
-                  ? { to: "/try/$childId", params: { childId: s.orphan.id } }
+                  ? { to: trialRoute(`/try/${encodeURIComponent(s.orphan.id)}`) }
                   : { to: "/orphans/$orphanId", params: { orphanId: s.orphan.id } })}
               >
                 {c.childFile}

@@ -186,6 +186,20 @@
    "hash": "787b40d7f952",
    "file": "src/components/ExcessSuggestion.tsx"
   },
+  "components/KafalaPromise.hadith": {
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
+   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
+   "kind": "text",
+   "hash": "ba5bbd99221a",
+   "file": "src/components/KafalaPromise.tsx"
+  },
+  "components/KafalaPromise.source": {
+   "en": "Narrated by al-Bukhari (6005)",
+   "ar": "رواه البخاري (6005)",
+   "kind": "text",
+   "hash": "68d0e4241fb7",
+   "file": "src/components/KafalaPromise.tsx"
+  },
   "components/LegalPage.binding": {
    "en": "This version is provided for convenience. If it differs from the Arabic, the Arabic version prevails.",
    "ar": "",
@@ -12735,20 +12749,6 @@
    "kind": "text",
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheetBody.tsx"
-  },
-  "components/try/KafalaPromise.hadith": {
-   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
-   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
-   "kind": "text",
-   "hash": "ba5bbd99221a",
-   "file": "src/components/try/KafalaPromise.tsx"
-  },
-  "components/try/KafalaPromise.source": {
-   "en": "Narrated by al-Bukhari (6005)",
-   "ar": "رواه البخاري (6005)",
-   "kind": "text",
-   "hash": "68d0e4241fb7",
-   "file": "src/components/try/KafalaPromise.tsx"
   },
   "components/try/TrialProposal.authText": {
    "en": "What you chose in demo mode is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",

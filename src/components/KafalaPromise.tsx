@@ -1,6 +1,6 @@
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
-const COPY = defineCopy("components/try/KafalaPromise", {
+const COPY = defineCopy("components/KafalaPromise", {
   ar: {
     hadith: "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
     source: "رواه البخاري (6005)",

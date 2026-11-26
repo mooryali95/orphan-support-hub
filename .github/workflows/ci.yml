@@ -108,6 +108,55 @@ jobs:
       #   BASE_URL=https://… node scripts/e2e-smoke.mjs
       # أو محلّياً على البناء: node scripts/serve-worker.mjs & node scripts/e2e-smoke.mjs
 
+  # ── وضع التجربة يُحذف بأمرٍ واحد ─────────────────────────────────
+  # برهانٌ لا وعد: تُنسخ الشجرة إلى مجلّدٍ مؤقّت، ويُشغَّل أمر الإطلاق نفسه
+  # (`node scripts/remove-trial.mjs --apply`)، ثم الأنواع والاختبارات والبناء
+  # على ما بقي. يفشل الطلب إن صار الكود الحقيقي يحتاج ملفّاً من ملفّات التجربة
+  # (docs/trial-mode.ar.md). النسخة الأصلية لا تُمسّ.
+  trial-removal:
+    name: حذف التجربة بأمرٍ واحد — ثم أنواع واختبارات وبناء
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: تركيب الحزم من القفل
+        run: |
+          sed -i 's#https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/#https://registry.npmjs.org/#g' bun.lock
+          bun install --frozen-lockfile
+          git checkout -- bun.lock
+
+      - name: نسخةٌ مؤقّتة وحذف التجربة منها
+        run: |
+          dest="$RUNNER_TEMP/trial-removed"
+          mkdir -p "$dest"
+          tar --exclude=./node_modules --exclude=./.git -cf - . | tar -xf - -C "$dest"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$dest/node_modules"
+          cd "$dest"
+          node scripts/remove-trial.mjs --apply
+          if [ -e src/components/try ] || ls src/routes/try.* 2>/dev/null | grep -q .; then
+            echo "::error::بقيت ملفّات تجربة بعد الحذف"; exit 1
+          fi
+          if grep -q "'/try" src/routeTree.gen.ts; then
+            echo "::error::شجرة المسارات ما زالت تحمل /try"; exit 1
+          fi
+
+      - name: فحص الأنواع بلا التجربة
+        working-directory: ${{ runner.temp }}/trial-removed
+        run: npx tsc --noEmit
+
+      - name: اختبارات الوحدة بلا التجربة
+        working-directory: ${{ runner.temp }}/trial-removed
+        run: npx vitest run
+
+      - name: البناء بلا التجربة
+        working-directory: ${{ runner.temp }}/trial-removed
+        run: npx vite build
+
   vision-e2e:
     name: منصة الرؤية — المتصفّح بالأدوار الثلاثة
     runs-on: ubuntu-latest

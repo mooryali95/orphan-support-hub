@@ -24,7 +24,8 @@ import { listPrograms, type PublicProgram } from "@/lib/programs.functions";
 import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
 import { PartnerPlate } from "@/components/brand/PartnerPlate";
-import { isTrial, showTrialLink } from "@/config/platform";
+import { hallEntryHref, isTrial, showTrialLink } from "@/config/platform";
+import { trialRoute } from "@/lib/trial-gate";
 import { enterDemo } from "@/lib/demo-mode";
 import { brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -513,7 +514,7 @@ function HomePage() {
                 <div className="mt-9 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 lg:justify-start">
                   {isTrial() && (
                     <Button asChild size="lg">
-                      <Link to="/try" onClick={enterDemo}>
+                      <Link to={trialRoute("/try")} onClick={enterDemo}>
                         <FlaskConical className="size-4" aria-hidden="true" />
                         {c.tryIt}
                       </Link>
@@ -538,7 +539,7 @@ function HomePage() {
                   </Link>
                   {/* القاعة ثلاثية الأبعاد: رابطٌ عاديّ — المشهد يُحمَّل عند الدخول وحده */}
                   <a
-                    href="/hall?try=1"
+                    href={hallEntryHref()}
                     data-to-hall
                     className="inline-flex min-h-11 items-center gap-1.5 px-3 text-sm font-bold text-bridge-ink underline decoration-bridge/40 underline-offset-[6px] transition-colors hover:decoration-bridge"
                   >
@@ -548,7 +549,7 @@ function HomePage() {
                 </div>
                 {showTrialLink() && (
                   <Link
-                    to="/try"
+                    to={trialRoute("/try")}
                     onClick={enterDemo}
                     className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
@@ -872,7 +873,7 @@ function HomePage() {
                 <p className="mt-4 text-base leading-8 opacity-90">{c.hallP}</p>
                 <div className="mt-7 flex flex-wrap items-center gap-4">
                   <a
-                    href="/hall?try=1"
+                    href={hallEntryHref()}
                     data-to-hall
                     className="inline-flex min-h-12 items-center gap-2 rounded-full bg-background px-7 text-base font-bold text-primary shadow-soft transition-transform active:scale-[0.97]"
                   >
@@ -951,7 +952,7 @@ function HomePage() {
             <div className="mt-10">
               {isTrial() ? (
                 <Button asChild size="lg">
-                  <Link to="/try">
+                  <Link to={trialRoute("/try")}>
                     <FlaskConical className="size-4" aria-hidden="true" />
                     {c.tryIt}
                   </Link>

@@ -41,6 +41,7 @@ import { cn } from "@/lib/utils";
 import { DOC_LABELS, verifyDocument } from "@/lib/intake.functions";
 import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { givingCopy } from "@/config/giving-tracks";
+import { trialSlots } from "@/lib/trial-slots";
 import { PLEDGE_TRANSITIONS, verificationLevel } from "@/lib/verification";
 import { VerificationBadge, VerificationChecklist } from "./VerificationBadge";
 
@@ -612,7 +613,7 @@ export function RecordsConsole({
     if (!visitor) return;
     let events: readonly string[] = [];
     const bump = () => setVisitorTick((n) => n + 1);
-    void import("@/lib/try-admin-overlay").then((m) => {
+    void trialSlots?.loadAdminOverlay().then((m) => {
       events = m.OVERLAY_EVENTS;
       for (const e of events) window.addEventListener(e, bump);
     });
@@ -630,7 +631,8 @@ export function RecordsConsole({
         });
       }
       const { sampleRows, samplePage } = await import("@/lib/admin-console-sample");
-      const mine = visitor ? (await import("@/lib/try-admin-overlay")).visitorRows(kind) : [];
+      const overlay = visitor ? await trialSlots?.loadAdminOverlay() : undefined;
+      const mine = overlay ? overlay.visitorRows(kind) : [];
       const rows = [...mine, ...sampleRows(kind)].map(
         (r) => ({ ...r, ...edits[r.id] }) as AnyRecord,
       );

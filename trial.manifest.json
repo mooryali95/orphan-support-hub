@@ -1,0 +1,18 @@
+{
+  "$comment": "Every file of trial mode (/try). `npm run trial:remove` deletes exactly these; no file outside them may import one (src/lib/trial-manifest.test.ts). See docs/trial-mode.ar.md.",
+  "files": [
+    "src/routes/try.tsx",
+    "src/routes/try.*.tsx",
+    "src/lib/try-*.ts",
+    "src/lib/hall/trial*.ts",
+    "src/components/try/**",
+    "scripts/gen-try-world.mjs"
+  ],
+  "config": {
+    "file": "src/config/platform.ts",
+    "set": {
+      "PLATFORM_MODE": "\"live\"",
+      "KEEP_TRIAL_PUBLIC": "false"
+    }
+  }
+}

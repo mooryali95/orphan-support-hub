@@ -20,6 +20,7 @@
 ## Demonstration boundaries
 - Keep showcase geography and fictional child cards in a shared browser-safe demo module, separate from payable child IDs; this prevents sample data from entering financial workflows.
 - Demo office records use an explicit name prefix and remain inactive until replaced by reviewed source data; this avoids implying accreditation or a live integration.
+- Trial mode (`/try`) is removable with one command (`npm run trial:remove -- --apply`, `docs/trial-mode.ar.md`): every trial file is listed in `trial.manifest.json`, and real code never imports one — it reaches trial data through `useDataFn`/`registerDemo`, trial UI through `src/lib/trial-slots.ts`, and `/try` links through `trialRoute` behind `TRIAL_ENABLED` (`src/lib/trial-gate.ts`), so launch deletes files without editing real screens (locked by `trial-manifest.test.ts` and the CI `trial-removal` job).
 - In the live hall (`/hall`) only the WAMY network and the directory's country counts (`hallDirectory`) are real; every panel of regions, funding, payment or impact carries the sample chip from `src/lib/hall/live.ts` and says "simulated", so sample figures never pass as results.
 
 ## Support selections

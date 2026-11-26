@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { HallSearch } from "@/lib/hall/source";
 import { defineCopy, pluralOf, useCopy } from "@/lib/locale";
 import { impactAt, impactPercent, impactSpan, impactStats, type MyImpact } from "@/lib/my-impact";
+import { trialRoute, type TrialPath } from "@/lib/trial-gate";
 
 /**
  * «كوكبة أثرك»: الداعم في المركز، وكلّ طفلٍ يكفله جوهرةٌ على مدار. حول كلّ طفل
@@ -96,7 +97,7 @@ export function MyImpactHero({
   impact: MyImpact;
   loading: boolean;
   /** where «اكفل يتيماً آخر» leads; the client demo keeps the visitor inside /try */
-  anotherTo?: "/orphans" | "/try";
+  anotherTo?: "/orphans" | TrialPath;
   /** the demo opens the hall in demo mode, on the visitor's latest gift; `from` is the way back */
   hallSearch?: HallSearch;
 }) {
@@ -198,7 +199,9 @@ export function MyImpactHero({
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to={anotherTo}>{c.another}</Link>
+              <Link to={anotherTo === "/orphans" ? anotherTo : trialRoute(anotherTo)}>
+                {c.another}
+              </Link>
             </Button>
           </div>
         </div>

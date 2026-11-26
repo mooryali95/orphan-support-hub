@@ -9,9 +9,11 @@
  */
 import { hallSource, type HallSearch } from "@/lib/hall/source";
 import { hasWebGL2 } from "@/lib/hall/webgl";
+import { trialSlots } from "@/lib/trial-slots";
 
 export const loadHallScene = () => import("@/components/hall/hall-scene.js");
-export const loadHallTrial = () => import("@/lib/hall/trial");
+/** the trial catalogue, from the trial when it is there (`@/lib/trial-slots`); none without it */
+export const loadHallTrial = () => trialSlots?.loadHall() ?? Promise.resolve(null);
 
 /** starts the downloads and returns at once; a failure here is the page's to report, not ours */
 export function warmHall(search: HallSearch): void {

@@ -9,7 +9,7 @@ import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-
 import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
-import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { KafalaPromise } from "@/components/KafalaPromise";
 import { TryChildMissing } from "@/components/try/TryChildMissing";
 import { TryReportPreview } from "@/components/try/TryReportPreview";
 import { Button } from "@/components/ui/button";

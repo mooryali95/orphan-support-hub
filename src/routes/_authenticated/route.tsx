@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { isDemoSession } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import type { AppRole } from "@/hooks/useAuth";
 import { LocaleProvider } from "@/lib/locale";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/_authenticated")({
     // الوضع التجريبي: «أثري» هو أثر التجربة. المخرج إلى الرحلة الحقيقية يُنهي الوضع أوّلاً
     // (TryShell وأزرار «الرحلة الحقيقية»)، فلا يُحجب داعمٌ حقيقي عن لوحته.
     if (location.pathname === "/dashboard" && isDemoSession())
-      throw redirect({ to: "/try/impact" });
+      throw redirect({ to: trialRoute("/try/impact") });
     const { data, error } = await supabase.auth.getUser();
     // الرابط المحمي يحفظ وجهته (UX-09): بعد الدخول يعود إليها لا إلى اللوحة.
     if (error || !data.user) throw redirect({ to: "/auth", search: { redirect: location.href } });

@@ -10,7 +10,6 @@ import type { MapActionContext } from "@/components/map/WorldMap";
 import type { MapStats } from "@/components/map/demo-stats";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { TrialProposalOffer } from "@/components/try/TrialProposal";
 import { normalize } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
@@ -26,7 +25,10 @@ import {
 } from "@/lib/support.functions";
 import { PledgeReceipt } from "@/components/support/PledgeReceipt";
 import { SupportSheetBody, type SheetTarget } from "@/components/support/SupportSheetBody";
-import { dismissProposal } from "@/lib/try-handoff";
+import { trialSlots } from "@/lib/trial-slots";
+
+/** من التجربة إن وُجدت (`@/lib/trial-slots`) */
+const ProposalOffer = trialSlots?.ProposalOffer;
 
 const COPY = defineCopy("components/support/SupportSheet", {
   ar: {
@@ -226,7 +228,7 @@ export function SupportSheet({
           elapsed: Math.min(86_400, Math.round((Date.now() - openedAt) / 1000)),
         },
       });
-      if (res.ok && usedProposal.current) dismissProposal(usedProposal.current);
+      if (res.ok && usedProposal.current) trialSlots?.dismissProposal(usedProposal.current);
       setResult(
         res.ok
           ? { ok: true, text: t.pledged, id: res.id ?? undefined, at: new Date() }
@@ -316,24 +318,26 @@ export function SupportSheet({
     <SupportSheetBody
       lead={
         /* من الوضع التجريبي، لهذه الدولة وحدها: لا يُطبَّق إلا بضغطة، فتُعدّ تعديلاً من الزائر */
-        <TrialProposalOffer
-          tracks={["qualification", "in_kind"]}
-          co={ctx.code}
-          sameCountryOnly
-          usable={(p) =>
-            payList.some((o) => o.currency === p.currency) &&
-            !(target.type === "institution" && p.track === "qualification")
-          }
-          onUse={(p) => {
-            if (p.track !== "sponsorship") {
-              setKind(p.track);
-              setMonthly(false);
+        ProposalOffer && (
+          <ProposalOffer
+            tracks={["qualification", "in_kind"]}
+            co={ctx.code}
+            sameCountryOnly
+            usable={(p) =>
+              payList.some((o) => o.currency === p.currency) &&
+              !(target.type === "institution" && p.track === "qualification")
             }
-            setChosenCurrency(p.currency);
-            chooseAmount(p.amount);
-            usedProposal.current = p.id;
-          }}
-        />
+            onUse={(p) => {
+              if (p.track !== "sponsorship") {
+                setKind(p.track);
+                setMonthly(false);
+              }
+              setChosenCurrency(p.currency);
+              chooseAmount(p.amount);
+              usedProposal.current = p.id;
+            }}
+          />
+        )
       }
       targets={sheetTargets}
       target={sheetTargets.find((x) => x.key === key(target)) ?? sheetTargets[0]!}

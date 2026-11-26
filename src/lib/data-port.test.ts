@@ -27,7 +27,8 @@ for (const f of files) {
 }
 
 describe("منفذ البيانات", () => {
-  it("كل عمليةٍ في شاشةٍ حقيقية لها نسخةٌ تجريبية", () => {
+  // بعد حذف التجربة (`npm run trial:remove`) لا نسخ تجريبية، والمنفذ يعيد الخادم دائماً
+  it.skipIf(!files.some(isDemo))("كل عمليةٍ في شاشةٍ حقيقية لها نسخةٌ تجريبية", () => {
     expect([...used].filter((n) => !registered.has(n)).sort()).toEqual([]);
   });
 

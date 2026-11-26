@@ -5,6 +5,7 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { Name } from "@/components/kit/Name";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import { formatMoney, fundingPercent } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
@@ -59,7 +60,7 @@ export function SimilarReadyChildren({ orphanId, amount }: { orphanId: string; a
             <Link
               // في التجربة يُفتح ملفّ طفل التجربة نفسه، لا مسار الدليل الحقيقي.
               {...(demo
-                ? { to: "/try/$childId", params: { childId: o.id } }
+                ? { to: trialRoute(`/try/${encodeURIComponent(o.id)}`) }
                 : { to: "/orphans/$orphanId", params: { orphanId: o.id } })}
               aria-label={c.open(o.display_name)}
               className="block min-h-11 rounded-xl bg-card p-3 shadow-[0_0_0_1px_rgb(0_0_0/0.08)] transition-[box-shadow,transform] duration-150 hover:shadow-[0_0_0_1px_rgb(0_0_0/0.12),0_4px_12px_-4px_rgb(0_0_0/0.12)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.99] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"

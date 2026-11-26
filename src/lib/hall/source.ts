@@ -11,6 +11,7 @@
  * خالصٌ وخفيف: يدخل حزمة الدخول مع `routes/hall.tsx`، فلا يستورد كتالوجاً ولا مشهداً.
  */
 import type { Geo, GeoCountry } from "@/lib/geo";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 
 export type HallSearch = {
   /** opens the hall on the trial catalogue */
@@ -69,7 +70,7 @@ export type HallSource = {
    */
   mode: "donor" | "trial" | "live";
   /** «أثري» of the same mode: the trial's impact page, or the donor's dashboard */
-  mine: "/try/impact" | "/dashboard";
+  mine: ReturnType<typeof trialRoute> | "/dashboard";
   /** where the visitor came from, when that is another page than `mine` */
   back: string | null;
   /** the country to land on */
@@ -82,15 +83,22 @@ export type HallSource = {
  * link, opens the donor's hall on their real sponsorships; `?live=1` opens the concept hall on
  * the real directory's counts; a bare link is the trial. Everything the page does differently between the three follows from `mode`.
  */
-export function hallSource(search: HallSearch, opts: { demo?: boolean } = {}): HallSource {
+export function hallSource(
+  search: HallSearch,
+  opts: { demo?: boolean; trial?: boolean } = {},
+): HallSource {
   // a bare /hall is the trial: labelled, and the same catalogue the trial pages read. The concept
   // hall, whose figures are sample beside one real count, opens only when a link asks for it.
   // A visitor in demo mode (`@/lib/demo-mode`) always gets the trial hall: no donor's real
   // sponsorships and no directory counts reach a demo session, whatever the link says.
   const asked =
     search.try === 1 ? "trial" : search.me === 1 ? "donor" : search.live === 1 ? "live" : "trial";
-  const mode = opts.demo ? "trial" : asked;
-  const mine = mode === "trial" ? "/try/impact" : "/dashboard";
+  // without the trial's files (`@/lib/trial-gate`) there is no trial hall: what would open it opens
+  // the live hall, so links left in old pages and bookmarks still land somewhere real
+  const trial = opts.trial ?? TRIAL_ENABLED;
+  const wanted = opts.demo ? "trial" : asked;
+  const mode = wanted === "trial" && !trial ? "live" : wanted;
+  const mine = mode === "trial" ? trialRoute("/try/impact") : "/dashboard";
   const from = hallReturn(search.from);
   return {
     mode,

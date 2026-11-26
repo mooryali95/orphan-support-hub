@@ -23,7 +23,6 @@ import { FX_SEED, operatingCurrency, quoteCharge, UNIFIED_CURRENCY } from "@/lib
 import { SYNC_FRESH_HOURS } from "@/lib/go-live";
 import { COUNTRIES as HALL_COUNTRIES } from "@/lib/hall/model";
 import { IMPACT_COHORT_MIN } from "@/lib/support-impact";
-import { TRY_CHILDREN } from "@/lib/try-demo";
 
 const ROOT = resolve(__dirname, "../..");
 const SRC = join(ROOT, "src");
@@ -337,10 +336,8 @@ describe("التجربة مفصولة عن المسارات المالية", () 
 
   it("معرّف طفل التجربة لا يمرّ من فحص المعرّف في دوالّ المال", () => {
     const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    for (const c of TRY_CHILDREN) {
-      expect(uuid.test(c.id)).toBe(false);
-      expect(c.code.startsWith("DEMO-")).toBe(true);
-    }
+    // أطفال التجربة أنفسهم يُفحصون في ملفّها (try-demo.test.ts)، فيبقى هذا الفحص بعد حذفها
+    expect(uuid.test("try-al")).toBe(false);
     expect(code("src/lib/sponsorships.functions.ts")).toMatch(/orphanId: z\.string\(\)\.uuid\(\)/);
     expect(code("src/lib/payments.functions.ts")).toMatch(/sponsorshipId: z\.string\(\)\.uuid\(\)/);
   });
