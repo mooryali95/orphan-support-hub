@@ -9,6 +9,49 @@ import { Textarea } from "@/components/ui/textarea";
 import { useDataFn } from "@/lib/data-port";
 import { submitProgressReport } from "@/lib/impact.functions";
 import { createDocumentUploadUrl } from "@/lib/intake.functions";
+import { defineCopy, useCopy } from "@/lib/locale";
+
+const COPY = defineCopy("components/impact/ReportForm", {
+  ar: {
+    uploadFailed: "تعذّر رفع المرفق",
+    empty: "اكتب سطراً واحداً على الأقل — تقرير فارغ لا يُفيد الكافل",
+    sent: "أُرسل التقرير للمراجعة",
+    period: "الفترة",
+    periodHint: "تقرير واحد لكل فترة. وإعادة الإرسال قبل الاعتماد تستبدل السابق.",
+    summary: "خلاصة الفترة",
+    education: "التعليم",
+    health: "الصحة",
+    living: "المعيشة",
+    visibility:
+      "يرى الكافل بعد الاعتماد الخلاصةَ والتعليم والمعيشة. أمّا الصحة والمرفقات فتبقى لدائرة الطفل (الجهة والوليّ والإدارة) ولا تصل الكافل.",
+    attachments: "المرفقات",
+    attachmentsHint: "تُحفظ في الخزنة الخاصة، ولا يفتحها إلا من حول الطفل برابطٍ موقّع.",
+    remove: (name: string) => `إزالة ${name}`,
+    add: "أضف مرفقاً",
+    submit: "إرسال للمراجعة",
+    cancel: "إلغاء",
+  },
+  en: {
+    uploadFailed: "The attachment could not be uploaded",
+    empty: "Write at least one line — an empty report doesn't help the sponsor",
+    sent: "Report sent for review",
+    period: "Period",
+    periodHint: "One report per period. Sending again before approval replaces the previous one.",
+    summary: "Summary of the period",
+    education: "Education",
+    health: "Health",
+    living: "Living conditions",
+    visibility:
+      "After approval the sponsor sees the summary, education and living conditions. Health notes and attachments stay within the child's circle (the organization, the guardian and the administration) and never reach the sponsor.",
+    attachments: "Attachments",
+    attachmentsHint:
+      "Kept in the private vault, and opened only by the people around the child through a signed link.",
+    remove: (name: string) => `Remove ${name}`,
+    add: "Add an attachment",
+    submit: "Send for review",
+    cancel: "Cancel",
+  },
+});
 
 /** الفترة الافتراضية هي الشهر الماضي: التقرير يُكتب عن شهر انقضى. */
 function lastMonth(): string {
@@ -29,6 +72,7 @@ export function ReportForm({
   // منفذ البيانات: الخادم دائماً في المنصّة، ونسخةٌ تجريبية في جلسة التجربة وحدها.
   const submit = useDataFn("impact.submitReport", submitProgressReport);
   const signUpload = useDataFn("intake.uploadUrl", createDocumentUploadUrl);
+  const t = useCopy(COPY);
 
   const [period, setPeriod] = useState(lastMonth());
   const [summary, setSummary] = useState("");
@@ -55,7 +99,7 @@ export function ReportForm({
         body: file,
       });
       if (!put.ok) {
-        toast.error("تعذّر رفع المرفق");
+        toast.error(t.uploadFailed);
         return;
       }
       setFiles((f) => [...f, { path: signed.path, name: file.name }]);
@@ -66,7 +110,7 @@ export function ReportForm({
 
   async function send() {
     if (!summary.trim() && !education.trim() && !health.trim() && !living.trim()) {
-      toast.error("اكتب سطراً واحداً على الأقل — تقرير فارغ لا يُفيد الكافل");
+      toast.error(t.empty);
       return;
     }
     setBusy(true);
@@ -86,7 +130,7 @@ export function ReportForm({
         toast.error(res.error);
         return;
       }
-      toast.success("أُرسل التقرير للمراجعة");
+      toast.success(t.sent);
       onDone();
     } finally {
       setBusy(false);
@@ -97,7 +141,7 @@ export function ReportForm({
     <div className="border-border bg-secondary/30 mt-3 space-y-4 rounded-xl border p-4">
       <div className="space-y-1.5">
         <Label htmlFor={`period-${orphanId}`} className="text-xs">
-          الفترة
+          {t.period}
         </Label>
         <Input
           id={`period-${orphanId}`}
@@ -106,34 +150,27 @@ export function ReportForm({
           onChange={(e) => setPeriod(e.target.value)}
           className="w-44"
         />
-        <p className="text-muted-foreground text-xs">
-          تقرير واحد لكل فترة. وإعادة الإرسال قبل الاعتماد تستبدل السابق.
-        </p>
+        <p className="text-muted-foreground text-xs">{t.periodHint}</p>
       </div>
 
-      <Row id={`sum-${orphanId}`} label="خلاصة الفترة" value={summary} onChange={setSummary} />
+      <Row id={`sum-${orphanId}`} label={t.summary} value={summary} onChange={setSummary} />
       <div className="grid gap-3 sm:grid-cols-3">
         <Row
           id={`edu-${orphanId}`}
-          label="التعليم"
+          label={t.education}
           value={education}
           onChange={setEducation}
           rows={3}
         />
-        <Row id={`hea-${orphanId}`} label="الصحة" value={health} onChange={setHealth} rows={3} />
-        <Row id={`liv-${orphanId}`} label="المعيشة" value={living} onChange={setLiving} rows={3} />
+        <Row id={`hea-${orphanId}`} label={t.health} value={health} onChange={setHealth} rows={3} />
+        <Row id={`liv-${orphanId}`} label={t.living} value={living} onChange={setLiving} rows={3} />
       </div>
       {/* ما يراه الكافل يُقال لكاتب التقرير قبل أن يكتب، لا بعد أن يُنشر. */}
-      <p className="text-muted-foreground text-xs leading-6">
-        يرى الكافل بعد الاعتماد الخلاصةَ والتعليم والمعيشة. أمّا الصحة والمرفقات فتبقى لدائرة الطفل
-        (الجهة والوليّ والإدارة) ولا تصل الكافل.
-      </p>
+      <p className="text-muted-foreground text-xs leading-6">{t.visibility}</p>
 
       <div>
-        <p className="text-xs font-medium">المرفقات</p>
-        <p className="text-muted-foreground mt-1 text-xs leading-6">
-          تُحفظ في الخزنة الخاصة، ولا يفتحها إلا من حول الطفل برابطٍ موقّع.
-        </p>
+        <p className="text-xs font-medium">{t.attachments}</p>
+        <p className="text-muted-foreground mt-1 text-xs leading-6">{t.attachmentsHint}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           {files.map((f, i) => (
             <span
@@ -145,7 +182,7 @@ export function ReportForm({
               <button
                 type="button"
                 onClick={() => setFiles((x) => x.filter((_, j) => j !== i))}
-                aria-label={`إزالة ${f.name}`}
+                aria-label={t.remove(f.name)}
               >
                 <Trash2 className="size-3" aria-hidden="true" />
               </button>
@@ -157,7 +194,7 @@ export function ReportForm({
             ) : (
               <Upload className="size-3" aria-hidden="true" />
             )}
-            أضف مرفقاً
+            {t.add}
             <input
               type="file"
               className="sr-only"
@@ -176,10 +213,10 @@ export function ReportForm({
       <div className="flex gap-2">
         <Button size="sm" onClick={() => void send()} disabled={busy}>
           {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-          إرسال للمراجعة
+          {t.submit}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          إلغاء
+          {t.cancel}
         </Button>
       </div>
     </div>
