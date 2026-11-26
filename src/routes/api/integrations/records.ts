@@ -12,6 +12,8 @@ import {
   readBodyCapped,
 } from "@/lib/integrations/client";
 
+import { untypedRpc } from "@/lib/rpc-call";
+
 import { withoutIdempotencyKey } from "./-mirror-payload";
 
 /**
@@ -91,12 +93,7 @@ export const Route = createFileRoute("/api/integrations/records")({
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const db = supabaseAdmin as unknown as {
-          rpc: (
-            fn: string,
-            args: Record<string, unknown>,
-          ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
-        };
+        const db = untypedRpc(supabaseAdmin);
         const { data, error } = await db.rpc("golden_ingest", {
           _client: auth.client.id,
           _country: body.country,

@@ -3401,10 +3401,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.four_eyes_required": {
-   "en": "You uploaded this change yourself: another supervisor or the admin team settles it.",
-   "ar": "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو الإدارة.",
+   "en": "You uploaded this change yourself: another supervisor or another admin settles it.",
+   "ar": "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو مديرٌ آخر.",
    "kind": "text",
-   "hash": "a383ccad6da1",
+   "hash": "3ceff8b38956",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.gender_required": {
@@ -5178,11 +5178,12 @@
    "hash": "926bed064fb5",
    "file": "src/components/admin/data/work-copy.ts"
   },
-  "components/admin/data/work.selectOne": {
-   "en": "Select this item",
-   "ar": "حدّد هذا البند",
-   "kind": "text",
-   "hash": "57f238e0fa94",
+  "components/admin/data/work.selectItem": {
+   "en": "Select {0} for file {1}",
+   "ar": "حدّد بند {0} للملف {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "8334d3e7334f",
    "file": "src/components/admin/data/work-copy.ts"
   },
   "components/admin/data/work.selected.one": {

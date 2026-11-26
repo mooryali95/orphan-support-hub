@@ -32,7 +32,7 @@ export const WORK_COPY = defineCopy("components/admin/data/work", {
     keysPick: "حدّد",
     keysFind: "ابحث",
     selectAll: "حدّد كل الظاهر القابل للحسم الجماعي",
-    selectOne: "حدّد هذا البند",
+    selectItem: (field: string, code: string) => `حدّد بند ${field} للملف ${code}`,
     selected: pluralOf(
       {
         zero: "لم يُحدَّد شيء",
@@ -194,7 +194,7 @@ export const WORK_COPY = defineCopy("components/admin/data/work", {
     keysPick: "select",
     keysFind: "search",
     selectAll: "Select all visible items that can be settled in bulk",
-    selectOne: "Select this item",
+    selectItem: (field: string, code: string) => `Select ${field} for file ${code}`,
     selected: pluralOf(
       { zero: "Nothing selected", one: "{0} item selected", other: "{0} items selected" },
       0,

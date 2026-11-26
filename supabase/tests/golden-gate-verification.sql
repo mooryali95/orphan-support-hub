@@ -5,7 +5,8 @@ INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('a9900000-0000-4000-8000-000000000001', 'gg-admin@example.test', '{}'::jsonb),
   ('a9900000-0000-4000-8000-000000000002', 'gg-sponsor@example.test', '{}'::jsonb),
   ('a9900000-0000-4000-8000-000000000003', 'gg-org@example.test', '{"role":"care_org"}'::jsonb);
-INSERT INTO public.user_roles (user_id, role) VALUES ('a9900000-0000-4000-8000-000000000001', 'admin');
+INSERT INTO auth.users (id, email) VALUES ('a9900000-0000-4000-8000-000000000009', 'gg-admin2@example.test');
+INSERT INTO public.user_roles (user_id, role) VALUES ('a9900000-0000-4000-8000-000000000001', 'admin'), ('a9900000-0000-4000-8000-000000000009', 'admin');
 INSERT INTO public.care_organizations (id, owner_id, name, status)
 VALUES ('a9920000-0000-4000-8000-000000000001', 'a9900000-0000-4000-8000-000000000003', 'جهة البوابة', 'approved');
 
@@ -50,10 +51,12 @@ BEGIN
   -- 3) حسم التنبيه والتعارض يعيده تلقائياً
   SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated"}';
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated"}';
   PERFORM public.admin_alert_resolve(_a, 'false_positive', 'خطأ إدخال صُحّح');
   PERFORM public.admin_conflict_resolve(
     (SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND status = 'open'), 'keep');
   IF NOT public.golden_accepts_new_support(_o) THEN RAISE EXCEPTION 'FAIL — الملف لم يعد بعد الحسم'; END IF;
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated"}';
   INSERT INTO public.sponsorships (sponsor_id, orphan_id, amount, currency, status)
   VALUES ('a9900000-0000-4000-8000-000000000002', _o, 50, 'USD', 'pending_payment');
   RAISE NOTICE 'PASS — الحسم يعيد الملف للكفالة دون خطوةٍ أخرى';
@@ -62,6 +65,7 @@ BEGIN
   PERFORM public.admin_golden_import('wamy', 'SN', NULL,
     '[{"external_ref":"gg-1","observed_at":"2026-11-03T00:00:00Z","fields":{"birth_date":"2005-01-01"}}]'::jsonb);
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated"}';
   PERFORM public.admin_alert_resolve(_a, 'confirmed', 'تلاعبٌ مؤكَّد بالميلاد');
   PERFORM public.admin_conflict_resolve(
     (SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND status = 'open'), 'keep');

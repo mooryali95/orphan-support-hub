@@ -4,7 +4,8 @@ BEGIN;
 INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('a9100000-0000-4000-8000-000000000001', 'gr-admin@example.test', '{}'::jsonb),
   ('a9100000-0000-4000-8000-000000000002', 'gr-user@example.test', '{}'::jsonb);
-INSERT INTO public.user_roles (user_id, role) VALUES ('a9100000-0000-4000-8000-000000000001', 'admin');
+INSERT INTO auth.users (id, email) VALUES ('a9100000-0000-4000-8000-000000000009', 'second-admin-a91000@example.test');
+INSERT INTO public.user_roles (user_id, role) VALUES ('a9100000-0000-4000-8000-000000000001', 'admin'), ('a9100000-0000-4000-8000-000000000009', 'admin');
 INSERT INTO public.api_clients (id, name, client_key, secret_hash, org_id, scopes, source) VALUES
   ('a9300000-0000-4000-8000-000000000001', 'الندوة', 'ck_live_wamy', 'x', NULL, ARRAY['records:primary'], NULL),
   ('a9300000-0000-4000-8000-000000000002', 'مكتب ألبانيا', 'ck_live_office', 'x', NULL, ARRAY['records:verify'], 'rowad-albania');
@@ -130,7 +131,13 @@ BEGIN
   END IF;
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,
     '[{"external_ref":"w-1","observed_at":"2026-11-15T00:00:00Z","fields":{"birth_date":"2014-04-01"}}]'::jsonb);
+  -- العينان بلا استثناء: المدير الذي رفع التغيير لا يعتمده، ويعتمده مديرٌ آخر.
+  IF public.admin_conflict_resolve((SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open'), 'accept')->>'code' <> 'four_eyes_required' THEN
+    RAISE EXCEPTION 'FAIL — مديرٌ اعتمد تغييراً حرجاً رفعه بنفسه';
+  END IF;
+  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000009","role":"authenticated"}';
   _r := public.admin_conflict_resolve((SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open'), 'accept');
+  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000001","role":"authenticated"}';
   IF NOT (_r->>'ok')::boolean OR (SELECT birth_date FROM public.orphans WHERE id = _o) <> DATE '2014-04-01' THEN
     RAISE EXCEPTION 'FAIL — الاعتماد لم يطبّق: %', _r;
   END IF;

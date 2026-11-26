@@ -1,4 +1,5 @@
 import { guardApiRate } from "@/lib/integrations/client";
+import { untypedRpc } from "@/lib/rpc-call";
 import { NONCE_COOKIE, safeNext, verifyLaunchToken, type VerifyKeys } from "@/lib/sso/launch-token";
 
 /**
@@ -78,9 +79,7 @@ export async function handle(request: Request, token: string | null): Promise<Re
   const c = v.claims;
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const db = supabaseAdmin as unknown as {
-    rpc: (fn: string, a: Record<string, unknown>) => PromiseLike<{ data: unknown; error: unknown }>;
-  };
+  const db = untypedRpc(supabaseAdmin);
   const claimed = await db.rpc("sso_claim_jti", {
     _jti: `${PROVIDER}:${c.jti}`,
     _expires: new Date(c.exp * 1000).toISOString(),

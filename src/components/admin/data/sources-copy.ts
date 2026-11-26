@@ -328,7 +328,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       note_required: "التأكيد يحتاج سبباً مكتوباً.",
       alert_closed: "حُسم هذا التنبيه من قبل.",
       country_forbidden: "لا صلاحية لك على هذه الدولة لهذا الإجراء.",
-      four_eyes_required: "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو الإدارة.",
+      four_eyes_required: "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو مديرٌ آخر.",
       user_not_found: "لا حساب مسجّل بهذا البريد.",
       invite_failed: "تعذّر إرسال الدعوة. تحقّق من البريد وأعد المحاولة.",
       role_forbidden: "لا تملك منح هذا الدور أو تعديل هذا العضو.",
@@ -614,7 +614,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       alert_closed: "This alert was already settled.",
       country_forbidden: "You don't have this permission for this country.",
       four_eyes_required:
-        "You uploaded this change yourself: another supervisor or the admin team settles it.",
+        "You uploaded this change yourself: another supervisor or another admin settles it.",
       user_not_found: "No registered account with this email.",
       invite_failed: "The invitation couldn't be sent. Check the email and try again.",
       role_forbidden: "You can't grant this role or change this member.",
