@@ -164,3 +164,13 @@ describe("وضع التجربة", () => {
     expect(story.map((s) => s.title + s.text).join("")).not.toMatch(/[\u0600-\u06FF]/);
   });
 });
+
+describe("معرّف طفل التجربة لا يمرّ من فحص المعرّف في دوالّ المال", () => {
+  it("لا معرّف UUID ولا رمز بلا DEMO-", () => {
+    const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    for (const c of TRY_CHILDREN) {
+      expect(uuid.test(c.id)).toBe(false);
+      expect(c.code.startsWith("DEMO-")).toBe(true);
+    }
+  });
+});

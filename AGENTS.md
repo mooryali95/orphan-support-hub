@@ -20,6 +20,7 @@
 ## Demonstration boundaries
 - Keep showcase geography and fictional child cards in a shared browser-safe demo module, separate from payable child IDs; this prevents sample data from entering financial workflows.
 - Demo office records use an explicit name prefix and remain inactive until replaced by reviewed source data; this avoids implying accreditation or a live integration.
+- Trial mode (`/try`) is removable with one command (`npm run trial:remove -- --apply`, `docs/trial-mode.ar.md`): every trial file is listed in `trial.manifest.json`, and real code never imports one — it reaches trial data through `useDataFn`/`registerDemo`, trial UI through `src/lib/trial-slots.ts`, and `/try` links through `trialRoute` behind `TRIAL_ENABLED` (`src/lib/trial-gate.ts`), so launch deletes files without editing real screens (locked by `trial-manifest.test.ts` and the CI `trial-removal` job).
 - In the live hall (`/hall`) only the WAMY network and the directory's country counts (`hallDirectory`) are real; every panel of regions, funding, payment or impact carries the sample chip from `src/lib/hall/live.ts` and says "simulated", so sample figures never pass as results.
 
 ## Support selections
@@ -42,6 +43,7 @@
 
 ## Core countries
 - The real mode shows only `countries.live_focus` (Sri Lanka, Pakistan with Kashmir as a `country_regions` row, Thailand, Sudan, Senegal) via `public_focus_countries`; the trial keeps the whole network with sample data, so real and sample geography never mix.
+- Vision pages read country presence from the generated `src/data/wamy-presence.ts` (regenerate with `npx tsx scripts/gen-wamy-presence.mjs` after editing `wamy-network.ts`; `wamy-presence.test.ts` fails if they differ), so they stay within the 385KB page budget without the research indicators.
 - Sri Lanka and Pakistan entries in `src/data/wamy-network.ts` rest on WAMY management's statement (no public URL); replace `source`/`url` with the official source when supplied, keeping the `in_network` migration list in sync.
 - Country teams (`country_staff`: supervisor, data_entry, viewer) reach the verification layer only through `country_can`, checked before an item's status so other countries learn nothing; critical changes and alerts are settled by someone other than their uploader (`received_by`, `raised_by`), so no single staff member can push and approve the same change.
 - New sponsorships pass `golden_accepts_new_support` (insert trigger, both suggestion functions, `public_verification.accepts`); keep it an indexed check that matches `golden_trust` (locked by `golden-gate-verification`), so flagged files never take new money and suggestions stay fast at 10,000 files.

@@ -19,6 +19,7 @@
     "test:e2e:vision": "node scripts/e2e-vision.mjs",
     "test:e2e:hall-countries": "node scripts/hall-countries.mjs",
     "i18n:extract": "node scripts/i18n-extract.mjs",
+    "trial:remove": "node scripts/remove-trial.mjs",
     "brand:sync": "node scripts/brand-sync.mjs"
   },
   "overrides": {

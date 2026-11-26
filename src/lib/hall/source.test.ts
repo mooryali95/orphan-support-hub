@@ -10,15 +10,12 @@ import { describe, expect, it } from "vitest";
 
 import { toMapStats } from "@/components/map/demo-stats";
 import { resolveMapSource } from "@/components/map/map-source";
-import { ALBANIA, TRAITS as VISION_TRAITS } from "@/data/vision-demo";
+import { TRAITS as VISION_TRAITS } from "@/data/vision-demo";
 import { NETWORK, NETWORK_SITES } from "@/data/vision-network";
 import { demoGeography } from "@/lib/demo-network";
 import { shapeGeo } from "@/lib/geo";
-import { resolveRegion, type RegionShape } from "@/lib/regions";
-import { tryChild } from "@/lib/try-demo";
-import { TRY_PLACES, tryChildOf, tryRegionName } from "@/lib/try-places";
 
-import { byCode, COUNTRIES, regionsFor, TRAITS } from "./model";
+import { COUNTRIES, TRAITS } from "./model";
 import { impactStats, myImpact } from "@/lib/my-impact";
 import type { MySponsorship } from "@/lib/sponsorships.functions";
 
@@ -32,10 +29,12 @@ import {
   hallSource,
   parseHallSearch,
 } from "./source";
-import { trialHall } from "./trial";
 
 /** the only child id the money functions accept (`orphanId: z.string().uuid()`) */
 const PAYABLE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/** the trial is there: these expectations hold whether or not its files are (`@/lib/trial-gate`) */
+const T = { trial: true };
 
 const ROOT = resolve(__dirname, "../../..");
 const read = (path: string) => readFileSync(join(ROOT, path), "utf8");
@@ -58,14 +57,22 @@ const importsOf = (path: string) =>
 
 describe("مفتاح التجربة/الحقيقي: موضعٌ واحد", () => {
   it("التجربة بـ?try=1 وحدها، وإلا فالحقيقي؛ و«أثري» من الوضع نفسه", () => {
-    expect(hallSource({ try: 1 })).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    expect(hallSource({ try: 1 }, T)).toMatchObject({ mode: "trial", mine: "/try/impact" });
     expect(hallSource({ live: 1 })).toMatchObject({ mode: "live", mine: "/dashboard" });
     // الرابط العامّ بلا معرّف يفتح التجربة الموسومة، لا القاعة التصوّرية
-    expect(hallSource({})).toMatchObject({ mode: "trial", mine: "/try/impact" });
+    expect(hallSource({}, T)).toMatchObject({ mode: "trial", mine: "/try/impact" });
     // زائرٌ في الوضع التجريبي يرى قاعة التجربة وحدها، ولو طلب الرابط الحقيقي أو أثر الداعم
-    expect(hallSource({ live: 1 }, { demo: true })).toMatchObject({ mode: "trial" });
-    expect(hallSource({ me: 1 }, { demo: true })).toMatchObject({ mode: "trial" });
+    expect(hallSource({ live: 1 }, { demo: true, trial: true })).toMatchObject({ mode: "trial" });
+    expect(hallSource({ me: 1 }, { demo: true, trial: true })).toMatchObject({ mode: "trial" });
     expect(parseHallSearch({ live: "1" })).toEqual({ live: 1 });
+  });
+
+  it("بلا ملفّات التجربة: ما كان يفتح التجربة يفتح القاعة الحيّة، و«أثري» اللوحة", () => {
+    const off = { trial: false };
+    expect(hallSource({}, off)).toMatchObject({ mode: "live", mine: "/dashboard" });
+    expect(hallSource({ try: 1 }, off)).toMatchObject({ mode: "live", mine: "/dashboard" });
+    expect(hallSource({ live: 1 }, { demo: true, trial: false }).mode).toBe("live");
+    expect(hallSource({ me: 1 }, off).mode).toBe("donor");
   });
 
   it("لا ملفّ في القاعة يقرأ وضع المنصّة، والصفحة تأخذ قرارها من source.ts", () => {
@@ -216,34 +223,6 @@ describe("التجربة والعرض: تعريفٌ واحد لما يتكرّر
     for (const f of ["src/routes/hall.lazy.tsx", "src/components/hall/hall-scene.js"])
       expect(read(f)).not.toMatch(/\d+(<\/span>)?\s*موقعاً/);
   });
-
-  it("مدن ألبانيا في العرض بأسماء الخريطة، ومنطقتا التجربة منها بالاسم والعدد", () => {
-    const map = (JSON.parse(read("public/geo/admin1/AL.json")) as { regions: RegionShape[] })
-      .regions;
-    for (const c of ALBANIA) expect(resolveRegion(c.name.en, map)).toBe(c.name.ar);
-    const al = TRY_PLACES.find((p) => p.co === "AL")!;
-    const columns = regionsFor(byCode("AL")!);
-    for (const r of al.regions) {
-      const city = ALBANIA.find((c) => c.id === r.hall)!;
-      expect(city).toBeDefined();
-      expect(tryRegionName(r.id, "ar")).toBe(city.name.ar);
-      expect(r.children).toBe(city.need);
-      expect(columns.find((c) => c.id === r.hall)).toMatchObject({ ar: city.name.ar });
-    }
-  });
-
-  it("طفل الدولة في القاعة هو طفل الصفحات نفسه، ومعرّفه لا يدخل مساراً مالياً", () => {
-    const hall = trialHall({ pledges: [], gifts: [], now: new Date("2026-06-01"), locale: "ar" });
-    for (const place of TRY_PLACES) {
-      const kids = hall.countries[place.co]!.regions.flatMap((r) => r.kids);
-      const page = tryChildOf(place.co)!;
-      expect(kids.map((k) => k.id)).toEqual([page.id]);
-      expect(kids[0]).toMatchObject({ code: page.code, need: page.need });
-      expect(tryChild(page.id)).toBe(page);
-      expect(PAYABLE_ID.test(page.id)).toBe(false);
-      expect(page.code.startsWith("DEMO-")).toBe(true);
-    }
-  });
 });
 
 describe("الدخول والخروج يحملان السياق", () => {
@@ -259,50 +238,20 @@ describe("الدخول والخروج يحملان السياق", () => {
     expect(hallReturn("/dashboard")).toBe("/dashboard");
   });
 
-  it("رابط القاعة من صفحةٍ يحمل دولتها وطريق العودة ببحثها كما هو", () => {
-    const childCo = ({ pathname }: { pathname: string }) =>
-      tryChild(/^\/try\/(try-\w\w)$/.exec(pathname)?.[1] ?? "")?.co;
-    const kid = tryChildOf("EG")!;
-    expect(hallEntry({ pathname: `/try/${kid.id}`, search: {} }, { try: 1 }, childCo)).toEqual({
-      try: 1,
-      c: "EG",
-      from: `/try/${kid.id}`,
-    });
-    expect(
-      hallEntry(
-        { pathname: "/try/support", search: { c: "SN", r: "SEN-759", kind: "in_kind" } },
-        { try: 1 },
-        childCo,
-      ),
-    ).toEqual({ try: 1, c: "SN", from: "/try/support?c=SN&r=SEN-759&kind=in_kind" });
-    expect(hallEntry({ pathname: "/try", search: {} }, { try: 1 }, childCo)).toEqual({
-      try: 1,
-      from: "/try",
-    });
-  });
-
   it("القاعة تفتح على الدولة المحمولة، وتعرض «عودة» حين تختلف الصفحة عن «أثري»", () => {
     const from = "/try/support?c=SN&r=SEN-759&kind=in_kind";
-    expect(hallSource({ try: 1, c: "SN", from })).toEqual({
+    expect(hallSource({ try: 1, c: "SN", from }, T)).toEqual({
       mode: "trial",
       mine: "/try/impact",
       back: from,
       start: "SN",
     });
     expect(hallSource({ live: 1, from: "/dashboard" }).back).toBeNull();
-    expect(hallSource({ try: 1, from: "/try/impact?kind=monthly" }).back).toBeNull();
-  });
-
-  it("كل دولةٍ تحملها الصفحات ترسمها القاعة وتدخلها التجربة", () => {
-    const hall = trialHall({ pledges: [], gifts: [], now: new Date("2026-06-01"), locale: "ar" });
-    for (const c of COUNTRIES) expect(hall.countries[c.code], c.code).toBeDefined();
+    expect(hallSource({ try: 1, from: "/try/impact?kind=monthly" }, T).back).toBeNull();
   });
 
   it("روابط الصفحات إلى القاعة تمرّ من hallEntry أو تحمل طريق العودة", () => {
-    expect(read("src/components/try/TryJourneyGuide.tsx")).not.toMatch(
-      /search=\{\{\s*try: 1\s*\}\}/,
-    );
-    expect(read("src/routes/try.index.tsx")).not.toMatch(/search=\{\{\s*try: 1\s*\}\}/);
+    // links from the trial pages are checked in the trial's own test (trial-source.test.ts)
     expect(read("src/routes/_authenticated/dashboard.tsx")).toContain(
       'hallSearch={{ me: 1, from: "/dashboard" }}',
     );
@@ -363,7 +312,7 @@ const cardOf = (id: string) => CARD[id];
 describe("مفتاح القاعة: الداعم من لوحته يرى أثره هو", () => {
   it("?me=1 يفتح قاعة الداعم، و?try=1 يبقى تجربة", () => {
     expect(hallSource({ me: 1 })).toMatchObject({ mode: "donor", mine: "/dashboard" });
-    expect(hallSource({ me: 1, try: 1 }).mode).toBe("trial");
+    expect(hallSource({ me: 1, try: 1 }, T).mode).toBe("trial");
     expect(parseHallSearch({ me: "1", from: "/dashboard" })).toEqual({
       me: 1,
       from: "/dashboard",
@@ -485,9 +434,9 @@ describe("أرقام الداعم في القاعة هي أرقام لوحته: 
   });
 
   it("معرّف طفلٍ تجريبي لا يصير رابطاً ولا يُطلب: المعرّف القابل للدفع وحده", () => {
-    const trial = Object.values(
-      trialHall({ pledges: [], gifts: [], now: NOW, locale: "ar" }).countries,
-    )[0]!.regions.flatMap((r) => r.kids)[0]!.id;
+    // a trial child's id has this shape (`try-<country>`; the trial's own test checks its
+    // catalogue against PAYABLE_ID), so the donor's hall is tested without the trial's files
+    const trial = "try-al";
     expect(trial).not.toMatch(PAYABLE_ID);
     const list = [
       sponsorship(1, {

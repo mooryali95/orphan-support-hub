@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { CircleSlash, Loader2, Pause, Play, SlidersHorizontal } from "lucide-react";
@@ -25,6 +24,9 @@ import {
 } from "@/lib/sponsorships.functions";
 import { formatDate, formatMoney, isolate, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+import { useDataFn, useDataKey } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
@@ -164,10 +166,16 @@ function sponsorshipActions(s: MySponsorship) {
 
 export function ManageSponsorshipLink({ s }: { s: MySponsorship }) {
   const c = useCopy(COPY);
+  const demo = useDemo();
   if (sponsorshipActions(s).ended) return null;
   return (
     <Button asChild size="sm" variant="outline">
-      <Link to="/sponsorships/$sponsorshipId/manage" params={{ sponsorshipId: s.id }}>
+      <Link
+        // في التجربة شاشة الإدارة نفسها تحت «جرّب»، على كفالات الجلسة.
+        {...(demo
+          ? { to: trialRoute(`/try/sponsorships/${encodeURIComponent(s.id)}/manage`) }
+          : { to: "/sponsorships/$sponsorshipId/manage", params: { sponsorshipId: s.id } })}
+      >
         <SlidersHorizontal className="size-4" strokeWidth={1.75} aria-hidden="true" />
         {c.manage}
       </Link>
@@ -177,9 +185,10 @@ export function ManageSponsorshipLink({ s }: { s: MySponsorship }) {
 
 export function ManageSponsorship({ sponsorshipId }: { sponsorshipId: string }) {
   const c = useCopy(COPY);
-  const fetchList = useServerFn(listMySponsorships);
+  const demo = useDemo();
+  const fetchList = useDataFn("sponsor.manage.list", listMySponsorships);
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["my-sponsorships"],
+    queryKey: useDataKey(["my-sponsorships"]),
     queryFn: () => fetchList(),
   });
 
@@ -211,7 +220,7 @@ export function ManageSponsorship({ sponsorshipId }: { sponsorshipId: string }) 
       <div className="rounded-2xl border border-dashed border-border p-8 text-center">
         <p className="text-muted-foreground">{c.notFound}</p>
         <Button asChild variant="outline" className="mt-3">
-          <Link to="/dashboard">{c.back}</Link>
+          <Link to={demo ? trialRoute("/try/impact") : "/dashboard"}>{c.back}</Link>
         </Button>
       </div>
     );
@@ -223,6 +232,8 @@ function ManageBody({ s }: { s: MySponsorship }) {
   const c = useCopy(COPY);
   const locale = useLocale();
   const qc = useQueryClient();
+  const demo = useDemo();
+  const listKey = useDataKey(["my-sponsorships"]);
   const [mode, setMode] = useState<Mode>(null);
   const name = s.orphan?.display_name ?? "—";
   const a = sponsorshipActions(s);
@@ -231,7 +242,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
 
   const done = async () => {
     setMode(null);
-    await qc.invalidateQueries({ queryKey: ["my-sponsorships"] });
+    await qc.invalidateQueries({ queryKey: listKey });
   };
 
   const state = s.cancel_effective_at
@@ -247,7 +258,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
   return (
     <div className="space-y-8">
       <Link
-        to="/dashboard"
+        to={demo ? trialRoute("/try/impact") : "/dashboard"}
         className="inline-flex min-h-11 items-center text-sm font-semibold text-primary"
       >
         {c.back}
@@ -275,14 +286,21 @@ function ManageBody({ s }: { s: MySponsorship }) {
           {c.lead}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button asChild size="sm" variant="outline">
-            <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
-              {c.details}
-            </Link>
-          </Button>
+          {/* التجربة لا صفحة جدولٍ لها: سجلّ أشهرها في «أثري» */}
+          {!demo && (
+            <Button asChild size="sm" variant="outline">
+              <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
+                {c.details}
+              </Link>
+            </Button>
+          )}
           {s.orphan && (
             <Button asChild size="sm" variant="ghost">
-              <Link to="/orphans/$orphanId" params={{ orphanId: s.orphan.id }}>
+              <Link
+                {...(demo
+                  ? { to: trialRoute(`/try/${encodeURIComponent(s.orphan.id)}`) }
+                  : { to: "/orphans/$orphanId", params: { orphanId: s.orphan.id } })}
+              >
                 {c.childFile}
               </Link>
             </Button>
@@ -445,7 +463,7 @@ function ResumeConfirm({
   onDone: () => Promise<void>;
 }) {
   const c = useCopy(COPY);
-  const resume = useServerFn(resumeSponsorship);
+  const resume = useDataFn("sponsor.manage.resume", resumeSponsorship);
   const [busy, setBusy] = useState(false);
   return (
     <form

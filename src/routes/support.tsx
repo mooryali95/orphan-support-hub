@@ -41,6 +41,7 @@ import { CelebrateMark } from "@/components/kit/Celebrate";
 import { SupportSheet } from "@/components/support/SupportSheet";
 import { MapHallSwitch } from "@/components/support/MapHallSwitch";
 import { useDemo } from "@/lib/demo-mode";
+import { trialSlots } from "@/lib/trial-slots";
 
 const search = z.object({
   orphan: z.string().uuid().optional(),
@@ -204,19 +205,14 @@ const COPY = defineCopy("routes/support", {
 
 // الوضع التجريبي: الصفحة نفسها بخريطتها وورقتها، ومصدرها كتالوج التجربة — لا قراءة من القاعدة
 // ولا كتابة فيها. في قطعتها، فلا تدخل حزمة الصفحة الحقيقية.
-const DemoSupportMap = lazy(() =>
-  // كتالوج التجربة يُحمَّل قبل أيّ قراءة، كما تفعل مسارات «جرّب» نفسها (routes/try.tsx)
-  Promise.all([
-    import("@/lib/try-places"),
-    import("@/lib/try-cycle"),
-    import("@/components/try/TrySupportMap"),
-  ]).then(([, , m]) => ({ default: m.TrySupportMap })),
-);
+// تأتي من التجربة إن وُجدت (`@/lib/trial-slots`)؛ وبعد حذفها لا جلسة عرض، فالصفحة الحقيقية.
+const loadDemoMap = trialSlots?.loadSupportMap;
+const DemoSupportMap = loadDemoMap ? lazy(loadDemoMap) : null;
 
 function SupportPage() {
   const demo = useDemo();
   const { c, r, kind } = Route.useSearch();
-  if (!demo) return <RealSupportPage />;
+  if (!demo || !DemoSupportMap) return <RealSupportPage />;
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />

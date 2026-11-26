@@ -80,9 +80,12 @@ describe("فحص WebGL: مرّةٌ واحدة، وسياقه يُعاد فورا
 describe("التسخين نفسه", () => {
   it("بلا WebGL لا يُطلب المشهد ولا كتالوج التجربة؛ ومعه يُطلبان", async () => {
     const scene = vi.fn(() => Promise.resolve({}));
-    const trial = vi.fn(() => Promise.resolve({}));
+    // the trial's catalogue comes through its slot (`@/lib/trial-slots`): mocked here, so this
+    // holds with or without the trial's files
+    const trial = vi.fn(() => Promise.resolve(null));
     vi.doMock("@/components/hall/hall-scene.js", scene);
-    vi.doMock("@/lib/hall/trial", trial);
+    vi.doMock("@/lib/trial-gate", () => ({ TRIAL_ENABLED: true, trialRoute: (p: string) => p }));
+    vi.doMock("@/lib/trial-slots", () => ({ trialSlots: { loadHall: trial } }));
     const { warmHall } = await import("./preload");
 
     browser("refused");
@@ -97,6 +100,7 @@ describe("التسخين نفسه", () => {
     await vi.waitFor(() => expect(scene).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(trial).toHaveBeenCalledTimes(1));
     vi.doUnmock("@/components/hall/hall-scene.js");
-    vi.doUnmock("@/lib/hall/trial");
+    vi.doUnmock("@/lib/trial-gate");
+    vi.doUnmock("@/lib/trial-slots");
   });
 });

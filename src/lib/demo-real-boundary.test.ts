@@ -19,12 +19,10 @@ const DEMO_MODULES = [
 ];
 
 /**
- * جسور مقصودة ومراجَعة: بطاقة «ما اخترته في التجربة» تعرض مقترحاً (بلد ومبلغ)
- * ولا تُنشئ شيئاً؛ الداعم يختار طفلاً حقيقياً ويؤكّد بنفسه.
+ * لا جسور: ما تعرضه الشاشات الحقيقية من التجربة (بطاقة «ما اخترته في التجربة» وأخواتها)
+ * يأتيها بالاسم من `@/lib/trial-slots`، لا باستيراد (trial-manifest.test.ts).
  */
-const ALLOWED_BRIDGES: Record<string, string[]> = {
-  "routes/_authenticated/dashboard.tsx": ["@/components/try/TrialProposal"],
-};
+const ALLOWED_BRIDGES: Record<string, string[]> = {};
 
 const ROOT = join(__dirname, "..");
 const REAL_ROOTS = ["routes/_authenticated", "routes/api"];

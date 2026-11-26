@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4165,
+ "count": 4204,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -185,6 +185,20 @@
    "kind": "text",
    "hash": "787b40d7f952",
    "file": "src/components/ExcessSuggestion.tsx"
+  },
+  "components/KafalaPromise.hadith": {
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
+   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
+   "kind": "text",
+   "hash": "ba5bbd99221a",
+   "file": "src/components/KafalaPromise.tsx"
+  },
+  "components/KafalaPromise.source": {
+   "en": "Narrated by al-Bukhari (6005)",
+   "ar": "رواه البخاري (6005)",
+   "kind": "text",
+   "hash": "68d0e4241fb7",
+   "file": "src/components/KafalaPromise.tsx"
   },
   "components/LegalPage.binding": {
    "en": "This version is provided for convenience. If it differs from the Arabic, the Arabic version prevails.",
@@ -12736,20 +12750,6 @@
    "hash": "aabca11c13dc",
    "file": "src/components/support/SupportSheetBody.tsx"
   },
-  "components/try/KafalaPromise.hadith": {
-   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
-   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
-   "kind": "text",
-   "hash": "ba5bbd99221a",
-   "file": "src/components/try/KafalaPromise.tsx"
-  },
-  "components/try/KafalaPromise.source": {
-   "en": "Narrated by al-Bukhari (6005)",
-   "ar": "رواه البخاري (6005)",
-   "kind": "text",
-   "hash": "68d0e4241fb7",
-   "file": "src/components/try/KafalaPromise.tsx"
-  },
   "components/try/TrialProposal.authText": {
    "en": "What you chose in demo mode is waiting as a proposal. Nothing is created or charged before you confirm it yourself.",
    "ar": "ما اخترته في الوضع التجريبي ينتظرك مقترحاً. لا يُنشأ شيءٌ ولا يُخصم قبل أن تؤكّده بنفسك.",
@@ -14086,10 +14086,24 @@
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.admin.1": {
-   "en": "The data console: verification, approval, pledges and the access log.",
-   "ar": "لوحة البيانات: التوثيق، والاعتماد، والتعهّدات، وسجلّ الاطّلاع.",
+   "en": "The data console: verification, pledges, verification sources and the trust center.",
+   "ar": "لوحة البيانات: التوثيق، والتعهّدات، ومصادر التحقق، ومركز الثقة.",
    "kind": "text",
-   "hash": "f9c6738aa361",
+   "hash": "90ca48051b75",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.country.0": {
+   "en": "Country team",
+   "ar": "فريق الدولة",
+   "kind": "text",
+   "hash": "2023396c61b9",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.country.1": {
+   "en": "Settles alerts and conflicts and uploads the country's files; switch between supervisor, data entry and viewer.",
+   "ar": "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته — بدّل بين المشرف والمدخل والمطّلع.",
+   "kind": "text",
+   "hash": "27fd2ecc3d2e",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.decider.0": {
@@ -14600,6 +14614,76 @@
    "kind": "text",
    "hash": "565dc525e754",
    "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryVerification.countryLabel": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.data_entry": {
+   "en": "Uploads the country's files and reads the alerts, but cannot settle.",
+   "ar": "يرفع ملفّات الدولة ويقرأ التنبيهات، ولا يحسم.",
+   "kind": "text",
+   "hash": "9c032b32fe0d",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.supervisor": {
+   "en": "Settles, uploads and manages the team, except changes they uploaded, which someone else settles.",
+   "ar": "يحسم ويرفع ويدير فريقه — إلا ما رفعه بنفسه، فيحسمه غيره.",
+   "kind": "text",
+   "hash": "6711978f17d9",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleHint.viewer": {
+   "en": "Reads data health and the queues; cannot upload or settle.",
+   "ar": "يقرأ صحة البيانات وطوابيرها، ولا يرفع ولا يحسم.",
+   "kind": "text",
+   "hash": "6db0cf953a1f",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roleLabel": {
+   "en": "Enter as",
+   "ar": "ادخل بدور",
+   "kind": "text",
+   "hash": "5c9de2968da5",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.data_entry": {
+   "en": "Data entry",
+   "ar": "مدخل بيانات",
+   "kind": "text",
+   "hash": "7bd738023f51",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.roles.viewer": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/try/TryVerification.tsx"
+  },
+  "components/try/TryVerification.sampleLead": {
+   "en": "Five countries with fictional files (DEMO-…) and demo office platforms. Settling, uploading and linking are simulated in this session only; nothing reaches the server or touches a child or a payment.",
+   "ar": "دولٌ خمس بملفّاتٍ مستعارة (DEMO-…) ومنصّات مكاتب تجريبية. الحسم والرفع والربط محاكاةٌ في هذه الجلسة وحدها، لا تصل الخادم ولا تمسّ طفلاً أو دفعة.",
+   "kind": "text",
+   "hash": "6db6b79e9cbc",
+   "file": "src/components/try/TryVerification.tsx"
   },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",
@@ -20745,6 +20829,55 @@
    "hash": "a55dde73376b",
    "file": "src/lib/try-reach.ts"
   },
+  "lib/try-sponsor-center.programSummary": {
+   "en": "A sample qualification track in the trial, with six stages each approved by a measure.",
+   "ar": "مسار تأهيلٍ نموذجيٌّ في التجربة، بمحطّاتٍ ستّ تُعتمد كلٌّ منها بقياس.",
+   "kind": "text",
+   "hash": "3c8ec4be0a01",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.programs.0": {
+   "en": "Young reader track",
+   "ar": "مسار القارئ الصغير",
+   "kind": "text",
+   "hash": "ff27f677206e",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.programs.1": {
+   "en": "Life skills track",
+   "ar": "مسار المهارات الحياتية",
+   "kind": "text",
+   "hash": "7a5a9a24c188",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.programs.2": {
+   "en": "Careful memorisation track",
+   "ar": "مسار الحفظ المتقن",
+   "kind": "text",
+   "hash": "ce4f61295782",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.reports.0": {
+   "en": "Attended school regularly this month and reading has improved. The food basket was delivered with a receipt.",
+   "ar": "انتظم في الدراسة هذا الشهر، وتحسّن تحصيله في القراءة. وصلت سلّة الغذاء بمستند استلام.",
+   "kind": "text",
+   "hash": "d186ab0eaa07",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.reports.1": {
+   "en": "School supplies are complete and the routine health check is done. Joined the weekly group activity.",
+   "ar": "اكتملت لوازمه المدرسية، وأتمّ الفحص الصحي الدوري. شارك في نشاط المجموعة الأسبوعي.",
+   "kind": "text",
+   "hash": "409bb0202572",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
+  "lib/try-sponsor-center.reports.2": {
+   "en": "Finished the term with good progress and keeps up with the Qur'an circle. The sponsorship was delivered in full with a receipt.",
+   "ar": "أنهى الفصل الدراسي بتقدّم، ويواظب على حلقة التحفيظ. سُلِّمت الكفالة كاملةً بمستند.",
+   "kind": "text",
+   "hash": "78900636cf9c",
+   "file": "src/lib/try-sponsor-center.ts"
+  },
   "lib/try-world.covers.0": {
    "en": "Schooling, food and healthcare",
    "ar": "الدراسة والغذاء والرعاية الصحية",
@@ -24062,6 +24195,13 @@
    "hash": "2d60d00840f1",
    "file": "src/routes/sso.tsx"
   },
+  "routes/sso.reasons.not_this_browser": {
+   "en": "This link didn't start in this browser. Open the platform from WAMY's platform directly.",
+   "ar": "هذا الرابط لم يبدأ من هذا المتصفّح. افتح المنصّة من منصّة الندوة مباشرة.",
+   "kind": "text",
+   "hash": "5129a8e8bb12",
+   "file": "src/routes/sso.tsx"
+  },
   "routes/sso.reasons.subject_taken": {
    "en": "This email is linked to another WAMY account. Contact the admin team.",
    "ar": "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
@@ -24757,6 +24897,13 @@
    "hash": "1f738ae6e46d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
+  "routes/try.admin.sections.3": {
+   "en": "Verification",
+   "ar": "التحقق",
+   "kind": "text",
+   "hash": "dcf128bde2be",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
   "routes/try.admin.title": {
    "en": "Administration console",
    "ar": "لوحة الإدارة",
@@ -24776,6 +24923,34 @@
    "ar": "ماذا تجرّب هنا؟",
    "kind": "text",
    "hash": "44b68d78e93b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verify.sources": {
+   "en": "Verification sources",
+   "ar": "مصادر التحقق",
+   "kind": "text",
+   "hash": "05c6e55557c7",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verify.trust": {
+   "en": "Trust center",
+   "ar": "مركز الثقة",
+   "kind": "text",
+   "hash": "1214c4f2cb38",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verifyCards.sources": {
+   "en": "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
+   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
+   "kind": "text",
+   "hash": "9dfd1ef6a330",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verifyCards.trust": {
+   "en": "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
+   "ar": "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+   "kind": "text",
+   "hash": "042836eb154d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.childId.activation": {
@@ -24812,6 +24987,20 @@
    "ar": "اختر طفلاً آخر",
    "kind": "text",
    "hash": "5d41911f6ec7",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.barSimilar": {
+   "en": "Children ready now",
+   "ar": "أطفالٌ جاهزون",
+   "kind": "text",
+   "hash": "469aa158fdbf",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.barVerifying": {
+   "en": "Under verification — not taking new sponsorships yet",
+   "ar": "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+   "kind": "text",
+   "hash": "908548fb0299",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.cadence": {
@@ -25007,6 +25196,48 @@
    "kind": "text",
    "hash": "f429a89a1ce4",
    "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.childId.verifying": {
+   "en": "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
+   "ar": "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
+   "kind": "text",
+   "hash": "023783fc63ac",
+   "file": "src/routes/try.$childId.tsx"
+  },
+  "routes/try.country.lead": {
+   "en": "Each country's team sees only its own files: what arrived from WAMY and from the office platform, where they disagree, and what the platform flagged. Switch roles to see what each one may do.",
+   "ar": "فريق كلّ دولةٍ يرى ملفّات دولته وحدها: ما وصل من الندوة ومن منصّة المكتب، وما اختلفا عليه، وما نبّهت إليه المنصّة. بدّل الدور لترى ما يحقّ لكلٍّ منهم.",
+   "kind": "text",
+   "hash": "e21d4b073c5d",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.real": {
+   "en": "each member signs in with their own account and role, and nobody settles a change they uploaded",
+   "ar": "كلّ عضوٍ يدخل بحسابه ودوره، ولا يحسم أحدٌ تغييراً رفعه بنفسه",
+   "kind": "text",
+   "hash": "93a28c150f44",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.role": {
+   "en": "Country team",
+   "ar": "فريق الدولة",
+   "kind": "text",
+   "hash": "2023396c61b9",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.title": {
+   "en": "Verification in your country",
+   "ar": "التحقق في دولتك",
+   "kind": "text",
+   "hash": "a7a6ed45c68f",
+   "file": "src/routes/try.country.lazy.tsx"
+  },
+  "routes/try.country.title.title": {
+   "en": "Country team: interactive demo",
+   "ar": "فريق الدولة — عرض تفاعلي",
+   "kind": "text",
+   "hash": "6a22234786d2",
+   "file": "src/routes/try.country.tsx"
   },
   "routes/try.cycle.age": {
    "en": "Age",
@@ -25702,6 +25933,29 @@
    "hash": "ddbaafc7f855",
    "file": "src/routes/try.impact.tsx"
   },
+  "routes/try.impact.statusEnded": {
+   "en": "Status: ended (simulated)",
+   "ar": "الحالة: انتهت (محاكاة)",
+   "kind": "text",
+   "hash": "3c1c996d9d31",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.statusEnding": {
+   "en": "Status: ends on {0} (simulated)",
+   "ar": "الحالة: تنتهي في {0} (محاكاة)",
+   "kind": "template",
+   "params": 1,
+   "hash": "8bb71bad87de",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.statusPaused": {
+   "en": "Status: paused until {0} (simulated)",
+   "ar": "الحالة: موقوفة حتى {0} (محاكاة)",
+   "kind": "template",
+   "params": 1,
+   "hash": "26d9c4037c87",
+   "file": "src/routes/try.impact.tsx"
+  },
   "routes/try.impact.title": {
    "en": "My impact",
    "ar": "أثري",
@@ -26252,6 +26506,27 @@
    "kind": "text",
    "hash": "8b2850eaf906",
    "file": "src/routes/try.tsx"
+  },
+  "routes/try.sponsorships.manage.lead": {
+   "en": "Pause, resume, a new amount, or end it, with a clear confirmation for each step. In the trial, all of it is simulated in your browser only.",
+   "ar": "إيقافٌ مؤقّت، أو استئناف، أو مبلغٌ جديد، أو إنهاء — بتأكيدٍ واضحٍ لكلّ خطوة. في التجربة يُحاكى كلّ ذلك في متصفّحك وحده.",
+   "kind": "text",
+   "hash": "63530dd1b804",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
+  },
+  "routes/try.sponsorships.manage.pageTitle": {
+   "en": "Manage sponsorship · Try the platform",
+   "ar": "إدارة الكفالة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "3438a30ef446",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
+  },
+  "routes/try.sponsorships.manage.title": {
+   "en": "Manage sponsorship",
+   "ar": "إدارة الكفالة",
+   "kind": "text",
+   "hash": "bb4a7e763040",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
   },
   "routes/try.supervisor.age": {
    "en": "{0} years old",

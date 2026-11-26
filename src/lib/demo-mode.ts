@@ -12,10 +12,14 @@
  */
 import { useSyncExternalStore } from "react";
 
+import { TRIAL_ENABLED } from "@/lib/trial-gate";
+
 const KEY = "platform-demo-mode";
 const EVENT = "platform-demo-mode";
 
 function read(): boolean {
+  // بعد حذف التجربة (`@/lib/trial-gate`) لا جلسة عرض، ولو بقي علمها في تبويبٍ قديم.
+  if (!TRIAL_ENABLED) return false;
   try {
     return typeof window !== "undefined" && window.sessionStorage.getItem(KEY) === "1";
   } catch {
@@ -38,7 +42,7 @@ export const isDemoSession = read;
 
 /** يدخل الوضع التجريبي — يُستدعى من زرّ «ادخل التجربة» ومن دخول مسارات التجربة. */
 export function enterDemo() {
-  if (!read()) write(true);
+  if (TRIAL_ENABLED && !read()) write(true);
 }
 
 /** يعود إلى المنصّة الحقيقية. */

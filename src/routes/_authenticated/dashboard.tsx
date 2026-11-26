@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { MyPledges } from "@/components/support/MyPledges";
 import { MyPledgeImpact } from "@/components/support/MyPledgeImpact";
 import { getMyPledges } from "@/lib/support.functions";
-import { TrialProposalCard } from "@/components/try/TrialProposal";
+import { trialSlots } from "@/lib/trial-slots";
 import { MyJourney } from "@/components/support/MyJourney";
 import { FollowedChildren } from "@/components/support/FollowedChildren";
 import { DashboardShell } from "@/components/DashboardShell";
@@ -41,6 +41,9 @@ import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { MyEvidence } from "@/components/impact/MyEvidence";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
+
+/** من التجربة إن وُجدت (`@/lib/trial-slots`) */
+const ProposalCard = trialSlots?.ProposalCard;
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   // العودة من الدفع: ?payment=done — تُحتفى مرّةً ثم تُزال من الرابط.
@@ -153,7 +156,7 @@ function DashboardPage() {
       )}
 
       {/* ما اختاره في الوضع التجريبي: مقترحٌ من متصفّحه، يؤكّده هو في موضعه الحقيقي. لا يُنشأ عنه شيء. */}
-      <TrialProposalCard className="mb-8" />
+      {ProposalCard && <ProposalCard className="mb-8" />}
 
       {/* 0. «أثري»: الصورة الشخصية من كفالاتك أنت، والباب إلى الوضع الغامر. */}
       {!listFailed && (

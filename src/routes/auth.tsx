@@ -6,13 +6,16 @@ import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
 import { GivingOnceLine } from "@/components/auth/GivingOnceLine";
 import { BrandHalo } from "@/components/brand/BrandPattern";
-import { KafalaPromise } from "@/components/try/KafalaPromise";
-import { TrialAuthNotice } from "@/components/try/TrialProposal";
+import { KafalaPromise } from "@/components/KafalaPromise";
+import { trialSlots } from "@/lib/trial-slots";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND, brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { formatMoney, isolate } from "@/lib/format";
 import { loadDraft, orphanIdOfPath, type SponsorDraft } from "@/lib/sponsor-draft";
+
+/** من التجربة إن وُجدت (`@/lib/trial-slots`) */
+const AuthNotice = trialSlots?.AuthNotice;
 
 const COPY = defineCopy("routes/auth", {
   ar: {
@@ -180,7 +183,9 @@ function AuthPage() {
             )}
           </p>
         )}
-        {!draft && redirectTo === "/dashboard" && <TrialAuthNotice className="mt-6 lg:mt-0" />}
+        {!draft && redirectTo === "/dashboard" && AuthNotice && (
+          <AuthNotice className="mt-6 lg:mt-0" />
+        )}
         {/* the panel's own heading is small; here it is the page's welcome, in the display face */}
         <AuthPanel
           className="mt-8 lg:mt-0 [&>h2]:font-display [&>h2]:text-4xl [&>h2]:leading-[1.4] [&>h2]:font-bold [&>h2+p]:mt-3"

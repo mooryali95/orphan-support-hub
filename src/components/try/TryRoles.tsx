@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Building2,
+  ClipboardCheck,
   Compass,
   HandHeart,
   Landmark,
@@ -22,10 +23,14 @@ const COPY = defineCopy("components/try/TryRoles", {
     roles: {
       supporter: ["الكافل", "يتصفّح الأطفال، ويكفل أو يدعم مكاناً، ويرى أثره في «أثري» والقاعة."],
       org: ["الجهة الميدانية", "تُدخل ملفّ طفلٍ ومستنداته — ثم تراه ينتقل حتى أوّل تقرير."],
-      admin: ["الإدارة", "لوحة البيانات: التوثيق، والاعتماد، والتعهّدات، وسجلّ الاطّلاع."],
+      admin: ["الإدارة", "لوحة البيانات: التوثيق، والتعهّدات، ومصادر التحقق، ومركز الثقة."],
       office: [
         "المكتب الميداني",
         "يراجع ملفّات الجهات، ويرسل التقارير، وينفّذ التأهيل والدعم العيني.",
+      ],
+      country: [
+        "فريق الدولة",
+        "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته — بدّل بين المشرف والمدخل والمطّلع.",
       ],
       supervisor: ["المشرف", "يزور الطفل ويسجّل حاله، فتدخل الزيارة ملفّه وتقرير كافله."],
       decider: ["صاحب القرار", "صورة الشبكة: الأطفال والتغطية والتوثيق — ونشاط الجلسة كلّه."],
@@ -47,11 +52,15 @@ const COPY = defineCopy("components/try/TryRoles", {
       ],
       admin: [
         "Administration",
-        "The data console: verification, approval, pledges and the access log.",
+        "The data console: verification, pledges, verification sources and the trust center.",
       ],
       office: [
         "Field office",
         "Reviews organizations' files, sends reports, and delivers training and in-kind support.",
+      ],
+      country: [
+        "Country team",
+        "Settles alerts and conflicts and uploads the country's files; switch between supervisor, data entry and viewer.",
       ],
       supervisor: [
         "Supervisor",
@@ -71,6 +80,7 @@ const ROUTES = {
   org: { to: "/try/cycle", icon: <Building2 /> },
   admin: { to: "/try/admin", icon: <ShieldCheck /> },
   office: { to: "/try/office", icon: <Compass /> },
+  country: { to: "/try/country", icon: <ClipboardCheck /> },
   supervisor: { to: "/try/supervisor", icon: <UserCheck /> },
   decider: { to: "/try/decider", icon: <Landmark /> },
 } as const satisfies Record<string, { to: string; icon: ReactNode }>;

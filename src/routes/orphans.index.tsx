@@ -7,6 +7,8 @@ import { Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useDemo } from "@/lib/demo-mode";
+import { trialSlots } from "@/lib/trial-slots";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 import { OrphanCard } from "@/components/OrphanCard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -229,17 +231,13 @@ const PAGE = 24;
  */
 // الوضع التجريبي: الدليل نفسه في مكانه، ومصدره كتالوج التجربة وبطاقاتها (كما في «جرّب»)، وكلّ
 // بطاقةٍ تقود إلى صفحة طفل التجربة. لا قراءة من القاعدة في هذا الفرع ولا كتابة.
-const DemoDirectory = lazy(() =>
-  Promise.all([
-    import("@/lib/try-places"),
-    import("@/lib/try-cycle"),
-    import("@/components/try/TryDirectory"),
-  ]).then(([, , m]) => ({ default: m.TryDirectory })),
-);
+// يأتي من التجربة إن وُجدت (`@/lib/trial-slots`)؛ وبعد حذفها لا جلسة عرض، فالدليل الحقيقي.
+const loadDemoDirectory = trialSlots?.loadDirectory;
+const DemoDirectory = loadDemoDirectory ? lazy(loadDemoDirectory) : null;
 
 function OrphansPage() {
   const demo = useDemo();
-  if (!demo) return <RealOrphansPage />;
+  if (!demo || !DemoDirectory) return <RealOrphansPage />;
   return (
     <div className="min-h-dvh bg-background">
       <SiteHeader />
@@ -699,12 +697,14 @@ function RealOrphansPage() {
             )}
             {prelaunch ? (
               <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Link
-                  to="/try"
-                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
-                >
-                  {t.launchTry}
-                </Link>
+                {TRIAL_ENABLED && (
+                  <Link
+                    to={trialRoute("/try")}
+                    className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+                  >
+                    {t.launchTry}
+                  </Link>
+                )}
                 <Link
                   to="/support"
                   className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-5 text-sm font-bold text-foreground"

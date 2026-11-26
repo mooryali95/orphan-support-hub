@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   Check,
   Download,
@@ -11,6 +10,7 @@ import {
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/countries";
 import {
@@ -94,8 +94,8 @@ export function SourcesPanel({
   access: CountryAccess;
 }) {
   const c = useCopy(SOURCES_COPY);
-  const fetchHealth = useServerFn(getDataHealth);
-  const health = useQuery({ queryKey: ["data-health"], queryFn: () => fetchHealth() });
+  const fetchHealth = useDataFn("golden.health", getDataHealth);
+  const health = useQuery({ queryKey: useDataKey(["data-health"]), queryFn: () => fetchHealth() });
   const rows = health.data?.ok ? health.data.data : [];
   const code = rows.some((r) => r.code === country) ? country : (rows[0]?.code ?? "");
   const selected = rows.find((r) => r.code === code) ?? null;
@@ -379,7 +379,8 @@ function ModeControl({ row }: { row: CountryHealth }) {
   const c = useCopy(SOURCES_COPY);
   const err = useErr();
   const qc = useQueryClient();
-  const save = useServerFn(setCountrySource);
+  const dk = useDataKey([]);
+  const save = useDataFn("golden.setSource", setCountrySource);
   const [mode, setMode] = useState<OfficeMode>(row.office_mode);
   const [source, setSource] = useState(row.office_source ?? row.platforms[0]?.key ?? "");
   const [days, setDays] = useState(String(row.stale_after_days));
@@ -396,8 +397,8 @@ function ModeControl({ row }: { row: CountryHealth }) {
     onSuccess: (res) => {
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(c.modeSaved(res.data.reevaluated));
-      void qc.invalidateQueries({ queryKey: ["data-health"] });
-      void qc.invalidateQueries({ queryKey: ["golden-conflicts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "golden-conflicts"] });
     },
   });
   const noPlatform = row.platforms.length === 0;
@@ -558,7 +559,8 @@ function UploadCard({ row }: { row: CountryHealth }) {
   const w = useCopy(WORK_COPY);
   const err = useWorkErr();
   const qc = useQueryClient();
-  const send = useServerFn(importGolden);
+  const dk = useDataKey([]);
+  const send = useDataFn("golden.import", importGolden);
   const [role, setRole] = useState<SourceRole>("wamy");
   const [text, setText] = useState("");
   const [fileName, setFileName] = useState("");
@@ -590,7 +592,7 @@ function UploadCard({ row }: { row: CountryHealth }) {
       setFileName("");
       if (fileInput.current) fileInput.current.value = "";
       for (const k of ["data-health", "golden-conflicts", "golden-links", "golden-alerts"])
-        void qc.invalidateQueries({ queryKey: [k] });
+        void qc.invalidateQueries({ queryKey: [...dk, k] });
     },
   });
 
@@ -800,17 +802,18 @@ function Conflicts({
   const w = useCopy(WORK_COPY);
   const err = useWorkErr();
   const qc = useQueryClient();
-  const fetchList = useServerFn(listConflicts);
+  const dk = useDataKey([]);
+  const fetchList = useDataFn("golden.conflicts", listConflicts);
   const list = useQuery({
-    queryKey: ["golden-conflicts", country],
+    queryKey: useDataKey(["golden-conflicts", country]),
     queryFn: () => fetchList({ data: { country } }),
   });
   const refresh = () => {
-    void qc.invalidateQueries({ queryKey: ["golden-conflicts"] });
-    void qc.invalidateQueries({ queryKey: ["data-health"] });
-    void qc.invalidateQueries({ queryKey: ["child-file"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "golden-conflicts"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "child-file"] });
   };
-  const resolve = useServerFn(resolveConflict);
+  const resolve = useDataFn("golden.resolveConflict", resolveConflict);
   const m = useMutation({
     mutationFn: (v: { id: string; choice: "accept" | "keep" | "use_wamy" | "use_office" }) =>
       resolve({ data: v }),
@@ -821,7 +824,7 @@ function Conflicts({
     },
   });
   const [picked, setPicked] = useState<Set<string>>(() => new Set());
-  const bulkFn = useServerFn(resolveConflictsBulk);
+  const bulkFn = useDataFn("golden.resolveConflictsBulk", resolveConflictsBulk);
   const bulk = useMutation({
     mutationFn: (v: { ids: string[]; choice: BulkChoice }) => bulkFn({ data: v }),
     onSuccess: (res) => {
@@ -1138,16 +1141,17 @@ function LinkQueue({
   const [roleF, setRoleF] = useState("");
   const search = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
-  const fetchList = useServerFn(listLinkQueue);
+  const dk = useDataKey([]);
+  const fetchList = useDataFn("golden.links", listLinkQueue);
   const list = useQuery({
-    queryKey: ["golden-links", country],
+    queryKey: useDataKey(["golden-links", country]),
     queryFn: () => fetchList({ data: { country } }),
   });
-  const resolve = useServerFn(resolveLink);
-  const createAll = useServerFn(createUnmatched);
+  const resolve = useDataFn("golden.resolveLink", resolveLink);
+  const createAll = useDataFn("golden.createUnmatched", createUnmatched);
   const refresh = () => {
     for (const k of ["golden-links", "golden-conflicts", "data-health"])
-      void qc.invalidateQueries({ queryKey: [k] });
+      void qc.invalidateQueries({ queryKey: [...dk, k] });
   };
   const m = useMutation({
     mutationFn: (v: { id: string; action: "link" | "create" | "ignore"; orphanId?: string }) =>
@@ -1484,12 +1488,13 @@ function Alerts({
   const [severity, setSeverity] = useState("");
   const search = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
-  const fetchList = useServerFn(listAlerts);
+  const dk = useDataKey([]);
+  const fetchList = useDataFn("golden.alerts", listAlerts);
   const list = useQuery({
-    queryKey: ["golden-alerts", country],
+    queryKey: useDataKey(["golden-alerts", country]),
     queryFn: () => fetchList({ data: { country } }),
   });
-  const resolve = useServerFn(resolveAlert);
+  const resolve = useDataFn("golden.resolveAlert", resolveAlert);
   const m = useMutation({
     mutationFn: (v: {
       id: string;
@@ -1499,8 +1504,8 @@ function Alerts({
     onSuccess: (res) => {
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(c.done);
-      void qc.invalidateQueries({ queryKey: ["golden-alerts"] });
-      void qc.invalidateQueries({ queryKey: ["data-health"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "golden-alerts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
     },
   });
   const all = list.data?.ok ? list.data.data : [];
@@ -1643,10 +1648,11 @@ function Team({ country, access }: { country: string; access: CountryAccess }) {
   const c = useCopy(SOURCES_COPY);
   const err = useErr();
   const qc = useQueryClient();
-  const fetchList = useServerFn(listCountryStaff);
-  const save = useServerFn(setCountryStaff);
+  const dk = useDataKey([]);
+  const fetchList = useDataFn("golden.staff", listCountryStaff);
+  const save = useDataFn("golden.setStaff", setCountryStaff);
   const list = useQuery({
-    queryKey: ["country-staff", country],
+    queryKey: useDataKey(["country-staff", country]),
     queryFn: () => fetchList({ data: { country } }),
   });
   const roles = grantableRoles(access, country);
@@ -1659,7 +1665,7 @@ function Team({ country, access }: { country: string; access: CountryAccess }) {
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(res.invited ? c.invited(email.trim()) : c.done);
       setEmail("");
-      void qc.invalidateQueries({ queryKey: ["country-staff", country] });
+      void qc.invalidateQueries({ queryKey: [...dk, "country-staff", country] });
     },
   });
   const items = list.data?.ok ? list.data.data : [];

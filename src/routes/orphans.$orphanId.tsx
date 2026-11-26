@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
-import { getPublicVerification } from "@/lib/public-verification.functions";
+import { usePublicVerification } from "@/components/orphans/public-verification";
 import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
 import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
 import { Input } from "@/components/ui/input";
@@ -48,8 +48,7 @@ import { CHILD_PAGE_ROBOTS } from "@/lib/security-headers";
 import { copyOf, defineCopy, placeLabel, useCopy, useLocale } from "@/lib/locale";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/sponsor-draft";
-import { TrialProposalOffer } from "@/components/try/TrialProposal";
-import { dismissProposal } from "@/lib/try-handoff";
+import { trialSlots } from "@/lib/trial-slots";
 import { resolveCountry } from "@/lib/countries";
 import {
   amountAfterSwitch,
@@ -64,6 +63,9 @@ import { Name } from "@/components/kit/Name";
 import { usePrivateFile } from "@/hooks/usePrivateFile";
 import { CHILD_PHOTO_BUCKET } from "@/lib/child-photo";
 import { FollowButton } from "@/components/support/Follow";
+
+/** من التجربة إن وُجدت (`@/lib/trial-slots`) */
+const ProposalOffer = trialSlots?.ProposalOffer;
 
 const SUPPORT_MODES: Array<"monthly" | SupportKind> = ["monthly", "qualification", "in_kind"];
 
@@ -284,12 +286,7 @@ function OrphanDetail() {
   const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
   // شرط الثقة: ملفٌّ قيد التحقق لا يقبل كفالةً جديدة (الحارس في القاعدة؛ هنا يُشرح بدل أن يفشل).
-  const fetchVerification = useServerFn(getPublicVerification);
-  const { data: verification } = useQuery({
-    queryKey: ["public-verification", orphanId],
-    queryFn: () => fetchVerification({ data: { orphanId } }),
-    staleTime: 10 * 60_000,
-  });
+  const { data: verification } = usePublicVerification(orphanId);
   const verifying = verification?.accepts === false;
   const pay = useServerFn(startCheckout);
   // إثباتٌ اجتماعي صادق: من أرقام المنصّة الحقيقية فقط، ويُخفى إن غابت.
@@ -445,7 +442,7 @@ function OrphanDetail() {
       }
       setExcessOffer(null);
       clearDraft(orphanId);
-      if (usedProposal.current) dismissProposal(usedProposal.current);
+      if (usedProposal.current) trialSlots?.dismissProposal(usedProposal.current);
       // الدفع مباشرةً بعد «ابدأ»: لا يُترك الداعم يبحث عن «أكمل الدفع» في لوحته.
       toast.success(t.toPayment);
       try {
@@ -689,18 +686,20 @@ function OrphanDetail() {
                     </p>
                   )}
                   {/* من الوضع التجريبي: مقترحٌ لا يُطبَّق إلا بضغطة، ولا يُعرض بعملةٍ لا تُقبل هنا */}
-                  <TrialProposalOffer
-                    tracks={["sponsorship"]}
-                    co={resolveCountry(orphan.country)}
-                    usable={(p) => canPayIn(payOptions, p.currency)}
-                    onUse={(p) => {
-                      setChosenCurrency(p.currency);
-                      setAmount(String(p.amount));
-                      setCadence(p.cadence);
-                      setExcessOffer(null);
-                      usedProposal.current = p.id;
-                    }}
-                  />
+                  {ProposalOffer && (
+                    <ProposalOffer
+                      tracks={["sponsorship"]}
+                      co={resolveCountry(orphan.country)}
+                      usable={(p) => canPayIn(payOptions, p.currency)}
+                      onUse={(p) => {
+                        setChosenCurrency(p.currency);
+                        setAmount(String(p.amount));
+                        setCadence(p.cadence);
+                        setExcessOffer(null);
+                        usedProposal.current = p.id;
+                      }}
+                    />
+                  )}
                   <div
                     role="radiogroup"
                     aria-label={t.cadence}

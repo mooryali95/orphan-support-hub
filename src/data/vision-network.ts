@@ -8,7 +8,9 @@
  *   - أرقام التشغيل الافتراضية (مجموعات، أيتام في التأهيل، تمويل، مشرفون)
  *     مشتقّةٌ ثابتةً من رمز الدولة، وتُوسم «افتراضي» دائماً، ولا معرّف فيها.
  */
-import { type Bilingual, type PublicPresence, WAMY_COUNTRIES } from "@/data/wamy-network";
+// الحضور وحده (wamy-presence، مولَّد): لا مؤشّرات الحاجة ومصادرها، فتبقى صفحات الرؤية خفيفة.
+import type { Bilingual, PublicPresence } from "@/data/wamy-network";
+import { WAMY_PRESENCE } from "@/data/wamy-presence";
 
 export type NetworkMode = "virtual" | "real";
 
@@ -62,7 +64,7 @@ export function simFor(code: string, status: "office" | "field", hq = false) {
   return { groups, inQualification, funded, supervisors, measured };
 }
 
-export const NETWORK: NetworkOffice[] = WAMY_COUNTRIES.flatMap((c) => {
+export const NETWORK: NetworkOffice[] = WAMY_PRESENCE.flatMap((c) => {
   if (c.presence.status === "unconfirmed") return [];
   const p = c.presence as PublicPresence;
   return [

@@ -11,6 +11,11 @@ import type { PublicVerification } from "@/lib/golden-record";
 export const getPublicVerification = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ orphanId: z.string().uuid() }).parse(input))
   .handler(async ({ data }): Promise<PublicVerification | null> => {
+    // بابٌ للزوّار: حدّ الطلبات نفسه الذي يحرس الواجهة البرمجية، فلا يُمسح كل معرّف.
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const { guardApiRate } = await import("@/lib/integrations/client");
+    const req = getRequest();
+    if (req && (await guardApiRate(req))) return null;
     const { publicClient } = await import("@/lib/protection.functions");
     const rpc = publicClient() as unknown as {
       rpc: (

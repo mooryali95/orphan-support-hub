@@ -1,8 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Clock, ShieldCheck } from "lucide-react";
 
-import { getPublicVerification } from "@/lib/public-verification.functions";
+import { usePublicVerification } from "@/components/orphans/public-verification";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
@@ -32,12 +30,7 @@ const COPY = defineCopy("components/orphans/VerificationBadge", {
 export function VerificationBadge({ orphanId }: { orphanId: string }) {
   const c = useCopy(COPY);
   const locale = useLocale();
-  const fetchIt = useServerFn(getPublicVerification);
-  const { data } = useQuery({
-    queryKey: ["public-verification", orphanId],
-    queryFn: () => fetchIt({ data: { orphanId } }),
-    staleTime: 10 * 60_000,
-  });
+  const { data } = usePublicVerification(orphanId);
   if (!data) return null;
   const hint =
     data.level === "two_sources"

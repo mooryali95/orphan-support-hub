@@ -6,7 +6,7 @@ import { FxNote } from "@/components/sponsorship/PayCurrency";
 import { Button } from "@/components/ui/button";
 import { formatMoneyExact } from "@/lib/currency";
 import { formatMoney } from "@/lib/format";
-import { KafalaPromise } from "@/components/try/KafalaPromise";
+import { KafalaPromise } from "@/components/KafalaPromise";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { canPayIn, quoteFor } from "@/lib/pay-options";

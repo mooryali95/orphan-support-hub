@@ -102,6 +102,21 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — العينان: من رفع التغيير الحرج لا يعتمده، ويحسمه مشرفٌ آخر، والرافع مسجَّل';
 
+  -- ثغرتا المراجعة: إعادة رفعٍ من زميل لا تمحو صاحب القيمة، والقيمة اليدوية في الحرج للإدارة
+  PERFORM pg_temp.as_user(2);
+  PERFORM public.admin_golden_import('wamy', 'SD', NULL,
+    '[{"external_ref":"sd-1","observed_at":"2026-11-04T00:00:00Z","fields":{"birth_date":"2006-01-01"}}]'::jsonb);
+  PERFORM pg_temp.as_user(3);
+  PERFORM public.admin_golden_import('wamy', 'SD', NULL,
+    '[{"external_ref":"sd-1","observed_at":"2026-11-05T00:00:00Z","fields":{"birth_date":"2006-01-01"}}]'::jsonb);
+  SELECT id INTO _c FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open';
+  PERFORM pg_temp.as_user(2);
+  IF public.admin_conflict_resolve(_c, 'accept')->>'code' <> 'four_eyes_required'
+     OR public.admin_conflict_resolve(_c, 'manual', '"2001-01-01"'::jsonb)->>'code' <> 'manual_critical_admin_only' THEN
+    RAISE EXCEPTION 'FAIL — المشرف اعتمد قيمةً رفعها بعد إعادة رفع زميل، أو كتب قيمةً حرجة بيده';
+  END IF;
+  RAISE NOTICE 'PASS — إعادة رفعٍ من زميل لا تمحو صاحب القيمة، والقيمة اليدوية الحرجة للإدارة وحدها';
+
   -- العزل: مشرف تايلاند لا يرى السودان، والمطّلع يرى ولا يرفع
   PERFORM pg_temp.as_user(6);
   IF NOT pg_temp.denied($q$SELECT public.admin_conflicts('SD')$q$)

@@ -2,7 +2,6 @@ import type { HallLocale } from "@/lib/hall/copy";
 import type { DonorHall } from "@/lib/hall/donor";
 import type { HallStage, HallStep } from "@/lib/hall/history";
 import type { HallLive } from "@/lib/hall/live";
-import type { TrialDemo } from "@/lib/hall/trial";
 
 /** يركّب قاعة الأثر داخل العنصر ويعيد دالةً تفكّها (المشهد والمستمعون والحلقة). */
 export function mountHall(
@@ -14,9 +13,10 @@ export function mountHall(
     linked?: string[] | Promise<string[]>;
     /**
      * the client demo (/try): the trial model, its copy and its two writes, all from the trial
-     * catalogue (`@/lib/hall/trial`). When set, the hall reads no figure of its own.
+     * catalogue (`trialDemo` in the trial's `lib/hall/trial`, reached through `@/lib/trial-slots`
+     * so this contract survives the trial's removal). When set, the hall reads no figure of its own.
      */
-    demo?: TrialDemo | null;
+    demo?: object | null;
     /** the real mode's core countries (`public_focus_countries`), in order: the live hall shows these alone */
     focus?: Promise<string[]> | null;
     /** the real directory's aggregate counts by country (geo_stats); small cohorts carry no numbers */
