@@ -45,6 +45,10 @@ const Schema = z.object({
     .regex(/^[A-Za-z]{3}$/, "رمز عملةٍ من ثلاثة أحرف")
     .optional(),
   GRANT_SIGNING_KEY: text.optional(),
+  /** الدخول من منصّة الندوة (docs/wamy-sso.ar.md): المُصدِر، ثم سرٌّ مشترك أو مفاتيحها العامّة. */
+  WAMY_SSO_ISSUER: url.optional(),
+  WAMY_SSO_SECRET: z.string().trim().min(32).optional(),
+  WAMY_SSO_JWKS_URL: url.optional(),
   ERROR_REPORT_WEBHOOK_URL: url.optional(),
   SENTRY_DSN: url.optional(),
   HEARTBEAT_URL_OPS: url.optional(),
@@ -61,6 +65,8 @@ export const FEATURES = {
   email: ["LOVABLE_API_KEY", "PUBLIC_BASE_URL", "SUPABASE_SERVICE_ROLE_KEY"],
   payments: ["CREEM_API_KEY", "CREEM_WEBHOOK_SECRET", "CREEM_PRODUCT_MONTHLY"],
   grants: ["GRANT_SIGNING_KEY"],
+  // ومعها WAMY_SSO_SECRET أو WAMY_SSO_JWKS_URL: يفحصهما مسار الدخول نفسه.
+  sso: ["WAMY_SSO_ISSUER", "SUPABASE_SERVICE_ROLE_KEY"],
 } as const satisfies Record<string, ReadonlyArray<keyof ServerEnv>>;
 export type Feature = keyof typeof FEATURES;
 

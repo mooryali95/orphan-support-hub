@@ -291,6 +291,13 @@ export const createSponsorship = createServerFn({ method: "POST" })
       : await supabase.from("sponsorships").insert(row).select("id").single();
 
     if (error) {
+      // شرط الثقة (block_sponsorship_unverified): الملف موسوم أو متعارض أو ينتظر تأكيد المكتب.
+      if (/file_under_verification/.test(error.message)) {
+        return {
+          ok: false as const,
+          error: "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته.",
+        };
+      }
       if (payCurrency && /currency_not_payable|charge_currency|charge_amount/.test(error.message)) {
         return {
           ok: false as const,

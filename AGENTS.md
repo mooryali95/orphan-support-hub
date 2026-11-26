@@ -32,3 +32,19 @@
 - Use the streaming AI SDK Responses boundary with request-local gateway correlation and authenticated, rate-limited access; this keeps credentials server-only and prevents unbounded AI spending.
 - Ground answers in an anonymous `orphan_view` projected through an explicit public-card allowlist and published guidance, never caller-authorized details or privileged child reads; this preserves child privacy even for admin callers.
 - Keep one session-only conversation and durable server-only access-denial state; this avoids storing donor questions and prevents automatic replay after provider or credit blocks.
+
+## Golden record
+- WAMY is the primary source and the office operating platform verifies; authority is per field in `field_authority`, mirrored by `FIELD_RULES` in `src/lib/golden-record.ts` (locked by its test), so neither source silently overrides the other.
+- Each country's office platform moves `none` → `shadow` → `active` through `admin_country_source_set`, which re-evaluates stored observations; never write `orphan_field_state` or orphan identity columns around `golden_evaluate`, so critical fields keep human approval and the sponsorship lock.
+- Unlinked records wait in `source_link_queue`; files are created only from WAMY records and only by an admin, so names never auto-merge children.
+- Source comparison and link matching run on `golden_canon` text, and every observation passes the `golden_detect` trigger; keep new comparisons on canonical text so spelling variants never become conflicts and tampering always raises an alert.
+- Sponsors see only `public_verification` (three levels and a month); alert reasons and field values stay admin-only, preserving child privacy.
+
+## Core countries
+- The real mode shows only `countries.live_focus` (Sri Lanka, Pakistan with Kashmir as a `country_regions` row, Thailand, Sudan, Senegal) via `public_focus_countries`; the trial keeps the whole network with sample data, so real and sample geography never mix.
+- Sri Lanka and Pakistan entries in `src/data/wamy-network.ts` rest on WAMY management's statement (no public URL); replace `source`/`url` with the official source when supplied, keeping the `in_network` migration list in sync.
+- Country teams (`country_staff`: supervisor, data_entry, viewer) reach the verification layer only through `country_can`, checked before an item's status so other countries learn nothing; critical changes and alerts are settled by someone other than their uploader (`received_by`, `raised_by`), so no single staff member can push and approve the same change.
+- New sponsorships pass `golden_accepts_new_support` (insert trigger, both suggestion functions, `public_verification.accepts`); keep it an indexed check that matches `golden_trust` (locked by `golden-gate-verification`), so flagged files never take new money and suggestions stay fast at 10,000 files.
+
+## WAMY sign-in
+- WAMY's platform launches users into Kahatayn with a short-lived signed token to `/api/sso/wamy` (`src/lib/sso/launch-token.ts`, `docs/wamy-sso.ar.md`): single-use `jti`, identities bound by WAMY `sub` in `sso_identities`, session handed over in the URL fragment, and no role granted by the token, so a stolen link or a reused email never yields access beyond the country team and admin roles.

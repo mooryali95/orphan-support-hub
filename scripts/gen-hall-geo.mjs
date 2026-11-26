@@ -48,6 +48,8 @@ const ISO = {
   MY: "458",
   TJ: "762",
   UG: "800",
+  LK: "144",
+  PK: "586",
   XK: null,
 };
 const NAME = { XK: ["Kosovo"], PS: ["Palestine"], SO: ["Somaliland"] };

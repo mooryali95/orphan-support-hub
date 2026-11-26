@@ -29,6 +29,7 @@ import {
   respondDonorInvitation,
 } from "@/lib/workspaces.functions";
 import { BRAND, pageTitle } from "@/config/brand";
+import { getMyCountryAccess } from "@/lib/golden-record.functions";
 
 const TITLE = pageTitle("بواباتي", false);
 
@@ -52,6 +53,13 @@ const ENTITY_STATUS: Record<string, string> = {
 function WorkspacesPage() {
   const fetchWs = useServerFn(getMyWorkspaces);
   const { data, isPending } = useQuery({ queryKey: ["workspaces"], queryFn: () => fetchWs() });
+  // فريق دولة (مشرف أو مدخل أو مطّلع): بوّابة «بيانات الدولة». الإدارة تصلها من لوحتها.
+  const fetchAccess = useServerFn(getMyCountryAccess);
+  const { data: accessRes } = useQuery({
+    queryKey: ["my-country-access"],
+    queryFn: () => fetchAccess(),
+  });
+  const countryTeam = Boolean(accessRes?.ok && accessRes.data.countries.length > 0);
 
   if (isPending) {
     return (
@@ -112,6 +120,14 @@ function WorkspacesPage() {
             title="سجّل جهة ميدانية"
             text="مكتبٌ للندوة أو جهة تعمل معها ميدانياً؟ قدّم بياناتها ووثيقة تسجيلها لتراجعها الإدارة."
             to="/org"
+          />
+        )}
+        {countryTeam && (
+          <Portal
+            icon={<UserCheck className="size-5" />}
+            title="بيانات الدولة"
+            text="صحة بيانات دولتك والرفع والتنبيهات والتعارضات، بحسب دورك في فريقها."
+            to="/country-data"
           />
         )}
         {ws.supervisor && (
@@ -281,7 +297,7 @@ function Portal({
   icon: React.ReactNode;
   title: string;
   text: string;
-  to: "/dashboard" | "/guardian" | "/org" | "/admin" | "/supervisor";
+  to: "/dashboard" | "/guardian" | "/org" | "/admin" | "/supervisor" | "/country-data";
 }) {
   return (
     <Link

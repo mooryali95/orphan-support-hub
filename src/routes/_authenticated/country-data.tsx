@@ -1,0 +1,63 @@
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+
+import { DashboardShell } from "@/components/DashboardShell";
+import { SourcesPanel } from "@/components/admin/data/SourcesPanel";
+import { Busy, Failed, NeedsUpdate } from "@/components/admin/data/shared";
+import { pageTitle } from "@/config/brand";
+import { getMyCountryAccess } from "@/lib/golden-record.functions";
+import { defineCopy, useCopy } from "@/lib/locale";
+
+const COPY = defineCopy("routes/country-data", {
+  ar: {
+    title: "بيانات الدولة",
+    lead: "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
+    none: "حسابك ليس في فريق أي دولة بعد. يضيفك مشرف الدولة أو الإدارة من «فريق الدولة».",
+  },
+  en: {
+    title: "Country data",
+    lead: "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
+    none: "Your account isn't on any country team yet. The country supervisor or the admin team adds you under Country team.",
+  },
+});
+
+export const Route = createFileRoute("/_authenticated/country-data")({
+  head: () => ({
+    meta: [{ title: pageTitle("بيانات الدولة", false) }, { name: "robots", content: "noindex" }],
+  }),
+  component: CountryDataPage,
+});
+
+/**
+ * بوّابة فريق الدولة: مشرفوها ومدخلو بياناتها ومطّلعوها. الخانة نفسها التي تراها
+ * الإدارة في «مصادر التحقق»، مقصورةً على دولهم؛ والقاعدة تحرس كل باب (`country_can`).
+ */
+function CountryDataPage() {
+  const c = useCopy(COPY);
+  const fetchAccess = useServerFn(getMyCountryAccess);
+  const access = useQuery({ queryKey: ["my-country-access"], queryFn: () => fetchAccess() });
+  const [country, setCountry] = useState("");
+  const res = access.data;
+
+  return (
+    <DashboardShell title={c.title} description={c.lead}>
+      {access.isPending ? (
+        <Busy />
+      ) : !res?.ok ? (
+        res?.missing ? (
+          <NeedsUpdate />
+        ) : (
+          <Failed onRetry={() => void access.refetch()} />
+        )
+      ) : !res.data.admin && res.data.countries.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          {c.none}
+        </p>
+      ) : (
+        <SourcesPanel country={country} setCountry={setCountry} access={res.data} />
+      )}
+    </DashboardShell>
+  );
+}

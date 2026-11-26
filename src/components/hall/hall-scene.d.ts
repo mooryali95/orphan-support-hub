@@ -17,6 +17,8 @@ export function mountHall(
      * catalogue (`@/lib/hall/trial`). When set, the hall reads no figure of its own.
      */
     demo?: TrialDemo | null;
+    /** the real mode's core countries (`public_focus_countries`), in order: the live hall shows these alone */
+    focus?: Promise<string[]> | null;
     /** the real directory's aggregate counts by country (geo_stats); small cohorts carry no numbers */
     live?: Promise<
       Array<{

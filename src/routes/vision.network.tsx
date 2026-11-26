@@ -408,15 +408,21 @@ function CountrySheet({
               <section>
                 <h3 className="text-sm font-bold text-wine">{c.activity}</h3>
                 <p className="mt-1 text-sm leading-7">{tr(n.activity)}</p>
-                <a
-                  href={n.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="mt-2 inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-wine underline underline-offset-4"
-                >
-                  {c.source}: {n.source} ({n.year})
-                  <ExternalLink className="size-3" aria-hidden="true" />
-                </a>
+                {n.url ? (
+                  <a
+                    href={n.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="mt-2 inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-wine underline underline-offset-4"
+                  >
+                    {c.source}: {n.source} ({n.year})
+                    <ExternalLink className="size-3" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <p className="mt-2 text-xs font-semibold text-wine">
+                    {c.source}: {n.source} ({n.year})
+                  </p>
+                )}
               </section>
               {n.code === "AL" && (
                 <Link

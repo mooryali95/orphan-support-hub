@@ -9,8 +9,16 @@ import { cn } from "@/lib/utils";
 
 import { COPY } from "./copy";
 
-export type Area = "countries" | "regions" | "groups" | "persons" | "bulk" | "team";
-export const AREAS: readonly Area[] = ["countries", "regions", "groups", "persons", "bulk", "team"];
+export type Area = "countries" | "regions" | "groups" | "persons" | "bulk" | "sources" | "team";
+export const AREAS: readonly Area[] = [
+  "countries",
+  "regions",
+  "groups",
+  "persons",
+  "bulk",
+  "sources",
+  "team",
+];
 
 /** ما تتشاركه الخانات: الدول المحمَّلة، والدولة المختارة، والتنقّل بينها. */
 export type Shared = {

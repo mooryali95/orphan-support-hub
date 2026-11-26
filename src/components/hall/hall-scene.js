@@ -71,6 +71,7 @@ export function mountHall(
     linked = [],
     demo = null,
     live = null,
+    focus: focusCodes = null, // the live hall's core countries (`public_focus_countries`): the real mode shows these
     text: liveKit = null, // `text` is the canvas writer below
     start = null,
     kind = null, // the kind of giving the visitor chose before entering (support page / map)
@@ -184,14 +185,32 @@ export function mountHall(
       if (S.stage === "country" && !demo) renderCountry();
     })
     .catch(() => {});
+  /* the real mode's core countries: once known, the live hall shows and enters these alone
+     (and «show all» still opens the whole network). The trial and the donor's hall ignore it. */
+  const FOCUS = new Set();
+  const focusOn = () => FOCUS.size > 0 && !demo && !donor && !VIEW.all;
   // the trial shows and enters every country the hall draws, confirmed presence or not
   const shown = (c) =>
-    !!demo ||
-    VIEW.all ||
-    c.st !== "unconfirmed" ||
-    mineCodes.has(c.code) ||
-    (VIEW.layer === "gap" && PRI.has(c.code));
+    focusOn()
+      ? FOCUS.has(c.code) || (VIEW.layer === "gap" && PRI.has(c.code))
+      : !!demo ||
+        VIEW.all ||
+        c.st !== "unconfirmed" ||
+        mineCodes.has(c.code) ||
+        (VIEW.layer === "gap" && PRI.has(c.code));
   let CO = byCode("AL");
+  if (focusCodes && !demo && !donor)
+    Promise.resolve(focusCodes)
+      .then((codes) => {
+        if (disposed) return;
+        (codes || []).forEach((code) => byCode(code) && FOCUS.add(code));
+        if (!FOCUS.size) return;
+        if (!PICKED && !FOCUS.has(CO.code)) CO = byCode([...FOCUS][0]);
+        markLand();
+        refreshLabels();
+        if (S.stage === "world") renderWorld();
+      })
+      .catch(() => {});
   let PICKED = false; // nothing chosen until the visitor picks a country on the globe
   const CITY_CACHE = {};
   let CITIES = [];
@@ -3126,10 +3145,12 @@ export function mountHall(
   }
   function renderWorld() {
     if (donor) return donorWorld();
-    const n = (st) => COUNTRIES.filter((c) => c.st === st).length,
+    const n = (st) => COUNTRIES.filter((c) => c.st === st && (!focusOn() || shown(c))).length,
       sim = CO.sim,
-      // the trial shows every country, but only confirmed presence is counted as a site
-      sites = COUNTRIES.filter((c) => (demo ? c.st !== "unconfirmed" : shown(c))).length - 1;
+      // the trial shows every country, but only confirmed presence is counted as a site (the HQ is not one)
+      sites =
+        COUNTRIES.filter((c) => (demo ? c.st !== "unconfirmed" : shown(c))).length -
+        (COUNTRIES.some((c) => c.st === "hq" && (demo || shown(c))) ? 1 : 0);
     const W = X?.world,
       groups = W
         ? [
@@ -3178,7 +3199,7 @@ export function mountHall(
       .map(
         ([st, name]) =>
           `<div class="sect">${name}</div><div class="co-list">${COUNTRIES.filter(
-            (c) => c.st === st,
+            (c) => c.st === st && (!focusOn() || shown(c)),
           )
             .map(
               (c) =>

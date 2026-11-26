@@ -367,12 +367,13 @@ describe("بوّابة التكامل: القوائم نفسها في الكود
     );
   });
 
-  it("النطاقات الثلاثة في نموذج الإصدار هي قيد القاعدة", () => {
+  it("نطاقات نموذج الإصدار هي قيد القاعدة", () => {
+    // آخر هجرةٍ تعيد تعريف القيد: السجلّ الذهبي أضاف records:primary و records:verify.
     const sql = /scopes <@ ARRAY\[([^\]]+)\]/.exec(
-      read("supabase/migrations/20260919100000_mirror_sync.sql"),
+      read("supabase/migrations/20261126100000_golden_record.sql"),
     )?.[1];
     const db = set([...(sql ?? "").matchAll(/'([a-z:]+)'/g)].map((m) => m[1]!));
-    const zod = /scopes: z\.array\(z\.enum\(\[([^\]]+)\]\)\)/.exec(
+    const zod = /scopes: z\s*\.array\(\s*z\.enum\(\[([^\]]+)\]\),?\s*\)/.exec(
       read("src/lib/integrations.functions.ts"),
     )?.[1];
     expect(set([...(zod ?? "").matchAll(/"([a-z:]+)"/g)].map((m) => m[1]!))).toEqual(db);

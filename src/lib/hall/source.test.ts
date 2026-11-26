@@ -87,8 +87,10 @@ describe("الحقيقي: القاعة تقرأ مسار الصفحات نفسه
     );
     // the donor's hall adds the dashboard's own list (its gate unchanged) and the public card
     // any visitor reads; `donor.ts` takes the list's type only
+    // and the live hall's core countries: codes only, no counts (`public_focus_countries`)
     expect(server.sort()).toEqual([
       "src/lib/hall/donor.ts ← @/lib/sponsorships.functions",
+      "src/routes/hall.lazy.tsx ← @/lib/focus-countries.functions",
       "src/routes/hall.lazy.tsx ← @/lib/orphans.functions",
       "src/routes/hall.lazy.tsx ← @/lib/sponsorships.functions",
       "src/routes/hall.lazy.tsx ← @/lib/vision-links.functions",

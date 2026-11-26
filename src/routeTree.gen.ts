@@ -20,12 +20,14 @@ import { Route as HallRouteImport } from './routes/hall'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SsoRouteImport } from './routes/sso'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TraitsRouteImport } from './routes/traits'
 import { Route as TryRouteImport } from './routes/try'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCountryDataRouteImport } from './routes/_authenticated/country-data'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGuardianRouteImport } from './routes/_authenticated/guardian'
 import { Route as AuthenticatedOrgRouteImport } from './routes/_authenticated/org'
@@ -58,11 +60,13 @@ import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes
 import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
 import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
+import { Route as ApiIntegrationsRecordsRouteImport } from './routes/api/integrations/records'
 import { Route as ApiNotificationsDispatchRouteImport } from './routes/api/notifications/dispatch'
 import { Route as ApiOpsHealthRouteImport } from './routes/api/ops/health'
 import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/reconcile'
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as ApiPublicSupporterAssistantRouteImport } from './routes/api/public.supporter-assistant'
+import { Route as ApiSsoWamyRouteImport } from './routes/api/sso/wamy'
 import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
@@ -121,6 +125,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SsoRoute = SsoRouteImport.update({
+  id: '/sso',
+  path: '/sso',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -151,6 +160,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCountryDataRoute =
+  AuthenticatedCountryDataRouteImport.update({
+    id: '/country-data',
+    path: '/country-data',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -331,6 +346,11 @@ const ApiIntegrationsOrphansRoute = ApiIntegrationsOrphansRouteImport.update({
   path: '/api/integrations/orphans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiIntegrationsRecordsRoute = ApiIntegrationsRecordsRouteImport.update({
+  id: '/api/integrations/records',
+  path: '/api/integrations/records',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNotificationsDispatchRoute =
   ApiNotificationsDispatchRouteImport.update({
     id: '/api/notifications/dispatch',
@@ -358,6 +378,11 @@ const ApiPublicSupporterAssistantRoute =
     path: '/api/public/supporter-assistant',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiSsoWamyRoute = ApiSsoWamyRouteImport.update({
+  id: '/api/sso/wamy',
+  path: '/api/sso/wamy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisionReceiptIdRoute = VisionReceiptIdRouteImport.update({
   id: '/vision/receipt/$id',
   path: '/vision/receipt/$id',
@@ -419,12 +444,14 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/try': typeof TryRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/country-data': typeof AuthenticatedCountryDataRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
@@ -460,11 +487,13 @@ export interface FileRoutesByFullPath {
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -484,11 +513,13 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/country-data': typeof AuthenticatedCountryDataRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/guardian': typeof AuthenticatedGuardianRoute
   '/org': typeof AuthenticatedOrgRoute
@@ -524,11 +555,13 @@ export interface FileRoutesByTo {
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -550,12 +583,14 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/organizations': typeof OrganizationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sso': typeof SsoRoute
   '/support': typeof SupportRoute
   '/traits': typeof TraitsRoute
   '/try': typeof TryRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/country-data': typeof AuthenticatedCountryDataRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/guardian': typeof AuthenticatedGuardianRoute
   '/_authenticated/org': typeof AuthenticatedOrgRoute
@@ -591,11 +626,13 @@ export interface FileRoutesById {
   '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
+  '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
   '/api/notifications/dispatch': typeof ApiNotificationsDispatchRoute
   '/api/ops/health': typeof ApiOpsHealthRoute
   '/api/payments/reconcile': typeof ApiPaymentsReconcileRoute
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
+  '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
@@ -617,12 +654,14 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/try'
     | '/unsubscribe'
     | '/account'
     | '/admin'
+    | '/country-data'
     | '/dashboard'
     | '/guardian'
     | '/org'
@@ -658,11 +697,13 @@ export interface FileRouteTypes {
     | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -682,11 +723,13 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/unsubscribe'
     | '/account'
     | '/admin'
+    | '/country-data'
     | '/dashboard'
     | '/guardian'
     | '/org'
@@ -722,11 +765,13 @@ export interface FileRouteTypes {
     | '/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
     | '/sponsorships/$sponsorshipId/report'
@@ -747,12 +792,14 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/organizations'
     | '/sitemap.xml'
+    | '/sso'
     | '/support'
     | '/traits'
     | '/try'
     | '/unsubscribe'
     | '/_authenticated/account'
     | '/_authenticated/admin'
+    | '/_authenticated/country-data'
     | '/_authenticated/dashboard'
     | '/_authenticated/guardian'
     | '/_authenticated/org'
@@ -788,11 +835,13 @@ export interface FileRouteTypes {
     | '/_authenticated/translate/$locale'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
+    | '/api/integrations/records'
     | '/api/notifications/dispatch'
     | '/api/ops/health'
     | '/api/payments/reconcile'
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
+    | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
@@ -814,6 +863,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   OrganizationsRoute: typeof OrganizationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SsoRoute: typeof SsoRoute
   SupportRoute: typeof SupportRoute
   TraitsRoute: typeof TraitsRoute
   TryRoute: typeof TryRouteWithChildren
@@ -835,11 +885,13 @@ export interface RootRouteChildren {
   VisionIndexRoute: typeof VisionIndexRoute
   ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
+  ApiIntegrationsRecordsRoute: typeof ApiIntegrationsRecordsRoute
   ApiNotificationsDispatchRoute: typeof ApiNotificationsDispatchRoute
   ApiOpsHealthRoute: typeof ApiOpsHealthRoute
   ApiPaymentsReconcileRoute: typeof ApiPaymentsReconcileRoute
   ApiPaymentsWebhookRoute: typeof ApiPaymentsWebhookRoute
   ApiPublicSupporterAssistantRoute: typeof ApiPublicSupporterAssistantRoute
+  ApiSsoWamyRoute: typeof ApiSsoWamyRoute
   VisionReceiptIdRoute: typeof VisionReceiptIdRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -911,6 +963,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sso': {
+      id: '/sso'
+      path: '/sso'
+      fullPath: '/sso'
+      preLoaderRoute: typeof SsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/support': {
       id: '/support'
       path: '/support'
@@ -951,6 +1010,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/country-data': {
+      id: '/_authenticated/country-data'
+      path: '/country-data'
+      fullPath: '/country-data'
+      preLoaderRoute: typeof AuthenticatedCountryDataRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -1198,6 +1264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiIntegrationsOrphansRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/integrations/records': {
+      id: '/api/integrations/records'
+      path: '/api/integrations/records'
+      fullPath: '/api/integrations/records'
+      preLoaderRoute: typeof ApiIntegrationsRecordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/notifications/dispatch': {
       id: '/api/notifications/dispatch'
       path: '/api/notifications/dispatch'
@@ -1231,6 +1304,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/supporter-assistant'
       fullPath: '/api/public/supporter-assistant'
       preLoaderRoute: typeof ApiPublicSupporterAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sso/wamy': {
+      id: '/api/sso/wamy'
+      path: '/api/sso/wamy'
+      fullPath: '/api/sso/wamy'
+      preLoaderRoute: typeof ApiSsoWamyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vision/receipt/$id': {
@@ -1302,6 +1382,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCountryDataRoute: typeof AuthenticatedCountryDataRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGuardianRoute: typeof AuthenticatedGuardianRoute
   AuthenticatedOrgRoute: typeof AuthenticatedOrgRoute
@@ -1320,6 +1401,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCountryDataRoute: AuthenticatedCountryDataRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGuardianRoute: AuthenticatedGuardianRoute,
   AuthenticatedOrgRoute: AuthenticatedOrgRoute,
@@ -1380,6 +1462,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   OrganizationsRoute: OrganizationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SsoRoute: SsoRoute,
   SupportRoute: SupportRoute,
   TraitsRoute: TraitsRoute,
   TryRoute: TryRouteWithChildren,
@@ -1401,11 +1484,13 @@ const rootRouteChildren: RootRouteChildren = {
   VisionIndexRoute: VisionIndexRoute,
   ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
+  ApiIntegrationsRecordsRoute: ApiIntegrationsRecordsRoute,
   ApiNotificationsDispatchRoute: ApiNotificationsDispatchRoute,
   ApiOpsHealthRoute: ApiOpsHealthRoute,
   ApiPaymentsReconcileRoute: ApiPaymentsReconcileRoute,
   ApiPaymentsWebhookRoute: ApiPaymentsWebhookRoute,
   ApiPublicSupporterAssistantRoute: ApiPublicSupporterAssistantRoute,
+  ApiSsoWamyRoute: ApiSsoWamyRoute,
   VisionReceiptIdRoute: VisionReceiptIdRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

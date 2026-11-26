@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 3652,
+ "count": 3897,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -2845,6 +2845,13 @@
    "hash": "68f11e249e43",
    "file": "src/components/admin/data/copy.ts"
   },
+  "components/admin/data.steps.sources": {
+   "en": "Verification sources",
+   "ar": "مصادر التحقق",
+   "kind": "text",
+   "hash": "05c6e55557c7",
+   "file": "src/components/admin/data/copy.ts"
+  },
   "components/admin/data.steps.team": {
    "en": "Data-entry team",
    "ar": "فريق الإدخال",
@@ -3061,6 +3068,1593 @@
    "kind": "text",
    "hash": "2d474edc9504",
    "file": "src/components/admin/data/copy.ts"
+  },
+  "components/admin/data/sources.accept": {
+   "en": "Approve proposal",
+   "ar": "اعتمد المقترح",
+   "kind": "text",
+   "hash": "ea97c8abfa9d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertAdult": {
+   "en": "Crosses age 18",
+   "ar": "يعبر سنّ 18",
+   "kind": "text",
+   "hash": "388f214e0f4e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertDays": {
+   "en": "{0} days",
+   "ar": "{0} يوماً",
+   "kind": "template",
+   "params": 1,
+   "hash": "dee9f1101c84",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertDistance": {
+   "en": "{0} letters apart after normalization",
+   "ar": "فرق {0} حرف بعد التطبيع",
+   "kind": "template",
+   "params": 1,
+   "hash": "199913ea32f0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertFiles": {
+   "en": "{0} of {1} files within an hour",
+   "ar": "{0} ملف من {1} خلال ساعة",
+   "kind": "template",
+   "params": 2,
+   "hash": "87136b909951",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertFrom": {
+   "en": "Was",
+   "ar": "كان",
+   "kind": "text",
+   "hash": "0858802c8b99",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertHits": {
+   "en": "Seen {0} times",
+   "ar": "تكرّر {0} مرة",
+   "kind": "template",
+   "params": 1,
+   "hash": "241fd24f6fab",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertOlder": {
+   "en": "{0} years older",
+   "ar": "أكبر بـ{0} سنة",
+   "kind": "template",
+   "params": 1,
+   "hash": "72d5c2d49b45",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertOther": {
+   "en": "Other file",
+   "ar": "الملف الآخر",
+   "kind": "text",
+   "hash": "44b4d5eaeb67",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertTo": {
+   "en": "Now",
+   "ar": "صار",
+   "kind": "text",
+   "hash": "4f6bb82a56ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertYounger": {
+   "en": "{0} years younger",
+   "ar": "أصغر بـ{0} سنة",
+   "kind": "template",
+   "params": 1,
+   "hash": "76acfcd9a868",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsCount": {
+   "en": "Alerts: {0} critical, {1} warnings",
+   "ar": "تنبيهات: {0} حرج، {1} تحذير",
+   "kind": "template",
+   "params": 2,
+   "hash": "43956f1e3282",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsHint": {
+   "en": "Every incoming value is checked: hidden characters, mixed scripts, one-letter name edits, birth-date shifts, flip-flops, duplicate files, bulk changes, and edits after sponsorship. A critical alert flags the file and blocks new sponsorship until you settle it.",
+   "ar": "المنصّة تفحص كل قيمةٍ تصل: المحارف الخفية، وخلط الأبجديات، وتعديل حرفٍ في اسم، وإزاحة العمر، والتذبذب، والملفات المكرّرة، والتغيير بالجملة، والتعديل بعد الكفالة. التنبيه الحرج يسم الملف ويمنع الكفالة الجديدة حتى تحسمه.",
+   "kind": "text",
+   "hash": "832cfbbe80ce",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.alertsTitle": {
+   "en": "Automatic verification alerts",
+   "ar": "تنبيهات التحقق الآلي",
+   "kind": "text",
+   "hash": "a3df81fc37de",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.allClear": {
+   "en": "Nothing open",
+   "ar": "لا شيء مفتوح",
+   "kind": "text",
+   "hash": "dca864d38389",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.candidates": {
+   "en": "Candidates",
+   "ar": "مرشّحون",
+   "kind": "text",
+   "hash": "50eb061c0695",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.chooseFile": {
+   "en": "Choose a CSV file",
+   "ar": "اختر ملف CSV",
+   "kind": "text",
+   "hash": "7b6052f74a81",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.choosePlatform": {
+   "en": "Choose a platform",
+   "ar": "اختر المنصّة",
+   "kind": "text",
+   "hash": "51828c0bd7c1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmActive": {
+   "en": "Activating hands the current-situation fields to the office and re-evaluates them now. Continue?",
+   "ar": "التفعيل ينقل حقول الوضع الحالي إلى المكتب ويعيد تقييمها الآن. متأكد؟",
+   "kind": "text",
+   "hash": "3a5f1ecd20f6",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmFraud": {
+   "en": "Confirmed tampering or error",
+   "ar": "تلاعب أو خطأ مؤكَّد",
+   "kind": "text",
+   "hash": "2d876095e8d0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmNote": {
+   "en": "Write why you confirm it (kept in the audit log)",
+   "ar": "اكتب سبب التأكيد (يُحفظ في سجل التدقيق)",
+   "kind": "text",
+   "hash": "f05a0d9a39e9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmSubmit": {
+   "en": "Confirm",
+   "ar": "أكّد",
+   "kind": "text",
+   "hash": "e9465eeb3367",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.confirmTitle": {
+   "en": "Confirm tampering or error",
+   "ar": "تأكيد التلاعب أو الخطأ",
+   "kind": "text",
+   "hash": "2e752b85cb49",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.conflictsHint": {
+   "en": "Critical first. Every decision is audited; a manual choice holds until the owner sends a newer update.",
+   "ar": "الحرج أوّلاً. القرار يُسجَّل في سجلّ التدقيق، والاعتماد اليدوي يثبت حتى يصل تحديثٌ أحدث من المالك.",
+   "kind": "text",
+   "hash": "6886b49d4fe5",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.conflictsTitle": {
+   "en": "Conflict inbox",
+   "ar": "صندوق التعارضات",
+   "kind": "text",
+   "hash": "5dbd02c55190",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.countryWide": {
+   "en": "Country-wide",
+   "ar": "على مستوى الدولة",
+   "kind": "text",
+   "hash": "718d87fd213b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.create": {
+   "en": "Create a new file",
+   "ar": "أنشئ ملفاً جديداً",
+   "kind": "text",
+   "hash": "dff390ddad04",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.createAll": {
+   "en": "Create files for every WAMY record without a candidate",
+   "ar": "أنشئ ملفات كل سجلّات الندوة بلا مرشّح",
+   "kind": "text",
+   "hash": "818bf498873d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.createFailed": {
+   "en": "{0} records failed: missing name or gender.",
+   "ar": "تعذّر {0} سجلّ: الاسم أو الجنس ناقص.",
+   "kind": "template",
+   "params": 1,
+   "hash": "83442818a583",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.createdAll": {
+   "en": "{0} files created, under review.",
+   "ar": "أُنشئ {0} ملف «قيد المراجعة».",
+   "kind": "template",
+   "params": 1,
+   "hash": "fd1c67b36f0b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.criticalOpen.one": {
+   "en": "1 critical item",
+   "ar": "بندٌ حرج",
+   "kind": "plural",
+   "hash": "7d3243e7370f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.criticalOpen.other": {
+   "en": "{0} critical items",
+   "ar": "{0} بند حرج",
+   "kind": "plural",
+   "hash": "438ae2ad879b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.criticalOpen.zero": {
+   "en": "No critical items",
+   "ar": "لا بنود حرجة",
+   "kind": "plural",
+   "hash": "8dfaf7540274",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.current": {
+   "en": "Approved now",
+   "ar": "المعتمد الآن",
+   "kind": "text",
+   "hash": "b2a9f9fe759d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.done": {
+   "en": "Done",
+   "ar": "تم",
+   "kind": "text",
+   "hash": "626994aae676",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.admin_only": {
+   "en": "This action is for the admin team only.",
+   "ar": "هذا الإجراء لفريق الإدارة وحده.",
+   "kind": "text",
+   "hash": "cd12b3c9cbe5",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.alert_closed": {
+   "en": "This alert was already settled.",
+   "ar": "حُسم هذا التنبيه من قبل.",
+   "kind": "text",
+   "hash": "9366f5ae5c27",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.already_linked": {
+   "en": "That file is already linked to another record from the same source.",
+   "ar": "هذا الملف مربوطٌ بسجلٍّ آخر من المصدر نفسه.",
+   "kind": "text",
+   "hash": "58f23568e4ef",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.conflict_closed": {
+   "en": "This item was already closed.",
+   "ar": "أُغلق هذا البند من قبل.",
+   "kind": "text",
+   "hash": "c517db19026a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.country_forbidden": {
+   "en": "You don't have this permission for this country.",
+   "ar": "لا صلاحية لك على هذه الدولة لهذا الإجراء.",
+   "kind": "text",
+   "hash": "4b39ce0f38a2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.country_unknown": {
+   "en": "The country isn't in the registry.",
+   "ar": "الدولة ليست في السجلّ.",
+   "kind": "text",
+   "hash": "ad46c843eb8d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.create_primary_only": {
+   "en": "Files are created from WAMY records only; office records are linked.",
+   "ar": "إنشاء الملفات من سجلّات الندوة وحدها؛ سجلّ المكتب يُربط.",
+   "kind": "text",
+   "hash": "3ac2b89659a3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.failed": {
+   "en": "Couldn't complete. Nothing changed.",
+   "ar": "تعذّر التنفيذ. لم يتغيّر شيء.",
+   "kind": "text",
+   "hash": "bf58d362c147",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.four_eyes_required": {
+   "en": "You uploaded this change yourself: another supervisor or the admin team settles it.",
+   "ar": "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو الإدارة.",
+   "kind": "text",
+   "hash": "a383ccad6da1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.gender_required": {
+   "en": "The record has no valid gender.",
+   "ar": "السجلّ بلا جنسٍ صالح.",
+   "kind": "text",
+   "hash": "e856a229a295",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.invite_failed": {
+   "en": "The invitation couldn't be sent. Check the email and try again.",
+   "ar": "تعذّر إرسال الدعوة. تحقّق من البريد وأعد المحاولة.",
+   "kind": "text",
+   "hash": "2f30b88360eb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.link_closed": {
+   "en": "This record was already handled.",
+   "ar": "عولج هذا السجلّ من قبل.",
+   "kind": "text",
+   "hash": "a50f62c51629",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.mode_unknown": {
+   "en": "Unknown mode.",
+   "ar": "وضعٌ غير معروف.",
+   "kind": "text",
+   "hash": "16fe2e870479",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.name_required": {
+   "en": "The record has no name.",
+   "ar": "السجلّ بلا اسم.",
+   "kind": "text",
+   "hash": "f646b6dee69c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.note_required": {
+   "en": "Confirming needs a written reason.",
+   "ar": "التأكيد يحتاج سبباً مكتوباً.",
+   "kind": "text",
+   "hash": "c981b7bd7094",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.office_source_inactive": {
+   "en": "The office platform isn't in shadow or active mode for this country.",
+   "ar": "منصّة المكتب ليست في وضع الظلّ أو الفعّال لهذه الدولة.",
+   "kind": "text",
+   "hash": "62ee6ee1734d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.orphan_locked": {
+   "en": "The child is sponsored and their identity is locked: use a two-approval unlock request.",
+   "ar": "الطفل مكفول وهويته مقفلة: التعديل بطلب فكٍّ بموافقتين.",
+   "kind": "text",
+   "hash": "8b33a03ffba4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.orphan_unknown": {
+   "en": "That file isn't in this country.",
+   "ar": "الملف ليس من هذه الدولة.",
+   "kind": "text",
+   "hash": "4e03cbca35cb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.role_forbidden": {
+   "en": "You can't grant this role or change this member.",
+   "ar": "لا تملك منح هذا الدور أو تعديل هذا العضو.",
+   "kind": "text",
+   "hash": "d6579e375e7f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.role_unknown": {
+   "en": "Unknown role.",
+   "ar": "دورٌ غير معروف.",
+   "kind": "text",
+   "hash": "23ddc8a6da79",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.rows_invalid": {
+   "en": "The file is empty or over the limit.",
+   "ar": "الملف فارغ أو أكبر من الحدّ.",
+   "kind": "text",
+   "hash": "8f194f681ef0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.source_unknown": {
+   "en": "That platform doesn't belong to this country.",
+   "ar": "المنصّة ليست من منصّات هذه الدولة.",
+   "kind": "text",
+   "hash": "e8798627a8e9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.user_not_found": {
+   "en": "No registered account with this email.",
+   "ar": "لا حساب مسجّل بهذا البريد.",
+   "kind": "text",
+   "hash": "89da9371cb68",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.value_invalid": {
+   "en": "The value isn't valid for this field.",
+   "ar": "القيمة غير صالحة لهذا الحقل.",
+   "kind": "text",
+   "hash": "d5a12f47e9bd",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.falsePositive": {
+   "en": "False alarm",
+   "ar": "إنذار كاذب",
+   "kind": "text",
+   "hash": "850e463c4c72",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.birth_date": {
+   "en": "Birth date",
+   "ar": "تاريخ الميلاد",
+   "kind": "text",
+   "hash": "e40dc31f814a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.city": {
+   "en": "City",
+   "ar": "المدينة",
+   "kind": "text",
+   "hash": "ad8e85b1c36d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.display_name": {
+   "en": "Name",
+   "ar": "الاسم",
+   "kind": "text",
+   "hash": "865c3e992933",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.education_stage": {
+   "en": "Education stage",
+   "ar": "المرحلة الدراسية",
+   "kind": "text",
+   "hash": "02dd83144881",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.gender": {
+   "en": "Gender",
+   "ar": "الجنس",
+   "kind": "text",
+   "hash": "cde9d827f5c5",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.guardian": {
+   "en": "Guardian",
+   "ar": "الوصي",
+   "kind": "text",
+   "hash": "ce5abc2d74ab",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.health_status": {
+   "en": "Health",
+   "ar": "الحالة الصحية",
+   "kind": "text",
+   "hash": "d193229bb17f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.living_situation": {
+   "en": "Living situation",
+   "ar": "السكن",
+   "kind": "text",
+   "hash": "0199e653eaf4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.program_status": {
+   "en": "Program status",
+   "ar": "حالة البرنامج",
+   "kind": "text",
+   "hash": "a58ec066b748",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.progress_report": {
+   "en": "Progress report",
+   "ar": "تقرير التقدم",
+   "kind": "text",
+   "hash": "1b9209e0b53a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.qualification_track": {
+   "en": "Qualification track",
+   "ar": "مسار التأهيل",
+   "kind": "text",
+   "hash": "a100a761f74d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.region": {
+   "en": "Region",
+   "ar": "المنطقة",
+   "kind": "text",
+   "hash": "e87164f7bd71",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.sponsorship": {
+   "en": "Sponsorship",
+   "ar": "الكفالة",
+   "kind": "text",
+   "hash": "620375b4096c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.fields.sponsorship_eligible": {
+   "en": "Sponsorship eligibility",
+   "ar": "الأهلية للكفالة",
+   "kind": "text",
+   "hash": "e6ac7414c0e3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.file": {
+   "en": "File (CSV)",
+   "ar": "الملف (CSV)",
+   "kind": "text",
+   "hash": "98ef39f21e65",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.current": {
+   "en": "Current situation",
+   "ar": "الوضع الحالي",
+   "kind": "text",
+   "hash": "fca18b80dfd7",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.eligibility": {
+   "en": "Eligibility and program status",
+   "ar": "الأهلية وحالة البرنامج",
+   "kind": "text",
+   "hash": "3e577bf22f2f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.finance": {
+   "en": "Sponsorships and money",
+   "ar": "الكفالات والمال",
+   "kind": "text",
+   "hash": "a0db2bbe3488",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.identity": {
+   "en": "Identity",
+   "ar": "الهوية",
+   "kind": "text",
+   "hash": "79ef6d1d05fd",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.qualification": {
+   "en": "Qualification tracks",
+   "ar": "مسارات التأهيل",
+   "kind": "text",
+   "hash": "88513b7678e9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.groups.reports": {
+   "en": "Reports and photos",
+   "ar": "التقارير والصور",
+   "kind": "text",
+   "hash": "a031fa054d0b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.healthTitle": {
+   "en": "Data health by country",
+   "ar": "صحة البيانات لكل دولة",
+   "kind": "text",
+   "hash": "4f234f9fcfff",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.hint": {
+   "en": "WAMY is the primary source; the operating platform run by the country office verifies. Each field has an owner that decides and a verifier that flags differences. Critical fields change only with your approval.",
+   "ar": "الندوة هي المصدر الرئيس، ومنصّة التشغيل التي يديرها مكتب الدولة مصدرٌ مؤكِّد. لكل حقلٍ مالكٌ يحكم ومؤكِّدٌ يكشف الفرق، والحقل الحرج لا يتغيّر إلا باعتمادك.",
+   "kind": "text",
+   "hash": "c94245e64b76",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.hitsPlural.other": {
+   "en": "Received {0} times",
+   "ar": "وصل {0} مرة",
+   "kind": "plural",
+   "hash": "08a9f249b597",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.ignore": {
+   "en": "Ignore",
+   "ar": "تجاهل",
+   "kind": "text",
+   "hash": "65d0755e94b5",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.ignored": {
+   "en": "Ignored columns: {0}",
+   "ar": "أعمدةٌ تُتجاهل: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "45db927ee66c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.invalidCells": {
+   "en": "{0} unreadable cells won't be sent.",
+   "ar": "{0} خلية بقيمةٍ لا تُقرأ لن تُرسل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "29e0766f886c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.invited": {
+   "en": "Invitation sent to {0}; their role is saved.",
+   "ar": "أُرسلت دعوةٌ إلى {0}، ودوره محفوظ.",
+   "kind": "template",
+   "params": 1,
+   "hash": "73da474d499b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.keep": {
+   "en": "Keep current",
+   "ar": "أبقِ الحالي",
+   "kind": "text",
+   "hash": "bd5ca9a56ee4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.kinds.critical_change": {
+   "en": "Critical change awaiting approval",
+   "ar": "تغيير حرج ينتظر اعتمادك",
+   "kind": "text",
+   "hash": "3f931a281866",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.kinds.disagreement": {
+   "en": "Sources disagree",
+   "ar": "فرق بين المصدرين",
+   "kind": "text",
+   "hash": "070d57920ae2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.kinds.held_locked": {
+   "en": "Held by sponsorship lock",
+   "ar": "محجوز بقفل الكفالة",
+   "kind": "text",
+   "hash": "5d31d8e96dc6",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.lastOffice": {
+   "en": "Last from the office",
+   "ar": "آخر وصولٍ من المكتب",
+   "kind": "text",
+   "hash": "1bef97f4fb65",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.lastSync": {
+   "en": "Last update",
+   "ar": "آخر تحديث",
+   "kind": "text",
+   "hash": "22a0861a22c2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.lastWamy": {
+   "en": "Last from WAMY",
+   "ar": "آخر وصولٍ من الندوة",
+   "kind": "text",
+   "hash": "9e03f0e61ffa",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkHint": {
+   "en": "Records whose ID isn't known yet. Link to a suggested file, create one (WAMY only), or ignore. Once linked, sync relies on the ID, not the name.",
+   "ar": "سجلٌّ لم يُعرف معرّفه بعد. اربطه بملفٍّ مقترح، أو أنشئ له ملفاً (للندوة وحدها)، أو تجاهله. بعد الربط تعتمد المزامنة على المعرّف لا على الاسم.",
+   "kind": "text",
+   "hash": "55e1003138e8",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkPending.one": {
+   "en": "1 record awaiting a link",
+   "ar": "سجلٌّ بانتظار الربط",
+   "kind": "plural",
+   "hash": "98a107f16d94",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkPending.other": {
+   "en": "{0} records awaiting a link",
+   "ar": "{0} سجلّ بانتظار الربط",
+   "kind": "plural",
+   "hash": "12afac252510",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkPending.zero": {
+   "en": "Nothing awaiting a link",
+   "ar": "لا شيء بانتظار الربط",
+   "kind": "plural",
+   "hash": "93e533ba8040",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkTitle": {
+   "en": "Link queue",
+   "ar": "طابور الربط",
+   "kind": "text",
+   "hash": "e7c985c148db",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.linkTo": {
+   "en": "Link to {0}",
+   "ar": "اربط بـ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d9abf7a04dfc",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.lockedHint": {
+   "en": "The child is sponsored and their identity is locked: change it through a two-approval unlock request on the file.",
+   "ar": "الطفل مكفول وهويته مقفلة: التعديل بطلب فكٍّ بموافقتين من شاشة الملف.",
+   "kind": "text",
+   "hash": "91610f027169",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.matrixTitle": {
+   "en": "Who decides now",
+   "ar": "من يحكم الآن",
+   "kind": "text",
+   "hash": "fadd72b7e651",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.missingRef": {
+   "en": "Lines without an ID won't be sent: {0}",
+   "ar": "أسطرٌ بلا معرّف لن تُرسل: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7f918f3309d2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeHint": {
+   "en": "Without a working operating platform, WAMY owns every field. When one is added it runs in shadow, comparing without changing, then goes active and takes the current-situation fields. Every switch re-evaluates fields automatically and loses nothing.",
+   "ar": "حين لا توجد منصّة تشغيل سليمة تبقى الندوة مالكة كل الحقول. حين تُضاف منصّة، تمرّ بفترة ظلّ تقارن فيها ولا تغيّر، ثم تُفعَّل فتتسلّم حقول الوضع الحالي. كل انتقالٍ يعيد تقييم الحقول تلقائياً ولا يفقد شيئاً.",
+   "kind": "text",
+   "hash": "b5e517fcc49e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeHints.active": {
+   "en": "The office owns schooling, housing, health, guardian and reports; WAMY verifies them.",
+   "ar": "المكتب يملك الدراسة والسكن والصحة والوصي والتقارير، والندوة تؤكّدها.",
+   "kind": "text",
+   "hash": "9596ca49d199",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeHints.none": {
+   "en": "WAMY owns every field; a file is verified by its source alone.",
+   "ar": "الندوة تملك كل الحقول، والملف موثّقٌ بمصدرها وحده.",
+   "kind": "text",
+   "hash": "5537dcd91ff9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeHints.shadow": {
+   "en": "The office platform sends, differences land in the inbox, no approved value changes.",
+   "ar": "منصّة المكتب ترسل، والفروق تظهر في الصندوق، ولا تتغيّر أي قيمة معتمدة.",
+   "kind": "text",
+   "hash": "e4bf7817b1ae",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeSaved": {
+   "en": "Mode saved; {0} fields re-evaluated.",
+   "ar": "حُفظ الوضع، وأُعيد تقييم {0} حقل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "c43f85caf265",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modeTitle": {
+   "en": "Office platform mode",
+   "ar": "وضع منصّة المكتب",
+   "kind": "text",
+   "hash": "39a48e5e4b36",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modes.active": {
+   "en": "Active: full matrix",
+   "ar": "فعّالة: المصفوفة كاملة",
+   "kind": "text",
+   "hash": "ccd8af00a1d2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modes.none": {
+   "en": "No operating platform",
+   "ar": "بلا منصّة تشغيل",
+   "kind": "text",
+   "hash": "7ea6a2f01345",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modes.shadow": {
+   "en": "Shadow: compare only",
+   "ar": "ظلّ: مقارنة فقط",
+   "kind": "text",
+   "hash": "564ad123c984",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modesShort.active": {
+   "en": "Office: active",
+   "ar": "مكتب: فعّال",
+   "kind": "text",
+   "hash": "938cb09f4929",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modesShort.none": {
+   "en": "WAMY only",
+   "ar": "الندوة وحدها",
+   "kind": "text",
+   "hash": "540940950e37",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.modesShort.shadow": {
+   "en": "Office: compare",
+   "ar": "مكتب: مقارنة",
+   "kind": "text",
+   "hash": "64be39166b02",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.needsDecision.one": {
+   "en": "1 critical item needs your decision",
+   "ar": "بندٌ حرج ينتظر قرارك",
+   "kind": "plural",
+   "hash": "f25252c05c6e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.needsDecision.other": {
+   "en": "{0} critical items need your decision",
+   "ar": "{0} بند حرج ينتظر قرارك",
+   "kind": "plural",
+   "hash": "961d1f258c00",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.never": {
+   "en": "Not yet",
+   "ar": "لم يصل بعد",
+   "kind": "text",
+   "hash": "65b4139602fa",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.no": {
+   "en": "No",
+   "ar": "لا",
+   "kind": "text",
+   "hash": "b720e1c6f5d2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noAlerts": {
+   "en": "No open alerts.",
+   "ar": "لا تنبيهات مفتوحة.",
+   "kind": "text",
+   "hash": "0eb9a5cc1a75",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noCandidates": {
+   "en": "No candidate by name and birth date.",
+   "ar": "لا مرشّح بالاسم والميلاد.",
+   "kind": "text",
+   "hash": "d0b1f6a2e6df",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noConflicts": {
+   "en": "No open conflicts.",
+   "ar": "لا تعارضات مفتوحة.",
+   "kind": "text",
+   "hash": "d4db17982729",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noCountries": {
+   "en": "No countries in the registry yet. Add them under Countries.",
+   "ar": "لا دول في السجلّ بعد. أضفها من «الدول».",
+   "kind": "text",
+   "hash": "65e766e79daa",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noFile": {
+   "en": "No file chosen",
+   "ar": "لم يُختر ملف",
+   "kind": "text",
+   "hash": "7519e4762b92",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noLinks": {
+   "en": "Nothing awaiting a link.",
+   "ar": "لا شيء بانتظار الربط.",
+   "kind": "text",
+   "hash": "771a38a2ea5f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noManaged": {
+   "en": "Nothing imported yet",
+   "ar": "لم يُستورد شيء بعد",
+   "kind": "text",
+   "hash": "4ff80d5d92dd",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.noPlatform": {
+   "en": "No operating platform is registered for this country. Register it under Countries, then come back.",
+   "ar": "لا منصّة تشغيل مسجّلة لهذه الدولة. سجّلها من «الدول» ثم عد هنا.",
+   "kind": "text",
+   "hash": "e9f8ba75e71d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.nobody": {
+   "en": "Nobody",
+   "ar": "لا أحد",
+   "kind": "text",
+   "hash": "39a060f23a6a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.officeNeedsMode": {
+   "en": "Office uploads work in shadow or active mode.",
+   "ar": "رفع المكتب يعمل في وضع الظلّ أو الفعّال.",
+   "kind": "text",
+   "hash": "15a64db2fb16",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.openItems.one": {
+   "en": "1 open item",
+   "ar": "بندٌ واحد مفتوح",
+   "kind": "plural",
+   "hash": "17db1cf84aca",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.openItems.other": {
+   "en": "{0} open items",
+   "ar": "{0} بند مفتوح",
+   "kind": "plural",
+   "hash": "091224627848",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.otherOpen.one": {
+   "en": "1 difference",
+   "ar": "فرقٌ واحد",
+   "kind": "plural",
+   "hash": "32cec120eb9d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.otherOpen.other": {
+   "en": "{0} differences",
+   "ar": "{0} فرق",
+   "kind": "plural",
+   "hash": "79db8973a929",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.otherOpen.zero": {
+   "en": "No differences",
+   "ar": "لا فروق",
+   "kind": "plural",
+   "hash": "c0c7b84a5b3a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.owner": {
+   "en": "Owner",
+   "ar": "المالك",
+   "kind": "text",
+   "hash": "f6b89bc01ca3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.pendingInvite": {
+   "en": "Invited, not signed in yet",
+   "ar": "دُعي ولم يدخل بعد",
+   "kind": "text",
+   "hash": "b500831f6712",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.platform": {
+   "en": "Office platform",
+   "ar": "منصّة المكتب",
+   "kind": "text",
+   "hash": "cc67961e8fa9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.preview": {
+   "en": "{0} records ready, with {1} fields.",
+   "ar": "{0} سجلّ جاهز، بـ{1} حقل.",
+   "kind": "template",
+   "params": 2,
+   "hash": "be7b2d801450",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.proposed": {
+   "en": "Proposed",
+   "ar": "المقترح",
+   "kind": "text",
+   "hash": "a55a247262a2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.readOnly": {
+   "en": "You can view this country but not settle items. Settling is for the country supervisor.",
+   "ar": "تطّلع على هذه الدولة دون حسم. الحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "c6c8e40978b0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.result": {
+   "en": "{0} values recorded, {1} records awaiting a link, {2} skipped.",
+   "ar": "سُجّلت {0} قيمة، و{1} سجلّ ينتظر الربط، وتُخطّي {2}.",
+   "kind": "template",
+   "params": 3,
+   "hash": "ba0a48776b0e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.reviewed": {
+   "en": "Reviewed, no issue",
+   "ar": "روجِع ولا إشكال",
+   "kind": "text",
+   "hash": "8440d29f4dc1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.admin": {
+   "en": "You see every country, settle items, assign supervisors, and move office platforms between modes.",
+   "ar": "ترى كل الدول، وتحسم، وتعيّن المشرفين، وتنقل منصّة المكتب بين الأوضاع.",
+   "kind": "text",
+   "hash": "62608ebe80c3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.data_entry": {
+   "en": "You upload WAMY and office files for your country and see their results. Settling is for the country supervisor.",
+   "ar": "ترفع ملفات الندوة والمكتب لدولتك، وترى نتيجتها. الحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "c406d2e9c2d3",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.supervisor": {
+   "en": "You settle your country's alerts and conflicts, link its records, and add data entry staff and viewers.",
+   "ar": "تحسم تنبيهات دولتك وتعارضاتها وتربط سجلّاتها، وتضيف مدخلي البيانات والمطّلعين.",
+   "kind": "text",
+   "hash": "d564e4282ca2",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleCan.viewer": {
+   "en": "You see your country's data health and alerts without uploading or settling.",
+   "ar": "ترى صحة بيانات دولتك وتنبيهاتها دون رفعٍ أو حسم.",
+   "kind": "text",
+   "hash": "f4b24a6cf355",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.admin": {
+   "en": "Admin team",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "9ee173ff263a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.data_entry": {
+   "en": "Data entry",
+   "ar": "مدخل بيانات",
+   "kind": "text",
+   "hash": "7bd738023f51",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roleNames.viewer": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roles.office": {
+   "en": "Office",
+   "ar": "المكتب",
+   "kind": "text",
+   "hash": "763556384043",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roles.platform": {
+   "en": "Platform",
+   "ar": "المنصّة",
+   "kind": "text",
+   "hash": "b67fa0969046",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.roles.wamy": {
+   "en": "WAMY",
+   "ar": "الندوة",
+   "kind": "text",
+   "hash": "eff4fe336b96",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.saveMode": {
+   "en": "Save mode",
+   "ar": "احفظ الوضع",
+   "kind": "text",
+   "hash": "4dcd2fb3c18c",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.scoreLabel": {
+   "en": "Trust score",
+   "ar": "درجة الثقة",
+   "kind": "text",
+   "hash": "49daa56cd2bb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.sectionsLabel": {
+   "en": "Country sections",
+   "ar": "أقسام الدولة",
+   "kind": "text",
+   "hash": "25a71bb48f43",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.send": {
+   "en": "Send",
+   "ar": "أرسل",
+   "kind": "text",
+   "hash": "936916995673",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.sending": {
+   "en": "Sending",
+   "ar": "جارٍ الإرسال",
+   "kind": "text",
+   "hash": "45bb72ae6a6a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.critical": {
+   "en": "Critical",
+   "ar": "حرج",
+   "kind": "text",
+   "hash": "fa39deee3489",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.info": {
+   "en": "Info",
+   "ar": "معلومة",
+   "kind": "text",
+   "hash": "2e2ac02f6b73",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.severities.warning": {
+   "en": "Warning",
+   "ar": "تحذير",
+   "kind": "text",
+   "hash": "62b31e1eef1e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.age_shift": {
+   "en": "Birth date shifted",
+   "ar": "إزاحة في تاريخ الميلاد",
+   "kind": "text",
+   "hash": "fa3138529b35",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.bulk_change": {
+   "en": "Bulk change from a source",
+   "ar": "تغيير بالجملة من مصدر",
+   "kind": "text",
+   "hash": "e3cb3cdcc49f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.change_after_sponsorship": {
+   "en": "Critical field changed after sponsorship",
+   "ar": "تغيير حقل حرج بعد الكفالة",
+   "kind": "text",
+   "hash": "d5305cbac1a6",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.cosmetic_change": {
+   "en": "Cosmetic change folded by normalization",
+   "ar": "تغيير شكليّ طواه التطبيع",
+   "kind": "text",
+   "hash": "d8a5e288bc91",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.flip_flop": {
+   "en": "Returned to an earlier value",
+   "ar": "عودة إلى قيمة سابقة",
+   "kind": "text",
+   "hash": "7240d5ba6e25",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.hidden_characters": {
+   "en": "Hidden characters in the value",
+   "ar": "محارف خفية في القيمة",
+   "kind": "text",
+   "hash": "db635a29e46d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.mixed_script": {
+   "en": "Mixed scripts in one word",
+   "ar": "خلط أبجديات في كلمة",
+   "kind": "text",
+   "hash": "cf24cfa265ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.possible_duplicate": {
+   "en": "Possible duplicate file",
+   "ar": "ملف مكرّر محتمل",
+   "kind": "text",
+   "hash": "ccc08590e5b9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.signals.subtle_edit": {
+   "en": "One or two letters edited",
+   "ar": "تعديل حرف أو حرفين",
+   "kind": "text",
+   "hash": "2c9dbefc3e33",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.sourceRole": {
+   "en": "Source",
+   "ar": "المصدر",
+   "kind": "text",
+   "hash": "055d731ad559",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.staffRoles.data_entry": {
+   "en": "Data entry",
+   "ar": "مدخل بيانات",
+   "kind": "text",
+   "hash": "7bd738023f51",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.staffRoles.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.staffRoles.viewer": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.staleDays": {
+   "en": "A file is stale after (days)",
+   "ar": "يُعدّ الملف متقادماً بعد (يوماً)",
+   "kind": "text",
+   "hash": "b21d89862317",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLabel": {
+   "en": "Start here",
+   "ar": "ابدأ من هنا",
+   "kind": "text",
+   "hash": "b0b71dce8207",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLinks.one": {
+   "en": "{0}: link 1 record",
+   "ar": "{0}: اربط سجلّاً واحداً",
+   "kind": "plural",
+   "hash": "70472537e715",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startLinks.other": {
+   "en": "{0}: link {1} records",
+   "ar": "{0}: اربط {1} سجلّ",
+   "kind": "plural",
+   "hash": "1cd65782a33f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startNothing": {
+   "en": "Nothing is waiting for you.",
+   "ar": "لا شيء ينتظرك الآن.",
+   "kind": "text",
+   "hash": "d542a57b4e1f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUpload": {
+   "en": "Upload a file for {0}",
+   "ar": "ارفع ملف {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "b2057ad26302",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUrgent.one": {
+   "en": "{0}: settle 1 critical item",
+   "ar": "{0}: احسم بنداً حرجاً",
+   "kind": "plural",
+   "hash": "c584214b3c5e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.startUrgent.other": {
+   "en": "{0}: settle {1} critical items",
+   "ar": "{0}: احسم {1} بند حرج",
+   "kind": "plural",
+   "hash": "2d1652a8230a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.alerts": {
+   "en": "Alerts",
+   "ar": "التنبيهات",
+   "kind": "text",
+   "hash": "93161231a159",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.conflicts": {
+   "en": "Conflicts",
+   "ar": "التعارضات",
+   "kind": "text",
+   "hash": "7a7e583f9f36",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.links": {
+   "en": "Linking",
+   "ar": "الربط",
+   "kind": "text",
+   "hash": "cccacd9ea60f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.mode": {
+   "en": "Sources",
+   "ar": "المصادر",
+   "kind": "text",
+   "hash": "34f433b6368b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.team": {
+   "en": "Team",
+   "ar": "الفريق",
+   "kind": "text",
+   "hash": "5d4b710047e0",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.tabs.upload": {
+   "en": "Upload",
+   "ar": "رفع ملف",
+   "kind": "text",
+   "hash": "ec9a426889ad",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamAdd": {
+   "en": "Add or invite",
+   "ar": "أضف أو ادعُ",
+   "kind": "text",
+   "hash": "05259e98c792",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamEmail": {
+   "en": "Email",
+   "ar": "البريد الإلكتروني",
+   "kind": "text",
+   "hash": "b47b33fa0a51",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamEmailHint": {
+   "en": "Without an account they get an email invitation, and their role is kept for when they accept.",
+   "ar": "إن لم يكن له حساب تصله دعوةٌ بالبريد، ويُسند دوره حين يقبلها.",
+   "kind": "text",
+   "hash": "1588e0a3cbb4",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamEmpty": {
+   "en": "No members yet.",
+   "ar": "لا أعضاء بعد.",
+   "kind": "text",
+   "hash": "37c98eb50b1a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamHint": {
+   "en": "The country supervisor settles conflicts and alerts and links records, data entry uploads files, and viewers only read. A critical change a member uploads is settled by someone else.",
+   "ar": "مشرف الدولة يحسم التعارضات والتنبيهات ويربط السجلّات، ومدخل البيانات يرفع الملفات، والمطّلع يرى فقط. ما يرفعه عضوٌ من تغييرٍ حرج يحسمه غيره.",
+   "kind": "text",
+   "hash": "3d811189b37a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamRemove": {
+   "en": "Remove",
+   "ar": "أزل",
+   "kind": "text",
+   "hash": "ff40f34328d5",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamRole": {
+   "en": "Role",
+   "ar": "الدور",
+   "kind": "text",
+   "hash": "0f9753ebfadb",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.teamTitle": {
+   "en": "Country team",
+   "ar": "فريق الدولة",
+   "kind": "text",
+   "hash": "2023396c61b9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.template": {
+   "en": "Download template",
+   "ar": "نزّل القالب",
+   "kind": "text",
+   "hash": "bf3f22baf12a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.title": {
+   "en": "Data sources and verification",
+   "ar": "مصادر البيانات والتحقق",
+   "kind": "text",
+   "hash": "b50802021ba8",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.conflict": {
+   "en": "Conflict",
+   "ar": "متعارض",
+   "kind": "text",
+   "hash": "363900be1c98",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.flagged": {
+   "en": "Flagged by an alert",
+   "ar": "موسوم بتنبيه",
+   "kind": "text",
+   "hash": "7aaba69676df",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.legacy": {
+   "en": "Pre-dates this layer",
+   "ar": "سابق للطبقة",
+   "kind": "text",
+   "hash": "73b7543ec50e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.single_source": {
+   "en": "Single source",
+   "ar": "مصدر واحد",
+   "kind": "text",
+   "hash": "7b42f4294822",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.stale": {
+   "en": "Stale",
+   "ar": "متقادم",
+   "kind": "text",
+   "hash": "d1fc5d3703ca",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trust.verified": {
+   "en": "Verified",
+   "ar": "موثّق",
+   "kind": "text",
+   "hash": "3236f9b28010",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.conflict": {
+   "en": "Has an open item: held at the last approved version.",
+   "ar": "فيه بندٌ مفتوح: يُجمَّد على آخر نسخةٍ معتمدة.",
+   "kind": "text",
+   "hash": "72e39618f3f1",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.flagged": {
+   "en": "Open critical alert or confirmed tampering: no new sponsorship.",
+   "ar": "تنبيهٌ حرج مفتوح أو تلاعبٌ مؤكَّد: لا كفالة جديدة.",
+   "kind": "text",
+   "hash": "37080624fbfd",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.legacy": {
+   "en": "Entered before this layer and not yet imported.",
+   "ar": "ملفٌّ أُدخل قبل هذه الطبقة ولم يصله استيراد.",
+   "kind": "text",
+   "hash": "d512272ac5a8",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.single_source": {
+   "en": "Not yet confirmed by the office: shown, but no new sponsorship.",
+   "ar": "لم يؤكّده المكتب بعد: يظهر بلا كفالةٍ جديدة.",
+   "kind": "text",
+   "hash": "720cd1b74c62",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.stale": {
+   "en": "No update within the set period.",
+   "ar": "لا تحديث منذ المدة المحددة.",
+   "kind": "text",
+   "hash": "e91125929671",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.trustHint.verified": {
+   "en": "Both sources agree, or WAMY alone when there is no operating platform.",
+   "ar": "المصدران متفقان، أو الندوة وحدها حين لا منصّة تشغيل.",
+   "kind": "text",
+   "hash": "7f70f4629036",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.uploadHint": {
+   "en": "Until the API is ready: export a CSV from the WAMY or office platform and upload it here. It goes through the same rules automatic sync will.",
+   "ar": "إلى أن تجهز الواجهة البرمجية: صدّر الملف من منصّة الندوة أو المكتب بصيغة CSV وارفعه هنا. يمرّ بالقواعد نفسها التي ستمرّ بها المزامنة الآلية.",
+   "kind": "text",
+   "hash": "cf2edef21891",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.uploadTitle": {
+   "en": "Upload a file from a source",
+   "ar": "رفع ملف من مصدر",
+   "kind": "text",
+   "hash": "600631e99982",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.useOffice": {
+   "en": "Use the office's value",
+   "ar": "اعتمد قيمة المكتب",
+   "kind": "text",
+   "hash": "868d1344723f",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.useWamy": {
+   "en": "Use WAMY's value",
+   "ar": "اعتمد قيمة الندوة",
+   "kind": "text",
+   "hash": "3ceb9fa47c7b",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.one": {
+   "en": "of 1 file",
+   "ar": "من ملفٍّ واحد",
+   "kind": "plural",
+   "hash": "ea91dbd5312a",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.other": {
+   "en": "of {0} files",
+   "ar": "من {0} ملف",
+   "kind": "plural",
+   "hash": "182d455f4b83",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedOf.zero": {
+   "en": "no files",
+   "ar": "لا ملفات",
+   "kind": "plural",
+   "hash": "412f5ef053f9",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifiedShare": {
+   "en": "{0}% verified",
+   "ar": "{0}% موثّق",
+   "kind": "template",
+   "params": 1,
+   "hash": "5294223a1f24",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.verifier": {
+   "en": "Verifier",
+   "ar": "المؤكِّد",
+   "kind": "text",
+   "hash": "d7d9648f3959",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.yes": {
+   "en": "Yes",
+   "ar": "نعم",
+   "kind": "text",
+   "hash": "ea4f193f5078",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.yourRole": {
+   "en": "Your role",
+   "ar": "دورك",
+   "kind": "text",
+   "hash": "c5a4bed2d9ec",
+   "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/overview.attentionAll": {
    "en": "All items ({0})",
@@ -7819,6 +9413,48 @@
    "kind": "text",
    "hash": "ca27dd23cbc1",
    "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphans/VerificationBadge.hintPrimary": {
+   "en": "The platform matched this file against WAMY's record.",
+   "ar": "طابقت المنصّة بيانات الملف مع سجلّ الندوة.",
+   "kind": "text",
+   "hash": "cdc1742be4e9",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.hintReview": {
+   "en": "This file is being reviewed before it takes a new sponsorship.",
+   "ar": "يُراجَع الملف الآن قبل استقبال كفالةٍ جديدة.",
+   "kind": "text",
+   "hash": "cc4c0bbc4d2f",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.hintTwo": {
+   "en": "The platform matched this file between WAMY and its country office.",
+   "ar": "طابقت المنصّة بيانات الملف بين الندوة ومكتبها في الدولة.",
+   "kind": "text",
+   "hash": "1ebfce50bd11",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.primary_source": {
+   "en": "Verified by WAMY",
+   "ar": "موثّق من الندوة",
+   "kind": "text",
+   "hash": "33d47d297400",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.two_sources": {
+   "en": "Verified by two sources",
+   "ar": "موثّق من مصدرين",
+   "kind": "text",
+   "hash": "0377850a7669",
+   "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/orphans/VerificationBadge.under_review": {
+   "en": "Under verification",
+   "ar": "قيد التحقق",
+   "kind": "text",
+   "hash": "d050b3dcba89",
+   "file": "src/components/orphans/VerificationBadge.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
    "en": "Cancel",
@@ -18185,6 +19821,27 @@
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
   },
+  "routes/country-data.lead": {
+   "en": "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
+   "ar": "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
+   "kind": "text",
+   "hash": "b4b7298de5be",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.none": {
+   "en": "Your account isn't on any country team yet. The country supervisor or the admin team adds you under Country team.",
+   "ar": "حسابك ليس في فريق أي دولة بعد. يضيفك مشرف الدولة أو الإدارة من «فريق الدولة».",
+   "kind": "text",
+   "hash": "94369b6d210e",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.title": {
+   "en": "Country data",
+   "ar": "بيانات الدولة",
+   "kind": "text",
+   "hash": "58a4af1c234c",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
   "routes/hall.description": {
    "en": "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
    "ar": "قاعة الأثر ثلاثية الأبعاد: اختر دولةً من شبكة الندوة، وشاهد أثر عطائك على البلد والمنطقة والمجموعة والطفل.",
@@ -20465,12 +22122,89 @@
    "hash": "53e40a898c1b",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/orphans.orphanId.verifying": {
+   "en": "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
+   "ar": "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
+   "kind": "text",
+   "hash": "023783fc63ac",
+   "file": "src/routes/orphans.$orphanId.tsx"
+  },
   "routes/orphans.orphanId.years": {
    "en": "years",
    "ar": "سنة",
    "kind": "text",
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
+  },
+  "routes/sso.failed": {
+   "en": "We couldn't complete your sign-in from WAMY's platform.",
+   "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
+   "kind": "text",
+   "hash": "d65c0cfb1c1d",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.email_unverified": {
+   "en": "Your email isn't verified on WAMY's platform.",
+   "ar": "بريدك غير موثَّق في منصّة الندوة.",
+   "kind": "text",
+   "hash": "d6a16cbc5344",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.expired": {
+   "en": "The link expired. It works for two minutes only.",
+   "ar": "انتهت صلاحية الرابط. الرابط يعمل دقيقتين فقط.",
+   "kind": "text",
+   "hash": "fca9a7d1b994",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.not_configured": {
+   "en": "Sign-in from WAMY's platform isn't enabled yet.",
+   "ar": "الدخول من منصّة الندوة لم يُفعَّل بعد.",
+   "kind": "text",
+   "hash": "2d60d00840f1",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.subject_taken": {
+   "en": "This email is linked to another WAMY account. Contact the admin team.",
+   "ar": "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
+   "kind": "text",
+   "hash": "b8d624ac0238",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.token_used": {
+   "en": "This link was already used. Each link works once.",
+   "ar": "استُعمل هذا الرابط من قبل. كل رابطٍ يعمل مرّةً واحدة.",
+   "kind": "text",
+   "hash": "84858f54e092",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.retry": {
+   "en": "Go back to WAMY's platform and open the link again, or sign in here directly.",
+   "ar": "عد إلى منصّة الندوة وافتح الرابط من جديد، أو سجّل الدخول هنا مباشرة.",
+   "kind": "text",
+   "hash": "f957697ce868",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.title": {
+   "en": "Sign in from WAMY",
+   "ar": "الدخول من منصّة الندوة",
+   "kind": "text",
+   "hash": "421563bb5bf6",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.working": {
+   "en": "Completing your sign-in from WAMY's platform…",
+   "ar": "نُكمل دخولك من منصّة الندوة…",
+   "kind": "text",
+   "hash": "88e8d6cb3e6b",
+   "file": "src/routes/sso.tsx"
   },
   "routes/support.another": {
    "en": "Sponsor a child",

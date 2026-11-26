@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS auth.users (
   email TEXT UNIQUE,
   email_confirmed_at TIMESTAMPTZ,
   raw_user_meta_data JSONB DEFAULT '{}'::jsonb,
+  -- كما في Supabase: فارغٌ لحسابٍ دُعي ولم يدخل بعد.
+  last_sign_in_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
