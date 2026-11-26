@@ -1,19 +1,32 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Download, FileUp, ShieldAlert, Upload as UploadIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Check,
+  Download,
+  FileUp,
+  FolderOpen,
+  ShieldAlert,
+  Upload as UploadIcon,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/countries";
 import {
   authorityNow,
+  bulkEligible,
   canDo,
   goldenTemplate,
   grantableRoles,
+  matchesQuery,
+  MAX_BULK,
   readGoldenSheet,
+  rowIssues,
   showValue,
+  topFailure,
   verifiedShare,
+  type BulkChoice,
   type Conflict,
   type CountryAccess,
   type CountryHealth,
@@ -35,6 +48,7 @@ import {
   listLinkQueue,
   resolveAlert,
   resolveConflict,
+  resolveConflictsBulk,
   resolveLink,
   setCountryStaff,
   setCountrySource,
@@ -55,6 +69,8 @@ import {
   SELECT,
 } from "./shared";
 import { SOURCES_COPY } from "./sources-copy";
+import { WORK_COPY } from "./work-copy";
+import { ChildFileSheet, FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "./WorkTools";
 
 const MODES: OfficeMode[] = ["none", "shadow", "active"];
 
@@ -84,6 +100,7 @@ export function SourcesPanel({
   const code = rows.some((r) => r.code === country) ? country : (rows[0]?.code ?? "");
   const selected = rows.find((r) => r.code === code) ?? null;
   const [tab, setTab] = useState<Tab>("alerts");
+  const [fileId, setFileId] = useState<string | null>(null);
 
   if (health.isPending) return <Busy />;
   if (!health.data?.ok) {
@@ -203,12 +220,14 @@ export function SourcesPanel({
             ))}
           </div>
           <div role="tabpanel" id={`panel-${current}`} aria-labelledby={`tab-${current}`}>
-            {current === "alerts" && <Alerts country={selected.code} canApprove={can("approve")} />}
+            {current === "alerts" && (
+              <Alerts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+            )}
             {current === "conflicts" && (
-              <Conflicts country={selected.code} canApprove={can("approve")} />
+              <Conflicts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
             )}
             {current === "links" && (
-              <LinkQueue country={selected.code} canApprove={can("approve")} />
+              <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
             )}
             {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
             {current === "mode" &&
@@ -229,6 +248,7 @@ export function SourcesPanel({
           </div>
         </section>
       )}
+      <ChildFileSheet id={fileId} onClose={() => setFileId(null)} />
     </div>
   );
 }
@@ -505,18 +525,49 @@ function Matrix({ mode }: { mode: OfficeMode }) {
   );
 }
 
+function Step({
+  n,
+  title,
+  done,
+  children,
+}: {
+  n: string;
+  title: string;
+  done: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <li className="relative ps-10">
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute start-0 top-0 inline-flex size-7 items-center justify-center rounded-full text-sm font-bold tabular-nums",
+          done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
+        )}
+      >
+        {done ? <Check className="size-4" /> : n}
+      </span>
+      <h5 className="text-sm font-bold leading-7">{title}</h5>
+      <div className="mt-2">{children}</div>
+    </li>
+  );
+}
+
 function UploadCard({ row }: { row: CountryHealth }) {
   const c = useCopy(SOURCES_COPY);
-  const err = useErr();
+  const w = useCopy(WORK_COPY);
+  const err = useWorkErr();
   const qc = useQueryClient();
   const send = useServerFn(importGolden);
   const [role, setRole] = useState<SourceRole>("wamy");
   const [text, setText] = useState("");
   const [fileName, setFileName] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
   const sheet: GoldenSheet | null = useMemo(
     () => (text ? readGoldenSheet(text, role) : null),
     [text, role],
   );
+  const issues = useMemo(() => (sheet ? rowIssues(sheet) : []), [sheet]);
   const officeBlocked = role === "office" && row.office_mode === "none";
   useEffect(() => {
     if (row.office_mode === "none") setRole("wamy");
@@ -537,7 +588,8 @@ function UploadCard({ row }: { row: CountryHealth }) {
       toast.success(c.result(res.data.observed, res.data.unlinked, res.data.skipped_count));
       setText("");
       setFileName("");
-      for (const k of ["data-health", "golden-conflicts", "golden-links"])
+      if (fileInput.current) fileInput.current.value = "";
+      for (const k of ["data-health", "golden-conflicts", "golden-links", "golden-alerts"])
         void qc.invalidateQueries({ queryKey: [k] });
     },
   });
@@ -550,101 +602,214 @@ function UploadCard({ row }: { row: CountryHealth }) {
     a.click();
     URL.revokeObjectURL(url);
   }
+  const ready = sheet?.records.length ?? 0;
 
   return (
-    <section aria-labelledby="upload-title" className={cn(CARD, "p-5")}>
+    <section aria-labelledby="upload-title" className={cn(CARD, "p-4 sm:p-5")}>
       <h4 id="upload-title" className="text-base font-bold">
         {c.uploadTitle}
       </h4>
       <p className="mt-1 max-w-3xl text-sm leading-7 text-muted-foreground">{c.uploadHint}</p>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <Field
-          label={c.sourceRole}
-          htmlFor="golden-role"
-          hint={officeBlocked ? c.officeNeedsMode : undefined}
-        >
-          <select
-            id="golden-role"
-            value={role}
-            onChange={(e) => setRole(e.target.value as SourceRole)}
-            className={SELECT}
+      <ol className="mt-5 space-y-6">
+        <Step n="1" title={w.stepSource} done>
+          <div
+            role="radiogroup"
+            aria-label={c.sourceRole}
+            className="grid grid-cols-2 gap-2 sm:max-w-md"
           >
-            <option value="wamy">{c.roles.wamy}</option>
-            <option value="office" disabled={row.office_mode === "none"}>
-              {c.roles.office}
-            </option>
-          </select>
-        </Field>
-        <Field label={c.file} htmlFor="golden-file">
-          <div className="flex min-h-11 items-center gap-3">
-            <label
-              htmlFor="golden-file"
-              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium transition-colors hover:bg-secondary focus-within:ring-2 focus-within:ring-ring"
-            >
-              <FileUp className="size-4" aria-hidden="true" />
-              {c.chooseFile}
-              <input
-                id="golden-file"
-                type="file"
-                accept=".csv,text/csv"
-                className="sr-only"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  setFileName(f?.name ?? "");
-                  if (f) void f.text().then(setText);
-                }}
-              />
-            </label>
-            <bdi dir="auto" className="min-w-0 truncate text-sm text-muted-foreground">
-              {fileName || c.noFile}
-            </bdi>
+            {(["wamy", "office"] as const).map((r) => {
+              const off = r === "office" && row.office_mode === "none";
+              return (
+                <label
+                  key={r}
+                  className={cn(
+                    "flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 text-base transition-[border-color,background-color] duration-150 focus-within:ring-2 focus-within:ring-ring",
+                    role === r ? "border-primary bg-primary/5 font-bold" : "border-border",
+                    off && "cursor-not-allowed opacity-50",
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="golden-role"
+                    value={r}
+                    checked={role === r}
+                    disabled={off}
+                    onChange={() => setRole(r)}
+                    style={ACCENT}
+                    className="size-5"
+                  />
+                  {c.roles[r]}
+                </label>
+              );
+            })}
           </div>
-        </Field>
-      </div>
-      {sheet && (
-        <div role="status" className="mt-4 space-y-1 rounded-xl bg-secondary/60 p-3 text-sm">
-          <p className="font-bold">{c.preview(sheet.records.length, sheet.fields.length)}</p>
-          {sheet.ignored.length > 0 && (
-            <p className="text-muted-foreground">{c.ignored(sheet.ignored.join("، "))}</p>
+          {row.office_mode === "none" && (
+            <p className="mt-2 text-xs text-muted-foreground">{c.officeNeedsMode}</p>
           )}
-          {sheet.missingRef.length > 0 && (
-            <p className="text-muted-foreground">
-              {c.missingRef(sheet.missingRef.slice(0, 20).join("، "))}
-            </p>
+          <Button type="button" variant="link" className="mt-1 min-h-11 px-0" onClick={download}>
+            <Download className="size-4" aria-hidden="true" />
+            {c.template}
+          </Button>
+        </Step>
+
+        <Step n="2" title={w.stepFile} done={!!sheet}>
+          <label
+            htmlFor="golden-file"
+            className="flex min-h-16 w-full cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-input bg-background px-4 py-3 text-base transition-[border-color,background-color] duration-150 hover:border-primary/60 focus-within:ring-2 focus-within:ring-ring active:bg-secondary sm:max-w-md"
+          >
+            <FileUp className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <span className="min-w-0">
+              <span className="block font-bold">{fileName ? w.changeFile : c.chooseFile}</span>
+              <bdi dir="auto" className="block truncate text-sm text-muted-foreground">
+                {fileName || c.noFile}
+              </bdi>
+            </span>
+            <input
+              ref={fileInput}
+              id="golden-file"
+              type="file"
+              accept=".csv,text/csv"
+              className="sr-only"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                setFileName(f?.name ?? "");
+                if (f) void f.text().then(setText);
+                else setText("");
+              }}
+            />
+          </label>
+        </Step>
+
+        <Step n="3" title={w.stepCheck} done={false}>
+          {!sheet ? (
+            <p className="text-sm text-muted-foreground">{c.noFile}</p>
+          ) : (
+            <div className="space-y-3">
+              <div role="status" className="flex flex-wrap gap-2 text-sm">
+                <span className="inline-flex min-h-9 items-center rounded-full bg-shore-thrive/15 px-3 font-bold tabular-nums">
+                  {w.rowsOk(ready)}
+                </span>
+                <span
+                  className={cn(
+                    "inline-flex min-h-9 items-center rounded-full px-3 tabular-nums",
+                    issues.length > 0
+                      ? "bg-destructive/10 font-bold text-destructive"
+                      : "bg-secondary text-muted-foreground",
+                  )}
+                >
+                  {w.rowsBad(issues.length)}
+                </span>
+              </div>
+              {sheet.ignored.length > 0 && (
+                <p className="text-xs leading-5 text-muted-foreground">
+                  {c.ignored(sheet.ignored.join("، "))}
+                </p>
+              )}
+              {issues.length > 0 && (
+                <>
+                  <p className="text-xs leading-5 text-muted-foreground">{w.stepCheckHint}</p>
+                  <ul className="divide-y divide-border overflow-hidden rounded-xl border border-destructive/30">
+                    {issues.slice(0, 30).map((x) => (
+                      <li
+                        key={x.line}
+                        className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-3 py-2.5 text-sm"
+                      >
+                        <span className="font-bold tabular-nums">{w.line(x.line)}</span>
+                        {x.missingRef && <span className="text-destructive">{w.noRef}</span>}
+                        {x.fields.length > 0 && (
+                          <span className="text-muted-foreground">
+                            {w.badCells(x.fields.map((f) => c.fields[f] ?? f).join("، "))}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                    {issues.length > 30 && (
+                      <li className="px-3 py-2 text-xs text-muted-foreground tabular-nums">
+                        {w.moreRows(issues.length - 30)}
+                      </li>
+                    )}
+                  </ul>
+                </>
+              )}
+              {ready > 0 && (
+                <details className="rounded-xl bg-secondary/60 px-3">
+                  <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">
+                    {w.sample}
+                  </summary>
+                  <ul className="space-y-1 pb-3 text-sm">
+                    {sheet.records.slice(0, 5).map((r) => (
+                      <li key={r.external_ref} className="flex min-w-0 gap-2">
+                        <bdi dir="ltr" className="shrink-0 font-medium tabular-nums">
+                          {r.external_ref}
+                        </bdi>
+                        <span className="min-w-0 truncate text-muted-foreground">
+                          {Object.keys(r.fields)
+                            .map((f) => c.fields[f] ?? f)
+                            .join("، ")}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+              <Button
+                type="button"
+                className="min-h-12 w-full text-base sm:w-auto"
+                disabled={ready === 0 || officeBlocked || m.isPending}
+                onClick={() => m.mutate()}
+              >
+                <UploadIcon className="size-4" aria-hidden="true" />
+                {m.isPending ? c.sending : w.sendN(ready)}
+              </Button>
+            </div>
           )}
-          {sheet.invalid.length > 0 && (
-            <p className="text-muted-foreground">{c.invalidCells(sheet.invalid.length)}</p>
-          )}
-        </div>
-      )}
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button
-          type="button"
-          className="min-h-11"
-          disabled={!sheet || sheet.records.length === 0 || officeBlocked || m.isPending}
-          onClick={() => m.mutate()}
-        >
-          <UploadIcon className="size-4" aria-hidden="true" />
-          {m.isPending ? c.sending : c.send}
-        </Button>
-        <Button type="button" variant="outline" className="min-h-11" onClick={download}>
-          <Download className="size-4" aria-hidden="true" />
-          {c.template}
-        </Button>
-      </div>
+        </Step>
+      </ol>
     </section>
   );
 }
 
-function Conflicts({ country, canApprove }: { country: string; canApprove: boolean }) {
+/** خيارات المرشّح من البنود نفسها: حقولٌ بلا بنود لا تزحم القائمة. */
+function fieldOptions(items: Array<{ field: string }>, names: Record<string, string>) {
+  return [...new Set(items.map((x) => x.field))]
+    .map((f) => ({ value: f, label: names[f] ?? f }))
+    .sort((a, b) => a.label.localeCompare(b.label, "ar"));
+}
+
+function OpenFile({ id, onOpen }: { id: string | null; onOpen: (id: string) => void }) {
+  const w = useCopy(WORK_COPY);
+  if (!id) return null;
+  return (
+    <Button type="button" size="sm" variant="ghost" className="min-h-11" onClick={() => onOpen(id)}>
+      <FolderOpen className="size-4" aria-hidden="true" />
+      {w.openFile}
+    </Button>
+  );
+}
+
+function Conflicts({
+  country,
+  canApprove,
+  onOpen,
+}: {
+  country: string;
+  canApprove: boolean;
+  onOpen: (orphanId: string) => void;
+}) {
   const c = useCopy(SOURCES_COPY);
-  const err = useErr();
+  const w = useCopy(WORK_COPY);
+  const err = useWorkErr();
   const qc = useQueryClient();
   const fetchList = useServerFn(listConflicts);
   const list = useQuery({
     queryKey: ["golden-conflicts", country],
     queryFn: () => fetchList({ data: { country } }),
   });
+  const refresh = () => {
+    void qc.invalidateQueries({ queryKey: ["golden-conflicts"] });
+    void qc.invalidateQueries({ queryKey: ["data-health"] });
+    void qc.invalidateQueries({ queryKey: ["child-file"] });
+  };
   const resolve = useServerFn(resolveConflict);
   const m = useMutation({
     mutationFn: (v: { id: string; choice: "accept" | "keep" | "use_wamy" | "use_office" }) =>
@@ -652,114 +817,326 @@ function Conflicts({ country, canApprove }: { country: string; canApprove: boole
     onSuccess: (res) => {
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(c.done);
-      void qc.invalidateQueries({ queryKey: ["golden-conflicts"] });
-      void qc.invalidateQueries({ queryKey: ["data-health"] });
+      refresh();
     },
   });
-  const items = list.data?.ok ? list.data.data : [];
+  const [picked, setPicked] = useState<Set<string>>(() => new Set());
+  const bulkFn = useServerFn(resolveConflictsBulk);
+  const bulk = useMutation({
+    mutationFn: (v: { ids: string[]; choice: BulkChoice }) => bulkFn({ data: v }),
+    onSuccess: (res) => {
+      if (!res.ok) return void toast.error(err(res.error));
+      if (res.data.done > 0) toast.success(w.bulkDone(res.data.done));
+      if (res.data.failed > 0)
+        toast.error(w.bulkFailed(res.data.failed, err(topFailure(res.data))));
+      setPicked(new Set(res.data.results.filter((x) => !x.ok).map((x) => x.id)));
+      refresh();
+    },
+  });
+  const [query, setQuery] = useState("");
+  const [field, setField] = useState("");
+  const [risk, setRisk] = useState("");
+  const search = useRef<HTMLInputElement>(null);
+  const all = list.data?.ok ? list.data.data : [];
+  const items = all.filter(
+    (d) =>
+      (!field || d.field === field) &&
+      (!risk || d.risk === risk) &&
+      matchesQuery(query, d.code, d.name),
+  );
+  const eligible = items.filter(bulkEligible);
+  const chosen = all.filter((d) => picked.has(d.id) && bulkEligible(d));
+  const allOn = eligible.length > 0 && eligible.every((d) => picked.has(d.id));
+  const toggle = (id: string) =>
+    setPicked((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  const keys = useListKeys({
+    search,
+    onOpen: (i) => items[i] && onOpen(items[i].orphan_id),
+    onToggle: canApprove
+      ? (i) => items[i] && bulkEligible(items[i]) && toggle(items[i].id)
+      : undefined,
+  });
+  const busy = m.isPending || bulk.isPending;
+  const choiceName: Record<BulkChoice, string> = {
+    use_wamy: c.useWamy,
+    use_office: c.useOffice,
+    keep: c.keep,
+  };
+  function runBulk(choice: BulkChoice) {
+    const ids = chosen.slice(0, MAX_BULK).map((d) => d.id);
+    if (ids.length === 0) return;
+    if (!window.confirm(w.bulkConfirm(ids.length, choiceName[choice]))) return;
+    bulk.mutate({ ids, choice });
+  }
 
   return (
-    <section aria-labelledby="conflicts-title">
+    <section aria-labelledby="conflicts-title" onKeyDown={keys.onKeyDown}>
       <SectionHead title={c.conflictsTitle} hint={c.conflictsHint} />
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
-        <Failed onRetry={() => void list.refetch()} />
-      ) : items.length === 0 ? (
+        list.data?.missing ? (
+          <NeedsUpdate />
+        ) : (
+          <Failed onRetry={() => void list.refetch()} />
+        )
+      ) : all.length === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">{c.noConflicts}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
-          {items.map((d) => (
-            <li
-              key={d.id}
-              className={cn(CARD, "p-4", d.risk === "critical" && "ring-1 ring-destructive/40")}
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                {d.risk === "critical" && (
-                  <ShieldAlert className="size-4 text-destructive" aria-hidden="true" />
-                )}
-                <span className="font-bold">{c.fields[d.field] ?? d.field}</span>
-                <Pill tone={d.risk === "critical" ? "wine" : "quiet"}>{c.kinds[d.kind]}</Pill>
-                <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground">
-                  <Val>{d.code}</Val> · {d.name}
-                </span>
-              </div>
-              <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
-                <div>
-                  <dt className="text-xs text-muted-foreground">{c.current}</dt>
-                  <dd className="font-medium">
-                    <V v={d.current} />
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">{c.roles.wamy}</dt>
-                  <dd>
-                    <V v={d.wamy} />
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-muted-foreground">{c.roles.office}</dt>
-                  <dd>
-                    <V v={d.office} />
-                  </dd>
-                </div>
-              </dl>
-              {d.kind === "held_locked" && (
-                <p className="mt-2 text-xs text-muted-foreground">{c.lockedHint}</p>
+        <>
+          <FilterBar
+            query={query}
+            setQuery={setQuery}
+            placeholder={w.search}
+            inputRef={search}
+            shown={items.length}
+            total={all.length}
+            filters={[
+              {
+                id: "field",
+                label: w.fieldFilter,
+                value: field,
+                set: setField,
+                all: w.allFields,
+                options: fieldOptions(all, c.fields),
+              },
+              {
+                id: "risk",
+                label: w.riskFilter,
+                value: risk,
+                set: setRisk,
+                all: w.allRisks,
+                options: (["critical", "medium", "low"] as const).map((r) => ({
+                  value: r,
+                  label: w.risks[r]!,
+                })),
+              },
+            ]}
+          />
+          {canApprove && eligible.length > 0 && (
+            <div
+              role="region"
+              aria-label={w.bulkLabel}
+              className={cn(
+                CARD,
+                "sticky bottom-3 z-10 mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:static",
+                chosen.length > 0 && "ring-2 ring-primary/50",
               )}
-              <div className="mt-3 flex flex-wrap gap-2" hidden={!canApprove}>
-                {d.kind === "disagreement" ? (
-                  <>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="min-h-11"
-                      disabled={m.isPending}
-                      onClick={() => m.mutate({ id: d.id, choice: "use_wamy" })}
-                    >
-                      {c.useWamy}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="min-h-11"
-                      disabled={m.isPending}
-                      onClick={() => m.mutate({ id: d.id, choice: "use_office" })}
-                    >
-                      {c.useOffice}
-                    </Button>
-                  </>
-                ) : (
+            >
+              <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={allOn}
+                  onChange={() =>
+                    setPicked((s) => {
+                      const n = new Set(s);
+                      for (const d of eligible) {
+                        if (allOn) n.delete(d.id);
+                        else n.add(d.id);
+                      }
+                      return n;
+                    })
+                  }
+                  style={ACCENT}
+                  className="size-5"
+                  aria-label={w.selectAll}
+                />
+                <span className="font-bold tabular-nums">{w.selected(chosen.length)}</span>
+              </label>
+              {chosen.length > 0 && (
+                <div className="flex w-full flex-wrap gap-2 sm:ms-auto sm:w-auto">
                   <Button
                     size="sm"
-                    className="min-h-11"
-                    disabled={m.isPending}
-                    onClick={() => m.mutate({ id: d.id, choice: "accept" })}
+                    variant="outline"
+                    className="min-h-11 flex-1 sm:flex-none"
+                    disabled={busy}
+                    onClick={() => runBulk("use_wamy")}
                   >
-                    {c.accept}: <V v={d.proposed} />
+                    {w.bulkWamy}
                   </Button>
-                )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="min-h-11"
-                  disabled={m.isPending}
-                  onClick={() => m.mutate({ id: d.id, choice: "keep" })}
-                >
-                  {c.keep}
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="min-h-11 flex-1 sm:flex-none"
+                    disabled={busy}
+                    onClick={() => runBulk("use_office")}
+                  >
+                    {w.bulkOffice}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="min-h-11 flex-1 sm:flex-none"
+                    disabled={busy}
+                    onClick={() => runBulk("keep")}
+                  >
+                    {w.bulkKeep}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="min-h-11"
+                    disabled={busy}
+                    onClick={() => setPicked(new Set())}
+                  >
+                    {w.bulkClear}
+                  </Button>
+                </div>
+              )}
+              <p className="w-full text-xs text-muted-foreground">
+                {w.bulkCriticalNote}
+                {chosen.length > MAX_BULK && <> {w.bulkMax(MAX_BULK)}</>}
+              </p>
+            </div>
+          )}
+          {items.length === 0 ? (
+            <p className="mt-3 text-sm text-muted-foreground">{w.noMatch}</p>
+          ) : (
+            <div ref={keys.root}>
+              <ul className="mt-4 space-y-3">
+                {items.map((d) => {
+                  const can = canApprove && bulkEligible(d);
+                  const on = picked.has(d.id);
+                  return (
+                    <li
+                      key={d.id}
+                      data-row=""
+                      tabIndex={0}
+                      aria-label={`${c.fields[d.field] ?? d.field} · ${d.code} · ${d.name}`}
+                      className={cn(
+                        CARD,
+                        ROW_FOCUS,
+                        "p-4",
+                        d.risk === "critical" && "ring-1 ring-destructive/40",
+                        on && "ring-2 ring-primary",
+                      )}
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        {can && (
+                          <input
+                            type="checkbox"
+                            checked={on}
+                            onChange={() => toggle(d.id)}
+                            style={ACCENT}
+                            className="-my-2 size-5 shrink-0 cursor-pointer p-3"
+                            aria-label={w.selectOne}
+                          />
+                        )}
+                        {d.risk === "critical" && (
+                          <ShieldAlert className="size-4 text-destructive" aria-hidden="true" />
+                        )}
+                        <span className="font-bold">{c.fields[d.field] ?? d.field}</span>
+                        <Pill tone={d.risk === "critical" ? "wine" : "quiet"}>
+                          {c.kinds[d.kind]}
+                        </Pill>
+                        <span className="text-xs text-muted-foreground">{w.risks[d.risk]}</span>
+                        <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground">
+                          <Val>{d.code}</Val> · <bdi dir="auto">{d.name}</bdi>
+                        </span>
+                      </div>
+                      <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
+                        <div className="min-w-0">
+                          <dt className="text-xs text-muted-foreground">{c.current}</dt>
+                          <dd className="font-medium [overflow-wrap:anywhere]">
+                            <V v={d.current} />
+                          </dd>
+                        </div>
+                        <div className="min-w-0">
+                          <dt className="text-xs text-muted-foreground">{c.roles.wamy}</dt>
+                          <dd className="[overflow-wrap:anywhere]">
+                            <V v={d.wamy} />
+                          </dd>
+                        </div>
+                        <div className="min-w-0">
+                          <dt className="text-xs text-muted-foreground">{c.roles.office}</dt>
+                          <dd className="[overflow-wrap:anywhere]">
+                            <V v={d.office} />
+                          </dd>
+                        </div>
+                      </dl>
+                      {d.kind === "held_locked" && (
+                        <p className="mt-2 text-xs text-muted-foreground">{c.lockedHint}</p>
+                      )}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {canApprove &&
+                          (d.kind === "disagreement" ? (
+                            <>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="min-h-11"
+                                disabled={busy}
+                                onClick={() => m.mutate({ id: d.id, choice: "use_wamy" })}
+                              >
+                                {c.useWamy}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="min-h-11"
+                                disabled={busy}
+                                onClick={() => m.mutate({ id: d.id, choice: "use_office" })}
+                              >
+                                {c.useOffice}
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              size="sm"
+                              className="min-h-11"
+                              disabled={busy}
+                              onClick={() => m.mutate({ id: d.id, choice: "accept" })}
+                            >
+                              {c.accept}: <V v={d.proposed} />
+                            </Button>
+                          ))}
+                        {canApprove && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="min-h-11"
+                            disabled={busy}
+                            onClick={() => m.mutate({ id: d.id, choice: "keep" })}
+                          >
+                            {c.keep}
+                          </Button>
+                        )}
+                        <span className="ms-auto">
+                          <OpenFile id={d.orphan_id} onOpen={onOpen} />
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
 }
 
-function LinkQueue({ country, canApprove }: { country: string; canApprove: boolean }) {
+function LinkQueue({
+  country,
+  canApprove,
+  onOpen,
+}: {
+  country: string;
+  canApprove: boolean;
+  onOpen: (orphanId: string) => void;
+}) {
   const c = useCopy(SOURCES_COPY);
-  const err = useErr();
+  const w = useCopy(WORK_COPY);
+  const err = useWorkErr();
+  const [query, setQuery] = useState("");
+  const [roleF, setRoleF] = useState("");
+  const search = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
   const fetchList = useServerFn(listLinkQueue);
   const list = useQuery({
@@ -790,11 +1167,23 @@ function LinkQueue({ country, canApprove }: { country: string; canApprove: boole
       refresh();
     },
   });
-  const items = list.data?.ok ? list.data.data : [];
-  const unmatched = items.some((q) => q.role === "wamy" && q.candidates.length === 0);
+  const everything = list.data?.ok ? list.data.data : [];
+  const unmatched = everything.some((q) => q.role === "wamy" && q.candidates.length === 0);
+  const items = everything.filter(
+    (q) =>
+      (!roleF || q.role === roleF) &&
+      matchesQuery(query, q.name, q.external_ref, ...q.candidates.flatMap((o) => [o.code, o.name])),
+  );
+  const keys = useListKeys({
+    search,
+    onOpen: (i) => {
+      const first = items[i]?.candidates[0];
+      if (first) onOpen(first.id);
+    },
+  });
 
   return (
-    <section aria-labelledby="links-title">
+    <section aria-labelledby="links-title" onKeyDown={keys.onKeyDown}>
       <SectionHead
         title={c.linkTitle}
         hint={c.linkHint}
@@ -815,74 +1204,134 @@ function LinkQueue({ country, canApprove }: { country: string; canApprove: boole
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
-        <Failed onRetry={() => void list.refetch()} />
-      ) : items.length === 0 ? (
+        list.data?.missing ? (
+          <NeedsUpdate />
+        ) : (
+          <Failed onRetry={() => void list.refetch()} />
+        )
+      ) : everything.length === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">{c.noLinks}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
-          {items.map((q) => (
-            <li key={q.id} className={cn(CARD, "p-4")}>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-bold">{q.name ?? q.external_ref}</span>
-                <Pill tone="quiet">{c.roles[q.role]}</Pill>
-                <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground tabular-nums">
-                  <Val>{q.external_ref}</Val>
-                  {q.birth_date && (
-                    <>
-                      {" · "}
-                      <Val>{q.birth_date}</Val>
-                    </>
-                  )}
-                </span>
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                {q.candidates.length ? c.candidates : c.noCandidates}
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2" hidden={!canApprove}>
-                {q.candidates.map((o) => (
-                  <Button
-                    key={o.id}
-                    size="sm"
-                    variant="outline"
-                    className="min-h-11"
-                    disabled={m.isPending}
-                    onClick={() => m.mutate({ id: q.id, action: "link", orphanId: o.id })}
+        <>
+          <FilterBar
+            query={query}
+            setQuery={setQuery}
+            placeholder={w.searchLinks}
+            inputRef={search}
+            shown={items.length}
+            total={everything.length}
+            filters={[
+              {
+                id: "role",
+                label: c.sourceRole,
+                value: roleF,
+                set: setRoleF,
+                all: w.allSources,
+                options: (["wamy", "office"] as const).map((r) => ({
+                  value: r,
+                  label: c.roles[r],
+                })),
+              },
+            ]}
+          />
+          {items.length === 0 ? (
+            <p className="mt-3 text-sm text-muted-foreground">{w.noMatch}</p>
+          ) : (
+            <div ref={keys.root}>
+              <ul className="mt-4 space-y-3">
+                {items.map((q) => (
+                  <li
+                    key={q.id}
+                    data-row=""
+                    tabIndex={0}
+                    aria-label={`${q.name ?? q.external_ref} · ${q.external_ref}`}
+                    className={cn(CARD, ROW_FOCUS, "p-4")}
                   >
-                    <Val>{c.linkTo(o.code)}</Val>
-                    <span className="text-xs text-muted-foreground">
-                      {o.name}
-                      {o.birth_date && (
-                        <>
-                          {" · "}
-                          <Val>{o.birth_date}</Val>
-                        </>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <bdi dir="auto" className="font-bold">
+                        {q.name ?? q.external_ref}
+                      </bdi>
+                      <Pill tone="quiet">{c.roles[q.role]}</Pill>
+                      <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground tabular-nums">
+                        <Val>{q.external_ref}</Val>
+                        {q.birth_date && (
+                          <>
+                            {" · "}
+                            <Val>{q.birth_date}</Val>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      {q.candidates.length ? c.candidates : c.noCandidates}
+                    </p>
+                    {q.candidates.length > 0 && (
+                      <ul className="mt-1 flex flex-wrap gap-x-1">
+                        {q.candidates.map((o) => (
+                          <li key={o.id}>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              className="min-h-11"
+                              onClick={() => onOpen(o.id)}
+                              aria-label={`${w.openFile} ${o.code}`}
+                            >
+                              <FolderOpen className="size-4" aria-hidden="true" />
+                              <Val>{o.code}</Val>
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="mt-2 flex flex-wrap gap-2" hidden={!canApprove}>
+                      {q.candidates.map((o) => (
+                        <Button
+                          key={o.id}
+                          size="sm"
+                          variant="outline"
+                          className="min-h-11"
+                          disabled={m.isPending}
+                          onClick={() => m.mutate({ id: q.id, action: "link", orphanId: o.id })}
+                        >
+                          <Val>{c.linkTo(o.code)}</Val>
+                          <span className="text-xs text-muted-foreground">
+                            {o.name}
+                            {o.birth_date && (
+                              <>
+                                {" · "}
+                                <Val>{o.birth_date}</Val>
+                              </>
+                            )}
+                          </span>
+                        </Button>
+                      ))}
+                      {q.role === "wamy" && (
+                        <Button
+                          size="sm"
+                          className="min-h-11"
+                          disabled={m.isPending}
+                          onClick={() => m.mutate({ id: q.id, action: "create" })}
+                        >
+                          {c.create}
+                        </Button>
                       )}
-                    </span>
-                  </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="min-h-11"
+                        disabled={m.isPending}
+                        onClick={() => m.mutate({ id: q.id, action: "ignore" })}
+                      >
+                        {c.ignore}
+                      </Button>
+                    </div>
+                  </li>
                 ))}
-                {q.role === "wamy" && (
-                  <Button
-                    size="sm"
-                    className="min-h-11"
-                    disabled={m.isPending}
-                    onClick={() => m.mutate({ id: q.id, action: "create" })}
-                  >
-                    {c.create}
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="min-h-11"
-                  disabled={m.isPending}
-                  onClick={() => m.mutate({ id: q.id, action: "ignore" })}
-                >
-                  {c.ignore}
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
@@ -1018,9 +1467,22 @@ function AlertActions({
   );
 }
 
-function Alerts({ country, canApprove }: { country: string; canApprove: boolean }) {
+function Alerts({
+  country,
+  canApprove,
+  onOpen,
+}: {
+  country: string;
+  canApprove: boolean;
+  onOpen: (orphanId: string) => void;
+}) {
   const c = useCopy(SOURCES_COPY);
-  const err = useErr();
+  const w = useCopy(WORK_COPY);
+  const err = useWorkErr();
+  const [query, setQuery] = useState("");
+  const [field, setField] = useState("");
+  const [severity, setSeverity] = useState("");
+  const search = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
   const fetchList = useServerFn(listAlerts);
   const list = useQuery({
@@ -1041,62 +1503,137 @@ function Alerts({ country, canApprove }: { country: string; canApprove: boolean 
       void qc.invalidateQueries({ queryKey: ["data-health"] });
     },
   });
-  const items = list.data?.ok ? list.data.data : [];
+  const all = list.data?.ok ? list.data.data : [];
+  const items = all.filter(
+    (a) =>
+      (!field || a.field === field) &&
+      (!severity || a.severity === severity) &&
+      matchesQuery(query, a.code, a.name),
+  );
+  const keys = useListKeys({
+    search,
+    onOpen: (i) => {
+      const id = items[i]?.orphan_id;
+      if (id) onOpen(id);
+    },
+  });
+  const fieldName = (f: string) => c.fields[f] ?? (f === "identity" ? c.groups.identity : f);
 
   return (
-    <section aria-labelledby="alerts-title">
+    <section aria-labelledby="alerts-title" onKeyDown={keys.onKeyDown}>
       <SectionHead title={c.alertsTitle} hint={c.alertsHint} />
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
-        <Failed onRetry={() => void list.refetch()} />
-      ) : items.length === 0 ? (
+        list.data?.missing ? (
+          <NeedsUpdate />
+        ) : (
+          <Failed onRetry={() => void list.refetch()} />
+        )
+      ) : all.length === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">{c.noAlerts}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
-          {items.map((a) => (
-            <li
-              key={a.id}
-              className={cn(CARD, "p-4", a.severity === "critical" && "ring-1 ring-destructive/40")}
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                {a.severity === "critical" && (
-                  <ShieldAlert className="size-4 text-destructive" aria-hidden="true" />
-                )}
-                <span className="font-bold">{c.signals[a.signal]}</span>
-                <Pill
-                  tone={
-                    a.severity === "critical" ? "wine" : a.severity === "warning" ? "gold" : "quiet"
-                  }
-                >
-                  {c.severities[a.severity]}
-                </Pill>
-                <span className="text-xs text-muted-foreground">
-                  {c.fields[a.field] ?? (a.field === "identity" ? c.groups.identity : a.field)}
-                  {a.role ? ` · ${c.roles[a.role]}` : ""}
-                </span>
-                <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground">
-                  {a.code ? (
-                    <>
-                      <Val>{a.code}</Val> · {a.name}
-                    </>
-                  ) : (
-                    c.countryWide
-                  )}
-                </span>
-              </div>
-              <AlertDetail a={a} />
-              {canApprove && (
-                <AlertActions
-                  busy={m.isPending}
-                  onSettle={(status, note) =>
-                    m.mutate({ id: a.id, status, ...(note ? { note } : {}) })
-                  }
-                />
-              )}
-            </li>
-          ))}
-        </ul>
+        <>
+          <FilterBar
+            query={query}
+            setQuery={setQuery}
+            placeholder={w.search}
+            inputRef={search}
+            shown={items.length}
+            total={all.length}
+            filters={[
+              {
+                id: "field",
+                label: w.fieldFilter,
+                value: field,
+                set: setField,
+                all: w.allFields,
+                options: [...new Set(all.map((a) => a.field))].map((f) => ({
+                  value: f,
+                  label: fieldName(f),
+                })),
+              },
+              {
+                id: "severity",
+                label: w.severityFilter,
+                value: severity,
+                set: setSeverity,
+                all: w.allSeverities,
+                options: (["critical", "warning", "info"] as const).map((s) => ({
+                  value: s,
+                  label: c.severities[s],
+                })),
+              },
+            ]}
+          />
+          {items.length === 0 ? (
+            <p className="mt-3 text-sm text-muted-foreground">{w.noMatch}</p>
+          ) : (
+            <div ref={keys.root}>
+              <ul className="mt-4 space-y-3">
+                {items.map((a) => (
+                  <li
+                    key={a.id}
+                    data-row=""
+                    tabIndex={0}
+                    aria-label={`${c.signals[a.signal]} · ${a.code ?? c.countryWide}`}
+                    className={cn(
+                      CARD,
+                      ROW_FOCUS,
+                      "p-4",
+                      a.severity === "critical" && "ring-1 ring-destructive/40",
+                    )}
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      {a.severity === "critical" && (
+                        <ShieldAlert className="size-4 text-destructive" aria-hidden="true" />
+                      )}
+                      <span className="font-bold">{c.signals[a.signal]}</span>
+                      <Pill
+                        tone={
+                          a.severity === "critical"
+                            ? "wine"
+                            : a.severity === "warning"
+                              ? "gold"
+                              : "quiet"
+                        }
+                      >
+                        {c.severities[a.severity]}
+                      </Pill>
+                      <span className="text-xs text-muted-foreground">
+                        {fieldName(a.field)}
+                        {a.role ? ` · ${c.roles[a.role]}` : ""}
+                      </span>
+                      <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground">
+                        {a.code ? (
+                          <>
+                            <Val>{a.code}</Val> · <bdi dir="auto">{a.name}</bdi>
+                          </>
+                        ) : (
+                          c.countryWide
+                        )}
+                      </span>
+                    </div>
+                    <AlertDetail a={a} />
+                    {canApprove && (
+                      <AlertActions
+                        busy={m.isPending}
+                        onSettle={(status, note) =>
+                          m.mutate({ id: a.id, status, ...(note ? { note } : {}) })
+                        }
+                      />
+                    )}
+                    {a.orphan_id && (
+                      <div className="mt-2 flex justify-end">
+                        <OpenFile id={a.orphan_id} onOpen={onOpen} />
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
