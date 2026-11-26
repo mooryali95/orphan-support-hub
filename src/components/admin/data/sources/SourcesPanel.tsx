@@ -1,0 +1,215 @@
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useDataFn, useDataKey } from "@/lib/data-port";
+import { flagOf } from "@/lib/countries";
+import { canDo, type CountryAccess } from "@/lib/golden-record";
+import { getDataHealth } from "@/lib/golden-record.functions";
+import { useCopy } from "@/lib/locale";
+import { cn } from "@/lib/utils";
+import { Busy, CARD, Failed, NeedsUpdate, SectionHead } from "../shared";
+import { SOURCES_COPY } from "../sources-copy";
+import { ChildFileSheet } from "../WorkTools";
+import { Alerts } from "./Alerts";
+import { Conflicts } from "./ConflictsInbox";
+import { HealthCard } from "./HealthCard";
+import { LinkQueue } from "./LinkQueue";
+import { ModeControl, Matrix } from "./ModeControl";
+import { StartHere } from "./StartHere";
+import { Team } from "./Team";
+import { UploadCard } from "./UploadCard";
+import { type Tab } from "./shared";
+
+/**
+ * مصادر التحقق: صحة كل دولة، ووضع منصّة مكتبها، والرفع، والتعارضات، والربط.
+ * القاعدة تقرّر؛ هذه الخانة تعرض وتسأل المشرف حيث يلزم قرار بشري.
+ */
+export function SourcesPanel({
+  country,
+  setCountry,
+  access,
+}: {
+  country: string;
+  setCountry: (code: string) => void;
+  /** الإدارة، أو أدوار الدول لعضو فريقٍ (`my_country_access`). القاعدة تحرس على كل حال. */
+  access: CountryAccess;
+}) {
+  const c = useCopy(SOURCES_COPY);
+  const fetchHealth = useDataFn("golden.health", getDataHealth);
+  const health = useQuery({ queryKey: useDataKey(["data-health"]), queryFn: () => fetchHealth() });
+  const rows = health.data?.ok ? health.data.data : [];
+  const code = rows.some((r) => r.code === country) ? country : (rows[0]?.code ?? "");
+  const selected = rows.find((r) => r.code === code) ?? null;
+  const [tab, setTab] = useState<Tab>("alerts");
+  const [fileId, setFileId] = useState<string | null>(null);
+
+  if (health.isPending) return <Busy />;
+  if (!health.data?.ok) {
+    return health.data?.missing ? (
+      <NeedsUpdate />
+    ) : (
+      <Failed onRetry={() => void health.refetch()} />
+    );
+  }
+
+  const can = (need: "import" | "approve" | "manage") =>
+    selected ? canDo(access, selected.code, need) : false;
+  const tabs: Array<{ key: Tab; count: number; urgent: boolean }> = selected
+    ? [
+        {
+          key: "alerts",
+          count: selected.alerts.critical + selected.alerts.warning,
+          urgent: selected.alerts.critical > 0,
+        },
+        {
+          key: "conflicts",
+          count: selected.conflicts.critical + selected.conflicts.other,
+          urgent: selected.conflicts.critical > 0,
+        },
+        { key: "links", count: selected.link_pending, urgent: false },
+        ...(can("import") ? [{ key: "upload" as const, count: 0, urgent: false }] : []),
+        { key: "mode" as const, count: 0, urgent: false },
+        ...(can("manage") ? [{ key: "team" as const, count: 0, urgent: false }] : []),
+      ]
+    : [];
+  const current: Tab = tabs.some((t) => t.key === tab) ? tab : "alerts";
+
+  return (
+    <div className="space-y-8">
+      <SectionHead title={c.title} hint={c.hint} />
+      <StartHere
+        rows={rows}
+        access={access}
+        onGo={(code, t) => {
+          setCountry(code);
+          setTab(t);
+          requestAnimationFrame(() =>
+            document
+              .getElementById("country-work-title")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+          );
+        }}
+      />
+
+      <section aria-labelledby="health-title">
+        <h4 id="health-title" className="text-base font-bold">
+          {c.healthTitle}
+        </h4>
+        {rows.length === 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">{c.noCountries}</p>
+        ) : (
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {rows.map((r) => (
+              <li key={r.code}>
+                <HealthCard row={r} active={r.code === code} onPick={() => setCountry(r.code)} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {selected && (
+        <section aria-labelledby="country-work-title" className="space-y-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h4 id="country-work-title" className="text-lg font-bold">
+              {flagOf(selected.code)} {selected.name_ar}
+            </h4>
+            {!can("approve") && (
+              <p role="note" className="text-xs text-muted-foreground">
+                {c.readOnly}
+              </p>
+            )}
+          </div>
+          <div
+            role="tablist"
+            aria-label={c.sectionsLabel}
+            className="-mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
+            onKeyDown={(e) => {
+              // نمط WAI-ARIA للألسنة: الأسهم تتبع اتجاه القراءة، وHome/End للطرفين.
+              const i = tabs.findIndex((t) => t.key === current);
+              const rtl = getComputedStyle(e.currentTarget).direction === "rtl";
+              const step: Record<string, number> = {
+                ArrowRight: rtl ? -1 : 1,
+                ArrowLeft: rtl ? 1 : -1,
+              };
+              let next: number;
+              if (e.key in step) next = (i + step[e.key]! + tabs.length) % tabs.length;
+              else if (e.key === "Home") next = 0;
+              else if (e.key === "End") next = tabs.length - 1;
+              else return;
+              e.preventDefault();
+              const key = tabs[next]!.key;
+              setTab(key);
+              const el = document.getElementById(`tab-${key}`);
+              el?.focus();
+              el?.scrollIntoView({ block: "nearest", inline: "nearest" });
+            }}
+          >
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                role="tab"
+                id={`tab-${t.key}`}
+                aria-selected={current === t.key}
+                aria-controls={current === t.key ? `panel-${t.key}` : undefined}
+                tabIndex={current === t.key ? 0 : -1}
+                onClick={(e) => {
+                  setTab(t.key);
+                  e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+                }}
+                className={cn(
+                  "-mb-px inline-flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  current === t.key
+                    ? "border-primary font-bold text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {c.tabs[t.key]}
+                {t.count > 0 && (
+                  <span
+                    className={cn(
+                      "min-w-5 rounded-full px-1.5 text-xs font-bold tabular-nums",
+                      t.urgent
+                        ? "bg-destructive text-destructive-foreground"
+                        : "bg-secondary text-muted-foreground",
+                    )}
+                  >
+                    {t.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <div role="tabpanel" id={`panel-${current}`} aria-labelledby={`tab-${current}`}>
+            {current === "alerts" && (
+              <Alerts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+            )}
+            {current === "conflicts" && (
+              <Conflicts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+            )}
+            {current === "links" && (
+              <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+            )}
+            {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
+            {current === "mode" &&
+              (access.admin ? (
+                <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
+              ) : (
+                <section className={cn(CARD, "p-5")}>
+                  <p className="text-sm">
+                    <span className="font-bold">{c.modeTitle}: </span>
+                    {c.modes[selected.office_mode]}
+                  </p>
+                  <Matrix mode={selected.office_mode} />
+                </section>
+              ))}
+            {current === "team" && (
+              <Team key={`team-${selected.code}`} country={selected.code} access={access} />
+            )}
+          </div>
+        </section>
+      )}
+      <ChildFileSheet id={fileId} onClose={() => setFileId(null)} />
+    </div>
+  );
+}

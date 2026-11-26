@@ -5178,11 +5178,12 @@
    "hash": "926bed064fb5",
    "file": "src/components/admin/data/work-copy.ts"
   },
-  "components/admin/data/work.selectOne": {
-   "en": "Select this item",
-   "ar": "حدّد هذا البند",
-   "kind": "text",
-   "hash": "57f238e0fa94",
+  "components/admin/data/work.selectItem": {
+   "en": "Select {0} for file {1}",
+   "ar": "حدّد بند {0} للملف {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "8334d3e7334f",
    "file": "src/components/admin/data/work-copy.ts"
   },
   "components/admin/data/work.selected.one": {
