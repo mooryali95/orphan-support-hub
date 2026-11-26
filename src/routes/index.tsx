@@ -25,7 +25,7 @@ import { formatMoney, formatMoneyTotals } from "@/lib/format";
 import type { PlatformStats } from "@/lib/orphans.functions";
 import { PartnerPlate } from "@/components/brand/PartnerPlate";
 import { hallEntryHref, isTrial, showTrialLink } from "@/config/platform";
-import { trialRoute } from "@/lib/trial-gate";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 import { enterDemo } from "@/lib/demo-mode";
 import { brandFor } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -147,6 +147,7 @@ const COPY = defineCopy("routes/index", {
       "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل — المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
     hallCta: "ادخل القاعة",
     hallNote: "تجربةٌ ببياناتٍ نموذجية، بلا حسابٍ ولا خصم.",
+    hallNoteLive: "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة — بلا حسابٍ ولا خصم.",
     tryIt: "ادخل التجربة — بلا حساب ولا خصم",
     browse: "تصفّح ملفات الأيتام",
     hadithMeaning: null as string | null,
@@ -285,6 +286,8 @@ const COPY = defineCopy("routes/index", {
       "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
     hallCta: "Enter the hall",
     hallNote: "A walkthrough on sample data, with no account and nothing charged.",
+    hallNoteLive:
+      "WAMY's network is real; the support figures inside are simulated — no account, nothing charged.",
     tryIt: "Enter the demo — no account, nothing charged",
     browse: "Browse children's files",
     hadithMeaning:
@@ -880,7 +883,9 @@ function HomePage() {
                     <Box className="size-5" aria-hidden="true" />
                     {c.hallCta}
                   </a>
-                  <span className="text-sm opacity-75">{c.hallNote}</span>
+                  <span className="text-sm opacity-75">
+                    {TRIAL_ENABLED ? c.hallNote : c.hallNoteLive}
+                  </span>
                 </div>
               </div>
             </div>

@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { TRIAL_ENABLED } from "@/lib/trial-gate";
 import {
   createPledge,
   getSupportCatalog,
@@ -92,6 +93,7 @@ const COPY = defineCopy("routes/support", {
     sumPending: "—",
     realNote:
       "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
+    realNoteLive: "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي.",
     kinds: KIND_INFO,
     targets: TARGET_INFO,
     children: (n: number) => `${n} طفل`,
@@ -142,6 +144,7 @@ const COPY = defineCopy("routes/support", {
     sumPending: "—",
     realNote:
       'Real support: recorded in your name and reaching a real child. To explore without commitment, open "Try the platform".',
+    realNoteLive: "Real support: recorded in your name and reaching a real child.",
     kinds: {
       qualification: {
         label: "Building capability",
@@ -503,7 +506,7 @@ function RealSupportPage() {
               className="mt-2.5 size-2 shrink-0 rounded-full bg-shore-thrive"
               aria-hidden="true"
             />
-            {t.realNote}
+            {TRIAL_ENABLED ? t.realNote : t.realNoteLive}
           </p>
 
           <ol className="mt-10 flex items-start" aria-label={t.stepsLabel}>
