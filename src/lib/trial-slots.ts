@@ -8,7 +8,7 @@
  *
  * العقود (أنواع الخصائص) حقيقيةٌ ومكتوبة هنا، ومدخل التجربة يلتزم بها (`satisfies TrialSlots`).
  */
-import type { ComponentType } from "react";
+import { createElement, lazy, Suspense, type ComponentType } from "react";
 
 import type { AnyRecord, RecordKind } from "@/lib/admin-console.functions";
 import type { Locale } from "@/lib/locale";
@@ -68,7 +68,29 @@ export interface TrialSlots {
   }>;
 }
 
-const found = import.meta.glob<TrialSlots>("./try-entry.ts", { eager: true, import: "slots" });
+// كسول عمداً: لا يدخل شيءٌ من التجربة حزمة صفحةٍ حقيقية (ميزانية حجم الصفحات في CI)، ويُحمَّل
+// مدخلها في قطعته حين تُعرض قطعةٌ منه فعلاً.
+const found = import.meta.glob<TrialSlots>("./try-entry.ts", { import: "slots" });
+const loadEntry = Object.values(found)[0];
+
+/** مكوّنٌ من مدخل التجربة يُحمَّل عند أوّل عرض. */
+function lazySlot<P extends object>(pick: (s: TrialSlots) => ComponentType<P>): ComponentType<P> {
+  const Lazy = lazy(() => loadEntry!().then((s) => ({ default: pick(s) })));
+  return function TrialSlot(props: P) {
+    return createElement(Suspense, { fallback: null }, createElement(Lazy, props));
+  };
+}
 
 /** قطع التجربة إن وُجدت، وإلا `null`. */
-export const trialSlots: TrialSlots | null = Object.values(found)[0] ?? null;
+export const trialSlots: TrialSlots | null = loadEntry
+  ? {
+      ProposalOffer: lazySlot((s) => s.ProposalOffer),
+      ProposalCard: lazySlot((s) => s.ProposalCard),
+      AuthNotice: lazySlot((s) => s.AuthNotice),
+      dismissProposal: (id) => void loadEntry().then((s) => s.dismissProposal(id)),
+      loadSupportMap: () => loadEntry().then((s) => s.loadSupportMap()),
+      loadDirectory: () => loadEntry().then((s) => s.loadDirectory()),
+      loadAdminOverlay: () => loadEntry().then((s) => s.loadAdminOverlay()),
+      loadHall: () => loadEntry().then((s) => s.loadHall()),
+    }
+  : null;

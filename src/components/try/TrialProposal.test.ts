@@ -101,6 +101,11 @@ async function sheet() {
   await act(async () => {
     renderer = create(createElement(SupportSheet, props));
   });
+  // قطعة التجربة تُحمَّل عند أوّل عرض (src/lib/trial-slots.ts): يُنتظر تحميلها ثم رسمها.
+  await act(async () => {
+    await import("@/lib/try-entry");
+    await new Promise((r) => setTimeout(r, 0));
+  });
   if (!renderer) throw new Error("Sheet did not mount");
   return renderer;
 }
