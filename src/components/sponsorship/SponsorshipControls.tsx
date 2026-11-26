@@ -127,7 +127,7 @@ export function SponsorshipControls({ s }: { s: MySponsorship }) {
   );
 }
 
-function CancelForm({
+export function CancelForm({
   s,
   name,
   card,
@@ -252,7 +252,7 @@ function CancelForm({
   );
 }
 
-function PauseForm({
+export function PauseForm({
   s,
   name,
   onDone,
@@ -309,7 +309,7 @@ function PauseForm({
   );
 }
 
-function AmountForm({
+export function AmountForm({
   s,
   name,
   onDone,

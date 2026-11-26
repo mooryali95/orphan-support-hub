@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
+import { MapPin, GraduationCap, Building2, ShieldCheck, Loader2, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { getPublicVerification } from "@/lib/public-verification.functions";
+import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
+import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -118,6 +120,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     follow: "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
     remainingMonthly: "المتبقّي شهرياً",
     support: (n: string) => `ادعم ${n}`,
+    barVerifying: "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+    barSimilar: "أطفالٌ جاهزون",
   },
   en: {
     kinds: {
@@ -196,6 +200,8 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     follow: "You follow it from “My portals” through the office's reports and photos.",
     remainingMonthly: "Still needed monthly",
     support: (n: string) => `Support ${n}`,
+    barVerifying: "Under verification — not taking new sponsorships yet",
+    barSimilar: "Children ready now",
   },
 });
 
@@ -297,6 +303,10 @@ function OrphanDetail() {
   const percent = fundingPercent(orphan.monthly_need, orphan.funded_monthly);
   const remaining = Math.max(0, Number(orphan.monthly_need) - Number(orphan.funded_monthly));
   const surplus = Math.max(0, Number(orphan.funded_monthly) - Number(orphan.monthly_need));
+  // بدائل جاهزة لملفٍّ قيد التحقق، بفجوته أو باحتياجه كلّه إن غُطّي.
+  const similarAmount = Math.round(remaining > 0 ? remaining : Number(orphan.monthly_need));
+  const { data: similar } = useSimilarReady(orphanId, similarAmount, verifying);
+  const hasSimilar = (similar?.suggestions.length ?? 0) > 0;
 
   // ما يفتحه الفائض يُقرأ من القاعدة: الكتالوج يتغيّر، وحسابه في الواجهة
   // يجعل العرض يتخلّف عنه.
@@ -669,6 +679,7 @@ function OrphanDetail() {
                       {t.verifying}
                     </p>
                   )}
+                  {verifying && <SimilarReadyChildren orphanId={orphanId} amount={similarAmount} />}
                   {restored && (
                     <p
                       role="status"
@@ -897,17 +908,39 @@ function OrphanDetail() {
       {/* على الجوال يقع نموذج الكفالة أسفل الصفحة بأربع شاشات؛ هذا الشريط
           يُبقي الفعل حاضراً ويقفز إليه. يُخفى على الشاشات الكبيرة حيث
           النموذج مثبّت في العمود الجانبي أصلاً. */}
-      <div className="border-border bg-background/95 sticky bottom-0 z-40 border-t p-3 backdrop-blur lg:hidden">
+      <div className="border-border bg-background/95 sticky bottom-0 z-40 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
         <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <p className="text-xs text-muted-foreground">{t.remainingMonthly}</p>
-            <p className="text-bridge-ink text-base font-extrabold">
-              {formatMoney(remaining, orphan.currency, locale)}
-            </p>
+          <div className="min-w-0 flex-1">
+            {verifying ? (
+              <p className="flex items-center gap-1.5 text-sm leading-6 font-semibold">
+                <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
+                {t.barVerifying}
+              </p>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground">{t.remainingMonthly}</p>
+                <p className="text-bridge-ink text-base font-extrabold tabular-nums">
+                  {formatMoney(remaining, orphan.currency, locale)}
+                </p>
+              </>
+            )}
           </div>
-          <Button asChild size="lg" className="flex-1">
-            <a href="#sponsor-form">{t.support(isolate(orphan.display_name))}</a>
-          </Button>
+          {verifying && hasSimilar ? (
+            // الفعل المتاح فعلاً: لا زرّ كفالةٍ يُضغط فيفشل، بل الطريق إلى طفلٍ جاهز.
+            <Button asChild size="lg" variant="outline" className="min-h-11 flex-1">
+              <a href={`#${SIMILAR_READY_ID}`}>{t.barSimilar}</a>
+            </Button>
+          ) : verifying ? (
+            <Button size="lg" className="min-h-11 flex-1" disabled>
+              {t.support(isolate(orphan.display_name))}
+            </Button>
+          ) : (
+            <Button asChild size="lg" className="min-h-11 min-w-0 flex-1">
+              <a href="#sponsor-form" className="truncate">
+                {t.support(isolate(orphan.display_name))}
+              </a>
+            </Button>
+          )}
         </div>
       </div>
 

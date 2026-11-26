@@ -71,6 +71,7 @@ import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
 import { Route as AuthenticatedDonorEntityIdReportRouteImport } from './routes/_authenticated/donor.$entityId.report'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.index'
+import { Route as AuthenticatedSponsorshipsSponsorshipIdManageRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.manage'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdReportRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.report'
 import { Route as AuthenticatedSponsorshipsSponsorshipIdTransferRouteImport } from './routes/_authenticated/sponsorships.$sponsorshipId.transfer'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -406,6 +407,12 @@ const AuthenticatedSponsorshipsSponsorshipIdIndexRoute =
     path: '/sponsorships/$sponsorshipId/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSponsorshipsSponsorshipIdManageRoute =
+  AuthenticatedSponsorshipsSponsorshipIdManageRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/manage',
+    path: '/sponsorships/$sponsorshipId/manage',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSponsorshipsSponsorshipIdReportRoute =
   AuthenticatedSponsorshipsSponsorshipIdReportRouteImport.update({
     id: '/sponsorships/$sponsorshipId/report',
@@ -496,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/sponsorships/$sponsorshipId/manage': typeof AuthenticatedSponsorshipsSponsorshipIdManageRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -564,6 +572,7 @@ export interface FileRoutesByTo {
   '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/sponsorships/$sponsorshipId/manage': typeof AuthenticatedSponsorshipsSponsorshipIdManageRoute
   '/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -635,6 +644,7 @@ export interface FileRoutesById {
   '/api/sso/wamy': typeof ApiSsoWamyRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
+  '/_authenticated/sponsorships/$sponsorshipId/manage': typeof AuthenticatedSponsorshipsSponsorshipIdManageRoute
   '/_authenticated/sponsorships/$sponsorshipId/report': typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   '/_authenticated/sponsorships/$sponsorshipId/transfer': typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -706,6 +716,7 @@ export interface FileRouteTypes {
     | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
+    | '/sponsorships/$sponsorshipId/manage'
     | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
@@ -774,6 +785,7 @@ export interface FileRouteTypes {
     | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
+    | '/sponsorships/$sponsorshipId/manage'
     | '/sponsorships/$sponsorshipId/report'
     | '/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
@@ -844,6 +856,7 @@ export interface FileRouteTypes {
     | '/api/sso/wamy'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
+    | '/_authenticated/sponsorships/$sponsorshipId/manage'
     | '/_authenticated/sponsorships/$sponsorshipId/report'
     | '/_authenticated/sponsorships/$sponsorshipId/transfer'
     | '/lovable/email/auth/preview'
@@ -1341,6 +1354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sponsorships/$sponsorshipId/manage': {
+      id: '/_authenticated/sponsorships/$sponsorshipId/manage'
+      path: '/sponsorships/$sponsorshipId/manage'
+      fullPath: '/sponsorships/$sponsorshipId/manage'
+      preLoaderRoute: typeof AuthenticatedSponsorshipsSponsorshipIdManageRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sponsorships/$sponsorshipId/report': {
       id: '/_authenticated/sponsorships/$sponsorshipId/report'
       path: '/sponsorships/$sponsorshipId/report'
@@ -1392,6 +1412,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedTranslateLocaleRoute: typeof AuthenticatedTranslateLocaleRoute
   AuthenticatedDonorEntityIdReportRoute: typeof AuthenticatedDonorEntityIdReportRoute
+  AuthenticatedSponsorshipsSponsorshipIdManageRoute: typeof AuthenticatedSponsorshipsSponsorshipIdManageRoute
   AuthenticatedSponsorshipsSponsorshipIdReportRoute: typeof AuthenticatedSponsorshipsSponsorshipIdReportRoute
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute: typeof AuthenticatedSponsorshipsSponsorshipIdTransferRoute
   AuthenticatedDonorEntityIdIndexRoute: typeof AuthenticatedDonorEntityIdIndexRoute
@@ -1412,6 +1433,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedSettingsNotificationsRoute,
   AuthenticatedTranslateLocaleRoute: AuthenticatedTranslateLocaleRoute,
   AuthenticatedDonorEntityIdReportRoute: AuthenticatedDonorEntityIdReportRoute,
+  AuthenticatedSponsorshipsSponsorshipIdManageRoute:
+    AuthenticatedSponsorshipsSponsorshipIdManageRoute,
   AuthenticatedSponsorshipsSponsorshipIdReportRoute:
     AuthenticatedSponsorshipsSponsorshipIdReportRoute,
   AuthenticatedSponsorshipsSponsorshipIdTransferRoute:

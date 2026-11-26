@@ -19,6 +19,8 @@ import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { listMySponsorships, type MySponsorship } from "@/lib/sponsorships.functions";
 import { SponsorshipControls } from "@/components/sponsorship/SponsorshipControls";
+import { ManageSponsorshipLink } from "@/components/sponsorship/ManageSponsorship";
+import { ChildTimeline } from "@/components/sponsorship/ChildTimeline";
 import { startCheckout, getPaymentMode } from "@/lib/payments.functions";
 import {
   formatDate,
@@ -378,9 +380,14 @@ function DashboardPage() {
                             </Link>
                           </Button>
                         )}
-                        <SponsorshipControls s={s} />
+                        <ManageSponsorshipLink s={s} />
                       </div>
                     </div>
+
+                    {/* خطّ الطفل: حالة ملفّه، وآخر تقرير معتمد، وموضعه في مسار التأهيل. */}
+                    {orphan && s.status !== "cancelled" && (
+                      <ChildTimeline orphanId={orphan.id} name={orphan.display_name} />
+                    )}
 
                     {/* الأثر تحت كل كفالة لا في صفحة منفصلة: الكافل يفتح
                         لوحته ليطمئنّ، فإن لزمته نقرة أخرى لم يطمئنّ. */}
