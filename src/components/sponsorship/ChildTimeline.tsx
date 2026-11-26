@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { FileText, GraduationCap, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { listReports, type ProgressReportView } from "@/lib/impact.functions";
 import { getOrphanQualification } from "@/lib/qualification.functions";
 import type { PublicQualification, QualificationStage } from "@/integrations/supabase/types.extra";
@@ -96,14 +96,14 @@ function latestReport(reports: ProgressReportView[]): ProgressReportView | null 
 export function ChildTimeline({ orphanId, name }: { orphanId: string; name: string }) {
   const c = useCopy(COPY);
   const locale = useLocale();
-  const fetchReports = useServerFn(listReports);
-  const fetchQualification = useServerFn(getOrphanQualification);
+  const fetchReports = useDataFn("sponsor.timeline.reports", listReports);
+  const fetchQualification = useDataFn("sponsor.timeline.qualification", getOrphanQualification);
   const reports = useQuery({
-    queryKey: ["reports", orphanId],
+    queryKey: useDataKey(["reports", orphanId]),
     queryFn: () => fetchReports({ data: { orphanId } }),
   });
   const qualification = useQuery({
-    queryKey: ["qualification", orphanId],
+    queryKey: useDataKey(["qualification", orphanId]),
     queryFn: () => fetchQualification({ data: { orphanId } }),
   });
 

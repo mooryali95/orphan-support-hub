@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -41,14 +41,15 @@ type Mode = "cancel" | "pause" | "amount" | null;
 export function SponsorshipControls({ s }: { s: MySponsorship }) {
   const [mode, setMode] = useState<Mode>(null);
   const qc = useQueryClient();
-  const resume = useServerFn(resumeSponsorship);
+  const listKey = useDataKey(["my-sponsorships"]);
+  const resume = useDataFn("sponsor.manage.resume", resumeSponsorship);
   const [busy, setBusy] = useState(false);
   const name = s.orphan?.display_name ?? "الطفل";
   const card = Boolean(s.provider_subscription_id);
   const ending = Boolean(s.cancel_effective_at);
   const live = s.status === "active" || s.status === "paused";
 
-  const refresh = () => qc.invalidateQueries({ queryKey: ["my-sponsorships"] });
+  const refresh = () => qc.invalidateQueries({ queryKey: listKey });
 
   if (!live && s.status !== "pending_payment") return null;
 
@@ -140,7 +141,7 @@ export function CancelForm({
   onAlternative: (m: "pause" | "amount") => void;
   onDone: () => Promise<void>;
 }) {
-  const cancel = useServerFn(cancelSponsorship);
+  const cancel = useDataFn("sponsor.manage.cancel", cancelSponsorship);
   const [reason, setReason] = useState<keyof typeof CANCEL_REASONS | "">("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -261,7 +262,7 @@ export function PauseForm({
   name: string;
   onDone: () => Promise<void>;
 }) {
-  const pause = useServerFn(pauseSponsorship);
+  const pause = useDataFn("sponsor.manage.pause", pauseSponsorship);
   const [months, setMonths] = useState(1);
   const [busy, setBusy] = useState(false);
   return (
@@ -318,7 +319,7 @@ export function AmountForm({
   name: string;
   onDone: () => Promise<void>;
 }) {
-  const change = useServerFn(changeSponsorshipAmount);
+  const change = useDataFn("sponsor.manage.amount", changeSponsorshipAmount);
   const [value, setValue] = useState(String(Math.round(Number(s.amount))));
   const [busy, setBusy] = useState(false);
   const amount = Number(value);

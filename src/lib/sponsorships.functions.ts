@@ -10,6 +10,7 @@ import {
   type PayOptions,
 } from "@/lib/pay-options";
 import { publicClient } from "@/lib/protection.functions";
+import { lifecycleError } from "@/lib/sponsorship-lifecycle";
 
 /**
  * عملات الدفع لملفٍّ منشور: عملة حاجته، ثم عملة تشغيل دولته والعملة الموحّدة
@@ -406,16 +407,6 @@ type Rpc = {
     args: Record<string, unknown>,
   ) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>;
 };
-
-/** رسالة الخطأ كما يفهمها الكافل، من رمز القاعدة لا من نصّها. */
-function lifecycleError(error: { message: string; code?: string }): string {
-  if (error.code === "0A000")
-    return "الكفالة بالبطاقة لا تُوقَف ولا يُعدَّل مبلغها من هنا بعد. يمكنك إنهاؤها ثم البدء بمبلغٍ جديد.";
-  if (error.code === "55000") return "حال الكفالة لا تسمح بهذا الآن.";
-  if (error.code === "22023") return "القيمة خارج الحدود المسموحة.";
-  if (error.code === "P0002") return "لا توجد كفالة بهذا المعرّف.";
-  return "تعذّر التنفيذ، حاول لاحقاً.";
-}
 
 export const CANCEL_REASONS = {
   financial: "ظرفٌ مالي",

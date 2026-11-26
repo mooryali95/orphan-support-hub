@@ -386,7 +386,7 @@ describe("الكتالوج المولَّد خارج حزمة الدخول وص�
     ]);
     // the trial route loads it lazily through try-places (which also adds the six countries' extras)
     expect(readFileSync("src/routes/try.tsx", "utf8")).toMatch(
-      /beforeLoad: \(\) =>\s*Promise\.all\(\[import\("@\/lib\/try-places"\)/,
+      /beforeLoad: \(\) =>\s*Promise\.all\(\[\s*import\("@\/lib\/try-places"\)/,
     );
   });
 
