@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { TryChildCard } from "@/components/try/TryChildCard";
 import { TryDirectory } from "@/components/try/TryDirectory";
 import { TryRoles } from "@/components/try/TryRoles";
+import { TryStoryEntry } from "@/components/try/story/TryStoryEntry";
 import { TryJourneyGuide } from "@/components/try/TryJourneyGuide";
 import { useTryHallSearch } from "@/components/try/useTryHallSearch";
 import { GIVING_TRACKS, useGivingCopy } from "@/config/giving-tracks";
@@ -108,6 +109,8 @@ function TryHome() {
       </section>
 
       <TryRoles />
+
+      <TryStoryEntry />
 
       {/* three steps on one ruled band: the numeral is the ornament, no icon chips */}
       <ol className="mt-14 grid divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">

@@ -23,11 +23,25 @@ import {
   TRY_CHILDREN,
   TRY_CURRENCY,
   TRY_EVENT,
+  TRY_STORY,
   TRY_WORLD_CHILDREN,
   tryChild,
   type TryChild,
 } from "@/lib/try-demo";
 import { tryStore, type TryStore } from "@/lib/try-store";
+
+/**
+ * طفلة القصّة الموجّهة: شارتها وتقاريرها من حالة القصّة (`try-story`)، تسجّلها القصّة
+ * حين تُحمَّل، فلا تدخل طبقة التحقق حزمة كلّ صفحات التجربة.
+ */
+type StoryHooks = {
+  verification: (now: Date) => PublicVerification;
+  reports: (locale: Locale) => ProgressReportView[];
+};
+let story: StoryHooks | null = null;
+export function setStoryHooks(h: StoryHooks) {
+  story = h;
+}
 
 /** ملفّ التجربة «قيد التحقق»: لا يقبل كفالةً جديدة، فتُعرض بدله ملفّاتٌ جاهزة. */
 export const TRY_UNDER_REVIEW = "try-05";
@@ -43,6 +57,7 @@ const monthOf = (d: Date, back = 0) => {
 /** شارة طفل التجربة كما تعيدها `public_verification`: درجةٌ وقبولٌ وشهر، لا تفاصيل. */
 export function tryVerification(id: string, now: Date = new Date()): PublicVerification | null {
   if (!tryChild(id)) return null;
+  if (story && id === TRY_STORY.id) return story.verification(now);
   if (id === TRY_UNDER_REVIEW)
     return { level: "under_review", accepts: false, verified_month: null };
   const two = TWO_SOURCES.has(id) || (!id.startsWith("try-0") && hash(id) % 3 === 0);
@@ -115,6 +130,7 @@ export function tryReports(
   now: Date = new Date(),
 ): ProgressReportView[] {
   if (!tryChild(id)) return [];
+  if (story && id === TRY_STORY.id) return story.reports(locale);
   const t = copyOf(COPY, locale);
   const month = monthOf(now, 1);
   const period = new Intl.DateTimeFormat(locale, {

@@ -61,6 +61,7 @@ export const LEGACY_TRIAL_KEYS = [
   "try-office:v1",
   "try-sponsor-center:v1",
   "try-verification:v1",
+  "try-story:v1",
 ] as const;
 
 let purged = false;

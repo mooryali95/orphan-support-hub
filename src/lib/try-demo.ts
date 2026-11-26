@@ -137,7 +137,28 @@ export const TRY_WORLD_EXTRA: TryChild[] = [];
 /** ملفّ «الدورة الكاملة» بعد نشره (`try-cycle`): يُفتح ويُدعم كأيّ طفلٍ في التجربة. */
 export const TRY_CYCLE: TryChild[] = [];
 
+/**
+ * طفلة «القصّة الموجّهة» (`/try/journey`): يتبعها الزائر من سجلّ الندوة إلى أثر الكافل.
+ * تُفتح وتُدعم كأيّ طفلٍ في التجربة، ولا تدخل الدليل ولا القاعة ولا الخريطة.
+ */
+export const TRY_STORY: TryChild = {
+  id: "try-story",
+  co: "LK",
+  region: "colombo",
+  code: "DEMO-STORY-01",
+  name: "سلمى",
+  country: "سريلانكا",
+  age: 11,
+  stage: "الصف الخامس",
+  need: 90,
+  funded: 30,
+  waitingDays: 41,
+  covers: "الدراسة والغذاء",
+  en: { name: "Salma", stage: "Grade 5", covers: "School and food" },
+};
+
 export const tryChild = (id: string) =>
+  (id === TRY_STORY.id ? TRY_STORY : undefined) ??
   TRY_CYCLE.find((c) => c.id === id) ??
   TRY_CHILDREN.find((c) => c.id === id) ??
   TRY_WORLD_CHILDREN.find((c) => c.id === id) ??

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4204,
+ "count": 4302,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -14685,6 +14685,667 @@
    "hash": "6db6b79e9cbc",
    "file": "src/components/try/TryVerification.tsx"
   },
+  "components/try/story/TryStory.audience.admin": {
+   "en": "You start as the administration: what happened to the file, in the trust center. Then the story loops back to show how it got there.",
+   "ar": "تبدأ بعين الإدارة: ما جرى للملفّ في مركز الثقة. ثم تعود القصّة إلى أوّلها لترى كيف وصل إلى هنا.",
+   "kind": "text",
+   "hash": "627c155fc84d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.audience.partner": {
+   "en": "You start as a country team: a suspicious change waits to be settled, and whoever uploaded it can't settle it. Then you see its effect for the sponsor and the administration.",
+   "ar": "تبدأ بعين فريق الدولة: تغييرٌ مريب ينتظر الحسم، ولا يحسمه من رفعه. ثم ترى أثره عند الكافل والإدارة.",
+   "kind": "text",
+   "hash": "cd620b6bb95a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.audience.sponsor": {
+   "en": "You start as a sponsor: the file has arrived and been verified, so you see what reassures you before and after you sponsor.",
+   "ar": "تبدأ بعين الكافل: الملفّ وصل وتُحقّق منه، فترى ما يطمئنك قبل أن تكفل وبعده.",
+   "kind": "text",
+   "hash": "fa1e7c07dba2",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.back": {
+   "en": "Back",
+   "ar": "السابق",
+   "kind": "text",
+   "hash": "4ea73caa400f",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.badgeNow": {
+   "en": "What the sponsor sees now",
+   "ar": "ما يراه الكافل الآن",
+   "kind": "text",
+   "hash": "6e226610382e",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.birthFrom": {
+   "en": "Birth date",
+   "ar": "تاريخ الميلاد",
+   "kind": "text",
+   "hash": "e40dc31f814a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.blocked": {
+   "en": "New sponsorship is paused until the file is settled.",
+   "ar": "الكفالة الجديدة موقوفة حتى يُحسم الملف.",
+   "kind": "text",
+   "hash": "026bf4c02006",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.eyebrow": {
+   "en": "The trust story · two minutes",
+   "ar": "قصّة الثقة · دقيقتان",
+   "kind": "text",
+   "hash": "baa78ab67c7a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.female": {
+   "en": "Female",
+   "ar": "أنثى",
+   "kind": "text",
+   "hash": "7cd6b69de17e",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.fullPage": {
+   "en": "Open her full file",
+   "ar": "افتح ملفّها كاملاً",
+   "kind": "text",
+   "hash": "e3e1fbbad049",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.incoming": {
+   "en": "Arriving from the office platform",
+   "ar": "يصل من منصّة المكتب",
+   "kind": "text",
+   "hash": "80c2b3e0c2ad",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.lanka": {
+   "en": "Sri Lanka",
+   "ar": "سريلانكا",
+   "kind": "text",
+   "hash": "ea28fab04765",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.lead": {
+   "en": "One child, followed through seven steps, each through its owner's eyes and on their real screen. Each step has one action that builds trust; do it yourself or press “Show me”.",
+   "ar": "طفلةٌ واحدة نتبعها في سبع خطوات، كلٌّ بعين صاحبها وعلى شاشته الحقيقية. في كلّ خطوةٍ فعلٌ واحد يبني الثقة؛ أدّه بنفسك أو اضغط «أرني».",
+   "kind": "text",
+   "hash": "0ac4b8067c6b",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.locked": {
+   "en": "Do this step's action, or press “Show me”, to move on.",
+   "ar": "أدِّ فعل هذه الخطوة أو اضغط «أرني» لتنتقل.",
+   "kind": "text",
+   "hash": "074bdfeb1765",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.loop": {
+   "en": "From the start",
+   "ar": "من البداية",
+   "kind": "text",
+   "hash": "2502b83041a9",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.need": {
+   "en": "Monthly need {0}",
+   "ar": "حاجتها الشهرية {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9b8d8495e027",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.next": {
+   "en": "Next",
+   "ar": "التالي",
+   "kind": "text",
+   "hash": "fec227498b7b",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.open": {
+   "en": "open",
+   "ar": "مفتوحة",
+   "kind": "text",
+   "hash": "7fbb9ab3758f",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.persona": {
+   "en": "Who is at the screen?",
+   "ar": "من أمام اللوحة؟",
+   "kind": "text",
+   "hash": "4bc7b11bc2d0",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.personaA": {
+   "en": "First supervisor · uploaded it",
+   "ar": "المشرف الأوّل · رفع التغيير",
+   "kind": "text",
+   "hash": "a486cb53cf9a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.personaB": {
+   "en": "Second supervisor",
+   "ar": "المشرف الثاني",
+   "kind": "text",
+   "hash": "9ac08ea7e40f",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.personaHintA": {
+   "en": "Try settling: the rule stops you because you uploaded the change yourself.",
+   "ar": "جرّب الحسم: ستمنعك القاعدة لأنك رفعت التغيير بنفسك.",
+   "kind": "text",
+   "hash": "d2e23405dde9",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.personaHintB": {
+   "en": "Settles in the log as",
+   "ar": "يحسم في السجلّ باسم",
+   "kind": "text",
+   "hash": "8170efd32eda",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.record": {
+   "en": "The record arriving from WAMY",
+   "ar": "السجلّ الوارد من الندوة",
+   "kind": "text",
+   "hash": "9780a499c3ef",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.recordFields.birth": {
+   "en": "Birth date",
+   "ar": "تاريخ الميلاد",
+   "kind": "text",
+   "hash": "e40dc31f814a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.recordFields.country": {
+   "en": "Country",
+   "ar": "الدولة",
+   "kind": "text",
+   "hash": "6660428bf8fb",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.recordFields.gender": {
+   "en": "Gender",
+   "ar": "الجنس",
+   "kind": "text",
+   "hash": "cde9d827f5c5",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.recordFields.name": {
+   "en": "Name",
+   "ar": "الاسم",
+   "kind": "text",
+   "hash": "865c3e992933",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.recordFields.ref": {
+   "en": "WAMY reference",
+   "ar": "مرجع الندوة",
+   "kind": "text",
+   "hash": "b3f61e62020a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.restart": {
+   "en": "Restart the story",
+   "ar": "أعد القصّة",
+   "kind": "text",
+   "hash": "6d07d1b2947c",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.sampleLead": {
+   "en": "Salma is a fictional child (DEMO-…). Every action here is simulated in your session only: nothing is charged and no email or notification is sent.",
+   "ar": "سلمى طفلةٌ مستعارة (DEMO-…). كلّ فعلٍ هنا محاكاةٌ في جلستك وحدها: لا يُخصم شيء، ولا يُرسل بريدٌ ولا إشعار.",
+   "kind": "text",
+   "hash": "2f7f27d09ec5",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.showMe": {
+   "en": "Show me",
+   "ar": "أرني",
+   "kind": "text",
+   "hash": "f8ee0004db91",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.sponsor": {
+   "en": "Sponsor Salma for {0} a month",
+   "ar": "اكفل سلمى بـ{0} شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "690062c1f37a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.sponsored": {
+   "en": "You sponsored her in this session",
+   "ar": "كفلتَها في هذه الجلسة",
+   "kind": "text",
+   "hash": "21a9994f764d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.stepOf": {
+   "en": "Step {0} of {1}",
+   "ar": "الخطوة {0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "7ccb7f09819a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.0.act": {
+   "en": "Press “Create file” on the record in the queue.",
+   "ar": "اضغط «أنشئ ملفاً» على السجلّ في الطابور.",
+   "kind": "text",
+   "hash": "e467fa2c9fd4",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.0.done": {
+   "en": "The file was created from WAMY's record, and the office's record for the same child matched by reference, so the two sources agree.",
+   "ar": "أُنشئ الملف من سجلّ الندوة، ووصل سجلّ المكتب للطفلة نفسها بمرجعه، فتطابق المصدران.",
+   "kind": "text",
+   "hash": "5e5596d4bc8d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.0.title": {
+   "en": "The child's record arrives from WAMY",
+   "ar": "سجلّ الطفلة يصل من الندوة",
+   "kind": "text",
+   "hash": "917840f37e1c",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.0.what": {
+   "en": "WAMY is the primary source. Salma's record waits in the link queue, and only the administration creates a file from it.",
+   "ar": "الندوة هي المصدر الأوّل. سجلّ سلمى ينتظر في طابور الربط، والإدارة وحدها تنشئ منه ملفاً.",
+   "kind": "text",
+   "hash": "14e0c9743ff8",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.0.why": {
+   "en": "No file without a WAMY record, and no merging by name: two children with one name never become one file.",
+   "ar": "لا ملفّ بلا سجلٍّ من الندوة، ولا دمج بالاسم: طفلان باسمٍ واحد لا يصيران ملفاً واحداً.",
+   "kind": "text",
+   "hash": "7bac66783a3d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.1.act": {
+   "en": "Receive the office platform's upload.",
+   "ar": "استقبل رفع منصّة المكتب.",
+   "kind": "text",
+   "hash": "62fd9c9b8fd5",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.1.done": {
+   "en": "The birth-date shift raised a critical alert; the file is now “under verification” and takes no new sponsorship.",
+   "ar": "رُصدت إزاحة الميلاد تنبيهاً حرجاً، والملفّ الآن «قيد التحقق» ولا يقبل كفالةً جديدة.",
+   "kind": "text",
+   "hash": "2fab5a1d08ee",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.1.title": {
+   "en": "The platform detects a suspicious change",
+   "ar": "المنصّة ترصد تغييراً مريباً",
+   "kind": "text",
+   "hash": "527891bdb0bd",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.1.what": {
+   "en": "The office platform sends a birth date ten years earlier. The platform detects the shift on its own, flags the file and stops new sponsorships.",
+   "ar": "يصل من منصّة المكتب تاريخ ميلادٍ أقدم بعشر سنوات. المنصّة ترصد الإزاحة وحدها، وتعلّم الملفّ وتوقف الكفالة الجديدة.",
+   "kind": "text",
+   "hash": "e228d7c4a254",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.1.why": {
+   "en": "No identity change passes silently: detection is automatic, and the file is frozen before any money reaches it.",
+   "ar": "لا يمرّ تغييرٌ في الهويّة بصمت: الكشف آليّ، والملفّ يُجمَّد قبل أن يدخله مال.",
+   "kind": "text",
+   "hash": "b873f583b196",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.2.act": {
+   "en": "Try settling as the first supervisor, then switch to the second and settle the conflict and the alert.",
+   "ar": "جرّب الحسم بعين المشرف الأوّل، ثم بدّل إلى الثاني واحسم التعارض والتنبيه.",
+   "kind": "text",
+   "hash": "31dda3fd2f96",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.2.done": {
+   "en": "A second supervisor settled the change, and the file is verified by two sources again.",
+   "ar": "حُسم التغيير بيد مشرفٍ ثانٍ، وعاد الملفّ موثّقاً من مصدرين.",
+   "kind": "text",
+   "hash": "4a1f258c33ea",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.2.title": {
+   "en": "The country supervisor reviews and settles",
+   "ar": "مشرف الدولة يراجع ويحسم",
+   "kind": "text",
+   "hash": "c641f7763761",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.2.what": {
+   "en": "The first supervisor uploaded the change, so they can't settle it. A second supervisor takes it, keeps the original date and closes the alert.",
+   "ar": "المشرف الأوّل هو من رفع التغيير، فلا يحسمه. يتسلّمه مشرفٌ ثانٍ، فيبقي التاريخ الأصلي ويغلق التنبيه.",
+   "kind": "text",
+   "hash": "acb0eea7162a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.2.why": {
+   "en": "Four eyes, not two: nobody uploads a change and then approves it themselves.",
+   "ar": "عينان لا عينٌ واحدة: لا أحد يرفع تغييراً ثم يعتمده بنفسه.",
+   "kind": "text",
+   "hash": "6e64ab7711f4",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.3.act": {
+   "en": "Sponsor Salma (simulated, nothing is charged).",
+   "ar": "اكفل سلمى (محاكاة، لا يُخصم شيء).",
+   "kind": "text",
+   "hash": "2ecc6d440eb5",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.3.done": {
+   "en": "A simulated monthly sponsorship was recorded in your session. Nothing was charged.",
+   "ar": "سُجّلت كفالةٌ شهرية محاكاة في جلستك. لم يُخصم شيء.",
+   "kind": "text",
+   "hash": "190ed25aa63f",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.3.title": {
+   "en": "The sponsor sees the badge and sponsors",
+   "ar": "الكافل يرى الشارة ويكفل",
+   "kind": "text",
+   "hash": "84baf491fbed",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.3.what": {
+   "en": "The sponsor never sees the alert's reason or the file's fields; they see one of three levels and its month. Now: “Verified by two sources”.",
+   "ar": "الكافل لا يرى سبب التنبيه ولا حقول الملفّ؛ يرى درجةً من ثلاث وشهرها. والآن: «موثّق من مصدرين».",
+   "kind": "text",
+   "hash": "2083f6ca44b1",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.3.why": {
+   "en": "Trust without exposing the child: a level is enough to decide, and the details stay with the administration.",
+   "ar": "الثقة بلا كشفٍ لخصوصية الطفلة: درجةٌ تكفي للقرار، وتفاصيلها للإدارة وحدها.",
+   "kind": "text",
+   "hash": "ea6a6e953471",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.4.act": {
+   "en": "Fill in the report and send it for review.",
+   "ar": "املأ التقرير وأرسله للمراجعة.",
+   "kind": "text",
+   "hash": "6bdd76adc557",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.4.done": {
+   "en": "The report was sent and approved (simulated), so it is now in the child's timeline for her sponsor.",
+   "ar": "أُرسل التقرير واعتُمد محاكاةً، فصار في خطّ الطفلة عند كافلها.",
+   "kind": "text",
+   "hash": "bfdf6f89eba2",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.4.title": {
+   "en": "The office uploads a progress report",
+   "ar": "المكتب يرفع تقرير المتابعة",
+   "kind": "text",
+   "hash": "41df9e3a4a2d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.4.what": {
+   "en": "The field office writes the month's report. Health and attachments stay within the child's circle; the summary and education reach the sponsor once approved.",
+   "ar": "المكتب الميداني يكتب تقرير الشهر. الصحة والمرفقات تبقى لدائرة الطفلة، والخلاصة والتعليم تصل الكافل بعد الاعتماد.",
+   "kind": "text",
+   "hash": "449d73897c31",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.4.why": {
+   "en": "What reaches the sponsor was written by someone who saw the child and approved by the administration. In the trial it is approved as soon as it is sent.",
+   "ar": "ما يصل الكافل كتبه من رأى الطفلة، واعتمدته الإدارة. في التجربة يُعتمد محاكاةً فور إرساله.",
+   "kind": "text",
+   "hash": "097739a3e15a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.5.act": {
+   "en": "",
+   "ar": "",
+   "kind": "text",
+   "hash": "5ba93c9db0cf",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.5.done": {
+   "en": "",
+   "ar": "",
+   "kind": "text",
+   "hash": "5ba93c9db0cf",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.5.title": {
+   "en": "The sponsor sees the report in the child's timeline",
+   "ar": "الكافل يرى التقرير في خطّ الطفلة",
+   "kind": "text",
+   "hash": "54fd97bff851",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.5.what": {
+   "en": "In “My impact” the sponsor sees the file's status, the latest approved report and the qualification track.",
+   "ar": "في «أثري» يرى الكافل حالة الملفّ، وآخر تقريرٍ معتمد، ومسار التأهيل.",
+   "kind": "text",
+   "hash": "1b44824c7a4a",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.5.why": {
+   "en": "Follow-up is evidence, not a promise: what was written in the field reaches the sponsor directly.",
+   "ar": "المتابعة دليلٌ لا وعد: ما كُتب في الميدان يصل الكافل بلا وسيط.",
+   "kind": "text",
+   "hash": "cdc3b604f9c0",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.6.act": {
+   "en": "",
+   "ar": "",
+   "kind": "text",
+   "hash": "5ba93c9db0cf",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.6.done": {
+   "en": "",
+   "ar": "",
+   "kind": "text",
+   "hash": "5ba93c9db0cf",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.6.title": {
+   "en": "The administration sees the effect in the trust center",
+   "ar": "الإدارة ترى الأثر في مركز الثقة",
+   "kind": "text",
+   "hash": "9df36f6834b1",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.6.what": {
+   "en": "The counts and the decision log: the file's creation, the office's upload, and the second supervisor's settlement under their name.",
+   "ar": "العدّادات وسجلّ القرارات: إنشاء الملفّ، ورفع المكتب، وحسم المشرف الثاني باسمه.",
+   "kind": "text",
+   "hash": "03ccf721bdc6",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.steps.6.why": {
+   "en": "Every decision is logged under its owner's name, so it can be reviewed later and is never lost.",
+   "ar": "كلّ قرارٍ مسجّلٌ باسم صاحبه، فيُراجَع لاحقاً ولا يضيع.",
+   "kind": "text",
+   "hash": "6b22c89de960",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.stepsLabel": {
+   "en": "Story steps",
+   "ar": "خطوات القصّة",
+   "kind": "text",
+   "hash": "2e2a3300a068",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.title": {
+   "en": "Salma, from WAMY's record to her sponsor's impact",
+   "ar": "سلمى، من سجلّ الندوة إلى أثر كافلها",
+   "kind": "text",
+   "hash": "7cf68dbb2113",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.trustLink": {
+   "en": "Open the full trust center",
+   "ar": "افتح مركز الثقة كاملاً",
+   "kind": "text",
+   "hash": "3fb4b3f6d7d8",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.upload": {
+   "en": "Receive the office platform's upload",
+   "ar": "استقبل رفع منصّة المكتب",
+   "kind": "text",
+   "hash": "ad0916f0d94e",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.what": {
+   "en": "What happens",
+   "ar": "ما يحدث",
+   "kind": "text",
+   "hash": "6fb99461fb3b",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.admin": {
+   "en": "Administration",
+   "ar": "الإدارة",
+   "kind": "text",
+   "hash": "6a509e4c7c53",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.office": {
+   "en": "Field office",
+   "ar": "المكتب الميداني",
+   "kind": "text",
+   "hash": "121e18b2e2ae",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.platform": {
+   "en": "Platform",
+   "ar": "المنصّة",
+   "kind": "text",
+   "hash": "b67fa0969046",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.sponsor": {
+   "en": "Sponsor",
+   "ar": "الكافل",
+   "kind": "text",
+   "hash": "db3b0018879d",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.supervisor": {
+   "en": "Country supervisor",
+   "ar": "مشرف الدولة",
+   "kind": "text",
+   "hash": "43aa65c2a8ed",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.who.wamy": {
+   "en": "WAMY",
+   "ar": "الندوة",
+   "kind": "text",
+   "hash": "eff4fe336b96",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.why": {
+   "en": "Why it builds trust",
+   "ar": "لماذا يبني الثقة",
+   "kind": "text",
+   "hash": "6c34fbfc5563",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStory.youAre": {
+   "en": "You are now seeing it as",
+   "ar": "أنت الآن بعين",
+   "kind": "text",
+   "hash": "97fa0437ec4b",
+   "file": "src/components/try/story/TryStory.tsx"
+  },
+  "components/try/story/TryStoryEntry.all": {
+   "en": "The whole story from the start",
+   "ar": "القصّة كاملةً من أوّلها",
+   "kind": "text",
+   "hash": "c797697c9a0b",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.eyebrow": {
+   "en": "The trust story · two minutes",
+   "ar": "قصّة الثقة · دقيقتان",
+   "kind": "text",
+   "hash": "baa78ab67c7a",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.lead": {
+   "en": "One child, from WAMY's record to her sponsor's impact, through the eyes of everyone who touches her file. Choose where to start; the story is the same.",
+   "ar": "طفلةٌ واحدة من سجلّ الندوة إلى أثر كافلها، بعين كلّ من يمسّ ملفّها. اختر من أين تبدأ؛ القصّة واحدة.",
+   "kind": "text",
+   "hash": "0755d88435a8",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.sees.admin": {
+   "en": "The effect in the trust center, then how it got there",
+   "ar": "الأثر في مركز الثقة، ثم كيف وصل",
+   "kind": "text",
+   "hash": "238901ea3115",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.sees.partner": {
+   "en": "A suspicious change settled by a second supervisor",
+   "ar": "تغييرٌ مريب يحسمه مشرفٌ ثانٍ",
+   "kind": "text",
+   "hash": "f41db9b7c58e",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.sees.sponsor": {
+   "en": "The badge before sponsoring, the report after",
+   "ar": "الشارة قبل الكفالة، والتقرير بعدها",
+   "kind": "text",
+   "hash": "4a46757dadda",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.title": {
+   "en": "How is trust built at every step?",
+   "ar": "كيف تُبنى الثقة في كلّ خطوة؟",
+   "kind": "text",
+   "hash": "ab948ab90ef0",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.who.admin": {
+   "en": "I'm in administration",
+   "ar": "أنا من الإدارة",
+   "kind": "text",
+   "hash": "edc0463dd33b",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.who.partner": {
+   "en": "I'm a partner organization",
+   "ar": "أنا جهةٌ شريكة",
+   "kind": "text",
+   "hash": "ea8cde03e3e6",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/try/story/TryStoryEntry.who.sponsor": {
+   "en": "I'm a sponsor",
+   "ar": "أنا كافل",
+   "kind": "text",
+   "hash": "a55cef431d29",
+   "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",
    "ar": "أطفالٌ يصلهم أثري",
@@ -20878,6 +21539,27 @@
    "hash": "78900636cf9c",
    "file": "src/lib/try-sponsor-center.ts"
   },
+  "lib/try-story.education": {
+   "en": "Full attendance this month, with progress in reading and maths.",
+   "ar": "حضورٌ كامل هذا الشهر، وتقدّمٌ في القراءة والحساب.",
+   "kind": "text",
+   "hash": "cd24a8148eab",
+   "file": "src/lib/try-story.ts"
+  },
+  "lib/try-story.noUpload": {
+   "en": "Attachments aren't uploaded in the trial; the report is sent without them.",
+   "ar": "المرفقات لا تُرفع في التجربة؛ التقرير يُرسل بدونها.",
+   "kind": "text",
+   "hash": "5d91ead1e036",
+   "file": "src/lib/try-story.ts"
+  },
+  "lib/try-story.summary": {
+   "en": "Salma kept up with Grade 5 and her reading has improved. Her school supplies were delivered with a receipt.",
+   "ar": "انتظمت سلمى في الصف الخامس، وتحسّنت قراءتها. وصلت لوازمها المدرسية بمستند استلام.",
+   "kind": "text",
+   "hash": "6a1813f17d61",
+   "file": "src/lib/try-story.ts"
+  },
   "lib/try-world.covers.0": {
    "en": "Schooling, food and healthcare",
    "ar": "الدراسة والغذاء والرعاية الصحية",
@@ -26144,6 +26826,13 @@
    "kind": "text",
    "hash": "7ca1e6b5247f",
    "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.journey.title.title": {
+   "en": "The trust story, step by step",
+   "ar": "قصّة الثقة خطوةً خطوة",
+   "kind": "text",
+   "hash": "bcd6d41848bb",
+   "file": "src/routes/try.journey.tsx"
   },
   "routes/try.office.approve": {
    "en": "Pass to admin",

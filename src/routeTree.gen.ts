@@ -44,6 +44,7 @@ import { Route as TryAdminRouteImport } from './routes/try.admin'
 import { Route as TryCountryRouteImport } from './routes/try.country'
 import { Route as TryCycleRouteImport } from './routes/try.cycle'
 import { Route as TryImpactRouteImport } from './routes/try.impact'
+import { Route as TryJourneyRouteImport } from './routes/try.journey'
 import { Route as TryPayRouteImport } from './routes/try.pay'
 import { Route as TrySupportRouteImport } from './routes/try.support'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
@@ -254,6 +255,11 @@ const TryImpactRoute = TryImpactRouteImport.update({
   path: '/impact',
   getParentRoute: () => TryRoute,
 } as any)
+const TryJourneyRoute = TryJourneyRouteImport.update({
+  id: '/journey',
+  path: '/journey',
+  getParentRoute: () => TryRoute,
+} as any).lazy(() => import('./routes/try.journey.lazy').then((d) => d.Route))
 const TryOfficeLazyRoute = TryOfficeLazyRouteImport.update({
   id: '/office',
   path: '/office',
@@ -486,6 +492,7 @@ export interface FileRoutesByFullPath {
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
+  '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
@@ -557,6 +564,7 @@ export interface FileRoutesByTo {
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
+  '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
@@ -631,6 +639,7 @@ export interface FileRoutesById {
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
+  '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
   '/vision/cycle': typeof VisionCycleRoute
@@ -705,6 +714,7 @@ export interface FileRouteTypes {
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
+    | '/try/journey'
     | '/try/pay'
     | '/try/support'
     | '/vision/cycle'
@@ -776,6 +786,7 @@ export interface FileRouteTypes {
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
+    | '/try/journey'
     | '/try/pay'
     | '/try/support'
     | '/vision/cycle'
@@ -849,6 +860,7 @@ export interface FileRouteTypes {
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
+    | '/try/journey'
     | '/try/pay'
     | '/try/support'
     | '/vision/cycle'
@@ -1176,6 +1188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TryImpactRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/journey': {
+      id: '/try/journey'
+      path: '/journey'
+      fullPath: '/try/journey'
+      preLoaderRoute: typeof TryJourneyRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/try/office': {
       id: '/try/office'
       path: '/office'
@@ -1492,6 +1511,7 @@ interface TryRouteChildren {
   TryCountryRoute: typeof TryCountryRoute
   TryCycleRoute: typeof TryCycleRoute
   TryImpactRoute: typeof TryImpactRoute
+  TryJourneyRoute: typeof TryJourneyRoute
   TryPayRoute: typeof TryPayRoute
   TrySupportRoute: typeof TrySupportRoute
   TryDeciderLazyRoute: typeof TryDeciderLazyRoute
@@ -1507,6 +1527,7 @@ const TryRouteChildren: TryRouteChildren = {
   TryCountryRoute: TryCountryRoute,
   TryCycleRoute: TryCycleRoute,
   TryImpactRoute: TryImpactRoute,
+  TryJourneyRoute: TryJourneyRoute,
   TryPayRoute: TryPayRoute,
   TrySupportRoute: TrySupportRoute,
   TryDeciderLazyRoute: TryDeciderLazyRoute,
