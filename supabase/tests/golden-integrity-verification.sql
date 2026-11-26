@@ -3,7 +3,8 @@
 BEGIN;
 INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
   ('a9500000-0000-4000-8000-000000000001', 'gi-admin@example.test', '{}'::jsonb);
-INSERT INTO public.user_roles (user_id, role) VALUES ('a9500000-0000-4000-8000-000000000001', 'admin');
+INSERT INTO auth.users (id, email) VALUES ('a9500000-0000-4000-8000-000000000009', 'second-admin-a95000@example.test');
+INSERT INTO public.user_roles (user_id, role) VALUES ('a9500000-0000-4000-8000-000000000001', 'admin'), ('a9500000-0000-4000-8000-000000000009', 'admin');
 
 DO $$
 DECLARE _r JSONB; _o UUID; _o2 UUID; _q UUID; _ok BOOLEAN; _a UUID;
@@ -61,9 +62,11 @@ BEGIN
 
   -- الإنذار الكاذب لا يعود للقيمة نفسها، والتأكيد يحتاج ملاحظة
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
+  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000009","role":"authenticated"}';
   _r := public.admin_alert_resolve(_a, 'confirmed');
   IF _r->>'code' <> 'note_required' THEN RAISE EXCEPTION 'FAIL — تأكيد بلا ملاحظة'; END IF;
   _r := public.admin_alert_resolve(_a, 'false_positive', 'تصحيح من السجل المدني');
+  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000001","role":"authenticated"}';
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,
     '[{"external_ref":"g-1","observed_at":"2026-11-06T00:00:00Z","fields":{"birth_date":"2012-05-01"}}]'::jsonb);
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,

@@ -3401,10 +3401,10 @@
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.four_eyes_required": {
-   "en": "You uploaded this change yourself: another supervisor or the admin team settles it.",
-   "ar": "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو الإدارة.",
+   "en": "You uploaded this change yourself: another supervisor or another admin settles it.",
+   "ar": "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو مديرٌ آخر.",
    "kind": "text",
-   "hash": "a383ccad6da1",
+   "hash": "3ceff8b38956",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.gender_required": {
