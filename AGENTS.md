@@ -43,6 +43,7 @@
 
 ## Core countries
 - The real mode shows only `countries.live_focus` (Sri Lanka, Pakistan with Kashmir as a `country_regions` row, Thailand, Sudan, Senegal) via `public_focus_countries`; the trial keeps the whole network with sample data, so real and sample geography never mix.
+- Vision pages read country presence from the generated `src/data/wamy-presence.ts` (regenerate with `npx tsx scripts/gen-wamy-presence.mjs` after editing `wamy-network.ts`; `wamy-presence.test.ts` fails if they differ), so they stay within the 385KB page budget without the research indicators.
 - Sri Lanka and Pakistan entries in `src/data/wamy-network.ts` rest on WAMY management's statement (no public URL); replace `source`/`url` with the official source when supplied, keeping the `in_network` migration list in sync.
 - Country teams (`country_staff`: supervisor, data_entry, viewer) reach the verification layer only through `country_can`, checked before an item's status so other countries learn nothing; critical changes and alerts are settled by someone other than their uploader (`received_by`, `raised_by`), so no single staff member can push and approve the same change.
 - New sponsorships pass `golden_accepts_new_support` (insert trigger, both suggestion functions, `public_verification.accepts`); keep it an indexed check that matches `golden_trust` (locked by `golden-gate-verification`), so flagged files never take new money and suggestions stay fast at 10,000 files.
