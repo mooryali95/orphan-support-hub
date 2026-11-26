@@ -2236,4 +2236,50 @@ export const WAMY_COUNTRIES: NetworkCountry[] = [
     context:
       "تعداد 2024: نحو 2.9 مليون طفل يتيم (12.9% من الأطفال)، والعدد تضاعف منذ 2002 (1.3 مليون). أعلى التركّزات في غرب النيل وماديو كاراموجا. أكثر من 12% من الأسر يرأسها أطفال أو شباب.",
   },
+  {
+    code: "LK",
+    nameAr: "سريلانكا",
+    presence: {
+      status: "office",
+      city: null,
+      type: {
+        ar: "مكتب وطني",
+        en: "Country office",
+      },
+      activity: {
+        ar: "دولة أساسية في المنصّة: كفالة الأيتام وتأهيلهم",
+        en: "A core platform country: orphan sponsorship and qualification",
+      },
+      year: 2026,
+      // إفادة مالك المنصّة لا مصدرٌ عامّ منشور: بلا رابط، وتُستبدل بالمصدر الرسمي حين يُزوَّد.
+      source: "إفادة إدارة الندوة للمنصّة (نوفمبر 2026)",
+      url: "",
+      confidence: "medium",
+    },
+    need: [],
+    context: null,
+  },
+  {
+    code: "PK",
+    nameAr: "باكستان",
+    presence: {
+      status: "office",
+      city: null,
+      type: {
+        ar: "مكتب وطني",
+        en: "Country office",
+      },
+      activity: {
+        ar: "دولة أساسية في المنصّة عبر برامج كشمير: كفالة الأيتام وتأهيلهم",
+        en: "A core platform country through its Kashmir programs: orphan sponsorship and qualification",
+      },
+      year: 2026,
+      // إفادة مالك المنصّة لا مصدرٌ عامّ منشور: بلا رابط، وتُستبدل بالمصدر الرسمي حين يُزوَّد.
+      source: "إفادة إدارة الندوة للمنصّة (نوفمبر 2026)",
+      url: "",
+      confidence: "medium",
+    },
+    need: [],
+    context: null,
+  },
 ];

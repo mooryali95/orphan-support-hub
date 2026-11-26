@@ -13,7 +13,7 @@ import {
   tierOf,
 } from "./office-gap";
 
-const OFFICE = "SA TD NE SD KE DJ SN GN MR EG NG KG TH CM ML ID BD BA BR PS".split(" ");
+const OFFICE = "SA TD NE SD KE DJ SN GN MR EG NG KG TH CM ML ID BD BA BR PS LK PK".split(" ");
 const FIELD = "AL XK MK ET TZ RW CI".split(" ");
 const UNCONFIRMED = "SO YE PH IQ ZA MY TJ UG".split(" ");
 

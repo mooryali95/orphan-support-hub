@@ -36,18 +36,21 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — دول الشبكة في الكتالوج والتعهّد';
 
-  -- ٤) السلسلة تبذر دول الحضور العلني معلَّمة (20261123200000)، وغير المؤكَّد خارجها.
+  -- ٤) السلسلة تبذر دول الحضور العلني معلَّمة (20261123200000، ثم 20261126120000 بسريلانكا
+  --    وباكستان)، وغير المؤكَّد خارجها. المفعَّل: ألبانيا والدول الخمس الأساسية وحدها.
   UPDATE public.countries SET in_network = false WHERE code = 'ZZ';
-  IF (SELECT count(*) FROM public.countries WHERE in_network) <> 27
+  IF (SELECT count(*) FROM public.countries WHERE in_network) <> 29
      OR EXISTS (SELECT 1 FROM public.countries
                  WHERE in_network AND code IN ('SO','YE','PH','IQ','ZA','MY','TJ','UG'))
      OR (SELECT status FROM public.countries WHERE code = 'AL') <> 'active'
-     OR EXISTS (SELECT 1 FROM public.countries WHERE code <> 'AL' AND in_network AND status <> 'planned')
+     OR EXISTS (SELECT 1 FROM public.countries WHERE code <> 'AL' AND in_network
+                  AND status <> CASE WHEN live_focus THEN 'active' ELSE 'planned' END)
+     OR (SELECT array_agg(code ORDER BY code) FROM public.countries WHERE live_focus) <> ARRAY['LK','PK','SD','SN','TH']
      OR EXISTS (SELECT 1 FROM public.countries WHERE in_network AND currency IS NULL) THEN
     RAISE EXCEPTION 'FAIL — بذر دول الشبكة لا يطابق الحضور العلني';
   END IF;
   _cat := public.support_catalog(NULL);
-  IF jsonb_array_length(_cat->'countries') <> 27
+  IF jsonb_array_length(_cat->'countries') <> 29
      OR NOT (_cat->'countries') @> '[{"code":"SA"},{"code":"XK"},{"code":"CI"}]'
      OR (_cat->'countries') @> '[{"code":"SO"}]' THEN
     RAISE EXCEPTION 'FAIL — كتالوج الدعم لا يعرض دول الشبكة المبذورة';

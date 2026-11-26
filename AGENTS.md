@@ -39,3 +39,7 @@
 - Unlinked records wait in `source_link_queue`; files are created only from WAMY records and only by an admin, so names never auto-merge children.
 - Source comparison and link matching run on `golden_canon` text, and every observation passes the `golden_detect` trigger; keep new comparisons on canonical text so spelling variants never become conflicts and tampering always raises an alert.
 - Sponsors see only `public_verification` (three levels and a month); alert reasons and field values stay admin-only, preserving child privacy.
+
+## Core countries
+- The real mode shows only `countries.live_focus` (Sri Lanka, Pakistan with Kashmir as a `country_regions` row, Thailand, Sudan, Senegal) via `public_focus_countries`; the trial keeps the whole network with sample data, so real and sample geography never mix.
+- Sri Lanka and Pakistan entries in `src/data/wamy-network.ts` rest on WAMY management's statement (no public URL); replace `source`/`url` with the official source when supplied, keeping the `in_network` migration list in sync.

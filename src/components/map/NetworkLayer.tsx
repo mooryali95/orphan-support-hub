@@ -427,6 +427,13 @@ function indicatorYears(i: Indicator, locale: Locale): string {
 }
 
 function SourceLink({ href, children }: { href: string; children: ReactNode }) {
+  // إفادةٌ بلا رابطٍ منشور (مثل إفادة إدارة الندوة): نصٌّ لا رابطٌ فارغ.
+  if (!href)
+    return (
+      <span dir="auto" className="truncate">
+        {children}
+      </span>
+    );
   return (
     <a
       href={href}

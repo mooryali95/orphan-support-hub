@@ -15,10 +15,10 @@ import {
 } from "./model";
 
 describe("قاعة الأثر — الشبكة", () => {
-  it("كخريطة الشبكة: مقرّ و19 مكتباً و7 أنشطة ميدانية، و8 غير مؤكَّدة", () => {
+  it("كخريطة الشبكة: مقرّ و21 مكتباً و7 أنشطة ميدانية، و8 غير مؤكَّدة", () => {
     const n = (st: string) => COUNTRIES.filter((c) => c.st === st).length;
-    expect(COUNTRIES).toHaveLength(35);
-    expect([n("hq"), n("office"), n("field"), n("unconfirmed")]).toEqual([1, 19, 7, 8]);
+    expect(COUNTRIES).toHaveLength(37);
+    expect([n("hq"), n("office"), n("field"), n("unconfirmed")]).toEqual([1, 21, 7, 8]);
     expect(byCode("SA")!.st).toBe("hq");
   });
 

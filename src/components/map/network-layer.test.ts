@@ -18,7 +18,7 @@ describe("طبقتا الشبكة", () => {
     expect(paint.get("ET")).toBe("field");
     for (const code of ["SO", "YE", "PH", "IQ", "ZA", "MY", "TJ", "UG"])
       expect(paint.has(code)).toBe(false);
-    expect(kindCounts(paint)).toMatchObject({ hq: 1, office: 19, field: 7, unconfirmed: 0 });
+    expect(kindCounts(paint)).toMatchObject({ hq: 1, office: 21, field: 7, unconfirmed: 0 });
   });
 
   it("وللإدارة يظهر غير المؤكَّد محايداً", () => {

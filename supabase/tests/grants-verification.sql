@@ -229,6 +229,7 @@ DECLARE _allowed TEXT[] := ARRAY[
     'orphan_trust(uuid)',
     'orphan_view(uuid)',
     'public_operating_links()', -- مجاميع الدول المتّصلة بالتشغيل لمنصة الرؤية (بلا صفوف)
+    'public_focus_countries()', -- رموز الدول الأساسية للوضع الحقيقي (بلا أعداد)
     'public_offices_map()', -- مكاتب الندوة على الخريطة: الاسم والدولة والمدينة والفئة ووسم التجريبي (بلا أعضاء)
     'public_ui_locales()',
     'public_verification(uuid)', -- شارة الكافل: درجةٌ من ثلاث وشهر آخر تحقّق لملفٍّ منشور (بلا حقول ولا أسباب)

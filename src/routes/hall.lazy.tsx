@@ -28,6 +28,7 @@ import { formatCount } from "@/lib/format";
 import { copyOf, defineCopy, dirOf, useLocale } from "@/lib/locale";
 import { getPublicOrphan } from "@/lib/orphans.functions";
 import { listMySponsorships } from "@/lib/sponsorships.functions";
+import { getFocusCountries } from "@/lib/focus-countries.functions";
 import { getOperatingLinks } from "@/lib/vision-links.functions";
 
 /**
@@ -269,6 +270,8 @@ function HallPage() {
             : getOperatingLinks()
                 .then((links) => links.map((l) => l.country))
                 .catch(() => []),
+          // الوضع الحقيقي يعرض الدول الأساسية وحدها؛ التجربة والداعم لا يقرآنها.
+          focus: trying || donor ? null : getFocusCountries().catch(() => []),
           demo: trial
             ? trial.trialDemo({ locale, child: search.child, cadence: search.cadence })
             : null,
