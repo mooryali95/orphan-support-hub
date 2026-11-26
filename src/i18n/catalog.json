@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4308,
+ "count": 4373,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -9183,6 +9183,119 @@
    "hash": "618172b0a1c2",
    "file": "src/components/impact/QualificationImpactView.tsx"
   },
+  "components/impact/ReportForm.add": {
+   "en": "Add an attachment",
+   "ar": "أضف مرفقاً",
+   "kind": "text",
+   "hash": "a8c54de68de5",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.attachments": {
+   "en": "Attachments",
+   "ar": "المرفقات",
+   "kind": "text",
+   "hash": "ca629df37c0c",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.attachmentsHint": {
+   "en": "Kept in the private vault, and opened only by the people around the child through a signed link.",
+   "ar": "تُحفظ في الخزنة الخاصة، ولا يفتحها إلا من حول الطفل برابطٍ موقّع.",
+   "kind": "text",
+   "hash": "74ee2481be31",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.education": {
+   "en": "Education",
+   "ar": "التعليم",
+   "kind": "text",
+   "hash": "f5406ee9c0e4",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.empty": {
+   "en": "Write at least one line — an empty report doesn't help the sponsor",
+   "ar": "اكتب سطراً واحداً على الأقل — تقرير فارغ لا يُفيد الكافل",
+   "kind": "text",
+   "hash": "68f68835583b",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.health": {
+   "en": "Health",
+   "ar": "الصحة",
+   "kind": "text",
+   "hash": "8db6a915cb2d",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.living": {
+   "en": "Living conditions",
+   "ar": "المعيشة",
+   "kind": "text",
+   "hash": "2b13763ff8ee",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.period": {
+   "en": "Period",
+   "ar": "الفترة",
+   "kind": "text",
+   "hash": "74d0c88d3fd1",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.periodHint": {
+   "en": "One report per period. Sending again before approval replaces the previous one.",
+   "ar": "تقرير واحد لكل فترة. وإعادة الإرسال قبل الاعتماد تستبدل السابق.",
+   "kind": "text",
+   "hash": "4400cc53234c",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.remove": {
+   "en": "Remove {0}",
+   "ar": "إزالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "199ff27d775c",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.sent": {
+   "en": "Report sent for review",
+   "ar": "أُرسل التقرير للمراجعة",
+   "kind": "text",
+   "hash": "74322ef82696",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.submit": {
+   "en": "Send for review",
+   "ar": "إرسال للمراجعة",
+   "kind": "text",
+   "hash": "1c78a307d29a",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.summary": {
+   "en": "Summary of the period",
+   "ar": "خلاصة الفترة",
+   "kind": "text",
+   "hash": "1e40c8cda11f",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.uploadFailed": {
+   "en": "The attachment could not be uploaded",
+   "ar": "تعذّر رفع المرفق",
+   "kind": "text",
+   "hash": "cb207e689a06",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
+  "components/impact/ReportForm.visibility": {
+   "en": "After approval the sponsor sees the summary, education and living conditions. Health notes and attachments stay within the child's circle (the organization, the guardian and the administration) and never reach the sponsor.",
+   "ar": "يرى الكافل بعد الاعتماد الخلاصةَ والتعليم والمعيشة. أمّا الصحة والمرفقات فتبقى لدائرة الطفل (الجهة والوليّ والإدارة) ولا تصل الكافل.",
+   "kind": "text",
+   "hash": "6c13a0152446",
+   "file": "src/components/impact/ReportForm.tsx"
+  },
   "components/impact/SupportImpactParts.justBegan": {
    "en": "Just begun",
    "ar": "بدأ للتوّ",
@@ -12408,6 +12521,337 @@
    "kind": "text",
    "hash": "95120cefa33c",
    "file": "src/components/sponsorship/PayCurrency.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.changed": {
+   "en": "Amount changed — it applies from the next transfer",
+   "ar": "تغيّر المبلغ — يسري من التحويل القادم",
+   "kind": "text",
+   "hash": "a4b1e19e94f8",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.invalid": {
+   "en": "Enter a whole amount of 5 or more.",
+   "ar": "مبلغٌ صحيح من 5 فأكثر.",
+   "kind": "text",
+   "hash": "bbb2ac31054a",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.label": {
+   "en": "New monthly amount ({0})",
+   "ar": "المبلغ الشهري الجديد ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "d726a414206e",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.lead": {
+   "en": "The current amount is {0} a month. The new amount applies from the next transfer; what was paid before stays the same. The field organization is told about the change.",
+   "ar": "المبلغ الحالي {0} شهرياً. الجديد يسري من التحويل القادم، وما دُفع قبله لا يتغيّر. تعلم الجهة الميدانية بالتعديل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "fff348b5986e",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.submit": {
+   "en": "Save amount",
+   "ar": "احفظ المبلغ",
+   "kind": "text",
+   "hash": "fa79b6f61283",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.amountForm.title": {
+   "en": "Change the amount for {0}",
+   "ar": "تعديل مبلغ كفالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d6db46a3b42e",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.alternatives": {
+   "en": "If the situation is temporary or the amount feels heavy, there are two alternatives:",
+   "ar": "إن كان الظرف مؤقّتاً أو المبلغ ثقيلاً، فهناك بديلان:",
+   "kind": "text",
+   "hash": "dfdf829465ca",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.cancelled": {
+   "en": "Sponsorship cancelled",
+   "ar": "أُلغيت الكفالة",
+   "kind": "text",
+   "hash": "ff027c728e20",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.card": {
+   "en": "Your card subscription with the payment provider is cancelled at the end of the same cycle.",
+   "ar": "ويُلغى اشتراك البطاقة لدى مزوّد الدفع عند نهاية الدورة نفسها.",
+   "kind": "text",
+   "hash": "dee6b31b3603",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.ending": {
+   "en": "Ending recorded — the sponsorship continues until {0}",
+   "ar": "سُجّل الإنهاء — تبقى الكفالة جاريةً حتى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "cafa58d8a5b4",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.lead": {
+   "en": "{0} a month. The sponsorship does not end at once: it continues until the end of the month you paid for, so the child receives it in full, then it ends and nothing more is charged.",
+   "ar": "{0} شهرياً. لا تنتهي الكفالة فوراً: تبقى جاريةً حتى آخر الشهر الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6f07f49a2d14",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.leadPending": {
+   "en": "Nothing has been paid yet, so the request is cancelled now and no transfer is expected from you.",
+   "ar": "لم يُدفع شيءٌ بعد، فيُلغى الطلب الآن ولا يُطلب منك تحويل.",
+   "kind": "text",
+   "hash": "f03e056684ef",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.lowerAmount": {
+   "en": "Lower the amount",
+   "ar": "خفّض المبلغ",
+   "kind": "text",
+   "hash": "397e98992062",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.noReason": {
+   "en": "I'd rather not say",
+   "ar": "لا أريد ذكر سبب",
+   "kind": "text",
+   "hash": "155e1886525c",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.note": {
+   "en": "A note for the organization (optional)",
+   "ar": "كلمةٌ للجهة (اختياري)",
+   "kind": "text",
+   "hash": "3a0acb666450",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.notify": {
+   "en": "The field organization and the administration are told the end date.",
+   "ar": "تُبلَّغ الجهة الميدانية والإدارة بموعد الانتهاء.",
+   "kind": "text",
+   "hash": "4dac956cb227",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.pauseInstead": {
+   "en": "Pause it",
+   "ar": "أوقفها مؤقّتاً",
+   "kind": "text",
+   "hash": "6ee6db1c6ad8",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reason": {
+   "en": "Reason (optional)",
+   "ar": "السبب (اختياري)",
+   "kind": "text",
+   "hash": "4aa8ee8b9a9d",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reasons.another_child": {
+   "en": "I want to sponsor another child",
+   "ar": "أريد كفالة طفلٍ آخر",
+   "kind": "text",
+   "hash": "6ebc25c61554",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reasons.dissatisfied": {
+   "en": "I'm not satisfied with the follow-up",
+   "ar": "لست راضياً عن المتابعة",
+   "kind": "text",
+   "hash": "7898b49096a3",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reasons.financial": {
+   "en": "Financial circumstances",
+   "ar": "ظرفٌ مالي",
+   "kind": "text",
+   "hash": "142dbb9012ec",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reasons.other": {
+   "en": "Another reason",
+   "ar": "سببٌ آخر",
+   "kind": "text",
+   "hash": "3140e17f3258",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.reasons.temporary": {
+   "en": "I need a temporary break",
+   "ar": "أحتاج توقّفاً مؤقّتاً",
+   "kind": "text",
+   "hash": "0e9030cece2c",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.submit": {
+   "en": "End at the close of the paid month",
+   "ar": "أنهِ الكفالة آخر الشهر المدفوع",
+   "kind": "text",
+   "hash": "5b8f8cb010fb",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.submitPending": {
+   "en": "Cancel the request",
+   "ar": "ألغِ الطلب",
+   "kind": "text",
+   "hash": "d0973e28f6cf",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.title": {
+   "en": "End the sponsorship of {0}",
+   "ar": "إنهاء كفالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "b7ea3feb7b48",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancel.titlePending": {
+   "en": "Cancel the sponsorship request for {0}",
+   "ar": "إلغاء طلب كفالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "5b6f2e7bb1da",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.cancelRequest": {
+   "en": "Cancel request",
+   "ar": "إلغاء الطلب",
+   "kind": "text",
+   "hash": "ca217db10433",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.changeAmount": {
+   "en": "Change amount",
+   "ar": "تعديل المبلغ",
+   "kind": "text",
+   "hash": "baca4adabe9b",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.child": {
+   "en": "the child",
+   "ar": "الطفل",
+   "kind": "text",
+   "hash": "f4f31c8d0549",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.endSponsorship": {
+   "en": "End sponsorship",
+   "ar": "إنهاء الكفالة",
+   "kind": "text",
+   "hash": "096ae58b2fd2",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pause": {
+   "en": "Pause",
+   "ar": "إيقاف مؤقّت",
+   "kind": "text",
+   "hash": "d8dbacfa88c7",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.duration": {
+   "en": "Duration",
+   "ar": "المدّة",
+   "kind": "text",
+   "hash": "26197ca255d5",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.lead": {
+   "en": "The pause starts after the last month you paid for, no transfer is expected during it, and the sponsorship then resumes automatically. Your place with the child is kept, and the field organization is told how long the pause lasts. You can resume earlier whenever you like.",
+   "ar": "يبدأ الإيقاف بعد آخر شهرٍ دفعته، ولا يُنتظر منك تحويلٌ خلاله، ثم تُستأنف الكفالة تلقائياً. يبقى مكانك مع الطفل، وتعلم الجهة الميدانية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.",
+   "kind": "text",
+   "hash": "03fa82755766",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.months.one": {
+   "en": "{0} month",
+   "ar": "شهر",
+   "kind": "plural",
+   "hash": "f96dffab3a84",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.months.other": {
+   "en": "{0} months",
+   "ar": "{0} شهر",
+   "kind": "plural",
+   "hash": "3509a8f952e2",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.paused": {
+   "en": "Paused — resumes on {0}",
+   "ar": "أُوقفت مؤقّتاً — تُستأنف في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "2e1dfc7bbc2e",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.submit": {
+   "en": "Pause it",
+   "ar": "أوقفها مؤقّتاً",
+   "kind": "text",
+   "hash": "6ee6db1c6ad8",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.pauseForm.title": {
+   "en": "Pause the sponsorship of {0}",
+   "ar": "إيقاف كفالة {0} مؤقّتاً",
+   "kind": "template",
+   "params": 1,
+   "hash": "9f04489b5d2b",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.resumeNow": {
+   "en": "Resume now",
+   "ar": "استئناف الآن",
+   "kind": "text",
+   "hash": "a1f4eddedf7f",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/SponsorshipControls.resumed": {
+   "en": "Sponsorship resumed",
+   "ar": "استُؤنفت الكفالة",
+   "kind": "text",
+   "hash": "1a5b57134386",
+   "file": "src/components/sponsorship/SponsorshipControls.tsx"
+  },
+  "components/sponsorship/status.active": {
+   "en": "Active",
+   "ar": "نشطة",
+   "kind": "text",
+   "hash": "60a91d5c492f",
+   "file": "src/components/sponsorship/status-copy.ts"
+  },
+  "components/sponsorship/status.cancelled": {
+   "en": "Cancelled",
+   "ar": "ملغاة",
+   "kind": "text",
+   "hash": "870dcbd9eca0",
+   "file": "src/components/sponsorship/status-copy.ts"
+  },
+  "components/sponsorship/status.completed": {
+   "en": "Completed",
+   "ar": "مكتملة",
+   "kind": "text",
+   "hash": "34f01c4760a7",
+   "file": "src/components/sponsorship/status-copy.ts"
+  },
+  "components/sponsorship/status.paused": {
+   "en": "Paused",
+   "ar": "موقوفة مؤقّتاً",
+   "kind": "text",
+   "hash": "e7667102d8a5",
+   "file": "src/components/sponsorship/status-copy.ts"
+  },
+  "components/sponsorship/status.pending_payment": {
+   "en": "Awaiting payment",
+   "ar": "بانتظار الدفع",
+   "kind": "text",
+   "hash": "670b461263f2",
+   "file": "src/components/sponsorship/status-copy.ts"
   },
   "components/support/Follow.follow": {
    "en": "Follow",
@@ -23429,6 +23873,13 @@
    "hash": "d235f9338dcb",
    "file": "src/routes/index.tsx"
   },
+  "routes/index.hallNoteLive": {
+   "en": "WAMY's network is real; the support figures inside are simulated — no account, nothing charged.",
+   "ar": "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة — بلا حسابٍ ولا خصم.",
+   "kind": "text",
+   "hash": "7078e0aa2cb7",
+   "file": "src/routes/index.tsx"
+  },
   "routes/index.hallP": {
    "en": "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
    "ar": "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل — المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
@@ -24271,6 +24722,13 @@
    "ar": "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
    "kind": "text",
    "hash": "b38c02bba2a8",
+   "file": "src/routes/orphans.index.tsx"
+  },
+  "routes/orphans.index.launchTextLive": {
+   "en": "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, you can support a place now.",
+   "ar": "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين ادعم مكاناً بعينه الآن.",
+   "kind": "text",
+   "hash": "c5dc25e8b610",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.launchTitle": {
@@ -25174,6 +25632,13 @@
    "ar": "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
    "kind": "text",
    "hash": "bd00a456abba",
+   "file": "src/routes/support.tsx"
+  },
+  "routes/support.realNoteLive": {
+   "en": "Real support: recorded in your name and reaching a real child.",
+   "ar": "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي.",
+   "kind": "text",
+   "hash": "2872861e428c",
    "file": "src/routes/support.tsx"
   },
   "routes/support.rest": {

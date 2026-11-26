@@ -21,13 +21,13 @@ import { listMySponsorships, type MySponsorship } from "@/lib/sponsorships.funct
 import { SponsorshipControls } from "@/components/sponsorship/SponsorshipControls";
 import { ManageSponsorshipLink } from "@/components/sponsorship/ManageSponsorship";
 import { ChildTimeline } from "@/components/sponsorship/ChildTimeline";
+import { useStatusLabel } from "@/components/sponsorship/status-copy";
 import { startCheckout, getPaymentMode } from "@/lib/payments.functions";
 import {
   formatDate,
   formatMoney,
   formatMoneyTotals,
   fundingPercent,
-  SPONSORSHIP_STATUS_LABELS,
   totalsByCurrency,
 } from "@/lib/format";
 import { BRAND, pageTitle } from "@/config/brand";
@@ -75,6 +75,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function DashboardPage() {
   const { payment } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const statusLabel = useStatusLabel();
   const fetchList = useServerFn(listMySponsorships);
   const pay = useServerFn(startCheckout);
   const fetchMode = useServerFn(getPaymentMode);
@@ -355,7 +356,7 @@ function DashboardPage() {
                               <Name>{orphan?.display_name ?? "ملفّ محذوف"}</Name>
                             </h3>
                             <Badge variant={s.status === "active" ? "default" : "secondary"}>
-                              {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+                              {statusLabel(s.status)}
                             </Badge>
                           </div>
                           <p className="mt-1 text-sm text-muted-foreground">

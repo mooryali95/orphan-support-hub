@@ -25,6 +25,120 @@ import {
   type MySponsorship,
 } from "@/lib/sponsorships.functions";
 import { formatDate, formatMoney, isolate } from "@/lib/format";
+import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
+
+const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
+  ar: {
+    child: "الطفل",
+    resumed: "استُؤنفت الكفالة",
+    resumeNow: "استئناف الآن",
+    pause: "إيقاف مؤقّت",
+    changeAmount: "تعديل المبلغ",
+    cancelRequest: "إلغاء الطلب",
+    endSponsorship: "إنهاء الكفالة",
+    cancel: {
+      cancelled: "أُلغيت الكفالة",
+      ending: (date: string) => `سُجّل الإنهاء — تبقى الكفالة جاريةً حتى ${date}`,
+      titlePending: (name: string) => `إلغاء طلب كفالة ${name}`,
+      title: (name: string) => `إنهاء كفالة ${name}`,
+      leadPending: "لم يُدفع شيءٌ بعد، فيُلغى الطلب الآن ولا يُطلب منك تحويل.",
+      lead: (money: string) =>
+        `${money} شهرياً. لا تنتهي الكفالة فوراً: تبقى جاريةً حتى آخر الشهر الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها.`,
+      card: "ويُلغى اشتراك البطاقة لدى مزوّد الدفع عند نهاية الدورة نفسها.",
+      notify: "تُبلَّغ الجهة الميدانية والإدارة بموعد الانتهاء.",
+      alternatives: "إن كان الظرف مؤقّتاً أو المبلغ ثقيلاً، فهناك بديلان:",
+      pauseInstead: "أوقفها مؤقّتاً",
+      lowerAmount: "خفّض المبلغ",
+      reason: "السبب (اختياري)",
+      noReason: "لا أريد ذكر سبب",
+      reasons: {
+        financial: "ظرفٌ مالي",
+        another_child: "أريد كفالة طفلٍ آخر",
+        dissatisfied: "لست راضياً عن المتابعة",
+        temporary: "أحتاج توقّفاً مؤقّتاً",
+        other: "سببٌ آخر",
+      } satisfies Record<keyof typeof CANCEL_REASONS, string>,
+      note: "كلمةٌ للجهة (اختياري)",
+      submitPending: "ألغِ الطلب",
+      submit: "أنهِ الكفالة آخر الشهر المدفوع",
+    },
+    pauseForm: {
+      paused: (date: string) => `أُوقفت مؤقّتاً — تُستأنف في ${date}`,
+      title: (name: string) => `إيقاف كفالة ${name} مؤقّتاً`,
+      lead: "يبدأ الإيقاف بعد آخر شهرٍ دفعته، ولا يُنتظر منك تحويلٌ خلاله، ثم تُستأنف الكفالة تلقائياً. يبقى مكانك مع الطفل، وتعلم الجهة الميدانية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.",
+      duration: "المدّة",
+      months: pluralOf(
+        { one: "شهر", two: "شهران", few: "{0} أشهر", many: "{0} شهراً", other: "{0} شهر" },
+        0,
+        "ar",
+      ),
+      submit: "أوقفها مؤقّتاً",
+    },
+    amountForm: {
+      changed: "تغيّر المبلغ — يسري من التحويل القادم",
+      title: (name: string) => `تعديل مبلغ كفالة ${name}`,
+      lead: (money: string) =>
+        `المبلغ الحالي ${money} شهرياً. الجديد يسري من التحويل القادم، وما دُفع قبله لا يتغيّر. تعلم الجهة الميدانية بالتعديل.`,
+      label: (currency: string) => `المبلغ الشهري الجديد (${currency})`,
+      invalid: "مبلغٌ صحيح من 5 فأكثر.",
+      submit: "احفظ المبلغ",
+    },
+  },
+  en: {
+    child: "the child",
+    resumed: "Sponsorship resumed",
+    resumeNow: "Resume now",
+    pause: "Pause",
+    changeAmount: "Change amount",
+    cancelRequest: "Cancel request",
+    endSponsorship: "End sponsorship",
+    cancel: {
+      cancelled: "Sponsorship cancelled",
+      ending: (date: string) => `Ending recorded — the sponsorship continues until ${date}`,
+      titlePending: (name: string) => `Cancel the sponsorship request for ${name}`,
+      title: (name: string) => `End the sponsorship of ${name}`,
+      leadPending:
+        "Nothing has been paid yet, so the request is cancelled now and no transfer is expected from you.",
+      lead: (money: string) =>
+        `${money} a month. The sponsorship does not end at once: it continues until the end of the month you paid for, so the child receives it in full, then it ends and nothing more is charged.`,
+      card: "Your card subscription with the payment provider is cancelled at the end of the same cycle.",
+      notify: "The field organization and the administration are told the end date.",
+      alternatives:
+        "If the situation is temporary or the amount feels heavy, there are two alternatives:",
+      pauseInstead: "Pause it",
+      lowerAmount: "Lower the amount",
+      reason: "Reason (optional)",
+      noReason: "I'd rather not say",
+      reasons: {
+        financial: "Financial circumstances",
+        another_child: "I want to sponsor another child",
+        dissatisfied: "I'm not satisfied with the follow-up",
+        temporary: "I need a temporary break",
+        other: "Another reason",
+      } satisfies Record<keyof typeof CANCEL_REASONS, string>,
+      note: "A note for the organization (optional)",
+      submitPending: "Cancel the request",
+      submit: "End at the close of the paid month",
+    },
+    pauseForm: {
+      paused: (date: string) => `Paused — resumes on ${date}`,
+      title: (name: string) => `Pause the sponsorship of ${name}`,
+      lead: "The pause starts after the last month you paid for, no transfer is expected during it, and the sponsorship then resumes automatically. Your place with the child is kept, and the field organization is told how long the pause lasts. You can resume earlier whenever you like.",
+      duration: "Duration",
+      months: pluralOf({ one: "{0} month", other: "{0} months" }),
+      submit: "Pause it",
+    },
+    amountForm: {
+      changed: "Amount changed — it applies from the next transfer",
+      title: (name: string) => `Change the amount for ${name}`,
+      lead: (money: string) =>
+        `The current amount is ${money} a month. The new amount applies from the next transfer; what was paid before stays the same. The field organization is told about the change.`,
+      label: (currency: string) => `New monthly amount (${currency})`,
+      invalid: "Enter a whole amount of 5 or more.",
+      submit: "Save amount",
+    },
+  },
+});
 
 /**
  * أدوات الكافل على كفالته (APP-02 / UX-02 / UX-13).
@@ -44,7 +158,8 @@ export function SponsorshipControls({ s }: { s: MySponsorship }) {
   const listKey = useDataKey(["my-sponsorships"]);
   const resume = useDataFn("sponsor.manage.resume", resumeSponsorship);
   const [busy, setBusy] = useState(false);
-  const name = s.orphan?.display_name ?? "الطفل";
+  const t = useCopy(COPY);
+  const name = s.orphan?.display_name ?? t.child;
   const card = Boolean(s.provider_subscription_id);
   const ending = Boolean(s.cancel_effective_at);
   const live = s.status === "active" || s.status === "paused";
@@ -65,26 +180,26 @@ export function SponsorshipControls({ s }: { s: MySponsorship }) {
             const res = await resume({ data: { id: s.id } });
             setBusy(false);
             if (!res.ok) return void toast.error(res.error);
-            toast.success("استُؤنفت الكفالة");
+            toast.success(t.resumed);
             await refresh();
           }}
         >
-          استئناف الآن
+          {t.resumeNow}
         </Button>
       )}
       {s.status === "active" && !ending && !card && (
         <Button size="sm" variant="outline" onClick={() => setMode("pause")}>
-          إيقاف مؤقّت
+          {t.pause}
         </Button>
       )}
       {!ending && !card && (
         <Button size="sm" variant="outline" onClick={() => setMode("amount")}>
-          تعديل المبلغ
+          {t.changeAmount}
         </Button>
       )}
       {!ending && (
         <Button size="sm" variant="ghost" onClick={() => setMode("cancel")}>
-          {s.status === "pending_payment" ? "إلغاء الطلب" : "إنهاء الكفالة"}
+          {s.status === "pending_payment" ? t.cancelRequest : t.endSponsorship}
         </Button>
       )}
 
@@ -146,6 +261,8 @@ export function CancelForm({
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const pending = s.status === "pending_payment";
+  const t = useCopy(COPY).cancel;
+  const locale = useLocale();
 
   return (
     <form
@@ -161,27 +278,21 @@ export function CancelForm({
         });
         setBusy(false);
         if (!res.ok) return void toast.error(res.error);
-        toast.success(
-          res.immediate
-            ? "أُلغيت الكفالة"
-            : `سُجّل الإنهاء — تبقى الكفالة جاريةً حتى ${formatDate(res.effectiveAt)}`,
-        );
+        toast.success(res.immediate ? t.cancelled : t.ending(formatDate(res.effectiveAt, locale)));
         await onDone();
       }}
     >
       <DialogHeader>
         <DialogTitle>
-          {pending ? "إلغاء طلب كفالة" : "إنهاء كفالة"} {isolate(name)}
+          {pending ? t.titlePending(isolate(name)) : t.title(isolate(name))}
         </DialogTitle>
         <DialogDescription className="leading-7">
           {pending ? (
-            <>لم يُدفع شيءٌ بعد، فيُلغى الطلب الآن ولا يُطلب منك تحويل.</>
+            t.leadPending
           ) : (
             <>
-              {formatMoney(s.amount, s.currency)} شهرياً. لا تنتهي الكفالة فوراً: تبقى جاريةً حتى
-              آخر الشهر الذي دفعته فيصل الطفلَ كاملاً، ثم تنتهي ولا يُحصَّل منك شيءٌ بعدها.
-              {card && " ويُلغى اشتراك البطاقة لدى مزوّد الدفع عند نهاية الدورة نفسها."} تُبلَّغ جهة
-              الرعاية والإدارة بموعد الانتهاء.
+              {t.lead(formatMoney(s.amount, s.currency, locale))}
+              {card && ` ${t.card}`} {t.notify}
             </>
           )}
         </DialogDescription>
@@ -189,7 +300,7 @@ export function CancelForm({
 
       {!pending && !card && (
         <div className="mt-4 rounded-xl bg-secondary/60 p-3 text-sm leading-7">
-          إن كان الظرف مؤقّتاً أو المبلغ ثقيلاً، فهناك بديلان:
+          {t.alternatives}
           <div className="mt-2 flex flex-wrap gap-2">
             {s.status === "active" && (
               <Button
@@ -198,7 +309,7 @@ export function CancelForm({
                 variant="outline"
                 onClick={() => onAlternative("pause")}
               >
-                أوقفها مؤقّتاً
+                {t.pauseInstead}
               </Button>
             )}
             <Button
@@ -207,7 +318,7 @@ export function CancelForm({
               variant="outline"
               onClick={() => onAlternative("amount")}
             >
-              خفّض المبلغ
+              {t.lowerAmount}
             </Button>
           </div>
         </div>
@@ -215,23 +326,23 @@ export function CancelForm({
 
       <div className="mt-4 space-y-3">
         <div>
-          <Label htmlFor="cancel-reason">السبب (اختياري)</Label>
+          <Label htmlFor="cancel-reason">{t.reason}</Label>
           <select
             id="cancel-reason"
             value={reason}
             onChange={(e) => setReason(e.target.value as typeof reason)}
             className="mt-1.5 h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
           >
-            <option value="">لا أريد ذكر سبب</option>
+            <option value="">{t.noReason}</option>
             {(Object.keys(CANCEL_REASONS) as Array<keyof typeof CANCEL_REASONS>).map((k) => (
               <option key={k} value={k}>
-                {CANCEL_REASONS[k]}
+                {t.reasons[k]}
               </option>
             ))}
           </select>
         </div>
         <div>
-          <Label htmlFor="cancel-note">كلمةٌ للجهة (اختياري)</Label>
+          <Label htmlFor="cancel-note">{t.note}</Label>
           <Textarea
             id="cancel-note"
             rows={2}
@@ -246,7 +357,7 @@ export function CancelForm({
       <DialogFooter className="mt-6 gap-2">
         <Button type="submit" variant="destructive" disabled={busy}>
           {busy && <Loader2 className="size-4 animate-spin" />}
-          {pending ? "ألغِ الطلب" : "أنهِ الكفالة آخر الشهر المدفوع"}
+          {pending ? t.submitPending : t.submit}
         </Button>
       </DialogFooter>
     </form>
@@ -265,6 +376,8 @@ export function PauseForm({
   const pause = useDataFn("sponsor.manage.pause", pauseSponsorship);
   const [months, setMonths] = useState(1);
   const [busy, setBusy] = useState(false);
+  const t = useCopy(COPY).pauseForm;
+  const locale = useLocale();
   return (
     <form
       onSubmit={async (e) => {
@@ -273,19 +386,16 @@ export function PauseForm({
         const res = await pause({ data: { id: s.id, months } });
         setBusy(false);
         if (!res.ok) return void toast.error(res.error);
-        toast.success(`أُوقفت مؤقّتاً — تُستأنف في ${formatDate(res.pausedUntil)}`);
+        toast.success(t.paused(formatDate(res.pausedUntil, locale)));
         await onDone();
       }}
     >
       <DialogHeader>
-        <DialogTitle>إيقاف كفالة {isolate(name)} مؤقّتاً</DialogTitle>
-        <DialogDescription className="leading-7">
-          يبدأ الإيقاف بعد آخر شهرٍ دفعته، ولا يُنتظر منك تحويلٌ خلاله، ثم تُستأنف الكفالة تلقائياً.
-          يبقى مكانك مع الطفل، وتعلم الجهة الميدانية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.
-        </DialogDescription>
+        <DialogTitle>{t.title(isolate(name))}</DialogTitle>
+        <DialogDescription className="leading-7">{t.lead}</DialogDescription>
       </DialogHeader>
       <fieldset className="mt-4">
-        <legend className="text-sm font-medium">المدّة</legend>
+        <legend className="text-sm font-medium">{t.duration}</legend>
         <div className="mt-2 flex gap-2">
           {[1, 2, 3].map((m) => (
             <Button
@@ -295,7 +405,7 @@ export function PauseForm({
               aria-pressed={months === m}
               onClick={() => setMonths(m)}
             >
-              {m === 1 ? "شهر" : m === 2 ? "شهران" : "ثلاثة أشهر"}
+              {t.months(m)}
             </Button>
           ))}
         </div>
@@ -303,7 +413,7 @@ export function PauseForm({
       <DialogFooter className="mt-6">
         <Button type="submit" disabled={busy}>
           {busy && <Loader2 className="size-4 animate-spin" />}
-          أوقفها مؤقّتاً
+          {t.submit}
         </Button>
       </DialogFooter>
     </form>
@@ -324,6 +434,8 @@ export function AmountForm({
   const [busy, setBusy] = useState(false);
   const amount = Number(value);
   const valid = Number.isInteger(amount) && amount >= 5 && amount <= 100000;
+  const t = useCopy(COPY).amountForm;
+  const locale = useLocale();
   return (
     <form
       onSubmit={async (e) => {
@@ -333,19 +445,18 @@ export function AmountForm({
         const res = await change({ data: { id: s.id, amount } });
         setBusy(false);
         if (!res.ok) return void toast.error(res.error);
-        toast.success("تغيّر المبلغ — يسري من التحويل القادم");
+        toast.success(t.changed);
         await onDone();
       }}
     >
       <DialogHeader>
-        <DialogTitle>تعديل مبلغ كفالة {isolate(name)}</DialogTitle>
+        <DialogTitle>{t.title(isolate(name))}</DialogTitle>
         <DialogDescription className="leading-7">
-          المبلغ الحالي {formatMoney(s.amount, s.currency)} شهرياً. الجديد يسري من التحويل القادم،
-          وما دُفع قبله لا يتغيّر. تعلم الجهة الميدانية بالتعديل.
+          {t.lead(formatMoney(s.amount, s.currency, locale))}
         </DialogDescription>
       </DialogHeader>
       <div className="mt-4">
-        <Label htmlFor="new-amount">المبلغ الشهري الجديد ({s.currency})</Label>
+        <Label htmlFor="new-amount">{t.label(s.currency)}</Label>
         <Input
           id="new-amount"
           dir="ltr"
@@ -355,12 +466,12 @@ export function AmountForm({
           className="mt-1.5"
           aria-invalid={!valid}
         />
-        {!valid && <p className="mt-1 text-xs text-destructive">مبلغٌ صحيح من 5 فأكثر.</p>}
+        {!valid && <p className="mt-1 text-xs text-destructive">{t.invalid}</p>}
       </div>
       <DialogFooter className="mt-6">
         <Button type="submit" disabled={busy || !valid}>
           {busy && <Loader2 className="size-4 animate-spin" />}
-          احفظ المبلغ
+          {t.submit}
         </Button>
       </DialogFooter>
     </form>
