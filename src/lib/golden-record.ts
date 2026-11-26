@@ -453,3 +453,112 @@ export type StaffMember = {
   pending?: boolean;
   created_at: string;
 };
+
+/* ── مركز عمل الفريق: الحسم الجماعي، والبحث، وملف الطفل ─────────── */
+
+/** خيارات الحسم الجماعي: لا «قبول» ولا قيمة يدوية، والقاعدة ترفض غيرها. */
+export type BulkChoice = "use_wamy" | "use_office" | "keep";
+/** حدّ الدفعة الواحدة، كما في `admin_conflicts_resolve_bulk`. */
+export const MAX_BULK = 200;
+
+/** يُحسم جماعياً: فرقٌ بين المصدرين غير حرج. الحرج واحداً واحداً بعينين، دائماً. */
+export function bulkEligible(d: Pick<Conflict, "kind" | "risk">): boolean {
+  return d.kind === "disagreement" && d.risk !== "critical";
+}
+
+export type BulkResult = {
+  ok: true;
+  done: number;
+  failed: number;
+  results: Array<{ id: string; ok: boolean; code: string | null }>;
+};
+
+/** أشيع سبب رفضٍ في دفعة، ليُسمّى مرةً لا مئة. */
+export function topFailure(r: BulkResult): string | null {
+  const n = new Map<string, number>();
+  for (const x of r.results) {
+    if (x.ok) continue;
+    const k = x.code ?? "failed";
+    n.set(k, (n.get(k) ?? 0) + 1);
+  }
+  return [...n.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+}
+
+/** مفتاح بحثٍ يتسامح مع الهمزات والتشكيل وحالة الحروف والأرقام الهندية. */
+export function searchKey(s: string): string {
+  return normalize(latinDigits(s));
+}
+
+/** هل يطابق البندُ البحث (رمز الطفل، أو اسمه، أو معرّفه الخارجي)؟ */
+export function matchesQuery(q: string, ...hay: Array<string | null | undefined>): boolean {
+  const k = searchKey(q);
+  if (!k) return true;
+  return hay.some((h) => !!h && searchKey(h).includes(k));
+}
+
+/** أسطر الملف المرفوع ومشكلاتها، مرتّبةً بالسطر: ما يراه المدخل قبل الإرسال. */
+export type RowIssue = { line: number; missingRef: boolean; fields: string[] };
+export function rowIssues(sheet: GoldenSheet): RowIssue[] {
+  const by = new Map<number, RowIssue>();
+  const at = (line: number) => {
+    let r = by.get(line);
+    if (!r) by.set(line, (r = { line, missingRef: false, fields: [] }));
+    return r;
+  };
+  for (const line of sheet.missingRef) at(line).missingRef = true;
+  for (const x of sheet.invalid) at(x.line).fields.push(x.field);
+  return [...by.values()].sort((a, b) => a.line - b.line);
+}
+
+export type Observation = { value: FieldValue; observed_at: string; source: string } | null;
+
+export type ChildFileField = {
+  field: string;
+  field_group: FieldGroup;
+  risk: Risk;
+  owner: Owner;
+  value: FieldValue;
+  from_role: SourceRole | "manual" | null;
+  applied_at: string | null;
+  pinned: boolean;
+  wamy: Observation;
+  office: Observation;
+  open_conflict: boolean;
+};
+
+export type ChildFileEvent = {
+  field: string;
+  role: SourceRole;
+  source: string;
+  value: FieldValue;
+  was: FieldValue;
+  changed: boolean;
+  observed_at: string;
+  received_at: string;
+};
+
+/** ما يعيده `country_child_file`: بلا صور ولا مواقع، بنطاق الدولة. */
+export type ChildFile = {
+  id: string;
+  code: string;
+  name: string;
+  country: string;
+  status: string;
+  trust: TrustState | null;
+  office_mode: OfficeMode;
+  fields: ChildFileField[];
+  history: ChildFileEvent[];
+};
+
+/** تاريخ الحقل: ما غيّر القيمة فقط، الأحدث أولاً. */
+export function changesOf(file: ChildFile, field: string): ChildFileEvent[] {
+  return file.history.filter((h) => h.field === field && h.changed);
+}
+
+/** هل يختلف المصدران على هذا الحقل الآن (بعد التطبيع)؟ */
+export function sourcesDiffer(f: ChildFileField): boolean {
+  if (!f.wamy || !f.office) return false;
+  const a = f.wamy.value;
+  const b = f.office.value;
+  return typeof a === "string" && typeof b === "string" ? searchKey(a) !== searchKey(b) : a !== b;
+}

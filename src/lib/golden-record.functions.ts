@@ -4,7 +4,10 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isMissingObject } from "@/lib/data-entry";
 import {
+  MAX_BULK,
   MAX_GOLDEN_ROWS,
+  type BulkResult,
+  type ChildFile,
   type Conflict,
   type CountryAccess,
   type CountryHealth,
@@ -138,6 +141,32 @@ export const resolveConflict = createServerFn({ method: "POST" })
       _choice: data.choice,
       _value: data.value === undefined ? null : data.value,
     }),
+  );
+
+/** حسمٌ جماعي للفروق غير الحرجة: القاعدة تمرّر كل بندٍ بباب الحسم الفردي وتعيد نتيجته. */
+export const resolveConflictsBulk = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        ids: z.array(uuid).min(1).max(MAX_BULK),
+        choice: z.enum(["use_wamy", "use_office", "keep"]),
+      })
+      .parse(input),
+  )
+  .handler(({ data, context }) =>
+    call<BulkResult>(context.supabase, "admin_conflicts_resolve_bulk", {
+      _ids: data.ids,
+      _choice: data.choice,
+    }),
+  );
+
+/** ملف الطفل الموحّد للفريق، بنطاق دولته (`country_can … 'read'`). */
+export const getChildFile = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: uuid }).parse(input))
+  .handler(({ data, context }) =>
+    call<ChildFile>(context.supabase, "country_child_file", { _orphan: data.id }),
   );
 
 export const listLinkQueue = createServerFn({ method: "GET" })
