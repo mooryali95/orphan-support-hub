@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4165,
+ "count": 4166,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -24060,6 +24060,13 @@
    "ar": "الدخول من منصّة الندوة لم يُفعَّل بعد.",
    "kind": "text",
    "hash": "2d60d00840f1",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.not_this_browser": {
+   "en": "This link didn't start in this browser. Open the platform from WAMY's platform directly.",
+   "ar": "هذا الرابط لم يبدأ من هذا المتصفّح. افتح المنصّة من منصّة الندوة مباشرة.",
+   "kind": "text",
+   "hash": "5129a8e8bb12",
    "file": "src/routes/sso.tsx"
   },
   "routes/sso.reasons.subject_taken": {

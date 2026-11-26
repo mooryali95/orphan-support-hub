@@ -23,7 +23,7 @@ const COPY = defineCopy("routes/sso", {
       email_unverified: "بريدك غير موثَّق في منصّة الندوة.",
       subject_taken: "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
       not_configured: "الدخول من منصّة الندوة لم يُفعَّل بعد.",
-      not_this_browser: "هذا الرابط لم يبدأ من هذا المتصفّح. افتح كهاتين من منصّة الندوة مباشرة.",
+      not_this_browser: "هذا الرابط لم يبدأ من هذا المتصفّح. افتح المنصّة من منصّة الندوة مباشرة.",
     } as Record<string, string>,
   },
   en: {
@@ -39,7 +39,7 @@ const COPY = defineCopy("routes/sso", {
       subject_taken: "This email is linked to another WAMY account. Contact the admin team.",
       not_configured: "Sign-in from WAMY's platform isn't enabled yet.",
       not_this_browser:
-        "This link didn't start in this browser. Open Kahatayn from WAMY's platform directly.",
+        "This link didn't start in this browser. Open the platform from WAMY's platform directly.",
     } as Record<string, string>,
   },
 });
