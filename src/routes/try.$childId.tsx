@@ -1,9 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Gift, MapPin, ShieldCheck } from "lucide-react";
+import { Clock, Gift, MapPin, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { CrossingProgress } from "@/components/brand/CrossingProgress";
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
+import { usePublicVerification } from "@/components/orphans/public-verification";
+import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
+import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
+import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { KafalaPromise } from "@/components/try/KafalaPromise";
 import { TryChildMissing } from "@/components/try/TryChildMissing";
@@ -34,7 +38,11 @@ export const Route = createFileRoute("/try/$childId")({
   // أطفال الكتالوج المولَّد يُسجَّلون حين تُحمَّل `try-world`: تُنتظر هنا قبل البحث، فيُفتح
   // رابط الطفل مباشرةً (لا من الدليل وحده) — كان رابطٌ مباشر يقول «ليس في التجربة».
   loader: async ({ params }) => {
-    await Promise.all([import("@/lib/try-places"), import("@/lib/try-cycle")]);
+    await Promise.all([
+      import("@/lib/try-places"),
+      import("@/lib/try-cycle"),
+      import("@/lib/try-sponsor-center"),
+    ]);
     return { child: tryChild(params.childId) ?? null };
   },
   head: ({ loaderData, match }) => {
@@ -100,6 +108,10 @@ const COPY = defineCopy("routes/try.childId", {
     activation: "تُفعَّل الكفالة بعد تأكيد الدفع، ويُسجَّل كل تحويلٍ وتسليمٍ بمستند.",
     another: "اختر طفلاً آخر",
     otherKinds: (name: string) => `أو ادعم ${name} بغير الكفالة المادية، من الخريطة:`,
+    verifying:
+      "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
+    barVerifying: "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+    barSimilar: "أطفالٌ جاهزون",
   },
   en: {
     pageTitle: (name: string) => `${name} · Try the platform`,
@@ -136,6 +148,10 @@ const COPY = defineCopy("routes/try.childId", {
       "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
     another: "Choose another child",
     otherKinds: (name: string) => `Or support ${name} in another way, from the map:`,
+    verifying:
+      "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
+    barVerifying: "Under verification — not taking new sponsorships yet",
+    barSimilar: "Children ready now",
   },
 });
 
@@ -155,6 +171,12 @@ function TryChildPage({ data }: { data: TryChild }) {
   }, [data.id]);
   const giving = useGivingCopy();
   const gap = gapOf(child);
+  // شرط الثقة كما في المنصّة: ملفٌّ قيد التحقق لا يقبل كفالةً جديدة، وتُعرض بدله ملفّاتٌ جاهزة.
+  const { data: verification } = usePublicVerification(data.id);
+  const verifying = verification?.accepts === false;
+  const similarAmount = gap > 0 ? gap : child.need;
+  const { data: similar } = useSimilarReady(data.id, similarAmount, verifying);
+  const hasSimilar = (similar?.suggestions.length ?? 0) > 0;
   const pct = Math.round((child.funded / child.need) * 100);
   const [cadence, setCadence] = useState<"monthly" | "one_time">("monthly");
   /* عملة الدفع: عملة الملفّ افتراضاً، أو عملة بلد الطفل، أو العملة الموحّدة. المبلغ يُكتب بها،
@@ -201,7 +223,7 @@ function TryChildPage({ data }: { data: TryChild }) {
 
   function start(e: FormEvent) {
     e.preventDefault();
-    if (!valid) return;
+    if (!valid || verifying) return;
     void navigate({
       to: "/try/pay",
       search: {
@@ -253,6 +275,9 @@ function TryChildPage({ data }: { data: TryChild }) {
         <div className="p-6 md:p-8">
           <p className="text-xs tabular-nums text-muted-foreground">{child.code}</p>
           <h1 className="mt-2 text-4xl leading-[1.3] font-bold md:text-[2.75rem]">{child.name}</h1>
+          <div className="mt-2">
+            <VerificationBadge orphanId={data.id} />
+          </div>
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-4" aria-hidden="true" />
@@ -299,6 +324,17 @@ function TryChildPage({ data }: { data: TryChild }) {
         <h2 id="sponsor-form-title" className="text-xl font-bold">
           {c.sponsor(child.name)}
         </h2>
+        {verifying && (
+          <div className="mt-4 space-y-4">
+            <p
+              role="status"
+              className="rounded-xl border border-border bg-secondary/60 px-3 py-2 text-sm leading-7"
+            >
+              {c.verifying}
+            </p>
+            <SimilarReadyChildren orphanId={data.id} amount={similarAmount} />
+          </div>
+        )}
         {/* نموذجٌ حقيقي: Enter في خانة المبلغ يبدأ الكفالة، كما يتوقّع من يكتب على لوحة المفاتيح */}
         <form onSubmit={start} noValidate>
           <div
@@ -435,7 +471,7 @@ function TryChildPage({ data }: { data: TryChild }) {
           </div>
 
           <KafalaPromise className="mt-5" />
-          <Button type="submit" size="lg" className="mt-3 w-full" disabled={!valid}>
+          <Button type="submit" size="lg" className="mt-3 w-full" disabled={!valid || verifying}>
             {cadence === "one_time" ? c.supportNow : c.start}
           </Button>
           {!valid && (
@@ -472,11 +508,26 @@ function TryChildPage({ data }: { data: TryChild }) {
         </Link>
       </aside>
 
-      {formBelow && (
+      {(formBelow || verifying) && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
-          <Button type="button" size="lg" className="w-full" onClick={toForm}>
-            {c.sponsor(child.name)}
-          </Button>
+          {verifying ? (
+            <div className="flex items-center gap-3">
+              <p className="flex min-w-0 flex-1 items-center gap-1.5 text-sm leading-6 font-semibold">
+                <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
+                {c.barVerifying}
+              </p>
+              {/* الفعل المتاح فعلاً: لا زرّ كفالةٍ يُضغط فيفشل، بل الطريق إلى طفلٍ جاهز */}
+              {hasSimilar && (
+                <Button asChild size="lg" variant="outline" className="min-h-11 shrink-0">
+                  <a href={`#${SIMILAR_READY_ID}`}>{c.barSimilar}</a>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <Button type="button" size="lg" className="w-full" onClick={toForm}>
+              {c.sponsor(child.name)}
+            </Button>
+          )}
         </div>
       )}
     </div>

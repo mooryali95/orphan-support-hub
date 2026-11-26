@@ -15,6 +15,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { loadGifts, resetGifts, TRY_CURRENCY, TRY_EVENT, tryChild } from "@/lib/try-demo";
 import { resetTrialSession } from "@/lib/try-store";
+// نسخ مركز الكافل في منفذ البيانات: تُسجَّل في المتصفّح مع الغلاف، قبل أن تُرسم صفحات «جرّب».
+// (`beforeLoad` لا يُعاد في المتصفّح عند الدخول من رابطٍ مباشر بعد رسم الخادم.)
+import "@/lib/try-sponsor-center";
 import {
   firstLeave,
   markResume,

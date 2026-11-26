@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
-import { getPublicVerification } from "@/lib/public-verification.functions";
+import { usePublicVerification } from "@/components/orphans/public-verification";
 import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
 import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
 import { Input } from "@/components/ui/input";
@@ -284,12 +284,7 @@ function OrphanDetail() {
   const orphan = authed?.orphan ?? data.orphan!;
   const submit = useServerFn(createSponsorship);
   // شرط الثقة: ملفٌّ قيد التحقق لا يقبل كفالةً جديدة (الحارس في القاعدة؛ هنا يُشرح بدل أن يفشل).
-  const fetchVerification = useServerFn(getPublicVerification);
-  const { data: verification } = useQuery({
-    queryKey: ["public-verification", orphanId],
-    queryFn: () => fetchVerification({ data: { orphanId } }),
-    staleTime: 10 * 60_000,
-  });
+  const { data: verification } = usePublicVerification(orphanId);
   const verifying = verification?.accepts === false;
   const pay = useServerFn(startCheckout);
   // إثباتٌ اجتماعي صادق: من أرقام المنصّة الحقيقية فقط، ويُخفى إن غابت.

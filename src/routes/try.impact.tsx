@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { ChildStanding } from "@/components/impact/ChildStanding";
 import { ImpactMoment } from "@/components/impact/ImpactMoment";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
+import { ChildTimeline } from "@/components/sponsorship/ChildTimeline";
+import { ManageSponsorshipLink } from "@/components/sponsorship/ManageSponsorship";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryKindPanel, TryKindSwitch, TrySupportImpact } from "@/components/try/TryImpactKinds";
 import { TryFollowUpStrip, TryGiftFollowUp } from "@/components/try/TryGiftFollowUp";
@@ -27,6 +29,7 @@ import {
   type TryGift,
 } from "@/lib/try-demo";
 import { tryEvidence } from "@/lib/try-evidence";
+import { trySponsorships } from "@/lib/try-sponsor-center";
 import { loadPledges, tryInKind, tryQualification, type TryPledge } from "@/lib/try-support";
 
 /**
@@ -62,6 +65,9 @@ const COPY = defineCopy("routes/try.impact", {
     monthly: "شهرية",
     oneTime: "مرّة واحدة",
     status: "الحالة: نشطة (محاكاة)",
+    statusPaused: (date: string) => `الحالة: موقوفة حتى ${date} (محاكاة)`,
+    statusEnding: (date: string) => `الحالة: تنتهي في ${date} (محاكاة)`,
+    statusEnded: "الحالة: انتهت (محاكاة)",
     dedication: (name: string) => `صدقةٌ جارية عن ${name}`,
   },
   en: {
@@ -80,6 +86,9 @@ const COPY = defineCopy("routes/try.impact", {
     monthly: "Monthly",
     oneTime: "One-time",
     status: "Status: active (simulated)",
+    statusPaused: (date: string) => `Status: paused until ${date} (simulated)`,
+    statusEnding: (date: string) => `Status: ends on ${date} (simulated)`,
+    statusEnded: "Status: ended (simulated)",
     dedication: (name: string) => `Ongoing charity on behalf of ${name}`,
   },
 });
@@ -123,6 +132,17 @@ function TryImpact() {
   const then = new Date(Date.now() + ahead * 30.44 * 86_400_000 + 3_600_000);
   const impact = myImpact(giftsAsSponsorships(gifts ?? [], locale), then);
   const rows = tryEvidence(gifts ?? [], ahead, locale);
+  /* the gifts as sponsorships, with what the visitor changed in «إدارة الكفالة» */
+  const subs = new Map(gifts ? trySponsorships(locale).map((s) => [s.id, s]) : []);
+  const statusOf = (id: string) => {
+    const s = subs.get(id);
+    if (!s) return c.status;
+    if (s.status === "cancelled" || s.status === "completed") return c.statusEnded;
+    if (s.cancel_effective_at) return c.statusEnding(formatDate(s.cancel_effective_at, locale));
+    if (s.status === "paused" && s.paused_until)
+      return c.statusPaused(formatDate(s.paused_until, locale));
+    return c.status;
+  };
   const waited = Object.fromEntries(
     (gifts ?? []).map((x) => [x.id, tryChild(x.childId)?.waitingDays ?? 0]),
   );
@@ -218,6 +238,7 @@ function TryImpact() {
               <ul className="mt-4 space-y-3">
                 {(gifts ?? []).map((g) => {
                   const kid = local(g.childId)!;
+                  const sub = subs.get(g.id);
                   return (
                     <li
                       key={g.id}
@@ -229,10 +250,10 @@ function TryImpact() {
                         {g.cadence === "monthly" ? c.monthly : c.oneTime}
                       </span>
                       <span className="ms-auto font-bold tabular-nums">
-                        {formatMoney(g.amount, TRY_CURRENCY, locale)}
+                        {formatMoney(sub?.amount ?? g.amount, TRY_CURRENCY, locale)}
                       </span>
                       <span className="w-full text-xs text-muted-foreground sm:w-auto">
-                        {formatDate(g.at, locale)} · {c.status}
+                        {formatDate(g.at, locale)} · {statusOf(g.id)}
                       </span>
                       {g.dedication && (
                         <span className="w-full text-xs font-bold text-bridge-ink">
@@ -240,6 +261,13 @@ function TryImpact() {
                         </span>
                       )}
                       <TryGiftFollowUp childId={g.childId} />
+                      {sub && <ManageSponsorshipLink s={sub} />}
+                      {/* خطّ الطفل كما في لوحة الكافل: حالة ملفّه، وآخر تقرير، ومسار تأهيله */}
+                      {sub && sub.status !== "cancelled" && (
+                        <div className="w-full">
+                          <ChildTimeline orphanId={g.childId} name={kid.name} />
+                        </div>
+                      )}
                     </li>
                   );
                 })}
