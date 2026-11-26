@@ -63,6 +63,7 @@ function save(s: VerificationState) {
   } catch {
     /* محجوب: تبقى في ذاكرة الصفحة */
   }
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(VERIFICATION_EVENT));
 }
 
 if (typeof window !== "undefined") {
@@ -80,6 +81,25 @@ if (typeof window !== "undefined") {
 /* ── من يعمل الآن: الإدارة، أو عضو فريق دولة بدوره ─────────────── */
 
 let actor: CountryAccess = ADMIN_ACCESS;
+/** من يُكتب في السجلّ: الزائر، أو «مشرفٌ ثانٍ» في القصّة الموجّهة. */
+let actorEmail = VISITOR_EMAIL;
+export function setVerificationEmail(email: string | null) {
+  actorEmail = email ?? VISITOR_EMAIL;
+}
+
+/*
+ * تركيز القصّة الموجّهة (`/try/journey`): حين يُضبط، تعرض الطوابير ملفّ القصّة وحده،
+ * فيرى الزائر طفلاً واحداً بدل طوابير الدولة كلّها. يُرفع عند مغادرة القصّة.
+ */
+let focus = false;
+export function setVerificationFocus(on: boolean) {
+  focus = on;
+}
+const inFocus = (s: VerificationState, orphanId: string | null, ref?: string) => {
+  if (!focus) return true;
+  if (ref !== undefined) return ref === STORY_WAMY_REF || ref === STORY_OFFICE_REF;
+  return !!orphanId && s.files.some((f) => f.id === orphanId && f.wamy_ref === STORY_WAMY_REF);
+};
 
 /** تضبطه شاشة التجربة قبل أن تعرض اللوحة: الإدارة، أو دورٌ في دولة. */
 export function setVerificationActor(next: { country: string; role: CountryRole } | null) {
@@ -164,7 +184,7 @@ function log(
     id: nextId(s, 6),
     action,
     created_at: new Date().toISOString(),
-    actor_email: VISITOR_EMAIL,
+    actor_email: actorEmail,
     country,
     file_code: file,
     detail,
@@ -292,9 +312,38 @@ function createFrom(s: VerificationState, linkId: string): DemoFile | null {
       received_at: new Date().toISOString(),
     })),
   };
+  if (l.external_ref === STORY_WAMY_REF) {
+    // سجلّ المكتب للطفل نفسه وصل بمرجعه، فيطابق المكتب الندوة: مصدران.
+    file.office_ref = STORY_OFFICE_REF;
+    file.region = "كولومبو";
+    Object.assign(file.values, STORY_DETAILS);
+    file.office = { ...file.values };
+    file.base = "verified";
+  }
   s.files.push(file);
   l.closed_at = new Date().toISOString();
   return file;
+}
+
+function settleAlert(
+  s: VerificationState,
+  id: string,
+  status: "reviewed" | "false_positive" | "confirmed",
+  note?: string,
+): string | null {
+  const a = s.alerts.find((x) => x.id === id);
+  if (!a || a.closed_at) return "alert_closed";
+  if (!allowed(a.country, "approve")) return "country_forbidden";
+  if (a.mine) return "four_eyes_required";
+  if (status === "confirmed" && !note) return "note_required";
+  a.closed_at = new Date().toISOString();
+  if (status === "confirmed" && a.orphan_id) {
+    const f = s.files.find((o) => o.id === a.orphan_id);
+    if (f) f.base = "flagged";
+  }
+  log(s, "golden_alert_resolve", a.country, { signal: a.signal, status }, a.code);
+  settled(s, a.country);
+  return null;
 }
 
 /* ── العمليات المسجّلة: الأسماء نفسها في الشاشات الحقيقية ───────── */
@@ -338,197 +387,229 @@ registerDemo(
   },
 );
 
-registerDemo(
-  "golden.import",
-  async ({
-    data,
-  }: {
-    data: {
-      role: "wamy" | "office";
-      country: string;
-      source: string | null;
-      records: Array<{
-        external_ref: string;
-        observed_at?: string;
-        fields: Record<string, string | boolean>;
-      }>;
-    };
-  }) => {
-    await pause();
-    if (!allowed(data.country, "import")) return fail("country_forbidden");
-    const s = load();
-    const c = s.countries.find((x) => x.code === data.country);
-    if (!c) return fail("country_unknown");
-    if (data.role === "office" && c.office_mode === "none") return fail("office_source_inactive");
-    if (!data.records.length || data.records.length > 2000) return fail("rows_invalid");
-    const out: IngestResult = {
-      ok: true,
-      observed: 0,
-      unlinked: 0,
-      skipped_count: 0,
-      skipped: [],
-      open_conflicts: 0,
-    };
-    const now = new Date().toISOString();
-    data.records.forEach((r, index) => {
-      const key = searchKey(r.external_ref);
-      const f = s.files.find(
-        (o) =>
-          o.country === c.code &&
-          searchKey(data.role === "wamy" ? o.wamy_ref : (o.office_ref ?? "")) === key,
+type ImportInput = {
+  role: "wamy" | "office";
+  country: string;
+  source: string | null;
+  records: Array<{
+    external_ref: string;
+    observed_at?: string;
+    fields: Record<string, string | boolean>;
+  }>;
+};
+
+/** يوم الميلاد بعد إزاحته: فرقٌ بالأيام، وهل يعبر الثامنة عشرة اليوم. */
+function ageShift(from: string, to: string) {
+  const a = Date.parse(from);
+  const b = Date.parse(to);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+  const days = Math.round((b - a) / 86_400_000);
+  if (Math.abs(days) < 365) return null;
+  const adult = (t: number) => Date.now() - t >= 18 * 365.25 * 86_400_000;
+  return { days, crosses_adulthood: adult(a) !== adult(b) };
+}
+
+function ingest(data: ImportInput) {
+  if (!allowed(data.country, "import")) return fail("country_forbidden");
+  const s = load();
+  const c = s.countries.find((x) => x.code === data.country);
+  if (!c) return fail("country_unknown");
+  if (data.role === "office" && c.office_mode === "none") return fail("office_source_inactive");
+  if (!data.records.length || data.records.length > 2000) return fail("rows_invalid");
+  const out: IngestResult = {
+    ok: true,
+    observed: 0,
+    unlinked: 0,
+    skipped_count: 0,
+    skipped: [],
+    open_conflicts: 0,
+  };
+  const now = new Date().toISOString();
+  data.records.forEach((r, index) => {
+    const key = searchKey(r.external_ref);
+    const f = s.files.find(
+      (o) =>
+        o.country === c.code &&
+        searchKey(data.role === "wamy" ? o.wamy_ref : (o.office_ref ?? "")) === key,
+    );
+    if (!f) {
+      const pending = s.links.find(
+        (l) => !l.closed_at && l.country === c.code && searchKey(l.external_ref) === key,
       );
-      if (!f) {
-        const pending = s.links.find(
-          (l) => !l.closed_at && l.country === c.code && searchKey(l.external_ref) === key,
-        );
-        if (!pending) {
-          const name =
-            typeof r.fields["display_name"] === "string" ? r.fields["display_name"] : null;
-          s.links.unshift({
-            id: nextId(s, 4),
+      if (!pending) {
+        const name = typeof r.fields["display_name"] === "string" ? r.fields["display_name"] : null;
+        s.links.unshift({
+          id: nextId(s, 4),
+          role: data.role,
+          source: data.role === "wamy" ? "wamy" : (c.office_source ?? "office"),
+          external_ref: r.external_ref,
+          country: c.code,
+          name: name ? (name.includes("نموذج") ? name : `${name} (نموذج)`) : null,
+          birth_date: typeof r.fields["birth_date"] === "string" ? r.fields["birth_date"] : null,
+          gender: typeof r.fields["gender"] === "string" ? r.fields["gender"] : null,
+          created_at: now,
+          candidates: s.files
+            .filter(
+              (o) =>
+                o.country === c.code &&
+                name &&
+                searchKey(o.name).includes(searchKey(name).split(" ")[0] ?? ""),
+            )
+            .slice(0, 3)
+            .map((o) => ({
+              id: o.id,
+              code: o.code,
+              name: o.name,
+              birth_date:
+                typeof o.values["birth_date"] === "string" ? o.values["birth_date"] : null,
+              region: o.region || null,
+            })),
+        });
+      }
+      out.unlinked++;
+      return;
+    }
+    out.observed++;
+    for (const [field, raw] of Object.entries(r.fields)) {
+      const rule = ruleOf(field);
+      if (!rule || rule.owner === "platform") {
+        out.skipped.push({ index, ref: r.external_ref, field, reason: "field_unknown" });
+        continue;
+      }
+      const value: FieldValue = raw;
+      if (data.role === "office") f.office[field] = value;
+      const current = f.values[field] ?? null;
+      const same =
+        typeof value === "string" && typeof current === "string"
+          ? searchKey(value) === searchKey(current)
+          : value === current;
+      if (same) continue;
+      const owner = effectiveOwner(rule.owner, c.office_mode);
+      const already = s.conflicts.some(
+        (x) => !x.closed_at && x.orphan_id === f.id && x.field === field,
+      );
+      if (already) continue;
+      if (rule.risk === "critical" || (f.sponsored && rule.group === "identity")) {
+        s.conflicts.unshift({
+          id: nextId(s, 2),
+          orphan_id: f.id,
+          code: f.code,
+          name: f.name,
+          country: c.code,
+          field,
+          field_group: rule.group,
+          kind: f.sponsored ? "held_locked" : "critical_change",
+          risk: "critical",
+          current,
+          proposed: value,
+          wamy: data.role === "wamy" ? value : (f.values[field] ?? null),
+          office: data.role === "office" ? value : null,
+          created_at: now,
+          mine: true,
+        });
+        opened(s, c.code, true);
+        // كما يفعل `golden_detect`: إزاحة الميلاد سنةً فأكثر تنبيهٌ حرج.
+        const shift =
+          field === "birth_date" && typeof current === "string" && typeof value === "string"
+            ? ageShift(current, value)
+            : null;
+        if (shift)
+          s.alerts.unshift({
+            id: nextId(s, 3),
+            orphan_id: f.id,
+            code: f.code,
+            name: f.name,
+            country: c.code,
+            field,
+            signal: "age_shift",
+            severity: "critical",
             role: data.role,
-            source: data.role === "wamy" ? "wamy" : (c.office_source ?? "office"),
-            external_ref: r.external_ref,
-            country: c.code,
-            name: name ? (name.includes("نموذج") ? name : `${name} (نموذج)`) : null,
-            birth_date: typeof r.fields["birth_date"] === "string" ? r.fields["birth_date"] : null,
-            gender: typeof r.fields["gender"] === "string" ? r.fields["gender"] : null,
+            source: data.role === "wamy" ? "wamy" : c.office_source,
+            detail: { from: current, to: value, ...shift },
+            hits: 1,
             created_at: now,
-            candidates: s.files
-              .filter(
-                (o) =>
-                  o.country === c.code &&
-                  name &&
-                  searchKey(o.name).includes(searchKey(name).split(" ")[0] ?? ""),
-              )
-              .slice(0, 3)
-              .map((o) => ({
-                id: o.id,
-                code: o.code,
-                name: o.name,
-                birth_date:
-                  typeof o.values["birth_date"] === "string" ? o.values["birth_date"] : null,
-                region: o.region || null,
-              })),
+            updated_at: now,
+            mine: true,
           });
-        }
-        out.unlinked++;
-        return;
-      }
-      out.observed++;
-      for (const [field, raw] of Object.entries(r.fields)) {
-        const rule = ruleOf(field);
-        if (!rule || rule.owner === "platform") {
-          out.skipped.push({ index, ref: r.external_ref, field, reason: "field_unknown" });
-          continue;
-        }
-        const value: FieldValue = raw;
-        if (data.role === "office") f.office[field] = value;
-        const current = f.values[field] ?? null;
-        const same =
-          typeof value === "string" && typeof current === "string"
-            ? searchKey(value) === searchKey(current)
-            : value === current;
-        if (same) continue;
-        const owner = effectiveOwner(rule.owner, c.office_mode);
-        const already = s.conflicts.some(
-          (x) => !x.closed_at && x.orphan_id === f.id && x.field === field,
-        );
-        if (already) continue;
-        if (rule.risk === "critical" || (f.sponsored && rule.group === "identity")) {
-          s.conflicts.unshift({
-            id: nextId(s, 2),
+        if (f.sponsored)
+          s.alerts.unshift({
+            id: nextId(s, 3),
             orphan_id: f.id,
             code: f.code,
             name: f.name,
             country: c.code,
             field,
-            field_group: rule.group,
-            kind: f.sponsored ? "held_locked" : "critical_change",
-            risk: "critical",
-            current,
-            proposed: value,
-            wamy: data.role === "wamy" ? value : (f.values[field] ?? null),
-            office: data.role === "office" ? value : null,
+            signal: "change_after_sponsorship",
+            severity: "critical",
+            role: data.role,
+            source: data.role === "wamy" ? "wamy" : c.office_source,
+            detail: { from: String(current ?? ""), to: String(value) },
+            hits: 1,
             created_at: now,
+            updated_at: now,
             mine: true,
           });
-          opened(s, c.code, true);
-          if (f.sponsored)
-            s.alerts.unshift({
-              id: nextId(s, 3),
-              orphan_id: f.id,
-              code: f.code,
-              name: f.name,
-              country: c.code,
-              field,
-              signal: "change_after_sponsorship",
-              severity: "critical",
-              role: data.role,
-              source: data.role === "wamy" ? "wamy" : c.office_source,
-              detail: { from: String(current ?? ""), to: String(value) },
-              hits: 1,
-              created_at: now,
-              updated_at: now,
-              mine: true,
-            });
-        } else if (owner === data.role) {
-          setValue(f, field, value, data.role);
-          if (field === "display_name" && typeof current === "string" && typeof value === "string")
-            s.alerts.unshift({
-              id: nextId(s, 3),
-              orphan_id: f.id,
-              code: f.code,
-              name: f.name,
-              country: c.code,
-              field,
-              signal: "subtle_edit",
-              severity: "warning",
-              role: data.role,
-              source: data.role === "wamy" ? "wamy" : c.office_source,
-              detail: {
-                from: current,
-                to: value,
-                distance: Math.abs(current.length - value.length) || 1,
-              },
-              hits: 1,
-              created_at: now,
-              updated_at: now,
-              mine: true,
-            });
-        } else {
-          s.conflicts.unshift({
-            id: nextId(s, 2),
+      } else if (owner === data.role) {
+        setValue(f, field, value, data.role);
+        if (field === "display_name" && typeof current === "string" && typeof value === "string")
+          s.alerts.unshift({
+            id: nextId(s, 3),
             orphan_id: f.id,
             code: f.code,
             name: f.name,
             country: c.code,
             field,
-            field_group: rule.group,
-            kind: "disagreement",
-            risk: rule.risk,
-            current,
-            proposed: value,
-            wamy: data.role === "wamy" ? value : current,
-            office: data.role === "office" ? value : current,
+            signal: "subtle_edit",
+            severity: "warning",
+            role: data.role,
+            source: data.role === "wamy" ? "wamy" : c.office_source,
+            detail: {
+              from: current,
+              to: value,
+              distance: Math.abs(current.length - value.length) || 1,
+            },
+            hits: 1,
             created_at: now,
+            updated_at: now,
             mine: true,
           });
-          opened(s, c.code, false);
-        }
+      } else {
+        s.conflicts.unshift({
+          id: nextId(s, 2),
+          orphan_id: f.id,
+          code: f.code,
+          name: f.name,
+          country: c.code,
+          field,
+          field_group: rule.group,
+          kind: "disagreement",
+          risk: rule.risk,
+          current,
+          proposed: value,
+          wamy: data.role === "wamy" ? value : current,
+          office: data.role === "office" ? value : current,
+          created_at: now,
+          mine: true,
+        });
+        opened(s, c.code, false);
       }
-    });
-    out.skipped_count = out.skipped.length;
-    out.open_conflicts = s.conflicts.filter((x) => x.country === c.code && !x.closed_at).length;
-    if (data.role === "wamy") c.last_wamy = now;
-    else c.last_office = now;
-    const w = week(s, c.code);
-    if (w) w.files_observed += out.observed;
-    log(s, "golden_ingest", c.code, { records: data.records.length });
-    save(s);
-    return ok(out);
-  },
-);
+    }
+  });
+  out.skipped_count = out.skipped.length;
+  out.open_conflicts = s.conflicts.filter((x) => x.country === c.code && !x.closed_at).length;
+  if (data.role === "wamy") c.last_wamy = now;
+  else c.last_office = now;
+  const w = week(s, c.code);
+  if (w) w.files_observed += out.observed;
+  log(s, "golden_ingest", c.code, { records: data.records.length });
+  save(s);
+  return ok(out);
+}
+
+registerDemo("golden.import", async ({ data }: { data: ImportInput }) => {
+  await pause();
+  return ingest(data);
+});
 
 registerDemo("golden.conflicts", async ({ data }: { data: { country: string | null } }) => {
   await pause();
@@ -536,7 +617,7 @@ registerDemo("golden.conflicts", async ({ data }: { data: { country: string | nu
   const see = visible(data.country);
   return ok(
     load()
-      .conflicts.filter((x) => !x.closed_at && see(x.country))
+      .conflicts.filter((x) => !x.closed_at && see(x.country) && inFocus(load(), x.orphan_id))
       .map(({ mine: _m, closed_at: _c, ...x }) => x),
   );
 });
@@ -632,7 +713,7 @@ registerDemo("golden.links", async ({ data }: { data: { country: string | null }
   const see = visible(data.country);
   return ok(
     load()
-      .links.filter((l) => !l.closed_at && see(l.country))
+      .links.filter((l) => !l.closed_at && see(l.country) && inFocus(load(), null, l.external_ref))
       .map(({ closed_at: _c, ...l }) => l),
   );
 });
@@ -691,7 +772,7 @@ registerDemo("golden.alerts", async ({ data }: { data: { country: string | null 
   const see = visible(data.country);
   return ok(
     load()
-      .alerts.filter((a) => !a.closed_at && see(a.country))
+      .alerts.filter((a) => !a.closed_at && see(a.country) && inFocus(load(), a.orphan_id))
       .map(({ mine: _m, closed_at: _c, ...a }) => a),
   );
 });
@@ -705,18 +786,8 @@ registerDemo(
   }) => {
     await pause();
     const s = load();
-    const a = s.alerts.find((x) => x.id === data.id);
-    if (!a || a.closed_at) return fail("alert_closed");
-    if (!allowed(a.country, "approve")) return fail("country_forbidden");
-    if (a.mine) return fail("four_eyes_required");
-    if (data.status === "confirmed" && !data.note) return fail("note_required");
-    a.closed_at = new Date().toISOString();
-    if (data.status === "confirmed" && a.orphan_id) {
-      const f = s.files.find((o) => o.id === a.orphan_id);
-      if (f) f.base = "flagged";
-    }
-    log(s, "golden_alert_resolve", a.country, { signal: a.signal, status: data.status }, a.code);
-    settled(s, a.country);
+    const e = settleAlert(s, data.id, data.status, data.note);
+    if (e) return fail(e);
     save(s);
     return ok({ ok: true as const });
   },
@@ -912,3 +983,160 @@ registerDemo("trust.weekly", async ({ data }: { data: { country: string } }) => 
     weeks: s.weeks[data.country] ?? [],
   });
 });
+
+/* ── القصّة الموجّهة (`/try/journey`): طفلةٌ واحدة تمرّ بالطبقة كلّها ─────────
+ * تُبذر عند البدء وتُمحى بإعادة القصّة، ولا تمسّ بقية العيّنة. الأفعال هنا هي نفسها
+ * ما تناديه الشاشات الحقيقية («أرني» يؤدّيها عن الزائر)، فالقواعد واحدة: الملفّ من سجلّ
+ * الندوة وبيد الإدارة، والتغيير الحرج لا يحسمه رافعه. */
+
+export const STORY_COUNTRY = "LK";
+export const STORY_WAMY_REF = "WM-LK-7001";
+export const STORY_OFFICE_REF = "LK-OF-7001";
+/** المشرف الثاني في القصّة: عنوانٌ عامّ لا يصل أحداً. */
+export const STORY_SECOND = "supervisor.b@example.org";
+/** سجلّ الطفلة كما يصل من الندوة. */
+export const STORY_RECORD = {
+  external_ref: STORY_WAMY_REF,
+  name: "سلمى (نموذج)",
+  birth_date: "2015-04-12",
+  gender: "female",
+  country: STORY_COUNTRY,
+} as const;
+/** التاريخ الذي يصل من منصّة المكتب: عشر سنواتٍ أقدم، فتبدو بالغة. */
+export const STORY_SHIFTED = "2005-04-12";
+const STORY_DETAILS: Record<string, FieldValue> = {
+  region: "كولومبو",
+  city: "كولومبو",
+  education_stage: "الابتدائية",
+  guardian: "الأم",
+  living_situation: "مع الأم",
+  health_status: "جيدة",
+  progress_report: "تواظب على الدراسة.",
+  qualification_track: "دعم مدرسي",
+};
+
+const storyFileOf = (s: VerificationState) => s.files.find((f) => f.wamy_ref === STORY_WAMY_REF);
+
+function withActor<T>(next: { country: string; role: CountryRole } | null, run: () => T): T {
+  const was = actor;
+  setVerificationActor(next);
+  try {
+    return run();
+  } finally {
+    actor = was;
+  }
+}
+
+/** يمحو أثر القصّة السابق ويضع سجلّ الندوة في طابور الربط من جديد. */
+export function storySeed() {
+  const s = load();
+  const f = storyFileOf(s);
+  if (f) {
+    s.files = s.files.filter((x) => x !== f);
+    s.conflicts = s.conflicts.filter((x) => x.orphan_id !== f.id);
+    s.alerts = s.alerts.filter((x) => x.orphan_id !== f.id);
+    s.decisions = s.decisions.filter((d) => d.file_code !== f.code);
+  }
+  s.links = s.links.filter(
+    (l) => l.external_ref !== STORY_WAMY_REF && l.external_ref !== STORY_OFFICE_REF,
+  );
+  s.links.unshift({
+    id: nextId(s, 4),
+    role: "wamy",
+    source: "wamy",
+    external_ref: STORY_RECORD.external_ref,
+    country: STORY_COUNTRY,
+    name: STORY_RECORD.name,
+    birth_date: STORY_RECORD.birth_date,
+    gender: STORY_RECORD.gender,
+    created_at: new Date().toISOString(),
+    candidates: [],
+  });
+  setVerificationEmail(null);
+  save(s);
+}
+
+export type StoryFacts = {
+  linked: boolean;
+  code: string | null;
+  trust: TrustState | null;
+  /** رُصدت إزاحة الميلاد (مفتوحةً أو محسومة) */
+  flagged: boolean;
+  open: number;
+  /** ما بقي مفتوحاً منسوبٌ إلى رافعه (المشرف الأوّل) */
+  mine: boolean;
+  settled: boolean;
+};
+
+export function storyFacts(): StoryFacts {
+  const s = load();
+  const f = storyFileOf(s);
+  const open = f
+    ? [
+        ...s.conflicts.filter((x) => x.orphan_id === f.id && !x.closed_at),
+        ...s.alerts.filter((x) => x.orphan_id === f.id && !x.closed_at),
+      ]
+    : [];
+  const raised = f ? s.alerts.some((a) => a.orphan_id === f.id && a.signal === "age_shift") : false;
+  return {
+    linked: !!f,
+    code: f?.code ?? null,
+    trust: f ? trustOf(s, f) : null,
+    flagged: raised,
+    open: open.length,
+    mine: open.some((x) => x.mine),
+    settled: raised && open.length === 0,
+  };
+}
+
+/** الخطوة ١ عن الزائر: الإدارة تنشئ الملفّ من سجلّ الندوة. */
+export function storyCreate() {
+  const s = load();
+  const l = s.links.find((x) => !x.closed_at && x.external_ref === STORY_WAMY_REF);
+  if (!l) return;
+  const f = createFrom(s, l.id);
+  log(s, "golden_ingest", l.country, { records: 1 }, f?.code ?? null);
+  save(s);
+}
+
+/** الخطوة ٢: منصّة المكتب ترفع تاريخ ميلادٍ مُزاحاً، برفع المشرف الأوّل. */
+export function storyUpload() {
+  const s = load();
+  const f = storyFileOf(s);
+  if (!f || s.alerts.some((a) => a.orphan_id === f.id && a.signal === "age_shift")) return;
+  const c = s.countries.find((x) => x.code === STORY_COUNTRY);
+  withActor({ country: STORY_COUNTRY, role: "supervisor" }, () =>
+    ingest({
+      role: "office",
+      country: STORY_COUNTRY,
+      source: c?.office_source ?? null,
+      records: [{ external_ref: STORY_OFFICE_REF, fields: { birth_date: STORY_SHIFTED } }],
+    }),
+  );
+}
+
+/** الخطوة ٣: من يجلس أمام اللوحة — رافع التغيير، أو مشرفٌ ثانٍ. */
+export function storyHandOver(second: boolean) {
+  const s = load();
+  const f = storyFileOf(s);
+  setVerificationEmail(second ? STORY_SECOND : null);
+  if (!f) return;
+  for (const x of [...s.conflicts, ...s.alerts])
+    if (x.orphan_id === f.id && !x.closed_at) x.mine = !second;
+  save(s);
+}
+
+/** الخطوة ٣ عن الزائر: المشرف الثاني يبقي التاريخ الأصلي، ويغلق التنبيه خطأً في الرفع. */
+export function storySettle() {
+  storyHandOver(true);
+  const s = load();
+  const f = storyFileOf(s);
+  if (!f) return;
+  withActor({ country: STORY_COUNTRY, role: "supervisor" }, () => {
+    for (const x of s.conflicts.filter((c) => c.orphan_id === f.id && !c.closed_at))
+      settleConflict(s, x.id, "keep");
+    for (const a of s.alerts.filter((x) => x.orphan_id === f.id && !x.closed_at))
+      settleAlert(s, a.id, "false_positive");
+  });
+  save(s);
+}

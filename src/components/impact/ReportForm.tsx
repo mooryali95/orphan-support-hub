@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2, Paperclip, Trash2, Upload } from "lucide-react";
 
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useDataFn } from "@/lib/data-port";
 import { submitProgressReport } from "@/lib/impact.functions";
 import { createDocumentUploadUrl } from "@/lib/intake.functions";
 
@@ -26,8 +26,9 @@ export function ReportForm({
   onDone: () => void;
   onCancel: () => void;
 }) {
-  const submit = useServerFn(submitProgressReport);
-  const signUpload = useServerFn(createDocumentUploadUrl);
+  // منفذ البيانات: الخادم دائماً في المنصّة، ونسخةٌ تجريبية في جلسة التجربة وحدها.
+  const submit = useDataFn("impact.submitReport", submitProgressReport);
+  const signUpload = useDataFn("intake.uploadUrl", createDocumentUploadUrl);
 
   const [period, setPeriod] = useState(lastMonth());
   const [summary, setSummary] = useState("");
