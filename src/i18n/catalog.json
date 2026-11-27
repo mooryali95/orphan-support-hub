@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5140,
+ "count": 5171,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -848,6 +848,13 @@
    "hash": "29c84246bd75",
    "file": "src/components/admin/AdminTrustStrip.tsx"
   },
+  "components/admin/FourEyesNote.note": {
+   "en": "Settling needs two-step verification and a reviewer other than the uploader.",
+   "ar": "الحسم يحتاج تحقّقاً بخطوتين، ومراجعاً غير من رفع التغيير.",
+   "kind": "text",
+   "hash": "85a82da7ed6c",
+   "file": "src/components/admin/FourEyesNote.tsx"
+  },
   "components/admin/GoLiveReadiness.badgeLive": {
    "en": "Live",
    "ar": "حقيقي",
@@ -931,6 +938,27 @@
    "kind": "text",
    "hash": "3fda408d7e4c",
    "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/PanelState.failed": {
+   "en": "This panel could not be read. The figure is missing, not zero.",
+   "ar": "تعذّرت قراءة هذه اللوحة. الرقم غائب لا صفر.",
+   "kind": "text",
+   "hash": "cee296805592",
+   "file": "src/components/admin/PanelState.tsx"
+  },
+  "components/admin/PanelState.loading": {
+   "en": "Loading",
+   "ar": "جارٍ التحميل",
+   "kind": "text",
+   "hash": "dd4242b665fb",
+   "file": "src/components/admin/PanelState.tsx"
+  },
+  "components/admin/PanelState.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/admin/PanelState.tsx"
   },
   "components/admin/SystemHealth.lead": {
    "en": "Operations, dispatch and the data mirror in one card: what's running, what's behind and what needs attention.",
@@ -9293,6 +9321,20 @@
    "ar": "لا بنود تطابق المرشّحات.",
    "kind": "text",
    "hash": "2f6e701af852",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyFilteredNext": {
+   "en": "Clear the filters to see everything waiting.",
+   "ar": "امسح المرشّحات لترى كلّ ما ينتظر.",
+   "kind": "text",
+   "hash": "cc65db0d7635",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyNext": {
+   "en": "Open the trust center to see each country's health.",
+   "ar": "راجع «مركز الثقة» لترى صحة الدول.",
+   "kind": "text",
+   "hash": "b76b1ec19eef",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.failed": {
@@ -18569,6 +18611,177 @@
    "kind": "text",
    "hash": "dd5c04779f10",
    "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TryAdminSettings.cards.golive": {
+   "en": "The checklist before launch appears here in the live platform.",
+   "ar": "قائمة ما يلزم قبل الإطلاق تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "574b068c40cb",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.cards.health": {
+   "en": "Service status and scheduled jobs appear here in the live platform.",
+   "ar": "حالة الخدمات والمهامّ المجدولة تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "9723c0097cc3",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.cards.integrations": {
+   "en": "Platform keys and who uses them appear here in the live platform.",
+   "ar": "مفاتيح المنصّات ومن يستعملها تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "81420d56015f",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.counts": {
+   "en": "{0} reviewed · {1} published",
+   "ar": "{0} مراجَعة · {1} منشورة",
+   "kind": "template",
+   "params": 2,
+   "hash": "59f6422b4b06",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.draft": {
+   "en": "Draft",
+   "ar": "مسودّة",
+   "kind": "text",
+   "hash": "6f72db7bbccd",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.empty": {
+   "en": "No items in the sample.",
+   "ar": "لا عناصر في العيّنة.",
+   "kind": "text",
+   "hash": "6feffd9739ed",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.emptyNext": {
+   "en": "Open Today to try settling.",
+   "ar": "افتح «اليوم» لتجرّب الحسم.",
+   "kind": "text",
+   "hash": "4a786621ab51",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.country_sources": {
+   "en": "Country sources",
+   "ar": "مصادر الدول",
+   "kind": "text",
+   "hash": "ff4692a969d5",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.golive": {
+   "en": "Go-live readiness",
+   "ar": "جاهزية الإطلاق",
+   "kind": "text",
+   "hash": "fb3dfe3c4dd1",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.health": {
+   "en": "System health",
+   "ar": "صحة النظام",
+   "kind": "text",
+   "hash": "fd5f92d24cb9",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.integrations": {
+   "en": "Integrations",
+   "ar": "التكاملات",
+   "kind": "text",
+   "hash": "570e1bfe98b7",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.languages": {
+   "en": "Languages",
+   "ar": "اللغات",
+   "kind": "text",
+   "hash": "ddccaf209127",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.live": {
+   "en": "Published",
+   "ar": "منشورة",
+   "kind": "text",
+   "hash": "93d7a4946a80",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.localesLead": {
+   "en": "Languages proposed by the countries, and how much is reviewed and published.",
+   "ar": "لغات الدول المقترحة، وما رُوجع منها وما نُشر.",
+   "kind": "text",
+   "hash": "c0ac93193747",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.mirrored": {
+   "en": "{0} files mirrored",
+   "ar": "{0} ملفّاً منسوخاً",
+   "kind": "template",
+   "params": 1,
+   "hash": "14e5ecefc939",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.noStatus": {
+   "en": "No live status in the demo.",
+   "ar": "لا حالة حيّة في العرض.",
+   "kind": "text",
+   "hash": "901ed911a3f6",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.readOnly": {
+   "en": "Read only in the demo.",
+   "ar": "للقراءة وحدها في العرض.",
+   "kind": "text",
+   "hash": "2ef11faf2622",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.sourcesLead": {
+   "en": "One office platform per country, its status and the linking steps left.",
+   "ar": "منصّة مكتبٍ لكل دولة، وحالتها، وما بقي من خطوات ربطها.",
+   "kind": "text",
+   "hash": "4a24dadb9459",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.active": {
+   "en": "Active",
+   "ar": "مفعّلة",
+   "kind": "text",
+   "hash": "a27ae761242a",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.onboarding": {
+   "en": "Onboarding",
+   "ar": "قيد الإعداد",
+   "kind": "text",
+   "hash": "d2446606a45d",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.paused": {
+   "en": "Paused",
+   "ar": "موقوفة",
+   "kind": "text",
+   "hash": "1045c18429c7",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.trial": {
+   "en": "Trial",
+   "ar": "تجريبية",
+   "kind": "text",
+   "hash": "283caf082587",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.steps": {
+   "en": "{0} of {1} steps",
+   "ar": "{0} من {1} خطوات",
+   "kind": "template",
+   "params": 2,
+   "hash": "f7e1f9f7fef5",
+   "file": "src/components/try/TryAdminSettings.tsx"
   },
   "components/try/TryChildCard.age.one": {
    "en": "{0} year old",
@@ -31401,9 +31614,9 @@
   },
   "routes/try.admin.cycleLead": {
    "en": "For the whole cycle, from file entry to the first monthly report:",
-   "ar": "وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —",
+   "ar": "وللدورة كاملةً من إدخال الملفّ إلى تقرير الشهر الأوّل:",
    "kind": "text",
-   "hash": "5bc5a2c3fcae",
+   "hash": "4b6ddac28f82",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.home": {
@@ -31477,10 +31690,10 @@
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.lead": {
-   "en": "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
-   "ar": "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك، كفالتك وتعهّدك وملفّ جهتك، يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+   "en": "The administration's own tables on sample data, with what you did this session highlighted.",
+   "ar": "جداول الإدارة نفسها على بياناتٍ نموذجية، وما فعلته في جلستك يظهر فيها مظلَّلاً.",
    "kind": "text",
-   "hash": "14cf5b5f3ec4",
+   "hash": "d340ee76e9bf",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.open": {
@@ -31504,39 +31717,46 @@
    "hash": "6a509e4c7c53",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.0": {
-   "en": "Today",
-   "ar": "اليوم",
-   "kind": "text",
-   "hash": "565dc525e754",
-   "file": "src/routes/try.admin.lazy.tsx"
-  },
-  "routes/try.admin.sections.1": {
+  "routes/try.admin.sections.countries": {
    "en": "Countries",
    "ar": "الدول",
    "kind": "text",
    "hash": "7f0e3e766f4f",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.2": {
-   "en": "Data quality",
-   "ar": "جودة البيانات",
-   "kind": "text",
-   "hash": "a021eccb3f8b",
-   "file": "src/routes/try.admin.lazy.tsx"
-  },
-  "routes/try.admin.sections.3": {
+  "routes/try.admin.sections.money": {
    "en": "Money",
    "ar": "المال",
    "kind": "text",
    "hash": "4970affee1c4",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.4": {
+  "routes/try.admin.sections.people": {
    "en": "People",
    "ar": "الناس",
    "kind": "text",
    "hash": "c37bc9786575",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.quality": {
+   "en": "Data quality",
+   "ar": "جودة البيانات",
+   "kind": "text",
+   "hash": "a021eccb3f8b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.settings": {
+   "en": "Settings",
+   "ar": "الإعدادات",
+   "kind": "text",
+   "hash": "8e286bdeb19c",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.title": {
@@ -31589,24 +31809,24 @@
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.decisions": {
-   "en": "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
-   "ar": "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها، وحسمك يظهر فيه فوراً",
+   "en": "Who settled what and when; your own settlements appear at once.",
+   "ar": "من حسم ماذا ومتى، وحسمك يظهر فيه فوراً.",
    "kind": "text",
-   "hash": "0ff8e83dfa1d",
+   "hash": "7aa5d0ee01ed",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.sources": {
-   "en": "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
-   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV، وتتغيّر العدّادات",
+   "en": "Settle an alert or a conflict, upload a file and watch the counts change.",
+   "ar": "احسم تنبيهاً أو تعارضاً، وارفع ملفّاً، وشاهد العدّادات تتغيّر.",
    "kind": "text",
-   "hash": "855b99ecb659",
+   "hash": "9179df6ac4d5",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.trust": {
-   "en": "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
-   "ar": "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+   "en": "The health of the five countries at a glance.",
+   "ar": "صحة الدول الخمس في نظرةٍ واحدة.",
    "kind": "text",
-   "hash": "042836eb154d",
+   "hash": "4387163a1d55",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.childId.activation": {
