@@ -560,7 +560,18 @@ export function seedVerification(now: number = Date.now()): VerificationState {
       });
     };
     decide("golden_ingest", 30 + ci, { records: 40 + ci * 9 });
-    decide("golden_conflict_resolve", 34 + ci, { field: "city", choice: "use_office" }, f(1).code);
+    // القيمتان قبل/بعد كما يكتبهما الحسم، لتُقرأ الجملة «اعتمد المدينة … بدل …».
+    decide(
+      "golden_conflict_resolve",
+      34 + ci,
+      {
+        field: "city",
+        choice: "use_office",
+        was: c.regions.find((r) => r !== f(1).values["city"]) ?? "",
+        value: String(f(1).values["city"] ?? ""),
+      },
+      f(1).code,
+    );
     decide(
       "golden_alert_resolve",
       48 + ci * 2,

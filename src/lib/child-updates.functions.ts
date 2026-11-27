@@ -10,6 +10,8 @@ import {
   type ChildUpdateKind,
   type PendingChildUpdate,
 } from "@/lib/child-updates";
+import { QUEUE_PAGE } from "@/lib/golden-record";
+import { queuePage } from "@/lib/golden-record.functions";
 import { callRpc, type RpcResult } from "@/lib/rpc-call";
 
 /**
@@ -82,12 +84,15 @@ export const listChildUpdateQueue = createServerFn({ method: "GET" })
           .string()
           .regex(/^[A-Z]{2}$/)
           .nullable(),
+        ...queuePage,
       })
       .parse(i),
   )
   .handler(async ({ data, context }): Promise<RpcResult<PendingChildUpdate[]>> => {
     const res = await callRpc<{ items: RawPending[] }>(context.supabase, "child_update_queue", {
       _country: data.country,
+      _limit: data.limit ?? QUEUE_PAGE,
+      _after: data.after ?? null,
     });
     if (!res.ok) return res;
     return { ok: true, data: await sign(context.supabase, res.data.items) };

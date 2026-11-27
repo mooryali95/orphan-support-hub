@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, ImageIcon, Send, StickyNote, Video, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { toast } from "sonner";
+import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -159,10 +160,9 @@ export function ChildUpdatesCard({
 }) {
   const c = useCopy(UPDATES_COPY);
   const fetchQueue = useDataFn("childUpdates.queue", listChildUpdateQueue);
-  const q = useQuery({
-    queryKey: useDataKey([QUEUE_KEY, country]),
-    queryFn: () => fetchQueue({ data: { country } }),
-  });
+  const q = useKeysetList(useDataKey([QUEUE_KEY, country]), (after) =>
+    fetchQueue({ data: { country, after, limit: QUEUE_PAGE } }),
+  );
 
   return (
     <div className="space-y-6">
@@ -195,6 +195,7 @@ export function ChildUpdatesCard({
             ))}
           </ul>
         )}
+        <LoadMore {...q} shown={q.data?.ok ? q.data.data.length : 0} />
       </section>
     </div>
   );
@@ -359,6 +360,7 @@ function UploadUpdate({ country }: { country: string }) {
       setConsent(false);
       if (fileRef.current) fileRef.current.value = "";
       void qc.invalidateQueries({ queryKey: [...dk, QUEUE_KEY] });
+      void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
     },
     onError: () => toast.error(err("failed")),
   });
@@ -521,6 +523,7 @@ export function ChildUpdateReview({
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(decision === "approve" ? c.approved : c.rejected);
       void qc.invalidateQueries({ queryKey: [...dk, QUEUE_KEY] });
+      void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
       onDone?.();
     },
     onError: () => toast.error(err("failed")),

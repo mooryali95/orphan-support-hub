@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
 import { Val, V, fieldOptions, OpenFile } from "./shared";
+import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function Conflicts({
   country,
@@ -39,14 +40,15 @@ export function Conflicts({
   const qc = useQueryClient();
   const dk = useDataKey([]);
   const fetchList = useDataFn("golden.conflicts", listConflicts);
-  const list = useQuery({
-    queryKey: useDataKey(["golden-conflicts", country]),
-    queryFn: () => fetchList({ data: { country } }),
-  });
+  const list = useKeysetList(useDataKey(["golden-conflicts", country]), (after) =>
+    fetchList({ data: { country, after, limit: QUEUE_PAGE } }),
+  );
   const refresh = () => {
     void qc.invalidateQueries({ queryKey: [...dk, "golden-conflicts"] });
     void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
     void qc.invalidateQueries({ queryKey: [...dk, "child-file"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "decision-log"] });
   };
   const resolve = useDataFn("golden.resolveConflict", resolveConflict);
   const m = useMutation({
@@ -356,6 +358,7 @@ export function Conflicts({
           )}
         </>
       )}
+      <LoadMore {...list} shown={all.length} />
     </section>
   );
 }

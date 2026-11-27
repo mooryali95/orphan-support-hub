@@ -313,7 +313,19 @@ export type CountryHealth = {
 /** قيمة حقلٍ كما تحفظها القاعدة (JSONB بسيط). */
 export type FieldValue = string | number | boolean | null;
 
+/** صفحة الطوابير: كم بنداً في كلّ طلب، والمؤشّر الذي يحمله آخر بندٍ لطلب ما بعده. */
+export const QUEUE_PAGE = 100;
+export type QueueCursor = { k: number; at: string; id: string };
+/** المؤشّر بعد صفحةٍ وصلت، أو `null` إن كانت الأخيرة (أقصر من حجمها أو بلا مؤشّر). */
+export function nextCursor(
+  page: ReadonlyArray<{ cursor?: QueueCursor | null }>,
+  size: number = QUEUE_PAGE,
+): QueueCursor | null {
+  return page.length >= size ? (page[page.length - 1]?.cursor ?? null) : null;
+}
+
 export type Conflict = {
+  cursor?: QueueCursor;
   id: string;
   orphan_id: string;
   code: string;
@@ -342,6 +354,7 @@ export type AlertSignal =
   | "bulk_change";
 
 export type DataAlert = {
+  cursor?: QueueCursor;
   id: string;
   orphan_id: string | null;
   code: string | null;
@@ -367,6 +380,7 @@ export type PublicVerification = {
 };
 
 export type LinkItem = {
+  cursor?: QueueCursor;
   id: string;
   role: SourceRole;
   source: string;

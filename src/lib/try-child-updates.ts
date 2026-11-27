@@ -4,6 +4,7 @@
  * سماء، دفتر، ملعب) — لا صورة طفلٍ ولا وجه — وكلّ بندٍ موسومٌ `sample`. لا يُرفع
  * ملفٌّ في التجربة؛ الملاحظات وحدها تُضاف إلى الطابور في ذاكرة الصفحة.
  */
+import { pageOf, type DemoPageInput } from "@/lib/try-page";
 import type { ChildUpdate, PendingChildUpdate } from "@/lib/child-updates";
 import { registerDemo } from "@/lib/data-port";
 import { TRY_CHILDREN } from "@/lib/try-demo";
@@ -171,10 +172,16 @@ export function registerChildUpdateDemos() {
     ok: true as const,
     data: tryChildUpdates(data.orphanId),
   }));
-  registerDemo("childUpdates.queue", async ({ data }: Input<{ country: string | null }>) => ({
-    ok: true as const,
-    data: pending().filter((u) => !data.country || u.country_code === data.country),
-  }));
+  registerDemo(
+    "childUpdates.queue",
+    async ({ data }: Input<{ country: string | null } & DemoPageInput>) => ({
+      ok: true as const,
+      data: pending()
+        .filter((u) => !data.country || u.country_code === data.country)
+        .map((u) => ({ ...u }))
+        .filter(pageOf(data)),
+    }),
+  );
   registerDemo(
     "childUpdates.children",
     async ({ data }: Input<{ country: string; q: string }>) => ({
@@ -221,3 +228,7 @@ export function registerChildUpdateDemos() {
     return { ok: true as const, data: { ok: true as const } };
   });
 }
+
+/** ما ينتظر الحسم من تحديثات العيّنة، لعدّاد «اليوم». */
+export const pendingChildUpdates = (country: string | null) =>
+  pending().filter((u) => !country || u.country_code === country).length;

@@ -22,6 +22,9 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminMfaGate } from "@/components/admin/AdminMfaGate";
 import { AdminExports, AdminSponsorsList } from "@/components/admin/AdminLists";
 import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
+import { ChildFileSheet } from "@/components/admin/data/WorkTools";
+import { DecisionTimeline } from "@/components/admin/decisions/DecisionTimeline";
+import { AdminSearch } from "@/components/admin/search/AdminSearch";
 import {
   adminHref,
   JOB_TABS,
@@ -98,6 +101,7 @@ const TAB_LABELS: Record<Tab, string> = {
   today: "ما ينتظر قرارك",
   countries: "درج الدول",
   trust: "مركز الثقة",
+  decisions: "سجلّ القرارات",
   data: "بناء البيانات",
   report: "التقرير الشامل",
   transfers: "تحويلاتٌ تنتظر المطابقة",
@@ -184,6 +188,7 @@ function AdminPage() {
   );
   // ملفّ واحد مفتوح للمراجعة في كل مرّة: المراجعة قراءة وثائق لا مسح قائمة.
   const [reviewing, setReviewing] = useState<string | null>(null);
+  const [fileId, setFileId] = useState<string | null>(null);
   const today = useToday(ADMIN_ACCESS);
 
   const { data, isLoading } = useQuery({
@@ -224,7 +229,7 @@ function AdminPage() {
   const cur = o.currency;
   // العدّاد على «اليوم» و«المال» وحدهما: ما يُعمل عليه، لا ضجيج شاراتٍ في كل مكان.
   const COUNTS: Partial<Record<Tab, number>> = {
-    today: today.items.length,
+    today: today.total,
     transfers: today.items.filter((i) => kindMatches("money", i.kind)).length,
   };
   const country = typeof search["country"] === "string" ? search["country"] : "";
@@ -249,6 +254,17 @@ function AdminPage() {
           onHome={() => setTab("today")}
         />
         <div className="min-w-0">
+          <div className="mb-5">
+            <AdminSearch
+              onPick={(h) => {
+                if (h.kind === "child") setFileId(h.item.id);
+                else if (h.kind === "sponsor") open("sponsors");
+                else if (h.kind === "sponsorship") open("sponsorships");
+                else open("today", { kind: "transfer", q: h.item.ref });
+              }}
+            />
+          </div>
+          <ChildFileSheet id={fileId} onClose={() => setFileId(null)} />
           <p className="text-muted-foreground text-xs font-bold lg:mt-1">
             {JOB_LABELS[jobOf(tab)]}
           </p>
@@ -308,6 +324,12 @@ function AdminPage() {
                 tab={workTab}
                 setTab={(t) => go({ ...search, ctab: t }, true)}
               />
+            </div>
+          )}
+
+          {tab === "decisions" && (
+            <div className="mt-6">
+              <DecisionTimeline />
             </div>
           )}
 

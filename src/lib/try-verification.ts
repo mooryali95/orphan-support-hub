@@ -28,7 +28,9 @@ import {
   type IngestResult,
   type TrustState,
 } from "@/lib/golden-record";
+import type { DecisionEvent, QueueCounts, SearchResults, SearchSponsor } from "@/lib/admin-tools";
 import type { AgingBucket, AgingItem, Decision, DecisionAction } from "@/lib/trust-center";
+import { pageOf, type DemoPageInput } from "@/lib/try-page";
 import { tryStore } from "@/lib/try-store";
 import {
   demoId,
@@ -127,6 +129,8 @@ type Fail = { ok: false; missing: false; error: string };
 const ok = <T>(data: T): Ok<T> => ({ ok: true, data });
 const fail = (error: string): Fail => ({ ok: false, missing: false, error });
 const pause = () => new Promise((r) => setTimeout(r, 180));
+
+const rankOf = (r: string) => (r === "critical" ? 0 : r === "medium" ? 1 : 2);
 
 /* ── حسابٌ على الحالة ─────────────────────────────────────────── */
 
@@ -271,7 +275,24 @@ function settleConflict(
     if (x.office !== null) f.office[x.field] = f.values[x.field] ?? null;
   }
   x.closed_at = new Date().toISOString();
-  log(s, "golden_conflict_resolve", x.country, { field: x.field, choice }, x.code);
+  const shown = (v: FieldValue) => (v === null ? "" : String(v));
+  const chosen =
+    choice === "accept"
+      ? x.proposed
+      : choice === "use_wamy"
+        ? x.wamy
+        : choice === "use_office"
+          ? x.office
+          : choice === "manual"
+            ? (value ?? null)
+            : (x.proposed ?? x.office ?? x.wamy);
+  log(
+    s,
+    "golden_conflict_resolve",
+    x.country,
+    { field: x.field, choice, was: shown(x.current), value: shown(chosen) },
+    x.code,
+  );
   settled(s, x.country);
   return null;
 }
@@ -611,17 +632,22 @@ registerDemo("golden.import", async ({ data }: { data: ImportInput }) => {
   return ingest(data);
 });
 
-registerDemo("golden.conflicts", async ({ data }: { data: { country: string | null } }) => {
-  await pause();
-  if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
-  const see = visible(data.country);
-  return ok(
-    load()
-      .conflicts.filter((x) => !x.closed_at && see(x.country) && inFocus(load(), x.orphan_id))
-      // «mine» يبقى: تلميح العينين في «اليوم» (القاعدة تحرس في المنصّة).
-      .map(({ closed_at: _c, ...x }) => x),
-  );
-});
+registerDemo(
+  "golden.conflicts",
+  async ({ data }: { data: { country: string | null } & DemoPageInput }) => {
+    await pause();
+    if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
+    const see = visible(data.country);
+    return ok(
+      load()
+        .conflicts.filter((x) => !x.closed_at && see(x.country) && inFocus(load(), x.orphan_id))
+        // «mine» يبقى: تلميح العينين في «اليوم» (القاعدة تحرس في المنصّة).
+        .map(({ closed_at: _c, ...x }) => x)
+        .sort((a, b) => rankOf(a.risk) - rankOf(b.risk) || a.created_at.localeCompare(b.created_at))
+        .filter(pageOf(data)),
+    );
+  },
+);
 
 registerDemo(
   "golden.resolveConflict",
@@ -708,16 +734,22 @@ registerDemo("golden.childFile", async ({ data }: { data: { id: string } }) => {
   return ok(file);
 });
 
-registerDemo("golden.links", async ({ data }: { data: { country: string | null } }) => {
-  await pause();
-  if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
-  const see = visible(data.country);
-  return ok(
-    load()
-      .links.filter((l) => !l.closed_at && see(l.country) && inFocus(load(), null, l.external_ref))
-      .map(({ closed_at: _c, ...l }) => l),
-  );
-});
+registerDemo(
+  "golden.links",
+  async ({ data }: { data: { country: string | null } & DemoPageInput }) => {
+    await pause();
+    if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
+    const see = visible(data.country);
+    return ok(
+      load()
+        .links.filter(
+          (l) => !l.closed_at && see(l.country) && inFocus(load(), null, l.external_ref),
+        )
+        .map(({ closed_at: _c, ...l }) => l)
+        .filter(pageOf(data)),
+    );
+  },
+);
 
 registerDemo(
   "golden.resolveLink",
@@ -767,16 +799,20 @@ registerDemo("golden.createUnmatched", async ({ data }: { data: { country: strin
   return ok({ ok: true as const, created, failed: todo.length - created });
 });
 
-registerDemo("golden.alerts", async ({ data }: { data: { country: string | null } }) => {
-  await pause();
-  if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
-  const see = visible(data.country);
-  return ok(
-    load()
-      .alerts.filter((a) => !a.closed_at && see(a.country) && inFocus(load(), a.orphan_id))
-      .map(({ closed_at: _c, ...a }) => a),
-  );
-});
+registerDemo(
+  "golden.alerts",
+  async ({ data }: { data: { country: string | null } & DemoPageInput }) => {
+    await pause();
+    if (data.country && !allowed(data.country, "read")) return fail("country_forbidden");
+    const see = visible(data.country);
+    return ok(
+      load()
+        .alerts.filter((a) => !a.closed_at && see(a.country) && inFocus(load(), a.orphan_id))
+        .map(({ closed_at: _c, ...a }) => a)
+        .filter(pageOf(data)),
+    );
+  },
+);
 
 registerDemo(
   "golden.resolveAlert",
@@ -1148,4 +1184,178 @@ export function storySettle() {
       settleAlert(s, a.id, "false_positive");
   });
   save(s);
+}
+
+/* ── أدوات الإدارة: العدّادات والبحث وسجلّ القرارات على العيّنة ─────── */
+
+/** عدّ المفتوح في طوابير العيّنة بنطاق الدور (`admin.queueCounts` بلا التحديثات). */
+export function verificationCounts(country: string | null): Omit<QueueCounts, "updates"> {
+  const s = load();
+  const see = visible(country);
+  return {
+    conflicts: s.conflicts.filter((x) => !x.closed_at && see(x.country) && inFocus(s, x.orphan_id))
+      .length,
+    alerts: s.alerts.filter((a) => !a.closed_at && see(a.country) && inFocus(s, a.orphan_id))
+      .length,
+    links: s.links.filter((l) => !l.closed_at && see(l.country) && inFocus(s, null, l.external_ref))
+      .length,
+  };
+}
+
+/** كفلاءٌ نموذجيون بأسماءٍ عامة من example.org: لا يقابلون أحداً. */
+const DEMO_SPONSORS: SearchSponsor[] = [
+  { id: demoId(8, 1), name: "Sponsor A (sample)", email: "sponsor.a@example.org" },
+  { id: demoId(8, 2), name: "كافل ب (نموذج)", email: "sponsor.b@example.org" },
+  { id: demoId(8, 3), name: "Sponsor C (sample)", email: "sponsor.c@example.org" },
+];
+
+/** البحث الموحّد على العيّنة: الإدارة ترى الكلّ، وفريق الدولة أطفال دوله وحدهم. */
+export function demoSearch(q: string): SearchResults {
+  const k = searchKey(q);
+  const empty: SearchResults = { children: [], sponsors: [], sponsorships: [], transfers: [] };
+  if (k.length < 2) return empty;
+  const s = load();
+  const has = (...hay: Array<string | null | undefined>) =>
+    hay.some((h) => !!h && searchKey(h).includes(k));
+  const children = s.files
+    .filter((f) => allowed(f.country, "read") && has(f.code, f.name))
+    .slice(0, 6)
+    .map((f) => ({
+      id: f.id,
+      code: f.code,
+      name: f.name,
+      country: f.country,
+      status: f.sponsored ? "sponsored" : "available",
+    }));
+  if (!actor.admin) return { ...empty, children };
+  const sponsored = s.files.filter((f) => f.sponsored);
+  const sponsorships = sponsored
+    .map((f, i) => {
+      const sp = DEMO_SPONSORS[i % DEMO_SPONSORS.length]!;
+      return {
+        id: demoId(7, i + 1),
+        status: "active",
+        amount: 40 + (i % 4) * 10,
+        currency: "USD",
+        code: f.code,
+        child: f.name,
+        sponsor: sp.name,
+        created_at: new Date(Date.now() - (i + 3) * 86_400_000).toISOString(),
+        email: sp.email,
+      };
+    })
+    .filter((x) => has(x.code, x.child, x.sponsor, x.email, x.id))
+    .slice(0, 6)
+    .map(({ email: _e, ...x }) => x);
+  const transfers = sponsored
+    .slice(0, 4)
+    .map((f, i) => ({
+      id: demoId(7, 100 + i),
+      ref: `DEMO${String(4100 + i * 37)}`,
+      amount: 45 + i * 15,
+      currency: i % 2 ? "EUR" : "USD",
+      status: "pending_payment",
+      code: f.code,
+      bank_reference: null,
+      created_at: new Date(Date.now() - (i + 1) * 36 * 3_600_000).toISOString(),
+    }))
+    .filter((x) => has(x.ref, x.code));
+  return {
+    children,
+    sponsors: DEMO_SPONSORS.filter((x) => has(x.name, x.email)),
+    sponsorships,
+    transfers,
+  };
+}
+
+/** أحداث أمنٍ نموذجية؛ ما يرفضه العرض من حسمٍ بالعينين يُضاف إليها في الجلسة. */
+function demoSecurity(s: VerificationState): DecisionEvent[] {
+  const now = Date.now();
+  const at = (h: number) => new Date(now - h * 3_600_000).toISOString();
+  const f = s.files[0];
+  const base = {
+    src: "security" as const,
+    field: null,
+    from: null,
+    to: null,
+    detail: {},
+  };
+  return [
+    {
+      ...base,
+      id: "i0000000000000000003",
+      at: at(5),
+      actor: "supervisor.lk@example.org",
+      action: "sec_four_eyes_refused",
+      orphan_id: f?.id ?? null,
+      code: f?.code ?? null,
+      country: f?.country ?? null,
+    },
+    {
+      ...base,
+      id: "i0000000000000000002",
+      at: at(26),
+      actor: "supervisor.pk@example.org",
+      action: "sec_mfa_required",
+      orphan_id: null,
+      code: null,
+      country: "PK",
+    },
+    {
+      ...base,
+      id: "i0000000000000000001",
+      at: at(24 * 6),
+      actor: null,
+      action: "sec_sso_failure",
+      orphan_id: null,
+      code: null,
+      country: null,
+    },
+  ];
+}
+
+/** سجلّ القرارات على العيّنة بالشكل الذي تعيده `admin_decision_log`. */
+export function demoDecisionLog(data: {
+  orphan: string | null;
+  kind: "decisions" | "security" | null;
+  beforeAt: string | null;
+  beforeId: string | null;
+}) {
+  if (!actor.admin) return fail("admin_only");
+  const s = load();
+  const code = data.orphan ? (s.files.find((f) => f.id === data.orphan)?.code ?? "") : null;
+  const byCode = new Map(s.files.map((f) => [f.code, f]));
+  const decisions: DecisionEvent[] =
+    data.kind === "security"
+      ? []
+      : s.decisions.map((d) => {
+          const keep = d.action === "golden_conflict_resolve" && d.detail["choice"] === "keep";
+          const f = d.file_code ? byCode.get(d.file_code) : undefined;
+          const str = (k: string) => (d.detail[k] === undefined ? null : String(d.detail[k]));
+          return {
+            id: d.id,
+            src: keep ? "conflict" : "audit",
+            at: d.created_at,
+            actor: d.actor_email,
+            action: keep ? "golden_conflict_keep" : d.action,
+            orphan_id: f?.id ?? null,
+            code: d.file_code,
+            country: d.country,
+            field: str("field"),
+            from: str("was"),
+            to: str("value"),
+            detail: d.detail,
+          };
+        });
+  const security = data.kind === "decisions" ? [] : demoSecurity(s);
+  const rows = [...decisions, ...security]
+    .filter(
+      (e) =>
+        (code === null || e.code === code) &&
+        (!data.beforeAt ||
+          e.at < data.beforeAt ||
+          (e.at === data.beforeAt && !!data.beforeId && e.id < data.beforeId)),
+    )
+    .sort((a, b) => b.at.localeCompare(a.at) || b.id.localeCompare(a.id));
+  return ok({ rows: rows.slice(0, 30), has_more: rows.length > 30 });
 }

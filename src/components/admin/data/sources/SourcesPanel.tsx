@@ -5,7 +5,7 @@ import { useDataFn, useDataKey } from "@/lib/data-port";
 import { flagOf } from "@/lib/countries";
 import { canDo, type CountryAccess } from "@/lib/golden-record";
 import { getDataHealth } from "@/lib/golden-record.functions";
-import { listChildUpdateQueue } from "@/lib/child-updates.functions";
+import { getQueueCounts } from "@/lib/admin-tools.functions";
 import { useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import { Busy, CARD, Failed, NeedsUpdate, SectionHead } from "../shared";
@@ -55,11 +55,11 @@ export function SourcesPanel({
     setTabIn?.(t);
   };
   const [fileId, setFileId] = useState<string | null>(null);
-  // المفتاح نفسه في لسان «التحديثات»: الحسم هناك يحدّث العدّاد هنا.
-  const fetchUpdates = useDataFn("childUpdates.queue", listChildUpdateQueue);
-  const updates = useQuery({
-    queryKey: useDataKey(["child-updates-queue", code]),
-    queryFn: () => fetchUpdates({ data: { country: code } }),
+  // عدّاد الطوابير نفسه في «اليوم»: الحسم في لسان «التحديثات» يحدّثه هنا.
+  const fetchCounts = useDataFn("admin.queueCounts", getQueueCounts);
+  const counts = useQuery({
+    queryKey: useDataKey(["queue-counts", code]),
+    queryFn: () => fetchCounts({ data: { country: code } }),
     enabled: !!code,
   });
 
@@ -90,7 +90,7 @@ export function SourcesPanel({
         ...(can("import") ? [{ key: "upload" as const, count: 0, urgent: false }] : []),
         {
           key: "updates" as const,
-          count: updates.data?.ok ? updates.data.data.length : 0,
+          count: counts.data?.ok ? counts.data.data.updates : 0,
           urgent: false,
         },
         { key: "mode" as const, count: 0, urgent: false },
