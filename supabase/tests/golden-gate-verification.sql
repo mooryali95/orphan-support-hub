@@ -13,7 +13,7 @@ VALUES ('a9920000-0000-4000-8000-000000000001', 'a9900000-0000-4000-8000-0000000
 DO $$
 DECLARE _o UUID; _a UUID; _ok BOOLEAN; _codes TEXT[]; _st TEXT; _x RECORD;
 BEGIN
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_golden_import('wamy', 'SN', NULL,
     '[{"external_ref":"gg-1","observed_at":"2026-11-01T00:00:00Z",
        "fields":{"display_name":"عمر سال","birth_date":"2014-06-01","gender":"male"}}]'::jsonb);
@@ -39,7 +39,7 @@ BEGIN
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — كفالةٌ أُدرجت لملفٍّ موسوم'; END IF;
 
   -- 2) الاقتراحات لا تعرضه، والشارة تقول ذلك
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000002","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000002","role":"authenticated","aal":"aal2"}';
   SELECT array_agg(code) INTO _codes FROM public.suggest_orphans_for_sponsor(1000, NULL, 48);
   IF (SELECT code FROM public.orphans WHERE id = _o) = ANY(COALESCE(_codes, '{}'))
      OR EXISTS (SELECT 1 FROM public.suggest_orphans_for_amount(1000, NULL, 50) s WHERE s.id = _o) THEN
@@ -49,14 +49,14 @@ BEGIN
   RAISE NOTICE 'PASS — الموسوم لا يُكفل ولا يُقترح، والشارة تقول ذلك';
 
   -- 3) حسم التنبيه والتعارض يعيده تلقائياً
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_alert_resolve(_a, 'false_positive', 'خطأ إدخال صُحّح');
   PERFORM public.admin_conflict_resolve(
     (SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND status = 'open'), 'keep');
   IF NOT public.golden_accepts_new_support(_o) THEN RAISE EXCEPTION 'FAIL — الملف لم يعد بعد الحسم'; END IF;
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   INSERT INTO public.sponsorships (sponsor_id, orphan_id, amount, currency, status)
   VALUES ('a9900000-0000-4000-8000-000000000002', _o, 50, 'USD', 'pending_payment');
   RAISE NOTICE 'PASS — الحسم يعيد الملف للكفالة دون خطوةٍ أخرى';
@@ -65,7 +65,7 @@ BEGIN
   PERFORM public.admin_golden_import('wamy', 'SN', NULL,
     '[{"external_ref":"gg-1","observed_at":"2026-11-03T00:00:00Z","fields":{"birth_date":"2005-01-01"}}]'::jsonb);
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
-  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9900000-0000-4000-8000-000000000009","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_alert_resolve(_a, 'confirmed', 'تلاعبٌ مؤكَّد بالميلاد');
   PERFORM public.admin_conflict_resolve(
     (SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND status = 'open'), 'keep');

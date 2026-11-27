@@ -10,7 +10,7 @@ INSERT INTO public.user_roles (user_id, role) VALUES
 DO $$
 DECLARE _o UUID; _ok BOOLEAN; _c UUID;
 BEGIN
-  SET LOCAL request.jwt.claims = '{"sub":"a9b00000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9b00000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_golden_import('wamy', 'SD', NULL,
     '[{"external_ref":"sh-1","observed_at":"2026-11-01T00:00:00Z",
        "fields":{"display_name":"هدى","birth_date":"2013-06-01","gender":"female"}}]'::jsonb);
@@ -46,7 +46,7 @@ BEGIN
           WHERE x->>'id' = _c::text) THEN
     RAISE EXCEPTION 'FAIL — البند لا يقول لرافعه إنه رفعه';
   END IF;
-  SET LOCAL request.jwt.claims = '{"sub":"a9b00000-0000-4000-8000-000000000002","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9b00000-0000-4000-8000-000000000002","role":"authenticated","aal":"aal2"}';
   IF (SELECT bool_or((x->>'mine')::boolean) FROM jsonb_array_elements(public.admin_conflicts('SD', 50)) x
       WHERE x->>'id' = _c::text) THEN
     RAISE EXCEPTION 'FAIL — البند يظهر لغير رافعه كأنه رفعه';

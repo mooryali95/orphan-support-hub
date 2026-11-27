@@ -326,6 +326,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'orphan_field_history|authenticated|SELECT|',
     'orphan_field_observations|authenticated|SELECT|',
     'orphan_field_state|authenticated|SELECT|',
+    'orphan_freezes|authenticated|SELECT|',
     'orphan_locks|authenticated|SELECT|',
     'orphan_needs|authenticated|DELETE,INSERT,SELECT,UPDATE|',
     'orphan_pending_edits|authenticated|SELECT|',

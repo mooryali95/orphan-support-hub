@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { MfaRequiredNotice } from "@/components/account/MfaSettings";
 import { useState } from "react";
 import { useDataFn, useDataKey } from "@/lib/data-port";
 import { flagOf } from "@/lib/countries";
@@ -12,6 +13,7 @@ import { ChildFileSheet } from "../WorkTools";
 import { Alerts } from "./Alerts";
 import { Conflicts } from "./ConflictsInbox";
 import { HealthCard } from "./HealthCard";
+import { SsoSwitchCard } from "./KillSwitches";
 import { LinkQueue } from "./LinkQueue";
 import { ModeControl, Matrix } from "./ModeControl";
 import { StartHere } from "./StartHere";
@@ -99,6 +101,11 @@ export function SourcesPanel({
           );
         }}
       />
+
+      {(access.admin || access.countries.some((x) => x.role === "supervisor")) && (
+        <MfaRequiredNotice />
+      )}
+      {access.admin && <SsoSwitchCard />}
 
       <section aria-labelledby="health-title">
         <h4 id="health-title" className="text-base font-bold">

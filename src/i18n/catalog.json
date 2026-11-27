@@ -1,7 +1,196 @@
 {
  "version": 1,
- "count": 4961,
+ "count": 4991,
  "entries": {
+  "account/mfa.code": {
+   "en": "Code",
+   "ar": "الرمز",
+   "kind": "text",
+   "hash": "6c6ec4877448",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.confirm": {
+   "en": "Confirm",
+   "ar": "تأكيد",
+   "kind": "text",
+   "hash": "cfe80a65f538",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.enrollIntro": {
+   "en": "Scan the code with an authenticator app (Google Authenticator, Microsoft Authenticator or 1Password), then enter the six-digit code.",
+   "ar": "امسح الرمز بتطبيق مصادقة (Google Authenticator أو Microsoft Authenticator أو 1Password)، ثم اكتب الرمز المكوّن من ستّة أرقام.",
+   "kind": "text",
+   "hash": "767b3f565be8",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.enrollStart": {
+   "en": "Turn on two-step verification",
+   "ar": "تفعيل المصادقة الثنائية",
+   "kind": "text",
+   "hash": "6557f3a12ea9",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.factorName": {
+   "en": "approvers",
+   "ar": "الحاسمون",
+   "kind": "text",
+   "hash": "791c20b42273",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.failed": {
+   "en": "Setup couldn't start. Try again.",
+   "ar": "تعذّر بدء التفعيل. أعد المحاولة.",
+   "kind": "text",
+   "hash": "401e349b02b9",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.intro": {
+   "en": "Settling alerts, conflicts and unlock requests, and managing a country team, needs a code from an authenticator app as well as your usual sign-in.",
+   "ar": "حسم التنبيهات والتعارضات وطلبات الفكّ وإدارة فريق الدولة يحتاج رمزاً من تطبيق مصادقة، إلى جانب الدخول المعتاد.",
+   "kind": "text",
+   "hash": "f98154bbb360",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.manual": {
+   "en": "Or enter the key by hand:",
+   "ar": "أو أدخل المفتاح يدوياً:",
+   "kind": "text",
+   "hash": "db370187006c",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.noticeLink": {
+   "en": "Open two-step verification in my account",
+   "ar": "افتح المصادقة الثنائية في حسابي",
+   "kind": "text",
+   "hash": "ef73db0b0ee7",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.noticeText": {
+   "en": "Decisions from this session won't be accepted until you turn on two-step verification or enter its code.",
+   "ar": "لن يُقبل حسمٌ من هذه الجلسة حتى تفعّل المصادقة الثنائية أو تكتب رمزها.",
+   "kind": "text",
+   "hash": "95e6a4e68283",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.noticeTitle": {
+   "en": "Your decisions need two-step verification",
+   "ar": "قراراتك تحتاج المصادقة الثنائية",
+   "kind": "text",
+   "hash": "9bbfc54ead99",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.on": {
+   "en": "On, and your current session is verified with it.",
+   "ar": "مفعّلة، وجلستك الحالية موثّقة بها.",
+   "kind": "text",
+   "hash": "acf99173faef",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.qrAlt": {
+   "en": "QR code to set up verification",
+   "ar": "رمز QR لتفعيل المصادقة",
+   "kind": "text",
+   "hash": "d7b0b606ff9c",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.title": {
+   "en": "Two-step verification",
+   "ar": "المصادقة الثنائية",
+   "kind": "text",
+   "hash": "8e945d3d36ca",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.verifyIntro": {
+   "en": "Two-step verification is on, but this session isn't verified with it yet. Enter the current code from your app.",
+   "ar": "المصادقة مفعّلة، لكن جلستك الحالية لم تُوثَّق بها بعد. اكتب الرمز الحالي من التطبيق.",
+   "kind": "text",
+   "hash": "af7330591a58",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.wrong": {
+   "en": "The code is wrong or expired. Try the current code from your app.",
+   "ar": "الرمز غير صحيح أو انتهت صلاحيته. جرّب الرمز الحالي من التطبيق.",
+   "kind": "text",
+   "hash": "b532f22fea21",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "admin/kill-switches.freeze": {
+   "en": "Freeze file",
+   "ar": "جمّد الملف",
+   "kind": "text",
+   "hash": "b85ccd472358",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.freezeHint": {
+   "en": "Stops every source write and every new sponsorship for this child until it's lifted. Existing sponsorships are untouched.",
+   "ar": "يوقف كل كتابةٍ من المصادر وكل كفالةٍ جديدة لهذا الطفل حتى يُرفع. الكفالات القائمة لا تُمسّ.",
+   "kind": "text",
+   "hash": "0105634bfaf0",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.freezeTitle": {
+   "en": "Freeze this file",
+   "ar": "تجميد الملف",
+   "kind": "text",
+   "hash": "eaf2d1974044",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.frozenNow": {
+   "en": "Frozen. Reason:",
+   "ar": "مجمَّد. السبب:",
+   "kind": "text",
+   "hash": "cd745b4d505d",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.reason": {
+   "en": "Reason for freezing",
+   "ar": "سبب التجميد",
+   "kind": "text",
+   "hash": "51f897817a2b",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.saved": {
+   "en": "Saved.",
+   "ar": "حُفظ.",
+   "kind": "text",
+   "hash": "c332f924d87d",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.ssoLabel": {
+   "en": "Pause sign-in from WAMY's platform",
+   "ar": "إيقاف الدخول من منصّة الندوة",
+   "kind": "text",
+   "hash": "b279454a3bc9",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.ssoOff": {
+   "en": "Paused: launch links are refused; regular sign-in still works.",
+   "ar": "موقوف: روابط الإطلاق تُرفض، والدخول المعتاد باقٍ.",
+   "kind": "text",
+   "hash": "c9ffefad1b7f",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.ssoOn": {
+   "en": "Open: users sign in with launch links from WAMY's platform.",
+   "ar": "مفتوح: يدخل المستخدمون برابط الإطلاق من منصّة الندوة.",
+   "kind": "text",
+   "hash": "f01dd9823a78",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.ssoTitle": {
+   "en": "Sign-in from WAMY's platform",
+   "ar": "الدخول من منصّة الندوة",
+   "kind": "text",
+   "hash": "a3c41861c4ba",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
+  "admin/kill-switches.unfreeze": {
+   "en": "Lift freeze",
+   "ar": "ارفع التجميد",
+   "kind": "text",
+   "hash": "45723cbdc83c",
+   "file": "src/components/admin/data/sources/KillSwitches.tsx"
+  },
   "components/DashboardShell.account": {
    "en": "My account",
    "ar": "حسابي",
@@ -4721,6 +4910,13 @@
    "hash": "a50f62c51629",
    "file": "src/components/admin/data/sources-copy.ts"
   },
+  "components/admin/data/sources.errors.mfa_required": {
+   "en": "This decision needs two-step verification. Turn it on or enter its code in My account → Two-step verification, then try again.",
+   "ar": "هذا القرار يحتاج المصادقة الثنائية. فعّلها أو اكتب رمزها من «حسابي ← المصادقة الثنائية»، ثم أعد المحاولة.",
+   "kind": "text",
+   "hash": "6861e58acc0e",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
   "components/admin/data/sources.errors.mode_unknown": {
    "en": "Unknown mode.",
    "ar": "وضعٌ غير معروف.",
@@ -4747,6 +4943,13 @@
    "ar": "منصّة المكتب ليست في وضع الظلّ أو الفعّال لهذه الدولة.",
    "kind": "text",
    "hash": "62ee6ee1734d",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.errors.orphan_frozen": {
+   "en": "The admin team froze this file: it can't change or take new sponsorships until it's unfrozen.",
+   "ar": "جمّدت الإدارة هذا الملف: لا يتغيّر ولا يُكفل حتى يُرفع التجميد.",
+   "kind": "text",
+   "hash": "befde5b8ecf9",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.errors.orphan_locked": {
@@ -29560,6 +29763,13 @@
    "ar": "لم يصل الطلب من منصّة الندوة. ادخل منها مباشرة.",
    "kind": "text",
    "hash": "f85c53b074fe",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.sso_disabled": {
+   "en": "The admin team has paused sign-in from WAMY's platform. Sign in here directly.",
+   "ar": "أوقفت الإدارة الدخول من منصّة الندوة مؤقّتاً. سجّل الدخول هنا مباشرة.",
+   "kind": "text",
+   "hash": "ddcb1c30d2bf",
    "file": "src/routes/sso.tsx"
   },
   "routes/sso.reasons.subject_taken": {

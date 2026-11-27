@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { DashboardShell } from "@/components/DashboardShell";
+import { MfaSettings } from "@/components/account/MfaSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -335,6 +336,9 @@ function AccountPage() {
             </div>
           )}
         </section>
+
+        {/* ── المصادقة الثنائية ── */}
+        <MfaSettings />
 
         {/* ── إلى أين ── */}
         <nav

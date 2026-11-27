@@ -14,7 +14,7 @@ ON CONFLICT (key) DO NOTHING;
 
 CREATE OR REPLACE FUNCTION pg_temp.as_user(_n INT) RETURNS VOID LANGUAGE sql AS $$
   SELECT set_config('request.jwt.claims',
-    format('{"sub":"a9800000-0000-4000-8000-00000000000%s","role":"authenticated"}', _n), true);
+    format('{"sub":"a9800000-0000-4000-8000-00000000000%s","role":"authenticated","aal":"aal2"}', _n), true);
 $$;
 CREATE OR REPLACE FUNCTION pg_temp.denied(_sql TEXT) RETURNS BOOLEAN LANGUAGE plpgsql AS $$
 BEGIN
@@ -128,7 +128,7 @@ BEGIN
      OR NOT pg_temp.denied(format($q$SELECT public.country_child_file(%L)$q$, gen_random_uuid())) THEN
     RAISE EXCEPTION 'FAIL — مشرف تايلاند رأى ملف طفلٍ في السودان';
   END IF;
-  PERFORM set_config('request.jwt.claims', '{"sub":"a9800000-0000-4000-8000-0000000000ff","role":"authenticated"}', true);
+  PERFORM set_config('request.jwt.claims', '{"sub":"a9800000-0000-4000-8000-0000000000ff","role":"authenticated","aal":"aal2"}', true);
   IF NOT pg_temp.denied(format($q$SELECT public.country_child_file(%L)$q$, _o1)) THEN
     RAISE EXCEPTION 'FAIL — مستخدمٌ بلا فريق رأى الملف';
   END IF;

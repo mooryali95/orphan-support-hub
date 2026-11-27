@@ -1,4 +1,4 @@
-import { guardApiRate } from "@/lib/integrations/client";
+import { guardSsoRate } from "@/lib/integrations/client";
 import { untypedRpc } from "@/lib/rpc-call";
 import { NONCE_COOKIE, safeNext, verifyLaunchToken, type VerifyKeys } from "@/lib/sso/launch-token";
 
@@ -17,6 +17,15 @@ import { NONCE_COOKIE, safeNext, verifyLaunchToken, type VerifyKeys } from "@/li
 
 const PROVIDER = "wamy";
 let jwksCache: { url: string; at: number; keys: JsonWebKey[] } | null = null;
+/** آخر جلبٍ لمعرّف مفتاحٍ مجهول (F9): مرّةً في الدقيقة على الأكثر، فلا يصير كلّ رمزٍ مزوَّر طلباً إلى الندوة. */
+let lastUnknownKidFetch = 0;
+const UNKNOWN_KID_FETCH_MS = 60_000;
+
+/** للاختبار وحده: يمحو ذاكرة المفاتيح بين الحالات. */
+export function resetJwksCacheForTest() {
+  jwksCache = null;
+  lastUnknownKidFetch = 0;
+}
 
 async function keys(env: Record<string, string | undefined>, kid?: string): Promise<VerifyKeys> {
   const out: VerifyKeys = {};
@@ -26,7 +35,9 @@ async function keys(env: Record<string, string | undefined>, kid?: string): Prom
     const stale = !jwksCache || jwksCache.url !== url || Date.now() - jwksCache.at > 10 * 60_000;
     const unknownKid =
       kid !== undefined && !jwksCache?.keys.some((k) => (k as { kid?: string }).kid === kid);
-    if (stale || unknownKid) {
+    const kidThrottled = !stale && Date.now() - lastUnknownKidFetch < UNKNOWN_KID_FETCH_MS;
+    if (stale || (unknownKid && !kidThrottled)) {
+      if (!stale) lastUnknownKidFetch = Date.now();
       // يُحفظ الجواب السليم وحده، ويبقى آخر مفاتيح صالحة إن تعثّر الجلب (تدوير المفاتيح عند الندوة).
       try {
         const res = await fetch(url, { headers: { accept: "application/json" } });
@@ -73,18 +84,35 @@ export function originAllowed(
   return allowed.has(from);
 }
 
-const fail = (origin: string, reason: string) =>
-  Response.redirect(`${origin}/sso#error=${encodeURIComponent(reason)}`, 303);
+/**
+ * الإخفاق يُسجَّل في سجلّ السلامة (السبب وحده: لا رمز ولا بريد ولا عنوان)، ثم يُعاد
+ * المتصفّح إلى /sso بالسبب. تعثّر التسجيل لا يغيّر الردّ.
+ */
+async function fail(origin: string, reason: string): Promise<Response> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await untypedRpc(supabaseAdmin).rpc("sso_log_failure", { _reason: reason });
+  } catch {
+    /* السجلّ عونٌ للمراقبة، لا شرطٌ للردّ */
+  }
+  return Response.redirect(`${origin}/sso#error=${encodeURIComponent(reason)}`, 303);
+}
 
 /** مُصدَّرة لمسار /api/sso/wamy ولاختبارها (launch.server.test.ts). */
 export async function handle(request: Request, token: string | null): Promise<Response> {
   const origin = new URL(request.url).origin;
-  const limited = await guardApiRate(request);
+  const limited = await guardSsoRate(request);
   if (limited) return limited;
   const { serverConfig } = await import("@/lib/env.server");
   const cfg = serverConfig();
   if (!cfg.features.sso.ready) return fail(origin, "not_configured");
   const env = process.env as Record<string, string | undefined>;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const db = untypedRpc(supabaseAdmin);
+  // مفتاح إيقافٍ بيد الإدارة (platform_settings.sso_disabled): يُغلق الباب دون نشر.
+  // تعذّر قراءته إغلاقٌ كذلك: باب دخولٍ لا يُعرف حاله لا يُفتح.
+  const off = await db.rpc("sso_disabled");
+  if (off.error || off.data !== false) return fail(origin, "sso_disabled");
   // الإرسال من منصّة الندوة وحدها: نموذجٌ من موقعٍ آخر لا يُدخل الزائر بحساب غيره.
   if (!originAllowed(request.headers.get("origin"), cfg.env.WAMY_SSO_ISSUER!, env)) {
     return fail(origin, "origin_denied");
@@ -100,8 +128,6 @@ export async function handle(request: Request, token: string | null): Promise<Re
   if (!v.ok) return fail(origin, v.reason);
   const c = v.claims;
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const db = untypedRpc(supabaseAdmin);
   const claimed = await db.rpc("sso_claim_jti", {
     _jti: `${PROVIDER}:${c.jti}`,
     _expires: new Date(c.exp * 1000).toISOString(),

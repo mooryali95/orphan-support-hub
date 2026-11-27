@@ -58,6 +58,7 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/country-work-verification.sql \
               supabase/tests/sso-verification.sql \
               supabase/tests/security-hardening-verification.sql \
+              supabase/tests/security-pass2-verification.sql \
               supabase/tests/trust-center-verification.sql \
               supabase/tests/trust-snapshots-verification.sql \
               supabase/tests/guardian-verification.sql \

@@ -12,7 +12,7 @@ INSERT INTO public.user_roles (user_id, role) VALUES ('a9700000-0000-4000-8000-0
 
 CREATE OR REPLACE FUNCTION pg_temp.as_user(_n INT) RETURNS VOID LANGUAGE sql AS $$
   SELECT set_config('request.jwt.claims',
-    format('{"sub":"a9700000-0000-4000-8000-00000000000%s","role":"authenticated"}', _n), true);
+    format('{"sub":"a9700000-0000-4000-8000-00000000000%s","role":"authenticated","aal":"aal2"}', _n), true);
 $$;
 CREATE OR REPLACE FUNCTION pg_temp.denied(_sql TEXT) RETURNS BOOLEAN LANGUAGE plpgsql AS $$
 BEGIN

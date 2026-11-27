@@ -189,6 +189,13 @@ export async function guardApiRate(request: Request): Promise<Response | null> {
   return verdict.allowed ? null : tooManyRequests(verdict);
 }
 
+/** دخول الندوة (`/api/sso/wamy`): دلوٌ مستقلّ عن بوّابات التكامل (F8). */
+export async function guardSsoRate(request: Request): Promise<Response | null> {
+  const { hitRateLimit, identityOf, tooManyRequests } = await import("@/lib/rate-limit");
+  const verdict = await hitRateLimit("sso", await identityOf(request));
+  return verdict.allowed ? null : tooManyRequests(verdict);
+}
+
 /** وبعد المصادقة: حدٌّ لكلّ مفتاح شريك أيّاً كان عنوانه (APP-10). */
 export async function guardClientRate(client: ApiClientRow): Promise<Response | null> {
   const { hitRateLimit, tooManyRequests } = await import("@/lib/rate-limit");

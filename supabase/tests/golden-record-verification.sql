@@ -27,7 +27,7 @@ BEGIN
   _ok := false;
   BEGIN
     SET LOCAL ROLE authenticated;
-    SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000002","role":"authenticated"}';
+    SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000002","role":"authenticated","aal":"aal2"}';
     PERFORM public.admin_data_health();
   EXCEPTION WHEN insufficient_privilege THEN _ok := true;
   END;
@@ -44,7 +44,7 @@ BEGIN
   RAISE NOTICE 'PASS — الطبقة مغلقة على الإدارة';
 
   -- المشرف بهويته (claims)، والفحوص تقرأ الجداول بصلاحية المالك.
-  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
 
   -- 1) استيراد الندوة: بلا رابط ← طابور، ثم إنشاءٌ جماعي «قيد المراجعة»
   _r := public.admin_golden_import('wamy', 'AL', NULL,
@@ -135,9 +135,9 @@ BEGIN
   IF public.admin_conflict_resolve((SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open'), 'accept')->>'code' <> 'four_eyes_required' THEN
     RAISE EXCEPTION 'FAIL — مديرٌ اعتمد تغييراً حرجاً رفعه بنفسه';
   END IF;
-  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000009","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000009","role":"authenticated","aal":"aal2"}';
   _r := public.admin_conflict_resolve((SELECT id FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open'), 'accept');
-  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9100000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   IF NOT (_r->>'ok')::boolean OR (SELECT birth_date FROM public.orphans WHERE id = _o) <> DATE '2014-04-01' THEN
     RAISE EXCEPTION 'FAIL — الاعتماد لم يطبّق: %', _r;
   END IF;
