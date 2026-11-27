@@ -1,3 +1,4 @@
+import { FourEyesNote } from "@/components/admin/FourEyesNote";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldAlert } from "lucide-react";
 import { useRef, useState } from "react";
@@ -232,12 +233,14 @@ export function Conflicts({
                 {w.bulkCriticalNote}
                 {chosen.length > MAX_BULK && <> {w.bulkMax(MAX_BULK)}</>}
               </p>
+              <FourEyesNote className="w-full" />
             </div>
           )}
           {items.length === 0 ? (
             <p className="mt-3 text-sm text-muted-foreground">{w.noMatch}</p>
           ) : (
             <div ref={keys.root}>
+              {canApprove && <FourEyesNote className="mt-4" />}
               <ul className="mt-4 space-y-3">
                 {items.map((d) => {
                   const can = canApprove && bulkEligible(d);
