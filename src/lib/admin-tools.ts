@@ -43,6 +43,8 @@ export type SearchResults = {
   sponsors: SearchSponsor[];
   sponsorships: SearchSponsorship[];
   transfers: SearchTransfer[];
+  /** مديرٌ بجلسة aal1: الكفلاء والكفالات والتحويلات محجوبة حتى العامل الثاني (N2). */
+  mfa_required?: boolean;
 };
 export const NO_RESULTS: SearchResults = {
   children: [],

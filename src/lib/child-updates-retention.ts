@@ -44,7 +44,33 @@ export async function purgeChildUpdateMedia(db: RetentionDb, paths: string[]): P
 
 type DueItem = { id: string; reason: "rejected" | "archived"; paths: string[] };
 
-export type RetentionSummary = { due: number; deleted: number; storageFailed: number };
+export type RetentionSummary = {
+  due: number;
+  deleted: number;
+  storageFailed: number;
+  /** كائناتٌ مضى عليها يومٌ بلا صفٍّ في child_updates فحُذفت (N1). */
+  stray: number;
+};
+
+/**
+ * ما رُفع ولم يُسجَّل بـ `child_update_create` لا يبقى: بلا موافقة وليٍّ ولا
+ * مراجعة، فيُحذف بعد 24 ساعة (مهلةٌ تكفي لإكمال تسجيل رفعٍ جارٍ).
+ */
+export async function sweepStrayChildUpdateObjects(
+  db: RetentionDb,
+): Promise<{ stray: number; failed: boolean }> {
+  const res = await db.rpc("child_updates_stray_objects", { _limit: 500 });
+  if (res.error) throw new Error(res.error.message);
+  const paths = ((res.data as { paths?: string[] } | null)?.paths ?? []).filter(
+    (p) => typeof p === "string",
+  );
+  if (paths.length === 0) return { stray: 0, failed: false };
+  const ok = await purgeChildUpdateMedia(db, paths);
+  if (!ok) return { stray: 0, failed: true };
+  const done = await db.rpc("child_updates_stray_done", { _deleted: paths.length });
+  if (done.error) throw new Error(done.error.message);
+  return { stray: paths.length, failed: false };
+}
 
 export async function runChildUpdatesRetention(
   db: RetentionDb,
@@ -82,5 +108,7 @@ export async function runChildUpdatesRetention(
     if (done.error) throw new Error(done.error.message);
     deleted = (done.data as { deleted?: number } | null)?.deleted ?? 0;
   }
-  return { due: items.length, deleted, storageFailed };
+  const sweep = await sweepStrayChildUpdateObjects(db);
+  if (sweep.failed) storageFailed += 1;
+  return { due: items.length, deleted, storageFailed, stray: sweep.stray };
 }

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { applySecurityHeaders, securityHeaders } from "./security-headers";
+import fs from "node:fs";
+import path from "node:path";
+
+import { applySecurityHeaders, isPrivatePath, securityHeaders } from "./security-headers";
 
 describe("securityHeaders", () => {
   it("يمنع تضمين الصفحة في إطار — بالرأسين معاً", () => {
@@ -118,5 +121,46 @@ describe("applySecurityHeaders", () => {
     );
     expect(out.status).toBe(201);
     expect(await out.text()).toBe("hello");
+  });
+});
+
+describe("no-store by default (N4)", () => {
+  const res = () => new Response("ok", { status: 200 });
+  /** يحوّل اسم ملفّ المسار إلى رابطٍ بقيمٍ نموذجية للمعاملات. */
+  const toUrl = (file: string) =>
+    "/" +
+    file
+      .replace(/\.tsx?$/, "")
+      .split(".")
+      .filter((seg) => seg !== "index" && seg !== "route")
+      .map((seg) => (seg.startsWith("$") ? "sample-id" : seg))
+      .join("/");
+
+  it("covers every route under _authenticated", () => {
+    const dir = path.resolve(__dirname, "../routes/_authenticated");
+    const files = fs.readdirSync(dir).filter((f) => /\.tsx?$/.test(f) && f !== "route.tsx");
+    expect(files.length).toBeGreaterThan(10);
+    for (const f of files) {
+      const url = toUrl(f);
+      expect(isPrivatePath(url), url).toBe(true);
+      const out = applySecurityHeaders(new Request(`https://x.test${url}`), res());
+      expect(out.headers.get("cache-control"), url).toContain("no-store");
+    }
+  });
+
+  it("keeps sign-in and token pages out of caches, public pages cacheable", () => {
+    for (const p of ["/sso", "/unsubscribe", "/ask", "/auth", "/something-new"]) {
+      expect(isPrivatePath(p), p).toBe(true);
+    }
+    for (const p of [
+      "/",
+      "/hall",
+      "/vision/hall",
+      "/legal/privacy",
+      "/assets/a.js",
+      "/robots.txt",
+    ]) {
+      expect(isPrivatePath(p), p).toBe(false);
+    }
   });
 });

@@ -27,6 +27,8 @@ export type LaunchClaims = {
 export type VerifyKeys = {
   /** HS256: سرٌّ مشترك (32 حرفاً فأكثر). */
   secret?: string;
+  /** HS256 أثناء التدوير: السرّ السابق يُقبل حتى يكتمل التبديل عند الطرفين. */
+  previousSecret?: string;
   /** ES256 / RS256: مفاتيح الندوة العامّة بصيغة JWK. */
   jwks?: JsonWebKey[];
 };
@@ -76,17 +78,28 @@ const decodeJson = (s: string): unknown => JSON.parse(new TextDecoder().decode(b
 
 type Header = { alg?: string; kid?: string; typ?: string };
 
-async function keyFor(alg: string, header: Header, keys: VerifyKeys): Promise<CryptoKey | null> {
+async function hmacKey(secret: string): Promise<CryptoKey> {
+  return crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+}
+
+async function keysFor(alg: string, header: Header, keys: VerifyKeys): Promise<CryptoKey[]> {
   if (alg === "HS256") {
-    if (!keys.secret || keys.secret.length < 32) return null;
-    return crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(keys.secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"],
+    const list = [keys.secret, keys.previousSecret].filter(
+      (s): s is string => typeof s === "string" && s.length >= 32,
     );
+    return Promise.all(list.map(hmacKey));
   }
+  const one = await keyFor(alg, header, keys);
+  return one ? [one] : [];
+}
+
+async function keyFor(alg: string, header: Header, keys: VerifyKeys): Promise<CryptoKey | null> {
   const kty = alg === "ES256" ? "EC" : "RSA";
   const jwk = (keys.jwks ?? []).find(
     (k) => k.kty === kty && (!header.kid || (k as { kid?: string }).kid === header.kid),
@@ -126,14 +139,22 @@ export async function verifyLaunchToken(
     ...((opts.keys.jwks ?? []).length ? ["ES256", "RS256"] : []),
   ];
   if (!allowed.includes(alg)) return { ok: false, reason: "alg_not_allowed" };
-  const key = await keyFor(alg, header, opts.keys);
-  if (!key) return { ok: false, reason: "no_key" };
-  const valid = await crypto.subtle.verify(
-    algParams(alg),
-    key,
-    b64urlToBytes(parts[2]!),
-    new TextEncoder().encode(`${parts[0]}.${parts[1]}`),
-  );
+  const candidates = await keysFor(alg, header, opts.keys);
+  if (candidates.length === 0) return { ok: false, reason: "no_key" };
+  let valid = false;
+  for (const key of candidates) {
+    if (
+      await crypto.subtle.verify(
+        algParams(alg),
+        key,
+        b64urlToBytes(parts[2]!),
+        new TextEncoder().encode(`${parts[0]}.${parts[1]}`),
+      )
+    ) {
+      valid = true;
+      break;
+    }
+  }
   if (!valid) return { ok: false, reason: "bad_signature" };
 
   const now = opts.now ?? Math.floor(Date.now() / 1000);

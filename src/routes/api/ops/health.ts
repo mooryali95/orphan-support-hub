@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/ops/health")({
         if (denied) return denied;
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { logServerError } = await import("@/lib/server-log");
+        const { logServerError, logServerEvent } = await import("@/lib/server-log");
         const { pingHeartbeat } = await import("@/lib/heartbeat.server");
         const { data, error } = await (supabaseAdmin as unknown as Rpc).rpc("ops_record_run");
         if (error) {
@@ -69,9 +69,30 @@ export const Route = createFileRoute("/api/ops/health")({
         // وحده، فتكرارها آمن، وتعثّرها يُسجَّل ولا يُسقط الفحص.
         const snap = await (supabaseAdmin as unknown as Rpc).rpc("trust_snapshot_take");
         if (snap.error) logServerError("ops.health.trust_snapshot_failed", snap.error);
+        // أحداث sec_* في الساعة الأخيرة (N6): تتابعها ينقر نبض فشلٍ خاصّاً بالسلامة.
+        const { securityAlertFrom, securityThresholdFrom } = await import("@/lib/security-alert");
+        const sec = await (
+          supabaseAdmin as unknown as {
+            rpc: (
+              fn: string,
+              args: Record<string, unknown>,
+            ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+          }
+        ).rpc("security_events_recent", {
+          _threshold: securityThresholdFrom(process.env["SECURITY_EVENTS_THRESHOLD"]),
+        });
+        if (sec.error) logServerError("ops.health.security_events_failed", sec.error);
+        const secAlert = securityAlertFrom(sec.error ? null : sec.data);
+        if (secAlert.alert) logServerEvent("warn", "ops.health.security_events", secAlert);
+        pingHeartbeat("HEARTBEAT_URL_SECURITY", !sec.error && !secAlert.alert);
         pingHeartbeat("HEARTBEAT_URL_OPS", true);
         // لا تُعاد تفاصيل الفحوص: المسار محميّ، لكن سجلّات المجدول ليست مكان الحال.
-        return Response.json({ ok: true, level: r.level, notified: r.notified });
+        return Response.json({
+          ok: true,
+          level: r.level,
+          notified: r.notified,
+          security_alert: secAlert.alert,
+        });
       },
     },
   },
