@@ -4,6 +4,7 @@ import { PaymentReturnView } from "@/components/payment/PaymentReturnView";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 import { registerPaymentReturnDemo } from "@/lib/try-payment-return";
+import { trialRoute } from "@/lib/trial-gate";
 
 // صريحٌ لا استيرادٌ مجرّد: الحزمة معلنة بلا آثار جانبية.
 registerPaymentReturnDemo();
@@ -32,7 +33,7 @@ function TryPaymentReturn() {
       <h1 className="mb-6 text-3xl leading-[1.3] font-bold md:text-4xl">{c.title}</h1>
       <PaymentReturnView
         sponsorshipId={child}
-        nextTo="/try/impact"
+        nextTo={trialRoute("/try/impact")}
         nextSearch={{ done: child }}
         sample
       />

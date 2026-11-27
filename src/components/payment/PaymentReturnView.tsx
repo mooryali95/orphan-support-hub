@@ -114,7 +114,7 @@ export function PaymentReturnView({
 }: {
   sponsorshipId: string;
   /** وجهة الخطوة التالية: «كفالاتي» في المنصّة، و«أثري» في التجربة */
-  nextTo: "/dashboard" | "/try/impact";
+  nextTo: "/dashboard" | "/";
   nextSearch?: Record<string, string>;
   sample?: boolean;
 }) {
