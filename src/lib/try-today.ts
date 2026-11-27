@@ -7,7 +7,7 @@
  * الحسم في صندوق القرارات لا يُحاكى هنا: لوحه في المنصّة يحمل وثائق وسياقاً حقيقيَّين.
  */
 import { registerDemo } from "@/lib/data-port";
-import "@/lib/try-child-updates";
+import { registerChildUpdateDemos } from "@/lib/try-child-updates";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import { demoId } from "@/lib/try-verification.data";
 
@@ -38,6 +38,7 @@ export function demoInbox(now: number = Date.now()): InboxItem[] {
  * فيُسقط المجمِّع استيراداً بلا قيمة.
  */
 export function registerTodayDemos() {
+  registerChildUpdateDemos();
   registerDemo("today.inbox", async () => {
     await new Promise((r) => setTimeout(r, 120));
     return demoInbox();

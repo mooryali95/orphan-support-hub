@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, ImageIcon, Play, Send, StickyNote, X } from "lucide-react";
+import { Check, ImageIcon, Send, StickyNote, Video, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -465,11 +464,12 @@ function UploadUpdate({ country }: { country: string }) {
       </div>
       {kind !== "note" && (
         <div className="flex items-start gap-3 rounded-xl bg-secondary/50 p-3">
-          <Checkbox
+          <input
             id={ids.ok}
+            type="checkbox"
             checked={consent}
-            onCheckedChange={(v) => setConsent(v === true)}
-            className="mt-1"
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1.5 size-4 shrink-0"
             style={ACCENT}
           />
           <Label htmlFor={ids.ok} className="text-sm leading-7 font-normal">
@@ -527,7 +527,7 @@ export function ChildUpdateReview({
   });
   const still = item.kind === "video" ? item.poster_url : item.url;
   const caption = locale === "en" && item.caption_en ? item.caption_en : item.caption_ar;
-  const Icon = item.kind === "video" ? Play : item.kind === "note" ? StickyNote : ImageIcon;
+  const Icon = item.kind === "video" ? Video : item.kind === "note" ? StickyNote : ImageIcon;
 
   return (
     <article className={cn(CARD, "flex h-full flex-col gap-3 p-4")}>

@@ -162,52 +162,62 @@ function pending(now: Date = new Date()): PendingChildUpdate[] {
 
 type Input<T> = { data: T };
 
-registerDemo("sponsor.childUpdates", async ({ data }: Input<{ orphanId: string }>) => ({
-  ok: true as const,
-  data: tryChildUpdates(data.orphanId),
-}));
-registerDemo("childUpdates.queue", async ({ data }: Input<{ country: string | null }>) => ({
-  ok: true as const,
-  data: pending().filter((u) => !data.country || u.country_code === data.country),
-}));
-registerDemo("childUpdates.children", async ({ data }: Input<{ country: string; q: string }>) => ({
-  ok: true as const,
-  data: TRY_CHILDREN.filter(
-    (k) => k.co === data.country && (!data.q || k.code.includes(data.q) || k.name.includes(data.q)),
-  ).map((k) => ({ id: k.id, code: k.code, display_name: k.name, frozen: false })),
-}));
-registerDemo("childUpdates.upload", async () => ({
-  ok: false as const,
-  error: "trial_no_upload",
-}));
-registerDemo(
-  "childUpdates.submit",
-  async ({ data }: Input<{ orphanId: string; captionAr: string; captionEn: string }>) => {
-    const k = TRY_CHILDREN.find((x) => x.id === data.orphanId);
-    if (!k) return { ok: false as const, missing: false, error: "failed" };
-    pending().push({
-      id: `try-pu-${Date.now()}`,
-      orphan_id: k.id,
-      orphan_name: k.name,
-      orphan_code: k.code,
-      country_code: k.co,
-      kind: "note",
-      caption_ar: data.captionAr,
-      caption_en: data.captionEn || null,
-      duration_seconds: null,
-      created_at: new Date().toISOString(),
-      mine: true,
-      frozen: false,
-      url: null,
-      poster_url: null,
-    });
-    return { ok: true as const, data: { ok: true as const, id: "try" } };
-  },
-);
-registerDemo("childUpdates.review", async ({ data }: Input<{ id: string }>) => {
-  const u = pending().find((x) => x.id === data.id);
-  if (!u) return { ok: false as const, missing: false, error: "update_closed" };
-  if (u.mine) return { ok: false as const, missing: false, error: "four_eyes_required" };
-  queue = pending().filter((x) => x.id !== data.id);
-  return { ok: true as const, data: { ok: true as const } };
-});
+/**
+ * يسجّل النسخ التجريبية في منفذ البيانات. تناديه وحدات التجربة التي تحمل شاشات الكافل
+ * و«اليوم» (`package.json` يعلن `sideEffects: false`، فالاستيراد المجرّد يُحذف من الحزمة).
+ */
+export function registerChildUpdateDemos() {
+  registerDemo("sponsor.childUpdates", async ({ data }: Input<{ orphanId: string }>) => ({
+    ok: true as const,
+    data: tryChildUpdates(data.orphanId),
+  }));
+  registerDemo("childUpdates.queue", async ({ data }: Input<{ country: string | null }>) => ({
+    ok: true as const,
+    data: pending().filter((u) => !data.country || u.country_code === data.country),
+  }));
+  registerDemo(
+    "childUpdates.children",
+    async ({ data }: Input<{ country: string; q: string }>) => ({
+      ok: true as const,
+      data: TRY_CHILDREN.filter(
+        (k) =>
+          k.co === data.country && (!data.q || k.code.includes(data.q) || k.name.includes(data.q)),
+      ).map((k) => ({ id: k.id, code: k.code, display_name: k.name, frozen: false })),
+    }),
+  );
+  registerDemo("childUpdates.upload", async () => ({
+    ok: false as const,
+    error: "trial_no_upload",
+  }));
+  registerDemo(
+    "childUpdates.submit",
+    async ({ data }: Input<{ orphanId: string; captionAr: string; captionEn: string }>) => {
+      const k = TRY_CHILDREN.find((x) => x.id === data.orphanId);
+      if (!k) return { ok: false as const, missing: false, error: "failed" };
+      pending().push({
+        id: `try-pu-${Date.now()}`,
+        orphan_id: k.id,
+        orphan_name: k.name,
+        orphan_code: k.code,
+        country_code: k.co,
+        kind: "note",
+        caption_ar: data.captionAr,
+        caption_en: data.captionEn || null,
+        duration_seconds: null,
+        created_at: new Date().toISOString(),
+        mine: true,
+        frozen: false,
+        url: null,
+        poster_url: null,
+      });
+      return { ok: true as const, data: { ok: true as const, id: "try" } };
+    },
+  );
+  registerDemo("childUpdates.review", async ({ data }: Input<{ id: string }>) => {
+    const u = pending().find((x) => x.id === data.id);
+    if (!u) return { ok: false as const, missing: false, error: "update_closed" };
+    if (u.mine) return { ok: false as const, missing: false, error: "four_eyes_required" };
+    queue = pending().filter((x) => x.id !== data.id);
+    return { ok: true as const, data: { ok: true as const } };
+  });
+}

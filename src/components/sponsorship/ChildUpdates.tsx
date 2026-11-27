@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, ImageIcon, Play, StickyNote } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, StickyNote, Video } from "lucide-react";
 import { useCallback, useState, type KeyboardEvent } from "react";
 
 import { hijriLabel, monthLabel } from "@/components/sponsorship/sponsor-format";
@@ -77,7 +77,7 @@ export function ChildUpdates({ orphanId }: { orphanId: string }) {
       {q.isPending ? (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="aspect-[4/3] rounded-2xl" />
+            <Skeleton key={i} className="aspect-square rounded-2xl" />
           ))}
         </div>
       ) : q.data && !q.data.ok ? (
@@ -104,7 +104,7 @@ export function ChildUpdates({ orphanId }: { orphanId: string }) {
                   u.kind === "note" ? (
                     <li
                       key={u.id}
-                      className="col-span-2 rounded-2xl bg-card p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.06)] sm:col-span-3 dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"
+                      className="col-span-full rounded-2xl bg-card p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.06)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"
                     >
                       <p className="flex items-center gap-2 text-xs text-muted-foreground">
                         <StickyNote className="size-3.5" aria-hidden="true" />
@@ -135,7 +135,7 @@ export function ChildUpdates({ orphanId }: { orphanId: string }) {
 function SampleChip() {
   const c = useCopy(COPY);
   return (
-    <span className="rounded-full bg-bridge/10 px-2 py-0.5 text-[11px] font-bold text-bridge-ink">
+    <span className="rounded-full bg-bridge/10 px-2 py-0.5 text-xs font-bold text-bridge-ink">
       {c.sample}
     </span>
   );
@@ -151,7 +151,7 @@ function Tile({ u, onOpen }: { u: ChildUpdate; onOpen: () => void }) {
       type="button"
       onClick={onOpen}
       aria-label={c.open(caption)}
-      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-secondary text-start shadow-[0_0_0_1px_rgb(0_0_0/0.06)] transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.98] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"
+      className="group relative block aspect-square w-full overflow-hidden rounded-2xl bg-secondary text-start shadow-[0_0_0_1px_rgb(0_0_0/0.06)] transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"
     >
       {still ? (
         <img
@@ -159,7 +159,7 @@ function Tile({ u, onOpen }: { u: ChildUpdate; onOpen: () => void }) {
           alt={caption}
           loading="lazy"
           decoding="async"
-          className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          className="size-full object-cover"
         />
       ) : (
         <span className="flex size-full items-center justify-center text-muted-foreground">
@@ -168,24 +168,32 @@ function Tile({ u, onOpen }: { u: ChildUpdate; onOpen: () => void }) {
       )}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black/80 to-transparent"
       />
       {u.kind === "video" && (
         <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
-          <span className="flex size-11 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
-            <Play className="size-5 translate-x-px fill-current" />
+          <span className="flex size-11 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg">
+            <Video className="size-5" />
           </span>
         </span>
       )}
-      <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-2.5 text-white">
-        <span className="line-clamp-2 min-w-0 text-xs leading-5 font-medium">
+      <span className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-2 text-xs tabular-nums">
+        {u.sample ? (
+          <span className="rounded-full bg-background/90 px-2 py-0.5 font-bold text-bridge-ink">
+            {c.sample}
+          </span>
+        ) : (
+          <span />
+        )}
+        {u.kind === "video" && u.duration_seconds ? (
+          <span className="rounded-full bg-black/80 px-2 py-0.5 font-medium text-white">
+            {clock(u.duration_seconds)}
+          </span>
+        ) : null}
+      </span>
+      <span className="absolute inset-x-0 bottom-0 p-2.5 text-white">
+        <span className="line-clamp-2 text-xs leading-5 font-medium">
           <bdi dir="auto">{caption}</bdi>
-        </span>
-        <span className="flex shrink-0 flex-col items-end gap-1 text-[11px] tabular-nums">
-          {u.sample && <SampleChip />}
-          {u.kind === "video" && u.duration_seconds ? (
-            <span>{clock(u.duration_seconds)}</span>
-          ) : null}
         </span>
       </span>
     </button>
@@ -227,11 +235,11 @@ function Lightbox({
     <Dialog open={!!u} onOpenChange={(o) => !o && onIndex(null)}>
       <DialogContent
         onKeyDown={onKey}
-        className="max-h-[92dvh] w-[calc(100vw-2rem)] max-w-3xl gap-3 overflow-y-auto rounded-2xl p-3 sm:p-4"
+        className="max-h-[90dvh] max-w-[95%] sm:max-w-xl gap-3 overflow-y-auto rounded-2xl p-3 pt-14"
       >
         {u && (
           <>
-            <figure className="overflow-hidden rounded-xl bg-black">
+            <figure className="overflow-hidden rounded-xl bg-black/80">
               {u.kind === "video" && u.url ? (
                 <video
                   key={u.id}
@@ -241,14 +249,14 @@ function Lightbox({
                   playsInline
                   preload="metadata"
                   aria-label={caption}
-                  className="mx-auto max-h-[70dvh] w-full"
+                  className="mx-auto max-h-[30rem] w-full"
                 />
               ) : (
                 <img
                   key={u.id}
                   src={(u.kind === "video" ? u.poster_url : u.url) ?? undefined}
                   alt={caption}
-                  className="animate-in fade-in-0 zoom-in-95 mx-auto max-h-[70dvh] w-auto object-contain duration-200"
+                  className="mx-auto max-h-[30rem] w-auto"
                 />
               )}
             </figure>
@@ -275,7 +283,7 @@ function Lightbox({
                   >
                     <Prev className="size-5" aria-hidden="true" />
                   </button>
-                  <span className="min-w-12 text-center text-xs text-muted-foreground tabular-nums">
+                  <span className="min-w-10 text-center text-xs text-muted-foreground tabular-nums">
                     {c.position(index! + 1, items.length)}
                   </span>
                   <button
