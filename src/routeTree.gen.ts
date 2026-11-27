@@ -47,6 +47,7 @@ import { Route as TryImpactRouteImport } from './routes/try.impact'
 import { Route as TryJourneyRouteImport } from './routes/try.journey'
 import { Route as TryPayRouteImport } from './routes/try.pay'
 import { Route as TrySupportRouteImport } from './routes/try.support'
+import { Route as TryWorkspacesRouteImport } from './routes/try.workspaces'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
@@ -71,6 +72,7 @@ import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as ApiPublicSupporterAssistantRouteImport } from './routes/api/public.supporter-assistant'
 import { Route as ApiSsoWamyRouteImport } from './routes/api/sso/wamy'
+import { Route as TryDonorEntityIdRouteImport } from './routes/try.donor.$entityId'
 import { Route as TryStatementsYearRouteImport } from './routes/try.statements.$year'
 import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
@@ -286,6 +288,11 @@ const TrySupportRoute = TrySupportRouteImport.update({
   path: '/support',
   getParentRoute: () => TryRoute,
 } as any)
+const TryWorkspacesRoute = TryWorkspacesRouteImport.update({
+  id: '/workspaces',
+  path: '/workspaces',
+  getParentRoute: () => TryRoute,
+} as any)
 const VisionIndexRoute = VisionIndexRouteImport.update({
   id: '/vision/',
   path: '/vision/',
@@ -413,6 +420,11 @@ const ApiSsoWamyRoute = ApiSsoWamyRouteImport.update({
   path: '/api/sso/wamy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TryDonorEntityIdRoute = TryDonorEntityIdRouteImport.update({
+  id: '/donor/$entityId',
+  path: '/donor/$entityId',
+  getParentRoute: () => TryRoute,
+} as any)
 const TryStatementsYearRoute = TryStatementsYearRouteImport.update({
   id: '/statements/$year',
   path: '/statements/$year',
@@ -522,6 +534,7 @@ export interface FileRoutesByFullPath {
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -551,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -598,6 +612,7 @@ export interface FileRoutesByTo {
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -627,6 +642,7 @@ export interface FileRoutesByTo {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -677,6 +693,7 @@ export interface FileRoutesById {
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -706,6 +723,7 @@ export interface FileRoutesById {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -756,6 +774,7 @@ export interface FileRouteTypes {
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -785,6 +804,7 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
@@ -832,6 +852,7 @@ export interface FileRouteTypes {
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -861,6 +882,7 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
@@ -910,6 +932,7 @@ export interface FileRouteTypes {
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -939,6 +962,7 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
@@ -1275,6 +1299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrySupportRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/workspaces': {
+      id: '/try/workspaces'
+      path: '/workspaces'
+      fullPath: '/try/workspaces'
+      preLoaderRoute: typeof TryWorkspacesRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/vision/': {
       id: '/vision/'
       path: '/vision'
@@ -1443,6 +1474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSsoWamyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/try/donor/$entityId': {
+      id: '/try/donor/$entityId'
+      path: '/donor/$entityId'
+      fullPath: '/try/donor/$entityId'
+      preLoaderRoute: typeof TryDonorEntityIdRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/try/statements/$year': {
       id: '/try/statements/$year'
       path: '/statements/$year'
@@ -1596,10 +1634,12 @@ interface TryRouteChildren {
   TryJourneyRoute: typeof TryJourneyRoute
   TryPayRoute: typeof TryPayRoute
   TrySupportRoute: typeof TrySupportRoute
+  TryWorkspacesRoute: typeof TryWorkspacesRoute
   TryDeciderLazyRoute: typeof TryDeciderLazyRoute
   TryOfficeLazyRoute: typeof TryOfficeLazyRoute
   TrySupervisorLazyRoute: typeof TrySupervisorLazyRoute
   TryIndexRoute: typeof TryIndexRoute
+  TryDonorEntityIdRoute: typeof TryDonorEntityIdRoute
   TryStatementsYearRoute: typeof TryStatementsYearRoute
   TrySponsorshipsSponsorshipIdManageRoute: typeof TrySponsorshipsSponsorshipIdManageRoute
   TrySponsorshipsSponsorshipIdIndexRoute: typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -1614,10 +1654,12 @@ const TryRouteChildren: TryRouteChildren = {
   TryJourneyRoute: TryJourneyRoute,
   TryPayRoute: TryPayRoute,
   TrySupportRoute: TrySupportRoute,
+  TryWorkspacesRoute: TryWorkspacesRoute,
   TryDeciderLazyRoute: TryDeciderLazyRoute,
   TryOfficeLazyRoute: TryOfficeLazyRoute,
   TrySupervisorLazyRoute: TrySupervisorLazyRoute,
   TryIndexRoute: TryIndexRoute,
+  TryDonorEntityIdRoute: TryDonorEntityIdRoute,
   TryStatementsYearRoute: TryStatementsYearRoute,
   TrySponsorshipsSponsorshipIdManageRoute:
     TrySponsorshipsSponsorshipIdManageRoute,
