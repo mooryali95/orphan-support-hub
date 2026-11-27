@@ -159,7 +159,7 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
         <p className="mb-1.5 font-medium text-foreground/80" data-brand-owner>
           {brand.ownerLine}
         </p>
-        © {new Date().getFullYear()} {brand.name} — {c.rights}
+        © {new Date().getFullYear()} {brand.name}. {c.rights}
       </div>
     </footer>
   );

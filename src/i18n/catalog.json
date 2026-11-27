@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5148,
+ "count": 5157,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -32828,6 +32828,14 @@
    "hash": "76d85a13de38",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.approveNamed": {
+   "en": "Pass {0}'s file to admin",
+   "ar": "ارفع ملفّ {0} للإدارة",
+   "kind": "template",
+   "params": 1,
+   "hash": "879d87a63de6",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.approved": {
    "en": "Passed to administration",
    "ar": "رُفع للإدارة",
@@ -32841,6 +32849,13 @@
    "kind": "template",
    "params": 1,
    "hash": "dc9018ea00f8",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.confirmReturn": {
+   "en": "Return with this reason",
+   "ar": "أعده بهذا السبب",
+   "kind": "text",
+   "hash": "b207b04202ac",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.deliver": {
@@ -32929,6 +32944,21 @@
    "hash": "cbfb6042f27a",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.nextNamed": {
+   "en": "Next step: {0}",
+   "ar": "الخطوة التالية: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c58ce658f25c",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.pickReason": {
+   "en": "Pick a reason first",
+   "ar": "اختر سبباً أوّلاً",
+   "kind": "text",
+   "hash": "43623ceedcf3",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.real": {
    "en": "an office sees only its own area, and every decision is logged under its author's name",
    "ar": "المكتب يرى منطقته وحدها، وكلّ قرارٍ باسم صاحبه في السجلّ",
@@ -32936,11 +32966,47 @@
    "hash": "26ffc97e8e42",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.reasons.0": {
+   "en": "Missing document",
+   "ar": "مستند ناقص",
+   "kind": "text",
+   "hash": "3321dbb28c7f",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasons.1": {
+   "en": "Details do not match",
+   "ar": "بيانات غير متطابقة",
+   "kind": "text",
+   "hash": "d1b14155d056",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasons.2": {
+   "en": "Unclear photo",
+   "ar": "صورة غير واضحة",
+   "kind": "text",
+   "hash": "f7f5dae24b5e",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasonsLabel": {
+   "en": "Reason for return",
+   "ar": "سبب الإعادة",
+   "kind": "text",
+   "hash": "2b677d399070",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.return": {
    "en": "Return",
    "ar": "أعده للجهة",
    "kind": "text",
    "hash": "5b3ea21628db",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.returnNamed": {
+   "en": "Return {0}'s file to the organization",
+   "ar": "أعد ملفّ {0} للجهة",
+   "kind": "template",
+   "params": 1,
+   "hash": "1a2ca7edefe0",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.returned": {
