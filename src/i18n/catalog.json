@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4692,
+ "count": 4694,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -27613,6 +27613,13 @@
    "hash": "d65c0cfb1c1d",
    "file": "src/routes/sso.tsx"
   },
+  "routes/sso.reasons.email_unconfirmed": {
+   "en": "This email is registered here but not confirmed. Confirm it, then sign in from the WAMY platform.",
+   "ar": "البريد مسجّلٌ هنا ولم يوثَّق بعد. وثّقه أوّلاً ثم ادخل من منصّة الندوة.",
+   "kind": "text",
+   "hash": "f9f0502c0f8d",
+   "file": "src/routes/sso.tsx"
+  },
   "routes/sso.reasons.email_unverified": {
    "en": "Your email isn't verified on WAMY's platform.",
    "ar": "بريدك غير موثَّق في منصّة الندوة.",
@@ -27639,6 +27646,13 @@
    "ar": "هذا الرابط لم يبدأ من هذا المتصفّح. افتح المنصّة من منصّة الندوة مباشرة.",
    "kind": "text",
    "hash": "5129a8e8bb12",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.reasons.origin_denied": {
+   "en": "The request did not come from the WAMY platform. Sign in from there directly.",
+   "ar": "لم يصل الطلب من منصّة الندوة. ادخل منها مباشرة.",
+   "kind": "text",
+   "hash": "f85c53b074fe",
    "file": "src/routes/sso.tsx"
   },
   "routes/sso.reasons.subject_taken": {

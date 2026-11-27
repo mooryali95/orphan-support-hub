@@ -55,6 +55,24 @@ function kidOf(token: string | null): string | undefined {
   }
 }
 
+/** مصدر الطلب: أصل المُصدِر، وما في WAMY_SSO_ORIGINS (مفصولةً بفواصل). غيابه لا يُقبل. */
+export function originAllowed(
+  from: string | null,
+  issuer: string,
+  env: Record<string, string | undefined>,
+): boolean {
+  if (!from) return false;
+  const allowed = new Set<string>();
+  for (const u of [issuer, ...(env["WAMY_SSO_ORIGINS"] ?? "").split(",")]) {
+    try {
+      if (u.trim()) allowed.add(new URL(u.trim()).origin);
+    } catch {
+      /* قيمةٌ غير صالحة تُتجاهل */
+    }
+  }
+  return allowed.has(from);
+}
+
 const fail = (origin: string, reason: string) =>
   Response.redirect(`${origin}/sso#error=${encodeURIComponent(reason)}`, 303);
 
@@ -67,6 +85,10 @@ export async function handle(request: Request, token: string | null): Promise<Re
   const cfg = serverConfig();
   if (!cfg.features.sso.ready) return fail(origin, "not_configured");
   const env = process.env as Record<string, string | undefined>;
+  // الإرسال من منصّة الندوة وحدها: نموذجٌ من موقعٍ آخر لا يُدخل الزائر بحساب غيره.
+  if (!originAllowed(request.headers.get("origin"), cfg.env.WAMY_SSO_ISSUER!, env)) {
+    return fail(origin, "origin_denied");
+  }
   let k: VerifyKeys;
   try {
     k = await keys(env, kidOf(token));
@@ -113,12 +135,15 @@ export async function handle(request: Request, token: string | null): Promise<Re
   if (link.error || !hashed || link.data?.user?.id !== r.user_id)
     return fail(origin, "session_failed");
   // ربطٌ بالمتصفّح الذي بدأ الدخول: رابط /sso يُرسَل لضحيةٍ بلا هذا الكعك لا يفتح شيئاً.
+  // الرمز يبقى في الخادم ويُسلَّم مرّةً واحدة للمتصفّح الذي يحمل الكعكة: لا يمرّ في الرابط.
   const nonce = crypto.randomUUID();
   const next = safeNext(c.next);
+  const put = await db.rpc("sso_handoff_put", { _nonce: nonce, _token_hash: hashed });
+  if (put.error) return fail(origin, "session_failed");
   return new Response(null, {
     status: 303,
     headers: {
-      location: `${origin}/sso#th=${encodeURIComponent(hashed)}&n=${nonce}&next=${encodeURIComponent(next)}`,
+      location: `${origin}/sso#n=${nonce}&next=${encodeURIComponent(next)}`,
       "set-cookie": `${NONCE_COOKIE}=${nonce}; Path=/; Max-Age=120; HttpOnly; Secure; SameSite=Lax`,
       "cache-control": "no-store",
     },
