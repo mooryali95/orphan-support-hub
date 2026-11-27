@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5212,
+ "count": 5231,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -33840,6 +33840,142 @@
    "kind": "text",
    "hash": "d9dc19086573",
    "file": "src/routes/try.support.tsx"
+  },
+  "routes/unsubscribe.account": {
+   "en": "My receipts in the account",
+   "ar": "إيصالاتي في الحساب",
+   "kind": "text",
+   "hash": "2294a7f5ee17",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.back": {
+   "en": "go back without changes",
+   "ar": "العودة دون تغيير",
+   "kind": "text",
+   "hash": "17ba7dda077a",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.badH": {
+   "en": "Invalid link",
+   "ar": "رابط غير صالح",
+   "kind": "text",
+   "hash": "0b0bca0a7cbf",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.badP": {
+   "en": "This link is incomplete or no longer valid. You can stop email from notification preferences after signing in.",
+   "ar": "هذا الرابط ناقص أو لم يعد صالحاً. يمكنك إيقاف البريد من تفضيلات الإشعارات بعد تسجيل الدخول.",
+   "kind": "text",
+   "hash": "4fbdf84f7cbd",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.confirm": {
+   "en": "Confirm stopping email",
+   "ar": "تأكيد إيقاف البريد",
+   "kind": "text",
+   "hash": "ea6ccdbe9a43",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.description": {
+   "en": "Stop email from {0}.",
+   "ar": "إيقاف رسائل البريد من {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "dd7520504410",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneH": {
+   "en": "Email stopped",
+   "ar": "أُوقف البريد",
+   "kind": "text",
+   "hash": "ce0283b8a117",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneP": {
+   "en": "You will no longer receive email from {0}, including payment receipts. Your notifications stay visible inside the platform, and past receipts remain in your account.",
+   "ar": "لن تصلك رسائل بريدية من {0} بعد الآن، ومنها إيصالات الدفع. وإشعاراتك تبقى ظاهرةً داخل المنصّة، وإيصالاتك السابقة محفوظة في حسابك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5cd909c1aca6",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneUndo": {
+   "en": "If you change your mind, turn it back on from notification preferences after signing in.",
+   "ar": "ولو غيّرت رأيك، تُعيده من تفضيلات الإشعارات بعد الدخول.",
+   "kind": "text",
+   "hash": "9ed3835e3292",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.errH": {
+   "en": "Could not complete",
+   "ar": "تعذّر التنفيذ",
+   "kind": "text",
+   "hash": "0fab1534f30f",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.errP": {
+   "en": "Something unexpected happened. Please try again shortly.",
+   "ar": "حدث خطأ غير متوقّع. حاول مرّة أخرى بعد قليل.",
+   "kind": "text",
+   "hash": "ff06fa37b79f",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.home": {
+   "en": "Back to the home page",
+   "ar": "العودة إلى الصفحة الرئيسة",
+   "kind": "text",
+   "hash": "a369e640aae8",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.idleH": {
+   "en": "Stop email from {0}",
+   "ar": "إيقاف البريد من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d085b9c62c78",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.idleP": {
+   "en": "Pressing below stops all email, including payment receipts and failed payment alerts. Your notifications stay visible inside the platform, and past receipts stay in your account.",
+   "ar": "بالضغط أدناه تتوقّف كل رسائل البريد، بما فيها إيصالات الدفع وتنبيهات تعثّره. وتبقى إشعاراتك ظاهرةً داخل المنصّة، وإيصالاتك السابقة في حسابك.",
+   "kind": "text",
+   "hash": "24e1d11858a5",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.or": {
+   "en": "or",
+   "ar": "أو",
+   "kind": "text",
+   "hash": "11dc1fd76e41",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.title": {
+   "en": "Unsubscribe",
+   "ar": "إلغاء الاشتراك",
+   "kind": "text",
+   "hash": "925fe3f3145e",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.working": {
+   "en": "Stopping email",
+   "ar": "جارٍ إيقاف البريد",
+   "kind": "text",
+   "hash": "5983b004f4ab",
+   "file": "src/routes/unsubscribe.tsx"
   },
   "routes/vision.cycle.again": {
    "en": "From the start",
