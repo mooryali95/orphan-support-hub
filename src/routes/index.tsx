@@ -69,7 +69,7 @@ const within = (ms: number) => new Promise<null>((done) => setTimeout(() => done
 
 const COPY = defineCopy("routes/index", {
   ar: {
-    title: (brand: string) => `${brand} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
+    title: (brand: string) => `${brand} | عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران`,
     description:
       "لا نقدّم رعايةً مؤقّتة بل نبني نظم عمران: ملفٌّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها، واعتمادٌ إداري، وثلاثة مساراتٍ للعطاء يُسجَّل تسليمها بمستند، وتقارير أثرٍ دورية.",
     ladder: [
@@ -209,7 +209,7 @@ const COPY = defineCopy("routes/index", {
   },
   en: {
     title: (brand: string) =>
-      `${brand} — Carrying the orphan from the shore of loss to the shore of thriving`,
+      `${brand} | Carrying the orphan from the shore of loss to the shore of thriving`,
     description:
       "We don't offer temporary care; we build systems that let children thrive. A file documented by a WAMY office or field partner, administrative approval, need-based monthly support whose delivery is recorded with a document, and regular impact reports.",
     ladder: [
@@ -275,7 +275,7 @@ const COPY = defineCopy("routes/index", {
       essentials: "Essentials",
     } as Record<string, string>,
     logo: (brand: string) => `${brand} logo`,
-    h1a: "We don't offer temporary care —",
+    h1a: "We don't offer temporary care:",
     h1b: "we build systems for thriving",
     lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document; and the impact comes back to you as a report.",
     supportNow: "Support now",

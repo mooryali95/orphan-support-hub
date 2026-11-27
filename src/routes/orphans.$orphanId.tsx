@@ -118,7 +118,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     restored: "استعدنا ما اخترته قبل الدخول: المبلغ ورسالتك.",
     activates:
       "الكفالة تبدأ بعد تأكيد الدفع، ويمكنك إنهاؤها متى شئت من لوحتك فتنتهي بعد آخر شهرٍ مدفوع.",
-    continueTo: (k: string, n: string) => `تابع — ${k} لـ${n}`,
+    continueTo: (k: string, n: string) => `تابع: ${k} لـ${n}`,
     follow: "تتابعه من «بواباتي» بتقارير المكتب وصوره.",
     remainingMonthly: "المتبقّي شهرياً",
     support: (n: string) => `ادعم ${n}`,
@@ -198,7 +198,7 @@ const COPY = defineCopy("routes/orphans.orphanId", {
     restored: "We kept what you chose before signing in: the amount and your message.",
     activates:
       "The sponsorship starts once payment is confirmed, and you can end it from your dashboard at any time; it stops after the last paid month.",
-    continueTo: (k: string, n: string) => `Continue — ${k} for ${n}`,
+    continueTo: (k: string, n: string) => `Continue: ${k} for ${n}`,
     follow: "You follow it from “My portals” through the office's reports and photos.",
     remainingMonthly: "Still needed monthly",
     support: (n: string) => `Support ${n}`,

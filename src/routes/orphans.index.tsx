@@ -112,7 +112,7 @@ const COPY = defineCopy("routes/orphans.index", {
     building: "برنامج بناء أهلية",
     buildingOn: "برنامج بناء أهلية قائم",
     lead: "كلّ ملفٍّ هنا اعتمدته إدارة المنصّة بعد أن وثّقه مكتبٌ للندوة أو شريكٌ ميداني لها",
-    inCountries: (n: number) => ` — في ${arCount(n, COUNTRIES)}.`,
+    inCountries: (n: number) => `، في ${arCount(n, COUNTRIES)}.`,
     cardH: "ما يُعرض هنا بطاقةٌ لا ملفّ:",
     cardP:
       "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته، لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
@@ -178,7 +178,7 @@ const COPY = defineCopy("routes/orphans.index", {
     building: "Qualification program",
     buildingOn: "Qualification program under way",
     lead: "Every file shown here was approved by the administration after being documented by a WAMY office or field partner",
-    inCountries: pluralOf({ one: " — in {0} country.", other: " — in {0} countries." }),
+    inCountries: pluralOf({ one: ", in {0} country.", other: ", in {0} countries." }),
     cardH: "What you see here is a card, not a file:",
     cardP:
       "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page; because a child's file isn't a page to browse.",

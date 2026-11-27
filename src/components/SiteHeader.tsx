@@ -42,6 +42,7 @@ const COPY = defineCopy("components/SiteHeader", {
 export function SiteHeader() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const c = useCopy(COPY);
   const brand = brandFor(useLocale());
   const NAV = ROUTES.map((to, i) => ({ to, label: c.nav[i] }));
@@ -76,11 +77,7 @@ export function SiteHeader() {
         {c.skip}
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link
-          to="/"
-          aria-label={`${brand.name} — ${c.home}`}
-          className="shrink-0 whitespace-nowrap"
-        >
+        <Link to="/" aria-label={`${brand.name}: ${c.home}`} className="shrink-0 whitespace-nowrap">
           <KahataynLockup />
         </Link>
         {/* the partner beside the product: a hairline, then its mark (name on wide screens) */}
@@ -94,7 +91,7 @@ export function SiteHeader() {
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "bg-secondary text-foreground" }}
             >
               {item.label}
@@ -137,6 +134,7 @@ export function SiteHeader() {
           )}
           <button
             type="button"
+            ref={menuButton}
             onClick={() => setOpen((v) => !v)}
             aria-label={c.menu}
             aria-expanded={open}
@@ -150,6 +148,11 @@ export function SiteHeader() {
 
       <div
         id="site-mobile-nav"
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") return;
+          setOpen(false);
+          menuButton.current?.focus();
+        }}
         className={cn("border-t border-border/70 lg:hidden", open ? "block" : "hidden")}
       >
         <nav className="mx-auto flex max-w-6xl flex-col p-2">
@@ -158,7 +161,7 @@ export function SiteHeader() {
               key={item.to}
               to={item.to}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+              className="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -176,7 +179,7 @@ export function SiteHeader() {
                     setOpen(false);
                     openAuth();
                   }}
-                  className="rounded-lg px-3 py-2 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  className="min-h-11 rounded-lg px-3 text-start text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
                   {c.signIn}
                 </button>
