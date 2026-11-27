@@ -36,6 +36,10 @@ import {
 import { getUiState, type UiState } from "@/lib/ui-i18n.functions";
 import { PreviewBridge } from "@/components/i18n/PreviewBridge";
 import { fontFaceCss, fontPreloads } from "@/lib/fonts";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { KahataynMark } from "@/components/brand/KahataynMark";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 
 // في المتصفّح: حال اللغة مرّةً للجلسة، لا نداءً مع كل تنقّل.
 const uiOnClient = new Map<string, UiState>();
@@ -54,14 +58,18 @@ async function loadUi(wanted: Locale): Promise<UiState> {
 
 const NOT_FOUND = defineCopy("routes/__root/not_found", {
   ar: {
-    title: "الصفحة غير موجودة",
+    title: "هذه الصفحة غير موجودة",
     text: "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
     home: "العودة للرئيسية",
+    browse: "تصفّح الأطفال",
+    try: "جرّب المنصّة",
   },
   en: {
-    title: "Page not found",
+    title: "This page does not exist",
     text: "The link you opened is wrong, or the page has moved.",
     home: "Back to home",
+    browse: "Browse children",
+    try: "Try the platform",
   },
 });
 const ERROR = defineCopy("routes/__root/error", {
@@ -70,68 +78,108 @@ const ERROR = defineCopy("routes/__root/error", {
     text: "حدث خلل غير متوقع. يمكنك المحاولة مجدداً أو العودة للرئيسية.",
     retry: "إعادة المحاولة",
     home: "الرئيسية",
+    browse: "تصفّح الأطفال",
+    ref: "رمز المرجع",
   },
   en: {
     title: "The page could not load",
     text: "Something unexpected went wrong. Try again, or go back home.",
     retry: "Try again",
     home: "Home",
+    browse: "Browse children",
+    ref: "Reference code",
   },
 });
+
+const ACTION =
+  "inline-flex h-11 min-w-11 items-center justify-center rounded-md px-5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const PRIMARY = `${ACTION} bg-primary text-primary-foreground hover:bg-primary/90`;
+const SECONDARY = `${ACTION} border border-input bg-background text-foreground hover:bg-accent`;
 
 function NotFoundComponent() {
   const c = useCopy(NOT_FOUND);
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">{c.title}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {c.home}
-          </Link>
+    <div className="flex min-h-dvh flex-col bg-background">
+      <SiteHeader />
+      <main id="main" className="flex flex-1 items-center justify-center px-4 py-16">
+        <div className="max-w-md text-center">
+          <p aria-hidden="true" className="text-7xl font-bold text-muted-foreground/60">
+            404
+          </p>
+          <h1 className="mt-4 text-2xl font-semibold text-foreground">{c.title}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <Link to="/" className={PRIMARY}>
+              {c.home}
+            </Link>
+            <Link to="/orphans" className={SECONDARY}>
+              {c.browse}
+            </Link>
+            {TRIAL_ENABLED ? (
+              <Link to={trialRoute("/try")} className={SECONDARY}>
+                {c.try}
+              </Link>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <SiteFooter />
+    </div>
   );
+}
+
+/** رمزٌ معتم للدعم: وقتٌ مضغوط فقط، بلا معرّفات ولا تفاصيل خطأ. */
+function referenceCode(): string {
+  return Date.now().toString(36).toUpperCase();
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   const c = useCopy(ERROR);
+  const [ref] = useState(referenceCode);
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold text-foreground">{c.title}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {c.retry}
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            {c.home}
-          </a>
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="flex h-16 items-center border-b px-4">
+        <a href="/" className="inline-flex h-11 items-center" aria-label={c.home}>
+          <KahataynMark className="size-9" />
+        </a>
+      </header>
+      <main id="main" className="flex flex-1 items-center justify-center px-4 py-16">
+        <div className="max-w-md text-center">
+          <h1 className="text-2xl font-semibold text-foreground">{c.title}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                router.invalidate();
+                reset();
+              }}
+              className={PRIMARY}
+            >
+              {c.retry}
+            </button>
+            <a href="/" className={SECONDARY}>
+              {c.home}
+            </a>
+            <a href="/orphans" className={SECONDARY}>
+              {c.browse}
+            </a>
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground">
+            {c.ref}:{" "}
+            <span className="font-mono" dir="ltr">
+              {ref}
+            </span>
+          </p>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
