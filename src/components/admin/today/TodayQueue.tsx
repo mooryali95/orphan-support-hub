@@ -528,7 +528,7 @@ function Row({
             )}
           >
             <Clock className="size-3.5" aria-hidden="true" />
-            {t.waited(days)}
+            {days === 0 ? t.waitedToday : t.waited(days)}
           </span>
         </span>
       </div>
@@ -860,7 +860,7 @@ function Head({ item }: { item: QueueItem }) {
   const t = useCopy(TODAY_COPY);
   const locale = useLocale();
   return (
-    <SheetHeader className="text-start">
+    <SheetHeader className="pe-10 text-start">
       <SheetTitle className="flex flex-wrap items-center gap-2">
         {t.kinds[item.kind]}
         {item.severity === "critical" && (

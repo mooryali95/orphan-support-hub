@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4800,
+ "count": 4801,
  "entries": {
   "components/DashboardShell.account": {
    "en": "My account",
@@ -8929,6 +8929,13 @@
    "en": "Today",
    "ar": "اليوم",
    "kind": "plural",
+   "hash": "565dc525e754",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.waitedToday": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
    "hash": "565dc525e754",
    "file": "src/components/admin/today/copy.ts"
   },
