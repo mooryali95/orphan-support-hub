@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import {
   Building2,
   ArrowLeft,
@@ -50,22 +49,18 @@ import { useAuth } from "@/hooks/useAuth";
  */
 const HOME_LAYER: MapLayer = "network";
 
+/**
+ * أعداد المنصّة وبرامجها لا تؤخّر الصفحة: تُرسم الصفحة فوراً (العنوان والوصف من `head`
+ * بلا قاعدة) ويُحجز للأرقام هيكلٌ بمقاسها نفسه، ثم تُجلب في المتصفّح بعد أوّل رسم.
+ * الخادم لا يجلبها أصلاً، فلا انتظار ولا اختلاف ترطيب (docs/performance.ar.md).
+ */
 const homeQuery = queryOptions({
   queryKey: ["home"],
   queryFn: async () => {
-    // على الخادم: لا ننتظر قاعدة البيانات بلا حدّ. إن تأخّرت تُرسم الصفحة بلا
-    // أعداد (كما تُرسم عند التعذّر) ثم يعيد المتصفّح الجلب بهدوء.
-    const late = typeof window === "undefined" ? within(HOME_WAIT_MS) : null;
-    const both = Promise.all([getPlatformStats(), listPrograms()]);
-    const got = late ? await Promise.race([both, late]) : await both;
-    if (!got) return { stats: null, programs: [] as PublicProgram[], partial: true };
-    const [stats, catalogue] = got;
-    return { stats, programs: catalogue.programs as PublicProgram[], partial: false };
+    const [stats, catalogue] = await Promise.all([getPlatformStats(), listPrograms()]);
+    return { stats, programs: catalogue.programs as PublicProgram[] };
   },
 });
-
-const HOME_WAIT_MS = 2500;
-const within = (ms: number) => new Promise<null>((done) => setTimeout(() => done(null), ms));
 
 const COPY = defineCopy("routes/index", {
   ar: {
@@ -380,7 +375,8 @@ export const Route = createFileRoute("/")({
     // يبدأ جلب أعداد الخريطة مبكراً ولا يُنتظر: إلى أن تصل يُرسم هيكلٌ بلا
     // أرقام (لا أرقامٌ تجريبية — ARC-11).
     void context.queryClient.prefetchQuery(geoQuery);
-    return context.queryClient.ensureQueryData(homeQuery);
+    // في التنقّل داخل المتصفّح يبدأ الجلب مبكراً بلا انتظار؛ والخادم لا ينتظر القاعدة.
+    if (typeof window !== "undefined") void context.queryClient.prefetchQuery(homeQuery);
   },
   component: HomePage,
 });
@@ -428,10 +424,10 @@ const CROSSING = [{ dot: "bg-shore-need" }, { dot: "bg-bridge" }, { dot: "bg-sho
 const CUSTODY = [Building2, FileCheck2, Stamp, LineChart];
 
 function HomePage() {
-  const { data, refetch } = useSuspenseQuery(homeQuery);
-  useEffect(() => {
-    if (data.partial) void refetch();
-  }, [data.partial, refetch]);
+  const home = useQuery(homeQuery);
+  // قبل وصول الأعداد: هيكلٌ بمقاسها (لا أصفار ولا أرقامٌ مختلَقة)؛ وعند التعذّر لا تُعرض.
+  const pending = home.isPending;
+  const data = home.data ?? { stats: null, programs: [] as PublicProgram[] };
   const locale = useLocale();
   const c = useCopy(COPY);
   const brand = brandFor(locale);
@@ -466,7 +462,7 @@ function HomePage() {
   const g = useGivingCopy();
   // قبل أوّل ملفٍّ معتمد لا تُعرض أصفار: «قيد الإطلاق» صادقةٌ ولا توحي بمنصّةٍ مهجورة.
   const launching = data.stats?.totalOrphans === 0;
-  const proof: Array<{ value: number; label: string; launch?: boolean }> = [
+  const proof: Array<{ value: number; label: string; launch?: boolean; skeleton?: boolean }> = [
     { value: NETWORK_COUNTS.offices, label: c.proofOffices },
     { value: NETWORK_COUNTS.field, label: c.proofField },
     // أعداد المنصّة الحيّة: إن تعذّرت لا تُعرض، فلا «صفر» ولا رقمٌ مختلَق.
@@ -475,7 +471,12 @@ function HomePage() {
           { value: data.stats.totalOrphans, label: c.proofFiles, launch: launching },
           { value: data.stats.fullySponsored, label: c.proofFull, launch: launching },
         ]
-      : []),
+      : pending
+        ? [
+            { value: 0, label: c.proofFiles, skeleton: true },
+            { value: 0, label: c.proofFull, skeleton: true },
+          ]
+        : []),
   ];
   const funded = moneyLine(data.stats, "monthlyFunded", locale);
   const need = moneyLine(data.stats, "monthlyNeed", locale);
@@ -585,7 +586,17 @@ function HomePage() {
                     <dt className="max-w-[14rem] text-sm leading-6 text-muted-foreground">
                       {item.label}
                     </dt>
-                    {item.launch ? (
+                    {item.skeleton ? (
+                      <dd className="numeral order-first text-5xl text-primary md:text-6xl">
+                        <span
+                          aria-hidden="true"
+                          data-home-skeleton
+                          className="inline-block w-[2ch] animate-pulse rounded-lg bg-muted"
+                        >
+                          &nbsp;
+                        </span>
+                      </dd>
+                    ) : item.launch ? (
                       <dd className="order-first flex min-h-[3.75rem] items-center text-2xl font-bold text-primary md:min-h-[4.5rem] md:text-3xl">
                         {c.launching}
                       </dd>
@@ -598,6 +609,16 @@ function HomePage() {
                 ))}
               </dl>
               {/* المبالغ لكلّ عملةٍ على حدة (UX-07): سطرٌ هادئ تحت الشريط، ولا يُعرض إن تعذّرت الأعداد. */}
+              {pending && (
+                <div
+                  aria-hidden="true"
+                  className="mx-auto mt-5 flex max-w-3xl justify-center text-sm"
+                >
+                  <span className="inline-block w-64 max-w-full animate-pulse rounded bg-muted">
+                    &nbsp;
+                  </span>
+                </div>
+              )}
               {money && (
                 <dl className="mx-auto mt-5 flex max-w-3xl flex-wrap items-baseline justify-center gap-x-8 gap-y-2 text-sm">
                   {money.map((m) => (

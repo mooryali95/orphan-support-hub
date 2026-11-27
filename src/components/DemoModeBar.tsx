@@ -25,7 +25,7 @@ const COPY = defineCopy("components/DemoModeBar", {
 });
 
 const LINK =
-  "inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold hover:bg-background/15 dark:hover:bg-foreground/10";
+  "inline-flex min-h-9 items-center rounded-full px-3 max-sm:min-h-11 text-xs font-bold hover:bg-background/15 dark:hover:bg-foreground/10";
 
 /**
  * روابط عاديّة لا روابط الموجّه: الشريط قطعةٌ تُحمَّل وحدها، فلا يشارك صفحاتِ المنصّة وحداتِها.
@@ -33,8 +33,9 @@ const LINK =
  * شريط الوضع التجريبي: يظهر فوق كل صفحةٍ ما دام الزائر في التجربة، فلا تُقرأ أرقام العيّنة
  * نتائجَ حقيقية، ويجمع أبوابها الثلاثة ومخرجها في مكانٍ واحد.
  */
-export default function DemoModeBar() {
-  const demo = useDemo();
+export default function DemoModeBar({ force = false }: { force?: boolean }) {
+  // `force`: مسار تجربة يُرسم من الخادم قبل أن تُقرأ الجلسة.
+  const demo = useDemo() || force;
   const c = useCopy(COPY);
   // يلتصق من الشاشة الصغيرة فما فوق وحدها (سطرٌ واحد)؛ على 360px يلتفّ ثلاثة أسطر فيمرّ
   // مع الصفحة، ويبقى شريط التجربة تحت الرأس دليلاً. ارتفاعه الملتصق في `--demo-bar-h`
