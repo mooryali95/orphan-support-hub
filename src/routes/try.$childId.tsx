@@ -41,7 +41,7 @@ export const Route = createFileRoute("/try/$childId")({
     await Promise.all([
       import("@/lib/try-places"),
       import("@/lib/try-cycle"),
-      import("@/lib/try-sponsor-center"),
+      import("@/lib/try-sponsor-center").then((m) => m.registerSponsorCenterDemos()),
     ]);
     return { child: tryChild(params.childId) ?? null };
   },
