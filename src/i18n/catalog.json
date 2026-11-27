@@ -13821,10 +13821,10 @@
    "file": "src/components/sponsorship/AnnualStatement.tsx"
   },
   "components/sponsorship/AnnualStatement.sampleNote": {
-   "en": "A simulated record from the trial: the invoices are sample data (DEMO-INV-) and nothing real was paid.",
-   "ar": "سجلٌّ محاكى من التجربة: الفواتير نموذجية (DEMO-INV-) ولم يُدفع شيءٌ حقيقي.",
+   "en": "A simulated record from the trial: the invoices are sample data and nothing real was paid.",
+   "ar": "سجلٌّ محاكى من التجربة: الفواتير نموذجية ولم يُدفع شيءٌ حقيقي.",
    "kind": "text",
-   "hash": "83fe84b88ccf",
+   "hash": "55b4100ace6a",
    "file": "src/components/sponsorship/AnnualStatement.tsx"
   },
   "components/sponsorship/AnnualStatement.title": {

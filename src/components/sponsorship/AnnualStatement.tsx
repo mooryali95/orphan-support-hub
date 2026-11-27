@@ -45,7 +45,7 @@ const COPY = defineCopy("components/sponsorship/AnnualStatement", {
     zakat:
       "أهلية الزكاة تتبع السياسة التي تنشرها الندوة. هذا السجلّ لا يصنّف التبرّعات زكاةً ولا يذكر خصماً ضريبياً.",
     sample: "بيانات نموذجية · محاكاة",
-    sampleNote: "سجلٌّ محاكى من التجربة: الفواتير نموذجية (DEMO-INV-) ولم يُدفع شيءٌ حقيقي.",
+    sampleNote: "سجلٌّ محاكى من التجربة: الفواتير نموذجية ولم يُدفع شيءٌ حقيقي.",
     child: "الطفل",
   },
   en: {
@@ -79,7 +79,7 @@ const COPY = defineCopy("components/sponsorship/AnnualStatement", {
       "Zakat eligibility follows the policy WAMY publishes. This record does not classify donations as zakat and makes no claim of tax deductibility.",
     sample: "Sample data · simulated",
     sampleNote:
-      "A simulated record from the trial: the invoices are sample data (DEMO-INV-) and nothing real was paid.",
+      "A simulated record from the trial: the invoices are sample data and nothing real was paid.",
     child: "Child",
   },
 });
