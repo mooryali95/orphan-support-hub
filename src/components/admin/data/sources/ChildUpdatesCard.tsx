@@ -232,7 +232,7 @@ function ChildPicker({
           type="button"
           onClick={() => onChange(null)}
           aria-label={c.cancel}
-          className="inline-flex size-9 items-center justify-center rounded-full hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className="inline-flex size-11 items-center justify-center rounded-full hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
           <X className="size-4" aria-hidden="true" />
         </button>

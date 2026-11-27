@@ -105,7 +105,7 @@ export function DecisionTimeline({ orphanId = null }: { orphanId?: string | null
             aria-checked={filter === f}
             onClick={() => setFilter(f)}
             className={cn(
-              "focus-visible:ring-ring min-h-9 rounded-lg px-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none",
+              "focus-visible:ring-ring min-h-11 rounded-lg px-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none",
               filter === f
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground",

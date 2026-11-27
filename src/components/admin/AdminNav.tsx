@@ -96,7 +96,7 @@ export function AdminNav<T extends string>({
                         aria-current={on ? "page" : undefined}
                         onClick={() => onSelect(it.key)}
                         className={cn(
-                          "focus-visible:ring-ring relative flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-start text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                          "focus-visible:ring-ring focus-visible:ring-offset-card relative flex min-h-11 w-full items-center gap-2 rounded-lg px-3 text-start text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none",
                           on
                             ? "bg-primary/10 text-primary font-bold"
                             : "text-foreground/80 hover:bg-secondary/60 hover:text-foreground font-medium",
