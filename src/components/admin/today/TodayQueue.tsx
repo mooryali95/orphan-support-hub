@@ -565,7 +565,6 @@ function Row({
               tabIndex={-1}
               className="min-h-11"
               disabled={busy}
-              aria-label={`${it.source === "alert" ? t.reviewed : t.acceptProposed} · ${it.title}`}
               onClick={onSettle}
               // the same verb repeats on every row: its name carries the item it settles
               aria-label={`${it.source === "alert" ? t.reviewed : t.acceptProposed} · ${it.title || t.countryWide}`}
