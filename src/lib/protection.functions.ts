@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { cachedPublic } from "@/lib/public-cache";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
@@ -67,38 +68,52 @@ export const listOrphanCards = createServerFn({ method: "GET" })
         error: RATE_LIMITED_MESSAGE as string | null,
       };
     }
-    const db = withProtection(publicClient());
-    const { data: res, error } = await db.rpc("list_orphan_cards", {
-      _country: (data.country ?? null) as never,
-      _region: (data.region ?? null) as never,
-      _age_band: (data.ageBand ?? null) as never,
-      _gender: (data.gender ?? null) as never,
-      _education_stage: (data.educationStage ?? null) as never,
-      _funding: (data.funding ?? null) as never,
-      _building: (data.building ?? null) as never,
-      _search: (data.search ?? null) as never,
-      _sort: data.sort ?? "waiting",
-      _limit: data.limit ?? 24,
-      _offset: data.offset ?? 0,
-      _group: (data.group ?? null) as never,
-    });
-    if (error) return { rows: [] as OrphanCardRow[], total: 0, error: error.message };
-    const payload = (res ?? {}) as { rows?: OrphanCardRow[]; total?: number };
-    return {
-      rows: payload.rows ?? [],
-      total: payload.total ?? 0,
-      error: null as string | null,
-    };
+    // بطاقات عامّة بالمفتاح العامّ (لا جلسة): ثلاثون ثانية لكلّ فلترٍ في ذاكرة العامل.
+    return cachedPublic(
+      `orphan-cards:${JSON.stringify(data)}`,
+      30_000,
+      () => loadCards(data),
+      (v) => !v.error,
+    );
   });
 
-export const getFilterOptions = createServerFn({ method: "GET" }).handler(async () => {
+async function loadCards(data: z.infer<typeof filterSchema>) {
+  const db = withProtection(publicClient());
+  const { data: res, error } = await db.rpc("list_orphan_cards", {
+    _country: (data.country ?? null) as never,
+    _region: (data.region ?? null) as never,
+    _age_band: (data.ageBand ?? null) as never,
+    _gender: (data.gender ?? null) as never,
+    _education_stage: (data.educationStage ?? null) as never,
+    _funding: (data.funding ?? null) as never,
+    _building: (data.building ?? null) as never,
+    _search: (data.search ?? null) as never,
+    _sort: data.sort ?? "waiting",
+    _limit: data.limit ?? 24,
+    _offset: data.offset ?? 0,
+    _group: (data.group ?? null) as never,
+  });
+  if (error) return { rows: [] as OrphanCardRow[], total: 0, error: error.message };
+  const payload = (res ?? {}) as { rows?: OrphanCardRow[]; total?: number };
+  return {
+    rows: payload.rows ?? [],
+    total: payload.total ?? 0,
+    error: null as string | null,
+  };
+}
+
+export const getFilterOptions = createServerFn({ method: "GET" }).handler(() =>
+  cachedPublic("filter-options", 300_000, loadFilterOptions, (v) => v !== FILTER_EMPTY),
+);
+
+const FILTER_EMPTY = { countries: [], regions: [], stages: [] } satisfies OrphanFilterOptions;
+
+async function loadFilterOptions(): Promise<OrphanFilterOptions> {
   const db = withProtection(publicClient());
   const { data, error } = await db.rpc("orphan_filter_options");
-  if (error) {
-    return { countries: [], regions: [], stages: [] } satisfies OrphanFilterOptions;
-  }
+  if (error) return FILTER_EMPTY;
   return (data ?? { countries: [], regions: [], stages: [] }) as OrphanFilterOptions;
-});
+}
 
 /**
  * الملفّ — بجلسةٍ إن وُجدت، وبلا جلسةٍ للزائر.

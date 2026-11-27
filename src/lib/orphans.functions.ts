@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { cachedPublic } from "@/lib/public-cache";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
@@ -109,18 +110,22 @@ export function toPlatformStats(row: unknown): PlatformStats | null {
  * احتياطاً.
  */
 export const getPlatformStats = createServerFn({ method: "GET" }).handler(
-  async (): Promise<PlatformStats | null> => {
-    const supabase = publicClient();
-    const rpc = supabase as unknown as {
-      rpc: (fn: string) => PromiseLike<{ data: unknown; error: { code?: string } | null }>;
-    };
-    const { data, error } = await rpc.rpc("public_platform_stats");
-    if (!error) return toPlatformStats(data);
-    // PGRST202: الدالّة لم تُنشأ بعد في هذه القاعدة. غير ذلك: «غير متاح».
-    if (error.code !== "PGRST202") return null;
-    return legacyPlatformStats(supabase);
-  },
+  // عامّة مجهولة (المفتاح العامّ): دقيقةٌ في ذاكرة العامل، والفشل لا يُحفظ.
+  (): Promise<PlatformStats | null> =>
+    cachedPublic("platform-stats", 60_000, loadPlatformStats, (v) => v !== null),
 );
+
+async function loadPlatformStats(): Promise<PlatformStats | null> {
+  const supabase = publicClient();
+  const rpc = supabase as unknown as {
+    rpc: (fn: string) => PromiseLike<{ data: unknown; error: { code?: string } | null }>;
+  };
+  const { data, error } = await rpc.rpc("public_platform_stats");
+  if (!error) return toPlatformStats(data);
+  // PGRST202: الدالّة لم تُنشأ بعد في هذه القاعدة. غير ذلك: «غير متاح».
+  if (error.code !== "PGRST202") return null;
+  return legacyPlatformStats(supabase);
+}
 
 async function legacyPlatformStats(
   supabase: ReturnType<typeof publicClient>,
