@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useState } from "react";
 import { Award, FileText, Gauge, Mail, Package, PackageCheck, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -55,12 +55,12 @@ const ICONS: Record<string, { icon: LucideIcon; tone: TimelineItem["tone"] }> = 
  * ومعاينة «رسالة الشهر» كما ستصل حين يُفتح البريد.
  */
 export function MyJourney({ limit = 5, className = "" }: { limit?: number; className?: string }) {
-  const fetchFeed = useServerFn(getMyJourneyFeed);
-  const fetchPreview = useServerFn(previewMonthlyDigest);
+  const fetchFeed = useDataFn("sponsor.journeyFeed", getMyJourneyFeed);
+  const fetchPreview = useDataFn("sponsor.digestPreview", previewMonthlyDigest);
   const c = useCopy(COPY);
   const locale = useLocale();
   const { data: feed = [], isPending } = useQuery({
-    queryKey: ["my-journey"],
+    queryKey: useDataKey(["my-journey"]),
     queryFn: () => fetchFeed(),
   });
   const [preview, setPreview] = useState<string | null>(null);

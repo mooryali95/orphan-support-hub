@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { toast } from "sonner";
 import {
   CalendarDays,
@@ -65,17 +65,17 @@ const COPY = defineCopy("components/impact/ImpactPanel", {
  * والمرفقات لا تصله أصلاً (تبقى لدائرة الطفل)، فلا تظهر خانتها له.
  */
 export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphanName: string }) {
-  const fetchReports = useServerFn(listReports);
-  const fetchTimeline = useServerFn(listTimeline);
+  const fetchReports = useDataFn("impact.reports", listReports);
+  const fetchTimeline = useDataFn("impact.timeline", listTimeline);
   const c = useCopy(COPY);
   const locale = useLocale();
 
   const { data: rep, isLoading } = useQuery({
-    queryKey: ["reports", orphanId],
+    queryKey: useDataKey(["reports", orphanId]),
     queryFn: () => fetchReports({ data: { orphanId } }),
   });
   const { data: tl } = useQuery({
-    queryKey: ["timeline", orphanId],
+    queryKey: useDataKey(["timeline", orphanId]),
     queryFn: () => fetchTimeline({ data: { orphanId } }),
   });
 
