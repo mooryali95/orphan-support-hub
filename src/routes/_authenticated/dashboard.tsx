@@ -27,6 +27,7 @@ import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { MyEvidence } from "@/components/impact/MyEvidence";
+import { MyChildrenNow } from "@/components/impact/MyChildrenNow";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
 
@@ -287,7 +288,13 @@ function DashboardPage() {
           ) : others.length === 0 ? (
             <NoSponsorships pendingOnly={pending.length > 0} />
           ) : (
-            <ChildCards list={others} />
+            <>
+              {/* the child first: this month in one sentence each, and what changed since the last visit */}
+              <MyChildrenNow list={others} className="mt-0 mb-8" />
+              <div id="sponsorship-cards" className="scroll-mt-24">
+                <ChildCards list={others} />
+              </div>
+            </>
           )}
         </div>
       </section>
