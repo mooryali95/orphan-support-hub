@@ -24377,10 +24377,10 @@
   },
   "lib/hall/live.screen.mapTitle": {
    "en": "{0}: as it stands",
-   "ar": "{0} — الحال الآن",
+   "ar": "{0}: الحال الآن",
    "kind": "template",
    "params": 1,
-   "hash": "00f50cac9e92",
+   "hash": "c8f113eabddb",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.screen.none": {
@@ -25230,11 +25230,11 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.support.option": {
-   "en": "{0} — {1} waiting",
-   "ar": "{0} — {1} ينتظرون",
+   "en": "{0}: {1} waiting",
+   "ar": "{0}: {1} ينتظرون",
    "kind": "template",
    "params": 2,
-   "hash": "c171b20600be",
+   "hash": "e78a84a4a9bf",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.support.pay": {
@@ -26400,11 +26400,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.map": {
-   "en": "{0} — sample data",
-   "ar": "{0} — بيانات نموذجية",
+   "en": "{0}: sample data",
+   "ar": "{0}: بيانات نموذجية",
    "kind": "template",
    "params": 1,
-   "hash": "0fcc56daa441",
+   "hash": "de254bf924e9",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.mapLine": {
@@ -26558,11 +26558,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.support.destOption": {
-   "en": "{0} — {1}",
-   "ar": "{0} — {1}",
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
    "kind": "template",
    "params": 2,
-   "hash": "5515e2971011",
+   "hash": "869f6c298bef",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.support.kind": {
