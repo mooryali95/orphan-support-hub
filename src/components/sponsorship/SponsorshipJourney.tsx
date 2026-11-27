@@ -18,6 +18,8 @@ import { hijriLabel, monthLabel } from "@/components/sponsorship/sponsor-format"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDataFn } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
+import { SampleBadge } from "@/components/impact/SupportImpactParts";
 import { formatDate, formatMoney } from "@/lib/format";
 import {
   verifyLedgerReceipt,
@@ -499,62 +501,67 @@ function MonthNode({
 function Invoices({ payments }: { payments: LedgerPayment[] }) {
   const c = useCopy(COPY);
   const locale = useLocale();
+  // في جلسة التجربة تحمل الفاتورة علامة «بيانات نموذجية» داخلها، لا في رأس الصفحة وحده.
+  const demo = useDemo();
   return (
-    <ul className="mt-4 space-y-2" aria-label={c.invoices}>
-      {payments.map((p) => (
-        <li key={p.invoice_no} className="rounded-xl bg-secondary/40 p-3 text-sm">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-xs text-muted-foreground">{c.invoice}</span>
-            <bdi dir="ltr" className="font-mono font-semibold">
-              {p.invoice_no}
-            </bdi>
-            <span className="tabular-nums">{formatMoney(p.amount, p.currency, locale)}</span>
-            <span
-              className={cn(
-                "text-xs font-medium",
-                p.status === "paid"
-                  ? "text-primary"
-                  : p.status === "refunded"
-                    ? "text-muted-foreground"
-                    : "text-destructive",
-              )}
-            >
-              {c.pay[p.status]}
-            </span>
-            {p.receipt_url && (
-              <a
-                href={p.receipt_url}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="ms-auto inline-flex min-h-11 items-center text-xs font-medium text-primary underline-offset-4 hover:underline"
-              >
-                {c.providerReceipt}
-              </a>
-            )}
-          </div>
-          {p.provider_payment_id && (
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span>{c.txAt(p.provider === "creem" ? "Creem" : (p.provider ?? c.provider))}</span>
-              <bdi dir="ltr" className="max-w-[16rem] truncate font-mono text-foreground">
-                {p.provider_payment_id}
+    <>
+      {demo && <SampleBadge className="mt-4 inline-block" />}
+      <ul className="mt-4 space-y-2" aria-label={c.invoices}>
+        {payments.map((p) => (
+          <li key={p.invoice_no} className="rounded-xl bg-secondary/40 p-3 text-sm">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="text-xs text-muted-foreground">{c.invoice}</span>
+              <bdi dir="ltr" className="font-mono font-semibold">
+                {p.invoice_no}
               </bdi>
-              <button
-                type="button"
-                aria-label={c.copyTx}
-                className="grid size-11 place-items-center rounded-full hover:bg-secondary"
-                onClick={async () => {
-                  await navigator.clipboard.writeText(p.provider_payment_id!);
-                  toast.success(c.copiedTx);
-                }}
+              <span className="tabular-nums">{formatMoney(p.amount, p.currency, locale)}</span>
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  p.status === "paid"
+                    ? "text-primary"
+                    : p.status === "refunded"
+                      ? "text-muted-foreground"
+                      : "text-destructive",
+                )}
               >
-                <Copy className="size-3.5" aria-hidden="true" />
-              </button>
-              {p.paid_at && <span>· {formatDate(p.paid_at, locale)}</span>}
+                {c.pay[p.status]}
+              </span>
+              {p.receipt_url && (
+                <a
+                  href={p.receipt_url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="ms-auto inline-flex min-h-11 items-center text-xs font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  {c.providerReceipt}
+                </a>
+              )}
             </div>
-          )}
-        </li>
-      ))}
-    </ul>
+            {p.provider_payment_id && (
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span>{c.txAt(p.provider === "creem" ? "Creem" : (p.provider ?? c.provider))}</span>
+                <bdi dir="ltr" className="max-w-[16rem] truncate font-mono text-foreground">
+                  {p.provider_payment_id}
+                </bdi>
+                <button
+                  type="button"
+                  aria-label={c.copyTx}
+                  className="grid size-11 place-items-center rounded-full hover:bg-secondary"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(p.provider_payment_id!);
+                    toast.success(c.copiedTx);
+                  }}
+                >
+                  <Copy className="size-3.5" aria-hidden="true" />
+                </button>
+                {p.paid_at && <span>· {formatDate(p.paid_at, locale)}</span>}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -570,6 +577,7 @@ function Receipt({
 }) {
   const c = useCopy(COPY);
   const verify = useDataFn("sponsor.verifyReceipt", verifyLedgerReceipt);
+  const demo = useDemo();
   const [checking, setChecking] = useState(false);
   const [input, setInput] = useState("");
   const [result, setResult] = useState<null | boolean>(null);
@@ -578,6 +586,7 @@ function Receipt({
     <div className="mt-4 rounded-xl bg-secondary/40 p-3">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">{c.receipt}</span>
+        {demo && <SampleBadge />}
         <bdi dir="ltr" className="font-mono text-sm font-semibold">
           {receipt}
         </bdi>
