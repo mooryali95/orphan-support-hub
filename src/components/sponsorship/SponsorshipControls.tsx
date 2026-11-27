@@ -327,6 +327,7 @@ export function CancelForm({
                 type="button"
                 size="sm"
                 variant="outline"
+                className="min-h-11"
                 onClick={() => onAlternative("pause")}
               >
                 {t.pauseInstead}
@@ -336,6 +337,7 @@ export function CancelForm({
               type="button"
               size="sm"
               variant="outline"
+              className="min-h-11"
               onClick={() => onAlternative("amount")}
             >
               {t.lowerAmount}

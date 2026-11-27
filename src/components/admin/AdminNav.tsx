@@ -21,12 +21,15 @@ export function AdminNav<T extends string>({
   onSelect,
   homeLabel,
   onHome,
+  homeHref = "/admin",
 }: {
   sections: AdminNavSection<T>[];
   active: T;
   onSelect: (key: T) => void;
   homeLabel: string;
   onHome: () => void;
+  /** عنوان «ابدأ من هنا» حين يُفتح في نافذةٍ جديدة: التجربة تمرّر مسارها فلا تخرج إلى الإدارة الحقيقية. */
+  homeHref?: string;
 }) {
   const t = useCopy(COPY);
   return (
@@ -66,7 +69,7 @@ export function AdminNav<T extends string>({
       <nav aria-label={t.label} className="hidden lg:block">
         <div className="border-border bg-card sticky top-20 rounded-2xl border p-3">
           <a
-            href="/admin"
+            href={homeHref}
             onClick={(e) => {
               if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
               e.preventDefault();

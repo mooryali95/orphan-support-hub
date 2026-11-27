@@ -144,8 +144,9 @@ const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "s
 function TryAdmin() {
   const t = useCopy(COPY);
   const LABELS = t.labels;
-  const [tab, setTabState] = useState<Key>("today");
-  const [country, setCountry] = useState("LK");
+  const { country: deep } = Route.useSearch();
+  const [tab, setTabState] = useState<Key>(deep ? "sources" : "today");
+  const [country, setCountry] = useState(deep ?? "LK");
   const [workTab, setWorkTab] = useState<WorkTab | undefined>(undefined);
   const qc = useQueryClient();
   // ما حُسم في لسانٍ يظهر في الآخر فوراً: ذاكرة التجربة تُقرأ من جديد عند كل انتقال.
@@ -186,6 +187,7 @@ function TryAdmin() {
           onSelect={setTab}
           homeLabel={t.home}
           onHome={() => setTab("home")}
+          homeHref="/try/admin"
         />
         <div className="min-w-0">
           <div className="mb-5">

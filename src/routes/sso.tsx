@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
-import { defineCopy, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 import { safeNext } from "@/lib/sso/launch-token";
 import { checkSsoNonce } from "@/lib/sso/nonce.functions";
 import { useServerFn } from "@tanstack/react-start";
@@ -54,12 +54,15 @@ const COPY = defineCopy("routes/sso", {
 });
 
 export const Route = createFileRoute("/sso")({
-  head: () => ({
-    meta: [
-      { title: pageTitle("الدخول من منصّة الندوة", false) },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return {
+      meta: [
+        { title: pageTitle(copyOf(COPY, l).title, false, l) },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: SsoPage,
 });
 

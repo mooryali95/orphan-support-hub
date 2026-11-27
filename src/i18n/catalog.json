@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5114,
+ "count": 5116,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -16020,10 +16020,10 @@
    "file": "src/components/sponsorship/ManageSponsorship.tsx"
   },
   "components/sponsorship/ManageSponsorship.back": {
-   "en": "← Back to my impact",
-   "ar": "→ العودة إلى أثري",
+   "en": "Back to my impact",
+   "ar": "العودة إلى أثري",
    "kind": "text",
-   "hash": "b968fb395bab",
+   "hash": "8e18859f1bb2",
    "file": "src/components/sponsorship/ManageSponsorship.tsx"
   },
   "components/sponsorship/ManageSponsorship.cancel.action": {
@@ -20481,10 +20481,10 @@
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.steps.0.act": {
-   "en": "Press “Create file” on the record in the queue.",
-   "ar": "اضغط «أنشئ ملفاً» على السجلّ في الطابور.",
+   "en": "Press “Create a new file” on the record in the queue.",
+   "ar": "اضغط «أنشئ ملفاً جديداً» على السجلّ في الطابور.",
    "kind": "text",
-   "hash": "e467fa2c9fd4",
+   "hash": "370ade15a74c",
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.steps.0.done": {
@@ -20885,6 +20885,20 @@
    "kind": "text",
    "hash": "a55cef431d29",
    "file": "src/components/try/story/TryStoryEntry.tsx"
+  },
+  "components/ui/dialog.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/components/ui/dialog.tsx"
+  },
+  "components/ui/sheet.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/components/ui/sheet.tsx"
   },
   "components/vision/ImpactCard.children": {
    "en": "Children my impact reaches",

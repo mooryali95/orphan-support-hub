@@ -9,7 +9,14 @@ const TITLE = defineCopy("routes/try.admin.title", {
   en: { title: "Administration: interactive demo" },
 });
 
+/** `?country=PK` يفتح مصادر التحقق لتلك الدولة: روابط مركز الثقة في القصّة تصل إلى مكانها. */
+export type TryAdminSearch = { country?: string };
+
 export const Route = createFileRoute("/try/admin")({
+  validateSearch: (raw: Record<string, unknown>): TryAdminSearch =>
+    typeof raw["country"] === "string" && /^[A-Z]{2}$/.test(raw["country"])
+      ? { country: raw["country"] }
+      : {},
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

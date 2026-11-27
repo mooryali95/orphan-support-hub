@@ -4,7 +4,18 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
+import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/ui/dialog", {
+  ar: { close: "إغلاق" },
+  en: { close: "Close" },
+});
+
+/** اسم زرّ الإغلاق بلغة الصفحة، لقارئ الشاشة. */
+function CloseLabel() {
+  return <span className="sr-only">{useCopy(COPY).close}</span>;
+}
 
 const Dialog = DialogPrimitive.Root;
 
@@ -43,7 +54,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className="absolute end-2.5 top-2.5 grid size-11 place-items-center rounded-full opacity-70 ring-offset-background cursor-pointer transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
         <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
+        <CloseLabel />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>
@@ -51,7 +62,10 @@ const DialogContent = React.forwardRef<
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
+  <div
+    className={cn("flex flex-col space-y-1.5 text-center sm:text-start", className)}
+    {...props}
+  />
 );
 DialogHeader.displayName = "DialogHeader";
 

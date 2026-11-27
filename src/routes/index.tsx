@@ -524,7 +524,12 @@ function HomePage() {
                     </Link>
                   </Button>
                   {(isTrial() || showTrialLink()) && (
-                    <Button asChild size="lg" variant="outline" className="bg-background/70">
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="h-auto min-h-11 whitespace-normal bg-background/70 py-2 text-center"
+                    >
                       <Link to={trialRoute("/try")} onClick={enterDemo}>
                         <FlaskConical className="size-4" aria-hidden="true" />
                         {c.tryIt}
@@ -946,7 +951,11 @@ function HomePage() {
             {/* فعلٌ واحد، بحسب وضع المنصّة: التجربة قبل الاعتماد، والدليل بعده. */}
             <div className="mt-10">
               {isTrial() ? (
-                <Button asChild size="lg">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-auto min-h-11 whitespace-normal py-2 text-center"
+                >
                   <Link to={trialRoute("/try")}>
                     <FlaskConical className="size-4" aria-hidden="true" />
                     {c.tryIt}
