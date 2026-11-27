@@ -1,0 +1,50 @@
+/* ── الطباعة: سجلّ التبرّعات وتقرير الكفالة (`.print-doc`) يُطبعان وحدهما، بحبرٍ على ورقٍ أبيض
+ * في السمتين، والعلامة المائية للتجربة تتكرّر على كل صفحة. بلا مكتبة PDF: «حفظ PDF» من المتصفّح. */
+.print-watermark {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    color-scheme: light;
+  }
+  body:has(.print-doc) *:not(.print-doc, .print-doc *, :has(.print-doc)) {
+    display: none !important;
+  }
+  .print-doc,
+  .print-doc * {
+    color: #000 !important;
+    background: transparent !important;
+    border-color: #8a8a8a !important;
+    box-shadow: none !important;
+  }
+  .print-doc tr,
+  .print-doc section {
+    break-inside: avoid;
+  }
+  .print-watermark {
+    position: fixed;
+    inset: 0;
+    display: grid !important;
+    place-items: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .print-doc .print-watermark > span {
+    rotate: -24deg;
+    max-width: 80%;
+    text-align: center;
+    font-size: 28pt;
+    font-weight: 800;
+    line-height: 1.4;
+    color: rgb(0 0 0 / 0.12) !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
