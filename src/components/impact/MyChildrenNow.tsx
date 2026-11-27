@@ -1,5 +1,6 @@
+import { useQueries } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Check, CircleAlert, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, CircleAlert, FileText, ImageIcon, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { MuralImage, registerFor } from "@/components/brand/MuralImage";
@@ -10,7 +11,11 @@ import { useLedgers } from "@/components/sponsorship/ledger-query";
 import { monthLabel } from "@/components/sponsorship/sponsor-format";
 import { useStatusLabel } from "@/components/sponsorship/status-copy";
 import { Skeleton } from "@/components/ui/skeleton";
+import { captionOf } from "@/lib/child-updates";
+import { listChildUpdates } from "@/lib/child-updates.functions";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useDemo } from "@/lib/demo-mode";
+import { listReports } from "@/lib/impact.functions";
 import { formatMoney, fundingPercent } from "@/lib/format";
 import { evidenceFromLedger, sortEvidence, type EvidenceMonth } from "@/lib/impact-evidence";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
@@ -56,6 +61,8 @@ const COPY = defineCopy("components/impact/MyChildrenNow", {
     state: { 1: "دُفع", 2: "حُوِّل للجهة الميدانية", 3: "وصل بمستند" } as Record<1 | 2 | 3, string>,
     receipt: "إيصال",
     full: "السجلّ كاملاً",
+    report: (period: string) => `تقرير تقدّم معتمد: ${period}`,
+    update: "تحديثٌ جديد من الجهة الميدانية",
   },
   en: {
     title: "Your children this month",
@@ -93,6 +100,8 @@ const COPY = defineCopy("components/impact/MyChildrenNow", {
     >,
     receipt: "Receipt",
     full: "Full record",
+    report: (period: string) => `Approved progress report: ${period}`,
+    update: "A new update from the field organization",
   },
 });
 
@@ -157,6 +166,27 @@ export function MyChildrenNow({
   );
   const past = rows.filter((r) => !r.upcoming);
 
+  // approved progress reports and child updates join the money record in «آخر ما قُيِّد»
+  const fetchReports = useDataFn("impact.reports", listReports);
+  const fetchUpdates = useDataFn("sponsor.childUpdates", listChildUpdates);
+  const reportKey = useDataKey(["reports"]);
+  const updateKey = useDataKey(["child-updates"]);
+  const kids = started.slice(0, HERO_CHILDREN).filter((s) => s.orphan);
+  const reportQs = useQueries({
+    queries: kids.map((s) => ({
+      queryKey: [...reportKey, s.orphan!.id],
+      queryFn: () => fetchReports({ data: { orphanId: s.orphan!.id } }),
+      staleTime: 5 * 60_000,
+    })),
+  });
+  const updateQs = useQueries({
+    queries: kids.map((s) => ({
+      queryKey: [...updateKey, s.orphan!.id],
+      queryFn: () => fetchUpdates({ data: { orphanId: s.orphan!.id } }),
+      staleTime: 8 * 60_000,
+    })),
+  });
+
   const key = SEEN_KEY(demo);
   /* read once per mount: «since your last visit» compares against what was there before today */
   const [before, setBefore] = useState<Seen | null | undefined>(undefined);
@@ -174,6 +204,34 @@ export function MyChildrenNow({
           .slice(0, 3)
       : [];
   const latest = sortEvidence(past.filter((r) => r.reached > 0)).slice(0, 3);
+  type Extra = { id: string; at: string; child: string; kind: "report" | "update"; text: string };
+  const extras: Extra[] = kids
+    .flatMap((s, i): Extra[] => {
+      const name = s.orphan!.display_name;
+      const reps = (reportQs[i]?.data?.reports ?? [])
+        .filter((r) => r.status === "approved")
+        .map((r) => ({
+          id: `r-${r.id}`,
+          at: r.published_at ?? r.created_at,
+          child: name,
+          kind: "report" as const,
+          text: c.report(r.period),
+        }));
+      const ups = updateQs[i]?.data;
+      const items = ups && "ok" in ups && ups.ok ? ups.data : [];
+      return [
+        ...reps,
+        ...items.map((u) => ({
+          id: `u-${u.id}`,
+          at: u.at,
+          child: name,
+          kind: "update" as const,
+          text: captionOf(u, locale) || c.update,
+        })),
+      ];
+    })
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, 2);
   const month = (ym: string) => monthLabel(ym, locale);
 
   function sentence(s: MySponsorship): string {
@@ -336,7 +394,7 @@ export function MyChildrenNow({
             <h3 className="text-sm font-bold">{c.latestTitle}</h3>
             {loading ? (
               <Skeleton className="mt-2 h-16 w-full" />
-            ) : latest.length === 0 ? (
+            ) : latest.length === 0 && extras.length === 0 ? (
               <p className="mt-1 text-sm leading-7 text-muted-foreground">{c.latestEmpty}</p>
             ) : (
               <ol className="mt-2 border-s border-border ps-4">
@@ -370,6 +428,26 @@ export function MyChildrenNow({
                           {c.receipt} {r.receipt}
                         </span>
                       )}
+                    </p>
+                  </li>
+                ))}
+                {extras.map((x) => (
+                  <li key={x.id} className="relative py-1.5" data-latest-kind={x.kind}>
+                    <span
+                      aria-hidden="true"
+                      className="absolute top-3.5 -start-[21px] size-2.5 rounded-full bg-bridge ring-4 ring-card"
+                    />
+                    <p className="flex flex-wrap items-baseline gap-x-2 text-sm leading-6">
+                      <Name className="font-bold">{x.child}</Name>
+                      <span className="text-muted-foreground">{month(x.at.slice(0, 7))}</span>
+                    </p>
+                    <p className="flex items-start gap-x-2 text-xs leading-6 text-muted-foreground">
+                      {x.kind === "report" ? (
+                        <FileText className="mt-1 size-3.5 shrink-0" aria-hidden="true" />
+                      ) : (
+                        <ImageIcon className="mt-1 size-3.5 shrink-0" aria-hidden="true" />
+                      )}
+                      <span className="line-clamp-2">{x.text}</span>
                     </p>
                   </li>
                 ))}

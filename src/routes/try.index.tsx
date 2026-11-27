@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 import { TryChildCard } from "@/components/try/TryChildCard";
 import { TryDirectory } from "@/components/try/TryDirectory";
 import { TryRoles } from "@/components/try/TryRoles";
@@ -46,6 +48,9 @@ const COPY = defineCopy("routes/try.index", {
       in_kind: "ادعم من الخريطة",
     },
     toImpact: "انتقل إلى «أثري»",
+    start: "ابدأ: اختر طفلاً",
+    more: "استكشف أكثر",
+    moreLead: "الأدوار، وقصّة الثقة، والدورة الكاملة، وأبواب العطاء الثلاثة، والدليل كلّه.",
   },
   en: {
     steps: [
@@ -85,6 +90,10 @@ const COPY = defineCopy("routes/try.index", {
       in_kind: "Support from the map",
     },
     toImpact: "Go to “My impact”",
+    start: "Start: choose a child",
+    more: "Explore more",
+    moreLead:
+      "The roles, the trust story, the full cycle, the three giving doors and the whole directory.",
   },
 });
 
@@ -103,14 +112,17 @@ function TryHome() {
         <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-muted-foreground md:text-lg md:leading-9">
           {c.lead}
         </p>
-        <div className="mt-8 flex justify-center">
+        {/* one primary path for a first visitor: choose a child; the guided story is the quiet second */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button asChild size="lg">
+            <a href="#try-kids" data-try-start>
+              {c.start}
+              <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+            </a>
+          </Button>
           <TryJourneyGuide variant="hero" />
         </div>
       </section>
-
-      <TryRoles />
-
-      <TryStoryEntry />
 
       {/* three steps on one ruled band: the numeral is the ornament, no icon chips */}
       <ol className="mt-14 grid divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -131,75 +143,7 @@ function TryHome() {
         ))}
       </ol>
 
-      {/* «الدورة الكاملة»: ملفٌّ واحد يُرى ينتقل عبر كلّ الأدوار — أقوى ما يُعرض لصاحب القرار */}
-      <Link
-        to="/try/cycle"
-        className="group mt-12 flex flex-col gap-4 rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:flex-row sm:items-center sm:p-8"
-      >
-        <span className="min-w-0 flex-1">
-          <span className="block text-xs font-bold tracking-wide opacity-80">{c.cycleEyebrow}</span>
-          <span className="mt-2 block text-2xl font-bold">{c.cycleTitle}</span>
-          <span className="mt-2 block max-w-2xl text-sm leading-7 opacity-90">{c.cycleText}</span>
-        </span>
-        <span className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start rounded-full bg-primary-foreground px-5 text-sm font-bold text-primary sm:self-center">
-          {c.cycleCta}
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100"
-            aria-hidden="true"
-          />
-        </span>
-      </Link>
-
-      {/* the three giving tracks, as on the home page: each door says what its impact looks like */}
-      <section aria-labelledby="try-doors" className="mt-14">
-        <h2 id="try-doors" className="heading-section">
-          {c.doors}
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{c.doorsLead}</p>
-        <ul className="mt-6 grid gap-4 md:grid-cols-3">
-          {GIVING_TRACKS.map((k, i) => {
-            const body = (
-              <>
-                <span className="block text-lg font-bold">{giving.tracks[k].name}</span>
-                <span className="mt-2 block text-sm leading-7 text-muted-foreground">
-                  {giving.tracks[k].promise}
-                </span>
-                <span className="mt-3 block border-t border-bridge/40 pt-3 text-sm font-bold text-bridge-ink">
-                  {c.doorImpact[k]}
-                </span>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary">
-                  {c.doorCta[k]}
-                  <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
-                </span>
-              </>
-            );
-            const cls =
-              "try-rise block h-full rounded-2xl border border-border bg-card p-5 shadow-soft transition-colors hover:border-primary/50 hover:bg-secondary/40";
-            const style = { animationDelay: `${0.12 + i * 0.06}s` };
-            return (
-              <li key={k}>
-                {k === "monthly" ? (
-                  <a href="#try-kids" data-door={k} className={cls} style={style}>
-                    {body}
-                  </a>
-                ) : (
-                  <Link
-                    to="/try/support"
-                    search={{ kind: k }}
-                    data-door={k}
-                    className={cls}
-                    style={style}
-                  >
-                    {body}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <section aria-labelledby="try-kids" className="mt-16 scroll-mt-24 md:mt-20">
+      <section aria-labelledby="try-kids" className="mt-14 scroll-mt-24">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
           <div>
             <h2 id="try-kids" className="heading-section">
@@ -240,7 +184,88 @@ function TryHome() {
         </Link>
       </section>
 
-      <TryDirectory />
+      {/* everything else sits under one heading after the children, so it never competes with the first step */}
+      <section aria-labelledby="try-more" className="mt-20 border-t border-border pt-12">
+        <h2 id="try-more" className="heading-section">
+          {c.more}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{c.moreLead}</p>
+        <TryRoles />
+
+        <TryStoryEntry />
+
+        {/* «الدورة الكاملة»: ملفٌّ واحد يُرى ينتقل عبر كلّ الأدوار — أقوى ما يُعرض لصاحب القرار */}
+        <Link
+          to="/try/cycle"
+          className="group mt-12 flex flex-col gap-4 rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:flex-row sm:items-center sm:p-8"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-bold tracking-wide opacity-80">
+              {c.cycleEyebrow}
+            </span>
+            <span className="mt-2 block text-2xl font-bold">{c.cycleTitle}</span>
+            <span className="mt-2 block max-w-2xl text-sm leading-7 opacity-90">{c.cycleText}</span>
+          </span>
+          <span className="inline-flex min-h-11 shrink-0 items-center gap-2 self-start rounded-full bg-primary-foreground px-5 text-sm font-bold text-primary sm:self-center">
+            {c.cycleCta}
+            <ArrowLeft
+              className="size-4 transition-transform group-hover:-translate-x-0.5 ltr:-scale-x-100"
+              aria-hidden="true"
+            />
+          </span>
+        </Link>
+
+        {/* the three giving tracks, as on the home page: each door says what its impact looks like */}
+        <section aria-labelledby="try-doors" className="mt-14">
+          <h2 id="try-doors" className="heading-section">
+            {c.doors}
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{c.doorsLead}</p>
+          <ul className="mt-6 grid gap-4 md:grid-cols-3">
+            {GIVING_TRACKS.map((k, i) => {
+              const body = (
+                <>
+                  <span className="block text-lg font-bold">{giving.tracks[k].name}</span>
+                  <span className="mt-2 block text-sm leading-7 text-muted-foreground">
+                    {giving.tracks[k].promise}
+                  </span>
+                  <span className="mt-3 block border-t border-bridge/40 pt-3 text-sm font-bold text-bridge-ink">
+                    {c.doorImpact[k]}
+                  </span>
+                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary">
+                    {c.doorCta[k]}
+                    <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
+                  </span>
+                </>
+              );
+              const cls =
+                "try-rise block h-full rounded-2xl border border-border bg-card p-5 shadow-soft transition-colors hover:border-primary/50 hover:bg-secondary/40";
+              const style = { animationDelay: `${0.12 + i * 0.06}s` };
+              return (
+                <li key={k}>
+                  {k === "monthly" ? (
+                    <a href="#try-kids" data-door={k} className={cls} style={style}>
+                      {body}
+                    </a>
+                  ) : (
+                    <Link
+                      to="/try/support"
+                      search={{ kind: k }}
+                      data-door={k}
+                      className={cls}
+                      style={style}
+                    >
+                      {body}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <TryDirectory />
+      </section>
     </>
   );
 }

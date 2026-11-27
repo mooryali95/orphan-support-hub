@@ -7,13 +7,14 @@
  * والمطّلع ومدخل البيانات لا يحسمان، وملفٌّ يُنشأ من سجلّ الندوة وحده. لا خادم، ولا
  * طفلٌ حقيقي، ولا دفع: كل شيءٍ في `sessionStorage` ويُمحى بـ«ابدأ من جديد».
  */
-import { registerDemo } from "@/lib/data-port";
+import { registerDemo as portRegister } from "@/lib/data-port";
 import {
   ADMIN_ACCESS,
   bulkEligible,
   canDo,
   effectiveOwner,
   FIELD_RULES,
+  fieldsFrom,
   grantableRoles,
   ruleOf,
   searchKey,
@@ -38,6 +39,59 @@ import {
   type DemoFile,
   type VerificationState,
 } from "@/lib/try-verification.data";
+
+/**
+ * أسماء العيّنة المستعارة تُحفظ بالعربية؛ في الواجهة الإنجليزية تُعرض بالإنجليزية عند حدّ
+ * المنفذ وحده (لا يُمسّ المخزون)، فلا تظهر «سلمى (نموذج)» وسط واجهةٍ إنجليزية.
+ */
+const SAMPLE_NAMES_EN: Record<string, string> = {
+  أمينة: "Amina",
+  مريم: "Maryam",
+  فاطمة: "Fatima",
+  خديجة: "Khadija",
+  زينب: "Zainab",
+  عائشة: "Aisha",
+  سلمى: "Salma",
+  هاجر: "Hajar",
+  يوسف: "Yusuf",
+  عمر: "Omar",
+  إبراهيم: "Ibrahim",
+  بلال: "Bilal",
+  حمزة: "Hamza",
+  سليمان: "Sulaiman",
+  إدريس: "Idris",
+  أنس: "Anas",
+};
+const SAMPLE_NAME = /^(.+?) \(نموذج\)$/;
+
+export function sampleNameEn(name: string): string {
+  const m = SAMPLE_NAME.exec(name);
+  if (!m) return name;
+  return `${SAMPLE_NAMES_EN[m[1]!] ?? m[1]} (sample)`;
+}
+
+function inEnglish(): boolean {
+  return typeof document !== "undefined" && document.documentElement.lang.startsWith("en");
+}
+
+function localNames<T>(v: T): T {
+  if (typeof v === "string") return sampleNameEn(v) as T;
+  if (Array.isArray(v)) return v.map(localNames) as T;
+  if (v && typeof v === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, x] of Object.entries(v)) out[k] = localNames(x);
+    return out as T;
+  }
+  return v;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function registerDemo(name: string, fn: (input: any) => Promise<unknown> | unknown) {
+  portRegister(name, async (input) => {
+    const out = await fn(input);
+    return inEnglish() ? localNames(out) : out;
+  });
+}
 
 export const VERIFICATION_KEY = "try-verification:v1";
 export const VERIFICATION_EVENT = "try-verification-change";
@@ -626,6 +680,42 @@ function ingest(data: ImportInput) {
   save(s);
   return ok(out);
 }
+
+/**
+ * ملفٌّ نموذجي جاهز للرفع في التجربة: صفوف ملفّات الدولة بقيمها الحالية وتاريخ اليوم، وصفٌّ
+ * بمرجعٍ جديد ينزل إلى طابور الربط. فيكمل الزائر الرفع إلى آخره بلا ملفٍّ من عنده.
+ */
+function sampleSheet(country: string, role: "wamy" | "office"): string {
+  const rules = fieldsFrom(role);
+  const today = new Date().toISOString().slice(0, 10);
+  const cell = (v: FieldValue | undefined) => {
+    const t = v === null || v === undefined ? "" : String(v);
+    return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  const rows = load()
+    .files.filter((f) => f.country === country && (role === "wamy" || f.office_ref))
+    .slice(0, 3)
+    .map((f) => [
+      role === "wamy" ? f.wamy_ref : f.office_ref!,
+      today,
+      ...rules.map((r) => cell(f.values[r.field])),
+    ]);
+  rows.push([
+    `DEMO-${country}-NEW-${role === "wamy" ? "W" : "O"}1`,
+    today,
+    ...rules.map((r) =>
+      r.field === "display_name" ? "هاجر (نموذج)" : r.field === "country" ? country : "",
+    ),
+  ]);
+  const head = ["المعرف", "تاريخ الرصد", ...rules.map((r) => r.headers[0] ?? r.field)];
+  return `\uFEFF${[head, ...rows].map((r) => r.join(",")).join("\n")}\n`;
+}
+
+registerDemo(
+  "golden.sampleSheet",
+  async ({ data }: { data: { country: string; role: "wamy" | "office" } }) =>
+    sampleSheet(data.country, data.role),
+);
 
 registerDemo("golden.import", async ({ data }: { data: ImportInput }) => {
   await pause();

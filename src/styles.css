@@ -613,6 +613,13 @@ header.sticky {
     background-color 150ms,
     scale 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+/* 44px on phones: the zoom group is the main touch control there */
+@media (max-width: 767px) {
+  .map-ctrl {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
 .map-ctrl:hover:not(:disabled) {
   background: var(--color-secondary);
 }

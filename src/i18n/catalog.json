@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5140,
+ "count": 5148,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -5708,6 +5708,13 @@
    "ar": "الندوة",
    "kind": "text",
    "hash": "eff4fe336b96",
+   "file": "src/components/admin/data/sources-copy.ts"
+  },
+  "components/admin/data/sources.sampleSheet": {
+   "en": "Try a sample file",
+   "ar": "جرّب بملفٍّ نموذجي",
+   "kind": "text",
+   "hash": "d26e988c09d2",
    "file": "src/components/admin/data/sources-copy.ts"
   },
   "components/admin/data/sources.saveMode": {
@@ -11901,6 +11908,14 @@
    "hash": "b3b4afb0ae5b",
    "file": "src/components/impact/MyChildrenNow.tsx"
   },
+  "components/impact/MyChildrenNow.report": {
+   "en": "Approved progress report: {0}",
+   "ar": "تقرير تقدّم معتمد: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "521cc366342c",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
   "components/impact/MyChildrenNow.sinceFirst": {
    "en": "This is the first visit we have noted on this device; next time we will show what changed here.",
    "ar": "هذه أوّل زيارة نسجّلها على هذا الجهاز؛ في المرّة القادمة نريك هنا ما تغيّر.",
@@ -11970,6 +11985,13 @@
    "kind": "template",
    "params": 1,
    "hash": "6c5b0f9375d3",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.update": {
+   "en": "A new update from the field organization",
+   "ar": "تحديثٌ جديد من الجهة الميدانية",
+   "kind": "text",
+   "hash": "cdcf69b48997",
    "file": "src/components/impact/MyChildrenNow.tsx"
   },
   "components/impact/MyEvidence.all.one": {
@@ -28424,6 +28446,20 @@
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
   },
+  "routes/country-data.all": {
+   "en": "All items by country",
+   "ar": "كل البنود بحسب الدولة",
+   "kind": "text",
+   "hash": "40e2918c3635",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.allNote": {
+   "en": "Today, above, gathers what is waiting for you from these same items; here are their full tabs for each country, with uploads and linking.",
+   "ar": "«اليوم» أعلاه تجمع ما ينتظرك من هذه البنود نفسها؛ وهنا ألسنتها كاملةً لكل دولة، مع الرفع والربط.",
+   "kind": "text",
+   "hash": "966cff5c669a",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
   "routes/country-data.lead": {
    "en": "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
    "ar": "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
@@ -32687,11 +32723,32 @@
    "hash": "64062bed5441",
    "file": "src/routes/try.index.tsx"
   },
+  "routes/try.index.more": {
+   "en": "Explore more",
+   "ar": "استكشف أكثر",
+   "kind": "text",
+   "hash": "ba0a9a60ad92",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.moreLead": {
+   "en": "The roles, the trust story, the full cycle, the three giving doors and the whole directory.",
+   "ar": "الأدوار، وقصّة الثقة، والدورة الكاملة، وأبواب العطاء الثلاثة، والدليل كلّه.",
+   "kind": "text",
+   "hash": "10b7b1869e53",
+   "file": "src/routes/try.index.tsx"
+  },
   "routes/try.index.order": {
    "en": "The same order as the real directory: longest wait first.",
    "ar": "الترتيب نفسه في الدليل الحقيقي: الأطول انتظاراً أوّلاً.",
    "kind": "text",
    "hash": "373196c2c75c",
+   "file": "src/routes/try.index.tsx"
+  },
+  "routes/try.index.start": {
+   "en": "Start: choose a child",
+   "ar": "ابدأ: اختر طفلاً",
+   "kind": "text",
+   "hash": "4edc1b15985e",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.steps.0.text": {

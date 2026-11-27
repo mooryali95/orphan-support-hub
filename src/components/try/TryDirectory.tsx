@@ -198,6 +198,7 @@ export function TryDirectory() {
           <Button
             size="sm"
             variant="outline"
+            className="max-sm:size-11"
             disabled={current === 0}
             onClick={() => setPage(current - 1)}
             aria-label={t.prev}
@@ -207,6 +208,7 @@ export function TryDirectory() {
           <Button
             size="sm"
             variant="outline"
+            className="max-sm:size-11"
             disabled={current + 1 >= pages}
             onClick={() => setPage(current + 1)}
             aria-label={t.next}
