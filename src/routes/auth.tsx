@@ -131,7 +131,7 @@ function AuthPage() {
           className="pointer-events-none absolute inset-4 rounded-2xl border"
           style={{ borderColor: "color-mix(in oklch, var(--bridge-bright) 30%, transparent)" }}
         />
-        <Link to="/" className="relative w-fit" aria-label={`${brand.name} — ${c.home}`}>
+        <Link to="/" className="relative w-fit" aria-label={`${brand.name} | ${c.home}`}>
           <KahataynLockup onDark />
         </Link>
         <div className="relative max-w-xl">
@@ -170,7 +170,7 @@ function AuthPage() {
         <Link
           to="/"
           className="flex justify-center lg:hidden"
-          aria-label={`${brand.name} — ${c.home}`}
+          aria-label={`${brand.name} | ${c.home}`}
         >
           <KahataynLockup />
         </Link>
