@@ -72,7 +72,7 @@ export function TrySampleNotice() {
     >
       <FlaskConical className="text-bridge-ink mt-1 size-5 shrink-0" aria-hidden="true" />
       <p className="min-w-0 flex-1 text-pretty">
-        <strong>{t.sample}</strong> — {t.sampleLead}
+        <strong>{t.sample}</strong>: {t.sampleLead}
       </p>
     </div>
   );
