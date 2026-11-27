@@ -12,7 +12,9 @@ import { type CountryRole } from "@/lib/golden-record";
 import { countryName } from "@/lib/countries";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { setVerificationActor, verificationCountries } from "@/lib/try-verification";
-import "@/lib/try-today";
+import { registerTodayDemos } from "@/lib/try-today";
+
+registerTodayDemos();
 import { cn } from "@/lib/utils";
 
 // مركز الثقة نفسه في الإدارة، يُحمَّل حين يُفتح لسانه.

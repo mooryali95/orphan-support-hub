@@ -9,7 +9,6 @@
 import { registerDemo } from "@/lib/data-port";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import { demoId } from "@/lib/try-verification.data";
-import "@/lib/try-verification";
 
 const HOUR = 3_600_000;
 
@@ -33,7 +32,14 @@ export function demoInbox(now: number = Date.now()): InboxItem[] {
   }));
 }
 
-registerDemo("today.inbox", async () => {
-  await new Promise((r) => setTimeout(r, 120));
-  return demoInbox();
-});
+/**
+ * يسجّل نسخة الصندوق. نداءٌ صريح لا استيرادٌ جانبي: الحزمة `sideEffects: false`
+ * فيُسقط المجمِّع استيراداً بلا قيمة.
+ */
+export function registerTodayDemos() {
+  registerDemo("today.inbox", async () => {
+    await new Promise((r) => setTimeout(r, 120));
+    return demoInbox();
+  });
+}
+registerTodayDemos();

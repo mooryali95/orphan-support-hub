@@ -11,6 +11,7 @@ vi.mock("@/lib/data-port", () => ({
   registerDemo: (name: string, fn: (input?: unknown) => Promise<unknown>) => registry.set(name, fn),
 }));
 
+await import("@/lib/try-verification");
 await import("@/lib/try-today");
 
 const call = <T>(name: string, input?: unknown) => registry.get(name)!(input) as Promise<T>;
