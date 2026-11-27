@@ -50,6 +50,8 @@ const COPY = defineCopy("components/impact/MyImpactHero", {
     replay: "منذ البداية",
     rail: "مسار أثرك عبر الأشهر",
     empty: "حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.",
+    invite:
+      "أرقام أثرك تبدأ من أوّل شهرٍ تكفل فيه طفلاً: كم طفلاً في رعايتك، وكم شهراً، وكم من حاجتهم سددت.",
     more: (n: number) => `و${n} آخرون في قائمة كفالاتك.`,
     milestones: "محطّاتك",
   },
@@ -74,6 +76,8 @@ const COPY = defineCopy("components/impact/MyImpactHero", {
     replay: "From the start",
     rail: "Your impact across the months",
     empty: "When your first sponsorship begins, it appears here as a gem around you.",
+    invite:
+      "Your figures start with the first month you sponsor a child: how many in your care, for how many months, and how much of their need you meet.",
     more: (n: number) => `And ${n} more in your sponsorship list.`,
     milestones: "Your milestones",
   },
@@ -169,32 +173,43 @@ export function MyImpactHero({
           </h2>
           <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">{c.lead}</p>
 
-          <dl className="mt-7 grid grid-cols-3 border-y border-border">
-            {stats.map(([label, value, suffix, unit], i) => (
-              <div
-                key={label}
-                className={
-                  i === 0 ? "min-w-0 py-4 pe-3" : "min-w-0 border-s border-border px-3 py-4 sm:px-5"
-                }
-              >
-                <dt className="truncate text-xs text-muted-foreground">{label}</dt>
-                <dd className="mt-2 flex flex-col gap-1.5">
-                  {loading ? (
-                    <Skeleton className="h-10 w-14" />
-                  ) : (
-                    <span
-                      dir="ltr"
-                      className="flex items-baseline justify-end gap-0.5 font-display text-4xl font-bold leading-none tabular-nums text-foreground sm:text-5xl"
-                    >
-                      {value}
-                      {suffix && <span className="text-xl font-normal sm:text-2xl">{suffix}</span>}
-                    </span>
-                  )}
-                  <span className="truncate text-xs text-muted-foreground">{unit}</span>
-                </dd>
-              </div>
-            ))}
-          </dl>
+          {/* no gift yet: an invitation, not a row of zeros */}
+          {!loading && impact.children.length === 0 ? (
+            <p className="mt-7 border-y border-border py-4 text-sm leading-7 text-pretty">
+              {c.invite}
+            </p>
+          ) : (
+            <dl className="mt-7 grid grid-cols-3 border-y border-border">
+              {stats.map(([label, value, suffix, unit], i) => (
+                <div
+                  key={label}
+                  className={
+                    i === 0
+                      ? "min-w-0 py-4 pe-3"
+                      : "min-w-0 border-s border-border px-3 py-4 sm:px-5"
+                  }
+                >
+                  <dt className="truncate text-xs text-muted-foreground">{label}</dt>
+                  <dd className="mt-2 flex flex-col gap-1.5">
+                    {loading ? (
+                      <Skeleton className="h-10 w-14" />
+                    ) : (
+                      <span
+                        dir="ltr"
+                        className="flex items-baseline justify-end gap-0.5 font-display text-4xl font-bold leading-none tabular-nums text-foreground sm:text-5xl"
+                      >
+                        {value}
+                        {suffix && (
+                          <span className="text-xl font-normal sm:text-2xl">{suffix}</span>
+                        )}
+                      </span>
+                    )}
+                    <span className="truncate text-xs text-muted-foreground">{unit}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg">

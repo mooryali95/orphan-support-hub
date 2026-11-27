@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5114,
+ "count": 5138,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -11813,6 +11813,165 @@
    "hash": "6755612e8a39",
    "file": "src/components/impact/MilestonesCard.tsx"
   },
+  "components/impact/MyChildrenNow.delivered": {
+   "en": "{0}'s support reached them with a delivery document.",
+   "ar": "وصلت كفالة {0} إليه بمستند تسليم.",
+   "kind": "template",
+   "params": 1,
+   "hash": "4cffe6e7d5cb",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.full": {
+   "en": "Full record",
+   "ar": "السجلّ كاملاً",
+   "kind": "text",
+   "hash": "3bd254461adc",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.issue": {
+   "en": "{0} could not be collected; the action is at the top of the page.",
+   "ar": "تعذّر تحصيل كفالة {0}؛ تجد الإجراء في أعلى الصفحة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "aac120fe6db6",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.latestEmpty": {
+   "en": "No month recorded yet. The first payment, its transfer and its delivery document appear here in order.",
+   "ar": "لم يُقيَّد شهرٌ بعد. أوّل دفعةٍ ثم تحويلها ثم مستند تسليمها تظهر هنا بالترتيب.",
+   "kind": "text",
+   "hash": "b4b43d8d5959",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.latestTitle": {
+   "en": "Latest on record",
+   "ar": "آخر ما قُيِّد",
+   "kind": "text",
+   "hash": "c0e62da152b5",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.lead": {
+   "en": "Each child with their month as the platform recorded it: paid, then transferred, then delivered with a document.",
+   "ar": "كلّ طفلٍ بحال شهره كما قيّدته المنصّة: دُفع، ثم حُوِّل، ثم وصل بمستند.",
+   "kind": "text",
+   "hash": "2d9b7e69ccd3",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.more.one": {
+   "en": "and one more child in your cards below",
+   "ar": "وطفلٌ آخر في بطاقاتك أدناه",
+   "kind": "plural",
+   "hash": "c2a816e0d542",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.more.other": {
+   "en": "and {0} more in your cards below",
+   "ar": "و{0} طفل آخر في بطاقاتك أدناه",
+   "kind": "plural",
+   "hash": "f1e85d9da96e",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.open": {
+   "en": "Open {0}'s journey",
+   "ar": "افتح رحلة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f53a2c04a55f",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.paid": {
+   "en": "{0} is paid, and its transfer to the field is scheduled.",
+   "ar": "دُفعت كفالة {0}، وتحويلها إلى الجهة الميدانية مجدول.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6bf77ec966d7",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.pending": {
+   "en": "Waiting for payment to begin.",
+   "ar": "تنتظر إتمام الدفع لتبدأ.",
+   "kind": "text",
+   "hash": "14f4751d8739",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.receipt": {
+   "en": "Receipt",
+   "ar": "إيصال",
+   "kind": "text",
+   "hash": "b3b4afb0ae5b",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.sinceFirst": {
+   "en": "This is the first visit we have noted on this device; next time we will show what changed here.",
+   "ar": "هذه أوّل زيارة نسجّلها على هذا الجهاز؛ في المرّة القادمة نريك هنا ما تغيّر.",
+   "kind": "text",
+   "hash": "ae0295ae25ba",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.sinceNone": {
+   "en": "Nothing new since your last visit; the month is on its way.",
+   "ar": "لا جديد منذ زيارتك الأخيرة؛ الشهر يمضي في مساره.",
+   "kind": "text",
+   "hash": "12c346650718",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.sinceTitle": {
+   "en": "Since your last visit",
+   "ar": "منذ زيارتك الأخيرة",
+   "kind": "text",
+   "hash": "e7c265983601",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.starting": {
+   "en": "Your sponsorship has begun; the first paid month shows here once recorded.",
+   "ar": "بدأت كفالتك، وأوّل شهرٍ مدفوع يظهر هنا حين يُقيَّد.",
+   "kind": "text",
+   "hash": "aea2b2745c16",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.steps.0": {
+   "en": "Paid",
+   "ar": "دُفع",
+   "kind": "text",
+   "hash": "4c5c783156d4",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.steps.1": {
+   "en": "Sent",
+   "ar": "حُوِّل",
+   "kind": "text",
+   "hash": "ae382829635f",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.steps.2": {
+   "en": "Delivered",
+   "ar": "وصل",
+   "kind": "text",
+   "hash": "9e36f66e7b20",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.stepsLabel": {
+   "en": "Stages of the month",
+   "ar": "مراحل الشهر",
+   "kind": "text",
+   "hash": "9b4e2dbc6c48",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.title": {
+   "en": "Your children this month",
+   "ar": "أطفالك هذا الشهر",
+   "kind": "text",
+   "hash": "e9306bfd50d2",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
+  "components/impact/MyChildrenNow.transferred": {
+   "en": "{0}'s support was sent to the field organization; the delivery document is awaited.",
+   "ar": "حُوِّلت كفالة {0} إلى الجهة الميدانية، وننتظر مستند التسليم.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6c5b0f9375d3",
+   "file": "src/components/impact/MyChildrenNow.tsx"
+  },
   "components/impact/MyEvidence.all.one": {
    "en": "The paid month was confirmed delivered with a document",
    "ar": "الشهر المدفوع أُكِّد وصوله بمستند",
@@ -11896,6 +12055,13 @@
    "ar": "طفلاً",
    "kind": "text",
    "hash": "dfa046b29507",
+   "file": "src/components/impact/MyImpactHero.tsx"
+  },
+  "components/impact/MyImpactHero.invite": {
+   "en": "Your figures start with the first month you sponsor a child: how many in your care, for how many months, and how much of their need you meet.",
+   "ar": "أرقام أثرك تبدأ من أوّل شهرٍ تكفل فيه طفلاً: كم طفلاً في رعايتك، وكم شهراً، وكم من حاجتهم سددت.",
+   "kind": "text",
+   "hash": "3e04a68193d3",
    "file": "src/components/impact/MyImpactHero.tsx"
   },
   "components/impact/MyImpactHero.justBegan": {
@@ -20139,6 +20305,13 @@
    "ar": "قدّم شهراً",
    "kind": "text",
    "hash": "bf8a5da4449c",
+   "file": "src/components/try/TryTimeBar.tsx"
+  },
+  "components/try/TryTimeBar.sampleNote": {
+   "en": "A time preview on sample data. Nothing is saved or changed.",
+   "ar": "تجربةٌ للزمن على بيانات نموذجية، لا تُحفظ ولا تغيّر شيئاً.",
+   "kind": "text",
+   "hash": "40b8cb691c12",
    "file": "src/components/try/TryTimeBar.tsx"
   },
   "components/try/TryTimeBar.simulated": {
