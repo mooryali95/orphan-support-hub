@@ -141,6 +141,8 @@ const COPY = defineCopy("routes/orphans.index", {
     launchTitle: "دليل الأيتام قيد الإطلاق",
     launchText:
       "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين جرّب الرحلة كاملة، أو ادعم مكاناً بعينه الآن.",
+    launchTextLive:
+      "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين ادعم مكاناً بعينه الآن.",
     launchTry: "جرّب الرحلة كاملة",
     launchSupport: "ادعم مكاناً",
     tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
@@ -205,6 +207,8 @@ const COPY = defineCopy("routes/orphans.index", {
     launchTitle: "The children's directory is launching soon",
     launchText:
       "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, try the full journey or support a place now.",
+    launchTextLive:
+      "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, you can support a place now.",
     launchTry: "Try the full journey",
     launchSupport: "Support a place",
     tryA: "Try removing one of the filters above, or",
@@ -681,7 +685,11 @@ function RealOrphansPage() {
             <p className="mt-4 text-base font-medium text-foreground">
               {prelaunch ? t.launchTitle : t.empty}
             </p>
-            {prelaunch && <p className="mx-auto mt-2 max-w-md leading-7">{t.launchText}</p>}
+            {prelaunch && (
+              <p className="mx-auto mt-2 max-w-md leading-7">
+                {TRIAL_ENABLED ? t.launchText : t.launchTextLive}
+              </p>
+            )}
             {chips.length > 0 && (
               <p className="mt-3">
                 {t.tryA}{" "}

@@ -976,11 +976,18 @@ registerDemo("trust.weekly", async ({ data }: { data: { country: string } }) => 
   const h = health(s).find((x) => x.code === data.country);
   if (!h) return fail("country_unknown");
   const files = Object.values(h.trust).reduce((a, b) => a + b, 0) - h.trust.legacy;
+  const rows = s.weeks[data.country] ?? [];
+  // لقطة الأسبوع الجاري تُحدَّث بالحاضر، كما يفعل `trust_snapshot_take`.
+  const now = files > 0 ? Math.floor((h.trust.verified / files) * 100) : null;
+  const weeks = rows.map((r, i) =>
+    i === rows.length - 1 ? { ...r, verified_share: now, recorded: true } : r,
+  );
   return ok({
     country: data.country,
     files,
     verified_now: h.trust.verified,
-    weeks: s.weeks[data.country] ?? [],
+    recorded_from: weeks.find((r) => r.recorded)?.week ?? null,
+    weeks,
   });
 });
 

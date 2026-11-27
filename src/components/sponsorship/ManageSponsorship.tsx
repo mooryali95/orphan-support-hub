@@ -22,7 +22,8 @@ import {
   resumeSponsorship,
   type MySponsorship,
 } from "@/lib/sponsorships.functions";
-import { formatDate, formatMoney, isolate, SPONSORSHIP_STATUS_LABELS } from "@/lib/format";
+import { useStatusLabel } from "@/components/sponsorship/status-copy";
+import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useDemo } from "@/lib/demo-mode";
@@ -231,6 +232,7 @@ export function ManageSponsorship({ sponsorshipId }: { sponsorshipId: string }) 
 function ManageBody({ s }: { s: MySponsorship }) {
   const c = useCopy(COPY);
   const locale = useLocale();
+  const statusLabel = useStatusLabel();
   const qc = useQueryClient();
   const demo = useDemo();
   const listKey = useDataKey(["my-sponsorships"]);
@@ -270,7 +272,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
             {c.title(isolate(name))}
           </h2>
           <Badge variant={s.status === "active" ? "default" : "secondary"}>
-            {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+            {statusLabel(s.status)}
           </Badge>
         </div>
         <p className="mt-2 text-sm text-muted-foreground tabular-nums">

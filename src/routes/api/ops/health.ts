@@ -7,7 +7,8 @@ import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
  *
  * POST — الفحص الدوري (يومياً، ويصحّ كل ساعة). القاعدة تحسب الفحوص وتسجّل
  *        التشغيل وتقرّر هل يُنبَّه المشرفون؛ التنبيه إشعارٌ داخل التطبيق
- *        والبريد يتبعه من صندوق الإرسال. وينقر نبض HEARTBEAT_URL_OPS.
+ *        والبريد يتبعه من صندوق الإرسال. وينقر نبض HEARTBEAT_URL_OPS، ويأخذ
+ *        لقطة الثقة الأسبوعية (`trust_snapshot_take`) لتقرير مركز الثقة.
  * GET  — لمراقب التوفّر الخارجي (ARC-06): هل يردّ التطبيق، وهل تصل القاعدة،
  *        وهل اكتمل إعداد كلّ ميزة — قيمٌ منطقية لا أسماء ولا رسائل.
  *
@@ -64,6 +65,10 @@ export const Route = createFileRoute("/api/ops/health")({
           return Response.json({ ok: false, error: "ops_check_failed", ref }, { status: 503 });
         }
         const r = data as { level: string; notified: number };
+        // لقطة الثقة الأسبوعية تركب الفحص الدوري نفسه: تُحدّث صفّ الأسبوع الجاري
+        // وحده، فتكرارها آمن، وتعثّرها يُسجَّل ولا يُسقط الفحص.
+        const snap = await (supabaseAdmin as unknown as Rpc).rpc("trust_snapshot_take");
+        if (snap.error) logServerError("ops.health.trust_snapshot_failed", snap.error);
         pingHeartbeat("HEARTBEAT_URL_OPS", true);
         // لا تُعاد تفاصيل الفحوص: المسار محميّ، لكن سجلّات المجدول ليست مكان الحال.
         return Response.json({ ok: true, level: r.level, notified: r.notified });

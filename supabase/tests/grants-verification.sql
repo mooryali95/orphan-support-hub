@@ -363,6 +363,7 @@ DECLARE _expected TEXT[] := ARRAY[
     'trait_dimensions|anon|SELECT|',
     'trait_dimensions|authenticated|SELECT|',
     'trait_score_revisions|authenticated|SELECT|',
+    'trust_snapshots|authenticated|SELECT|',
     'ui_locale_reviewers|authenticated|SELECT|',
     'ui_locales|authenticated|SELECT|',
     'unlock_requests|authenticated|SELECT|',

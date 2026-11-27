@@ -83,13 +83,41 @@ export type WeekRow = {
   settled: number;
   open_at_end: number;
   files_observed: number;
+  /** حصّة الموثَّق من لقطة الأسبوع (`trust_snapshots`)، و`null` بلا لقطة أو بلا ملفّات. */
+  verified_share: number | null;
+  /** هل أُخذت لقطةٌ لهذا الأسبوع؟ قبل أوّل لقطة: «لم يُسجَّل»، لا صفر. */
+  recorded: boolean;
 };
 export type TrustWeekly = {
   country: string;
   files: number;
   verified_now: number;
+  /** أوّل أسبوعٍ سُجّلت فيه لقطة لهذه الدولة، و`null` قبل أيّ لقطة. */
+  recorded_from: string | null;
   weeks: WeekRow[];
 };
+
+/** حصّة الأسبوع المسجَّلة وحدها: ما لم يُسجَّل (أو جاء من قاعدةٍ قبل الحزمة) `null`. */
+export function weekShare(r: Pick<WeekRow, "recorded" | "verified_share">): number | null {
+  return r.recorded === true && typeof r.verified_share === "number" ? r.verified_share : null;
+}
+
+/**
+ * مقاطع الخطّ: تتابعاتٌ من الأسابيع المسجَّلة بفهارسها، تنقطع عند كل أسبوعٍ
+ * لم يُسجَّل، فلا يُوصل خطٌّ فوق فجوة ولا تُختلَق قيمة.
+ */
+export function shareRuns(values: Array<number | null>): Array<Array<{ i: number; v: number }>> {
+  const runs: Array<Array<{ i: number; v: number }>> = [];
+  let cur: Array<{ i: number; v: number }> = [];
+  values.forEach((v, i) => {
+    if (v === null) {
+      if (cur.length) runs.push(cur);
+      cur = [];
+    } else cur.push({ i, v });
+  });
+  if (cur.length) runs.push(cur);
+  return runs;
+}
 
 /** الحصّة بنسبةٍ صحيحة، و`null` لدولةٍ بلا ملفّات (لا «0٪» مضلِّلة). */
 export function shareOf(verified: number, files: number): number | null {
@@ -120,9 +148,10 @@ export type WeeklyHead = {
   settled: string;
   openAtEnd: string;
   filesObserved: string;
+  verifiedShare: string;
 };
 
-/** ملفّ الأسابيع لدولة: صفٌّ لكل أسبوع بما يُعاد بناؤه من الطوابع وحده. */
+/** ملفّ الأسابيع لدولة: صفٌّ لكل أسبوع بما يُعاد بناؤه من الطوابع، وحصّة اللقطة إن وُجدت. */
 export function weeklyCsv(w: TrustWeekly, head: WeeklyHead): string {
   return toCsv(
     w.weeks.map((r) => ({
@@ -132,6 +161,8 @@ export function weeklyCsv(w: TrustWeekly, head: WeeklyHead): string {
       [head.settled]: r.settled,
       [head.openAtEnd]: r.open_at_end,
       [head.filesObserved]: r.files_observed,
+      // فارغٌ لما لم يُسجَّل: الخانة الفارغة صادقة، والصفر كذب.
+      [head.verifiedShare]: weekShare(r) ?? "",
     })),
   );
 }

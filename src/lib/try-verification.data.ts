@@ -514,8 +514,11 @@ export function seedVerification(now: number = Date.now()): VerificationState {
     if (ci % 2 === 0) member(`viewer.${lc}@example.org`, "viewer", 20);
     if (ci === 0 || ci === 4) member(`new.${lc}@example.org`, "data_entry", 2, true);
 
-    // أسابيع ثمانية: ما فُتح وما حُسم، والأخير يكمله ما يفعله الزائر.
+    // أسابيع ثمانية: ما فُتح وما حُسم، والأخير يكمله ما يفعله الزائر. حصّة الموثَّق
+    // من «لقطاتٍ» نموذجية تبدأ في الأسبوع الثالث، فيُرى الخطّ وفجوة ما لم يُسجَّل.
     const rows: WeekRow[] = [];
+    const [bv, bs, , bst] = c.background;
+    const base = Math.floor((bv / Math.max(1, bv + bs + bst)) * 100);
     let open = 6 + ci * 2;
     for (let w = 7; w >= 0; w--) {
       const start = new Date(now - w * 7 * 86_400_000);
@@ -531,6 +534,9 @@ export function seedVerification(now: number = Date.now()): VerificationState {
         settled,
         open_at_end: open,
         files_observed: w === 0 ? 0 : 20 + ((w * 11 + ci * 7) % 40),
+        // الأخير تملؤه قراءة `trust.weekly` بحصّة اليوم، كما تفعل لقطة الأسبوع الجاري.
+        verified_share: w >= 6 ? null : Math.max(0, Math.min(100, base - w * 2 + ((w + ci) % 3))),
+        recorded: w < 6,
       });
     }
     weeks[c.code] = rows;

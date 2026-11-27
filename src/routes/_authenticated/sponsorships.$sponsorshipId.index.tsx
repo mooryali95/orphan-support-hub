@@ -8,7 +8,8 @@ import { ImpactPanel } from "@/components/impact/ImpactPanel";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatMoney, SPONSORSHIP_STATUS_LABELS, isolate } from "@/lib/format";
+import { useStatusLabel } from "@/components/sponsorship/status-copy";
+import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { getSponsorshipLedger, MESSAGE_STATUS_LABELS } from "@/lib/ledger.functions";
 import { pageTitle } from "@/config/brand";
 import { StatTile } from "@/components/kit/StatTile";
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipI
 
 function SponsorshipPage() {
   const { sponsorshipId } = Route.useParams();
+  const statusLabel = useStatusLabel();
   const fetchLedger = useServerFn(getSponsorshipLedger);
   const { data, isPending } = useQuery({
     queryKey: ["ledger", sponsorshipId],
@@ -75,7 +77,7 @@ function SponsorshipPage() {
     >
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant={s.status === "active" ? "default" : "secondary"}>
-          {SPONSORSHIP_STATUS_LABELS[s.status] ?? s.status}
+          {statusLabel(s.status)}
         </Badge>
         {s.started_at && (
           <span className="text-xs text-muted-foreground">بدأت {formatDate(s.started_at)}</span>

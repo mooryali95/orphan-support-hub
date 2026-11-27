@@ -140,7 +140,14 @@ export const TRUST_COPY = defineCopy("components/admin/trust", {
     weeklyHint:
       "ثمانية أسابيع تبدأ كلٌّ منها يوم الاثنين (UTC)، من طوابع فتح العناصر وحسمها ووصول الملاحظات.",
     weeklyHonest:
-      "حصّة الموثَّق لا تُخزَّن أسبوعاً بأسبوع، فلا يُرسم لها اتجاهٌ مُختلَق. تظهر بقيمة اليوم وحدها، ويظهر بجانبها ما يُعاد بناؤه حقّاً.",
+      "حصّة الموثَّق تُحفظ بلقطةٍ أسبوعية من تطبيق هذه الحزمة، ولم تُسجَّل لهذه الدولة لقطةٌ بعد. تظهر بقيمة اليوم وحدها، ولا يُرسم اتجاهٌ مُختلَق.",
+    weeklyHonestFrom: (date: string) =>
+      `حصّة الموثَّق مسجَّلةٌ أسبوعاً بأسبوع منذ ${date}. الأسابيع قبلها «لم تُسجَّل» ولا يُختلَق لها رقم.`,
+    trendTitle: "حصّة الموثَّق أسبوعاً بأسبوع",
+    trendEmpty: "لا لقطة مسجَّلة في هذه الأسابيع بعد.",
+    trendPoint: (week: string, value: string) => `${week}: ${value}`,
+    notRecorded: "لم يُسجَّل",
+    colShare: "الموثَّق",
     verifiedToday: "الموثَّق اليوم",
     colWeek: "الأسبوع",
     colOpened: "فُتح",
@@ -273,7 +280,14 @@ export const TRUST_COPY = defineCopy("components/admin/trust", {
     weeklyHint:
       "Eight weeks starting Monday (UTC), from the timestamps of items opened and settled and observations received.",
     weeklyHonest:
-      "The verified share is not stored week by week, so no made-up trend is drawn. It shows today's value only, next to what can truly be rebuilt.",
+      "The verified share is stored in a weekly snapshot since this release, and none has been recorded for this country yet. It shows today's value only; no made-up trend is drawn.",
+    weeklyHonestFrom: (date: string) =>
+      `The verified share is recorded week by week from ${date}. Earlier weeks are "not recorded" and get no made-up figure.`,
+    trendTitle: "Verified share by week",
+    trendEmpty: "No snapshot recorded in these weeks yet.",
+    trendPoint: (week: string, value: string) => `${week}: ${value}`,
+    notRecorded: "Not recorded",
+    colShare: "Verified",
     verifiedToday: "Verified today",
     colWeek: "Week",
     colOpened: "Opened",
