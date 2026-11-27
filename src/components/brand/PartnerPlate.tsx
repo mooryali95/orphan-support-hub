@@ -1,5 +1,6 @@
 import { BrandHalo } from "@/components/brand/BrandPattern";
 import { BRAND } from "@/config/brand";
+import { useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 /**
@@ -7,7 +8,10 @@ import { cn } from "@/lib/utils";
  * نفسه ملفّه الثابت لا يُمسّ؛ واللوحة تقول من يقف خلف المنصّة قبل أي كلام.
  */
 export function PartnerPlate({ className }: { className?: string }) {
+  const ar = useLocale() === "ar";
   const p = BRAND.partner;
+  const withText = ar ? p.with : p.withLatin;
+  const name = ar ? p.name : p.nameLatin;
   return (
     <figure
       className={cn(
@@ -32,8 +36,8 @@ export function PartnerPlate({ className }: { className?: string }) {
         />
       </span>
       <figcaption className="relative mt-6 text-white">
-        <span className="block text-xs text-white/75">{p.with}</span>
-        <span className="mt-1 block font-display text-2xl font-bold">{p.name}</span>
+        <span className="block text-xs text-white/75">{withText}</span>
+        <span className="mt-1 block font-display text-2xl font-bold">{name}</span>
       </figcaption>
     </figure>
   );

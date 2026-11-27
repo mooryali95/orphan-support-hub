@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { normalize } from "@/lib/countries";
 import { payableOptions } from "@/lib/currency";
+import { readLastGift, saveLastGift, type LastGift } from "@/lib/last-gift";
 import { formatMoney } from "@/lib/format";
 import { useGivingCopy, type GivingTrack } from "@/config/giving-tracks";
 import { TrackArrow } from "@/components/support/GivingTrackChoice";
@@ -191,7 +192,16 @@ export function SupportSheet({
       sub: p.kind === "rest" ? formatMoney(p.value, currency, locale) : null,
       value: p.value,
     }));
-  const suggestedDefault = defaultIndividualAmount(gap);
+  // آخر ما أكّده الداعم يُقرأ بعد التركيب، فيصير افتراضاً ما لم يلمس المبلغ أو العملة.
+  const [lastGift, setLastGift] = useState<LastGift | null>(null);
+  useEffect(() => {
+    const saved = readLastGift();
+    if (!saved) return;
+    setLastGift(saved);
+    setChosenCurrency((c) => c ?? saved.currency);
+  }, []);
+  const suggestedDefault =
+    lastGift && lastGift.currency === currency ? lastGift.amount : defaultIndividualAmount(gap);
   const [amount, setAmount] = useState(suggestedDefault);
   const amountEdited = useRef(false);
   // Only initialize untouched amounts; the map's place key starts a new sheet.
@@ -228,6 +238,7 @@ export function SupportSheet({
           elapsed: Math.min(86_400, Math.round((Date.now() - openedAt) / 1000)),
         },
       });
+      if (res.ok) saveLastGift({ amount, currency });
       if (res.ok && usedProposal.current) trialSlots?.dismissProposal(usedProposal.current);
       setResult(
         res.ok

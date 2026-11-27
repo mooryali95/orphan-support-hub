@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 4991,
+ "count": 4993,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -17417,6 +17417,21 @@
    "ar": "مبلغ آخر",
    "kind": "text",
    "hash": "b59a152ed5ff",
+   "file": "src/components/support/SupportSheetBody.tsx"
+  },
+  "components/support/SupportSheetBody.tooHigh": {
+   "en": "The most for one pledge is {0}.",
+   "ar": "الحدّ الأعلى لمرّةٍ واحدة {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "0a84a58772d9",
+   "file": "src/components/support/SupportSheetBody.tsx"
+  },
+  "components/support/SupportSheetBody.tooLow": {
+   "en": "Enter an amount of 1 or more.",
+   "ar": "اكتب مبلغاً من 1 فأكثر.",
+   "kind": "text",
+   "hash": "74fdfff7e128",
    "file": "src/components/support/SupportSheetBody.tsx"
   },
   "components/support/SupportSheetBody.whom": {

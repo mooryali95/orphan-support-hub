@@ -645,7 +645,7 @@ export function AuthPanel({
               e.preventDefault();
               void send();
             }}
-            className="mt-3 flex gap-2"
+            className="mt-3 flex flex-col gap-2 sm:flex-row"
           >
             <Input
               key={method}
@@ -667,7 +667,12 @@ export function AuthPanel({
               className="h-11 flex-1 text-base"
               required
             />
-            <Button type="submit" size="lg" className="h-11" disabled={busy || !value.trim()}>
+            <Button
+              type="submit"
+              size="lg"
+              className="h-11 w-full sm:w-auto"
+              disabled={busy || !value.trim()}
+            >
               {busy ? <Loader2 className="animate-spin" /> : t.send}
             </Button>
           </form>

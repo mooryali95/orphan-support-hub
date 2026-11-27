@@ -1,4 +1,5 @@
 import { BRAND } from "@/config/brand";
+import { useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,14 +33,17 @@ export function PartnerLockup({
   className?: string;
   compact?: boolean;
 }) {
+  const ar = useLocale() === "ar";
   const p = BRAND.partner;
+  const withText = ar ? p.with : p.withLatin;
+  const name = ar ? p.name : p.nameLatin;
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <PartnerMark className="h-8" title={compact ? `${p.with} ${p.name}` : undefined} />
+      <PartnerMark className="h-8" title={compact ? `${withText} ${name}` : undefined} />
       {!compact && (
         <span className="flex flex-col text-start leading-tight">
-          <span className="text-[11px] text-muted-foreground">{p.with}</span>
-          <span className="text-sm font-bold text-foreground">{p.name}</span>
+          <span className="text-[11px] text-muted-foreground">{withText}</span>
+          <span className="text-sm font-bold text-foreground">{name}</span>
         </span>
       )}
     </span>
