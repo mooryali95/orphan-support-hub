@@ -7,7 +7,8 @@
  * الحسم في صندوق القرارات لا يُحاكى هنا: لوحه في المنصّة يحمل وثائق وسياقاً حقيقيَّين.
  */
 import { registerDemo } from "@/lib/data-port";
-import { registerChildUpdateDemos } from "@/lib/try-child-updates";
+import { pendingChildUpdates, registerChildUpdateDemos } from "@/lib/try-child-updates";
+import { demoDecisionLog, demoSearch, verificationCounts } from "@/lib/try-verification";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import { demoId } from "@/lib/try-verification.data";
 
@@ -39,6 +40,22 @@ export function demoInbox(now: number = Date.now()): InboxItem[] {
  */
 export function registerTodayDemos() {
   registerChildUpdateDemos();
+  // أدوات الإدارة على العيّنة: العدّادات والبحث وسجلّ القرارات (لا خادم).
+  registerDemo("admin.queueCounts", async ({ data }: { data: { country: string | null } }) => ({
+    ok: true as const,
+    data: { ...verificationCounts(data.country), updates: pendingChildUpdates(data.country) },
+  }));
+  registerDemo("admin.search", async ({ data }: { data: { q: string } }) => {
+    await new Promise((r) => setTimeout(r, 120));
+    return { ok: true as const, data: demoSearch(data.q) };
+  });
+  registerDemo(
+    "admin.decisionLog",
+    async ({ data }: { data: Parameters<typeof demoDecisionLog>[0] }) => {
+      await new Promise((r) => setTimeout(r, 120));
+      return demoDecisionLog(data);
+    },
+  );
   registerDemo("today.inbox", async () => {
     await new Promise((r) => setTimeout(r, 120));
     return demoInbox();

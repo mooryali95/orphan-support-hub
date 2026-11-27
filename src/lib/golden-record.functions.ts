@@ -6,6 +6,7 @@ import { callRpc, type RpcFailure } from "@/lib/rpc-call";
 import {
   MAX_BULK,
   MAX_GOLDEN_ROWS,
+  QUEUE_PAGE,
   type BulkResult,
   type ChildFile,
   type Conflict,
@@ -30,6 +31,14 @@ export type GoldenFailure = RpcFailure;
 const code2 = z.string().regex(/^[A-Z]{2}$/);
 const sourceKey = z.string().regex(/^[a-z0-9-]{2,40}$/);
 const uuid = z.string().uuid();
+/** مؤشّر الصفحة التالية كما يعيده البند الأخير (`cursor`)؛ تفسيره في القاعدة. */
+export const queuePage = {
+  after: z
+    .object({ k: z.number().int(), at: z.string().max(40), id: z.string().max(40) })
+    .nullable()
+    .optional(),
+  limit: z.number().int().min(1).max(200).optional(),
+};
 
 export const getDataHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -92,11 +101,14 @@ export const importGolden = createServerFn({ method: "POST" })
 
 export const listConflicts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ country: code2.nullable(), ...queuePage }).parse(input),
+  )
   .handler(({ data, context }) =>
     callRpc<Conflict[]>(context.supabase, "admin_conflicts", {
       _country: data.country,
-      _limit: 200,
+      _limit: data.limit ?? QUEUE_PAGE,
+      _after: data.after ?? null,
     }),
   );
 
@@ -147,11 +159,14 @@ export const getChildFile = createServerFn({ method: "GET" })
 
 export const listLinkQueue = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ country: code2.nullable(), ...queuePage }).parse(input),
+  )
   .handler(({ data, context }) =>
     callRpc<LinkItem[]>(context.supabase, "admin_link_queue", {
       _country: data.country,
-      _limit: 200,
+      _limit: data.limit ?? QUEUE_PAGE,
+      _after: data.after ?? null,
     }),
   );
 
@@ -189,9 +204,15 @@ export const createUnmatched = createServerFn({ method: "POST" })
 
 export const listAlerts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ country: code2.nullable(), ...queuePage }).parse(input),
+  )
   .handler(({ data, context }) =>
-    callRpc<DataAlert[]>(context.supabase, "admin_alerts", { _country: data.country, _limit: 200 }),
+    callRpc<DataAlert[]>(context.supabase, "admin_alerts", {
+      _country: data.country,
+      _limit: data.limit ?? QUEUE_PAGE,
+      _after: data.after ?? null,
+    }),
   );
 
 export const resolveAlert = createServerFn({ method: "POST" })

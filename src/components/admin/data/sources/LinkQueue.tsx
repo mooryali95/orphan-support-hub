@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FolderOpen } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
 import { Val } from "./shared";
+import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function LinkQueue({
   country,
@@ -32,14 +33,13 @@ export function LinkQueue({
   const qc = useQueryClient();
   const dk = useDataKey([]);
   const fetchList = useDataFn("golden.links", listLinkQueue);
-  const list = useQuery({
-    queryKey: useDataKey(["golden-links", country]),
-    queryFn: () => fetchList({ data: { country } }),
-  });
+  const list = useKeysetList(useDataKey(["golden-links", country]), (after) =>
+    fetchList({ data: { country, after, limit: QUEUE_PAGE } }),
+  );
   const resolve = useDataFn("golden.resolveLink", resolveLink);
   const createAll = useDataFn("golden.createUnmatched", createUnmatched);
   const refresh = () => {
-    for (const k of ["golden-links", "golden-conflicts", "data-health"])
+    for (const k of ["golden-links", "golden-conflicts", "data-health", "queue-counts"])
       void qc.invalidateQueries({ queryKey: [...dk, k] });
   };
   const m = useMutation({
@@ -226,6 +226,7 @@ export function LinkQueue({
           )}
         </>
       )}
+      <LoadMore {...list} shown={everything.length} />
     </section>
   );
 }

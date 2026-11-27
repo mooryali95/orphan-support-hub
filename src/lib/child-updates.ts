@@ -5,6 +5,8 @@
  * تسبقها في المتصفّح والخادم ليعرف الرافع السبب قبل أن يرفع.
  */
 
+import type { QueueCursor } from "@/lib/golden-record";
+
 export type ChildUpdateKind = "photo" | "video" | "note";
 
 /** الحدود نفسها في `child_update_create` وفي خزنة `child-updates`. */
@@ -62,6 +64,7 @@ export type ChildUpdate = {
 
 /** بندٌ ينتظر الحسم في دولةٍ ما. */
 export type PendingChildUpdate = {
+  cursor?: QueueCursor;
   id: string;
   orphan_id: string;
   orphan_name: string;

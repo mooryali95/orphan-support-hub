@@ -58,7 +58,13 @@ export function UploadCard({ row }: { row: CountryHealth }) {
       setText("");
       setFileName("");
       if (fileInput.current) fileInput.current.value = "";
-      for (const k of ["data-health", "golden-conflicts", "golden-links", "golden-alerts"])
+      for (const k of [
+        "data-health",
+        "golden-conflicts",
+        "golden-links",
+        "golden-alerts",
+        "queue-counts",
+      ])
         void qc.invalidateQueries({ queryKey: [...dk, k] });
     },
   });

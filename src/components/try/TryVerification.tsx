@@ -4,6 +4,10 @@ import { lazy, Suspense, useState, type ReactNode } from "react";
 
 import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
 import { Busy } from "@/components/admin/data/shared";
+import { ChildFileSheet } from "@/components/admin/data/WorkTools";
+import { DecisionTimeline } from "@/components/admin/decisions/DecisionTimeline";
+import { AdminSearch } from "@/components/admin/search/AdminSearch";
+import type { SearchHit } from "@/lib/admin-tools";
 import type { Tab as WorkTab } from "@/components/admin/data/sources/shared";
 import { TodayQueue, type WorkTab as TodayTab } from "@/components/admin/today/TodayQueue";
 import { useUrlFilters } from "@/components/admin/today/useUrlFilters";
@@ -145,6 +149,35 @@ export function TryAdminTrust({ openCountry }: { openCountry: (code: string) => 
   );
 }
 
+/** سجلّ القرارات جملاً على العيّنة: ما حسمه الزائر يظهر فيه فوراً. */
+export function TryAdminDecisions() {
+  setVerificationActor(null);
+  return (
+    <DemoOnly>
+      <TrySampleNotice />
+      <DecisionTimeline />
+    </DemoOnly>
+  );
+}
+
+/** البحث الموحّد على العيّنة؛ الطفل يُفتح في ملفّه، والباقي يُسلَّم للمضيف. */
+export function TrySearch({
+  admin = false,
+  onPick,
+}: {
+  admin?: boolean;
+  onPick?: (hit: SearchHit) => void;
+}) {
+  if (admin) setVerificationActor(null);
+  const [fileId, setFileId] = useState<string | null>(null);
+  return (
+    <DemoOnly>
+      <AdminSearch onPick={(h) => (h.kind === "child" ? setFileId(h.item.id) : onPick?.(h))} />
+      <ChildFileSheet id={fileId} onClose={() => setFileId(null)} />
+    </DemoOnly>
+  );
+}
+
 const ROLES: CountryRole[] = ["supervisor", "data_entry", "viewer"];
 
 /** فريق الدولة: دولةٌ واحدة، ومبدّل أدوارٍ ظاهر، واللوحة نفسها بصلاحية الدور. */
@@ -211,6 +244,7 @@ export function TryCountryTeam() {
         <p className="text-muted-foreground mt-3 text-sm leading-7">{t.roleHint[role]}</p>
       </div>
       <div key={`${country}:${role}`} className="space-y-12">
+        <TrySearch />
         <TodayQueue
           access={access}
           scope="country"
