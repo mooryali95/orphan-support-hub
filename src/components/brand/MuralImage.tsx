@@ -1,5 +1,17 @@
 import { BrandHalo } from "@/components/brand/BrandPattern";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/brand/MuralImage", {
+  ar: {
+    needAlt: (name: string) => `صورة تعبيرية لحالة ملفّ ${name}`,
+    thriveAlt: (name: string) => `${name} بعد اكتمال كفالته`,
+  },
+  en: {
+    needAlt: (name: string) => `Illustrative image for ${name}'s file`,
+    thriveAlt: (name: string) => `${name} after their sponsorship was completed`,
+  },
+});
 
 /**
  * نظام «الجداريات» — معالجة صور الملفات كما تعرّفها الاستراتيجية البصرية للعمران.
@@ -40,6 +52,7 @@ export function MuralImage({
   imgClassName?: string;
   priority?: boolean;
 }) {
+  const c = useCopy(COPY);
   if (!photoUrl) {
     return (
       // no photo: a quiet wine field with the child's initial in the display face, so each card is
@@ -65,11 +78,7 @@ export function MuralImage({
     <div className={cn("relative overflow-hidden", className)}>
       <img
         src={photoUrl}
-        alt={
-          register === "need"
-            ? `صورة تعبيرية لحالة ملفّ ${displayName}`
-            : `${displayName} بعد اكتمال كفالته`
-        }
+        alt={register === "need" ? c.needAlt(displayName) : c.thriveAlt(displayName)}
         loading={priority ? "eager" : "lazy"}
         className={cn(
           "size-full object-cover",

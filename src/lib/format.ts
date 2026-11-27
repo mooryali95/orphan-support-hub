@@ -119,14 +119,6 @@ export const ORPHAN_STATUS_LABELS: Record<string, string> = {
   archived: "مؤرشف",
 };
 
-export const SPONSORSHIP_STATUS_LABELS: Record<string, string> = {
-  pending_payment: "بانتظار الدفع",
-  active: "نشطة",
-  paused: "موقوفة مؤقّتاً",
-  cancelled: "ملغاة",
-  completed: "مكتملة",
-};
-
 export const NEED_CATEGORY_LABELS: Record<string, string> = {
   education: "تعليم",
   health: "صحة",
