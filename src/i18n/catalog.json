@@ -28417,13 +28417,6 @@
    "hash": "8b29dbb7f872",
    "file": "src/routes/how-it-works.tsx"
   },
-  "routes/index.browse": {
-   "en": "Browse children's files",
-   "ar": "تصفّح ملفات الأيتام",
-   "kind": "text",
-   "hash": "972c4eb22e0b",
-   "file": "src/routes/index.tsx"
-  },
   "routes/index.categories.education": {
    "en": "Education",
    "ar": "تعليم",
@@ -29054,6 +29047,13 @@
    "ar": "بناء أهلية",
    "kind": "text",
    "hash": "7d7764e5919c",
+   "file": "src/routes/index.tsx"
+  },
+  "routes/index.sponsor": {
+   "en": "Sponsor an orphan",
+   "ar": "اكفل يتيمًا",
+   "kind": "text",
+   "hash": "b8899841ad64",
    "file": "src/routes/index.tsx"
   },
   "routes/index.startReal": {
