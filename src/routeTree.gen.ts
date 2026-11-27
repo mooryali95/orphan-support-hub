@@ -86,6 +86,8 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as TrySponsorshipsSponsorshipIdIndexRouteImport } from './routes/try.sponsorships.$sponsorshipId.index'
 import { Route as TrySponsorshipsSponsorshipIdManageRouteImport } from './routes/try.sponsorships.$sponsorshipId.manage'
+import { Route as TrySponsorshipsSponsorshipIdReportRouteImport } from './routes/try.sponsorships.$sponsorshipId.report'
+import { Route as TrySponsorshipsSponsorshipIdTransferRouteImport } from './routes/try.sponsorships.$sponsorshipId.transfer'
 
 const TryDeciderLazyRouteImport = createFileRoute('/try/decider')()
 const TryOfficeLazyRouteImport = createFileRoute('/try/office')()
@@ -502,6 +504,18 @@ const TrySponsorshipsSponsorshipIdManageRoute =
     path: '/sponsorships/$sponsorshipId/manage',
     getParentRoute: () => TryRoute,
   } as any)
+const TrySponsorshipsSponsorshipIdReportRoute =
+  TrySponsorshipsSponsorshipIdReportRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/report',
+    path: '/sponsorships/$sponsorshipId/report',
+    getParentRoute: () => TryRoute,
+  } as any)
+const TrySponsorshipsSponsorshipIdTransferRoute =
+  TrySponsorshipsSponsorshipIdTransferRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/transfer',
+    path: '/sponsorships/$sponsorshipId/transfer',
+    getParentRoute: () => TryRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -578,6 +592,8 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId/': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -656,6 +672,8 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/donor/$entityId': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -737,6 +755,8 @@ export interface FileRoutesById {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/_authenticated/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/_authenticated/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId/': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -818,6 +838,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/donor/$entityId/'
     | '/sponsorships/$sponsorshipId/'
     | '/try/sponsorships/$sponsorshipId/'
@@ -896,6 +918,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/donor/$entityId'
     | '/sponsorships/$sponsorshipId'
     | '/try/sponsorships/$sponsorshipId'
@@ -976,6 +1000,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/_authenticated/donor/$entityId/'
     | '/_authenticated/sponsorships/$sponsorshipId/'
     | '/try/sponsorships/$sponsorshipId/'
@@ -1575,6 +1601,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrySponsorshipsSponsorshipIdManageRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/sponsorships/$sponsorshipId/report': {
+      id: '/try/sponsorships/$sponsorshipId/report'
+      path: '/sponsorships/$sponsorshipId/report'
+      fullPath: '/try/sponsorships/$sponsorshipId/report'
+      preLoaderRoute: typeof TrySponsorshipsSponsorshipIdReportRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/sponsorships/$sponsorshipId/transfer': {
+      id: '/try/sponsorships/$sponsorshipId/transfer'
+      path: '/sponsorships/$sponsorshipId/transfer'
+      fullPath: '/try/sponsorships/$sponsorshipId/transfer'
+      preLoaderRoute: typeof TrySponsorshipsSponsorshipIdTransferRouteImport
+      parentRoute: typeof TryRoute
+    }
   }
 }
 
@@ -1646,6 +1686,8 @@ interface TryRouteChildren {
   TryPayReturnRoute: typeof TryPayReturnRoute
   TryStatementsYearRoute: typeof TryStatementsYearRoute
   TrySponsorshipsSponsorshipIdManageRoute: typeof TrySponsorshipsSponsorshipIdManageRoute
+  TrySponsorshipsSponsorshipIdReportRoute: typeof TrySponsorshipsSponsorshipIdReportRoute
+  TrySponsorshipsSponsorshipIdTransferRoute: typeof TrySponsorshipsSponsorshipIdTransferRoute
   TrySponsorshipsSponsorshipIdIndexRoute: typeof TrySponsorshipsSponsorshipIdIndexRoute
 }
 
@@ -1666,6 +1708,10 @@ const TryRouteChildren: TryRouteChildren = {
   TryStatementsYearRoute: TryStatementsYearRoute,
   TrySponsorshipsSponsorshipIdManageRoute:
     TrySponsorshipsSponsorshipIdManageRoute,
+  TrySponsorshipsSponsorshipIdReportRoute:
+    TrySponsorshipsSponsorshipIdReportRoute,
+  TrySponsorshipsSponsorshipIdTransferRoute:
+    TrySponsorshipsSponsorshipIdTransferRoute,
   TrySponsorshipsSponsorshipIdIndexRoute:
     TrySponsorshipsSponsorshipIdIndexRoute,
 }

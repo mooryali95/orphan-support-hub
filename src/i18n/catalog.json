@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5255,
+ "count": 5307,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -15927,6 +15927,13 @@
    "hash": "cfbd8fa45a47",
    "file": "src/components/sponsorship/AnnualStatement.tsx"
   },
+  "components/sponsorship/AnnualStatement.watermark": {
+   "en": "A simulated sample for the trial, not an official document",
+   "ar": "نموذجٌ محاكى للتجربة، وليس مستنداً رسمياً",
+   "kind": "text",
+   "hash": "286cb73a79db",
+   "file": "src/components/sponsorship/AnnualStatement.tsx"
+  },
   "components/sponsorship/AnnualStatement.year": {
    "en": "Year",
    "ar": "السنة",
@@ -17990,6 +17997,312 @@
    "params": 1,
    "hash": "32e747073e7d",
    "file": "src/components/sponsorship/SponsorshipJourney.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.back": {
+   "en": "Back to the sponsorship",
+   "ar": "العودة إلى الكفالة",
+   "kind": "text",
+   "hash": "44055f0d2a0d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.dashboard": {
+   "en": "My dashboard",
+   "ar": "لوحتي",
+   "kind": "text",
+   "hash": "192153630320",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.delivered": {
+   "en": "Months delivered with proof",
+   "ar": "أشهرٌ وصلت موثّقة",
+   "kind": "text",
+   "hash": "b48e40f5e8e8",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.file": {
+   "en": "file",
+   "ar": "ملفّ",
+   "kind": "text",
+   "hash": "6dba91d35fbd",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.footer": {
+   "en": "“Delivered with proof” means the field organization recorded the handover and uploaded its receipt document; the document is kept on the platform and is not independently reviewed before it is marked. Each month has a receipt computed from its facts: keep this report, and check any receipt in it later from the sponsorship page. If a fact changes, its number changes.",
+   "ar": "«الوصول الموثّق» يعني أن الجهة الميدانية سجّلت التسليم ورفعت مستند استلامه؛ المستند محفوظ في المنصّة ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه. ولكل شهرٍ إيصالٌ يُحسب من حقائقه: احفظ هذا التقرير، وتحقّق من أيّ إيصالٍ فيه لاحقاً من صفحة الكفالة. إن تغيّرت حقيقةٌ تغيّر رقمها.",
+   "kind": "text",
+   "hash": "ca4550a1003d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.issued": {
+   "en": "Issued on {0}.",
+   "ar": "صدر في {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "34b6f4ecf6bf",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.loadError": {
+   "en": "Could not load the sponsorship.",
+   "ar": "تعذّر تحميل الكفالة.",
+   "kind": "text",
+   "hash": "833b942f8c10",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.month": {
+   "en": "Month",
+   "ar": "الشهر",
+   "kind": "text",
+   "hash": "19993f359a79",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.monthly": {
+   "en": "{0} a month",
+   "ar": "{0} شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "abfd4860a842",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.noReceipt": {
+   "en": "No receipt",
+   "ar": "لا إيصال",
+   "kind": "text",
+   "hash": "d38b78a5e36c",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.none": {
+   "en": "No months in this year.",
+   "ar": "لا أشهر في هذه السنة.",
+   "kind": "text",
+   "hash": "fbdae70d0480",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.notPaid": {
+   "en": "Not paid",
+   "ar": "لم يُدفع",
+   "kind": "text",
+   "hash": "81024fedcd0c",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paid": {
+   "en": "Paid",
+   "ar": "المدفوع",
+   "kind": "text",
+   "hash": "a22cf2fa7c23",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paidMonths": {
+   "en": "Months paid",
+   "ar": "أشهرٌ مدفوعة",
+   "kind": "text",
+   "hash": "3b721a930ebe",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paidYear": {
+   "en": "Paid this year",
+   "ar": "المدفوع في السنة",
+   "kind": "text",
+   "hash": "87d3e7ec0b3d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.print": {
+   "en": "Print or save as PDF",
+   "ar": "طباعة أو حفظ PDF",
+   "kind": "text",
+   "hash": "f9ad934d6aba",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.receipt": {
+   "en": "Receipt",
+   "ar": "الإيصال",
+   "kind": "text",
+   "hash": "2ce401c0096b",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.sponsorshipOf": {
+   "en": "Sponsorship of",
+   "ar": "كفالة",
+   "kind": "text",
+   "hash": "831cb71a3549",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.title": {
+   "en": "Sponsorship report for {0}",
+   "ar": "تقرير الكفالة لعام {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "6bba7d9722ff",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.watermark": {
+   "en": "A simulated sample for the trial, not an official document.",
+   "ar": "نموذجٌ محاكى للتجربة، وليس مستنداً رسمياً.",
+   "kind": "text",
+   "hash": "c975aed0e9b9",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.year": {
+   "en": "Year",
+   "ar": "السنة",
+   "kind": "text",
+   "hash": "7ba53788b69f",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/TransferInstructions.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.awaiting": {
+   "en": "Awaiting transfer confirmation",
+   "ar": "بانتظار تأكيد التحويل",
+   "kind": "text",
+   "hash": "19d2f613d7f9",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.awaitingTrial": {
+   "en": "Simulated: no transfer and no confirmation in the trial",
+   "ar": "محاكاة: لا تحويل ولا تأكيد في التجربة",
+   "kind": "text",
+   "hash": "d5aa33d8ae98",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.back": {
+   "en": "Back to my sponsorships",
+   "ar": "العودة إلى كفالاتي",
+   "kind": "text",
+   "hash": "1a61018f3572",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.backTrial": {
+   "en": "Back to my impact",
+   "ar": "العودة إلى أثري",
+   "kind": "text",
+   "hash": "8e18859f1bb2",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.bankNote": {
+   "en": "The bank account details are sent with your confirmation message if you have not received them yet. For any question, write to the address above.",
+   "ar": "بيانات الحساب البنكي تُرسل إليك مع رسالة التأكيد إن لم تكن قد استلمتها بعد. لأي استفسار تواصل معنا على البريد أعلاه.",
+   "kind": "text",
+   "hash": "f1997e1f1261",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.details": {
+   "en": "Sponsorship details",
+   "ar": "تفاصيل الكفالة",
+   "kind": "text",
+   "hash": "570225148296",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.file": {
+   "en": "File",
+   "ar": "الملفّ",
+   "kind": "text",
+   "hash": "9fb4fd0456b2",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.loadError": {
+   "en": "Could not load your sponsorship right now. It is saved, so try again.",
+   "ar": "تعذّر تحميل كفالتك الآن. كفالتك محفوظة، فأعد المحاولة.",
+   "kind": "text",
+   "hash": "dc10a1e05a70",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.monthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.notFound": {
+   "en": "We did not find this sponsorship among yours",
+   "ar": "لم نجد هذه الكفالة ضمن كفالاتك",
+   "kind": "text",
+   "hash": "1ee517c157ef",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.once": {
+   "en": "one time",
+   "ar": "لمرة واحدة",
+   "kind": "text",
+   "hash": "285cbbd200e1",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.reference": {
+   "en": "Reference number",
+   "ar": "رقم المرجع",
+   "kind": "text",
+   "hash": "73682a5c5fad",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.retry": {
+   "en": "Try again",
+   "ar": "إعادة المحاولة",
+   "kind": "text",
+   "hash": "c32d3c94b178",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step1": {
+   "en": "Transfer {0} to the platform's approved bank account.",
+   "ar": "حوّل مبلغ {0} إلى حساب المنصّة البنكي المعتمد.",
+   "kind": "template",
+   "params": 1,
+   "hash": "0fe88dfce022",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step2": {
+   "en": "Write the reference number {0} in the transfer description, so your payment is matched to your sponsorship.",
+   "ar": "اكتب رقم المرجع {0} في خانة البيان أو الملاحظات، فبه تُربط دفعتك بكفالتك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1c6649db1092",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step3": {
+   "en": "Send a picture of the transfer notice to the support address with the reference number:",
+   "ar": "أرسل صورة إشعار التحويل إلى بريد الدعم مع رقم المرجع:",
+   "kind": "text",
+   "hash": "2b913842caad",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step4": {
+   "en": "The administration confirms receipt, your sponsorship is activated, you are notified, and impact reports begin.",
+   "ar": "تؤكّد الإدارة الاستلام، فتُفعَّل كفالتك ويصلك إشعار، وتبدأ تقارير الأثر.",
+   "kind": "text",
+   "hash": "e5263f89bda3",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.steps": {
+   "en": "Steps to complete",
+   "ar": "خطوات الإتمام",
+   "kind": "text",
+   "hash": "f5b504473379",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialNote": {
+   "en": "These are simulated steps on a sample sponsorship. Do not transfer any money; the trial confirms no transfer and activates no sponsorship.",
+   "ar": "هذه خطواتٌ محاكاة على كفالةٍ نموذجية. لا تحوّل أيّ مبلغ؛ التجربة لا تؤكّد تحويلاً ولا تفعّل كفالة.",
+   "kind": "text",
+   "hash": "fe15128fd002",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
   },
   "components/sponsorship/status.active": {
    "en": "Active",
@@ -31546,6 +31859,34 @@
    "hash": "8cfc1db6565e",
    "file": "src/routes/_authenticated/settings.notifications.tsx"
   },
+  "routes/sponsorships.report.pageTitle": {
+   "en": "Sponsorship report",
+   "ar": "تقرير الكفالة",
+   "kind": "text",
+   "hash": "ac9ae3bc0750",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.report.tsx"
+  },
+  "routes/sponsorships.transfer.description": {
+   "en": "Complete your sponsorship by bank transfer. It is activated once the administration confirms receipt.",
+   "ar": "أكمل كفالتك بتحويل بنكي، وتُفعَّل فور تأكيد الإدارة استلام المبلغ.",
+   "kind": "text",
+   "hash": "133b13365bab",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/sponsorships.transfer.pageTitle": {
+   "en": "Transfer instructions",
+   "ar": "تعليمات التحويل",
+   "kind": "text",
+   "hash": "4725e2066901",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/sponsorships.transfer.title": {
+   "en": "Bank transfer instructions",
+   "ar": "تعليمات التحويل البنكي",
+   "kind": "text",
+   "hash": "25225d0dfb4a",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
   "routes/sso.failed": {
    "en": "We couldn't complete your sign-in from WAMY's platform.",
    "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
@@ -33974,6 +34315,34 @@
    "kind": "text",
    "hash": "bb4a7e763040",
    "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
+  },
+  "routes/try.sponsorships.report.pageTitle": {
+   "en": "Sponsorship report · Try the platform",
+   "ar": "تقرير الكفالة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "1e56853f40e5",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.report.tsx"
+  },
+  "routes/try.sponsorships.transfer.lead": {
+   "en": "This is how a sponsor sees the bank transfer steps when payment is manual. Everything here is simulated.",
+   "ar": "هكذا يرى الكافل خطوات التحويل البنكي حين يكون الدفع يدوياً. كلّها هنا محاكاة.",
+   "kind": "text",
+   "hash": "176d9bc3c8a9",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/try.sponsorships.transfer.pageTitle": {
+   "en": "Transfer instructions · Try the platform",
+   "ar": "تعليمات التحويل · جرّب المنصّة",
+   "kind": "text",
+   "hash": "38f58238b50b",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/try.sponsorships.transfer.title": {
+   "en": "Bank transfer instructions",
+   "ar": "تعليمات التحويل البنكي",
+   "kind": "text",
+   "hash": "25225d0dfb4a",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
   },
   "routes/try.statements.title": {
    "en": "Record of donations · Try the platform",
