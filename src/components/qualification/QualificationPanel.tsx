@@ -24,8 +24,8 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
     lead: "الكفالة هنا اشتراكٌ في بناء أهليّة هذا الطفل، لا سدُّ احتياجٍ شهري.",
     eq: "الأهلية = القدرة على تفهّم الخطاب + اكتساب الفعل.",
     perMonth: " / شهرياً",
-    concept: "المفهوم — ما نُعلِّمه",
-    trait: "السمة — ما نريد أن نبنيه",
+    concept: "المفهوم: ما نُعلِّمه",
+    trait: "السمة: ما نريد أن نبنيه",
     journeyH: "رحلة التشغيل",
     current: "المرحلة الحالية",
     sessions: "ورش الجلسات",
@@ -49,11 +49,11 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
       "وقوعُ القياس يُعرض، ونتيجتُه لا: خريطة سمات طفلٍ حكمٌ عليه لا أثرٌ يُعرض على غريب.",
     supH: "أهلية المشرف",
     independent: "مشرف مستقلّ",
-    training: "قيد التأهيل — إشرافه مقرونٌ بمتابعة الإدارة",
+    training: "قيد التأهيل: إشرافه مقرونٌ بمتابعة الإدارة",
     supNote:
-      "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
+      "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة، لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
     privacy:
-      "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
+      "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته، لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
   },
   en: {
     levels: {
@@ -81,8 +81,8 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
     lead: "Sponsorship here means taking part in building this child's capability, not just covering a monthly need.",
     eq: "Capability = the ability to understand what is asked + acquire action.",
     perMonth: " / month",
-    concept: "Concept — what we teach",
-    trait: "Trait — what we want to build",
+    concept: "Concept: what we teach",
+    trait: "Trait: what we want to build",
     journeyH: "The program journey",
     current: "Current stage",
     sessions: "Session workshops",
@@ -106,11 +106,11 @@ const COPY = defineCopy("components/qualification/QualificationPanel", {
       "We show that measurement happened, not its result: a child's trait map is a judgment about them, not an impact to show a stranger.",
     supH: "Supervisor qualification",
     independent: "Independent supervisor",
-    training: "In training — supervision paired with administrative follow-up",
+    training: "In training: supervision paired with administrative follow-up",
     supNote:
-      "Supervision is assigned only to someone certified by the administration — not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
+      "Supervision is assigned only to someone certified by the administration, not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
     privacy:
-      "Trait measurements stay between the child, their supervisor and their field organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
+      "Trait measurements stay between the child, their supervisor and their field organization; they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
   },
 });
 

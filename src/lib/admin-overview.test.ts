@@ -425,7 +425,7 @@ describe("العيّنة النموذجية", () => {
     expect(s.overview.pending_orphans).toEqual([]);
   });
 
-  it("متّسقةٌ مع نفسها: دول الخارطة لا تتجاوز مجاميع اللوحة", () => {
+  it("متّسقةٌ مع نفسها: دول الخريطة لا تتجاوز مجاميع اللوحة", () => {
     const rows = countryRows(s.geo);
     const total = rows.reduce((a, r) => a + (r.total ?? 0), 0);
     const sponsored = rows.reduce((a, r) => a + (r.sponsored ?? 0), 0);

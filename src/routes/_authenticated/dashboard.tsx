@@ -34,7 +34,7 @@ const COPY = defineCopy("routes/_authenticated/dashboard", {
   ar: {
     pageTitle: "كفالاتي",
     title: "أثري",
-    description: "كيف حال من تكفلهم، وهل وصل عطاؤك — ثم أثرك كلّه.",
+    description: "كيف حال من تكفلهم، وهل وصل عطاؤك، ثم أثرك كلّه.",
     payFailed: "تعذّر بدء الدفع",
     unexpected: "حدث خطأ غير متوقع",
     celebrateTitle: "بدأت كفالتك",
@@ -63,7 +63,7 @@ const COPY = defineCopy("routes/_authenticated/dashboard", {
     pageTitle: "My sponsorships",
     title: "My impact",
     description:
-      "How the children you sponsor are doing, and whether your giving arrived — then your whole impact.",
+      "How the children you sponsor are doing, and whether your giving arrived; then your whole impact.",
     payFailed: "Couldn't start the payment",
     unexpected: "Something went wrong",
     celebrateTitle: "Your sponsorship has begun",

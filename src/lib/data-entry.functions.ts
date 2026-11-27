@@ -202,7 +202,7 @@ export const saveCountry = createServerFn({ method: "POST" })
 async function loadNetwork() {
   // ملفّ الشبكة كبير: يُحمَّل في الخادم عند الطلب، ولا يدخل حزمة المتصفّح من هنا.
   const { WAMY_COUNTRIES } = await import("@/data/wamy-network");
-  // الحضور العلني (مكتب أو نشاط ميداني) وحده — كما على الخارطة الرئيسية.
+  // الحضور العلني (مكتب أو نشاط ميداني) وحده — كما على الخريطة الرئيسية.
   return WAMY_COUNTRIES.filter((c) => c.presence.status !== "unconfirmed").map((c) => ({
     code: c.code,
     nameAr: c.nameAr,

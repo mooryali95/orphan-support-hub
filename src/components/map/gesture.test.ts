@@ -15,7 +15,7 @@ const size = { w: 1000, h: 500 };
 const world = { w: 1000, h: 520 };
 const full = { x: 0, y: 0, w: 1000, h: 500 };
 
-describe("إيماءات الخارطة", () => {
+describe("إيماءات الخريطة", () => {
   it("التكبير حول نقطةٍ يُبقي ما تحتها ثابتاً", () => {
     const at = { x: 300, y: 100 };
     const before = toWorld(full, size, at);

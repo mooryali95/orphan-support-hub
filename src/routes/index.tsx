@@ -105,7 +105,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "شطّ العمران",
-        "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً — وهذا وحده مقياس نجاحنا.",
+        "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً، وهذا وحده مقياس نجاحنا.",
       ],
     ],
     custody: [
@@ -138,17 +138,17 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `شعار ${brand}`,
     h1a: "لا نقدّم رعايةً مؤقّتة،",
     h1b: "بل نبني نظم عمران",
-    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ موثّق، واعتمادٌ إداري، وعطاءٌ يُسلَّم بمستند — ويعود إليك أثرُه تقريراً.",
+    lead: "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ موثّق، واعتمادٌ إداري، وعطاءٌ يُسلَّم بمستند، ويعود إليك أثرُه تقريراً.",
     supportNow: "ادعم الآن",
     hallHero: "ادخل قاعة الأثر",
     hallEyebrow: "قاعة الأثر · ثلاثية الأبعاد",
     hallH: "العالم كما يتحرّك به عطاؤك",
     hallP:
-      "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل — المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
+      "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل، المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
     hallCta: "ادخل القاعة",
     hallNote: "تجربةٌ ببياناتٍ نموذجية، بلا حسابٍ ولا خصم.",
-    hallNoteLive: "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة — بلا حسابٍ ولا خصم.",
-    tryIt: "ادخل التجربة — بلا حساب ولا خصم",
+    hallNoteLive: "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة، بلا حسابٍ ولا خصم.",
+    tryIt: "ادخل التجربة: بلا حساب ولا خصم",
     sponsor: "اكفل يتيمًا",
     hadithMeaning: null as string | null,
     hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
@@ -173,18 +173,18 @@ const COPY = defineCopy("routes/index", {
     crossingH: "شطّان ومضيق",
     childH: "اليتيم عندنا شخصٌ لا «حالة»",
     childP1:
-      "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
+      "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم، لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
     childP2:
       "ولذلك نكتب الاحتياج الشهري صريحاً، ونعرض ما غُطّي منه وما بقي، ونُسمّي البرنامج الذي يُصرَف عليه المال. الكافل شريكٌ في نظام، لا متبرّعٌ في صندوق.",
     dignityH: "الكرامة قيدٌ في الكود لا وعدٌ في الصفحة",
     dignity: [
       "لا تُنشر صورة وجهٍ لملفٍّ في حالة الاحتياج ما لم تُوثَّق موافقة مصوّرة على النشر.",
-      "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملفّ آلياً، لا يختاره من يرفع الصورة.",
-      "البيانات الحسّاسة — الوثائق والعناوين — لا يراها الزائر أبداً.",
+      "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل، والسجلّ يُشتقّ من حالة الملفّ آلياً، لا يختاره من يرفع الصورة.",
+      "البيانات الحسّاسة (الوثائق والعناوين) لا يراها الزائر أبداً.",
     ],
     ladderH: "مراتب الوعي: من الدراية إلى العمران",
     ladderP:
-      "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام بالنظام.",
+      "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي، من رؤية الصورة إلى الالتزام بالنظام.",
     programsH: "الكفالة بناء أهلية، لا سدُّ احتياج",
     programsP:
       "ننقل العمل من منطق الرعاية إلى منطق البناء: لا نسدّ حاجة شهر، بل نكوّن قابليةً تُنتج الفعل ذاتياً بعد أن ينتهي تدخّلنا.",
@@ -216,7 +216,7 @@ const COPY = defineCopy("routes/index", {
       [
         "Awareness",
         "Seeing the picture",
-        "A file documented by a WAMY office or field partner captures a whole crisis in one picture — it moves you and reframes how you see it.",
+        "A file documented by a WAMY office or field partner captures a whole crisis in one picture; it moves you and reframes how you see it.",
       ],
       [
         "The moment",
@@ -245,7 +245,7 @@ const COPY = defineCopy("routes/index", {
       ],
       [
         "The shore of thriving",
-        "A young person who reads, learns a trade and works. No longer a recipient but capable — and that alone is how we measure success.",
+        "A young person who reads, learns a trade and works. No longer a recipient but capable, and that alone is how we measure success.",
       ],
     ],
     custody: [
@@ -277,7 +277,7 @@ const COPY = defineCopy("routes/index", {
     logo: (brand: string) => `${brand} logo`,
     h1a: "We don't offer temporary care —",
     h1b: "we build systems for thriving",
-    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
+    lead: "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document; and the impact comes back to you as a report.",
     supportNow: "Support now",
     hallHero: "Enter the impact hall",
     hallEyebrow: "The impact hall · 3D",
@@ -287,8 +287,8 @@ const COPY = defineCopy("routes/index", {
     hallCta: "Enter the hall",
     hallNote: "A walkthrough on sample data, with no account and nothing charged.",
     hallNoteLive:
-      "WAMY's network is real; the support figures inside are simulated — no account, nothing charged.",
-    tryIt: "Enter the demo — no account, nothing charged",
+      "WAMY's network is real; the support figures inside are simulated, with no account and nothing charged.",
+    tryIt: "Enter the demo: no account, nothing charged",
     sponsor: "Sponsor an orphan",
     hadithMeaning:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
@@ -314,18 +314,18 @@ const COPY = defineCopy("routes/index", {
     crossingH: "Two shores and a strait",
     childH: "Here, an orphan is a person, not a “case”",
     childP1:
-      "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers — because what isn't measured isn't followed, and what isn't followed doesn't change.",
+      "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers; because what isn't measured isn't followed, and what isn't followed doesn't change.",
     childP2:
       "That's why we state the monthly need plainly, show what has been covered and what remains, and name the program the money is spent on. A sponsor is a partner in a system, not a donor to a fund.",
     dignityH: "Dignity is a rule in the code, not a promise on the page",
     dignity: [
       "No face photo is published for a child in need unless written consent to publish has been documented.",
-      "Painful photos are shown in monochrome without faces; only uplifting photos appear in full color — and that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
-      "Sensitive data — documents and addresses — is never visible to visitors.",
+      "Painful photos are shown in monochrome without faces, and only uplifting photos appear in full color; that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
+      "Sensitive data, such as documents and addresses, is never visible to visitors.",
     ],
     ladderH: "Stages of awareness: from seeing to thriving",
     ladderP:
-      "A sponsor's journey isn't a set of procedural steps but shifts in awareness — from seeing the picture to committing to the system.",
+      "A sponsor's journey isn't a set of procedural steps but shifts in awareness, from seeing the picture to committing to the system.",
     programsH: "Sponsorship builds capability, not just covers needs",
     programsP:
       "We move from a logic of care to a logic of building: not covering one month's need, but forming a capability that keeps producing action after our intervention ends.",
@@ -356,7 +356,7 @@ const layerSearchOf = (raw: unknown): { layer?: MapLayer } => {
 };
 
 export const Route = createFileRoute("/")({
-  // موضع الخارطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
+  // موضع الخريطة في الرابط: يُشارَك، ويعيده زرّ الرجوع.
   validateSearch: (raw: Record<string, unknown>): { c?: string; r?: string; layer?: MapLayer } => ({
     ...(typeof raw["c"] === "string" && /^[A-Z]{2}$/.test(raw["c"]) ? { c: raw["c"] } : {}),
     ...(typeof raw["r"] === "string" && raw["r"] ? { r: raw["r"] } : {}),
@@ -377,7 +377,7 @@ export const Route = createFileRoute("/")({
     };
   },
   loader: async ({ context }) => {
-    // يبدأ جلب أعداد الخارطة مبكراً ولا يُنتظر: إلى أن تصل يُرسم هيكلٌ بلا
+    // يبدأ جلب أعداد الخريطة مبكراً ولا يُنتظر: إلى أن تصل يُرسم هيكلٌ بلا
     // أرقام (لا أرقامٌ تجريبية — ARC-11).
     void context.queryClient.prefetchQuery(geoQuery);
     return context.queryClient.ensureQueryData(homeQuery);
@@ -882,7 +882,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 5 · أين: الخارطة، «الشبكة» افتراضياً ── */}
+        {/* ── 5 · أين: الخريطة، «الشبكة» افتراضياً ── */}
         <section
           id="map"
           aria-labelledby="map-heading"

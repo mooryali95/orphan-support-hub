@@ -5,7 +5,7 @@ import { copyOf, defineCopy } from "@/lib/locale";
 
 // المكوّن في try.admin.lazy.tsx: يُحمَّل حين تُفتح الصفحة وحدها.
 const TITLE = defineCopy("routes/try.admin.title", {
-  ar: { title: "الإدارة — عرض تفاعلي" },
+  ar: { title: "الإدارة: عرض تفاعلي" },
   en: { title: "Administration: interactive demo" },
 });
 

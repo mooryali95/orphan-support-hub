@@ -230,7 +230,7 @@ export const revokeAccessRequest = createServerFn({ method: "POST" })
 
 /**
  * مصدر الجغرافيا الواحد — أعداد الدول والمناطق كما تُعيدها `geo_stats`.
- * الخارطة وقائمتا البلد والمنطقة في الدليل تقرأ منه وحده. وعند تعذّر
+ * الخريطة وقائمتا البلد والمنطقة في الدليل تقرأ منه وحده. وعند تعذّر
  * القاعدة (متوقّفة أو لم تُطبَّق الهجرة) يعود `available: false`، فتقرّر
  * الواجهة ما تعرضه بدل أن تنهار.
  */
@@ -238,7 +238,7 @@ export const getGeoStats = createServerFn({ method: "GET" }).handler(async () =>
   const db = withProtection(publicClient());
   const { data, error } = await db.rpc("geo_stats" as never);
   if (error || !data) {
-    // يُسجَّل التعذّر: الخارطة تقول «غير متاحة» للزائر، والانقطاع لا يمرّ صامتاً (ARC-11).
+    // يُسجَّل التعذّر: الخريطة تقول «غير متاحة» للزائر، والانقطاع لا يمرّ صامتاً (ARC-11).
     console.error("geo_stats unavailable", error?.code ?? "no-data", error?.message ?? "");
     return { available: false as const, countries: [] as GeoCountryRow[] };
   }
@@ -253,7 +253,7 @@ export type GeoRegionRow = {
   small: boolean;
   total: number | null;
   sponsored: number | null;
-  /** طبقات الخارطة (هجرة 0929): الفجوة بالعملة الغالبة، والتسليمات الموثّقة خلال ٩٠ يوماً. */
+  /** طبقات الخريطة (هجرة 0929): الفجوة بالعملة الغالبة، والتسليمات الموثّقة خلال ٩٠ يوماً. */
   gap?: number | string | null;
   currency?: string | null;
   delivered?: number | null;

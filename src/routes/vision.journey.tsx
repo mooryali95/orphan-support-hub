@@ -59,7 +59,7 @@ const COPY = defineCopy("routes/vision.journey", {
   ar: {
     label: "الرحلة الكاملة",
     title: "من دعمك إلى الصورة الكلية",
-    lead: "اختر اتجاه الدعم وشاهد رحلته كاملة: الدفع والقيد، ثم التشغيل في الميدان، ثم أثره في السمات الستّ، ثم موقعه في الصورة الكلية لصاحب القرار — على بيانات متصفّحك نفسها.",
+    lead: "اختر اتجاه الدعم وشاهد رحلته كاملة: الدفع والقيد، ثم التشغيل في الميدان، ثم أثره في السمات الستّ، ثم موقعه في الصورة الكلية لصاحب القرار، على بيانات متصفّحك نفسها.",
     pick: "اختر اتجاه الدعم",
     track: {
       qualify: "التأهيل",
@@ -100,7 +100,7 @@ const COPY = defineCopy("routes/vision.journey", {
     month1: "الشهر الأوّل",
     kitsN: (n: number) => `${n} حقيبة`,
     traitsH: "الأثر في السمات الستّ",
-    traitsLead: (who: string) => `ملفّ ${who} — اسمٌ مستعار. الذهبيّ ما تغيّر في هذه الرحلة.`,
+    traitsLead: (who: string) => `ملفّ ${who} (اسمٌ مستعار). الذهبيّ ما تغيّر في هذه الرحلة.`,
     before: "قبل",
     now: "الآن",
     avg: "المتوسّط",
@@ -116,14 +116,13 @@ const COPY = defineCopy("routes/vision.journey", {
     kRaised: "إجمالي الدعم",
     toDecision: "افتح لوحة القرار",
     toImpact: "افتح صفحة الأثر",
-    unavailable:
-      "لا توجد وجهةٌ متاحة لهذا الاتجاه في بيئتك الآن — ابدأ بيئةً جديدة من أسفل الصفحة.",
+    unavailable: "لا توجد وجهةٌ متاحة لهذا الاتجاه في بيئتك الآن، ابدأ بيئةً جديدة من أسفل الصفحة.",
     arrow: "←",
   },
   en: {
     label: "The full journey",
     title: "From your support to the big picture",
-    lead: "Pick a support track and watch its whole journey: payment and ledger, field operations, its effect on the six traits, then its place in the decision-maker's big picture — on your browser's own data.",
+    lead: "Pick a support track and watch its whole journey: payment and ledger, field operations, its effect on the six traits, then its place in the decision-maker's big picture; on your browser's own data.",
     pick: "Pick a support track",
     track: {
       qualify: "Qualification",
@@ -133,8 +132,8 @@ const COPY = defineCopy("routes/vision.journey", {
     trackLead: {
       qualify:
         "Fund a full qualification journey for a waiting group: six sessions, then follow-up measurement.",
-      sponsor: "Sponsor a child monthly, delivered with proof — resilience and awareness rise.",
-      inkind: "Give learning kits delivered to a group with proof — competencies and drive rise.",
+      sponsor: "Sponsor a child monthly, delivered with proof; resilience and awareness rise.",
+      inkind: "Give learning kits delivered to a group with proof; competencies and drive rise.",
     } as Record<Track, string>,
     stages: ["Support", "Payment & ledger", "Operations", "Effect on traits", "Big picture"],
     play: "Play the journey",
@@ -166,7 +165,7 @@ const COPY = defineCopy("routes/vision.journey", {
     kitsN: (n: number) => `${n} kits`,
     traitsH: "Effect on the six traits",
     traitsLead: (who: string) =>
-      `${who}'s file — a pseudonym. Gold marks what this journey changed.`,
+      `${who}'s file (a pseudonym). Gold marks what this journey changed.`,
     before: "Before",
     now: "Now",
     avg: "Average",
@@ -183,7 +182,7 @@ const COPY = defineCopy("routes/vision.journey", {
     toDecision: "Open the decision board",
     toImpact: "Open the impact page",
     unavailable:
-      "No destination is available for this track in your sandbox now — start a fresh sandbox below.",
+      "No destination is available for this track in your sandbox now; start a fresh sandbox below.",
     arrow: "→",
   },
 });

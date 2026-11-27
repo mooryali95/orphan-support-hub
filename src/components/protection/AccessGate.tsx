@@ -31,11 +31,11 @@ const COPY = defineCopy("components/protection/AccessGate", {
       "وكفالتك ممكنةٌ من هذه الصفحة دون الاطّلاع على التفاصيل: الملفّ وثّقته جهة ميدانية تعمل تحت مظلّة الندوة، والإدارة راجعته قبل نشره.",
     hiddenH: "تفاصيل الملفّ محجوبة",
     hiddenP: (n: string) =>
-      `قصّة ${n} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.`,
+      `قصّة ${n} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة، لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.`,
     signInTo: "الدخول لطلب الاطّلاع",
     requestH: "اطلب الاطّلاع على الملفّ",
     requestA: (n: string) =>
-      `قصّة ${n} وصورته ومدينته وتفصيل احتياجه خلف إذنٍ من الإدارة. اكتب سبب طلبك — وهو سؤالٌ من حقّ الطفل أن يُسأل — ثم تنظر فيه الإدارة. والإذن حين يُمنح`,
+      `قصّة ${n} وصورته ومدينته وتفصيل احتياجه خلف إذنٍ من الإدارة. اكتب سبب طلبك، وهو سؤالٌ من حقّ الطفل أن يُسأل، ثم تنظر فيه الإدارة. والإذن حين يُمنح`,
     temporary: "مؤقّت",
     requestB: "، ويُسحب متى لزم.",
     whatSee: "ماذا تريد أن ترى؟",
@@ -59,11 +59,11 @@ const COPY = defineCopy("components/protection/AccessGate", {
       "You can still sponsor from this page without seeing the details: the file was documented by a field organization working under WAMY's umbrella and reviewed by the administration before publishing.",
     hiddenH: "File details are protected",
     hiddenP: (n: string) =>
-      `${n}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration — because a child's file isn't a page to browse.`,
+      `${n}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration; because a child's file isn't a page to browse.`,
     signInTo: "Sign in to request access",
     requestH: "Request access to the file",
     requestA: (n: string) =>
-      `${n}'s story, photo, city and detailed needs sit behind permission from the administration. Tell us why you're asking — it's a question the child deserves to have asked — and the administration will review it. When granted, access is`,
+      `${n}'s story, photo, city and detailed needs sit behind permission from the administration. Tell us why you're asking; it's a question the child deserves to have asked, and the administration will review it. When granted, access is`,
     temporary: "temporary",
     requestB: ", and can be withdrawn whenever needed.",
     whatSee: "What would you like to see?",

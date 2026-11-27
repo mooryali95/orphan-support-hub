@@ -115,7 +115,7 @@ export const COPY = defineCopy("components/admin/overview", {
     topics: {
       translation_drafts: "نصوصٌ مترجمة بانتظار المراجعة",
       translation_reviewed: "ترجماتٌ روجعت ولم تُنشر",
-      dispatch_schema: "مخطّط الإشعارات ناقص — التصريف موقوف",
+      dispatch_schema: "مخطّط الإشعارات ناقص: التصريف موقوف",
       dispatch_failed: "إشعاراتٌ استنفدت محاولاتها",
       dispatch_pending: "إشعاراتٌ في طابور الإرسال",
       source_checklist: "بنودٌ مفتوحة في قوائم ربط المصادر",
@@ -412,7 +412,7 @@ export const COPY = defineCopy("components/admin/overview", {
     topics: {
       translation_drafts: "Translations awaiting review",
       translation_reviewed: "Reviewed translations not yet published",
-      dispatch_schema: "Notification schema incomplete — dispatch is halted",
+      dispatch_schema: "Notification schema incomplete: dispatch is halted",
       dispatch_failed: "Notifications that exhausted their retries",
       dispatch_pending: "Notifications waiting in the send queue",
       source_checklist: "Open items on source onboarding checklists",

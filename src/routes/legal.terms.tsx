@@ -34,7 +34,7 @@ function TermsAr() {
     <LegalPage
       title="شروط الاستخدام"
       updated="2026-08-26"
-      intro="باستخدامك المنصّة فأنت توافق على ما يلي. اقرأه — فهو يحدّد ما تشتريه وما نلتزم به."
+      intro="باستخدامك المنصّة فأنت توافق على ما يلي. اقرأه، فهو يحدّد ما تشتريه وما نلتزم به."
     >
       <Section title="1. ما تشتريه بالضبط">
         <p>
@@ -80,11 +80,11 @@ function TermsAr() {
       <Section title="4. ما لا نضمنه">
         <p>
           نضمن <strong>تسليم الخدمة</strong> ومتابعتها والإبلاغ عنها. ولا نضمن نتيجة تعليمية أو
-          صحّية بعينها — فتلك تتوقّف على الطفل وظروفه، ولا يملك أحد أن يعِد بها.
+          صحّية بعينها، فتلك تتوقّف على الطفل وظروفه، ولا يملك أحد أن يعِد بها.
         </p>
       </Section>
 
-      <Section title="5. خصوصية الطفل — التزام عليك">
+      <Section title="5. خصوصية الطفل: التزام عليك">
         <p>ما تراه من بيانات الأيتام مُقدَّم لغرض الكفالة وحده. ويُمنع منعاً باتّاً:</p>
         <ul>
           <li>نشر صور الأيتام أو بياناتهم خارج المنصّة.</li>
@@ -104,7 +104,7 @@ function TermsAr() {
 
       <Section title="7. إنهاء الحساب">
         <p>
-          لك أن تُغلق حسابك متى شئت. ولنا أن نُعلّقه إن خولفت هذه الشروط، مع إشعارك بالسبب — إلا حين
+          لك أن تُغلق حسابك متى شئت. ولنا أن نُعلّقه إن خولفت هذه الشروط، مع إشعارك بالسبب، إلا حين
           يكون الإشعار نفسه ضارّاً بطفل.
         </p>
       </Section>
@@ -122,7 +122,7 @@ function TermsEn() {
       title="Terms of use"
       binding
       updated="2026-08-26"
-      intro="By using the platform you agree to the following. Please read it — it defines what you are paying for and what we commit to."
+      intro="By using the platform you agree to the following. Please read it: it defines what you are paying for and what we commit to."
     >
       <Section title="1. What exactly you are paying for">
         <p>
@@ -181,12 +181,12 @@ function TermsEn() {
       <Section title="4. What we don't guarantee">
         <p>
           We guarantee <strong>delivery of the service</strong>, its follow-up and reporting on it.
-          We don't guarantee a particular educational or health outcome — that depends on the child
+          We don't guarantee a particular educational or health outcome; that depends on the child
           and their circumstances, and no one can promise it.
         </p>
       </Section>
 
-      <Section title="5. The child's privacy — your obligation">
+      <Section title="5. The child's privacy: your obligation">
         <p>
           Children's data you see is provided for the purpose of sponsorship only. It is strictly
           forbidden to:
@@ -210,7 +210,7 @@ function TermsEn() {
       <Section title="7. Closing an account">
         <p>
           You may close your account whenever you wish. We may suspend it if these terms are
-          breached, and tell you why — unless telling you would itself harm a child.
+          breached, and tell you why, unless telling you would itself harm a child.
         </p>
       </Section>
 

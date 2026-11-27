@@ -376,17 +376,17 @@
    "file": "src/components/ExcessSuggestion.tsx"
   },
   "components/KafalaPromise.hadith": {
-   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
-   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
+   "ar": "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وقال بإصبعَيه السبّابةِ والوسطى.",
    "kind": "text",
-   "hash": "ba5bbd99221a",
+   "hash": "337ac614c94a",
    "file": "src/components/KafalaPromise.tsx"
   },
   "components/KafalaPromise.source": {
-   "en": "Narrated by al-Bukhari (6005)",
-   "ar": "رواه البخاري (6005)",
+   "en": "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
+   "ar": "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
    "kind": "text",
-   "hash": "68d0e4241fb7",
+   "hash": "357084714a51",
    "file": "src/components/KafalaPromise.tsx"
   },
   "components/LegalPage.binding": {
@@ -652,10 +652,10 @@
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.hadithNote": {
-   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
    "ar": "",
    "kind": "text",
-   "hash": "5e0b39d33e3c",
+   "hash": "cedb71a3f514",
    "file": "src/components/SiteFooter.tsx"
   },
   "components/SiteFooter.how": {
@@ -1811,10 +1811,10 @@
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleDoc": {
-   "en": "Sample document — there is no file behind it in sample data mode",
-   "ar": "مستندٌ نموذجي — لا ملفّ خلفه في وضع البيانات النموذجية",
+   "en": "Sample document: there is no file behind it in sample data mode",
+   "ar": "مستندٌ نموذجي: لا ملفّ خلفه في وضع البيانات النموذجية",
    "kind": "text",
-   "hash": "5935ae390e05",
+   "hash": "6b91baf82c1b",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleLead": {
@@ -2424,10 +2424,10 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.bulk.importAnyway": {
-   "en": "Different person — save",
-   "ar": "شخصٌ آخر — احفظه",
+   "en": "Different person: save",
+   "ar": "شخصٌ آخر: احفظه",
    "kind": "text",
-   "hash": "6c30992641e5",
+   "hash": "d77f102a7979",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.bulk.inFile": {
@@ -2769,9 +2769,9 @@
   },
   "components/admin/data.countries.inNetworkHint": {
    "en": "Shown on the map as a destination for qualification and in-kind giving",
-   "ar": "تظهر وجهةً للتأهيل والتبرّع العيني على الخارطة",
+   "ar": "تظهر وجهةً للتأهيل والتبرّع العيني على الخريطة",
    "kind": "text",
-   "hash": "5bbee1012fd8",
+   "hash": "b906b7d8d91b",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.countries.manageRegions": {
@@ -3465,11 +3465,11 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.groups.synced": {
-   "en": "From {0} — read only",
-   "ar": "من {0} — للقراءة",
+   "en": "From {0} (read only)",
+   "ar": "من {0}، للقراءة فقط",
    "kind": "template",
    "params": 1,
-   "hash": "2e5dd229bb17",
+   "hash": "9c0ef6e50251",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.lead": {
@@ -3571,10 +3571,10 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.persons.dupConfirm": {
-   "en": "Different person — save",
-   "ar": "شخصٌ آخر — احفظ",
+   "en": "Different person: save",
+   "ar": "شخصٌ آخر: احفظ",
    "kind": "text",
-   "hash": "bf6e5aea0dd9",
+   "hash": "a0063d1c4c8c",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.persons.dupReasons.same_birth_date": {
@@ -3995,11 +3995,11 @@
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.persons.synced": {
-   "en": "From operating platform {0} — read only",
-   "ar": "من منصّة التشغيل {0} — للقراءة",
+   "en": "From operating platform {0} (read only)",
+   "ar": "من منصّة التشغيل {0}، للقراءة فقط",
    "kind": "template",
    "params": 1,
-   "hash": "cc90c8e3dffd",
+   "hash": "3f89c7b25090",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.region": {
@@ -4109,9 +4109,9 @@
   },
   "components/admin/data.regions.emptyText": {
    "en": "Start from the list suggested by the map and edit it, or add regions by hand.",
-   "ar": "ابدأ بالقائمة المقترحة من الخارطة ثم عدّلها، أو أضف المناطق يدوياً.",
+   "ar": "ابدأ بالقائمة المقترحة من الخريطة ثم عدّلها، أو أضف المناطق يدوياً.",
    "kind": "text",
-   "hash": "c1d5deab3997",
+   "hash": "154384f1c881",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.regions.heading": {
@@ -4209,9 +4209,9 @@
   },
   "components/admin/data.regions.starterButton": {
    "en": "Suggest regions from the map",
-   "ar": "اقترح مناطق من الخارطة",
+   "ar": "اقترح مناطق من الخريطة",
    "kind": "text",
-   "hash": "993603612351",
+   "hash": "259ea460c5d8",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.regions.starterDone": {
@@ -4224,9 +4224,9 @@
   },
   "components/admin/data.regions.starterLead": {
    "en": "Region names as the map draws them. Edit what you like, untick what you do not want, then accept.",
-   "ar": "أسماء المناطق كما ترسمها الخارطة. عدّل ما تشاء وألغِ تحديد ما لا تريد، ثم اقبل.",
+   "ar": "أسماء المناطق كما ترسمها الخريطة. عدّل ما تشاء وألغِ تحديد ما لا تريد، ثم اقبل.",
    "kind": "text",
-   "hash": "1bf51d320cfc",
+   "hash": "71c36f2a48cf",
    "file": "src/components/admin/data/copy.ts"
   },
   "components/admin/data.regions.starterNone": {
@@ -8927,10 +8927,10 @@
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.topics.dispatch_schema": {
-   "en": "Notification schema incomplete — dispatch is halted",
-   "ar": "مخطّط الإشعارات ناقص — التصريف موقوف",
+   "en": "Notification schema incomplete: dispatch is halted",
+   "ar": "مخطّط الإشعارات ناقص: التصريف موقوف",
    "kind": "text",
-   "hash": "b48ce5b49323",
+   "hash": "09abe7586fc1",
    "file": "src/components/admin/overview/copy.ts"
   },
   "components/admin/overview.topics.donors_at_risk": {
@@ -9136,9 +9136,9 @@
   },
   "components/admin/search.hint": {
    "en": "Children, sponsors, sponsorships and transfers, within your access. Arrow keys to move, Enter to open.",
-   "ar": "أطفال، وكفلاء، وكفالات، وتحويلات — بنطاق صلاحيتك. الأسهم للتنقّل وEnter للفتح.",
+   "ar": "أطفال، وكفلاء، وكفالات، وتحويلات، بنطاق صلاحيتك. الأسهم للتنقّل وEnter للفتح.",
    "kind": "text",
-   "hash": "93cd0ce08e67",
+   "hash": "8b370df1ffbe",
    "file": "src/components/admin/search/AdminSearch.tsx"
   },
   "components/admin/search.none": {
@@ -10737,17 +10737,17 @@
    "file": "src/components/admin/trust/copy.ts"
   },
   "components/auth/AuthDialog.consent": {
-   "en": "By continuing you agree to the terms of use and privacy policy — this platform handles children's data.",
-   "ar": "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية — منصّةٌ تعالج بيانات أطفال.",
+   "en": "By continuing you agree to the terms of use and privacy policy; this platform handles children's data.",
+   "ar": "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية، فهذه منصّةٌ تعالج بيانات أطفال.",
    "kind": "text",
-   "hash": "49c93b492b18",
+   "hash": "0272da09e3eb",
    "file": "src/components/auth/AuthDialog.tsx"
   },
   "components/auth/AuthDialog.hint": {
-   "en": "Your passkey, a code sent to you, or Google — and you stay right where you are.",
-   "ar": "بصمتك، أو رمزٌ يصلك، أو جوجل — وتبقى حيث أنت.",
+   "en": "Your passkey, a code sent to you, or Google, and you stay right where you are.",
+   "ar": "بصمتك، أو رمزٌ يصلك، أو جوجل، وتبقى حيث أنت.",
    "kind": "text",
-   "hash": "8dde2259e502",
+   "hash": "c0fde253cd4f",
    "file": "src/components/auth/AuthDialog.tsx"
   },
   "components/auth/AuthDialog.title": {
@@ -10828,10 +10828,10 @@
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.enrolOk": {
-   "en": "Passkey added — next time, sign in with a touch.",
-   "ar": "أُضيفت بصمتك — في المرّة القادمة تدخل بلمسة.",
+   "en": "Passkey added: next time, sign in with a touch.",
+   "ar": "أُضيفت بصمتك: في المرّة القادمة تدخل بلمسة.",
    "kind": "text",
-   "hash": "ebecde792209",
+   "hash": "d9332e9837a0",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.google": {
@@ -10885,10 +10885,10 @@
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.offerP": {
-   "en": "Add your fingerprint or face on this device. No code to wait for, no password to forget — and your biometrics never leave your device.",
-   "ar": "أضف بصمتك أو وجهك على هذا الجهاز. لا رمز ينتظرك، ولا كلمة مرور تُنسى — وبصمتك لا تغادر جهازك.",
+   "en": "Add your fingerprint or face on this device. No code to wait for, no password to forget, and your biometrics never leave your device.",
+   "ar": "أضف بصمتك أو وجهك على هذا الجهاز. لا رمز ينتظرك، ولا كلمة مرور تُنسى، وبصمتك لا تغادر جهازك.",
    "kind": "text",
-   "hash": "83031a4ebab5",
+   "hash": "5093c42e2c21",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.orCode": {
@@ -10927,10 +10927,10 @@
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.passkeyUnconfirmed": {
-   "en": "Confirm your email or phone first — sign in with a code, then your passkey will work.",
-   "ar": "أكّد بريدك أو جوالك أوّلاً — ادخل برمزٍ يصلك، ثم تعمل البصمة.",
+   "en": "Confirm your email or phone first; sign in with a code, then your passkey will work.",
+   "ar": "أكّد بريدك أو جوالك أوّلاً: ادخل برمزٍ يصلك، ثم تعمل البصمة.",
    "kind": "text",
-   "hash": "37c0343cb9c3",
+   "hash": "3939a0792245",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.passkeyWait": {
@@ -11011,10 +11011,10 @@
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.smsOff": {
-   "en": "Phone sign-in isn't enabled yet — use email or Google.",
-   "ar": "الدخول بالجوال لم يُفعَّل بعد — استعمل البريد أو جوجل.",
+   "en": "Phone sign-in isn't enabled yet; use email or Google.",
+   "ar": "الدخول بالجوال لم يُفعَّل بعد، استعمل البريد أو جوجل.",
    "kind": "text",
-   "hash": "252bae3ce243",
+   "hash": "f69c20477d87",
    "file": "src/components/auth/AuthPanel.tsx"
   },
   "components/auth/AuthPanel.tabEmail": {
@@ -12613,18 +12613,18 @@
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.countryButton": {
-   "en": "{0}: {1} — press Enter to open",
-   "ar": "{0}: {1} — اضغط Enter للدخول",
+   "en": "{0}: {1}. Press Enter to open",
+   "ar": "{0}: {1}. اضغط Enter للدخول",
    "kind": "template",
    "params": 2,
-   "hash": "9c822e2462c1",
+   "hash": "334530c5024a",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.coverageLead": {
-   "en": "Confirmed-office countries ranked by the same need — presence against need.",
-   "ar": "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها — لقراءة الحضور أمام الحاجة.",
+   "en": "Confirmed-office countries ranked by the same need; presence against need.",
+   "ar": "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها، لقراءة الحضور أمام الحاجة.",
    "kind": "text",
-   "hash": "afba035d5ec0",
+   "hash": "9610869335fb",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.coverageLine": {
@@ -12692,10 +12692,10 @@
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.demo": {
-   "en": "Sample office — under review",
-   "ar": "مكتب تجريبي — قيد المراجعة",
+   "en": "Sample office: under review",
+   "ar": "مكتب تجريبي: قيد المراجعة",
    "kind": "text",
-   "hash": "db312ab6c609",
+   "hash": "5e25f5b7328a",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.derivedYears": {
@@ -12791,11 +12791,11 @@
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.lastEvidence": {
-   "en": "Latest evidence found: {0} — too old or too thin to confirm.",
-   "ar": "آخر دليلٍ وجده البحث: {0} — قديمٌ أو غير كافٍ للتأكيد.",
+   "en": "Latest evidence found: {0}, which is too old or too thin to confirm.",
+   "ar": "آخر دليلٍ وجده البحث: {0}، وهو قديمٌ أو غير كافٍ للتأكيد.",
    "kind": "template",
    "params": 1,
-   "hash": "400083c7fbaa",
+   "hash": "dcc65a39946c",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.latest": {
@@ -12928,10 +12928,10 @@
   },
   "components/map/NetworkLayer.open": {
    "en": "Open {0} on the map",
-   "ar": "افتح {0} على الخارطة",
+   "ar": "افتح {0} على الخريطة",
    "kind": "template",
    "params": 1,
-   "hash": "20e5a90d7ffb",
+   "hash": "6c6fc85a43ff",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.presenceSource": {
@@ -12970,18 +12970,18 @@
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.sponsoredNote": {
-   "en": "Last confirmed number of orphans sponsored by WAMY: {0} ({1}) — an old figure, shown with its year.",
-   "ar": "آخر رقمٍ مؤكَّد لعدد الأيتام المكفولين لدى الندوة: {0} ({1}) — رقمٌ قديم يُذكر بسنته.",
+   "en": "Last confirmed number of orphans sponsored by WAMY: {0} ({1}); an old figure, shown with its year.",
+   "ar": "آخر رقمٍ مؤكَّد لعدد الأيتام المكفولين لدى الندوة: {0} ({1})، رقمٌ قديم يُذكر بسنته.",
    "kind": "template",
    "params": 2,
-   "hash": "3c7758c7e339",
+   "hash": "602eb3fc043e",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.unconfirmed": {
-   "en": "Unconfirmed — admins only",
-   "ar": "غير مؤكَّد — للإدارة فقط",
+   "en": "Unconfirmed: admins only",
+   "ar": "غير مؤكَّد: للإدارة فقط",
    "kind": "text",
-   "hash": "4f7aa8bbabf2",
+   "hash": "1e0e560f89ff",
    "file": "src/components/map/network-copy.ts"
   },
   "components/map/NetworkLayer.unverifiable": {
@@ -13000,9 +13000,9 @@
   },
   "components/map/WorldMap.breadcrumb": {
    "en": "Your place on the map",
-   "ar": "موضعك على الخارطة",
+   "ar": "موضعك على الخريطة",
    "kind": "text",
-   "hash": "92c72ddc2358",
+   "hash": "6bc8e6d2b080",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.browse": {
@@ -13020,18 +13020,18 @@
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.cohort": {
-   "en": "We don't show exact numbers when any of them is below {0} — so children can't be identified.",
-   "ar": "لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن {0} — حمايةً للأطفال من أن يُعرَفوا.",
+   "en": "We don't show exact numbers when any of them is below {0}, so that no child can be identified.",
+   "ar": "لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن {0}، حمايةً للأطفال من أن يُعرَفوا.",
    "kind": "template",
    "params": 1,
-   "hash": "de2742f33477",
+   "hash": "990bc951eb1a",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.collapse": {
    "en": "Collapse the card to see the map",
-   "ar": "طيّ البطاقة لرؤية الخارطة",
+   "ar": "طيّ البطاقة لرؤية الخريطة",
    "kind": "text",
-   "hash": "163ec913d849",
+   "hash": "76bcc361af08",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.countries.one": {
@@ -13063,11 +13063,11 @@
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.countryButton": {
-   "en": "{0}: {1} — press Enter to open",
-   "ar": "{0}: {1} — اضغط Enter للدخول",
+   "en": "{0}: {1}. Press Enter to open",
+   "ar": "{0}: {1}. اضغط Enter للدخول",
    "kind": "template",
    "params": 2,
-   "hash": "9c822e2462c1",
+   "hash": "334530c5024a",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.delivered": {
@@ -13171,9 +13171,9 @@
   },
   "components/map/WorldMap.layers": {
    "en": "Map layer",
-   "ar": "طبقة الخارطة",
+   "ar": "طبقة الخريطة",
    "kind": "text",
-   "hash": "060ac768519d",
+   "hash": "f2a7266fe187",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.list": {
@@ -13192,9 +13192,9 @@
   },
   "components/map/WorldMap.loading": {
    "en": "Loading map figures…",
-   "ar": "تُحمَّل أرقام الخارطة…",
+   "ar": "تُحمَّل أرقام الخريطة…",
    "kind": "text",
-   "hash": "f2478965ede1",
+   "hash": "6d8d46e2f597",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.mapOf": {
@@ -13336,16 +13336,16 @@
   },
   "components/map/WorldMap.unavailable": {
    "en": "Map figures are unavailable right now",
-   "ar": "أرقام الخارطة غير متاحة الآن",
+   "ar": "أرقام الخريطة غير متاحة الآن",
    "kind": "text",
-   "hash": "80b48dd0c22b",
+   "hash": "88d671466265",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.unavailableHere": {
-   "en": "Figures are unavailable right now — please try again shortly.",
-   "ar": "لا تتوفّر الأرقام الآن — أعد المحاولة بعد قليل.",
+   "en": "Figures are unavailable right now; please try again shortly.",
+   "ar": "لا تتوفّر الأرقام الآن، أعد المحاولة بعد قليل.",
    "kind": "text",
-   "hash": "df40ca9215cb",
+   "hash": "323bc2d45dac",
    "file": "src/components/map/WorldMap.tsx"
   },
   "components/map/WorldMap.verified": {
@@ -13447,10 +13447,10 @@
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.empty": {
-   "en": "No suggestions right now — either you sponsor every open file, or no published file has a gap.",
-   "ar": "لا مرشَّحين الآن — إمّا أنّك تكفل كلّ الملفات المفتوحة، أو لا ملفّ منشوراً فيه ثغرة.",
+   "en": "No suggestions right now: either you sponsor every open file, or no published file has a gap.",
+   "ar": "لا مرشَّحين الآن: إمّا أنّك تكفل كلّ الملفات المفتوحة، أو لا ملفّ منشوراً فيه ثغرة.",
    "kind": "text",
-   "hash": "95351357d598",
+   "hash": "7232345a23d1",
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.file": {
@@ -13517,10 +13517,10 @@
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.prefsNote": {
-   "en": "The region raises a file's rank; it doesn't filter: filtering would hide a child in need outside it. The budget excludes no one — partial sponsorship is welcome — it puts first those your contribution would complete.",
-   "ar": "المنطقة ترجيحٌ لا تصفية: تصفيةٌ بها تُخفي محتاجاً خارجها. والميزانية لا تُقصي أحداً — الكفالة الجزئية مقبولة — بل تُقدّم من يُكمله اشتراكك.",
+   "en": "The region raises a file's rank; it doesn't filter: filtering would hide a child in need outside it. The budget excludes no one, partial sponsorship is welcome, it puts first those your contribution would complete.",
+   "ar": "المنطقة ترجيحٌ لا تصفية: تصفيةٌ بها تُخفي محتاجاً خارجها. والميزانية لا تُقصي أحداً، الكفالة الجزئية مقبولة، بل تُقدّم من يُكمله اشتراكك.",
    "kind": "text",
-   "hash": "2837a759389e",
+   "hash": "07f03bf37df0",
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.region": {
@@ -13567,10 +13567,10 @@
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.stalledNote": {
-   "en": "The program is waiting for a certified supervisor or documented consent from the field organization — your sponsorship still helps, but building can't move forward until both are in place.",
-   "ar": "برنامجه ينتظر مشرفاً معتمَداً أو إذناً موثَّقاً من جهته — وكفالتك تبقى نافعة، لكنّ البناء لا يتقدّم حتى يكتملا.",
+   "en": "The program is waiting for a certified supervisor or documented consent from the field organization; your sponsorship still helps, but building can't move forward until both are in place.",
+   "ar": "برنامجه ينتظر مشرفاً معتمَداً أو إذناً موثَّقاً من جهته، وكفالتك تبقى نافعة، لكنّ البناء لا يتقدّم حتى يكتملا.",
    "kind": "text",
-   "hash": "83a2b451b1a1",
+   "hash": "ac5756370eb2",
    "file": "src/components/matching/SuggestionsPanel.tsx"
   },
   "components/matching/SuggestionsPanel.title": {
@@ -13716,10 +13716,10 @@
    "file": "src/components/offices/OfficeChecklist.tsx"
   },
   "components/offices/OfficeChecklist.syncError": {
-   "en": "The last sync failed — ask the administration",
-   "ar": "آخر مزامنة أخفقت — راجع الإدارة",
+   "en": "The last sync failed: ask the administration",
+   "ar": "آخر مزامنة أخفقت: راجع الإدارة",
    "kind": "text",
-   "hash": "74fe6a0b0ff6",
+   "hash": "57b08ddabd7a",
    "file": "src/components/offices/OfficeChecklist.tsx"
   },
   "components/offices/OfficeChecklist.text": {
@@ -13878,10 +13878,10 @@
    "file": "src/components/offices/OfficesMap.tsx"
   },
   "components/offices/OfficesMap.demo": {
-   "en": "Sample — under review",
-   "ar": "تجريبي — قيد المراجعة",
+   "en": "Sample: under review",
+   "ar": "تجريبي: قيد المراجعة",
    "kind": "text",
-   "hash": "28207c92144a",
+   "hash": "d2b7dc5544f1",
    "file": "src/components/offices/OfficesMap.tsx"
   },
   "components/offices/OfficesMap.failed": {
@@ -14381,10 +14381,10 @@
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.empty": {
-   "en": "An empty section isn't saved — fill in a field or a note",
-   "ar": "القسم الخالي لا يُحفظ — اكتب حقلاً أو ملاحظة",
+   "en": "An empty section isn't saved; fill in a field or a note",
+   "ar": "القسم الخالي لا يُحفظ، اكتب حقلاً أو ملاحظة",
    "kind": "text",
-   "hash": "b01012c3b51f",
+   "hash": "dcab9196d9b4",
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.fields.caregiver_relation": {
@@ -14731,10 +14731,10 @@
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.sensitiveNote": {
-   "en": "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and field organization.",
-   "ar": "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه وجهته.",
+   "en": "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child; their guardian, supervisor and field organization.",
+   "ar": "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله، وليّه ووصيّه ومشرفه وجهته.",
    "kind": "text",
-   "hash": "c75544f56b44",
+   "hash": "0ea644841e5f",
    "file": "src/components/profile/OrphanProfilePanel.tsx"
   },
   "components/profile/OrphanProfilePanel.stale": {
@@ -14774,11 +14774,11 @@
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.hiddenP": {
-   "en": "{0}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration — because a child's file isn't a page to browse.",
-   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+   "en": "{0}'s story, photo, city and detailed needs aren't shown on an open page. Seeing them takes an account and then permission from the administration; because a child's file isn't a page to browse.",
+   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه لا تُعرض في صفحةٍ مفتوحة. وللاطّلاع عليها يلزم حسابٌ ثمّ إذنٌ من الإدارة، لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
    "kind": "template",
    "params": 1,
-   "hash": "04f668a62fb0",
+   "hash": "9debbb4fa484",
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.pendingH": {
@@ -14811,11 +14811,11 @@
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.requestA": {
-   "en": "{0}'s story, photo, city and detailed needs sit behind permission from the administration. Tell us why you're asking — it's a question the child deserves to have asked — and the administration will review it. When granted, access is",
-   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه خلف إذنٍ من الإدارة. اكتب سبب طلبك — وهو سؤالٌ من حقّ الطفل أن يُسأل — ثم تنظر فيه الإدارة. والإذن حين يُمنح",
+   "en": "{0}'s story, photo, city and detailed needs sit behind permission from the administration. Tell us why you're asking; it's a question the child deserves to have asked, and the administration will review it. When granted, access is",
+   "ar": "قصّة {0} وصورته ومدينته وتفصيل احتياجه خلف إذنٍ من الإدارة. اكتب سبب طلبك، وهو سؤالٌ من حقّ الطفل أن يُسأل، ثم تنظر فيه الإدارة. والإذن حين يُمنح",
    "kind": "template",
    "params": 1,
-   "hash": "eee1d82d6c9c",
+   "hash": "e9b49dd29a52",
    "file": "src/components/protection/AccessGate.tsx"
   },
   "components/protection/AccessGate.requestB": {
@@ -15002,10 +15002,10 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.concept": {
-   "en": "Concept — what we teach",
-   "ar": "المفهوم — ما نُعلِّمه",
+   "en": "Concept: what we teach",
+   "ar": "المفهوم: ما نُعلِّمه",
    "kind": "text",
-   "hash": "e62d4da7a455",
+   "hash": "086467acb25d",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.consentNo": {
@@ -15205,10 +15205,10 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.privacy": {
-   "en": "Trait measurements stay between the child, their supervisor and their field organization — they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
-   "ar": "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته — لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
+   "en": "Trait measurements stay between the child, their supervisor and their field organization; they aren't shown here, out of respect for the child's dignity. The same goes for the supervisor's score: a rule applied to the child but broken for the supervisor would be a weak rule.",
+   "ar": "قياس السمات يبقى بين الطفل ومشرفه وجهة رعايته، لا يُعرض هنا صوناً لكرامته. وكذلك رقم مؤشّر المشرف: قاعدةٌ تُطبَّق على الطفل وتُخرَق على مشرفه قاعدةٌ ضعيفة.",
    "kind": "text",
-   "hash": "320b3d3c80ce",
+   "hash": "5d93a5617ce6",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.processes": {
@@ -15276,10 +15276,10 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.supNote": {
-   "en": "Supervision is assigned only to someone certified by the administration — not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
-   "ar": "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة — لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
+   "en": "Supervision is assigned only to someone certified by the administration, not by the field organization. Their name isn't shown: what matters to you is that they're qualified, not who they are.",
+   "ar": "لا يُسنَد الإشراف إلا لمعتمَدٍ من الإدارة، لا من الجهة الميدانية. واسمه لا يُعرض: ما يعنيك أنه مؤهَّل، لا مَن هو.",
    "kind": "text",
-   "hash": "4b6e460c5750",
+   "hash": "e17853ac1d8e",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.supYes": {
@@ -15290,17 +15290,17 @@
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.training": {
-   "en": "In training — supervision paired with administrative follow-up",
-   "ar": "قيد التأهيل — إشرافه مقرونٌ بمتابعة الإدارة",
+   "en": "In training: supervision paired with administrative follow-up",
+   "ar": "قيد التأهيل: إشرافه مقرونٌ بمتابعة الإدارة",
    "kind": "text",
-   "hash": "3c031babcfdc",
+   "hash": "ef8c02c339e6",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/qualification/QualificationPanel.trait": {
-   "en": "Trait — what we want to build",
-   "ar": "السمة — ما نريد أن نبنيه",
+   "en": "Trait: what we want to build",
+   "ar": "السمة: ما نريد أن نبنيه",
    "kind": "text",
-   "hash": "7c73674ea30f",
+   "hash": "55f57047c991",
    "file": "src/components/qualification/QualificationPanel.tsx"
   },
   "components/sponsorship/ActionStrip.deletedFile": {
@@ -16981,10 +16981,10 @@
    "file": "src/components/sponsorship/SponsorshipChildPage.tsx"
   },
   "components/sponsorship/SponsorshipControls.amountForm.changed": {
-   "en": "Amount changed — it applies from the next transfer",
-   "ar": "تغيّر المبلغ — يسري من التحويل القادم",
+   "en": "Amount changed: it applies from the next transfer",
+   "ar": "تغيّر المبلغ: يسري من التحويل القادم",
    "kind": "text",
-   "hash": "a4b1e19e94f8",
+   "hash": "65effab75f4d",
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.amountForm.coverage": {
@@ -17070,11 +17070,11 @@
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.cancel.ending": {
-   "en": "Ending recorded — the sponsorship continues until {0}",
-   "ar": "سُجّل الإنهاء — تبقى الكفالة جاريةً حتى {0}",
+   "en": "Ending recorded: the sponsorship continues until {0}",
+   "ar": "سُجّل الإنهاء: تبقى الكفالة جاريةً حتى {0}",
    "kind": "template",
    "params": 1,
-   "hash": "cafa58d8a5b4",
+   "hash": "9dd0f6ffbd2b",
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.cancel.lead": {
@@ -17270,11 +17270,11 @@
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.pauseForm.paused": {
-   "en": "Paused — resumes on {0}",
-   "ar": "أُوقفت مؤقّتاً — تُستأنف في {0}",
+   "en": "Paused: resumes on {0}",
+   "ar": "أُوقفت مؤقّتاً: تُستأنف في {0}",
    "kind": "template",
    "params": 1,
-   "hash": "2e1dfc7bbc2e",
+   "hash": "de2cd3b1b166",
    "file": "src/components/sponsorship/SponsorshipControls.tsx"
   },
   "components/sponsorship/SponsorshipControls.pauseForm.resumesOn": {
@@ -17823,10 +17823,10 @@
    "file": "src/components/support/MyJourney.tsx"
   },
   "components/support/MyJourney.description": {
-   "en": "Everything your support has made happen: reports, deliveries, sessions and measurements — newest first.",
-   "ar": "كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات — الأحدث أولاً.",
+   "en": "Everything your support has made happen: reports, deliveries, sessions and measurements; newest first.",
+   "ar": "كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات، الأحدث أولاً.",
    "kind": "text",
-   "hash": "9dff5559f5bd",
+   "hash": "c04143f098d5",
    "file": "src/components/support/MyJourney.tsx"
   },
   "components/support/MyJourney.emptyText": {
@@ -18578,9 +18578,9 @@
   },
   "components/try/TryCycleTasks.published": {
    "en": "Approved and published. The supporter can see it in the directory now.",
-   "ar": "معتمد ومنشور — يراه الكافل الآن في الدليل",
+   "ar": "معتمد ومنشور: يراه الكافل الآن في الدليل",
    "kind": "text",
-   "hash": "3a818e69afd8",
+   "hash": "8120b68bc054",
    "file": "src/components/try/TryCycleTasks.tsx"
   },
   "components/try/TryCycleTasks.publishedLog": {
@@ -18614,9 +18614,9 @@
   },
   "components/try/TryCycleTasks.sent": {
    "en": "Sent. It has reached the supporter's My impact.",
-   "ar": "أُرسل — وصل إلى «أثري» عند الكافل",
+   "ar": "أُرسل: وصل إلى «أثري» عند الكافل",
    "kind": "text",
-   "hash": "c4b5f8730278",
+   "hash": "bd39bb86fd9e",
    "file": "src/components/try/TryCycleTasks.tsx"
   },
   "components/try/TryCycleTasks.sponsor": {
@@ -18692,10 +18692,10 @@
   },
   "components/try/TryDirectory.lead": {
    "en": "{0} sample children across the network's countries, with pseudonyms. Search, filter and support as in the real directory. Everything is simulated; nothing is charged.",
-   "ar": "{0} طفلاً بأسماءٍ مستعارة في كلّ دول الشبكة. ابحث وصفِّ وادعم كما في الدليل الحقيقي — كلّه محاكاة لا يُخصم منه شيء.",
+   "ar": "{0} طفلاً بأسماءٍ مستعارة في كلّ دول الشبكة. ابحث وصفِّ وادعم كما في الدليل الحقيقي، كلّه محاكاة لا يُخصم منه شيء.",
    "kind": "template",
    "params": 1,
-   "hash": "024582588694",
+   "hash": "ac281f823ef3",
    "file": "src/components/try/TryDirectory.tsx"
   },
   "components/try/TryDirectory.next": {
@@ -19223,9 +19223,9 @@
   },
   "components/try/TryPresent.off": {
    "en": "Off the tour. Next brings you back to it.",
-   "ar": "خارج مسار الجولة — التالي يعيدك إليها.",
+   "ar": "خارج مسار الجولة: التالي يعيدك إليها.",
    "kind": "text",
-   "hash": "b42336d95cea",
+   "hash": "8a957b1a5a85",
    "file": "src/components/try/TryPresent.tsx"
   },
   "components/try/TryPresent.prev": {
@@ -19265,9 +19265,9 @@
   },
   "components/try/TryPresent.say.3": {
    "en": "The supporter sees the published child, chooses an amount and sponsors. Payment is simulated here.",
-   "ar": "الكافل يرى الطفل المنشور، ويختار المبلغ، ويكفل — الدفع هنا محاكاة.",
+   "ar": "الكافل يرى الطفل المنشور، ويختار المبلغ، ويكفل. الدفع هنا محاكاة.",
    "kind": "text",
-   "hash": "17fa55da500a",
+   "hash": "d01f763cef70",
    "file": "src/components/try/TryPresent.tsx"
   },
   "components/try/TryPresent.say.4": {
@@ -19279,9 +19279,9 @@
   },
   "components/try/TryPresent.say.5": {
    "en": "The independent supervisor visits the child and records how they are, which becomes part of the file.",
-   "ar": "المشرف المستقلّ يزور الطفل ويسجّل حاله — فيصير جزءاً من ملفّه.",
+   "ar": "المشرف المستقلّ يزور الطفل ويسجّل حاله، فيصير جزءاً من ملفّه.",
    "kind": "text",
-   "hash": "0548cf33cd14",
+   "hash": "00c224aba0fd",
    "file": "src/components/try/TryPresent.tsx"
   },
   "components/try/TryPresent.say.6": {
@@ -19293,9 +19293,9 @@
   },
   "components/try/TryPresent.say.7": {
    "en": "The decision-maker sees the whole network, and everything we just did moves its figures.",
-   "ar": "صاحب القرار يرى الشبكة كلّها — وكلّ ما فعلناه الآن يحرّك أرقامها.",
+   "ar": "صاحب القرار يرى الشبكة كلّها، وكلّ ما فعلناه الآن يحرّك أرقامها.",
    "kind": "text",
-   "hash": "ff30be3d1066",
+   "hash": "9f2834183587",
    "file": "src/components/try/TryPresent.tsx"
   },
   "components/try/TryPresent.start": {
@@ -19606,9 +19606,9 @@
   },
   "components/try/TryRoles.lead": {
    "en": "Each role sees its own interface, with the same steps as the real platform. The data here is sample data; money and waiting are simulated.",
-   "ar": "كلّ دورٍ يرى واجهته هو، بالخطوات نفسها في المنصّة الحقيقية — والبيانات هنا نموذجية، والمال والانتظار محاكاة.",
+   "ar": "كلّ دورٍ يرى واجهته هو، بالخطوات نفسها في المنصّة الحقيقية، والبيانات هنا نموذجية، والمال والانتظار محاكاة.",
    "kind": "text",
-   "hash": "2de7b24e1121",
+   "hash": "e741d9c06d7c",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.open": {
@@ -19641,9 +19641,9 @@
   },
   "components/try/TryRoles.roles.country.1": {
    "en": "Settles alerts and conflicts and uploads the country's files; switch between supervisor, data entry and viewer.",
-   "ar": "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته — بدّل بين المشرف والمدخل والمطّلع.",
+   "ar": "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته، بدّل بين المشرف والمدخل والمطّلع.",
    "kind": "text",
-   "hash": "27fd2ecc3d2e",
+   "hash": "837aa09431bb",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.decider.0": {
@@ -19655,9 +19655,9 @@
   },
   "components/try/TryRoles.roles.decider.1": {
    "en": "The network at a glance: children, coverage, verification, and the session's activity.",
-   "ar": "صورة الشبكة: الأطفال والتغطية والتوثيق — ونشاط الجلسة كلّه.",
+   "ar": "صورة الشبكة: الأطفال والتغطية والتوثيق، ونشاط الجلسة كلّه.",
    "kind": "text",
-   "hash": "a93858e7a24c",
+   "hash": "6cfb5a5b2461",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.office.0": {
@@ -19683,9 +19683,9 @@
   },
   "components/try/TryRoles.roles.org.1": {
    "en": "Enters a child's file and documents, then follows it to the first report.",
-   "ar": "تُدخل ملفّ طفلٍ ومستنداته — ثم تراه ينتقل حتى أوّل تقرير.",
+   "ar": "تُدخل ملفّ طفلٍ ومستنداته، ثم تراه ينتقل حتى أوّل تقرير.",
    "kind": "text",
-   "hash": "4ab60ebba749",
+   "hash": "6eac3ee93423",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.supervisor.0": {
@@ -20171,9 +20171,9 @@
   },
   "components/try/TryVerification.roleHint.supervisor": {
    "en": "Settles, uploads and manages the team, except changes they uploaded, which someone else settles.",
-   "ar": "يحسم ويرفع ويدير فريقه — إلا ما رفعه بنفسه، فيحسمه غيره.",
+   "ar": "يحسم ويرفع ويدير فريقه، إلا ما رفعه بنفسه، فيحسمه غيره.",
    "kind": "text",
-   "hash": "6711978f17d9",
+   "hash": "bdeaf56e6fb1",
    "file": "src/components/try/TryVerification.tsx"
   },
   "components/try/TryVerification.roleHint.viewer": {
@@ -20915,10 +20915,10 @@
    "file": "src/components/vision/ImpactCard.tsx"
   },
   "components/vision/ImpactCard.lead": {
-   "en": "An image with your figures only — no child's name or place. Save or share it.",
-   "ar": "صورةٌ بأرقامك وحدها — لا اسم طفلٍ ولا مكان. احفظها أو شاركها.",
+   "en": "An image with your figures only; no child's name or place. Save or share it.",
+   "ar": "صورةٌ بأرقامك وحدها: لا اسم طفلٍ ولا مكان. احفظها أو شاركها.",
    "kind": "text",
-   "hash": "69d660aa81e2",
+   "hash": "4e6032336943",
    "file": "src/components/vision/ImpactCard.tsx"
   },
   "components/vision/ImpactCard.measured": {
@@ -20964,11 +20964,11 @@
    "file": "src/components/vision/ImpactCard.tsx"
   },
   "components/vision/Inbox.alert": {
-   "en": "Alert: {0} funding at {1}% — below the 40% floor",
-   "ar": "إنذار: تمويل {0} عند {1}% — دون الحدّ (40%)",
+   "en": "Alert: {0} funding at {1}%; below the 40% floor",
+   "ar": "إنذار: تمويل {0} عند {1}%، دون الحدّ (40%)",
    "kind": "template",
    "params": 2,
-   "hash": "5d5b57827412",
+   "hash": "3f9420619e21",
    "file": "src/components/vision/Inbox.tsx"
   },
   "components/vision/Inbox.empty": {
@@ -21036,10 +21036,10 @@
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.caps.approve": {
-   "en": "They approve the top recommendation — it returns to the field as a group or a campaign.",
-   "ar": "يعتمد أعلى توصية — فتعود إلى الميدان مجموعةً أو حملة.",
+   "en": "They approve the top recommendation; it returns to the field as a group or a campaign.",
+   "ar": "يعتمد أعلى توصية: فتعود إلى الميدان مجموعةً أو حملة.",
    "kind": "text",
-   "hash": "07b220ed5808",
+   "hash": "7029f2a6739b",
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.caps.decision": {
@@ -21051,9 +21051,9 @@
   },
   "components/vision/Story.caps.donate": {
    "en": "A supporter enters with no account and donates by card to a group awaiting funding.",
-   "ar": "داعمٌ يدخل دون حساب، ويتبرّع لمجموعةٍ تنتظر التمويل — بالبطاقة.",
+   "ar": "داعمٌ يدخل دون حساب، ويتبرّع لمجموعةٍ تنتظر التمويل، بالبطاقة.",
    "kind": "text",
-   "hash": "6d375f44fb72",
+   "hash": "7786332bbf6d",
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.caps.done": {
@@ -21092,10 +21092,10 @@
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.caps.sessions": {
-   "en": "The supervisor records all six sessions — each reaches the supporter and the board at once.",
-   "ar": "المشرف يسجّل الجلسات الستّ — كلّ جلسةٍ تصل الداعم والقرار فوراً.",
+   "en": "The supervisor records all six sessions; each reaches the supporter and the board at once.",
+   "ar": "المشرف يسجّل الجلسات الستّ، كلّ جلسةٍ تصل الداعم والقرار فوراً.",
    "kind": "text",
-   "hash": "cbe9411a559e",
+   "hash": "52be2e24a510",
    "file": "src/components/vision/Story.tsx"
   },
   "components/vision/Story.decider": {
@@ -21246,11 +21246,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.allocFull": {
-   "en": "{0} allocated to {1} — now fully funded",
-   "ar": "خُصِّص {0} لـ{1} — اكتمل تمويلها",
+   "en": "{0} allocated to {1}; now fully funded",
+   "ar": "خُصِّص {0} لـ{1}، واكتمل تمويلها",
    "kind": "template",
    "params": 2,
-   "hash": "a787f4312fa9",
+   "hash": "c6dfd921842a",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.allocGroup": {
@@ -21291,11 +21291,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.cycleDone": {
-   "en": "{0}: cycle complete — ready for follow-up measurement",
-   "ar": "{0}: اكتملت الدورة — جاهزة للقياس البعدي",
+   "en": "{0}: cycle complete and ready for follow-up measurement",
+   "ar": "{0}: اكتملت الدورة وهي جاهزة للقياس البعدي",
    "kind": "template",
    "params": 1,
-   "hash": "6b337490937c",
+   "hash": "91cca84e3b77",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.decision.campaign": {
@@ -21331,11 +21331,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.decision.scenario": {
-   "en": "Decision: a budget scenario approved — first destination {0}",
-   "ar": "قرار: اعتُمد سيناريو ميزانية — أوّل وجهاته {0}",
+   "en": "Decision: a budget scenario approved; first destination {0}",
+   "ar": "قرار: اعتُمد سيناريو ميزانية، أوّل وجهاته {0}",
    "kind": "template",
    "params": 1,
-   "hash": "ec9e1007c2be",
+   "hash": "9a70e4a22547",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.disbursed": {
@@ -21355,10 +21355,10 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.done": {
-   "en": "Received — follow it on the decision and operations boards",
-   "ar": "وصل — تابِعه في لوحة القرار والتشغيل",
+   "en": "Received: follow it on the decision and operations boards",
+   "ar": "وصل: تابِعه في لوحة القرار والتشغيل",
    "kind": "text",
-   "hash": "22ae3d9a3705",
+   "hash": "8bf4f0628ca3",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.donor": {
@@ -21397,10 +21397,10 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.formLead": {
-   "en": "It passes through the three layers as real money will — nothing is collected.",
-   "ar": "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي — ولا يُحصَّل شيء.",
+   "en": "It passes through the three layers as real money will; nothing is collected.",
+   "ar": "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي، ولا يُحصَّل شيء.",
    "kind": "text",
-   "hash": "3461e7f788bb",
+   "hash": "d5c576cd4735",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.give": {
@@ -21411,19 +21411,19 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.kitsDelivered": {
-   "en": "{0} kits delivered to {1} with proof — competencies and drive rose",
-   "ar": "سُلِّمت {0} حقيبة لـ{1} بإثبات — ارتفعت الكفايات والهمّة",
+   "en": "{0} kits delivered to {1} with proof; competencies and drive rose",
+   "ar": "سُلِّمت {0} حقيبة لـ{1} بإثبات، ارتفعت الكفايات والهمّة",
    "kind": "template",
    "params": 2,
-   "hash": "4451b7912446",
+   "hash": "a57949a79e6f",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.kitsPledged": {
-   "en": "{0} learning kits for {1} — awaiting delivery",
-   "ar": "{0} حقيبة تعليمية لـ{1} — بانتظار التسليم",
+   "en": "{0} learning kits for {1}, awaiting delivery",
+   "ar": "{0} حقيبة تعليمية لـ{1}، بانتظار التسليم",
    "kind": "template",
    "params": 2,
-   "hash": "3c671671eeab",
+   "hash": "6955fa381bfa",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.layer.decision": {
@@ -21471,11 +21471,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.month": {
-   "en": "A new month began: {0} — recurring sponsors, sessions and measurement",
-   "ar": "بدأ شهرٌ جديد: {0} — كفلاءٌ شهريون، وجلسات، وقياس",
+   "en": "A new month began: {0}, with recurring sponsors, sessions and measurement",
+   "ar": "بدأ شهرٌ جديد ({0}) بكفلاءَ شهريين وجلساتٍ وقياس",
    "kind": "template",
    "params": 1,
-   "hash": "04e37d82bef4",
+   "hash": "7a41c3f4a80a",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.moved": {
@@ -21494,11 +21494,11 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.pending": {
-   "en": "{1} declared a {0} transfer to {2} — awaiting reconciliation",
-   "ar": "{1} أعلن تحويلاً بـ {0} لـ{2} — بانتظار المطابقة",
+   "en": "{1} declared a {0} transfer to {2}, awaiting reconciliation",
+   "ar": "{1} أعلن تحويلاً بـ {0} لـ{2}، بانتظار المطابقة",
    "kind": "template",
    "params": 3,
-   "hash": "9dfd5bf37fe2",
+   "hash": "32557a076db5",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.reset": {
@@ -21539,19 +21539,19 @@
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.sponsorDelivered": {
-   "en": "{0}'s sponsorship delivered for month {1} with proof — resilience and awareness rose",
-   "ar": "سُلِّمت كفالة {0} للشهر {1} بإثبات — ارتفع الصمود والدراية",
+   "en": "{0}'s sponsorship delivered for month {1} with proof; resilience and awareness rose",
+   "ar": "سُلِّمت كفالة {0} للشهر {1} بإثبات، ارتفع الصمود والدراية",
    "kind": "template",
    "params": 2,
-   "hash": "81e2904af27e",
+   "hash": "548566e5013f",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.sponsored": {
-   "en": "Monthly sponsorship for {0}: {1} — reached the file in operations",
-   "ar": "كفالةٌ شهرية لـ{0}: {1} — وصلت ملفّه في التشغيل",
+   "en": "Monthly sponsorship for {0}: {1}; it reached the file in operations",
+   "ar": "كفالةٌ شهرية لـ{0}: {1}، ووصلت ملفّه في التشغيل",
    "kind": "template",
    "params": 2,
-   "hash": "5937870dc6f5",
+   "hash": "ec095d3c00b4",
    "file": "src/components/vision/VisionStore.tsx"
   },
   "components/vision/VisionStore.target": {
@@ -21583,10 +21583,10 @@
    "file": "src/components/vision/VisionTeaser.tsx"
   },
   "components/vision/VisionTeaser.lead": {
-   "en": "Operations, support and decision in one system: a donation reaches a group, its sessions are held and measured, and the decision changes. Try it yourself — everything stays in your browser.",
-   "ar": "التشغيل والدعم والقرار في منظومةٍ واحدة: تبرّعٌ يصل مجموعة، فتُعقد جلساتها وتُقاس، فيتغيّر القرار. جرّبها بنفسك — كلّ شيءٍ يُحفظ في متصفّحك.",
+   "en": "Operations, support and decision in one system: a donation reaches a group, its sessions are held and measured, and the decision changes. Try it yourself; everything stays in your browser.",
+   "ar": "التشغيل والدعم والقرار في منظومةٍ واحدة: تبرّعٌ يصل مجموعة، فتُعقد جلساتها وتُقاس، فيتغيّر القرار. جرّبها بنفسك، كلّ شيءٍ يُحفظ في متصفّحك.",
    "kind": "text",
-   "hash": "6b85fc1ba930",
+   "hash": "aa6915a145f7",
    "file": "src/components/vision/VisionTeaser.tsx"
   },
   "components/vision/VisionTeaser.story": {
@@ -21625,10 +21625,10 @@
    "file": "src/components/vision/WhatIf.tsx"
   },
   "components/vision/WhatIf.applied": {
-   "en": "Approved — it shows in the log and role boards",
-   "ar": "اعتُمد — يظهر في السجلّ ولوحات الأدوار",
+   "en": "Approved: it shows in the log and role boards",
+   "ar": "اعتُمد: يظهر في السجلّ ولوحات الأدوار",
    "kind": "text",
-   "hash": "a37434d030e5",
+   "hash": "b5aec21015cf",
    "file": "src/components/vision/WhatIf.tsx"
   },
   "components/vision/WhatIf.apply": {
@@ -21880,10 +21880,10 @@
    "file": "src/config/offering.ts"
   },
   "config/offering.title": {
-   "en": "Sponsorship and qualification support — not a general donation",
-   "ar": "كفالةٌ ودعمٌ للتأهيل — لا تبرّعٌ عام",
+   "en": "Sponsorship and qualification support: not a general donation",
+   "ar": "كفالةٌ ودعمٌ للتأهيل: لا تبرّعٌ عام",
    "kind": "text",
-   "hash": "da30c7874668",
+   "hash": "dcf199320b14",
    "file": "src/config/offering.ts"
   },
   "lib/event-labels.fallback": {
@@ -22547,10 +22547,10 @@
    "file": "src/lib/hall/copy.ts"
   },
   "lib/hall/copy.status.unconfirmed": {
-   "en": "Unconfirmed — staff only",
-   "ar": "غير مؤكَّد — للإدارة فقط",
+   "en": "Unconfirmed: staff only",
+   "ar": "غير مؤكَّد: للإدارة فقط",
    "kind": "text",
-   "hash": "c9d57fcbe573",
+   "hash": "e75a98e7f921",
    "file": "src/lib/hall/copy.ts"
   },
   "lib/hall/live.age.one": {
@@ -23024,10 +23024,10 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.done.title": {
-   "en": "Simulation complete — thank you",
-   "ar": "تمّت المحاكاة — شكراً لك",
+   "en": "Simulation complete: thank you",
+   "ar": "تمّت المحاكاة: شكراً لك",
    "kind": "text",
-   "hash": "742e36176b3a",
+   "hash": "57a839ac1282",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.donor": {
@@ -23324,9 +23324,9 @@
   },
   "lib/hall/live.kinds.rows.region.sponsor": {
    "en": "Those sponsored and those still without a sponsor",
-   "ar": "المكفولون ومن بقي بلا كفيل",
+   "ar": "المكفولون ومن بقي بلا كافل",
    "kind": "text",
-   "hash": "fc91feb55ba8",
+   "hash": "7b6d4bbc7721",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.kinds.sub": {
@@ -23743,9 +23743,9 @@
   },
   "lib/hall/live.preview.sPick": {
    "en": "Children are chosen from those who completed qualification and have no sponsor",
-   "ar": "يُختار الأطفال ممّن أتمّوا التأهيل ولا كفيل لهم",
+   "ar": "يُختار الأطفال ممّن أتمّوا التأهيل ولا كافل لهم",
    "kind": "text",
-   "hash": "597f66d054ad",
+   "hash": "bc8ea0c219e6",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.preview.sTitle": {
@@ -24382,9 +24382,9 @@
   },
   "lib/hall/live.story.noSponsor": {
    "en": "Without a sponsor",
-   "ar": "بلا كفيل",
+   "ar": "بلا كافل",
    "kind": "text",
-   "hash": "8ed0c8b83ee3",
+   "hash": "832ce84f2ffa",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.story.noteEngine": {
@@ -24530,9 +24530,9 @@
   },
   "lib/hall/live.story.s2": {
    "en": "Fewer children who completed qualification are left without a sponsor.",
-   "ar": "تقلّص عدد من أتمّوا التأهيل ولا كفيل لهم.",
+   "ar": "تقلّص عدد من أتمّوا التأهيل ولا كافل لهم.",
    "kind": "text",
-   "hash": "b7fb5a6ee0a3",
+   "hash": "f7229ea0b5f5",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.story.s3": {
@@ -24551,10 +24551,10 @@
   },
   "lib/hall/live.story.sBase": {
    "en": "Before your support: children in {0} who completed qualification and have no sponsor.",
-   "ar": "قبل دعمك: أطفالٌ أتمّوا التأهيل في {0} ولا كفيل لهم.",
+   "ar": "قبل دعمك: أطفالٌ أتمّوا التأهيل في {0} ولا كافل لهم.",
    "kind": "template",
    "params": 1,
-   "hash": "2d1011d698ff",
+   "hash": "38a962343705",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.story.sDone": {
@@ -25015,10 +25015,10 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.world.groups.unconfirmed": {
-   "en": "Unconfirmed — staff only",
-   "ar": "غير مؤكَّد — للإدارة فقط",
+   "en": "Unconfirmed: staff only",
+   "ar": "غير مؤكَّد: للإدارة فقط",
    "kind": "text",
-   "hash": "c9d57fcbe573",
+   "hash": "e75a98e7f921",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.world.simNote": {
@@ -26515,10 +26515,10 @@
    "file": "src/lib/office-gap.ts"
   },
   "lib/office-gap.noData": {
-   "en": "No reliable orphan figure yet — an official source is needed before ranking",
-   "ar": "لا رقم موثوقاً لعدد الأيتام بعد — يلزم مصدرٌ رسمي قبل الترتيب",
+   "en": "No reliable orphan figure yet; an official source is needed before ranking",
+   "ar": "لا رقم موثوقاً لعدد الأيتام بعد، يلزم مصدرٌ رسمي قبل الترتيب",
    "kind": "text",
-   "hash": "5120dc2417ec",
+   "hash": "bae1c4821396",
    "file": "src/lib/office-gap.ts"
   },
   "lib/office-gap.orphans": {
@@ -28026,10 +28026,10 @@
    "file": "src/routes/_authenticated/dashboard.tsx"
   },
   "routes/_authenticated/dashboard.description": {
-   "en": "How the children you sponsor are doing, and whether your giving arrived — then your whole impact.",
-   "ar": "كيف حال من تكفلهم، وهل وصل عطاؤك — ثم أثرك كلّه.",
+   "en": "How the children you sponsor are doing, and whether your giving arrived; then your whole impact.",
+   "ar": "كيف حال من تكفلهم، وهل وصل عطاؤك، ثم أثرك كلّه.",
    "kind": "text",
-   "hash": "9d6c080b5651",
+   "hash": "81f38870e89b",
    "file": "src/routes/_authenticated/dashboard.tsx"
   },
   "routes/_authenticated/dashboard.gotIt": {
@@ -28829,10 +28829,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.childP1": {
-   "en": "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers — because what isn't measured isn't followed, and what isn't followed doesn't change.",
-   "ar": "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم — لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
+   "en": "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers; because what isn't measured isn't followed, and what isn't followed doesn't change.",
+   "ar": "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم، لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
    "kind": "text",
-   "hash": "738f9092927a",
+   "hash": "cbeec9e599de",
    "file": "src/routes/index.tsx"
   },
   "routes/index.childP2": {
@@ -28885,10 +28885,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossing.2.1": {
-   "en": "A young person who reads, learns a trade and works. No longer a recipient but capable — and that alone is how we measure success.",
-   "ar": "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً — وهذا وحده مقياس نجاحنا.",
+   "en": "A young person who reads, learns a trade and works. No longer a recipient but capable, and that alone is how we measure success.",
+   "ar": "شابٌّ يقرأ ويتعلّم حرفة ويعمل. لم يعد متلقّياً بل صار قادراً، وهذا وحده مقياس نجاحنا.",
    "kind": "text",
-   "hash": "0192f6c1c46c",
+   "hash": "69fc056aab81",
    "file": "src/routes/index.tsx"
   },
   "routes/index.crossingH": {
@@ -28983,17 +28983,17 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.1": {
-   "en": "Painful photos are shown in monochrome without faces; only uplifting photos appear in full color — and that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
-   "ar": "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل — والسجلّ يُشتقّ من حالة الملفّ آلياً، لا يختاره من يرفع الصورة.",
+   "en": "Painful photos are shown in monochrome without faces, and only uplifting photos appear in full color; that choice is derived automatically from the file's status, not picked by whoever uploads the photo.",
+   "ar": "الصور المؤلمة تُعالَج أحاديةَ اللون بلا وجه، والصور الملهمة وحدها تُعرض بلونها الكامل، والسجلّ يُشتقّ من حالة الملفّ آلياً، لا يختاره من يرفع الصورة.",
    "kind": "text",
-   "hash": "379adc33221d",
+   "hash": "60c6b36113ef",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignity.2": {
-   "en": "Sensitive data — documents and addresses — is never visible to visitors.",
-   "ar": "البيانات الحسّاسة — الوثائق والعناوين — لا يراها الزائر أبداً.",
+   "en": "Sensitive data, such as documents and addresses, is never visible to visitors.",
+   "ar": "البيانات الحسّاسة (الوثائق والعناوين) لا يراها الزائر أبداً.",
    "kind": "text",
-   "hash": "a1e379771e13",
+   "hash": "70d6071f2396",
    "file": "src/routes/index.tsx"
   },
   "routes/index.dignityH": {
@@ -29046,10 +29046,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.hadithMeaning": {
-   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+   "en": "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
    "ar": "",
    "kind": "text",
-   "hash": "5e0b39d33e3c",
+   "hash": "cedb71a3f514",
    "file": "src/routes/index.tsx"
   },
   "routes/index.hadithSource": {
@@ -29095,17 +29095,17 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.hallNoteLive": {
-   "en": "WAMY's network is real; the support figures inside are simulated — no account, nothing charged.",
-   "ar": "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة — بلا حسابٍ ولا خصم.",
+   "en": "WAMY's network is real; the support figures inside are simulated, with no account and nothing charged.",
+   "ar": "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة، بلا حسابٍ ولا خصم.",
    "kind": "text",
-   "hash": "7078e0aa2cb7",
+   "hash": "f0ce743d388d",
    "file": "src/routes/index.tsx"
   },
   "routes/index.hallP": {
    "en": "Enter the hall, choose a country in WAMY's network, then the kind and amount of giving, and watch the impact change on the country, the region, the group and the child. The same place as on the map, from another view.",
-   "ar": "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل — المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
+   "ar": "اختر دولةً من شبكة الندوة، ثم نوع العطاء ومقداره، وشاهد الأثر يتغيّر أمامك حتى الطفل، المكان نفسه الذي على الخريطة، بمنظرٍ آخر.",
    "kind": "text",
-   "hash": "a67e27165c47",
+   "hash": "cbf76e540c34",
    "file": "src/routes/index.tsx"
   },
   "routes/index.impactH": {
@@ -29137,10 +29137,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.0.2": {
-   "en": "A file documented by a WAMY office or field partner captures a whole crisis in one picture — it moves you and reframes how you see it.",
+   "en": "A file documented by a WAMY office or field partner captures a whole crisis in one picture; it moves you and reframes how you see it.",
    "ar": "ملفّ يوثّقه مكتبٌ للندوة أو شريكٌ ميداني لها يختصر أزمة كاملة في صورة واحدة تصدمك وتخلق إطاراً ذهنياً جديداً.",
    "kind": "text",
-   "hash": "ff16b43fc125",
+   "hash": "624c730483a1",
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladder.1.0": {
@@ -29214,10 +29214,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.ladderP": {
-   "en": "A sponsor's journey isn't a set of procedural steps but shifts in awareness — from seeing the picture to committing to the system.",
-   "ar": "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي — من رؤية الصورة إلى الالتزام بالنظام.",
+   "en": "A sponsor's journey isn't a set of procedural steps but shifts in awareness, from seeing the picture to committing to the system.",
+   "ar": "رحلة الكافل ليست خطوات إجرائية، بل انتقالات في الوعي، من رؤية الصورة إلى الالتزام بالنظام.",
    "kind": "text",
-   "hash": "246b96d05d89",
+   "hash": "880bd99c0d53",
    "file": "src/routes/index.tsx"
   },
   "routes/index.launching": {
@@ -29228,10 +29228,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.lead": {
-   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document — and the impact comes back to you as a report.",
-   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ موثّق، واعتمادٌ إداري، وعطاءٌ يُسلَّم بمستند — ويعود إليك أثرُه تقريراً.",
+   "en": "We carry the orphan from the shore of loss to the shore of thriving: a file documented by a WAMY office or field partner and approved by the administration, then a monthly sponsorship spent on the child's stated needs, with each delivery recorded by a document; and the impact comes back to you as a report.",
+   "ar": "نعبر باليتيم من شطّ الفقد إلى شطّ العمران: ملفٌّ موثّق، واعتمادٌ إداري، وعطاءٌ يُسلَّم بمستند، ويعود إليك أثرُه تقريراً.",
    "kind": "text",
-   "hash": "ad37ba4378d5",
+   "hash": "cc54e6d57f22",
    "file": "src/routes/index.tsx"
   },
   "routes/index.logo": {
@@ -29448,10 +29448,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.tryIt": {
-   "en": "Enter the demo — no account, nothing charged",
-   "ar": "ادخل التجربة — بلا حساب ولا خصم",
+   "en": "Enter the demo: no account, nothing charged",
+   "ar": "ادخل التجربة: بلا حساب ولا خصم",
    "kind": "text",
-   "hash": "4f665de3adfd",
+   "hash": "691fc99afa92",
    "file": "src/routes/index.tsx"
   },
   "routes/office.addMetric": {
@@ -29470,9 +29470,9 @@
   },
   "routes/office.fileDenied": {
    "en": "Could not open the file. You may no longer be a member of this office.",
-   "ar": "تعذّر فتح الملفّ — قد لا تكون عضواً في هذا المكتب الآن.",
+   "ar": "تعذّر فتح الملفّ: قد لا تكون عضواً في هذا المكتب الآن.",
    "kind": "text",
-   "hash": "a6ca02a951b5",
+   "hash": "3f875dbbe53c",
    "file": "src/routes/_authenticated/office.$officeId.tsx"
   },
   "routes/office.files": {
@@ -29834,10 +29834,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.cardP": {
-   "en": "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page — because a child's file isn't a page to browse.",
-   "ar": "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+   "en": "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page; because a child's file isn't a page to browse.",
+   "ar": "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته، لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
    "kind": "text",
-   "hash": "58aaa9383df6",
+   "hash": "11585a7d1130",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.clearAll": {
@@ -30130,10 +30130,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.orphanId.activates": {
-   "en": "The sponsorship starts once payment is confirmed, and you can end it from your dashboard at any time — it stops after the last paid month.",
+   "en": "The sponsorship starts once payment is confirmed, and you can end it from your dashboard at any time; it stops after the last paid month.",
    "ar": "الكفالة تبدأ بعد تأكيد الدفع، ويمكنك إنهاؤها متى شئت من لوحتك فتنتهي بعد آخر شهرٍ مدفوع.",
    "kind": "text",
-   "hash": "8966eccac12d",
+   "hash": "57a8b253224b",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.ages.age_12_14": {
@@ -30215,10 +30215,10 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.barVerifying": {
-   "en": "Under verification — not taking new sponsorships yet",
-   "ar": "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+   "en": "Under verification: not taking new sponsorships yet",
+   "ar": "قيد التحقق: لا يقبل كفالةً جديدة الآن",
    "kind": "text",
-   "hash": "908548fb0299",
+   "hash": "6ed190f0ff09",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.cadence": {
@@ -30244,11 +30244,11 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.coveredPct": {
-   "en": "{0}% covered — {1} still needed",
-   "ar": "تم تغطية {0}% — المتبقي {1}",
+   "en": "{0}% covered, {1} still needed",
+   "ar": "تمّت تغطية {0}%، والمتبقي {1}",
    "kind": "template",
    "params": 2,
-   "hash": "456c9ea4c0d9",
+   "hash": "8a6b08b458da",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.createFailed": {
@@ -30259,10 +30259,10 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.created": {
-   "en": "Your sponsorship request is registered — complete the payment from your dashboard",
+   "en": "Your sponsorship request is registered; complete the payment from your dashboard",
    "ar": "تم تسجيل طلب الكفالة، أكمل الدفع من لوحتك",
    "kind": "text",
-   "hash": "dee6b29a58c1",
+   "hash": "68e696564cba",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.female": {
@@ -30382,10 +30382,10 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.messagePh": {
-   "en": "A word of encouragement — the field organization reviews it before it arrives",
-   "ar": "كلمة تشجيعية — تراجعها الجهة الميدانية قبل أن تصل",
+   "en": "A word of encouragement: the field organization reviews it before it arrives",
+   "ar": "كلمة تشجيعية: تراجعها الجهة الميدانية قبل أن تصل",
    "kind": "text",
-   "hash": "dfc85dac344c",
+   "hash": "b6f5b026e798",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.monthly": {
@@ -30800,10 +30800,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapText": {
-   "en": "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
-   "ar": "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
+   "en": "Choose a country on the map, or from “List”, then pick the kind of support and the amount on its card.",
+   "ar": "اختر دولةً على الخريطة، أو من «قائمة»، ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
    "kind": "text",
-   "hash": "d55109d299e7",
+   "hash": "1b4862f5978b",
    "file": "src/routes/support.tsx"
   },
   "routes/support.mapTitle": {
@@ -31172,9 +31172,9 @@
   },
   "routes/try.admin.cards.access_log": {
    "en": "Who opened a child's file and when, including your own views this session",
-   "ar": "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة",
+   "ar": "من اطّلع على ملفّ طفل ومتى، وفيه اطّلاعك أنت في هذه الجلسة",
    "kind": "text",
-   "hash": "8ff3df370610",
+   "hash": "684e649c5c9d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.cards.documents": {
@@ -31193,9 +31193,9 @@
   },
   "routes/try.admin.cards.pledges": {
    "en": "Activate a pledge or cancel it with a reason, and watch the counter change",
-   "ar": "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد",
+   "ar": "فعّل تعهّداً أو ألغه بسبب، ويتغيّر العدّاد",
    "kind": "text",
-   "hash": "d3e1445133fd",
+   "hash": "06bdeedd3e41",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.cards.sponsorships": {
@@ -31291,9 +31291,9 @@
   },
   "routes/try.admin.lead": {
    "en": "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
-   "ar": "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك — كفالتك وتعهّدك وملفّ جهتك — يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+   "ar": "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك، كفالتك وتعهّدك وملفّ جهتك، يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
    "kind": "text",
-   "hash": "573b4db5eb69",
+   "hash": "14cf5b5f3ec4",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.open": {
@@ -31361,9 +31361,9 @@
   },
   "routes/try.admin.title.title": {
    "en": "Administration: interactive demo",
-   "ar": "الإدارة — عرض تفاعلي",
+   "ar": "الإدارة: عرض تفاعلي",
    "kind": "text",
-   "hash": "d06c5736ef28",
+   "hash": "6641fbde4b12",
    "file": "src/routes/try.admin.tsx"
   },
   "routes/try.admin.today": {
@@ -31403,16 +31403,16 @@
   },
   "routes/try.admin.verifyCards.decisions": {
    "en": "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
-   "ar": "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها — وحسمك يظهر فيه فوراً",
+   "ar": "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها، وحسمك يظهر فيه فوراً",
    "kind": "text",
-   "hash": "e8b583ddb04e",
+   "hash": "0ff8e83dfa1d",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.sources": {
    "en": "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
-   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
+   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV، وتتغيّر العدّادات",
    "kind": "text",
-   "hash": "9dfd1ef6a330",
+   "hash": "855b99ecb659",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.trust": {
@@ -31466,10 +31466,10 @@
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.barVerifying": {
-   "en": "Under verification — not taking new sponsorships yet",
-   "ar": "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+   "en": "Under verification: not taking new sponsorships yet",
+   "ar": "قيد التحقق: لا يقبل كفالةً جديدة الآن",
    "kind": "text",
-   "hash": "908548fb0299",
+   "hash": "6ed190f0ff09",
    "file": "src/routes/try.$childId.tsx"
   },
   "routes/try.childId.cadence": {
@@ -31703,9 +31703,9 @@
   },
   "routes/try.country.title.title": {
    "en": "Country team: interactive demo",
-   "ar": "فريق الدولة — عرض تفاعلي",
+   "ar": "فريق الدولة: عرض تفاعلي",
    "kind": "text",
-   "hash": "6a22234786d2",
+   "hash": "fae5b8b21d65",
    "file": "src/routes/try.country.tsx"
   },
   "routes/try.cycle.age": {
@@ -31724,9 +31724,9 @@
   },
   "routes/try.cycle.approveHint": {
    "en": "Approval needs every document verified, as on the real platform.",
-   "ar": "يُعتمد حين تُوثَّق المستندات كلّها — كما في المنصّة الحقيقية.",
+   "ar": "يُعتمد حين تُوثَّق المستندات كلّها، كما في المنصّة الحقيقية.",
    "kind": "text",
-   "hash": "5c395c3a6770",
+   "hash": "bc85008dff54",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.audit": {
@@ -31794,9 +31794,9 @@
   },
   "routes/try.cycle.lead": {
    "en": "One child's file moving through every role: the care organization enters it, the administration verifies and approves it, it is published in the directory, a supporter sponsors it, and the first monthly report arrives. The same steps as the real platform, without waiting or a server.",
-   "ar": "ملفّ طفلٍ واحد تراه ينتقل عبر كلّ الأدوار: الجهة الميدانية تُدخله، والإدارة توثّقه وتعتمده، فيُنشر في الدليل، فيكفله داعم، فيصل تقرير الشهر الأوّل. الخطوات نفسها في المنصّة الحقيقية — بلا انتظارٍ ولا خادم.",
+   "ar": "ملفّ طفلٍ واحد تراه ينتقل عبر كلّ الأدوار: الجهة الميدانية تُدخله، والإدارة توثّقه وتعتمده، فيُنشر في الدليل، فيكفله داعم، فيصل تقرير الشهر الأوّل. الخطوات نفسها في المنصّة الحقيقية، بلا انتظارٍ ولا خادم.",
    "kind": "text",
-   "hash": "723d65ccd926",
+   "hash": "ded4d01840b3",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.locked": {
@@ -32026,9 +32026,9 @@
   },
   "routes/try.cycle.waitingSponsor": {
    "en": "Waiting for a sponsor: open the file and choose an amount.",
-   "ar": "بانتظار كافل — افتح ملفّه واختر المبلغ.",
+   "ar": "بانتظار كافل: افتح ملفّه واختر المبلغ.",
    "kind": "text",
-   "hash": "e60ded26d78e",
+   "hash": "bb79b3b68d8d",
    "file": "src/routes/try.cycle.lazy.tsx"
   },
   "routes/try.cycle.what.publish": {
@@ -32171,9 +32171,9 @@
   },
   "routes/try.decider.lead": {
    "en": "A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
-   "ar": "أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة — كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة — يحرّك الأرقام ويظهر في سجلّ النشاط.",
+   "ar": "أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة، كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة، يحرّك الأرقام ويظهر في سجلّ النشاط.",
    "kind": "text",
-   "hash": "974e17c9cffe",
+   "hash": "6252a52a6e26",
    "file": "src/routes/try.decider.lazy.tsx"
   },
   "routes/try.decider.pledgedInKind": {
@@ -32404,9 +32404,9 @@
   },
   "routes/try.index.cycleText": {
    "en": "Enter a child's file as a care organization, verify and approve it as the administration, sponsor it as a supporter, and send the first monthly report as an office: in minutes, with the same steps as the real platform.",
-   "ar": "أدخِل ملفّ طفل كجهة ميدانية، ووثّقه واعتمده كإدارة، ثم اكفله كداعم، وأرسل تقرير الشهر الأوّل كمكتب — في دقائق، بالخطوات نفسها في المنصّة الحقيقية.",
+   "ar": "أدخِل ملفّ طفل كجهة ميدانية، ووثّقه واعتمده كإدارة، ثم اكفله كداعم، وأرسل تقرير الشهر الأوّل كمكتب، في دقائق، بالخطوات نفسها في المنصّة الحقيقية.",
    "kind": "text",
-   "hash": "b57eb1a9e3e4",
+   "hash": "798047ca6832",
    "file": "src/routes/try.index.tsx"
   },
   "routes/try.index.cycleTitle": {
@@ -32955,9 +32955,9 @@
   },
   "routes/try.sponsorships.manage.lead": {
    "en": "Pause, resume, a new amount, or end it, with a clear confirmation for each step. In the trial, all of it is simulated in your browser only.",
-   "ar": "إيقافٌ مؤقّت، أو استئناف، أو مبلغٌ جديد، أو إنهاء — بتأكيدٍ واضحٍ لكلّ خطوة. في التجربة يُحاكى كلّ ذلك في متصفّحك وحده.",
+   "ar": "إيقافٌ مؤقّت، أو استئناف، أو مبلغٌ جديد، أو إنهاء، بتأكيدٍ واضحٍ لكلّ خطوة. في التجربة يُحاكى كلّ ذلك في متصفّحك وحده.",
    "kind": "text",
-   "hash": "63530dd1b804",
+   "hash": "18190fd707d9",
    "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
   },
   "routes/try.sponsorships.manage.pageTitle": {
@@ -33160,10 +33160,10 @@
    "file": "src/routes/vision.cycle.tsx"
   },
   "routes/vision.cycle.closing": {
-   "en": "And the orphan at the heart of it all — each layer sees only what it is entitled to.",
-   "ar": "واليتيم في قلبها جميعاً — كلّ طبقةٍ ترى ما يحقّ لها أن تراه.",
+   "en": "And the orphan at the heart of it all, with each layer seeing only what it is entitled to.",
+   "ar": "واليتيم في قلبها جميعاً، كلّ طبقةٍ ترى ما يحقّ لها أن تراه.",
    "kind": "text",
-   "hash": "4b0001c76e6f",
+   "hash": "73bfe1cd4490",
    "file": "src/routes/vision.cycle.tsx"
   },
   "routes/vision.cycle.decided": {
@@ -33464,10 +33464,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.countryLead": {
-   "en": "Need from the operations platform, donations from the support platform — on one map.",
-   "ar": "الحاجة من منصّة التشغيل، والعطاء من منصّة الدعم — على خريطةٍ واحدة.",
+   "en": "Need from the operations platform, donations from the support platform, on one map.",
+   "ar": "الحاجة من منصّة التشغيل، والعطاء من منصّة الدعم، على خريطةٍ واحدة.",
    "kind": "text",
-   "hash": "9b43d921fa72",
+   "hash": "1de3110023aa",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.decideH": {
@@ -33478,10 +33478,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.decideLead": {
-   "en": "The decision-maker sees the aggregate and decides — and the decision returns to both layers:",
-   "ar": "صاحب القرار يرى المجموع، ويقرّر — والقرار يعود إلى الطبقتين:",
+   "en": "The decision-maker sees the aggregate and decides, and the decision returns to both layers:",
+   "ar": "صاحب القرار يرى المجموع، ويقرّر، والقرار يعود إلى الطبقتين:",
    "kind": "text",
-   "hash": "6808e163a2a0",
+   "hash": "61cc20199860",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.funded": {
@@ -33544,10 +33544,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.lead": {
-   "en": "WAMY's board: where we stand and where the next support should go. Aggregates only — no names, no files.",
-   "ar": "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها — لا اسم ولا ملفّ.",
+   "en": "WAMY's board: where we stand and where the next support should go. Aggregates only; no names, no files.",
+   "ar": "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها، لا اسم ولا ملفّ.",
    "kind": "text",
-   "hash": "d6dc26a0d96a",
+   "hash": "4e12f5034a3d",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.liveDonors": {
@@ -33572,10 +33572,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.liveH": {
-   "en": "Albania now — moves with every donation and measurement",
-   "ar": "ألبانيا الآن — يتحرّك مع كلّ تبرّعٍ وقياس",
+   "en": "Albania now: moves with every donation and measurement",
+   "ar": "ألبانيا الآن: يتحرّك مع كلّ تبرّعٍ وقياس",
    "kind": "text",
-   "hash": "a993ef3502b4",
+   "hash": "957f6861310d",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.liveRaised": {
@@ -33686,11 +33686,11 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.campaign.why": {
-   "en": "Largest gap: {0} children, funding at {1}%. Campaign target {2} — appears in the support platform as its own door.",
-   "ar": "أكبر فجوة: {0} طفلاً، والتمويل {1}%. هدف الحملة {2} — تظهر في منصّة الدعم باباً مستقلاً.",
+   "en": "Largest gap: {0} children, funding at {1}%. Campaign target {2}; it appears in the support platform as its own door.",
+   "ar": "أكبر فجوة: {0} طفلاً، والتمويل {1}%. هدف الحملة {2}، وتظهر في منصّة الدعم باباً مستقلاً.",
    "kind": "template",
    "params": 3,
-   "hash": "8154aeb42c7e",
+   "hash": "124c8b9ffb05",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.fundGroup.h": {
@@ -33702,11 +33702,11 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.fundGroup.why": {
-   "en": "An existing group needs {2} to start its sessions — shown first to supporters.",
-   "ar": "مجموعةٌ قائمة تنتظر {2} لتبدأ جلساتها — تُعرض أوّلاً للداعمين.",
+   "en": "An existing group needs {2} to start its sessions; shown first to supporters.",
+   "ar": "مجموعةٌ قائمة تنتظر {2} لتبدأ جلساتها، تُعرض أوّلاً للداعمين.",
    "kind": "template",
    "params": 3,
-   "hash": "6832785a2461",
+   "hash": "e7fa124c89c2",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.newGroup.h": {
@@ -33718,11 +33718,11 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.newGroup.why": {
-   "en": "The free balance covers a full group ({2}) and {0} children still have none — it opens in operations with a qualified supervisor.",
-   "ar": "الرصيد الحرّ يكفي مجموعةً كاملة ({2}) وما زال {0} طفلاً بلا مجموعة — تُفتح في التشغيل بمشرفٍ مؤهَّل.",
+   "en": "The free balance covers a full group ({2}) and {0} children still have none; it opens in operations with a qualified supervisor.",
+   "ar": "الرصيد الحرّ يكفي مجموعةً كاملة ({2}) وما زال {0} طفلاً بلا مجموعة، تُفتح في التشغيل بمشرفٍ مؤهَّل.",
    "kind": "template",
    "params": 3,
-   "hash": "fb6d75257334",
+   "hash": "de77939cedd5",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.redirect.h": {
@@ -33896,10 +33896,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.trendsH": {
-   "en": "Month by month — use “Advance a month” in the bar above",
-   "ar": "الاتجاه شهراً بشهر — «تقدّم شهراً» من الشريط أعلاه",
+   "en": "Month by month: use “Advance a month” in the bar above",
+   "ar": "الاتجاه شهراً بشهر: «تقدّم شهراً» من الشريط أعلاه",
    "kind": "text",
-   "hash": "6dbce99e36ef",
+   "hash": "909a4a2d053a",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.trustees": {
@@ -34018,10 +34018,10 @@
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.groupsLead": {
-   "en": "Completed six sessions and were measured after — a qualification certificate for each group.",
-   "ar": "أتمّت الجلسات الستّ وقيست بعدها — شهادة تأهيلٍ لكلّ مجموعة.",
+   "en": "Completed six sessions and were measured after; a qualification certificate for each group.",
+   "ar": "أتمّت الجلسات الستّ وقيست بعدها، شهادة تأهيلٍ لكلّ مجموعة.",
    "kind": "text",
-   "hash": "4ed59bf96d02",
+   "hash": "b10497981276",
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.kidsH": {
@@ -34032,10 +34032,10 @@
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.kidsLead": {
-   "en": "Children who moved to a higher level — pseudonyms, with the six traits before and after.",
-   "ar": "أطفالٌ انتقلوا إلى مستوى أعلى — أسماءٌ مستعارة، والسمات الستّ قبل الرحلة وبعدها.",
+   "en": "Children who moved to a higher level, shown under pseudonyms, with the six traits before and after.",
+   "ar": "أطفالٌ انتقلوا إلى مستوى أعلى، بأسماءٍ مستعارة، والسمات الستّ قبل الرحلة وبعدها.",
    "kind": "text",
-   "hash": "c0f77dcb0f34",
+   "hash": "0df2bbe32c2f",
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.kidsUp": {
@@ -34053,10 +34053,10 @@
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.lead": {
-   "en": "Impact at three scales: a child who rose a level, a group that completed qualification, and a country where qualification advances — all from measurement before and after the journey.",
-   "ar": "الأثر بثلاث درجات: طفلٌ ارتفع مستواه، ومجموعةٌ أتمّت تأهيلها، ودولةٌ يتقدّم فيها التأهيل — كلّه من القياس قبل الرحلة وبعدها.",
+   "en": "Impact at three scales: a child who rose a level, a group that completed qualification, and a country where qualification advances, all from measurement before and after the journey.",
+   "ar": "الأثر بثلاث درجات: طفلٌ ارتفع مستواه، ومجموعةٌ أتمّت تأهيلها، ودولةٌ يتقدّم فيها التأهيل، كلّه من القياس قبل الرحلة وبعدها.",
    "kind": "text",
-   "hash": "631547e49dd7",
+   "hash": "f64b3c7deab6",
    "file": "src/routes/vision.impact.tsx"
   },
   "routes/vision.impact.level.capable": {
@@ -34160,10 +34160,10 @@
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.cycleText": {
-   "en": "One donation passes through the three layers and returns as a decision — step by step.",
-   "ar": "تبرّعٌ واحد يمرّ بالطبقات الثلاث ويعود قراراً — خطوةً بخطوة.",
+   "en": "One donation passes through the three layers and returns as a decision, step by step.",
+   "ar": "تبرّعٌ واحد يمرّ بالطبقات الثلاث ويعود قراراً، خطوةً بخطوة.",
    "kind": "text",
-   "hash": "dc9cb4932110",
+   "hash": "38a747667feb",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.enter": {
@@ -34188,10 +34188,10 @@
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.liveLead": {
-   "en": "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change — synced across tabs.",
-   "ar": "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
+   "en": "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change; synced across tabs.",
+   "ar": "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر، كلّ ذلك يتزامن بين التبويبات.",
    "kind": "text",
-   "hash": "3177a4085ea6",
+   "hash": "818131479626",
    "file": "src/routes/vision.index.tsx"
   },
   "routes/vision.index.measured": {
@@ -34407,10 +34407,10 @@
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.lead": {
-   "en": "Pick a support track and watch its whole journey: payment and ledger, field operations, its effect on the six traits, then its place in the decision-maker's big picture — on your browser's own data.",
-   "ar": "اختر اتجاه الدعم وشاهد رحلته كاملة: الدفع والقيد، ثم التشغيل في الميدان، ثم أثره في السمات الستّ، ثم موقعه في الصورة الكلية لصاحب القرار — على بيانات متصفّحك نفسها.",
+   "en": "Pick a support track and watch its whole journey: payment and ledger, field operations, its effect on the six traits, then its place in the decision-maker's big picture; on your browser's own data.",
+   "ar": "اختر اتجاه الدعم وشاهد رحلته كاملة: الدفع والقيد، ثم التشغيل في الميدان، ثم أثره في السمات الستّ، ثم موقعه في الصورة الكلية لصاحب القرار، على بيانات متصفّحك نفسها.",
    "kind": "text",
-   "hash": "a8d77bfd8ef8",
+   "hash": "87abcb318b2b",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.measure": {
@@ -34647,10 +34647,10 @@
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.trackLead.inkind": {
-   "en": "Give learning kits delivered to a group with proof — competencies and drive rise.",
+   "en": "Give learning kits delivered to a group with proof; competencies and drive rise.",
    "ar": "تقدّم حقائب تعليمية تُسلَّم للمجموعة بإثبات، فترتفع كفاياتها وهمّتها.",
    "kind": "text",
-   "hash": "e0bfe405186c",
+   "hash": "ade942ac904b",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.trackLead.qualify": {
@@ -34661,10 +34661,10 @@
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.trackLead.sponsor": {
-   "en": "Sponsor a child monthly, delivered with proof — resilience and awareness rise.",
+   "en": "Sponsor a child monthly, delivered with proof; resilience and awareness rise.",
    "ar": "تكفل طفلاً بمبلغٍ شهري يصله بإثبات، فيرتفع صموده ودرايته.",
    "kind": "text",
-   "hash": "7bb40d85e894",
+   "hash": "70eacf3d5f86",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.traitsH": {
@@ -34675,18 +34675,18 @@
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.traitsLead": {
-   "en": "{0}'s file — a pseudonym. Gold marks what this journey changed.",
-   "ar": "ملفّ {0} — اسمٌ مستعار. الذهبيّ ما تغيّر في هذه الرحلة.",
+   "en": "{0}'s file (a pseudonym). Gold marks what this journey changed.",
+   "ar": "ملفّ {0} (اسمٌ مستعار). الذهبيّ ما تغيّر في هذه الرحلة.",
    "kind": "template",
    "params": 1,
-   "hash": "adc22b883ead",
+   "hash": "bd66a8bf6cbc",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.journey.unavailable": {
-   "en": "No destination is available for this track in your sandbox now — start a fresh sandbox below.",
-   "ar": "لا توجد وجهةٌ متاحة لهذا الاتجاه في بيئتك الآن — ابدأ بيئةً جديدة من أسفل الصفحة.",
+   "en": "No destination is available for this track in your sandbox now; start a fresh sandbox below.",
+   "ar": "لا توجد وجهةٌ متاحة لهذا الاتجاه في بيئتك الآن، ابدأ بيئةً جديدة من أسفل الصفحة.",
    "kind": "text",
-   "hash": "ca1aec367140",
+   "hash": "e75f14181beb",
    "file": "src/routes/vision.journey.tsx"
   },
   "routes/vision.me.after": {
@@ -34769,10 +34769,10 @@
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.filesLead": {
-   "en": "Pseudonym, age and stage — no photo, no place. Tap a file to see the journey.",
-   "ar": "أسماءٌ مستعارة وعمرٌ ومرحلة — بلا صورةٍ ولا مكان. اضغط ملفاً لترى رحلته.",
+   "en": "Pseudonym, age and stage: no photo, no place. Tap a file to see the journey.",
+   "ar": "أسماءٌ مستعارة وعمرٌ ومرحلة، بلا صورةٍ ولا مكان. اضغط ملفاً لترى رحلته.",
    "kind": "text",
-   "hash": "65179fc23dbc",
+   "hash": "d01174b52f42",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.funding": {
@@ -34945,10 +34945,10 @@
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.privacy": {
-   "en": "A pseudonym. No photo, place or school — this is all a supporter sees.",
-   "ar": "اسمٌ مستعار. لا صورة ولا موقع ولا مدرسة — هذا كلّ ما يراه الداعم.",
+   "en": "A pseudonym. No photo, place or school; this is all a supporter sees.",
+   "ar": "اسمٌ مستعار. لا صورة ولا موقع ولا مدرسة، هذا كلّ ما يراه الداعم.",
    "kind": "text",
-   "hash": "ffbdc8a818f4",
+   "hash": "c74f07ff5c96",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.recKind.campaign": {
@@ -35015,10 +35015,10 @@
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.roles.decider.text": {
-   "en": "See aggregate indicators and gaps, and approve decisions — no names, no files.",
-   "ar": "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات — بلا اسمٍ ولا ملفّ.",
+   "en": "See aggregate indicators and gaps, and approve decisions; no names, no files.",
+   "ar": "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات، بلا اسمٍ ولا ملفّ.",
    "kind": "text",
-   "hash": "613a7055aa86",
+   "hash": "c491d63a8e01",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.roles.supervisor.cta": {
@@ -35148,10 +35148,10 @@
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.supLead": {
-   "en": "Record each session after it meets, and the follow-up measurement after session six — it reaches the supporter and the board at once.",
-   "ar": "سجّل الجلسة بعد انعقادها، والقياس البعدي بعد الجلسة السادسة — يصل الداعمَ والقرارَ فوراً.",
+   "en": "Record each session after it meets, and the follow-up measurement after session six; it reaches the supporter and the board at once.",
+   "ar": "سجّل الجلسة بعد انعقادها، والقياس البعدي بعد الجلسة السادسة، يصل الداعمَ والقرارَ فوراً.",
    "kind": "text",
-   "hash": "bc48f8ef7f58",
+   "hash": "4e358c1e8ee6",
    "file": "src/routes/vision.me.tsx"
   },
   "routes/vision.me.switchRole": {
@@ -35260,10 +35260,10 @@
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.lead": {
-   "en": "Every country with a WAMY office or documented field activity gets a sample board — and stays a sample until its operations platform is actually connected, when its real figures appear.",
-   "ar": "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية — وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
+   "en": "Every country with a WAMY office or documented field activity gets a sample board, which stays a sample until its operations platform is actually connected, when its real figures appear.",
+   "ar": "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية، وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
    "kind": "text",
-   "hash": "79131400b1f8",
+   "hash": "df6e3941969b",
    "file": "src/routes/vision.network.tsx"
   },
   "routes/vision.network.live": {
@@ -35499,10 +35499,10 @@
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.fileLead": {
-   "en": "A care circle of supervisor, guardian, religious mentor and sponsor — each sees what they are entitled to.",
-   "ar": "دائرة رعاية تجمع المشرف والوليّ والمرجع الشرعي والكافل — كلٌّ يرى ما يحقّ له.",
+   "en": "A care circle of supervisor, guardian, religious mentor and sponsor, where each sees what they are entitled to.",
+   "ar": "دائرة رعاية تجمع المشرف والوليّ والمرجع الشرعي والكافل، كلٌّ يرى ما يحقّ له.",
    "kind": "text",
-   "hash": "354cd7c4a342",
+   "hash": "212fb5c64026",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.fromDecision": {
@@ -35556,10 +35556,10 @@
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.lead": {
-   "en": "The Rowad platform as it will connect to the system: the command centre, the groups, every orphan's file and the live report — all updated from the field.",
-   "ar": "منصّة الرواد كما ستتّصل بالمنظومة: مركز القيادة، والمجموعات، وملف كل يتيم، والتقرير الحي — كلّه يتحدّث من الميدان أولاً بأول.",
+   "en": "The Rowad platform as it will connect to the system: the command centre, the groups, every orphan's file and the live report, all updated from the field.",
+   "ar": "منصّة الرواد كما ستتّصل بالمنظومة: مركز القيادة، والمجموعات، وملف كل يتيم، والتقرير الحي، كلّه يتحدّث من الميدان أولاً بأول.",
    "kind": "text",
-   "hash": "42d8dbab8157",
+   "hash": "85efbca30090",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.measure": {
@@ -35679,24 +35679,24 @@
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.syncLines.0": {
-   "en": "Group status and sessions — no names",
-   "ar": "حال المجموعة وجلساتها — بلا أسماء",
+   "en": "Group status and sessions: no names",
+   "ar": "حال المجموعة وجلساتها: بلا أسماء",
    "kind": "text",
-   "hash": "aacbf161e38f",
+   "hash": "11f21a9d1f7f",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.syncLines.1": {
-   "en": "Average traits before and after — per group",
-   "ar": "متوسّط السمات قبل وبعد — لكل مجموعة",
+   "en": "Average traits before and after, per group",
+   "ar": "متوسّط السمات قبل وبعد، لكل مجموعة",
    "kind": "text",
-   "hash": "e23cec751bb2",
+   "hash": "1407bfba530e",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.syncLines.2": {
-   "en": "Disbursement and delivery proof — frozen by fingerprint",
-   "ar": "إثبات الصرف والتسليم — مجمَّدًا ببصمته",
+   "en": "Disbursement and delivery proof: frozen by fingerprint",
+   "ar": "إثبات الصرف والتسليم: مجمَّدًا ببصمته",
    "kind": "text",
-   "hash": "882a2ada7213",
+   "hash": "6dcfe964ecc2",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.tabCommand": {
@@ -35742,10 +35742,10 @@
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.operations.waitingNote": {
-   "en": "Sessions start once it is fully funded — donate to it from the money journey.",
-   "ar": "تبدأ جلساتها حين يكتمل تمويلها — تبرّع لها من رحلة المال.",
+   "en": "Sessions start once it is fully funded; donate to it from the money journey.",
+   "ar": "تبدأ جلساتها حين يكتمل تمويلها، تبرّع لها من رحلة المال.",
    "kind": "text",
-   "hash": "e027d447bfa9",
+   "hash": "f8963a383f13",
    "file": "src/routes/vision.operations.tsx"
   },
   "routes/vision.payments.acDonor": {
@@ -35784,10 +35784,10 @@
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.acOfficeNote": {
-   "en": "Monthly disbursement — in EUR",
-   "ar": "صرفٌ شهري — باليورو",
+   "en": "Monthly disbursement: in EUR",
+   "ar": "صرفٌ شهري: باليورو",
    "kind": "text",
-   "hash": "8c99cfa90c06",
+   "hash": "cb148267427f",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.acProvider": {
@@ -35812,10 +35812,10 @@
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.acWamyNote": {
-   "en": "Where all money settles — in the platform's unified currency",
-   "ar": "يستقرّ فيه كلّ مال — بعملة المنصّة الموحّدة",
+   "en": "Where all money settles: in the platform's unified currency",
+   "ar": "يستقرّ فيه كلّ مال، بعملة المنصّة الموحّدة",
    "kind": "text",
-   "hash": "5e4fa0a6e78b",
+   "hash": "b7b0b301d8f1",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.accountsH": {
@@ -35868,10 +35868,10 @@
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.bankSteps.3": {
-   "en": "A different amount passes only with an explicit note — then invoice and activation",
-   "ar": "فرقٌ في المبلغ لا يمرّ إلا بإقرارٍ وملاحظة — ثم الفاتورة والتفعيل",
+   "en": "A different amount passes only with an explicit note, then invoice and activation",
+   "ar": "فرقٌ في المبلغ لا يمرّ إلا بإقرارٍ وملاحظة، ثم الفاتورة والتفعيل",
    "kind": "text",
-   "hash": "6e20abd9888f",
+   "hash": "41b2fba07bff",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.card": {
@@ -35882,10 +35882,10 @@
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.cardSteps.0": {
-   "en": "Creem's hosted checkout — the card never touches the platform",
-   "ar": "صفحة دفع Creem المستضافة — لا تمرّ البطاقة بالمنصّة",
+   "en": "Creem's hosted checkout: the card never touches the platform",
+   "ar": "صفحة دفع Creem المستضافة، لا تمرّ البطاقة بالمنصّة",
    "kind": "text",
-   "hash": "3d1c96fc9251",
+   "hash": "8a8b16ee8346",
    "file": "src/routes/vision.payments.tsx"
   },
   "routes/vision.payments.cardSteps.1": {
@@ -36295,10 +36295,10 @@
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.pending": {
-   "en": "The transfer awaits reconciliation — the receipt is issued after.",
-   "ar": "التحويل بانتظار المطابقة — يصدر الإيصال بعدها.",
+   "en": "The transfer awaits reconciliation; the receipt is issued afterwards.",
+   "ar": "التحويل بانتظار المطابقة، ويصدر الإيصال بعدها.",
    "kind": "text",
-   "hash": "baa014412112",
+   "hash": "36f462516b6b",
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.print": {
@@ -36309,10 +36309,10 @@
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.thanks": {
-   "en": "Thank you — the impact of your support reaches you from operations.",
-   "ar": "جزاك الله خيراً — أثر دعمك يصلك من منصّة التشغيل.",
+   "en": "Thank you. The impact of your support reaches you from operations.",
+   "ar": "جزاك الله خيراً. أثر دعمك يصلك من منصّة التشغيل.",
    "kind": "text",
-   "hash": "e327851be0cc",
+   "hash": "c8f8aaea7e17",
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.title": {
@@ -36330,10 +36330,10 @@
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.watermark": {
-   "en": "Sandbox — not an official receipt",
-   "ar": "تجريبي — ليس إيصالاً رسمياً",
+   "en": "Sandbox: not an official receipt",
+   "ar": "تجريبي: ليس إيصالاً رسمياً",
    "kind": "text",
-   "hash": "131b341131ba",
+   "hash": "f3c603f74700",
    "file": "src/routes/vision.receipt.$id.tsx"
   }
  },

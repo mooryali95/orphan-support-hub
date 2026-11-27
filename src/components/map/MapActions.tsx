@@ -27,7 +27,7 @@ const COPY = defineCopy("components/map/MapActions", {
 
 /**
  * ما يفعله الزائر من بطاقة الدولة أو المنطقة: يتصفّح من ينتظر، ويدعم
- * المكان نفسه. ومن لم يدخل بعد يدخل في نافذةٍ فوق الخارطة، ثم يكمل.
+ * المكان نفسه. ومن لم يدخل بعد يدخل في نافذةٍ فوق الخريطة، ثم يكمل.
  */
 export function MapActions({ ctx }: { ctx: MapActionContext }) {
   const { user } = useAuth();
@@ -45,7 +45,7 @@ export function MapActions({ ctx }: { ctx: MapActionContext }) {
         <Link
           to="/orphans"
           search={{
-            // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخارطة.
+            // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخريطة.
             country,
             ...(ctx.regionValue ? { region: ctx.regionValue } : {}),
             funding: "open",

@@ -28,7 +28,7 @@ const COPY = defineCopy("components/offices/OfficesMap", {
       survey_pending: "يُصنَّف بالمسح",
       activity_scope: "نطاق نشاط",
     } satisfies Record<OfficeCategory, string>,
-    demo: "تجريبي — قيد المراجعة",
+    demo: "تجريبي: قيد المراجعة",
     real: "معتمد",
     countryLevel: "على مستوى الدولة",
     source: (d: string) => `المصدر: سجلّ الحصر، اطّلاع ${d}`,
@@ -49,7 +49,7 @@ const COPY = defineCopy("components/offices/OfficesMap", {
       survey_pending: "To be classified by survey",
       activity_scope: "Activity scope",
     } satisfies Record<OfficeCategory, string>,
-    demo: "Sample — under review",
+    demo: "Sample: under review",
     real: "Approved",
     countryLevel: "Country level",
     source: (d: string) => `Source: office register, accessed ${d}`,
@@ -63,7 +63,7 @@ const COPY = defineCopy("components/offices/OfficesMap", {
 const kindOf = (o: PublicOffice): NetworkKind => (o.demo ? "demo" : "office");
 
 /**
- * مكاتب الندوة على الخارطة نفسها التي تعرض الشبكة في الصفحة الأولى، والمصدر سجلّ المكاتب في
+ * مكاتب الندوة على الخريطة نفسها التي تعرض الشبكة في الصفحة الأولى، والمصدر سجلّ المكاتب في
  * القاعدة. الإضافة والتعديل والإيقاف من لوحة الإدارة (المكاتب).
  */
 export function OfficesMap() {

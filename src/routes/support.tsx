@@ -48,7 +48,7 @@ const search = z.object({
   orphan: z.string().uuid().optional(),
   name: z.string().max(120).optional(),
   kind: z.enum(["qualification", "in_kind"]).optional(),
-  // موضع الخارطة: الدولة (رمز) والمنطقة (كما في القاعدة).
+  // موضع الخريطة: الدولة (رمز) والمنطقة (كما في القاعدة).
   c: z
     .string()
     .regex(/^[A-Z]{2}$/)
@@ -100,7 +100,7 @@ const COPY = defineCopy("routes/support", {
     pledged: "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
     failed: "تعذّر التسجيل.",
     mapTitle: "أين تريد أن تدعم؟",
-    mapText: "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
+    mapText: "اختر دولةً على الخريطة، أو من «قائمة»، ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
     supportRegion: "ادعم هذه المنطقة",
     supportCountry: "ادعم هذه الدولة",
     h1: "اختر أثرك",
@@ -171,7 +171,7 @@ const COPY = defineCopy("routes/support", {
     failed: "It couldn't be recorded.",
     mapTitle: "Where would you like to support?",
     mapText:
-      "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
+      "Choose a country on the map, or from “List”, then pick the kind of support and the amount on its card.",
     supportRegion: "Support this region",
     supportCountry: "Support this country",
     h1: "Choose your impact",
@@ -365,7 +365,7 @@ function RealSupportPage() {
       ]
     : [];
 
-  /** ما اختير على الخارطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
+  /** ما اختير على الخريطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
   function applyPlace(code: string | null, region: string | null) {
     if (!catalog || !code) return;
     const c = catalog.countries.find((x) => x.code === code || resolveCountry(x.name) === code);
@@ -383,13 +383,13 @@ function RealSupportPage() {
     }
   }
 
-  // القادم من بطاقة الخارطة في الصفحة الأولى يجد المكان مختاراً.
+  // القادم من بطاقة الخريطة في الصفحة الأولى يجد المكان مختاراً.
   useEffect(() => {
     if (!targetType && !orphan) applyPlace(mapCountry ?? null, mapRegion ?? null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog]);
 
-  // الدولة في الرابط؛ والمنطقة على الخارطة محلّية (معرّفها جغرافيّ، لا قيمة القاعدة).
+  // الدولة في الرابط؛ والمنطقة على الخريطة محلّية (معرّفها جغرافيّ، لا قيمة القاعدة).
   const [regionId, setRegionId] = useState<string | null>(null);
   const selection: MapSelection = { country: mapCountry ?? null, region: regionId };
   const onSelect = (sel: MapSelection) => {
@@ -447,7 +447,7 @@ function RealSupportPage() {
       <SiteHeader />
       {!orphan && <SupportPicks />}
       {!orphan && (
-        // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخارطة هي المحتوى هنا.
+        // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخريطة هي المحتوى هنا.
         <main id="main" tabIndex={-1} className="scroll-mt-16 outline-none">
           <h1 className="sr-only">{t.h1}</h1>
           <div id="support-map" className="relative scroll-mt-16">

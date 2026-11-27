@@ -27,7 +27,7 @@ const STEPS: Array<[keyof SourceChecklist, string, string]> = [
   ["first_sync", "أوّل مزامنة", "تصل أوّل دفعة من المنصّة"],
   ["reconciled", "مطابقةٌ نظيفة", "تطابق كل المعرّفات بلا انحراف"],
   ["office_reviewed", "مراجعة المكتب الوطني", "يراجع المكتب البيانات المستوردة"],
-  ["regions_mapped", "ربط المناطق بالخارطة", "أسماء المناطق تطابق الخارطة"],
+  ["regions_mapped", "ربط المناطق بالخريطة", "أسماء المناطق تطابق الخريطة"],
 ];
 
 const STATUS: Record<SourceRow["status"], { label: string; tone: string }> = {

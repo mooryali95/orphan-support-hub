@@ -65,13 +65,13 @@ function PrivacyAr() {
       <Section title="2. أساس المعالجة">
         <ul>
           <li>
-            <strong>موافقة ولي الأمر</strong> — لبيانات اليتيم السرّية ووثائقه وصورته.
+            <strong>موافقة ولي الأمر</strong>: لبيانات اليتيم السرّية ووثائقه وصورته.
           </li>
           <li>
-            <strong>المصلحة المشروعة</strong> — لتشغيل الكفالة وإيصال التقارير.
+            <strong>المصلحة المشروعة</strong>: لتشغيل الكفالة وإيصال التقارير.
           </li>
           <li>
-            <strong>الالتزام النظامي</strong> — للسجلّات المالية.
+            <strong>الالتزام النظامي</strong>: للسجلّات المالية.
           </li>
         </ul>
       </Section>
@@ -85,7 +85,7 @@ function PrivacyAr() {
             <strong>موافقة موثّقة</strong> من ولي الأمر، مرفوعة كوثيقة في النظام.
           </li>
           <li>
-            <strong>صورة لا تُعرّف صاحبها</strong> (الوجه محجوب) — ولا تحتاج وثيقة.
+            <strong>صورة لا تُعرّف صاحبها</strong> (الوجه محجوب)، ولا تحتاج وثيقة.
           </li>
         </ul>
         <p>
@@ -104,7 +104,7 @@ function PrivacyAr() {
             <strong>الجهة الميدانية:</strong> ملفّات أيتامها وحدها.
           </li>
           <li>
-            <strong>ولي الأمر:</strong> ملفّ من يرعاه وتقاريره — ولا يرى شيئاً عن الكفلاء.
+            <strong>ولي الأمر:</strong> ملفّ من يرعاه وتقاريره، ولا يرى شيئاً عن الكفلاء.
           </li>
           <li>
             <strong>الإدارة:</strong> ما يلزم للمراجعة، وكل قرار تتّخذه يُسجَّل في سجلّ تدقيق.
@@ -127,7 +127,7 @@ function PrivacyAr() {
             </tr>
             <tr>
               <td>الصورة</td>
-              <td>تُحذف فور سحب الموافقة — بلا انتظار</td>
+              <td>تُحذف فور سحب الموافقة، بلا انتظار</td>
             </tr>
             <tr>
               <td>تقارير الأثر</td>
@@ -148,7 +148,7 @@ function PrivacyAr() {
       <Section title="6. حقوقك">
         <p>
           لك أن تطلب نسخة من بياناتك، أو تصحيحها، أو حذفها، أو سحب موافقتك. ويُستثنى من الحذف ما
-          يلزمنا الاحتفاظ به نظاماً — وأهمّه السجلّ المالي.
+          يلزمنا الاحتفاظ به نظاماً، وأهمّه السجلّ المالي.
         </p>
         <p>
           ولطلبات بيانات الأطفال: يُقدّمها <strong>ولي الأمر</strong> أو الجهة الميدانية المسؤولة.
@@ -171,13 +171,13 @@ function PrivacyAr() {
       <Section title="8. أطراف ثالثة">
         <ul>
           <li>
-            <strong>مزوّد الاستضافة وقاعدة البيانات</strong> — لتشغيل المنصّة.
+            <strong>مزوّد الاستضافة وقاعدة البيانات</strong>: لتشغيل المنصّة.
           </li>
           <li>
-            <strong>مزوّد الدفع</strong> — يعالج الدفع ولا نحفظ نحن بيانات البطاقة.
+            <strong>مزوّد الدفع</strong>: يعالج الدفع ولا نحفظ نحن بيانات البطاقة.
           </li>
           <li>
-            <strong>مزوّد البريد</strong> — لإرسال الإشعارات.
+            <strong>مزوّد البريد</strong>: لإرسال الإشعارات.
           </li>
         </ul>
         <p>ولا نبيع بياناتك ولا نؤجّرها لأحد، ولا نستعملها في إعلانات.</p>
@@ -192,7 +192,7 @@ function PrivacyEn() {
       title="Privacy policy"
       binding
       updated="2026-08-26"
-      intro="This platform processes children's data — among the most sensitive categories in any data protection regime — and we treat it that way, not as ordinary user data."
+      intro="This platform processes children's data, among the most sensitive categories in any data protection regime, and we treat it that way, not as ordinary user data."
     >
       <Section title="1. Data we collect">
         <p className="font-medium">About the orphan:</p>
@@ -228,14 +228,14 @@ function PrivacyEn() {
       <Section title="2. Legal basis">
         <ul>
           <li>
-            <strong>Guardian consent</strong> — for the orphan's confidential data, documents and
+            <strong>Guardian consent</strong>: for the orphan's confidential data, documents and
             photo.
           </li>
           <li>
-            <strong>Legitimate interest</strong> — to run the sponsorship and deliver reports.
+            <strong>Legitimate interest</strong>: to run the sponsorship and deliver reports.
           </li>
           <li>
-            <strong>Legal obligation</strong> — for financial records.
+            <strong>Legal obligation</strong>: for financial records.
           </li>
         </ul>
       </Section>
@@ -251,12 +251,12 @@ function PrivacyEn() {
             system.
           </li>
           <li>
-            <strong>A photo that doesn't identify the child</strong> (face hidden) — no document
+            <strong>A photo that doesn't identify the child</strong> (face hidden): no document
             needed.
           </li>
         </ul>
         <p>
-          Withdrawing consent removes the photo <strong>immediately</strong> — not after a review or
+          Withdrawing consent removes the photo <strong>immediately</strong>, not after a review or
           a delay. This is enforced in the database itself, not the interface, so it can't be
           bypassed.
         </p>
@@ -272,7 +272,7 @@ function PrivacyEn() {
             <strong>Field organization:</strong> only its own children's files.
           </li>
           <li>
-            <strong>Guardian:</strong> the file and reports of the child in their care — and nothing
+            <strong>Guardian:</strong> the file and reports of the child in their care, and nothing
             about the sponsors.
           </li>
           <li>
@@ -297,7 +297,7 @@ function PrivacyEn() {
             </tr>
             <tr>
               <td>Photo</td>
-              <td>Deleted as soon as consent is withdrawn — no waiting</td>
+              <td>Deleted as soon as consent is withdrawn, no waiting</td>
             </tr>
             <tr>
               <td>Impact reports</td>
@@ -318,7 +318,7 @@ function PrivacyEn() {
       <Section title="6. Your rights">
         <p>
           You may ask for a copy of your data, its correction or deletion, or withdraw your consent.
-          Data we are legally required to keep — above all financial records — is exempt from
+          Data we are legally required to keep, above all financial records, is exempt from
           deletion.
         </p>
         <p>
@@ -345,13 +345,13 @@ function PrivacyEn() {
       <Section title="8. Third parties">
         <ul>
           <li>
-            <strong>Hosting and database provider</strong> — to run the platform.
+            <strong>Hosting and database provider</strong>: to run the platform.
           </li>
           <li>
-            <strong>Payment provider</strong> — processes payments; we never store card data.
+            <strong>Payment provider</strong>: processes payments; we never store card data.
           </li>
           <li>
-            <strong>Email provider</strong> — to send notifications.
+            <strong>Email provider</strong>: to send notifications.
           </li>
         </ul>
         <p>We don't sell or rent your data to anyone, and we don't use it for advertising.</p>

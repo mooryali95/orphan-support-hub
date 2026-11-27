@@ -206,7 +206,7 @@ const COPY = defineCopy("lib/office-gap", {
     absent: "لا حضور مؤكَّداً للندوة حالياً",
     sep: "؛ ",
     end: ".",
-    noData: "لا رقم موثوقاً لعدد الأيتام بعد — يلزم مصدرٌ رسمي قبل الترتيب",
+    noData: "لا رقم موثوقاً لعدد الأيتام بعد، يلزم مصدرٌ رسمي قبل الترتيب",
     unverified: (n: string, year: string) => `الرقم المتداول (${n}، ${year}) تعذّر التحقّق منه`,
   },
   en: {
@@ -219,7 +219,7 @@ const COPY = defineCopy("lib/office-gap", {
     absent: "no confirmed WAMY presence at the moment",
     sep: "; ",
     end: ".",
-    noData: "No reliable orphan figure yet — an official source is needed before ranking",
+    noData: "No reliable orphan figure yet; an official source is needed before ranking",
     unverified: (n: string, year: string) =>
       `the circulating figure (${n}, ${year}) could not be verified`,
   },

@@ -304,8 +304,8 @@ describe("القاعة والمنصّة: أسماء المسارات واحدة"
   });
 });
 
-describe("القاعة والخارطة: شبكةٌ واحدة", () => {
-  it("كلّ دولةٍ في القاعة بحالتها هي نفسها في طبقة الشبكة على الخارطة", async () => {
+describe("القاعة والخريطة: شبكةٌ واحدة", () => {
+  it("كلّ دولةٍ في القاعة بحالتها هي نفسها في طبقة الشبكة على الخريطة", async () => {
     const { networkPaint } = await import("@/components/map/network-layer");
     const paint = networkPaint("network", { showUnconfirmed: true });
     for (const c of COUNTRIES) {

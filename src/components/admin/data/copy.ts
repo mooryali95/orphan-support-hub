@@ -78,7 +78,7 @@ export const COPY = defineCopy("components/admin/data", {
       emptyText: "أضف دولةً من القائمة أدناه، أو طابق دول الشبكة دفعةً واحدة.",
       noMatch: "لا دولة تطابق البحث.",
       inNetwork: "في الشبكة",
-      inNetworkHint: "تظهر وجهةً للتأهيل والتبرّع العيني على الخارطة",
+      inNetworkHint: "تظهر وجهةً للتأهيل والتبرّع العيني على الخريطة",
       status: "حال الكفالة",
       statusLabels: {
         planned: "مخطّطة",
@@ -164,7 +164,7 @@ export const COPY = defineCopy("components/admin/data", {
         "ar",
       ),
       empty: "لا مناطق لهذه الدولة بعد",
-      emptyText: "ابدأ بالقائمة المقترحة من الخارطة ثم عدّلها، أو أضف المناطق يدوياً.",
+      emptyText: "ابدأ بالقائمة المقترحة من الخريطة ثم عدّلها، أو أضف المناطق يدوياً.",
       name: "اسم المنطقة",
       nameLocal: "الاسم المحلّي",
       addPlaceholder: "اسم منطقةٍ جديدة",
@@ -192,10 +192,10 @@ export const COPY = defineCopy("components/admin/data", {
       renameCascadeHint: "لا يُمسّ ما تملكه منصّة تشغيل ولا الملفّ المقفول؛ ويُذكر كم بقي.",
       renamed: (moved: number, left: number) =>
         `حُفظ الاسم. نُقل ${moved} ملفّاً، وبقي ${left} بالاسم القديم.`,
-      starterButton: "اقترح مناطق من الخارطة",
+      starterButton: "اقترح مناطق من الخريطة",
       starterTitle: "قائمة مقترحة",
       starterLead:
-        "أسماء المناطق كما ترسمها الخارطة. عدّل ما تشاء وألغِ تحديد ما لا تريد، ثم اقبل.",
+        "أسماء المناطق كما ترسمها الخريطة. عدّل ما تشاء وألغِ تحديد ما لا تريد، ثم اقبل.",
       starterNone: "لا قائمة مقترحة لهذه الدولة، أو كلّ مناطقها في السجلّ.",
       starterAccept: pluralOf(
         {
@@ -259,7 +259,7 @@ export const COPY = defineCopy("components/admin/data", {
       groupRegionDiffers: "المنطقة التي اخترتها غير منطقة المجموعة. حُفظت كما اخترتها.",
       dupTitle: "قد يكون هذا الشخص مُدخَلاً من قبل",
       dupText: "راجع الملفّات المطابقة. إن كان شخصاً آخر فاحفظه، وإلا فألغِ.",
-      dupConfirm: "شخصٌ آخر — احفظ",
+      dupConfirm: "شخصٌ آخر: احفظ",
       dupReasons: {
         same_reference: "المرجع نفسه",
         same_name: "الاسم نفسه",
@@ -269,7 +269,7 @@ export const COPY = defineCopy("components/admin/data", {
       },
       recentTitle: "آخر ما أُدخل",
       recentEmpty: "لا ملفّات بعد في هذه الدولة.",
-      synced: (source: string) => `من منصّة التشغيل ${source} — للقراءة`,
+      synced: (source: string) => `من منصّة التشغيل ${source}، للقراءة فقط`,
       locked: "مقفول",
       rowErrors: {
         name_required: "الاسم المستعار مطلوب (حرفان إلى ثمانين).",
@@ -310,7 +310,7 @@ export const COPY = defineCopy("components/admin/data", {
       create: "أنشئ المجموعة",
       created: "أُنشئت المجموعة",
       local: "محلّية",
-      synced: (source: string) => `من ${source} — للقراءة`,
+      synced: (source: string) => `من ${source}، للقراءة فقط`,
       members: pluralOf(
         {
           zero: "بلا أعضاء",
@@ -401,7 +401,7 @@ export const COPY = defineCopy("components/admin/data", {
       dryRunning: "جارٍ الفحص",
       dryRunDone: "انتهى الفحص. لم يُحفظ شيء.",
       dryRunFirst: "افحص على الخادم أوّلاً: هناك يُكشف التكرار مع الملفّات القائمة.",
-      importAnyway: "شخصٌ آخر — احفظه",
+      importAnyway: "شخصٌ آخر: احفظه",
       matches: (code: string, name: string) => `يطابق ${code} (${name})`,
       inFile: (row: number) => `يطابق الصفّ ${row} في الملفّ`,
       commit: pluralOf(
@@ -687,7 +687,7 @@ export const COPY = defineCopy("components/admin/data", {
         "The region you chose differs from the group's region. It was saved as you chose.",
       dupTitle: "This person may already have been entered",
       dupText: "Review the matching files. If this is a different person, save; otherwise cancel.",
-      dupConfirm: "Different person — save",
+      dupConfirm: "Different person: save",
       dupReasons: {
         same_reference: "Same reference",
         same_name: "Same name",
@@ -697,7 +697,7 @@ export const COPY = defineCopy("components/admin/data", {
       },
       recentTitle: "Most recently entered",
       recentEmpty: "No files yet in this country.",
-      synced: (source: string) => `From operating platform ${source} — read only`,
+      synced: (source: string) => `From operating platform ${source} (read only)`,
       locked: "Locked",
       rowErrors: {
         name_required: "A pseudonym is required (two to eighty characters).",
@@ -737,7 +737,7 @@ export const COPY = defineCopy("components/admin/data", {
       create: "Create the group",
       created: "Group created",
       local: "Local",
-      synced: (source: string) => `From ${source} — read only`,
+      synced: (source: string) => `From ${source} (read only)`,
       members: pluralOf({ zero: "No members", one: "One member", other: "{0} members" }, 0, "en"),
       open: "Members",
       membersTitle: (name: string) => `Members of ${name}`,
@@ -818,7 +818,7 @@ export const COPY = defineCopy("components/admin/data", {
       dryRunDone: "Check finished. Nothing was saved.",
       dryRunFirst:
         "Check on the server first: that is where duplicates against existing files are found.",
-      importAnyway: "Different person — save",
+      importAnyway: "Different person: save",
       matches: (code: string, name: string) => `Matches ${code} (${name})`,
       inFile: (row: number) => `Matches row ${row} in the file`,
       commit: pluralOf(

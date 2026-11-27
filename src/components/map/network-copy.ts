@@ -1,6 +1,6 @@
 /**
  * نصوص طبقتي الشبكة — مساحة اسمٍ واحدة (`components/map/NetworkLayer`) تُشارَك
- * بين الخارطة وبطاقتها وقسم «قرار التوسّع».
+ * بين الخريطة وبطاقتها وقسم «قرار التوسّع».
  */
 import { countryName } from "@/lib/countries";
 import { copyOf, defineCopy, type Locale, useLocale } from "@/lib/locale";
@@ -22,8 +22,8 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     hq: "المقرّ الرئيسي",
     office: "مكتب مؤكَّد",
     field: "نشاط ميداني",
-    unconfirmed: "غير مؤكَّد — للإدارة فقط",
-    demo: "مكتب تجريبي — قيد المراجعة",
+    unconfirmed: "غير مؤكَّد: للإدارة فقط",
+    demo: "مكتب تجريبي: قيد المراجعة",
     high: "أولوية عالية",
     medium: "أولوية متوسطة",
     data: "تحتاج بيانات",
@@ -38,7 +38,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     notInNetwork: "لا بيانات بحثية للندوة في هذه الدولة.",
     noPresence: "لا حضور مؤكَّداً للندوة حالياً.",
     noPresenceNote: "يُعرض الحضور متى أكّدته الأمانة العامة أو مصدرٌ مؤرَّخ حديث.",
-    lastEvidence: (year: string) => `آخر دليلٍ وجده البحث: ${year} — قديمٌ أو غير كافٍ للتأكيد.`,
+    lastEvidence: (year: string) => `آخر دليلٍ وجده البحث: ${year}، وهو قديمٌ أو غير كافٍ للتأكيد.`,
     noEvidence: "لم يجد البحث دليلاً على مكتبٍ أو نشاط.",
     city: "المدينة",
     cityUnknown: "المدينة غير مؤكَّدة",
@@ -56,17 +56,17 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     decisionLead:
       "الدول التي ليس فيها مكتبٌ مؤكَّد، مرتّبةً بعدد الأيتام التقديري موزوناً بثقة الرقم (عالية 1، متوسطة 0.8، منخفضة 0.6). من لا رقم موثوقاً له لا يُخمَّن.",
     coverageTitle: "التغطية الحالية: الحاجة حيث للندوة مكتب",
-    coverageLead: "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها — لقراءة الحضور أمام الحاجة.",
+    coverageLead: "دول المكاتب المؤكَّدة مرتّبةً بالحاجة نفسها، لقراءة الحضور أمام الحاجة.",
     coverageNoData: "لا رقم وطنياً موثوقاً بعد",
     coverageNoDataList: "مكاتب لا رقم وطنياً موثوقاً للأيتام في دولها بعد:",
-    open: (name: string) => `افتح ${name} على الخارطة`,
+    open: (name: string) => `افتح ${name} على الخريطة`,
     sources: "المصادر",
     sourcesLead: "رابطٌ لكلّ مؤشّر ولكلّ دليل حضور، كما وردت في البحث.",
     presenceSource: "دليل الحضور",
     sponsoredNote: (n: string, year: string) =>
-      `آخر رقمٍ مؤكَّد لعدد الأيتام المكفولين لدى الندوة: ${n} (${year}) — رقمٌ قديم يُذكر بسنته.`,
+      `آخر رقمٍ مؤكَّد لعدد الأيتام المكفولين لدى الندوة: ${n} (${year})، رقمٌ قديم يُذكر بسنته.`,
     officesH: "المكاتب والنشاط",
-    countryButton: (name: string, kind: string) => `${name}: ${kind} — اضغط Enter للدخول`,
+    countryButton: (name: string, kind: string) => `${name}: ${kind}. اضغط Enter للدخول`,
     ind_orphans_total: "الأيتام دون 18",
     ind_conflict_orphans: "فقدوا أحد الوالدين أو كليهما في الحرب",
     ind_orphan_rate_pct: "نسبة اليُتم بين الأطفال",
@@ -91,8 +91,8 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     hq: "Headquarters",
     office: "Confirmed office",
     field: "Field activity",
-    unconfirmed: "Unconfirmed — admins only",
-    demo: "Sample office — under review",
+    unconfirmed: "Unconfirmed: admins only",
+    demo: "Sample office: under review",
     high: "High priority",
     medium: "Medium priority",
     data: "Needs data",
@@ -109,7 +109,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     noPresenceNote:
       "Presence is shown once the General Secretariat or a recent dated source confirms it.",
     lastEvidence: (year: string) =>
-      `Latest evidence found: ${year} — too old or too thin to confirm.`,
+      `Latest evidence found: ${year}, which is too old or too thin to confirm.`,
     noEvidence: "The research found no evidence of an office or activity.",
     city: "City",
     cityUnknown: "City not confirmed",
@@ -127,7 +127,7 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     decisionLead:
       "Countries with no confirmed office, ranked by estimated orphans weighted by confidence (high 1, medium 0.8, low 0.6). Countries without a reliable figure are not guessed.",
     coverageTitle: "Current coverage: need where WAMY has an office",
-    coverageLead: "Confirmed-office countries ranked by the same need — presence against need.",
+    coverageLead: "Confirmed-office countries ranked by the same need; presence against need.",
     coverageNoData: "No reliable national figure yet",
     coverageNoDataList: "Offices in countries with no reliable national orphan figure yet:",
     open: (name: string) => `Open ${name} on the map`,
@@ -135,9 +135,9 @@ export const NETWORK_COPY = defineCopy("components/map/NetworkLayer", {
     sourcesLead: "A link for every indicator and every piece of presence evidence, as researched.",
     presenceSource: "Presence evidence",
     sponsoredNote: (n: string, year: string) =>
-      `Last confirmed number of orphans sponsored by WAMY: ${n} (${year}) — an old figure, shown with its year.`,
+      `Last confirmed number of orphans sponsored by WAMY: ${n} (${year}); an old figure, shown with its year.`,
     officesH: "Offices and activity",
-    countryButton: (name: string, kind: string) => `${name}: ${kind} — press Enter to open`,
+    countryButton: (name: string, kind: string) => `${name}: ${kind}. Press Enter to open`,
     ind_orphans_total: "Orphans under 18",
     ind_conflict_orphans: "Lost one or both parents in the war",
     ind_orphan_rate_pct: "Share of children orphaned",

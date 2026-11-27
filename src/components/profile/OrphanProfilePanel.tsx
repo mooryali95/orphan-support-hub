@@ -46,13 +46,13 @@ const COPY = defineCopy("components/profile/OrphanProfilePanel", {
     fields: {} as Record<string, string>,
     hidden: (n: number) => hiddenLabel(n),
     loading: "جارٍ تحميل البروفايل…",
-    empty: "القسم الخالي لا يُحفظ — اكتب حقلاً أو ملاحظة",
+    empty: "القسم الخالي لا يُحفظ، اكتب حقلاً أو ملاحظة",
     saveFailed: "تعذّر الحفظ",
     saved: "حُفظ القسم",
     title: (n: string) => `بروفايل ${n}`,
     count: (a: number, t: number) => `${a} من ${t} أقسام`,
     sensitiveNote:
-      "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله — وليّه ووصيّه ومشرفه وجهته.",
+      "أقسام الصحّة والأسرة والوضع النفسي وملاحظة المشرف لا تُفتح بإذن الاطّلاع: ملفٌّ طبّيٌّ أو نفسيٌّ لطفل ليس مما يُطّلع عليه ليُتّخذ قرار كفالة. وهي عند من حوله، وليّه ووصيّه ومشرفه وجهته.",
     writerNote:
       "يكتبه من حول الطفل: وليُّه أو وصيُّه أو مشرفه أو جهته. وصفتُك تُسجَّل مع ما تكتب، والتاريخ يتحرّك بالتغيير لا باللمس.",
     sensitive: "قسم حسّاس",
@@ -112,13 +112,13 @@ const COPY = defineCopy("components/profile/OrphanProfilePanel", {
     } as Record<string, string>,
     hidden: pluralOf({ one: "{0} protected section", other: "{0} protected sections" }),
     loading: "Loading the profile…",
-    empty: "An empty section isn't saved — fill in a field or a note",
+    empty: "An empty section isn't saved; fill in a field or a note",
     saveFailed: "Could not save",
     saved: "Section saved",
     title: (n: string) => `${n}'s profile`,
     count: (a: number, t: number) => `${a} of ${t} sections`,
     sensitiveNote:
-      "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child — their guardian, supervisor and field organization.",
+      "Health, family, psychological and supervisor's-note sections don't open with access permission: a child's medical or psychological file isn't something to view in order to decide on a sponsorship. Those stay with the people around the child; their guardian, supervisor and field organization.",
     writerNote:
       "Written by the people around the child: their guardian, supervisor or field organization. Your role is recorded with what you write, and the date moves only when something changes.",
     sensitive: "Sensitive section",

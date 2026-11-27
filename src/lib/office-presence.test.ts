@@ -36,7 +36,7 @@ describe("سجلّ المكاتب فوق ملفّ البحث", () => {
     expect(research.get(field!)).toBe("field");
   });
 
-  it("القاعة والخارطة بعد السجلّ نفسه: كلّ دولةٍ في القاعة بحالتها على الخارطة", () => {
+  it("القاعة والخريطة بعد السجلّ نفسه: كلّ دولةٍ في القاعة بحالتها على الخريطة", () => {
     const rows: RegisterRow[] = [field!, unconfirmed!].map((country) => ({
       country,
       demo: false,

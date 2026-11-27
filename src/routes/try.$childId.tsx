@@ -110,7 +110,7 @@ const COPY = defineCopy("routes/try.childId", {
     otherKinds: (name: string) => `أو ادعم ${name} بغير الكفالة المادية، من الخريطة:`,
     verifying:
       "هذا الملف قيد التحقق الآن، فلا يستقبل كفالةً جديدة حتى تكتمل مراجعته. يمكنك متابعته أو اختيار طفلٍ آخر.",
-    barVerifying: "قيد التحقق — لا يقبل كفالةً جديدة الآن",
+    barVerifying: "قيد التحقق: لا يقبل كفالةً جديدة الآن",
     barSimilar: "أطفالٌ جاهزون",
   },
   en: {
@@ -150,7 +150,7 @@ const COPY = defineCopy("routes/try.childId", {
     otherKinds: (name: string) => `Or support ${name} in another way, from the map:`,
     verifying:
       "This file is being verified, so it can't take a new sponsorship until its review is complete. You can follow it or choose another child.",
-    barVerifying: "Under verification — not taking new sponsorships yet",
+    barVerifying: "Under verification: not taking new sponsorships yet",
     barSimilar: "Children ready now",
   },
 });

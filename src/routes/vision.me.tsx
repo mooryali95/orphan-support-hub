@@ -76,7 +76,7 @@ const COPY = defineCopy("routes/vision.me", {
       },
       decider: {
         name: "صاحب القرار",
-        text: "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات — بلا اسمٍ ولا ملفّ.",
+        text: "ترى المؤشّرات المجمّعة والفجوات، وتعتمد القرارات، بلا اسمٍ ولا ملفّ.",
         cta: "ادخل كصاحب قرار",
       },
     } as Record<Role, { name: string; text: string; cta: string }>,
@@ -95,7 +95,7 @@ const COPY = defineCopy("routes/vision.me", {
     myChildren: "أطفالٌ يصلهم أثرك",
     myMeasured: "قياساتٌ اكتملت",
     filesH: "ملفات من تدعمهم",
-    filesLead: "أسماءٌ مستعارة وعمرٌ ومرحلة — بلا صورةٍ ولا مكان. اضغط ملفاً لترى رحلته.",
+    filesLead: "أسماءٌ مستعارة وعمرٌ ومرحلة، بلا صورةٍ ولا مكان. اضغط ملفاً لترى رحلته.",
     noFiles: "لم يصل دعمك إلى مجموعةٍ بعد. ابدأ بتبرّع، وستظهر ملفات أطفالها هنا فور تخصيصه.",
     waitingH: "مجموعاتٌ تنتظر دعمك",
     receiptsH: "إيصالاتي",
@@ -105,7 +105,7 @@ const COPY = defineCopy("routes/vision.me", {
     // المشرف
     supH: "مجموعاتي",
     supLead:
-      "سجّل الجلسة بعد انعقادها، والقياس البعدي بعد الجلسة السادسة — يصل الداعمَ والقرارَ فوراً.",
+      "سجّل الجلسة بعد انعقادها، والقياس البعدي بعد الجلسة السادسة، يصل الداعمَ والقرارَ فوراً.",
     record: "سجّل جلسة",
     measure: "سجّل القياس",
     needsFunding: "تنتظر التمويل",
@@ -137,7 +137,7 @@ const COPY = defineCopy("routes/vision.me", {
     after: "بعد",
     notYet: "لم يُقَس بعد",
     journey: "الرحلة",
-    privacy: "اسمٌ مستعار. لا صورة ولا موقع ولا مدرسة — هذا كلّ ما يراه الداعم.",
+    privacy: "اسمٌ مستعار. لا صورة ولا موقع ولا مدرسة، هذا كلّ ما يراه الداعم.",
     stage: {
       waiting: "بانتظار التمويل",
       baseline: "القياس القبلي",
@@ -165,7 +165,7 @@ const COPY = defineCopy("routes/vision.me", {
       },
       decider: {
         name: "Decision-maker",
-        text: "See aggregate indicators and gaps, and approve decisions — no names, no files.",
+        text: "See aggregate indicators and gaps, and approve decisions; no names, no files.",
         cta: "Enter as decision-maker",
       },
     } as Record<Role, { name: string; text: string; cta: string }>,
@@ -183,7 +183,7 @@ const COPY = defineCopy("routes/vision.me", {
     myChildren: "Children your impact reaches",
     myMeasured: "Measurements completed",
     filesH: "Files of those you support",
-    filesLead: "Pseudonym, age and stage — no photo, no place. Tap a file to see the journey.",
+    filesLead: "Pseudonym, age and stage: no photo, no place. Tap a file to see the journey.",
     noFiles:
       "Your support hasn't reached a group yet. Start with a donation and its children's files appear here once allocated.",
     waitingH: "Groups waiting for your support",
@@ -193,7 +193,7 @@ const COPY = defineCopy("routes/vision.me", {
     giveH: "Donate in your name",
     supH: "My groups",
     supLead:
-      "Record each session after it meets, and the follow-up measurement after session six — it reaches the supporter and the board at once.",
+      "Record each session after it meets, and the follow-up measurement after session six; it reaches the supporter and the board at once.",
     record: "Record session",
     measure: "Record measurement",
     needsFunding: "Awaiting funding",
@@ -223,7 +223,7 @@ const COPY = defineCopy("routes/vision.me", {
     after: "After",
     notYet: "Not measured yet",
     journey: "Journey",
-    privacy: "A pseudonym. No photo, place or school — this is all a supporter sees.",
+    privacy: "A pseudonym. No photo, place or school; this is all a supporter sees.",
     stage: {
       waiting: "Awaiting funding",
       baseline: "Baseline measurement",

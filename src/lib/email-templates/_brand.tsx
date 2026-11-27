@@ -122,15 +122,15 @@ export function BrandEmail({
               . لا تُشارك روابطها مع أحد.
             </Text>
             <Text style={footerFine}>
-              {IDENTITY.ownerLine} — {IDENTITY.partner.with} {IDENTITY.partner.name}.
+              {IDENTITY.ownerLine}, {IDENTITY.partner.with} {IDENTITY.partner.name}.
             </Text>
             <Text style={footerFine}>كفالة اليتيم استثمار في عمرانٍ قادم، لا إحسان عابر.</Text>
             {unsubscribeUrl && (
               <Text style={footerFine}>
                 <Link href={unsubscribeUrl} style={footerLink}>
                   إيقاف هذه الرسائل
-                </Link>{" "}
-                — وتبقى إشعاراتك ظاهرةً داخل المنصّة.
+                </Link>
+                ، وتبقى إشعاراتك ظاهرةً داخل المنصّة.
               </Text>
             )}
           </Section>

@@ -147,7 +147,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
         hq: "المقرّ الرئيسي",
         office: "مكاتب مؤكَّدة",
         field: "نشاط ميداني",
-        unconfirmed: "غير مؤكَّد — للإدارة فقط",
+        unconfirmed: "غير مؤكَّد: للإدارة فقط",
       },
       full: (sites: string, unconfirmed: string) =>
         `النموذج الكامل: المقرّ و${sites} موقعاً، منها ${unconfirmed} غير مؤكَّدة تظهر للإدارة فقط.`,
@@ -330,7 +330,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
         0,
         "ar",
       ),
-      sPick: "يُختار الأطفال ممّن أتمّوا التأهيل ولا كفيل لهم",
+      sPick: "يُختار الأطفال ممّن أتمّوا التأهيل ولا كافل لهم",
       sCount: (place: string, from: string, to: string) =>
         `المكفولون في ${place}: من ${from} إلى ${to}`,
       sExpect: "ارتفاعٌ متوقّع خلال سنة في الصمود والدراية والهمّة (تقديرٌ يضبطه القياس)",
@@ -502,10 +502,10 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       fee: "رسوم البوابة",
       netWamy: "الصافي إلى حساب الندوة",
       net: "الصافي",
-      sBase: (place: string) => `قبل دعمك: أطفالٌ أتمّوا التأهيل في ${place} ولا كفيل لهم.`,
+      sBase: (place: string) => `قبل دعمك: أطفالٌ أتمّوا التأهيل في ${place} ولا كافل لهم.`,
       sponsored: "المكفولون",
       of: (a: string, b: string) => `${a} من ${b}`,
-      noSponsor: "بلا كفيل",
+      noSponsor: "بلا كافل",
       resilience: "متوسّط الصمود",
       sDone: (money: string, months: string) =>
         `${money} = ${months}، يصل كلّ شهرٍ للطفل بإثبات تسليم.`,
@@ -550,7 +550,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       sponsoredCountry: "مكفولون في البلد",
       s1: "كفالاتٌ شهرية جديدة تصل بإثبات تسليم كلّ شهر.",
       sponsoredIn: (place: string) => `مكفولون في ${place}`,
-      s2: "تقلّص عدد من أتمّوا التأهيل ولا كفيل لهم.",
+      s2: "تقلّص عدد من أتمّوا التأهيل ولا كافل لهم.",
       sponsoredOf8: "مكفولون من 8",
       s3: "الكفالة تُثبّت الطفل في مجموعته ومتابعته الشهرية.",
       monthly: "يصله شهرياً",
@@ -596,7 +596,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       noteSim: (country: string) => `أرقام ${country} نموذجية، لا نتائج، حتى تتّصل منصّة تشغيلها.`,
     },
     done: {
-      title: "تمّت المحاكاة — شكراً لك",
+      title: "تمّت المحاكاة: شكراً لك",
       sub: (region: string, last: string) =>
         `هذه محاكاة: لم يُخصم شيء ولم يُسجَّل تبرّع. اقرأ أثرها كما سيُقرأ أثر الدعم الحقيقي: الأساس، ثم ما تمّ، ثم الأثر على البلد و${region} والمجموعة و${last}، ثم التفاصيل.`,
       support: "دعمك (محاكاة)",
@@ -648,7 +648,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
         region: {
           name: "المنطقة",
           qualify: "منتظروها وما تأهّل من حاجتها",
-          sponsor: "المكفولون ومن بقي بلا كفيل",
+          sponsor: "المكفولون ومن بقي بلا كافل",
           kiswa: "ما سُدّ من حاجة الموسم",
         },
         group: {
@@ -762,7 +762,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
         hq: "Headquarters",
         office: "Confirmed offices",
         field: "Field activity",
-        unconfirmed: "Unconfirmed — staff only",
+        unconfirmed: "Unconfirmed: staff only",
       },
       full: (sites: string, unconfirmed: string) =>
         `The full model: headquarters and ${sites} sites, ${unconfirmed} of them unconfirmed and shown to staff only.`,
@@ -1029,7 +1029,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
         `${country}'s figures are sample data, not results, until its operating platform is connected.`,
     },
     done: {
-      title: "Simulation complete — thank you",
+      title: "Simulation complete: thank you",
       sub: (region: string, last: string) =>
         `This was a simulation: nothing was charged and no donation was recorded. Read its impact as real support will be read: the baseline, what happened, then the impact on the country, the ${region}, the group and the ${last}, then the details.`,
       support: "Your support (simulated)",

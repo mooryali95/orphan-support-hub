@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { fit, flight } from "./camera";
 
-describe("كاميرا الخارطة", () => {
+describe("كاميرا الخريطة", () => {
   const world = { x: 0, y: 0, w: 1000, h: 520 };
   const albania = fit([547.9, 155.1, 4.83, 9.36], 0.52, 1.35);
 

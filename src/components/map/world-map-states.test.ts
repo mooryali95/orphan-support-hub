@@ -8,7 +8,7 @@ import { toMapStats } from "./demo-stats";
 import { EMPTY_GEO, type MapSourceStatus } from "./map-source";
 
 /**
- * الخارطة كما تُرسم للزائر خارج وضع العرض (ARC-11/PRD-15): أثناء التحميل
+ * الخريطة كما تُرسم للزائر خارج وضع العرض (ARC-11/PRD-15): أثناء التحميل
  * وعند تعذّر القاعدة لا رقم ولا «أقل من ٥» ولا «لا ملفّات هنا».
  */
 function render(status: MapSourceStatus | undefined) {
@@ -29,7 +29,7 @@ function render(status: MapSourceStatus | undefined) {
 
 const textOf = (html: string) => html.replace(/<[^>]+>/g, " ");
 
-describe("الخارطة بلا أرقامٍ بعد", () => {
+describe("الخريطة بلا أرقامٍ بعد", () => {
   it("أثناء التحميل: هيكلٌ بلا أيّ رقم", () => {
     const html = render("loading");
     expect(html).toContain('aria-busy="true"');

@@ -37,7 +37,7 @@ const COPY = defineCopy("components/try/TryVerification", {
       viewer: "مطّلع",
     } satisfies Record<CountryRole, string>,
     roleHint: {
-      supervisor: "يحسم ويرفع ويدير فريقه — إلا ما رفعه بنفسه، فيحسمه غيره.",
+      supervisor: "يحسم ويرفع ويدير فريقه، إلا ما رفعه بنفسه، فيحسمه غيره.",
       data_entry: "يرفع ملفّات الدولة ويقرأ التنبيهات، ولا يحسم.",
       viewer: "يقرأ صحة البيانات وطوابيرها، ولا يرفع ولا يحسم.",
     } satisfies Record<CountryRole, string>,
