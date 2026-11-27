@@ -67,7 +67,10 @@ function VisionHub() {
   return (
     <VisionShell>
       {/* المشهد الأوّل: نبيذيٌّ بعنوانٍ وثلاث شارات، كما يبدأ الفيلم. */}
-      <section className="relative overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#7a2236,var(--color-wine-deep)_75%)] text-ivory">
+      <section
+        aria-labelledby="vision-index-title"
+        className="relative overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#7a2236,var(--color-wine-deep)_75%)] text-ivory"
+      >
         <div aria-hidden="true" className="vision-halo pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-5xl px-4 py-20 text-center md:py-28">
           <span
@@ -77,6 +80,7 @@ function VisionHub() {
             هـ
           </span>
           <h1
+            id="vision-index-title"
             className="vision-rise mt-6 text-4xl font-extrabold md:text-6xl"
             style={{ animationDelay: "120ms" }}
           >
@@ -138,7 +142,7 @@ function VisionHub() {
       </section>
 
       {/* الطبقات الثلاث */}
-      <section className="mx-auto max-w-6xl px-4 py-14">
+      <section aria-label={c.title} className="mx-auto max-w-6xl px-4 py-14">
         <ol className="grid gap-5 lg:grid-cols-3">
           {LAYERS.map((l, i) => (
             <li key={l.key} style={{ ["--i" as string]: i }} className="stagger-in">

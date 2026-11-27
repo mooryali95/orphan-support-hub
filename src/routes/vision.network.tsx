@@ -159,7 +159,7 @@ function NetworkPage() {
   );
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+    <section aria-label={c.title} className="mx-auto max-w-6xl px-4 py-12 md:py-16">
       <Eyebrow label={c.label} title={c.title} lead={c.lead} />
 
       <dl className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-6">
