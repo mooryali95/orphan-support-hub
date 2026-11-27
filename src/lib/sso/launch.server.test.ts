@@ -65,7 +65,11 @@ async function token(email: string) {
   return `${head}.${b64url(sig)}`;
 }
 
-const req = () => new Request("https://kahatayn.example/api/sso/wamy", { method: "POST" });
+const req = (origin: string | null = new URL(ISS).origin) =>
+  new Request("https://kahatayn.example/api/sso/wamy", {
+    method: "POST",
+    headers: origin ? { origin } : {},
+  });
 
 beforeEach(() => {
   process.env["WAMY_SSO_SECRET"] = SECRET;
@@ -91,8 +95,22 @@ describe("الدخول من الندوة", () => {
     const { handle } = await import("./launch.server");
     const res = await handle(req(), await token("b@wamy.example"));
     expect(state.generateLink).toHaveBeenCalledWith({ type: "magiclink", email: "a@wamy.example" });
-    expect(res.headers.get("location")).toMatch(/\/sso#th=hashed&n=[0-9a-f-]{36}&next=/);
+    expect(res.headers.get("location")).toMatch(/\/sso#n=[0-9a-f-]{36}&next=/);
     expect(res.headers.get("set-cookie")).toMatch(/kh_sso_nonce=.*HttpOnly.*SameSite=Lax/);
+    expect(res.headers.get("location")).not.toContain("hashed");
+    expect(state.rpc).toHaveBeenCalledWith(
+      "sso_handoff_put",
+      expect.objectContaining({ _token_hash: "hashed" }),
+    );
+  });
+
+  it("يرفض نموذجاً من موقعٍ آخر أو بلا مصدر", async () => {
+    const { handle } = await import("./launch.server");
+    for (const o of ["https://evil.example", null]) {
+      const res = await handle(req(o), await token("a@wamy.example"));
+      expect(res.headers.get("location")).toMatch(/#error=origin_denied$/);
+    }
+    expect(state.generateLink).not.toHaveBeenCalled();
   });
 
   it("يرفض إن لم يطابق صاحب الرابط الحساب المربوط", async () => {

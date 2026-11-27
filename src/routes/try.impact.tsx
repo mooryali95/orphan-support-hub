@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { ChildStanding } from "@/components/impact/ChildStanding";
 import { ImpactMoment } from "@/components/impact/ImpactMoment";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
-import { ChildTimeline } from "@/components/sponsorship/ChildTimeline";
-import { ManageSponsorshipLink } from "@/components/sponsorship/ManageSponsorship";
+import { ActionStrip } from "@/components/sponsorship/ActionStrip";
+import { ChildCards, NoSponsorships } from "@/components/sponsorship/ChildCard";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
 import { TryKindPanel, TryKindSwitch, TrySupportImpact } from "@/components/try/TryImpactKinds";
 import { TryFollowUpStrip, TryGiftFollowUp } from "@/components/try/TryGiftFollowUp";
@@ -15,15 +16,14 @@ import { TryShareCard } from "@/components/try/TryShareCard";
 import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
 import type { GivingTrack } from "@/config/giving-tracks";
-import { formatMoney, formatDate } from "@/lib/format";
 import { impactMoments } from "@/lib/impact-evidence";
 import { myImpact } from "@/lib/my-impact";
 import { copyOf, defineCopy, dirOf, useCopy, useLocale } from "@/lib/locale";
+import { trialRoute } from "@/lib/trial-gate";
 import {
   giftsAsSponsorships,
   loadGifts,
   localTryChild,
-  TRY_CURRENCY,
   TRY_EVENT,
   tryChild,
   type TryGift,
@@ -60,14 +60,8 @@ const COPY = defineCopy("routes/try.impact", {
     title: "أثري",
     lead: "أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.",
     gifts: "عطاءاتك",
-    none: "لم تبدأ عطاءً بعد في التجربة.",
-    choose: "اختر طفلاً",
-    monthly: "شهرية",
-    oneTime: "مرّة واحدة",
-    status: "الحالة: نشطة (محاكاة)",
-    statusPaused: (date: string) => `الحالة: موقوفة حتى ${date} (محاكاة)`,
-    statusEnding: (date: string) => `الحالة: تنتهي في ${date} (محاكاة)`,
-    statusEnded: "الحالة: انتهت (محاكاة)",
+    statement: "سجلّ التبرّعات (محاكاة)",
+    payDemo: "الدفع في التجربة محاكاة، فلا يُفتح بابٌ للدفع ولا يُحصَّل شيء.",
     dedication: (name: string) => `صدقةٌ جارية عن ${name}`,
   },
   en: {
@@ -81,14 +75,8 @@ const COPY = defineCopy("routes/try.impact", {
     title: "My impact",
     lead: "The impact of your gifts in this trial, as a supporter sees it on their dashboard.",
     gifts: "Your gifts",
-    none: "You have not started a gift in the trial yet.",
-    choose: "Choose a child",
-    monthly: "Monthly",
-    oneTime: "One-time",
-    status: "Status: active (simulated)",
-    statusPaused: (date: string) => `Status: paused until ${date} (simulated)`,
-    statusEnding: (date: string) => `Status: ends on ${date} (simulated)`,
-    statusEnded: "Status: ended (simulated)",
+    statement: "Record of donations (simulated)",
+    payDemo: "Payment in the trial is simulated, so no checkout opens and nothing is charged.",
     dedication: (name: string) => `Ongoing charity on behalf of ${name}`,
   },
 });
@@ -132,17 +120,12 @@ function TryImpact() {
   const then = new Date(Date.now() + ahead * 30.44 * 86_400_000 + 3_600_000);
   const impact = myImpact(giftsAsSponsorships(gifts ?? [], locale), then);
   const rows = tryEvidence(gifts ?? [], ahead, locale);
-  /* the gifts as sponsorships, with what the visitor changed in «إدارة الكفالة» */
-  const subs = new Map(gifts ? trySponsorships(locale).map((s) => [s.id, s]) : []);
-  const statusOf = (id: string) => {
-    const s = subs.get(id);
-    if (!s) return c.status;
-    if (s.status === "cancelled" || s.status === "completed") return c.statusEnded;
-    if (s.cancel_effective_at) return c.statusEnding(formatDate(s.cancel_effective_at, locale));
-    if (s.status === "paused" && s.paused_until)
-      return c.statusPaused(formatDate(s.paused_until, locale));
-    return c.status;
-  };
+  /* the gifts as sponsorships, with what the visitor changed in «إدارة الكفالة» (re-read on every
+     TRY_EVENT through `gifts`); the cards then read each ledger through the data port */
+  const list = gifts ? trySponsorships(locale) : [];
+  const ready = gifts !== null;
+  // no payment in the trial: «ادفع الآن» says it is simulated and opens nothing
+  const onPay = () => void toast.message(c.payDemo);
   const waited = Object.fromEntries(
     (gifts ?? []).map((x) => [x.id, tryChild(x.childId)?.waitingDays ?? 0]),
   );
@@ -224,53 +207,45 @@ function TryImpact() {
           )}
 
           <section aria-labelledby="try-gifts" className="mt-10">
-            <h2 id="try-gifts" className="text-xl font-bold">
-              {c.gifts}
-            </h2>
-            {gifts && gifts.length === 0 ? (
-              <div className="mt-4 rounded-2xl border border-border bg-card p-8 text-center">
-                <p className="text-muted-foreground">{c.none}</p>
-                <Button asChild className="mt-4">
-                  <Link to="/try">{c.choose}</Link>
-                </Button>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <h2 id="try-gifts" className="text-xl font-bold">
+                {c.gifts}
+              </h2>
+              {gifts && gifts.length > 0 && (
+                <Link
+                  to={trialRoute(`/try/statements/${new Date().getUTCFullYear()}`)}
+                  className="inline-flex min-h-11 items-center text-sm font-semibold text-primary"
+                >
+                  {c.statement}
+                </Link>
+              )}
+            </div>
+            {/* the real «أثري» blocks, on the session's gifts through the data port */}
+            {ready && (
+              <div className="mt-4 empty:hidden">
+                <ActionStrip list={list} onPay={onPay} paying={null} />
               </div>
-            ) : (
-              <ul className="mt-4 space-y-3">
-                {(gifts ?? []).map((g) => {
-                  const kid = local(g.childId)!;
-                  const sub = subs.get(g.id);
-                  return (
-                    <li
-                      key={g.id}
-                      className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-border bg-card px-5 py-4"
-                    >
-                      <span className="font-bold">{kid.name}</span>
-                      <span className="text-sm text-muted-foreground">{kid.country}</span>
-                      <span className="rounded-full bg-primary/10 px-3 py-0.5 text-xs font-bold text-primary">
-                        {g.cadence === "monthly" ? c.monthly : c.oneTime}
+            )}
+            <div className="mt-4">
+              {!ready ? null : list.length === 0 ? (
+                <NoSponsorships browseTo="/try" />
+              ) : (
+                <ChildCards list={list} />
+              )}
+            </div>
+            {(gifts ?? []).some((g) => g.dedication) && (
+              <ul className="mt-4 space-y-2">
+                {(gifts ?? [])
+                  .filter((g) => g.dedication)
+                  .map((g) => (
+                    <li key={g.id} className="rounded-xl bg-card px-4 py-3 text-sm">
+                      <span className="font-bold">{local(g.childId)?.name}</span>
+                      <span className="block text-xs font-bold text-bridge-ink">
+                        {c.dedication(g.dedication!)}
                       </span>
-                      <span className="ms-auto font-bold tabular-nums">
-                        {formatMoney(sub?.amount ?? g.amount, TRY_CURRENCY, locale)}
-                      </span>
-                      <span className="w-full text-xs text-muted-foreground sm:w-auto">
-                        {formatDate(g.at, locale)} · {statusOf(g.id)}
-                      </span>
-                      {g.dedication && (
-                        <span className="w-full text-xs font-bold text-bridge-ink">
-                          {c.dedication(g.dedication)}
-                        </span>
-                      )}
                       <TryGiftFollowUp childId={g.childId} />
-                      {sub && <ManageSponsorshipLink s={sub} />}
-                      {/* خطّ الطفل كما في لوحة الكافل: حالة ملفّه، وآخر تقرير، ومسار تأهيله */}
-                      {sub && sub.status !== "cancelled" && (
-                        <div className="w-full">
-                          <ChildTimeline orphanId={g.childId} name={kid.name} />
-                        </div>
-                      )}
                     </li>
-                  );
-                })}
+                  ))}
               </ul>
             )}
           </section>

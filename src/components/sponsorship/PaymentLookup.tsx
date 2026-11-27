@@ -7,18 +7,73 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { lookupPayment, type PaymentLookup as Result } from "@/lib/ledger.functions";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-const STATUS: Record<string, string> = {
-  paid: "مدفوعة",
-  refunded: "مُردّة",
-  disputed: "قيد منازعة",
-};
-const DELIVERY: Record<string, string> = {
-  transferred: "حُوِّلت للجهة",
-  delivered: "وصلت الطفل بمستند",
-  scheduled: "مجدولة للتحويل",
-};
+const COPY = defineCopy("components/sponsorship/PaymentLookup", {
+  ar: {
+    status: {
+      paid: "مدفوعة",
+      refunded: "مُردّة",
+      disputed: "قيد منازعة",
+    } as Record<string, string>,
+    delivery: {
+      transferred: "حُوِّلت للجهة",
+      delivered: "وصلت الطفل بمستند",
+      scheduled: "مجدولة للتحويل",
+    } as Record<string, string>,
+    title: "تتبّع دفعة",
+    leadA: "برقم الفاتورة (مثل",
+    leadB: ") أو برقم المعاملة كما يظهر في كشف بطاقتك",
+    leadAdmin: " أو في لوحة المزوّد",
+    inputLabel: "رقم الفاتورة أو المعاملة",
+    search: "ابحث",
+    notFoundAdmin: "لا دفعة بهذا الرقم.",
+    notFound: "لا دفعة بهذا الرقم في دفعاتك.",
+    chain: "ربط الدفعة",
+    invoice: "الفاتورة",
+    transactionAt: (provider: string) => `المعاملة لدى ${provider}`,
+    provider: "المزوّد",
+    paidOn: (date: string) => `دُفعت ${date}`,
+    sponsorshipMonth: "الكفالة والشهر",
+    whatHappened: "ما جرى للمبلغ",
+    awaitingTransfer: "بانتظار التحويل للجهة",
+    receipt: "إيصال الشهر",
+    anchor: "بصمة الفاتورة في سجلّ السلامة",
+    open: "افتح الكفالة",
+  },
+  en: {
+    status: {
+      paid: "Paid",
+      refunded: "Refunded",
+      disputed: "Disputed",
+    } as Record<string, string>,
+    delivery: {
+      transferred: "Sent to the field organization",
+      delivered: "Reached the child, with a document",
+      scheduled: "Scheduled for transfer",
+    } as Record<string, string>,
+    title: "Track a payment",
+    leadA: "By invoice number (such as",
+    leadB: ") or by the transaction number shown on your card statement",
+    leadAdmin: " or in the provider's dashboard",
+    inputLabel: "Invoice or transaction number",
+    search: "Search",
+    notFoundAdmin: "No payment with this number.",
+    notFound: "No payment with this number among your payments.",
+    chain: "Payment trail",
+    invoice: "Invoice",
+    transactionAt: (provider: string) => `Transaction at ${provider}`,
+    provider: "the provider",
+    paidOn: (date: string) => `Paid ${date}`,
+    sponsorshipMonth: "Sponsorship and month",
+    whatHappened: "What happened to the amount",
+    awaitingTransfer: "Waiting to be sent to the field organization",
+    receipt: "Monthly receipt",
+    anchor: "Invoice fingerprint in the integrity log",
+    open: "Open the sponsorship",
+  },
+});
 
 /**
  * «أين ذهبت هذه الدفعة؟» — برقم الفاتورة عندنا أو برقم المعاملة في كشف
@@ -29,6 +84,8 @@ export function PaymentLookup({ admin = false }: { admin?: boolean }) {
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
   const [r, setR] = useState<Result | null>(null);
+  const c = useCopy(COPY);
+  const locale = useLocale();
 
   return (
     <section
@@ -37,12 +94,12 @@ export function PaymentLookup({ admin = false }: { admin?: boolean }) {
     >
       <h2 id="pl-h" className="flex items-center gap-2 font-bold">
         <FileSearch className="size-5 text-primary" strokeWidth={1.5} aria-hidden="true" />
-        تتبّع دفعة
+        {c.title}
       </h2>
       <p className="mt-1 text-sm leading-6 text-muted-foreground">
-        برقم الفاتورة (مثل <bdi dir="ltr">INV-2026-000123</bdi>) أو برقم المعاملة كما يظهر في كشف
-        بطاقتك
-        {admin ? " أو في لوحة المزوّد" : ""}.
+        {c.leadA} <bdi dir="ltr">INV-2026-000123</bdi>
+        {c.leadB}
+        {admin ? c.leadAdmin : ""}.
       </p>
       <form
         className="mt-3 flex gap-2"
@@ -61,61 +118,58 @@ export function PaymentLookup({ admin = false }: { admin?: boolean }) {
             setR(null);
           }}
           placeholder="INV-2026-000123"
-          aria-label="رقم الفاتورة أو المعاملة"
+          aria-label={c.inputLabel}
           className="h-10 flex-1 font-mono text-base md:text-sm"
         />
         <Button type="submit" className="h-10" disabled={busy || ref.trim().length < 6}>
-          {busy ? <Loader2 className="animate-spin" /> : "ابحث"}
+          {busy ? <Loader2 className="animate-spin" /> : c.search}
         </Button>
       </form>
 
       {r && !r.found && (
         <p role="status" className="map-rise mt-4 text-sm text-muted-foreground">
-          لا دفعة بهذا الرقم{admin ? "." : " في دفعاتك."}
+          {admin ? c.notFoundAdmin : c.notFound}
         </p>
       )}
       {r?.found && (
-        <ol role="status" className="map-rise mt-5 space-y-0" aria-label="ربط الدفعة">
+        <ol role="status" className="map-rise mt-5 space-y-0" aria-label={c.chain}>
           <Step
-            label="الفاتورة"
+            label={c.invoice}
             value={r.invoice_no}
             mono
-            sub={`${formatMoney(r.amount, r.currency)} · ${STATUS[r.status] ?? r.status}`}
+            sub={`${formatMoney(r.amount, r.currency, locale)} · ${c.status[r.status] ?? r.status}`}
           />
           <Step
-            label={`المعاملة لدى ${r.provider === "creem" ? "Creem" : (r.provider ?? "المزوّد")}`}
+            label={c.transactionAt(
+              r.provider === "creem" ? "Creem" : r.provider ? isolate(r.provider) : c.provider,
+            )}
             value={r.provider_payment_id ?? "—"}
             mono
-            sub={r.paid_at ? `دُفعت ${formatDate(r.paid_at)}` : undefined}
+            sub={r.paid_at ? c.paidOn(formatDate(r.paid_at, locale)) : undefined}
           />
           <Step
-            label="الكفالة والشهر"
+            label={c.sponsorshipMonth}
             value={`${isolate(r.orphan)} · ${isolate(r.month)}`}
             sub={r.orphan_code}
           />
           <Step
-            label="ما جرى للمبلغ"
+            label={c.whatHappened}
             value={
               r.delivery_status
-                ? (DELIVERY[r.delivery_status] ?? r.delivery_status)
-                : "بانتظار التحويل للجهة"
+                ? (c.delivery[r.delivery_status] ?? r.delivery_status)
+                : c.awaitingTransfer
             }
             tone={r.delivery_status === "delivered" ? "done" : "wait"}
           />
-          <Step label="إيصال الشهر" value={r.month_receipt ?? "—"} mono />
-          <Step
-            label="بصمة الفاتورة في سجلّ السلامة"
-            value={r.anchor ? `${r.anchor}…` : "—"}
-            mono
-            last
-          />
+          <Step label={c.receipt} value={r.month_receipt ?? "—"} mono />
+          <Step label={c.anchor} value={r.anchor ? `${r.anchor}…` : "—"} mono last />
           <li className="pt-3">
             <Link
               to="/sponsorships/$sponsorshipId"
               params={{ sponsorshipId: r.sponsorship_id }}
               className="inline-flex items-center gap-1 text-sm font-medium text-primary"
             >
-              افتح الكفالة
+              {c.open}
               <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
             </Link>
           </li>
@@ -153,7 +207,7 @@ function Step({
       <p className={cn("text-sm font-semibold", mono && "font-mono")}>
         {mono ? <bdi dir="ltr">{value}</bdi> : value}
       </p>
-      {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
+      {sub && <p className="text-xs text-muted-foreground tabular-nums">{sub}</p>}
     </li>
   );
 }

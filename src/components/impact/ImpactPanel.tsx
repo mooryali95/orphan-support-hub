@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { toast } from "sonner";
 import {
   CalendarDays,
@@ -18,6 +18,40 @@ import { eventLabel } from "@/lib/event-labels";
 import { openPrivateFile } from "@/hooks/usePrivateFile";
 import { formatDate } from "@/lib/format";
 import { Name } from "@/components/kit/Name";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+
+const COPY = defineCopy("components/impact/ImpactPanel", {
+  ar: {
+    openFailed: "تعذّر فتح الوثيقة",
+    loading: "جارٍ تحميل الأثر…",
+    reports: "تقارير الأثر",
+    noReports:
+      "لم يصدر تقرير بعد. تُصدر الجهة الميدانية تقريراً دورياً، ولا يظهر لك إلا بعد اعتماد الإدارة له.",
+    approved: "معتمد",
+    published: (date: string) => `نُشر ${date}`,
+    education: "التعليم",
+    health: "الصحة",
+    living: "المعيشة",
+    attachment: (n: number) => `مرفق ${n}`,
+    timeline: "الخط الزمني",
+    timelineOf: "الخط الزمني لملف",
+  },
+  en: {
+    openFailed: "Couldn't open the document",
+    loading: "Loading impact…",
+    reports: "Impact reports",
+    noReports:
+      "No report yet. The field organization issues a periodic report, and you see it only after the administration approves it.",
+    approved: "Approved",
+    published: (date: string) => `Published ${date}`,
+    education: "Education",
+    health: "Health",
+    living: "Living conditions",
+    attachment: (n: number) => `Attachment ${n}`,
+    timeline: "Timeline",
+    timelineOf: "Timeline for the file of",
+  },
+});
 
 /**
  * أثر الكفالة كما يراه الكافل.
@@ -31,15 +65,17 @@ import { Name } from "@/components/kit/Name";
  * والمرفقات لا تصله أصلاً (تبقى لدائرة الطفل)، فلا تظهر خانتها له.
  */
 export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphanName: string }) {
-  const fetchReports = useServerFn(listReports);
-  const fetchTimeline = useServerFn(listTimeline);
+  const fetchReports = useDataFn("impact.reports", listReports);
+  const fetchTimeline = useDataFn("impact.timeline", listTimeline);
+  const c = useCopy(COPY);
+  const locale = useLocale();
 
   const { data: rep, isLoading } = useQuery({
-    queryKey: ["reports", orphanId],
+    queryKey: useDataKey(["reports", orphanId]),
     queryFn: () => fetchReports({ data: { orphanId } }),
   });
   const { data: tl } = useQuery({
-    queryKey: ["timeline", orphanId],
+    queryKey: useDataKey(["timeline", orphanId]),
     queryFn: () => fetchTimeline({ data: { orphanId } }),
   });
 
@@ -48,13 +84,13 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
 
   async function open(path: string) {
     // يُنزَّل بجلسة القارئ لحظة الفتح؛ لا رابط موقَّعاً يبقى بعد سحب الإذن.
-    if (!(await openPrivateFile("orphan-documents", path))) toast.error("تعذّر فتح الوثيقة");
+    if (!(await openPrivateFile("orphan-documents", path))) toast.error(c.openFailed);
   }
 
   if (isLoading) {
     return (
       <p className="text-muted-foreground flex items-center gap-2 p-4 text-xs">
-        <Loader2 className="size-3 animate-spin" aria-hidden="true" /> جارٍ تحميل الأثر…
+        <Loader2 className="size-3 animate-spin" aria-hidden="true" /> {c.loading}
       </p>
     );
   }
@@ -62,11 +98,10 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
   return (
     <div className="mt-4 space-y-5">
       <section>
-        <h4 className="text-sm font-bold">تقارير الأثر</h4>
+        <h4 className="text-sm font-bold">{c.reports}</h4>
         {reports.length === 0 ? (
           <p className="text-muted-foreground border-border mt-2 rounded-lg border border-dashed p-4 text-xs leading-6">
-            لم يصدر تقرير بعد. تُصدر الجهة الميدانية تقريراً دورياً، ولا يظهر لك إلا بعد اعتماد
-            الإدارة له.
+            {c.noReports}
           </p>
         ) : (
           <ul className="mt-2 space-y-3">
@@ -74,11 +109,11 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
               <li key={r.id} className="border-border bg-card rounded-xl border p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <CalendarDays className="text-muted-foreground size-4" aria-hidden="true" />
-                  <span className="text-sm font-bold tabular-nums">{r.period}</span>
-                  <Badge className="bg-shore-thrive text-white">معتمد</Badge>
+                  <bdi className="text-sm font-bold tabular-nums">{r.period}</bdi>
+                  <Badge className="bg-shore-thrive text-white">{c.approved}</Badge>
                   {r.published_at && (
                     <span className="text-muted-foreground text-xs">
-                      نُشر {formatDate(r.published_at)}
+                      {c.published(formatDate(r.published_at, locale))}
                     </span>
                   )}
                 </div>
@@ -86,9 +121,9 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
                 {r.summary && <p className="mt-2 text-sm leading-7">{r.summary}</p>}
 
                 <dl className="mt-3 grid gap-2 sm:grid-cols-3">
-                  <Note icon={GraduationCap} label="التعليم" value={r.education_note} />
-                  <Note icon={Heart} label="الصحة" value={r.health_note} />
-                  <Note icon={Home} label="المعيشة" value={r.living_note} />
+                  <Note icon={GraduationCap} label={c.education} value={r.education_note} />
+                  <Note icon={Heart} label={c.health} value={r.health_note} />
+                  <Note icon={Home} label={c.living} value={r.living_note} />
                 </dl>
 
                 {r.attachments.length > 0 && (
@@ -101,7 +136,7 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
                         onClick={() => void open(path)}
                       >
                         <FileText className="size-3" aria-hidden="true" />
-                        مرفق {i + 1}
+                        {c.attachment(i + 1)}
                         <ExternalLink className="size-3" aria-hidden="true" />
                       </Button>
                     ))}
@@ -115,9 +150,9 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
 
       {events.length > 0 && (
         <section>
-          <h4 className="text-sm font-bold">الخط الزمني</h4>
+          <h4 className="text-sm font-bold">{c.timeline}</h4>
           <p className="sr-only">
-            الخط الزمني لملف <Name>{orphanName}</Name>
+            {c.timelineOf} <Name>{orphanName}</Name>
           </p>
           <ol className="border-border mt-2 border-s ps-4">
             {events.map((e) => (
@@ -127,10 +162,12 @@ export function ImpactPanel({ orphanId, orphanName }: { orphanId: string; orphan
                   aria-hidden="true"
                 />
                 <p className="text-sm">
-                  {eventLabel(e.event_type)}
+                  {eventLabel(e.event_type, locale)}
                   {e.detail && <span className="text-muted-foreground"> — {e.detail}</span>}
                 </p>
-                <p className="text-muted-foreground text-xs">{formatDate(e.created_at)}</p>
+                <p className="text-muted-foreground text-xs tabular-nums">
+                  {formatDate(e.created_at, locale)}
+                </p>
               </li>
             ))}
           </ol>

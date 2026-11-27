@@ -4,8 +4,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
 import { DashboardShell } from "@/components/DashboardShell";
-import { SourcesPanel } from "@/components/admin/data/SourcesPanel";
+import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
 import { Busy, Failed, NeedsUpdate } from "@/components/admin/data/shared";
+import { type Tab as WorkTab } from "@/components/admin/data/sources/shared";
+import { TodayQueue } from "@/components/admin/today/TodayQueue";
+import { useUrlFilters } from "@/components/admin/today/useUrlFilters";
 import { pageTitle } from "@/config/brand";
 import { getMyCountryAccess } from "@/lib/golden-record.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
@@ -39,6 +42,8 @@ function CountryDataPage() {
   const fetchAccess = useServerFn(getMyCountryAccess);
   const access = useQuery({ queryKey: ["my-country-access"], queryFn: () => fetchAccess() });
   const [country, setCountry] = useState("");
+  const [tab, setTab] = useState<WorkTab | undefined>(undefined);
+  const [filters, setFilters] = useUrlFilters();
   const res = access.data;
 
   return (
@@ -56,7 +61,32 @@ function CountryDataPage() {
           {c.none}
         </p>
       ) : (
-        <SourcesPanel country={country} setCountry={setCountry} access={res.data} />
+        // «اليوم» بنطاق دول الفريق، ثم درج الدولة نفسه الذي تفتحه الإدارة.
+        <div className="space-y-12">
+          <TodayQueue
+            access={res.data}
+            scope={res.data.admin ? "admin" : "country"}
+            filters={filters}
+            setFilters={setFilters}
+            onOpenCountry={(code, t) => {
+              setCountry(code);
+              setTab(t);
+              requestAnimationFrame(() =>
+                document
+                  .getElementById("country-work-title")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+              );
+            }}
+          />
+          <CountryWorkspace
+            scope="country"
+            access={res.data}
+            country={country}
+            setCountry={setCountry}
+            tab={tab}
+            setTab={setTab}
+          />
+        </div>
       )}
     </DashboardShell>
   );

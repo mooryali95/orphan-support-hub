@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { isDemoSession } from "@/lib/demo-mode";
+import { exitDemo, isDemoSession } from "@/lib/demo-mode";
 import { trialRoute } from "@/lib/trial-gate";
 import type { AppRole } from "@/hooks/useAuth";
 import { LocaleProvider } from "@/lib/locale";
@@ -23,6 +23,8 @@ export const Route = createFileRoute("/_authenticated")({
     // (TryShell وأزرار «الرحلة الحقيقية»)، فلا يُحجب داعمٌ حقيقي عن لوحته.
     if (location.pathname === "/dashboard" && isDemoSession())
       throw redirect({ to: trialRoute("/try/impact") });
+    // بوابات الفريق والإدارة حقيقيةٌ دائماً: علمٌ تجريبي باقٍ في التبويب لا يعرض لموظّفٍ بيانات عيّنة.
+    if (isDemoSession()) exitDemo();
     const { data, error } = await supabase.auth.getUser();
     // الرابط المحمي يحفظ وجهته (UX-09): بعد الدخول يعود إليها لا إلى اللوحة.
     if (error || !data.user) throw redirect({ to: "/auth", search: { redirect: location.href } });

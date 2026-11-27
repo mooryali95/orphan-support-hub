@@ -1,6 +1,6 @@
 import { defineCopy, useCopy } from "@/lib/locale";
 
-/** تسميات حالة الكفالة للكافل بلغته؛ الإدارة تبقى على `SPONSORSHIP_STATUS_LABELS`. */
+/** تسميات حالة الكفالة بلغة الواجهة، للكافل ولسجلّات الإدارة (`RecordsConsole`). */
 export const STATUS_COPY = defineCopy("components/sponsorship/status", {
   ar: {
     pending_payment: "بانتظار الدفع",

@@ -174,7 +174,7 @@ const FIELD_LABELS: Record<string, string> = {
   decision_note: "آخر قرار",
 };
 
-function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }) {
+export function DecisionPanel({ item, onDone }: { item: InboxItem; onDone: () => void }) {
   const qc = useQueryClient();
   const fetchContext = useServerFn(getDecisionContext);
   const fetchAccess = useServerFn(listAccessRequests);

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { useState } from "react";
 import { Award, FileText, Gauge, Mail, Package, PackageCheck, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -12,6 +12,34 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getMyJourneyFeed, previewMonthlyDigest } from "@/lib/journey.functions";
 import { eventLabel } from "@/lib/event-labels";
 import { isolate } from "@/lib/format";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
+
+const COPY = defineCopy("components/support/MyJourney", {
+  ar: {
+    title: "رحلتي",
+    description: "كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات — الأحدث أولاً.",
+    preview: "معاينة رسالة الشهر",
+    previewHint: "هكذا ستصلك رسالة الشهر",
+    close: "إغلاق",
+    emptyTitle: "رحلتك تبدأ مع أول دعم",
+    emptyText: "حين يُنشر تقرير أو تصل كفالة أو يجتاز من تدعمه جلسة، يظهر هنا.",
+    latestOnly: "عرض الأحدث فقط",
+    showAll: (n: number) => `عرض الكل (${n})`,
+  },
+  en: {
+    title: "My journey",
+    description:
+      "Everything your support has made happen: reports, deliveries, sessions and measurements — newest first.",
+    preview: "Preview the monthly letter",
+    previewHint: "This is how your monthly letter will arrive",
+    close: "Close",
+    emptyTitle: "Your journey begins with your first support",
+    emptyText:
+      "When a report is published, a sponsorship arrives, or someone you support completes a session, it appears here.",
+    latestOnly: "Show newest only",
+    showAll: (n: number) => `Show all (${n})`,
+  },
+});
 
 const ICONS: Record<string, { icon: LucideIcon; tone: TimelineItem["tone"] }> = {
   "report.published": { icon: FileText, tone: "done" },
@@ -27,10 +55,12 @@ const ICONS: Record<string, { icon: LucideIcon; tone: TimelineItem["tone"] }> = 
  * ومعاينة «رسالة الشهر» كما ستصل حين يُفتح البريد.
  */
 export function MyJourney({ limit = 5, className = "" }: { limit?: number; className?: string }) {
-  const fetchFeed = useServerFn(getMyJourneyFeed);
-  const fetchPreview = useServerFn(previewMonthlyDigest);
+  const fetchFeed = useDataFn("sponsor.journeyFeed", getMyJourneyFeed);
+  const fetchPreview = useDataFn("sponsor.digestPreview", previewMonthlyDigest);
+  const c = useCopy(COPY);
+  const locale = useLocale();
   const { data: feed = [], isPending } = useQuery({
-    queryKey: ["my-journey"],
+    queryKey: useDataKey(["my-journey"]),
     queryFn: () => fetchFeed(),
   });
   const [preview, setPreview] = useState<string | null>(null);
@@ -40,7 +70,7 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
   const items: TimelineItem[] = feed.map((f, i) => ({
     id: `${f.type}-${f.at}-${i}`,
     at: f.at,
-    title: [eventLabel(f.type), isolate(f.orphan)].filter(Boolean).join(" — "),
+    title: [eventLabel(f.type, locale), isolate(f.orphan)].filter(Boolean).join(" — "),
     text: f.kind === "timeline" ? null : f.text,
     icon: ICONS[f.type]?.icon ?? Sparkles,
     tone: ICONS[f.type]?.tone ?? "muted",
@@ -51,8 +81,8 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
   return (
     <PageSection
       id="my-journey"
-      title="رحلتي"
-      description="كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات — الأحدث أولاً."
+      title={c.title}
+      description={c.description}
       action={
         <Button
           size="sm"
@@ -62,7 +92,7 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
             setPreview(res.ok ? res.html : null);
           }}
         >
-          <Mail className="size-4" /> معاينة رسالة الشهر
+          <Mail className="size-4" /> {c.preview}
         </Button>
       }
       className={className}
@@ -70,17 +100,12 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
       {preview && (
         <div className="mb-6 overflow-hidden rounded-2xl border border-border">
           <div className="flex items-center justify-between bg-secondary/60 px-4 py-2 text-xs">
-            <span>هكذا ستصلك رسالة الشهر</span>
+            <span>{c.previewHint}</span>
             <button type="button" className="underline" onClick={() => setPreview(null)}>
-              إغلاق
+              {c.close}
             </button>
           </div>
-          <iframe
-            title="معاينة رسالة الشهر"
-            srcDoc={preview}
-            className="h-96 w-full bg-white"
-            sandbox=""
-          />
+          <iframe title={c.preview} srcDoc={preview} className="h-96 w-full bg-white" sandbox="" />
         </div>
       )}
       {isPending ? (
@@ -94,10 +119,7 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
           ))}
         </div>
       ) : items.length === 0 ? (
-        <EmptyState
-          title="رحلتك تبدأ مع أول دعم"
-          text="حين يُنشر تقرير أو تصل كفالة أو يجتاز من تدعمه جلسة، يظهر هنا."
-        />
+        <EmptyState title={c.emptyTitle} text={c.emptyText} />
       ) : (
         <>
           <Timeline items={shown} />
@@ -108,7 +130,7 @@ export function MyJourney({ limit = 5, className = "" }: { limit?: number; class
               aria-expanded={showAll}
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? "عرض الأحدث فقط" : `عرض الكل (${items.length})`}
+              {showAll ? c.latestOnly : c.showAll(items.length)}
             </Button>
           )}
         </>

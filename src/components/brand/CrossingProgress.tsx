@@ -1,4 +1,10 @@
+import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/brand/CrossingProgress", {
+  ar: { label: "نسبة تغطية الاحتياج الشهري" },
+  en: { label: "Share of the monthly need covered" },
+});
 
 /**
  * شريط «العبور» — تمويل الملفّ مقروءاً بلغة الهوية.
@@ -16,6 +22,7 @@ export function CrossingProgress({
   className?: string;
   label?: string;
 }) {
+  const c = useCopy(COPY);
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
   const arrived = clamped >= 100;
 
@@ -30,7 +37,7 @@ export function CrossingProgress({
       aria-valuenow={clamped}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label={label ?? "نسبة تغطية الاحتياج الشهري"}
+      aria-label={label ?? c.label}
     >
       <div
         className={cn(

@@ -1,22 +1,23 @@
-import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
+  Award,
   Banknote,
   Check,
   ChevronDown,
-  GraduationCap,
   Copy,
+  FileText,
+  GraduationCap,
   HandHeart,
   Landmark,
   Loader2,
-  ShieldCheck,
   TriangleAlert,
 } from "lucide-react";
 
+import { hijriLabel, monthLabel } from "@/components/sponsorship/sponsor-format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { flagOf, resolveCountry } from "@/lib/countries";
+import { useDataFn } from "@/lib/data-port";
 import { formatDate, formatMoney } from "@/lib/format";
 import {
   verifyLedgerReceipt,
@@ -24,173 +25,352 @@ import {
   type LedgerPayment,
   type SponsorshipLedger,
 } from "@/lib/ledger.functions";
-import { arCount, type ArForms } from "@/lib/plural";
+import { defineCopy, pluralOf, useCopy, useLocale, type Locale } from "@/lib/locale";
+import {
+  journeyByMonth,
+  packageLine,
+  PACKAGE_STEPS,
+  stepReached,
+  type JourneyEvent,
+  type JourneyReport,
+  type PackageStep,
+} from "@/lib/sponsor-center";
 import { cn } from "@/lib/utils";
-import { Name } from "@/components/kit/Name";
 
-const MONTHS = [
-  "يناير",
-  "فبراير",
-  "مارس",
-  "أبريل",
-  "مايو",
-  "يونيو",
-  "يوليو",
-  "أغسطس",
-  "سبتمبر",
-  "أكتوبر",
-  "نوفمبر",
-  "ديسمبر",
-];
-const monthName = (ym: string) => MONTHS[Number(ym.slice(5, 7)) - 1] ?? ym;
-const MONTHS_FORMS: ArForms = {
-  zero: "لا أشهر",
-  one: "شهرٌ واحد",
-  two: "شهران",
-  few: "{n} أشهر",
-  many: "{n} شهراً",
-  other: "{n} شهر",
+const COPY = defineCopy("components/sponsorship/SponsorshipJourney", {
+  ar: {
+    title: "رحلة الكفالة",
+    lead: "كلّ ما حدث في كفالتك، شهراً بشهر، الأحدث أولاً.",
+    empty: "تبدأ الرحلة مع أوّل دفعة: يظهر هنا كلّ شهرٍ بمحطّاته وإيصاله.",
+    steps: {
+      scheduled: "دُفع وجُدول",
+      transferred: "حُوِّل للجهة الميدانية",
+      delivered: "وصل الطفل بمستند",
+    } as Record<PackageStep, string>,
+    stepState: (n: number, label: string, state: string) => `المحطّة ${n} من 3: ${label}، ${state}`,
+    reached: "تمّت",
+    waiting: "لم تتمّ بعد",
+    monthLine: "محطّات الشهر",
+    delivered: (date: string) => `وصل ${date} بمستند استلام`,
+    waitingFor: (step: string) => `بانتظار: ${step}`,
+    notPaid: "لم يُدفع هذا الشهر",
+    pay: {
+      paid: "مدفوع",
+      pending: "الدفع قيد التأكيد",
+      failed: "تعذّر الدفع",
+      refunded: "رُدّ المبلغ",
+      disputed: "قيد منازعة",
+    } as Record<NonNullable<LedgerMonth["payment_status"]>, string>,
+    failedHint: "لم يصل دفع هذا الشهر. أكمله الآن ليُحوَّل للطفل في دورته.",
+    disputedHint: "فُتحت منازعةٌ على هذا الدفع لدى مزوّد الدفع، ويبقى الشهر معلّقاً حتى تُحسم.",
+    refundedHint: "رُدّ مبلغ هذا الشهر إليك، فلا يُحسب في سجلّ تبرّعاتك.",
+    payNow: "ادفع الآن",
+    invoices: "فواتير الشهر",
+    invoice: "الفاتورة",
+    providerReceipt: "إيصال المزوّد",
+    txAt: (provider: string) => `المعاملة لدى ${provider}`,
+    provider: "المزوّد",
+    copyTx: "نسخ رقم المعاملة",
+    copiedTx: "نُسخ رقم المعاملة",
+    receipt: "إيصال الشهر",
+    copyReceipt: "نسخ الإيصال",
+    copiedReceipt: "نُسخ الإيصال",
+    verifyOpen: "تحقّق من إيصالٍ محفوظ",
+    receiptHint:
+      "يُحسب من حقائق الشهر: الفواتير ومعاملاتها، والمدفوع، والتحويل، والوصول وتاريخه. إن تغيّر شيءٌ منها لاحقاً تغيّر الإيصال.",
+    savedReceipt: "الإيصال المحفوظ",
+    verify: "تحقّق",
+    verifyFailed: "تعذّر التحقّق",
+    match: "يطابق، لم يتغيّر شيء",
+    noMatch: "لا يطابق: تغيّرت حقيقةٌ من حقائق الشهر، فراسِل الإدارة",
+    report: (period: string) => `تقرير ${period} المعتمد`,
+    learned: "ما اجتازه في هذا الشهر",
+    firstDelivered: "أوّل شهرٍ وصل الطفل بمستند",
+    anniversary: pluralOf(
+      {
+        one: "عامٌ مع {1}",
+        two: "عامان مع {1}",
+        few: "{0} أعوام مع {1}",
+        other: "{0} عاماً مع {1}",
+      },
+      0,
+      "ar",
+    ),
+  },
+  en: {
+    title: "Sponsorship journey",
+    lead: "Everything that happened in your sponsorship, month by month, newest first.",
+    empty:
+      "The journey starts with the first payment: each month appears here with its steps and receipt.",
+    steps: {
+      scheduled: "Paid and scheduled",
+      transferred: "Sent to the field organization",
+      delivered: "Delivered with a document",
+    } as Record<PackageStep, string>,
+    stepState: (n: number, label: string, state: string) => `Step ${n} of 3: ${label}, ${state}`,
+    reached: "done",
+    waiting: "not yet",
+    monthLine: "This month's steps",
+    delivered: (date: string) => `Delivered ${date} with a receipt document`,
+    waitingFor: (step: string) => `Waiting for: ${step}`,
+    notPaid: "Not paid this month",
+    pay: {
+      paid: "Paid",
+      pending: "Payment being confirmed",
+      failed: "Payment failed",
+      refunded: "Refunded",
+      disputed: "Disputed",
+    } as Record<NonNullable<LedgerMonth["payment_status"]>, string>,
+    failedHint:
+      "This month's payment did not arrive. Complete it now so it reaches the child this cycle.",
+    disputedHint:
+      "A dispute is open on this payment with the payment provider; the month stays on hold until it is settled.",
+    refundedHint:
+      "This month's amount was refunded to you, so it does not count in your record of donations.",
+    payNow: "Pay now",
+    invoices: "Invoices for the month",
+    invoice: "Invoice",
+    providerReceipt: "Provider receipt",
+    txAt: (provider: string) => `Transaction at ${provider}`,
+    provider: "the provider",
+    copyTx: "Copy transaction number",
+    copiedTx: "Transaction number copied",
+    receipt: "Month receipt",
+    copyReceipt: "Copy receipt",
+    copiedReceipt: "Receipt copied",
+    verifyOpen: "Check a saved receipt",
+    receiptHint:
+      "Computed from the month's facts: invoices and their transactions, the amount paid, the transfer, and the delivery and its date. If any of them changes later, the receipt changes.",
+    savedReceipt: "Saved receipt",
+    verify: "Check",
+    verifyFailed: "Couldn't check",
+    match: "Matches, nothing has changed",
+    noMatch: "Doesn't match: a fact of the month has changed, so please contact the administration",
+    report: (period: string) => `Approved report for ${period}`,
+    learned: "Passed this month",
+    firstDelivered: "First month delivered to the child with a document",
+    anniversary: pluralOf({ one: "{0} year with {1}", other: "{0} years with {1}" }),
+  },
+});
+
+const STEP_ICONS: Record<PackageStep, typeof Banknote> = {
+  scheduled: Banknote,
+  transferred: Landmark,
+  delivered: HandHeart,
 };
 
-/** المحطّات الثلاث لكل شهر — ومن أين يُعرف كلٌّ منها. */
-type Station = "paid" | "transferred" | "delivered";
-function reached(m: LedgerMonth): Record<Station, boolean> {
-  return {
-    paid: m.paid > 0,
-    transferred: m.delivery_status === "transferred" || m.delivery_status === "delivered",
-    delivered: m.delivery_status === "delivered",
-  };
-}
-const STATIONS: Array<[Station, string, typeof Banknote]> = [
-  ["paid", "دُفع", Banknote],
-  ["transferred", "حُوِّل للجهة", Landmark],
-  ["delivered", "وصل الطفل", HandHeart],
-];
-
 /**
- * رحلة الكفالة: كل شهرٍ ثلاث محطّات — الدفع، ثم التحويل للجهة الميدانية، ثم
- * الوصول بمستند — ومعه إيصالٌ يُحسب من حقائقه. ما لم يحدث بعدُ يُقال كما
- * هو: «بانتظار…»، لا يُوهَم بإنجاز.
+ * خطّ الطرد لشهر: مُجدول ← حُوِّل ← وصل، بالنصّ واللون معاً، ويُعلن كلّ محطّةٍ وموضعها.
+ * يتبع اتجاه الصفحة (يمين إلى يسار في العربية).
  */
-export function SponsorshipJourney({
-  ledger,
-  learned = {},
+export function PackageSteps({
+  m,
+  compact = false,
+  className,
 }: {
-  ledger: SponsorshipLedger;
-  /** الجلسات التي اجتازها الطفل في كل شهر — من رحلة التأهيل. */
-  learned?: Record<string, string[]>;
+  m: LedgerMonth;
+  compact?: boolean;
+  className?: string;
 }) {
-  const s = ledger.sponsorship;
-  const past = ledger.months.filter((m) => !m.upcoming);
-  const next = ledger.months.find((m) => m.upcoming);
-  const delivered = ledger.totals.months_delivered;
-  const pct = past.length ? Math.round((delivered / past.length) * 100) : 0;
-  const code = resolveCountry(ledger.orphan.country);
-
-  const byYear = useMemo(() => {
-    const g = new Map<string, LedgerMonth[]>();
-    for (const m of past) g.set(m.month.slice(0, 4), [...(g.get(m.month.slice(0, 4)) ?? []), m]);
-    return [...g.entries()];
-  }, [past]);
-
+  const c = useCopy(COPY);
+  const line = packageLine(m);
   return (
-    <div className="space-y-8">
-      {/* ── رأس الرحلة ── */}
-      <section className="stagger-in relative overflow-hidden rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_12px_32px_-16px_rgb(0_0_0/0.18)] sm:p-8">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(90%_120%_at_100%_0%,var(--color-thrive-tint),transparent_60%)]"
-        />
-        <div className="relative flex flex-wrap items-center gap-6">
-          <Ring pct={pct} />
-          <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              {code && <span aria-hidden="true">{flagOf(code)}</span>}
-              {[ledger.orphan.country, ledger.orphan.region].filter(Boolean).join(" · ")}
-            </p>
-            <h2 className="mt-1 font-serif text-3xl font-bold text-primary">
-              <Name>{ledger.orphan.display_name}</Name>
-            </h2>
-            <p className="mt-2 text-sm leading-7">
-              <strong className="tabular-nums">{arCount(delivered, MONTHS_FORMS)}</strong> وصلت
-              الطفل موثّقة، من{" "}
-              <span className="tabular-nums">{arCount(past.length, MONTHS_FORMS)}</span> منذ{" "}
-              {s.started_at ? formatDate(s.started_at) : "بدء الكفالة"}.
-            </p>
-            {ledger.orphan.locked && (
-              <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                <ShieldCheck className="size-3.5" aria-hidden="true" />
-                ملفٌّ مثبّت — لا يُحذف ولا تتغيّر هويته إلا بقرارٍ رسمي بموافقتين
-              </p>
+    <ol aria-label={c.monthLine} className={cn("flex items-start gap-1", className)}>
+      {PACKAGE_STEPS.map((s, i) => {
+        const done = stepReached(line, s);
+        const Icon = STEP_ICONS[s];
+        return (
+          <li
+            key={s}
+            aria-label={c.stepState(i + 1, c.steps[s], done ? c.reached : c.waiting)}
+            className="min-w-0 flex-1"
+          >
+            <span
+              aria-hidden="true"
+              className={cn("block h-1.5 rounded-full", done ? "bg-primary" : "bg-border")}
+            />
+            {!compact && (
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "mt-1.5 flex items-center gap-1 text-xs leading-5",
+                  done ? "font-semibold text-foreground" : "text-muted-foreground",
+                )}
+              >
+                {done ? (
+                  <Check className="size-3.5 shrink-0 text-primary" strokeWidth={2.5} />
+                ) : (
+                  <Icon className="size-3.5 shrink-0" strokeWidth={1.5} />
+                )}
+                <span className="min-w-0">{c.steps[s]}</span>
+              </span>
             )}
-          </div>
-        </div>
-        {next && (
-          <p className="relative mt-6 rounded-2xl bg-secondary/60 px-4 py-3 text-sm">
-            القادم: <strong>{monthName(next.month)}</strong> — {formatMoney(next.due, s.currency)}
-            {s.next_charge_at ? ` · يُحصَّل ${formatDate(s.next_charge_at)}` : ""}
-          </p>
-        )}
-      </section>
-
-      {/* ── الأشهر ── */}
-      {byYear.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          تبدأ الرحلة مع أوّل دفعة: يظهر هنا كل شهرٍ بمحطّاته الثلاث وإيصاله.
-        </p>
-      ) : (
-        byYear.map(([year, months]) => (
-          <section key={year} aria-labelledby={`y-${year}`}>
-            <h3 id={`y-${year}`} className="text-sm font-bold text-muted-foreground">
-              {year}
-            </h3>
-            <ol className="relative mt-3 space-y-3 before:absolute before:inset-y-3 before:start-[1.15rem] before:w-px before:bg-border">
-              {months.map((m, i) => (
-                <MonthNode
-                  key={m.month}
-                  m={m}
-                  currency={s.currency}
-                  sponsorshipId={s.id}
-                  index={i}
-                  learned={learned[m.month] ?? []}
-                  defaultOpen={year === byYear[0]?.[0] && i === 0}
-                />
-              ))}
-            </ol>
-          </section>
-        ))
-      )}
-    </div>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
-/** حلقة التقدّم: نسبة الأشهر الواصلة من الأشهر الماضية. */
-function Ring({ pct }: { pct: number }) {
-  const r = 34;
-  const c = 2 * Math.PI * r;
+/**
+ * رحلة الكفالة: خطٌّ واحد مجموعٌ بالشهر، الأحدث أولاً، برأس شهرٍ ثابتٍ ميلاديّ وتحته الهجري.
+ * فيه الأشهر بمحطّاتها وفواتيرها وإيصالها، والتقارير المعتمدة، وما اجتازه الطفل، والمحطّات.
+ * ما لم يحدث بعدُ يُقال كما هو، ولا يُوهَم بإنجاز.
+ */
+export function SponsorshipJourney({
+  ledger,
+  reports = [],
+  learned = {},
+  onPay,
+  paying = false,
+  now,
+}: {
+  ledger: SponsorshipLedger;
+  reports?: JourneyReport[];
+  /** الجلسات التي اجتازها الطفل في كلّ شهر — من رحلة التأهيل. */
+  learned?: Record<string, string[]>;
+  /** «ادفع الآن» لشهرٍ تعذّر دفعه */
+  onPay?: () => void;
+  paying?: boolean;
+  now?: Date;
+}) {
+  const c = useCopy(COPY);
+  const locale = useLocale();
+  const groups = journeyByMonth(ledger, reports, learned, now);
+  const s = ledger.sponsorship;
+
   return (
-    <div
-      className="relative size-24 shrink-0"
-      role="img"
-      aria-label={`${pct}% من الأشهر وصلت موثّقة`}
-    >
-      <svg viewBox="0 0 80 80" className="size-full -rotate-90">
-        <circle cx="40" cy="40" r={r} fill="none" strokeWidth="7" className="stroke-secondary" />
-        <circle
-          cx="40"
-          cy="40"
-          r={r}
-          fill="none"
-          strokeWidth="7"
-          strokeLinecap="round"
-          className="stroke-primary transition-[stroke-dashoffset] duration-1000 ease-[var(--ease-out)] motion-reduce:transition-none"
-          style={{ strokeDasharray: c, strokeDashoffset: c * (1 - pct / 100) }}
+    <section aria-labelledby="journey-h">
+      <h2 id="journey-h" className="text-lg font-bold">
+        {c.title}
+      </h2>
+      <p className="mt-1 text-sm leading-7 text-muted-foreground">{c.lead}</p>
+      {groups.length === 0 ? (
+        <p className="mt-4 rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          {c.empty}
+        </p>
+      ) : (
+        <div className="mt-4 space-y-6">
+          {groups.map((g, gi) => (
+            <section key={g.month} aria-labelledby={`m-${g.month}`}>
+              <h3
+                id={`m-${g.month}`}
+                className="sticky top-0 z-10 -mx-1 flex flex-wrap items-baseline gap-x-2 bg-secondary/80 px-1 py-2 backdrop-blur-sm"
+              >
+                <span className="font-bold">{monthLabel(g.month, locale)}</span>
+                <span className="text-xs font-normal text-muted-foreground">
+                  {hijriLabel(g.month, locale)}
+                </span>
+              </h3>
+              <ul className="mt-2 space-y-2">
+                {sortEvents(g.events).map((e, i) => (
+                  <EventRow
+                    key={`${e.kind}-${i}`}
+                    e={e}
+                    ledger={ledger}
+                    currency={s.currency}
+                    defaultOpen={gi === 0}
+                    onPay={onPay}
+                    paying={paying}
+                    locale={locale}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+const ORDER: Record<JourneyEvent["kind"], number> = {
+  milestone: 0,
+  report: 1,
+  learned: 2,
+  month: 3,
+};
+const sortEvents = (es: JourneyEvent[]) => [...es].sort((a, b) => ORDER[a.kind] - ORDER[b.kind]);
+
+function EventRow({
+  e,
+  ledger,
+  currency,
+  defaultOpen,
+  onPay,
+  paying,
+  locale,
+}: {
+  e: JourneyEvent;
+  ledger: SponsorshipLedger;
+  currency: string;
+  defaultOpen: boolean;
+  onPay: (() => void) | undefined;
+  paying: boolean;
+  locale: Locale;
+}) {
+  const c = useCopy(COPY);
+  if (e.kind === "month")
+    return (
+      <MonthNode
+        m={e.m}
+        currency={currency}
+        sponsorshipId={ledger.sponsorship.id}
+        defaultOpen={defaultOpen}
+        onPay={onPay}
+        paying={paying}
+      />
+    );
+  const card =
+    "flex items-start gap-3 rounded-2xl bg-card px-4 py-3 text-sm leading-7 shadow-[0_0_0_1px_rgb(0_0_0/0.06)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]";
+  if (e.kind === "report")
+    return (
+      <li className={card}>
+        <FileText
+          className="mt-1 size-4 shrink-0 text-primary"
+          strokeWidth={1.75}
+          aria-hidden="true"
         />
-      </svg>
-      <span className="absolute inset-0 grid place-items-center text-xl font-extrabold tabular-nums text-primary">
-        {pct}%
+        <span className="min-w-0">
+          <span className="block font-semibold">{c.report(e.report.period)}</span>
+          {e.report.published_at && (
+            <span className="block text-xs text-muted-foreground">
+              {formatDate(e.report.published_at, locale)}
+            </span>
+          )}
+        </span>
+      </li>
+    );
+  if (e.kind === "learned")
+    return (
+      <li className={card}>
+        <GraduationCap
+          className="mt-1 size-4 shrink-0 text-primary"
+          strokeWidth={1.75}
+          aria-hidden="true"
+        />
+        <span className="min-w-0">
+          <span className="block font-semibold">{c.learned}</span>
+          <span className="block">{e.titles.join(" · ")}</span>
+        </span>
+      </li>
+    );
+  const ms = e.milestone;
+  return (
+    <li className={cn(card, "bg-primary/6")}>
+      <Award
+        className="mt-1 size-4 shrink-0 text-bridge-ink"
+        strokeWidth={1.75}
+        aria-hidden="true"
+      />
+      <span className="font-semibold">
+        {ms.kind === "first_delivered" ? (
+          c.firstDelivered
+        ) : (
+          <>{c.anniversary(ms.years, ledger.orphan.display_name)}</>
+        )}
       </span>
-    </div>
+    </li>
   );
 }
 
@@ -198,191 +378,178 @@ function MonthNode({
   m,
   currency,
   sponsorshipId,
-  index,
-  learned,
   defaultOpen,
+  onPay,
+  paying,
 }: {
   m: LedgerMonth;
   currency: string;
   sponsorshipId: string;
-  index: number;
-  learned: string[];
   defaultOpen: boolean;
+  onPay: (() => void) | undefined;
+  paying: boolean;
 }) {
+  const c = useCopy(COPY);
+  const locale = useLocale();
   const [open, setOpen] = useState(defaultOpen);
-  const st = reached(m);
-  const failed = m.payment_status === "failed" || m.payment_status === "disputed";
-  const done = st.delivered;
-  const nextStep = STATIONS.find(([k]) => !st[k]);
+  const line = packageLine(m);
+  const next = PACKAGE_STEPS.find((s) => !stepReached(line, s));
+  const status = m.payment_status;
+  const summary = line.issue
+    ? c.pay[line.issue]
+    : line.refunded
+      ? c.pay.refunded
+      : line.reached === "delivered"
+        ? c.delivered(m.delivered_at ? formatDate(m.delivered_at, locale) : "")
+        : line.reached === null
+          ? c.notPaid
+          : next
+            ? c.waitingFor(c.steps[next])
+            : "";
 
   return (
-    <li className="stagger-in relative ps-12" style={{ ["--i" as string]: index }}>
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute start-2 top-4 grid size-6 place-items-center rounded-full ring-4 ring-background",
-          done
-            ? "bg-primary text-primary-foreground"
-            : failed
-              ? "bg-destructive text-white"
-              : st.paid
-                ? "bg-card shadow-[0_0_0_2px_var(--color-bridge)]"
-                : "bg-card shadow-[0_0_0_1.5px_var(--color-border)]",
-        )}
+    <li className="rounded-2xl bg-card shadow-[0_0_0_1px_rgb(0_0_0/0.06)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.1)]">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex min-h-11 w-full items-center gap-3 px-4 py-3 text-start"
       >
-        {done ? (
-          <Check className="size-3.5" strokeWidth={3} />
-        ) : failed ? (
-          <TriangleAlert className="size-3.5" />
-        ) : null}
-      </span>
-      <div className="rounded-2xl bg-card shadow-[0_0_0_1px_rgb(0_0_0/0.06)]">
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          className="flex w-full items-center gap-3 px-4 py-3 text-start"
+        <span
+          aria-hidden="true"
+          className={cn(
+            "grid size-6 shrink-0 place-items-center rounded-full",
+            line.reached === "delivered"
+              ? "bg-primary text-primary-foreground"
+              : line.issue
+                ? "bg-destructive text-white"
+                : "bg-secondary",
+          )}
         >
-          <span className="min-w-0 flex-1">
-            <span className="block font-bold">{monthName(m.month)}</span>
-            <span className="block text-xs text-muted-foreground">
-              {failed
-                ? "تعذّر الدفع — يُعاد تلقائياً أو من لوحتك"
-                : done
-                  ? `وصل ${m.delivered_at ? formatDate(m.delivered_at) : ""} · موثّق`
-                  : nextStep
-                    ? `بانتظار: ${nextStep[1]}`
-                    : ""}
+          {line.reached === "delivered" ? (
+            <Check className="size-3.5" strokeWidth={3} />
+          ) : line.issue ? (
+            <TriangleAlert className="size-3.5" />
+          ) : null}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold">{summary}</span>
+          {Number(m.paid) > 0 && (
+            <span className="block text-xs text-muted-foreground tabular-nums">
+              {formatMoney(m.paid, currency, locale)}
             </span>
-          </span>
-          {/* المحطّات مصغّرة */}
-          <span className="flex items-center gap-1" aria-hidden="true">
-            {STATIONS.map(([k]) => (
-              <span
-                key={k}
-                className={cn(
-                  "h-1.5 w-5 rounded-full transition-colors duration-500",
-                  st[k] ? "bg-primary" : "bg-border",
-                )}
-              />
-            ))}
-          </span>
-          <ChevronDown
+          )}
+        </span>
+        {status && (
+          <span
             className={cn(
-              "size-4 text-muted-foreground transition-transform duration-200",
-              open && "rotate-180",
+              "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
+              status === "paid" && "bg-primary/10 text-primary",
+              (status === "failed" || status === "disputed") &&
+                "bg-destructive/10 text-destructive",
+              (status === "pending" || status === "refunded") && "bg-secondary text-foreground",
             )}
-            aria-hidden="true"
-          />
-        </button>
-        {open && (
-          <div className="map-rise border-t border-border px-4 pt-4 pb-4">
-            <ol className="grid grid-cols-3 gap-2">
-              {STATIONS.map(([k, label, Icon]) => (
-                <li
-                  key={k}
-                  className={cn(
-                    "rounded-xl p-3 text-center",
-                    st[k] ? "bg-primary/8 text-primary" : "bg-secondary/50 text-muted-foreground",
-                  )}
-                >
-                  <Icon className="mx-auto size-5" strokeWidth={1.5} aria-hidden="true" />
-                  <p className="mt-1.5 text-xs font-semibold">{label}</p>
-                  <p className="mt-0.5 text-xs">
-                    {k === "paid"
-                      ? st.paid
-                        ? formatMoney(m.paid, currency)
-                        : "لم يُدفع بعد"
-                      : k === "delivered"
-                        ? st.delivered
-                          ? "بمستند استلام"
-                          : "ينتظر المستند"
-                        : st.transferred
-                          ? "إلى الجهة الميدانية"
-                          : "ينتظر التحويل"}
-                  </p>
-                </li>
-              ))}
-            </ol>
-            {learned.length > 0 && (
-              <div className="mt-4 rounded-xl bg-primary/5 p-3">
-                <p className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                  <GraduationCap className="size-4" strokeWidth={1.5} aria-hidden="true" />
-                  ما اجتازه في هذا الشهر
-                </p>
-                <ul className="mt-1.5 space-y-1 text-sm">
-                  {learned.map((t) => (
-                    <li key={t} className="flex items-start gap-1.5">
-                      <Check className="mt-1 size-3.5 shrink-0 text-primary" aria-hidden="true" />
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {(m.payments?.length ?? 0) > 0 && <Invoices payments={m.payments!} />}
-            {m.receipt && (
-              <Receipt receipt={m.receipt} month={m.month} sponsorshipId={sponsorshipId} />
-            )}
-          </div>
+          >
+            {c.pay[status]}
+          </span>
         )}
-      </div>
+        <ChevronDown
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none",
+            open && "rotate-180",
+          )}
+          aria-hidden="true"
+        />
+      </button>
+      {open && (
+        <div className="border-t border-border px-4 pt-4 pb-4">
+          <PackageSteps m={m} />
+          {line.issue === "failed" && (
+            <div className="mt-4 rounded-xl bg-destructive/8 p-3 text-sm leading-7">
+              <p>{c.failedHint}</p>
+              {onPay && (
+                <Button className="mt-2 min-h-11" onClick={onPay} disabled={paying}>
+                  {paying && <Loader2 className="size-4 animate-spin" />}
+                  {c.payNow}
+                </Button>
+              )}
+            </div>
+          )}
+          {line.issue === "disputed" && (
+            <p className="mt-4 rounded-xl bg-destructive/8 p-3 text-sm leading-7">
+              {c.disputedHint}
+            </p>
+          )}
+          {line.refunded && (
+            <p className="mt-4 rounded-xl bg-secondary/60 p-3 text-sm leading-7">
+              {c.refundedHint}
+            </p>
+          )}
+          {(m.payments?.length ?? 0) > 0 && <Invoices payments={m.payments!} />}
+          {m.receipt && (
+            <Receipt receipt={m.receipt} month={m.month} sponsorshipId={sponsorshipId} />
+          )}
+        </div>
+      )}
     </li>
   );
 }
 
-const PAY_STATUS: Record<string, [string, string]> = {
-  paid: ["مدفوعة", "text-primary"],
-  refunded: ["مُردّة", "text-muted-foreground"],
-  disputed: ["قيد منازعة", "text-destructive"],
-};
-
 /** فواتير الشهر: رقمنا، ورقم المعاملة لدى المزوّد كما في كشف البطاقة. */
 function Invoices({ payments }: { payments: LedgerPayment[] }) {
+  const c = useCopy(COPY);
+  const locale = useLocale();
   return (
-    <ul className="mt-4 space-y-2" aria-label="فواتير الشهر">
+    <ul className="mt-4 space-y-2" aria-label={c.invoices}>
       {payments.map((p) => (
         <li key={p.invoice_no} className="rounded-xl bg-secondary/40 p-3 text-sm">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-xs text-muted-foreground">الفاتورة</span>
+            <span className="text-xs text-muted-foreground">{c.invoice}</span>
             <bdi dir="ltr" className="font-mono font-semibold">
               {p.invoice_no}
             </bdi>
-            <span className="tabular-nums">{formatMoney(p.amount, p.currency)}</span>
-            <span className={cn("text-xs font-medium", PAY_STATUS[p.status]?.[1])}>
-              {PAY_STATUS[p.status]?.[0] ?? p.status}
+            <span className="tabular-nums">{formatMoney(p.amount, p.currency, locale)}</span>
+            <span
+              className={cn(
+                "text-xs font-medium",
+                p.status === "paid"
+                  ? "text-primary"
+                  : p.status === "refunded"
+                    ? "text-muted-foreground"
+                    : "text-destructive",
+              )}
+            >
+              {c.pay[p.status]}
             </span>
             {p.receipt_url && (
               <a
                 href={p.receipt_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="ms-auto text-xs font-medium text-primary underline-offset-4 hover:underline"
+                className="ms-auto inline-flex min-h-11 items-center text-xs font-medium text-primary underline-offset-4 hover:underline"
               >
-                إيصال المزوّد
+                {c.providerReceipt}
               </a>
             )}
           </div>
           {p.provider_payment_id && (
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span>
-                المعاملة لدى {p.provider === "creem" ? "Creem" : (p.provider ?? "المزوّد")}
-              </span>
+              <span>{c.txAt(p.provider === "creem" ? "Creem" : (p.provider ?? c.provider))}</span>
               <bdi dir="ltr" className="max-w-[16rem] truncate font-mono text-foreground">
                 {p.provider_payment_id}
               </bdi>
               <button
                 type="button"
-                aria-label="نسخ رقم المعاملة"
-                className="grid size-7 place-items-center rounded-full hover:bg-secondary"
+                aria-label={c.copyTx}
+                className="grid size-11 place-items-center rounded-full hover:bg-secondary"
                 onClick={async () => {
                   await navigator.clipboard.writeText(p.provider_payment_id!);
-                  toast.success("نُسخ رقم المعاملة");
+                  toast.success(c.copiedTx);
                 }}
               >
                 <Copy className="size-3.5" aria-hidden="true" />
               </button>
-              {p.paid_at && <span>· {formatDate(p.paid_at)}</span>}
+              {p.paid_at && <span>· {formatDate(p.paid_at, locale)}</span>}
             </div>
           )}
         </li>
@@ -391,7 +558,7 @@ function Invoices({ payments }: { payments: LedgerPayment[] }) {
   );
 }
 
-/** الإيصال: يُنسخ ويُحفظ، ويُتحقّق منه لاحقاً. */
+/** الإيصال: يُنسخ ويُحفظ، ويُتحقّق منه لاحقاً (`sponsor.verifyReceipt`). */
 function Receipt({
   receipt,
   month,
@@ -401,7 +568,8 @@ function Receipt({
   month: string;
   sponsorshipId: string;
 }) {
-  const verify = useServerFn(verifyLedgerReceipt);
+  const c = useCopy(COPY);
+  const verify = useDataFn("sponsor.verifyReceipt", verifyLedgerReceipt);
   const [checking, setChecking] = useState(false);
   const [input, setInput] = useState("");
   const [result, setResult] = useState<null | boolean>(null);
@@ -409,43 +577,44 @@ function Receipt({
   return (
     <div className="mt-4 rounded-xl bg-secondary/40 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-muted-foreground">إيصال الشهر</span>
-        <bdi dir="ltr" className="font-mono text-sm font-semibold tracking-wider">
+        <span className="text-xs text-muted-foreground">{c.receipt}</span>
+        <bdi dir="ltr" className="font-mono text-sm font-semibold">
           {receipt}
         </bdi>
         <Button
           size="icon"
           variant="ghost"
-          className="size-8"
-          aria-label="نسخ الإيصال"
+          className="size-11"
+          aria-label={c.copyReceipt}
           onClick={async () => {
             await navigator.clipboard.writeText(receipt);
-            toast.success("نُسخ الإيصال");
+            toast.success(c.copiedReceipt);
           }}
         >
           <Copy className="size-3.5" />
         </Button>
         <button
           type="button"
-          onClick={() => setChecking((c) => !c)}
-          className="ms-auto text-xs font-medium text-primary"
+          onClick={() => setChecking((v) => !v)}
+          className="ms-auto inline-flex min-h-11 items-center text-xs font-medium text-primary"
           aria-expanded={checking}
         >
-          تحقّق من إيصالٍ محفوظ
+          {c.verifyOpen}
         </button>
       </div>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        يُحسب من حقائق الشهر: الفواتير ومعاملاتها لدى المزوّد، والمدفوع، والتحويل، والوصول وتاريخه.
-        إن تغيّر شيءٌ منها لاحقاً تغيّر الإيصال.
-      </p>
+      <p className="mt-1 text-xs leading-5 text-muted-foreground">{c.receiptHint}</p>
       {checking && (
         <form
-          className="map-rise mt-3 flex flex-wrap items-center gap-2"
+          className="mt-3 flex flex-wrap items-center gap-2"
           onSubmit={async (e) => {
             e.preventDefault();
-            const r = await verify({ data: { sponsorshipId, month, receipt: input } });
-            setResult(r.ok ? r.match : null);
-            if (!r.ok) toast.error("تعذّر التحقّق");
+            try {
+              const r = await verify({ data: { sponsorshipId, month, receipt: input } });
+              setResult(r.ok ? r.match : null);
+              if (!r.ok) toast.error(c.verifyFailed);
+            } catch {
+              toast.error(c.verifyFailed);
+            }
           }}
         >
           <Input
@@ -456,28 +625,27 @@ function Receipt({
               setResult(null);
             }}
             placeholder="XXXX-XXXX-XXXX"
-            aria-label="الإيصال المحفوظ"
-            className="h-9 w-44 font-mono text-base md:text-sm"
+            aria-label={c.savedReceipt}
+            className="h-11 w-48 font-mono text-base md:text-sm"
           />
-          <Button type="submit" size="sm" variant="outline" disabled={input.trim().length < 12}>
-            تحقّق
+          <Button
+            type="submit"
+            variant="outline"
+            className="min-h-11"
+            disabled={input.trim().length < 12}
+          >
+            {c.verify}
           </Button>
           {result !== null && (
             <span
               role="status"
               className={cn("text-sm font-medium", result ? "text-primary" : "text-destructive")}
             >
-              {result
-                ? "يطابق — لم يتغيّر شيء"
-                : "لا يطابق — تغيّرت حقيقةٌ من حقائق الشهر؛ راسِل الإدارة"}
+              {result ? c.match : c.noMatch}
             </span>
           )}
         </form>
       )}
     </div>
   );
-}
-
-export function JourneyLoading() {
-  return <Loader2 className="mx-auto my-16 size-6 animate-spin text-muted-foreground" />;
 }

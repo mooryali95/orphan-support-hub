@@ -27,11 +27,16 @@ export function SourcesPanel({
   country,
   setCountry,
   access,
+  tab: tabIn,
+  setTab: setTabIn,
 }: {
   country: string;
   setCountry: (code: string) => void;
   /** الإدارة، أو أدوار الدول لعضو فريقٍ (`my_country_access`). القاعدة تحرس على كل حال. */
   access: CountryAccess;
+  /** اللسان المفتوح حين يملكه من يعرض اللوحة (رابطٌ من «اليوم» إلى تعارضات دولة). */
+  tab?: Tab | undefined;
+  setTab?: ((t: Tab) => void) | undefined;
 }) {
   const c = useCopy(SOURCES_COPY);
   const fetchHealth = useDataFn("golden.health", getDataHealth);
@@ -39,7 +44,12 @@ export function SourcesPanel({
   const rows = health.data?.ok ? health.data.data : [];
   const code = rows.some((r) => r.code === country) ? country : (rows[0]?.code ?? "");
   const selected = rows.find((r) => r.code === code) ?? null;
-  const [tab, setTab] = useState<Tab>("alerts");
+  const [tabOwn, setTabOwn] = useState<Tab>("alerts");
+  const tab = tabIn ?? tabOwn;
+  const setTab = (t: Tab) => {
+    setTabOwn(t);
+    setTabIn?.(t);
+  };
   const [fileId, setFileId] = useState<string | null>(null);
 
   if (health.isPending) return <Busy />;

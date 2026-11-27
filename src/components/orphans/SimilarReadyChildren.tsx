@@ -30,7 +30,16 @@ const COPY = defineCopy("components/orphans/SimilarReadyChildren", {
  * الملفات غير الموثّقة، ويُعرض بالبطاقة العامّة وحدها (اسم، احتياج، فجوة).
  * يغيب القسم كلّه إن لم يُوجد بديل أو تعذّر الاقتراح.
  */
-export function SimilarReadyChildren({ orphanId, amount }: { orphanId: string; amount: number }) {
+export function SimilarReadyChildren({
+  orphanId,
+  amount,
+  lead,
+}: {
+  orphanId: string;
+  amount: number;
+  /** سطرٌ بدل «قريبٍ من هذا الملف» حين لا ملفّ (لوحةٌ بلا كفالات) */
+  lead?: string;
+}) {
   const c = useCopy(COPY);
   const locale = useLocale();
   const demo = useDemo();
@@ -53,7 +62,7 @@ export function SimilarReadyChildren({ orphanId, amount }: { orphanId: string; a
       <h3 id="similar-ready-title" className="text-base font-bold text-balance">
         {c.title}
       </h3>
-      <p className="mt-1 text-sm leading-7 text-pretty text-muted-foreground">{c.lead}</p>
+      <p className="mt-1 text-sm leading-7 text-pretty text-muted-foreground">{lead ?? c.lead}</p>
       <ul className="mt-3 space-y-2">
         {list.map((o) => (
           <li key={o.id}>

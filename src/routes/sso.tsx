@@ -20,6 +20,8 @@ const COPY = defineCopy("routes/sso", {
     reasons: {
       expired: "انتهت صلاحية الرابط. الرابط يعمل دقيقتين فقط.",
       token_used: "استُعمل هذا الرابط من قبل. كل رابطٍ يعمل مرّةً واحدة.",
+      origin_denied: "لم يصل الطلب من منصّة الندوة. ادخل منها مباشرة.",
+      email_unconfirmed: "البريد مسجّلٌ هنا ولم يوثَّق بعد. وثّقه أوّلاً ثم ادخل من منصّة الندوة.",
       email_unverified: "بريدك غير موثَّق في منصّة الندوة.",
       subject_taken: "هذا البريد مربوطٌ بحسابٍ آخر من منصّة الندوة. تواصل مع الإدارة.",
       not_configured: "الدخول من منصّة الندوة لم يُفعَّل بعد.",
@@ -35,6 +37,10 @@ const COPY = defineCopy("routes/sso", {
     reasons: {
       expired: "The link expired. It works for two minutes only.",
       token_used: "This link was already used. Each link works once.",
+      origin_denied:
+        "The request did not come from the WAMY platform. Sign in from there directly.",
+      email_unconfirmed:
+        "This email is registered here but not confirmed. Confirm it, then sign in from the WAMY platform.",
       email_unverified: "Your email isn't verified on WAMY's platform.",
       subject_taken: "This email is linked to another WAMY account. Contact the admin team.",
       not_configured: "Sign-in from WAMY's platform isn't enabled yet.",
@@ -68,17 +74,22 @@ function SsoPage() {
     const params = new URLSearchParams(window.location.hash.slice(1));
     window.history.replaceState(null, "", window.location.pathname);
     const err = params.get("error");
-    const th = params.get("th");
     const nonce = params.get("n");
-    if (err || !th || !nonce) {
+    if (err || !nonce) {
       setError(err ?? "missing");
       return;
     }
     void (async () => {
       // الرابط لا يُكمَل إلا في المتصفّح الذي بدأ الدخول من منصّة الندوة.
-      const bound = await checkNonce({ data: { nonce } }).catch(() => ({ ok: false }));
-      if (!bound.ok) return setError("not_this_browser");
-      const { error: e } = await supabase.auth.verifyOtp({ token_hash: th, type: "email" });
+      const bound = await checkNonce({ data: { nonce } }).catch(() => ({
+        ok: false,
+        tokenHash: undefined,
+      }));
+      if (!bound.ok || !bound.tokenHash) return setError("not_this_browser");
+      const { error: e } = await supabase.auth.verifyOtp({
+        token_hash: bound.tokenHash,
+        type: "email",
+      });
       if (e) return setError("session_failed");
       void navigate({ to: safeNext(params.get("next")) as "/workspaces", replace: true });
     })();

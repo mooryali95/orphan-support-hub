@@ -14,6 +14,9 @@ import type { ProgressReportView } from "@/lib/impact.functions";
 import { copyOf, defineCopy, parseLocale, type Locale } from "@/lib/locale";
 import { registerDemo } from "@/lib/data-port";
 import { LIFECYCLE_ERRORS } from "@/lib/sponsorship-lifecycle";
+import type { FeedItem } from "@/lib/journey.functions";
+import type { LedgerMonth, SponsorshipLedger } from "@/lib/ledger.functions";
+import type { SponsorQualification } from "@/lib/scopes.functions";
 import type { MySponsorship, SuggestedOrphan } from "@/lib/sponsorships.functions";
 import {
   gapOf,
@@ -101,6 +104,7 @@ const COPY = defineCopy("lib/try-sponsor-center", {
     ],
     programs: ["مسار القارئ الصغير", "مسار المهارات الحياتية", "مسار الحفظ المتقن"],
     programSummary: "مسار تأهيلٍ نموذجيٌّ في التجربة، بمحطّاتٍ ستّ تُعتمد كلٌّ منها بقياس.",
+    payDemo: "الدفع في التجربة محاكاة، فلا يُفتح بابٌ للدفع ولا يُحصَّل شيء.",
   },
   en: {
     reports: [
@@ -111,6 +115,7 @@ const COPY = defineCopy("lib/try-sponsor-center", {
     programs: ["Young reader track", "Life skills track", "Careful memorisation track"],
     programSummary:
       "A sample qualification track in the trial, with six stages each approved by a measure.",
+    payDemo: "Payment in the trial is simulated, so no checkout opens and nothing is charged.",
   },
 });
 
@@ -329,6 +334,166 @@ export function tryCancel(id: string, now = new Date(), store = safe()) {
   return { ok: true as const, effectiveAt, immediate };
 }
 
+/* ——— سجلّ الكفالة في التجربة ——— */
+
+const monthStart = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+const ym = (d: Date) => monthOf(d, 0);
+const hex4 = (s: string) => (hash(s) % 0x10000).toString(16).toUpperCase().padStart(4, "0");
+
+/**
+ * سجلّ كفالة التجربة بشكل `sponsorship_ledger`: من شهر العطاء إلى اليوم، وشهرٌ قادم للشهرية
+ * الجارية. الفواتير نموذجية (`DEMO-INV-`، مزوّدها `demo`، بلا إيصال مزوّد)، ومعرّف الكفالة
+ * `gift-…` لا يقبله `startCheckout` (يطلب UUID)، فلا يمسّ السجلّ دفعاً حقيقياً.
+ */
+export function tryLedger(
+  sponsorshipId: string,
+  locale: Locale = "ar",
+  now: Date = new Date(),
+  store: TryStore | null = safe(),
+): SponsorshipLedger | null {
+  const s = trySponsorships(locale, now, store).find((x) => x.id === sponsorshipId);
+  const k = s?.orphan ? tryChild(s.orphan.id) : undefined;
+  if (!s || !s.orphan || !k) return null;
+  const started = new Date(s.started_at ?? s.created_at);
+  const ended = s.ended_at ? new Date(s.ended_at) : null;
+  const last = monthStart(ended && ended < now ? ended : now);
+  const months: LedgerMonth[] = [];
+  for (let d = monthStart(started); d <= last; d.setUTCMonth(d.getUTCMonth() + 1)) {
+    const month = ym(d);
+    const first = month === ym(started);
+    // الإيقاف يبدأ بعد آخر ما دُفع، فلا يمسّ شهراً مضى؛ يغيب الشهر القادم وحده.
+    const billed = s.type === "monthly" || first;
+    if (!billed) {
+      months.push({
+        month,
+        upcoming: false,
+        due: 0,
+        paid: 0,
+        payment_status: null,
+        delivery_status: null,
+        delivered_at: null,
+        receipt: null,
+        payments: [],
+      });
+      continue;
+    }
+    // الشهر الجاري يتقدّم بالأيام منذ الدفع؛ وما قبله وصل بمستند.
+    const paidAt = first ? started : new Date(Math.max(d.getTime(), started.getTime()));
+    const age = (now.getTime() - paidAt.getTime()) / 86_400_000;
+    const delivery: LedgerMonth["delivery_status"] =
+      month < ym(now) || age >= 10 ? "delivered" : age >= 3 ? "transferred" : "scheduled";
+    const deliveredAt =
+      delivery === "delivered" ? new Date(paidAt.getTime() + 10 * 86_400_000).toISOString() : null;
+    const code = `${hex4(`${s.id}${month}`)}-${hex4(`${month}${s.id}`)}`;
+    months.push({
+      month,
+      upcoming: false,
+      due: s.amount,
+      paid: s.amount,
+      payment_status: "paid",
+      delivery_status: delivery,
+      delivered_at: deliveredAt,
+      receipt: `DEMO-${code}`,
+      payments: [
+        {
+          invoice_no: `DEMO-INV-${month.replace("-", "")}-${hex4(s.id)}`,
+          provider: "demo",
+          provider_payment_id: null,
+          amount: s.amount,
+          currency: s.currency,
+          status: "paid",
+          paid_at: paidAt.toISOString(),
+          receipt_url: null,
+        },
+      ],
+    });
+  }
+  const live = s.status === "active" && !s.cancel_effective_at && s.type === "monthly";
+  const next = new Date(last);
+  next.setUTCMonth(next.getUTCMonth() + 1);
+  if (live)
+    months.push({
+      month: ym(next),
+      upcoming: true,
+      due: s.amount,
+      paid: 0,
+      payment_status: null,
+      delivery_status: null,
+      delivered_at: null,
+      receipt: null,
+      payments: [],
+    });
+  const paid = months.filter((m) => m.paid > 0);
+  return {
+    sponsorship: {
+      id: s.id,
+      amount: s.amount,
+      currency: s.currency,
+      status: s.status,
+      type: s.type,
+      started_at: s.started_at,
+      // ما دُفع حتى: شهرٌ بعد البدء لكلّ شهرٍ مدفوع، كما يحسبه إيقاف التجربة وإنهاؤها
+      next_charge_at:
+        live || s.status === "paused" ? addMonthsTo(started.toISOString(), paid.length) : null,
+      is_anonymous: false,
+      message: null,
+      message_status: "none",
+      created_at: s.created_at,
+    },
+    orphan: {
+      id: s.orphan.id,
+      code: s.orphan.code,
+      display_name: s.orphan.display_name,
+      country: localTryChild(k, locale).country,
+      region: null,
+      age_band: "6-12",
+    },
+    months,
+    totals: {
+      paid: paid.reduce((a, m) => a + m.paid, 0),
+      months_paid: paid.length,
+      months_delivered: months.filter((m) => m.delivery_status === "delivered").length,
+    },
+  };
+}
+
+/** رحلة التأهيل كما يراها الكافل (`sponsor_qualification`): المرحلة وحدها، بلا جلساتٍ ولا درجات. */
+export function trySponsorQualification(id: string, locale: Locale = "ar"): SponsorQualification {
+  return {
+    allowed: true,
+    programs: tryQualificationTrack(id, locale).map((p) => ({
+      program: p.program,
+      status: p.status,
+      stage: p.stage,
+      started_at: p.stage_changed_at,
+      accepted: 0,
+      total: 0,
+      units: [],
+    })),
+    growth: [],
+  };
+}
+
+/** «رحلتي» في التجربة: بدء كلّ عطاء وآخر تقريرٍ نموذجيّ لطفله. */
+export function tryJourneyFeed(locale: Locale = "ar", now: Date = new Date()): FeedItem[] {
+  return trySponsorships(locale, now)
+    .flatMap((s): FeedItem[] =>
+      s.orphan
+        ? [
+            ...tryReports(s.orphan.id, locale, now).map((r) => ({
+              kind: "timeline" as const,
+              type: "report.published",
+              at: r.published_at ?? r.created_at,
+              orphan: s.orphan!.display_name,
+              orphan_id: s.orphan!.id,
+              text: r.summary,
+            })),
+          ]
+        : [],
+    )
+    .sort((a, b) => b.at.localeCompare(a.at));
+}
+
 /* ——— التسجيل في منفذ البيانات ——— */
 
 type Input<T> = { data: T };
@@ -352,6 +517,39 @@ registerDemo("sponsor.timeline.reports", async ({ data }: Input<{ orphanId: stri
 registerDemo("sponsor.timeline.qualification", async ({ data }: Input<{ orphanId: string }>) => ({
   programs: tryQualificationTrack(data.orphanId, uiLocale()),
   error: null,
+}));
+registerDemo("sponsor.ledger", async ({ data }: Input<{ sponsorshipId: string }>) => {
+  const ledger = tryLedger(data.sponsorshipId, uiLocale());
+  return ledger ? { ok: true as const, ledger } : { ok: false as const, ledger: null };
+});
+registerDemo("sponsor.qualification", async ({ data }: Input<{ orphanId: string }>) =>
+  JSON.stringify(trySponsorQualification(data.orphanId, uiLocale())),
+);
+registerDemo("impact.reports", async ({ data }: Input<{ orphanId: string }>) => ({
+  ok: true as const,
+  reports: tryReports(data.orphanId, uiLocale()),
+}));
+registerDemo(
+  "sponsor.verifyReceipt",
+  async ({ data }: Input<{ sponsorshipId: string; month: string; receipt: string }>) => {
+    const m = tryLedger(data.sponsorshipId, uiLocale())?.months.find((x) => x.month === data.month);
+    const clean = (v: string) => v.trim().toUpperCase();
+    return m?.receipt
+      ? { ok: true as const, match: clean(m.receipt) === clean(data.receipt), current: m.receipt }
+      : { ok: false as const };
+  },
+);
+registerDemo("impact.timeline", async () => ({ ok: true as const, events: [] }));
+registerDemo("sponsor.journeyFeed", async () => tryJourneyFeed(uiLocale()));
+registerDemo("sponsor.digestPreview", async () => ({
+  ok: false as const,
+  html: null,
+  subject: null,
+}));
+// لا دفع في التجربة: «ادفع الآن» يقول إنّه محاكاة، ولا يفتح بوابة.
+registerDemo("sponsor.pay", async () => ({
+  ok: false as const,
+  error: copyOf(COPY, uiLocale()).payDemo,
 }));
 registerDemo("sponsor.manage.list", async () => ({
   sponsorships: trySponsorships(uiLocale()),
