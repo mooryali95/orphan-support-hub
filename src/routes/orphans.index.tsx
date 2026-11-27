@@ -522,7 +522,7 @@ function RealOrphansPage() {
                   aria-pressed={funding === key}
                   onClick={() => set({ funding: key === "any" ? undefined : key })}
                   className={cn(
-                    "min-h-10 flex-1 rounded-md px-3 max-sm:min-h-11 py-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring sm:flex-none",
+                    "min-h-11 flex-1 rounded-md px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring sm:flex-none",
                     funding === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -647,7 +647,7 @@ function RealOrphansPage() {
                   <button
                     type="button"
                     onClick={c.clear}
-                    className="inline-flex min-h-9 items-center gap-1 rounded-full bg-secondary px-3 text-sm pointer-coarse:min-h-11 max-sm:min-h-11 transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full bg-secondary px-3 text-sm transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
                     aria-label={t.remove(c.label)}
                   >
                     <bdi>{c.label}</bdi>
@@ -656,7 +656,7 @@ function RealOrphansPage() {
                 </li>
               ))}
               <li>
-                <Button type="button" size="sm" variant="ghost" onClick={reset}>
+                <Button type="button" size="sm" variant="ghost" className="h-11" onClick={reset}>
                   {t.clearAll}
                 </Button>
               </li>

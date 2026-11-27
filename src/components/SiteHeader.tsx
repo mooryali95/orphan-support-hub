@@ -84,7 +84,11 @@ export function SiteHeader() {
         {c.skip}
       </a>
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link to="/" aria-label={`${brand.name}: ${c.home}`} className="shrink-0 whitespace-nowrap">
+        <Link
+          to="/"
+          aria-label={`${brand.name}: ${c.home}`}
+          className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap"
+        >
           <KahataynLockup />
         </Link>
         {/* the partner beside the product: a hairline, then its mark (name on wide screens) */}
@@ -127,7 +131,7 @@ export function SiteHeader() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hidden sm:inline-flex"
+                    className="hidden h-11 sm:inline-flex"
                     onClick={open}
                   >
                     {c.signIn}

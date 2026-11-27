@@ -82,16 +82,18 @@ export function SponsorCtaPanel({
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="min-w-0 flex-1">
-          {verifying ? (
-            <p className="flex items-center gap-1.5 text-sm leading-6 font-semibold">
-              <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
-              {verifyingText}
-            </p>
-          ) : (
-            lead
-          )}
-        </div>
+        {(verifying || lead) && (
+          <div className="min-w-0 flex-1">
+            {verifying ? (
+              <p className="flex items-center gap-1.5 text-sm leading-6 font-semibold">
+                <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
+                {verifyingText}
+              </p>
+            ) : (
+              lead
+            )}
+          </div>
+        )}
         {verifying ? (
           hasSimilar && (
             <Button asChild size="lg" variant="outline" className="h-11 min-h-11 shrink-0">
