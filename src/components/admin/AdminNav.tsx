@@ -1,5 +1,11 @@
 import { ChevronRight } from "lucide-react";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
+
+const COPY = defineCopy("components/admin/AdminNav", {
+  ar: { screen: "الشاشة", label: "أقسام الإدارة" },
+  en: { screen: "Screen", label: "Administration sections" },
+});
 
 export type AdminNavItem<T extends string> = { key: T; label: string; count: number | null };
 export type AdminNavSection<T extends string> = { label: string; items: AdminNavItem<T>[] };
@@ -22,6 +28,7 @@ export function AdminNav<T extends string>({
   homeLabel: string;
   onHome: () => void;
 }) {
+  const t = useCopy(COPY);
   return (
     <>
       {/* الجوال: قائمة منسدلة أصلية — تعمل بلوحة المفاتيح وقارئ الشاشة بلا كود. */}
@@ -30,7 +37,7 @@ export function AdminNav<T extends string>({
           htmlFor="admin-screen"
           className="text-muted-foreground mb-2 block text-xs font-bold"
         >
-          الشاشة
+          {t.screen}
         </label>
         <select
           id="admin-screen"
@@ -56,7 +63,7 @@ export function AdminNav<T extends string>({
       </div>
 
       {/* الحاسوب: شريطٌ ثابت يبقى ظاهراً أثناء التمرير. */}
-      <nav aria-label="أقسام الإدارة" className="hidden lg:block">
+      <nav aria-label={t.label} className="hidden lg:block">
         <div className="border-border bg-card sticky top-20 rounded-2xl border p-3">
           <a
             href="/admin"
@@ -67,7 +74,7 @@ export function AdminNav<T extends string>({
             }}
             className="text-primary hover:bg-secondary/60 focus-visible:ring-ring mb-2 flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-bold focus-visible:ring-2 focus-visible:outline-none"
           >
-            <ChevronRight aria-hidden="true" className="size-4" strokeWidth={2} />
+            <ChevronRight aria-hidden="true" className="size-4 ltr:-scale-x-100" strokeWidth={2} />
             {homeLabel}
           </a>
           <div className="brand-rule mx-3 mb-3 h-px opacity-60" aria-hidden="true" />

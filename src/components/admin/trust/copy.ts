@@ -12,7 +12,7 @@ export const TRUST_COPY = defineCopy("components/admin/trust", {
       aging: "الانتظار",
       team: "الفرق",
       decisions: "سجلّ القرارات",
-      weekly: "التقرير الأسبوعي",
+      weekly: "الأسبوعي واتجاه الحصّة",
     },
     sectionsLabel: "أقسام مركز الثقة",
 
@@ -169,7 +169,7 @@ export const TRUST_COPY = defineCopy("components/admin/trust", {
       aging: "Waiting",
       team: "Teams",
       decisions: "Decision log",
-      weekly: "Weekly report",
+      weekly: "Weekly and share trend",
     },
     sectionsLabel: "Trust center sections",
 

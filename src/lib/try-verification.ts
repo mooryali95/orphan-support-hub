@@ -618,7 +618,8 @@ registerDemo("golden.conflicts", async ({ data }: { data: { country: string | nu
   return ok(
     load()
       .conflicts.filter((x) => !x.closed_at && see(x.country) && inFocus(load(), x.orphan_id))
-      .map(({ mine: _m, closed_at: _c, ...x }) => x),
+      // «mine» يبقى: تلميح العينين في «اليوم» (القاعدة تحرس في المنصّة).
+      .map(({ closed_at: _c, ...x }) => x),
   );
 });
 
@@ -773,7 +774,7 @@ registerDemo("golden.alerts", async ({ data }: { data: { country: string | null 
   return ok(
     load()
       .alerts.filter((a) => !a.closed_at && see(a.country) && inFocus(load(), a.orphan_id))
-      .map(({ mine: _m, closed_at: _c, ...a }) => a),
+      .map(({ closed_at: _c, ...a }) => a),
   );
 });
 
@@ -879,8 +880,9 @@ registerDemo("trust.aging", async () => {
   const s = load();
   const now = Date.now();
   const items: AgingItem[] = [
+    // كما في `admin_trust_aging`: الحرج المفتوح وحده.
     ...s.conflicts
-      .filter((x) => !x.closed_at)
+      .filter((x) => !x.closed_at && x.risk === "critical")
       .map((x) => ({
         kind: "conflict" as const,
         id: x.id,
@@ -891,7 +893,7 @@ registerDemo("trust.aging", async () => {
         created_at: x.created_at,
       })),
     ...s.alerts
-      .filter((a) => !a.closed_at)
+      .filter((a) => !a.closed_at && a.severity === "critical")
       .map((a) => ({
         kind: "alert" as const,
         id: a.id,

@@ -7,7 +7,8 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { CycleAdminTask } from "@/components/try/TryCycleTasks";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
-import { TryAdminSources, TryAdminTrust } from "@/components/try/TryVerification";
+import { TryAdminSources, TryAdminToday, TryAdminTrust } from "@/components/try/TryVerification";
+import type { Tab as WorkTab } from "@/components/admin/data/sources/shared";
 import type { RecordKind } from "@/lib/admin-console.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
 import { ADMIN_FNS } from "@/components/admin/overview/admin-fns";
@@ -29,7 +30,7 @@ const TAB_TO_RECORDS: Partial<Record<AdminTab, RecordKind>> = {
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
 
 type Verify = "sources" | "trust";
-type Key = RecordKind | Verify | "home";
+type Key = RecordKind | Verify | "home" | "today";
 
 const COPY = defineCopy("routes/try.admin", {
   ar: {
@@ -44,8 +45,9 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "المدفوعات",
       access_log: "سجلّ الاطّلاع",
     } satisfies Record<RecordKind, string>,
-    sections: ["السجلّات", "الشبكة", "الثقة والمال", "التحقق"],
-    verify: { sources: "مصادر التحقق", trust: "مركز الثقة" } satisfies Record<Verify, string>,
+    sections: ["اليوم", "الدول", "جودة البيانات", "المال", "الناس"],
+    today: "ما ينتظر قرارك",
+    verify: { sources: "درج الدول", trust: "مركز الثقة" } satisfies Record<Verify, string>,
     verifyCards: {
       sources:
         "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
@@ -80,8 +82,9 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "Payments",
       access_log: "Access log",
     } satisfies Record<RecordKind, string>,
-    sections: ["Records", "Network", "Trust and money", "Verification"],
-    verify: { sources: "Verification sources", trust: "Trust center" } satisfies Record<
+    sections: ["Today", "Countries", "Data quality", "Money", "People"],
+    today: "Waiting for you",
+    verify: { sources: "Country workspace", trust: "Trust center" } satisfies Record<
       Verify,
       string
     >,
@@ -111,10 +114,10 @@ const COPY = defineCopy("routes/try.admin", {
   },
 });
 
+/** المال والناس من السجلّات؛ اليوم والدول وجودة البيانات قبلها، كما في ‎/admin. */
 const SECTIONS: RecordKind[][] = [
-  ["orphans", "sponsorships", "pledges"],
-  ["orgs", "offices", "supervisors"],
-  ["documents", "payments", "access_log"],
+  ["pledges", "payments", "sponsorships"],
+  ["orphans", "orgs", "offices", "supervisors", "documents", "access_log"],
 ];
 const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "sponsorships"];
 
@@ -127,8 +130,9 @@ const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "s
 function TryAdmin() {
   const t = useCopy(COPY);
   const LABELS = t.labels;
-  const [tab, setTabState] = useState<Key>("home");
+  const [tab, setTabState] = useState<Key>("today");
   const [country, setCountry] = useState("LK");
+  const [workTab, setWorkTab] = useState<WorkTab | undefined>(undefined);
   const qc = useQueryClient();
   // ما حُسم في لسانٍ يظهر في الآخر فوراً: ذاكرة التجربة تُقرأ من جديد عند كل انتقال.
   const setTab = (k: Key) => {
@@ -143,18 +147,23 @@ function TryAdmin() {
       <div className="mt-8 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
         <AdminNav<Key>
           sections={[
+            { label: t.sections[0] ?? "", items: [{ key: "today", label: t.today, count: null }] },
+            {
+              label: t.sections[1] ?? "",
+              items: [{ key: "sources", label: t.verify.sources, count: null }],
+            },
+            {
+              label: t.sections[2] ?? "",
+              items: [{ key: "trust", label: t.verify.trust, count: null }],
+            },
             ...SECTIONS.map((items, i) => ({
-              label: t.sections[i] ?? "",
+              label: t.sections[i + 3] ?? "",
               items: items.map((key): { key: Key; label: string; count: null } => ({
                 key,
                 label: LABELS[key],
                 count: null,
               })),
             })),
-            {
-              label: t.sections[3] ?? "",
-              items: VERIFY.map((key) => ({ key, label: t.verify[key], count: null })),
-            },
           ]}
           active={tab}
           onSelect={setTab}
@@ -224,8 +233,23 @@ function TryAdmin() {
                 </p>
               </section>
             </>
+          ) : tab === "today" ? (
+            <TryAdminToday
+              openCountry={(code, wt) => {
+                setCountry(code);
+                setWorkTab(wt);
+                setTab("sources");
+                window.scrollTo({ top: 0 });
+              }}
+              openTrust={() => setTab("trust")}
+            />
           ) : tab === "sources" ? (
-            <TryAdminSources country={country} setCountry={setCountry} />
+            <TryAdminSources
+              country={country}
+              setCountry={setCountry}
+              tab={workTab}
+              setTab={setWorkTab}
+            />
           ) : tab === "trust" ? (
             <TryAdminTrust
               openCountry={(code) => {
