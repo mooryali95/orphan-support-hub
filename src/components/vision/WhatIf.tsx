@@ -31,7 +31,7 @@ const COPY = defineCopy("components/vision/WhatIf", {
     after: "بعد السيناريو",
     byCity: "التمويل حسب المدينة: الآن ← بعد",
     apply: "اعتمد السيناريو",
-    applied: "اعتُمد — يظهر في السجلّ ولوحات الأدوار",
+    applied: "اعتُمد: يظهر في السجلّ ولوحات الأدوار",
     unused: (m: string) => `تكفي الحاجةَ كلّها؛ يبقى ${m} غير مخصّص في الصندوق.`,
   },
   en: {
@@ -53,7 +53,7 @@ const COPY = defineCopy("components/vision/WhatIf", {
     after: "After the scenario",
     byCity: "Funding by city: now → after",
     apply: "Approve scenario",
-    applied: "Approved — it shows in the log and role boards",
+    applied: "Approved: it shows in the log and role boards",
     unused: (m: string) => `It covers all the need; ${m} stays unallocated in the fund.`,
   },
 });

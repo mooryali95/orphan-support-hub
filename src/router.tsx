@@ -38,6 +38,9 @@ export const getRouter = () => {
     context: { queryClient },
     ...(nonce ? { ssr: { nonce } } : {}),
     scrollRestoration: true,
+    // تحميلٌ مسبق عند النيّة (مرور المؤشّر أو اللمس) لكلّ رابط: حزمة الصفحة
+    // وبياناتها تبدأ قبل النقر. والبيانات تحكمها staleTime في react-query.
+    defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     // لا يظهر مؤشّر التنقّل قبل 250ms حتى لا يومض في التنقّلات الفورية،
     // وإذا ظهر يبقى 400ms على الأقل فلا يُرى كوميض مبتور.
@@ -45,7 +48,7 @@ export const getRouter = () => {
     defaultPendingMinMs: 400,
     // التنقّل بين الصفحات بانتقالٍ هادئ (View Transitions، حركته في
     // src/styles/motion.css) حيث يدعمه المتصفّح، وإلا فتبديلٌ فوري. وهو لتغيّر
-    // الصفحة وحده: الفلترة وموضع الخارطة والوسم وإعادة الجلب تبقى في مكانها،
+    // الصفحة وحده: الفلترة وموضع الخريطة والوسم وإعادة الجلب تبقى في مكانها،
     // فلا تخفت الصفحة كلّها لتغيّرٍ في جزءٍ منها.
     defaultViewTransition: { types: ({ pathChanged }) => (pathChanged ? ["page"] : false) },
     // الاستعلامات الناجحة وحدها تُجفَّف (الافتراضي)، فلا يُرسل وعدٌ معلّق ولا

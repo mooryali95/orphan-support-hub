@@ -1,15 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, FastForward } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { EvidenceLedger } from "@/components/impact/EvidenceLedger";
 import { MilestonesCard } from "@/components/impact/MilestonesCard";
-import { Button } from "@/components/ui/button";
+import { TryTimeBar } from "@/components/try/TryTimeBar";
 import type { EvidenceMonth } from "@/lib/impact-evidence";
 import type { MyImpact } from "@/lib/my-impact";
 import { defineCopy, dirOf, pluralOf, useCopy, useLocale } from "@/lib/locale";
 import { localTryChild, nextTryChild, tryChild, type TryGift } from "@/lib/try-demo";
-
-const MAX_AHEAD = 12;
 
 const COPY = defineCopy("components/try/TryJourneyAhead", {
   ar: {
@@ -104,36 +102,12 @@ export function TryJourneyAhead({
           rows={rows}
           next={pending ? { kind: "document", month: pending.month } : null}
         >
-          <div className="mt-5 rounded-xl border border-border bg-background px-4 py-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p aria-live="polite" className="font-display text-2xl font-bold">
-                {ahead === 0 ? c.today : c.after(ahead)}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {ahead > 0 && (
-                  <Button variant="outline" onClick={() => onAhead(0)}>
-                    {c.backToday}
-                  </Button>
-                )}
-                <Button
-                  disabled={!child || ahead >= MAX_AHEAD}
-                  onClick={() => onAhead(Math.min(MAX_AHEAD, ahead + 1))}
-                >
-                  <FastForward className="size-4" aria-hidden="true" />
-                  {c.forward}
-                </Button>
-              </div>
-            </div>
-            {!child ? (
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">{c.needMonthly}</p>
-            ) : (
-              ahead === 0 && (
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {c.running(child.name)}
-                </p>
-              )
-            )}
-          </div>
+          <TryTimeBar
+            ahead={ahead}
+            onAhead={onAhead}
+            disabled={!child}
+            hint={child ? c.running(child.name) : c.needMonthly}
+          />
         </EvidenceLedger>
 
         <div className="grid gap-4">

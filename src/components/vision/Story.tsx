@@ -167,13 +167,13 @@ const COPY = defineCopy("components/vision/Story", {
     again: "أعد الجولة",
     caps: {
       intro: "ثلاث طبقاتٍ حول يتيمٍ واحد: التشغيل، والدعم، والقرار. لنتبع عطاءً واحداً.",
-      donate: "داعمٌ يدخل دون حساب، ويتبرّع لمجموعةٍ تنتظر التمويل — بالبطاقة.",
+      donate: "داعمٌ يدخل دون حساب، ويتبرّع لمجموعةٍ تنتظر التمويل، بالبطاقة.",
       money: "المال يُقيَّد في حساب الندوة بفاتورته ورسومه، ثم يُخصَّص للمجموعة ويُصرف للمكتب.",
       ops: "اكتمل تمويل المجموعة، فتصل إلى المشرف في منصّة التشغيل.",
-      sessions: "المشرف يسجّل الجلسات الستّ — كلّ جلسةٍ تصل الداعم والقرار فوراً.",
+      sessions: "المشرف يسجّل الجلسات الستّ، كلّ جلسةٍ تصل الداعم والقرار فوراً.",
       measure: "القياس البعدي: ترتفع السمة، ويخرج الأطفال من قائمة الحاجة.",
       decision: "صاحب القرار يرى المجموع وحده: الفجوة ضاقت، والتوصيات تغيّرت.",
-      approve: "يعتمد أعلى توصية — فتعود إلى الميدان مجموعةً أو حملة.",
+      approve: "يعتمد أعلى توصية: فتعود إلى الميدان مجموعةً أو حملة.",
       done: "اكتملت الدورة: تبرّعٌ ← تشغيل ← قياس ← قرار. جرّبها بنفسك بأيّ دور.",
     } as Record<Cap, string>,
   },
@@ -196,12 +196,12 @@ const COPY = defineCopy("components/vision/Story", {
         "The money is recorded in WAMY's account with its invoice and fee, then allocated to the group and disbursed.",
       ops: "The group is now fully funded and reaches its supervisor in operations.",
       sessions:
-        "The supervisor records all six sessions — each reaches the supporter and the board at once.",
+        "The supervisor records all six sessions; each reaches the supporter and the board at once.",
       measure: "Follow-up measurement: the trait rises and the children leave the need list.",
       decision:
         "The decision-maker sees aggregates only: the gap narrowed, the recommendations changed.",
       approve:
-        "They approve the top recommendation — it returns to the field as a group or a campaign.",
+        "They approve the top recommendation; it returns to the field as a group or a campaign.",
       done: "The cycle is complete: donation → operations → measurement → decision. Try it yourself in any role.",
     } as Record<Cap, string>,
   },

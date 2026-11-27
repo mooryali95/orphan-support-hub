@@ -38,7 +38,7 @@ const COPY = defineCopy("routes/vision.network", {
   ar: {
     label: "شبكة الندوة",
     title: "مكاتب الندوة ونشاطها",
-    lead: "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية — وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
+    lead: "كلّ دولةٍ فيها مكتبٌ للندوة أو نشاطٌ ميدانيّ موثّق بلوحةٍ نموذجية، وتبقى نموذجية حتى تتّصل منصّة تشغيلها فعلاً، فتظهر أرقامها الحقيقية.",
     countries: "دولة",
     offices: "مكتب مؤكَّد",
     field: "نشاط ميداني",
@@ -71,7 +71,7 @@ const COPY = defineCopy("routes/vision.network", {
   en: {
     label: "WAMY network",
     title: "WAMY offices and activity",
-    lead: "Every country with a WAMY office or documented field activity gets a sample board — and stays a sample until its operations platform is actually connected, when its real figures appear.",
+    lead: "Every country with a WAMY office or documented field activity gets a sample board, which stays a sample until its operations platform is actually connected, when its real figures appear.",
     countries: "countries",
     offices: "confirmed offices",
     field: "field activity",

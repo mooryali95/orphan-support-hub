@@ -60,21 +60,21 @@ const COPY = defineCopy("routes/try.admin", {
     } satisfies Record<Verify, string>,
     verifyCards: {
       sources:
-        "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
+        "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV، وتتغيّر العدّادات",
       trust: "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
-      decisions: "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها — وحسمك يظهر فيه فوراً",
+      decisions: "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها، وحسمك يظهر فيه فوراً",
     } satisfies Record<Verify, string>,
     role: "الإدارة",
     title: "لوحة الإدارة",
-    lead: "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك — كفالتك وتعهّدك وملفّ جهتك — يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+    lead: "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك، كفالتك وتعهّدك وملفّ جهتك، يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
     real: "دخولٌ برمز البريد ومصادقة ثنائية، وكلّ إجراءٍ في سجلّ التدقيق",
     home: "ابدأ من هنا",
     try: "ماذا تجرّب هنا؟",
     cards: {
       orphans: "افتح طفلاً وشاهد شارة توثيقه وما ينقص ملفّه",
       documents: "وثّق مستنداً، أو اسحب توثيقه بملاحظة",
-      pledges: "فعّل تعهّداً أو ألغه بسبب — ويتغيّر العدّاد",
-      access_log: "من اطّلع على ملفّ طفل ومتى — وفيه اطّلاعك أنت في هذه الجلسة",
+      pledges: "فعّل تعهّداً أو ألغه بسبب، ويتغيّر العدّاد",
+      access_log: "من اطّلع على ملفّ طفل ومتى، وفيه اطّلاعك أنت في هذه الجلسة",
       sponsorships: "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
     } as Partial<Record<RecordKind, string>>,
     open: "افتح",
@@ -144,8 +144,9 @@ const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "s
 function TryAdmin() {
   const t = useCopy(COPY);
   const LABELS = t.labels;
-  const [tab, setTabState] = useState<Key>("today");
-  const [country, setCountry] = useState("LK");
+  const { country: deep } = Route.useSearch();
+  const [tab, setTabState] = useState<Key>(deep ? "sources" : "today");
+  const [country, setCountry] = useState(deep ?? "LK");
   const [workTab, setWorkTab] = useState<WorkTab | undefined>(undefined);
   const qc = useQueryClient();
   // ما حُسم في لسانٍ يظهر في الآخر فوراً: ذاكرة التجربة تُقرأ من جديد عند كل انتقال.
@@ -186,6 +187,7 @@ function TryAdmin() {
           onSelect={setTab}
           homeLabel={t.home}
           onHome={() => setTab("home")}
+          homeHref="/try/admin"
         />
         <div className="min-w-0">
           <div className="mb-5">

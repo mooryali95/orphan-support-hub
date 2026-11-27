@@ -27,6 +27,7 @@ import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MilestonesCard } from "@/components/impact/MilestonesCard";
 import { MyEvidence } from "@/components/impact/MyEvidence";
+import { MyChildrenNow } from "@/components/impact/MyChildrenNow";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
 
@@ -34,7 +35,7 @@ const COPY = defineCopy("routes/_authenticated/dashboard", {
   ar: {
     pageTitle: "كفالاتي",
     title: "أثري",
-    description: "كيف حال من تكفلهم، وهل وصل عطاؤك — ثم أثرك كلّه.",
+    description: "كيف حال من تكفلهم، وهل وصل عطاؤك، ثم أثرك كلّه.",
     payFailed: "تعذّر بدء الدفع",
     unexpected: "حدث خطأ غير متوقع",
     celebrateTitle: "بدأت كفالتك",
@@ -63,7 +64,7 @@ const COPY = defineCopy("routes/_authenticated/dashboard", {
     pageTitle: "My sponsorships",
     title: "My impact",
     description:
-      "How the children you sponsor are doing, and whether your giving arrived — then your whole impact.",
+      "How the children you sponsor are doing, and whether your giving arrived; then your whole impact.",
     payFailed: "Couldn't start the payment",
     unexpected: "Something went wrong",
     celebrateTitle: "Your sponsorship has begun",
@@ -287,7 +288,13 @@ function DashboardPage() {
           ) : others.length === 0 ? (
             <NoSponsorships pendingOnly={pending.length > 0} />
           ) : (
-            <ChildCards list={others} />
+            <>
+              {/* the child first: this month in one sentence each, and what changed since the last visit */}
+              <MyChildrenNow list={others} className="mt-0 mb-8" />
+              <div id="sponsorship-cards" className="scroll-mt-24">
+                <ChildCards list={others} />
+              </div>
+            </>
           )}
         </div>
       </section>

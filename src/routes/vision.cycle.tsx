@@ -61,7 +61,7 @@ const COPY = defineCopy("routes/vision.cycle", {
     next: "الخطوة التالية",
     again: "من البداية",
     step: (a: number, b: number) => `الخطوة ${a} من ${b}`,
-    closing: "واليتيم في قلبها جميعاً — كلّ طبقةٍ ترى ما يحقّ لها أن تراه.",
+    closing: "واليتيم في قلبها جميعاً، كلّ طبقةٍ ترى ما يحقّ لها أن تراه.",
   },
   en: {
     label: "What we aim for",
@@ -103,7 +103,8 @@ const COPY = defineCopy("routes/vision.cycle", {
     next: "Next step",
     again: "From the start",
     step: (a: number, b: number) => `Step ${a} of ${b}`,
-    closing: "And the orphan at the heart of it all — each layer sees only what it is entitled to.",
+    closing:
+      "And the orphan at the heart of it all, with each layer seeing only what it is entitled to.",
   },
 });
 

@@ -24,7 +24,7 @@ const COPY = defineCopy("components/vision/Inbox", {
     empty: "لا إشعارات بعد.",
     readAll: "تعليم الكلّ مقروءاً",
     unread: (n: number) => `${n} غير مقروء`,
-    alert: (city: string, pct: number) => `إنذار: تمويل ${city} عند ${pct}% — دون الحدّ (40%)`,
+    alert: (city: string, pct: number) => `إنذار: تمويل ${city} عند ${pct}%، دون الحدّ (40%)`,
   },
   en: {
     open: "Notifications",
@@ -37,7 +37,7 @@ const COPY = defineCopy("components/vision/Inbox", {
     empty: "No notifications yet.",
     readAll: "Mark all read",
     unread: (n: number) => `${n} unread`,
-    alert: (city: string, pct: number) => `Alert: ${city} funding at ${pct}% — below the 40% floor`,
+    alert: (city: string, pct: number) => `Alert: ${city} funding at ${pct}%; below the 40% floor`,
   },
 });
 

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
@@ -118,7 +118,7 @@ const COPY = defineCopy("components/try/story/TryStory", {
         title: "سجلّ الطفلة يصل من الندوة",
         what: "الندوة هي المصدر الأوّل. سجلّ سلمى ينتظر في طابور الربط، والإدارة وحدها تنشئ منه ملفاً.",
         why: "لا ملفّ بلا سجلٍّ من الندوة، ولا دمج بالاسم: طفلان باسمٍ واحد لا يصيران ملفاً واحداً.",
-        act: "اضغط «أنشئ ملفاً» على السجلّ في الطابور.",
+        act: "اضغط «أنشئ ملفاً جديداً» على السجلّ في الطابور.",
         done: "أُنشئ الملف من سجلّ الندوة، ووصل سجلّ المكتب للطفلة نفسها بمرجعه، فتطابق المصدران.",
       },
       {
@@ -230,7 +230,7 @@ const COPY = defineCopy("components/try/story/TryStory", {
         title: "The child's record arrives from WAMY",
         what: "WAMY is the primary source. Salma's record waits in the link queue, and only the administration creates a file from it.",
         why: "No file without a WAMY record, and no merging by name: two children with one name never become one file.",
-        act: "Press “Create file” on the record in the queue.",
+        act: "Press “Create a new file” on the record in the queue.",
         done: "The file was created from WAMY's record, and the office's record for the same child matched by reference, so the two sources agree.",
       },
       {
@@ -618,7 +618,7 @@ function WamyStage() {
     [t.recordFields.country, t.lanka, false],
   ];
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
       <Frame className="bg-secondary/40">
         <p className="flex items-center gap-2 text-sm font-bold">
           <Building2 className="size-4" aria-hidden="true" />
@@ -626,9 +626,12 @@ function WamyStage() {
         </p>
         <dl className="mt-3 space-y-2 text-sm">
           {rows.map(([k, v, ltr]) => (
-            <div key={k} className="flex items-baseline justify-between gap-3">
+            <div key={k} className="flex flex-wrap items-baseline justify-between gap-x-3">
               <dt className="text-muted-foreground">{k}</dt>
-              <dd className="font-medium tabular-nums" dir={ltr ? "ltr" : undefined}>
+              <dd
+                className="min-w-0 font-medium break-words tabular-nums"
+                dir={ltr ? "ltr" : undefined}
+              >
                 {v}
               </dd>
             </div>
@@ -799,11 +802,15 @@ function TimelineStage() {
 
 function AdminStage() {
   const t = useCopy(COPY);
+  const navigate = useNavigate();
   setVerificationActor(null);
   return (
     <div>
       <Suspense fallback={<Busy />}>
-        <TrustCenter openCountry={noop} />
+        {/* «افتح في مصادر التحقق» يصل إلى مصادر الدولة في إدارة التجربة، لا زرّاً لا يفعل شيئاً. */}
+        <TrustCenter
+          openCountry={(code) => void navigate({ to: "/try/admin", search: { country: code } })}
+        />
       </Suspense>
       <Link
         to="/try/admin"

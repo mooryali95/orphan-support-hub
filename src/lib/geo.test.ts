@@ -33,7 +33,7 @@ describe("مصدر الجغرافيا الواحد", () => {
     expect(findCountry(geo, "ألبانيا")?.code).toBe("AL");
   });
 
-  it("الخارطة تأخذ ما له رمزٌ فقط، والصغير يبقى بلا رقم", () => {
+  it("الخريطة تأخذ ما له رمزٌ فقط، والصغير يبقى بلا رقم", () => {
     const stats = toMapStats(geo);
     expect(Object.keys(stats)).toEqual(["AL"]);
     expect(stats["AL"]!.regions["Kukës"]).toMatchObject({ small: true, total: null });

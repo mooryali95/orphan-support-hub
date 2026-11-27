@@ -36,7 +36,7 @@ const COPY = defineCopy("routes/vision.decision", {
   ar: {
     label: "الطبقة الثالثة · القرار",
     title: "الرؤية والتوجهات",
-    lead: "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها — لا اسم ولا ملفّ.",
+    lead: "لوحة الندوة: أين نحن، وإلى أين يذهب الدعم القادم. ترى الأرقام المجمّعة وحدها، لا اسم ولا ملفّ.",
     brand: "الأهلية للأيتام",
     chip: "الرؤية والتوجهات",
     tabShift: "المؤشّر",
@@ -61,7 +61,7 @@ const COPY = defineCopy("routes/vision.decision", {
     regionMeasured: "في التأهيل",
     notYet: "لم تبدأ",
     countryH: "قراءة دولة: ألبانيا",
-    countryLead: "الحاجة من منصّة التشغيل، والعطاء من منصّة الدعم — على خريطةٍ واحدة.",
+    countryLead: "الحاجة من منصّة التشغيل، والعطاء من منصّة الدعم، على خريطةٍ واحدة.",
     needFunding: "الاحتياج والتمويل حسب المدينة",
     need: "الحاجة",
     funded: "التمويل",
@@ -76,7 +76,7 @@ const COPY = defineCopy("routes/vision.decision", {
     gap: (n: number) => `فجوة ${n} طفلاً`,
     surplus: "فائض يُعاد توجيهه",
     decideH: "القرار",
-    decideLead: "صاحب القرار يرى المجموع، ويقرّر — والقرار يعود إلى الطبقتين:",
+    decideLead: "صاحب القرار يرى المجموع، ويقرّر، والقرار يعود إلى الطبقتين:",
     proposal: "قرارٌ مقترح",
     campaign: "حملةٌ لتيرانا",
     campaignText: "تظهر في منصّة الدعم بابًا مستقلاً «أكمل مجموعات تيرانا»، بهدفٍ يضيّق الفجوة.",
@@ -87,8 +87,8 @@ const COPY = defineCopy("routes/vision.decision", {
     toOps: "التشغيل",
     seeCycle: "شاهد الدورة كاملة",
     approve: "اعتمد القرار",
-    liveH: "ألبانيا الآن — يتحرّك مع كلّ تبرّعٍ وقياس",
-    trendsH: "الاتجاه شهراً بشهر — «تقدّم شهراً» من الشريط أعلاه",
+    liveH: "ألبانيا الآن: يتحرّك مع كلّ تبرّعٍ وقياس",
+    trendsH: "الاتجاه شهراً بشهر: «تقدّم شهراً» من الشريط أعلاه",
     trendGap: "أطفالٌ في الفجوة",
     trendMeasured: "في رحلةٍ مقيسة",
     liveRaised: "تبرّعاتٌ قُيّدت في حساب الندوة",
@@ -100,12 +100,12 @@ const COPY = defineCopy("routes/vision.decision", {
       campaign: {
         h: (p: string) => `حملةٌ لـ${p}`,
         why: (gap: number, pct: number, amt: string) =>
-          `أكبر فجوة: ${gap} طفلاً، والتمويل ${pct}%. هدف الحملة ${amt} — تظهر في منصّة الدعم باباً مستقلاً.`,
+          `أكبر فجوة: ${gap} طفلاً، والتمويل ${pct}%. هدف الحملة ${amt}، وتظهر في منصّة الدعم باباً مستقلاً.`,
       },
       newGroup: {
         h: (p: string) => `مجموعةٌ جديدة في ${p}`,
         why: (gap: number, _p: number, amt: string) =>
-          `الرصيد الحرّ يكفي مجموعةً كاملة (${amt}) وما زال ${gap} طفلاً بلا مجموعة — تُفتح في التشغيل بمشرفٍ مؤهَّل.`,
+          `الرصيد الحرّ يكفي مجموعةً كاملة (${amt}) وما زال ${gap} طفلاً بلا مجموعة، تُفتح في التشغيل بمشرفٍ مؤهَّل.`,
       },
       redirect: {
         h: (p: string, to: string) => `أعد توجيه فائض ${p} إلى ${to}`,
@@ -115,14 +115,14 @@ const COPY = defineCopy("routes/vision.decision", {
       fundGroup: {
         h: (_p: string, g: string) => `أولويةٌ لتمويل ${g}`,
         why: (_g: number, _p: number, amt: string) =>
-          `مجموعةٌ قائمة تنتظر ${amt} لتبدأ جلساتها — تُعرض أوّلاً للداعمين.`,
+          `مجموعةٌ قائمة تنتظر ${amt} لتبدأ جلساتها، تُعرض أوّلاً للداعمين.`,
       },
     },
   },
   en: {
     label: "Layer three · Decision",
     title: "Vision and directions",
-    lead: "WAMY's board: where we stand and where the next support should go. Aggregates only — no names, no files.",
+    lead: "WAMY's board: where we stand and where the next support should go. Aggregates only; no names, no files.",
     brand: "Orphan capability",
     chip: "Vision and directions",
     tabShift: "Indicator",
@@ -149,7 +149,7 @@ const COPY = defineCopy("routes/vision.decision", {
     notYet: "Not started",
     countryH: "Country reading: Albania",
     countryLead:
-      "Need from the operations platform, donations from the support platform — on one map.",
+      "Need from the operations platform, donations from the support platform, on one map.",
     needFunding: "Need and funding by city",
     need: "Need",
     funded: "Funding",
@@ -165,11 +165,11 @@ const COPY = defineCopy("routes/vision.decision", {
     surplus: "Surplus to redirect",
     decideH: "Decision",
     decideLead:
-      "The decision-maker sees the aggregate and decides — and the decision returns to both layers:",
+      "The decision-maker sees the aggregate and decides, and the decision returns to both layers:",
     proposal: "Proposed decision",
     campaign: "A Tirana campaign",
     campaignText:
-      "Appears in the support platform as its own door, “Complete the Tirana groups”, with a target that closes the gap.",
+      "Appears in the support platform as a separate entry point, “Complete the Tirana groups”, with a target that closes the gap.",
     newGroup: "A new group",
     newGroupText:
       "A fifth supervised group opens in Tirana in the operations platform, led by a qualified supervisor.",
@@ -178,8 +178,8 @@ const COPY = defineCopy("routes/vision.decision", {
     toOps: "Operations",
     seeCycle: "Watch the whole cycle",
     approve: "Approve decision",
-    liveH: "Albania now — moves with every donation and measurement",
-    trendsH: "Month by month — use “Advance a month” in the bar above",
+    liveH: "Albania now: moves with every donation and measurement",
+    trendsH: "Month by month: use “Advance a month” in the bar above",
     trendGap: "Children in the gap",
     trendMeasured: "In a measured journey",
     liveRaised: "Donations recorded in WAMY's account",
@@ -192,12 +192,12 @@ const COPY = defineCopy("routes/vision.decision", {
       campaign: {
         h: (p: string) => `A campaign for ${p}`,
         why: (gap: number, pct: number, amt: string) =>
-          `Largest gap: ${gap} children, funding at ${pct}%. Campaign target ${amt} — appears in the support platform as its own door.`,
+          `Largest gap: ${gap} children, funding at ${pct}%. Campaign target ${amt}; it appears in the support platform as a separate entry point.`,
       },
       newGroup: {
         h: (p: string) => `A new group in ${p}`,
         why: (gap: number, _p: number, amt: string) =>
-          `The free balance covers a full group (${amt}) and ${gap} children still have none — it opens in operations with a qualified supervisor.`,
+          `The free balance covers a full group (${amt}) and ${gap} children still have none; it opens in operations with a qualified supervisor.`,
       },
       redirect: {
         h: (p: string, to: string) => `Redirect ${p}'s surplus to ${to}`,
@@ -207,7 +207,7 @@ const COPY = defineCopy("routes/vision.decision", {
       fundGroup: {
         h: (_p: string, g: string) => `Priority funding for ${g}`,
         why: (_g: number, _p: number, amt: string) =>
-          `An existing group needs ${amt} to start its sessions — shown first to supporters.`,
+          `An existing group needs ${amt} to start its sessions; shown first to supporters.`,
       },
     },
   },

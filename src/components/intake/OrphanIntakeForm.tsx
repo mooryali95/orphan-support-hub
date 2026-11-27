@@ -49,7 +49,7 @@ import { clearDraft } from "./intake-draft";
  * من أيّ جهاز، ويُفتح بها الملفّ المرفوض للتصحيح وإعادة التقديم. لا شيء
  * منها في المتصفّح بعد اليوم — وما بقي من المفتاح القديم يُمحى.
  *
- * والدولة من الدول العاملة، والمنطقة من مناطق الخارطة نفسها (UX-10)،
+ * والدولة من الدول العاملة، والمنطقة من مناطق الخريطة نفسها (UX-10)،
  * والعملة عملة الدولة لا «$» ثابتة (A11Y-06).
  */
 
@@ -273,7 +273,7 @@ export function OrphanIntakeForm({
   }, [userId, orgId]);
 
   // الملفّ القائم يُملأ من القاعدة مرّةً واحدة؛ والمنطقة المكتوبة بتهجئةٍ
-  // تعرفها الخارطة تُردّ إلى اسمها في القائمة.
+  // تعرفها الخريطة تُردّ إلى اسمها في القائمة.
   useEffect(() => {
     if (!record || loaded.current) return;
     loaded.current = true;
@@ -533,7 +533,7 @@ export function OrphanIntakeForm({
                   ))}
                 </select>
               </Field>
-              <Field label="المنطقة" hint="من مناطق الخارطة، فيظهر الطفل في تفصيلها">
+              <Field label="المنطقة" hint="من مناطق الخريطة، فيظهر الطفل في تفصيلها">
                 <select
                   value={draft.region}
                   disabled={!draft.country}
@@ -541,9 +541,9 @@ export function OrphanIntakeForm({
                   className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
                 >
                   <option value="">{draft.country ? "اختر المنطقة" : "اختر الدولة أوّلاً"}</option>
-                  {/* نصٌّ قديم لا تعرفه الخارطة يُعرض كما هو حتى يُستبدل. */}
+                  {/* نصٌّ قديم لا تعرفه الخريطة يُعرض كما هو حتى يُستبدل. */}
                   {draft.region && !regionOpts.some((r) => r.value === draft.region) && (
-                    <option value={draft.region}>{draft.region} — غير موجودة في الخارطة</option>
+                    <option value={draft.region}>{draft.region} — غير موجودة في الخريطة</option>
                   )}
                   {regionOpts.map((r) => (
                     <option key={r.id} value={r.value}>

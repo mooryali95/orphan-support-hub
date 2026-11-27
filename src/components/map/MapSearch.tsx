@@ -7,7 +7,7 @@ import { rankSearch, type SearchItem } from "./map-search";
 export type { SearchItem };
 
 /**
- * بحثٌ سريع على الخارطة: حقلٌ يتّسع من زرّ، ونتائج تُختار بالأسهم وEnter،
+ * بحثٌ سريع على الخريطة: حقلٌ يتّسع من زرّ، ونتائج تُختار بالأسهم وEnter،
  * والاختيار يطير إلى موضعه. «/» يفتحه من أيّ مكان في الصفحة.
  */
 export function MapSearch({

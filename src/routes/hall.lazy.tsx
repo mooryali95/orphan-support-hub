@@ -218,7 +218,7 @@ function HallPage() {
       trying ? loadHallTrial() : null,
       // the live hall's own strings and sample names, in the interface language
       trying || donor ? null : import("@/lib/hall/live"),
-      // سجلّ المكاتب نفسه الذي تقرؤه الخارطة: لا ينتظر المشهدُ أكثر من ثانية ونصف، ودونه
+      // سجلّ المكاتب نفسه الذي تقرؤه الخريطة: لا ينتظر المشهدُ أكثر من ثانية ونصف، ودونه
       // يبقى ملفّ البحث وحده
       Promise.race([
         queryClient

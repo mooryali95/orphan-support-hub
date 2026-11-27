@@ -22,10 +22,10 @@ const real: Geo = {
   ],
 };
 
-/** كلّ رقمٍ تعرضه الخارطة، لا الرمز وحده. */
+/** كلّ رقمٍ تعرضه الخريطة، لا الرمز وحده. */
 const numbersOf = (geo: Geo) => Object.values(toMapStats(geo)).map((s) => s.total);
 
-describe("مصدر الخارطة خارج وضع العرض (ARC-11/PRD-15)", () => {
+describe("مصدر الخريطة خارج وضع العرض (ARC-11/PRD-15)", () => {
   const live = { demoMode: false };
 
   it("أثناء التحميل: لا أرقام ولا دول — هيكلٌ فقط", () => {

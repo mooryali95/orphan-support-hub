@@ -11,7 +11,7 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 const COPY = defineCopy("components/vision/ImpactCard", {
   ar: {
     h: "بطاقة أثري",
-    lead: "صورةٌ بأرقامك وحدها — لا اسم طفلٍ ولا مكان. احفظها أو شاركها.",
+    lead: "صورةٌ بأرقامك وحدها: لا اسم طفلٍ ولا مكان. احفظها أو شاركها.",
     save: "حفظ الصورة",
     share: "مشاركة",
     title: "أثري في منصّة الرؤية والتوجهات",
@@ -24,7 +24,7 @@ const COPY = defineCopy("components/vision/ImpactCard", {
   },
   en: {
     h: "My impact card",
-    lead: "An image with your figures only — no child's name or place. Save or share it.",
+    lead: "An image with your figures only; no child's name or place. Save or share it.",
     save: "Save image",
     share: "Share",
     title: "My impact on the Vision and Directions platform",

@@ -110,8 +110,11 @@ function TryPay() {
   if (!child)
     return (
       <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center">
-        <p>{c.noChild}</p>
-        <Link to="/try" className="mt-4 inline-flex font-bold text-primary hover:underline">
+        <h1 className="text-lg font-bold">{c.noChild}</h1>
+        <Link
+          to="/try"
+          className="mt-4 inline-flex min-h-11 items-center font-bold text-primary hover:underline"
+        >
           {c.startTrial}
         </Link>
       </div>

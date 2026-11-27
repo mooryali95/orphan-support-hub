@@ -39,8 +39,8 @@ const COPY = defineCopy("components/matching/SuggestionsPanel", {
     save: "حفظ",
     cancel: "إلغاء",
     prefsNote:
-      "المنطقة ترجيحٌ لا تصفية: تصفيةٌ بها تُخفي محتاجاً خارجها. والميزانية لا تُقصي أحداً — الكفالة الجزئية مقبولة — بل تُقدّم من يُكمله اشتراكك.",
-    empty: "لا مرشَّحين الآن — إمّا أنّك تكفل كلّ الملفات المفتوحة، أو لا ملفّ منشوراً فيه ثغرة.",
+      "المنطقة ترجيحٌ لا تصفية: تصفيةٌ بها تُخفي محتاجاً خارجها. والميزانية لا تُقصي أحداً، الكفالة الجزئية مقبولة، بل تُقدّم من يُكمله اشتراكك.",
+    empty: "لا مرشَّحين الآن: إمّا أنّك تكفل كلّ الملفات المفتوحة، أو لا ملفّ منشوراً فيه ثغرة.",
     placeSep: "، ",
     remaining: (amount: string) => `— يتبقّى ${amount}`,
     building: "بناؤه قائم",
@@ -60,7 +60,7 @@ const COPY = defineCopy("components/matching/SuggestionsPanel", {
       "ar",
     ),
     stalledNote:
-      "برنامجه ينتظر مشرفاً معتمَداً أو إذناً موثَّقاً من جهته — وكفالتك تبقى نافعة، لكنّ البناء لا يتقدّم حتى يكتملا.",
+      "برنامجه ينتظر مشرفاً معتمَداً أو إذناً موثَّقاً من جهته، وكفالتك تبقى نافعة، لكنّ البناء لا يتقدّم حتى يكتملا.",
     file: "الملفّ",
   },
   en: {
@@ -80,9 +80,9 @@ const COPY = defineCopy("components/matching/SuggestionsPanel", {
     save: "Save",
     cancel: "Cancel",
     prefsNote:
-      "The region raises a file's rank; it doesn't filter: filtering would hide a child in need outside it. The budget excludes no one — partial sponsorship is welcome — it puts first those your contribution would complete.",
+      "The region raises a file's rank; it doesn't filter: filtering would hide a child in need outside it. The budget excludes no one, partial sponsorship is welcome, it puts first those your contribution would complete.",
     empty:
-      "No suggestions right now — either you sponsor every open file, or no published file has a gap.",
+      "No suggestions right now: either you sponsor every open file, or no published file has a gap.",
     placeSep: ", ",
     remaining: (amount: string) => `— ${amount} still needed`,
     building: "Building under way",
@@ -91,7 +91,7 @@ const COPY = defineCopy("components/matching/SuggestionsPanel", {
     inRegion: "Your region",
     waiting: pluralOf({ one: "Waiting for {0} month", other: "Waiting for {0} months" }),
     stalledNote:
-      "The program is waiting for a certified supervisor or documented consent from the field organization — your sponsorship still helps, but building can't move forward until both are in place.",
+      "The program is waiting for a certified supervisor or documented consent from the field organization; your sponsorship still helps, but building can't move forward until both are in place.",
     file: "File",
   },
 });

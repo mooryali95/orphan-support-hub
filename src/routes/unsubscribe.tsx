@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+import { compact, searchUuid } from "@/lib/search-params";
 import { Loader2, MailX, CircleAlert, CircleCheck } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -20,7 +20,8 @@ const TITLE = "إلغاء الاشتراك — IOCO";
  * الروابط مسبقاً لفحصها، فإلغاءٌ عند الفتح قد يقع بلا نيّة صاحبه.
  */
 export const Route = createFileRoute("/unsubscribe")({
-  validateSearch: z.object({ token: z.string().uuid().optional() }),
+  validateSearch: (raw: Record<string, unknown>): { token?: string } =>
+    compact({ token: searchUuid(raw["token"]) }),
   head: () => ({
     meta: [
       { title: TITLE },

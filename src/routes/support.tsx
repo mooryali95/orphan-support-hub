@@ -2,7 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
-import { z } from "zod";
+import {
+  compact,
+  searchMatch,
+  searchOneOf,
+  searchPositive,
+  searchString,
+  searchUuid,
+} from "@/lib/search-params";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { SupportPicks } from "@/components/support/SupportPicks";
@@ -44,23 +51,28 @@ import { MapHallSwitch } from "@/components/support/MapHallSwitch";
 import { useDemo } from "@/lib/demo-mode";
 import { trialSlots } from "@/lib/trial-slots";
 
-const search = z.object({
-  orphan: z.string().uuid().optional(),
-  name: z.string().max(120).optional(),
-  kind: z.enum(["qualification", "in_kind"]).optional(),
-  // موضع الخارطة: الدولة (رمز) والمنطقة (كما في القاعدة).
-  c: z
-    .string()
-    .regex(/^[A-Z]{2}$/)
-    .optional(),
-  r: z.string().max(120).optional(),
-  // فجوة الطفل بعملته (من ملفّه) — منها يُقترح المبلغ.
-  gap: z.coerce.number().positive().max(1_000_000).optional(),
-  cur: z
-    .string()
-    .regex(/^[A-Z]{3}$/)
-    .optional(),
-});
+type SupportSearch = {
+  orphan?: string;
+  name?: string;
+  kind?: "qualification" | "in_kind";
+  c?: string;
+  r?: string;
+  gap?: number;
+  cur?: string;
+};
+
+const search = (raw: Record<string, unknown>): SupportSearch =>
+  compact({
+    orphan: searchUuid(raw["orphan"]),
+    name: searchString(raw["name"], 120),
+    kind: searchOneOf(raw["kind"], ["qualification", "in_kind"] as const),
+    // موضع الخريطة: الدولة (رمز) والمنطقة (كما في القاعدة).
+    c: searchMatch(raw["c"], /^[A-Z]{2}$/),
+    r: searchString(raw["r"], 120),
+    // فجوة الطفل بعملته (من ملفّه) — منها يُقترح المبلغ.
+    gap: searchPositive(raw["gap"], 1_000_000),
+    cur: searchMatch(raw["cur"], /^[A-Z]{3}$/),
+  });
 
 export const Route = createFileRoute("/support")({
   validateSearch: search,
@@ -100,7 +112,7 @@ const COPY = defineCopy("routes/support", {
     pledged: "سُجّل دعمك. سنُعلمك حين يُفتح التحصيل، وتتابعه من «بواباتي».",
     failed: "تعذّر التسجيل.",
     mapTitle: "أين تريد أن تدعم؟",
-    mapText: "اختر دولةً على الخارطة — أو من «قائمة» — ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
+    mapText: "اختر دولةً على الخريطة، أو من «قائمة»، ثم حدّد نوع الدعم ومبلغه في بطاقتها.",
     supportRegion: "ادعم هذه المنطقة",
     supportCountry: "ادعم هذه الدولة",
     h1: "اختر أثرك",
@@ -171,7 +183,7 @@ const COPY = defineCopy("routes/support", {
     failed: "It couldn't be recorded.",
     mapTitle: "Where would you like to support?",
     mapText:
-      "Choose a country on the map — or from “List” — then pick the kind of support and the amount on its card.",
+      "Choose a country on the map, or from “List”, then pick the kind of support and the amount on its card.",
     supportRegion: "Support this region",
     supportCountry: "Support this country",
     h1: "Choose your impact",
@@ -365,7 +377,7 @@ function RealSupportPage() {
       ]
     : [];
 
-  /** ما اختير على الخارطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
+  /** ما اختير على الخريطة يصير هدف الدعم: الدولة، ثم المنطقة إن وُجدت في الكتالوج. */
   function applyPlace(code: string | null, region: string | null) {
     if (!catalog || !code) return;
     const c = catalog.countries.find((x) => x.code === code || resolveCountry(x.name) === code);
@@ -383,13 +395,13 @@ function RealSupportPage() {
     }
   }
 
-  // القادم من بطاقة الخارطة في الصفحة الأولى يجد المكان مختاراً.
+  // القادم من بطاقة الخريطة في الصفحة الأولى يجد المكان مختاراً.
   useEffect(() => {
     if (!targetType && !orphan) applyPlace(mapCountry ?? null, mapRegion ?? null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog]);
 
-  // الدولة في الرابط؛ والمنطقة على الخارطة محلّية (معرّفها جغرافيّ، لا قيمة القاعدة).
+  // الدولة في الرابط؛ والمنطقة على الخريطة محلّية (معرّفها جغرافيّ، لا قيمة القاعدة).
   const [regionId, setRegionId] = useState<string | null>(null);
   const selection: MapSelection = { country: mapCountry ?? null, region: regionId };
   const onSelect = (sel: MapSelection) => {
@@ -447,7 +459,7 @@ function RealSupportPage() {
       <SiteHeader />
       {!orphan && <SupportPicks />}
       {!orphan && (
-        // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخارطة هي المحتوى هنا.
+        // وجهة «تخطّي إلى المحتوى» وعنوان الصفحة لقارئ الشاشة: الخريطة هي المحتوى هنا.
         <main id="main" tabIndex={-1} className="scroll-mt-16 outline-none">
           <h1 className="sr-only">{t.h1}</h1>
           <div id="support-map" className="relative scroll-mt-16">

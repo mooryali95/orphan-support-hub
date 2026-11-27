@@ -44,7 +44,7 @@ const COPY = defineCopy("components/SiteFooter", {
     developers: "Developers",
     rights: "All rights reserved",
     hadithNote:
-      "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+      "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
   },
 });
 
@@ -69,8 +69,7 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
               <blockquote className="mt-6 max-w-md border-t border-border pt-5 text-foreground">
                 {/* النصّ النبوي يبقى بلفظه العربي، والإنجليزية ترجمةٌ لمعناه تحته. */}
                 <p className="font-quran text-lg leading-9 text-balance" lang="ar" dir="rtl">
-                  «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما
-                  شيئاً.
+                  «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وقال بإصبعَيه السبّابةِ والوسطى.
                 </p>
                 {c.hadithNote && (
                   <p className="mt-1 text-xs leading-6 text-muted-foreground">{c.hadithNote}</p>

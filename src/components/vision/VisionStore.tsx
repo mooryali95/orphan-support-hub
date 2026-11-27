@@ -158,28 +158,28 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedEmpty: "لا أحداث بعد. جرّب تبرّعاً من «رحلة المال» أو من النموذج.",
     layer: { support: "الدعم", operations: "التشغيل", decision: "القرار" },
     moved: (n: number) => `وتحرّك بعده ${n} في الطبقات`,
-    month: (m: string) => `بدأ شهرٌ جديد: ${m} — كفلاءٌ شهريون، وجلسات، وقياس`,
+    month: (m: string) => `بدأ شهرٌ جديد (${m}) بكفلاءَ شهريين وجلساتٍ وقياس`,
     sponsored: (child: string, m: string) =>
-      `كفالةٌ شهرية لـ${child}: ${m} — وصلت ملفّه في التشغيل`,
+      `كفالةٌ شهرية لـ${child}: ${m}، ووصلت ملفّه في التشغيل`,
     sponsorDelivered: (child: string, n: string) =>
-      `سُلِّمت كفالة ${child} للشهر ${n} بإثبات — ارتفع الصمود والدراية`,
-    kitsPledged: (n: string, g: string) => `${n} حقيبة تعليمية لـ${g} — بانتظار التسليم`,
+      `سُلِّمت كفالة ${child} للشهر ${n} بإثبات، ارتفع الصمود والدراية`,
+    kitsPledged: (n: string, g: string) => `${n} حقيبة تعليمية لـ${g}، بانتظار التسليم`,
     kitsDelivered: (n: string, g: string) =>
-      `سُلِّمت ${n} حقيبة لـ${g} بإثبات — ارتفعت الكفايات والهمّة`,
+      `سُلِّمت ${n} حقيبة لـ${g} بإثبات، ارتفعت الكفايات والهمّة`,
     advance: "تقدّم شهراً",
     now: "الآن",
     donation: (amt: string, donor: string, place: string) =>
       `${donor} تبرّع بـ ${amt} لـ${place} (بطاقة)`,
     pending: (amt: string, donor: string, place: string) =>
-      `${donor} أعلن تحويلاً بـ ${amt} لـ${place} — بانتظار المطابقة`,
+      `${donor} أعلن تحويلاً بـ ${amt} لـ${place}، بانتظار المطابقة`,
     settled: (amt: string, net: string, inv: string) =>
       `قُيِّد ${amt} في حساب الندوة · الصافي ${net} · ${inv}`,
     allocGroup: (amt: string, place: string) => `خُصِّص ${amt} لـ${place}`,
-    allocFull: (amt: string, place: string) => `خُصِّص ${amt} لـ${place} — اكتمل تمويلها`,
+    allocFull: (amt: string, place: string) => `خُصِّص ${amt} لـ${place}، واكتمل تمويلها`,
     allocPool: (amt: string, place: string) => `${amt} رصيدٌ حرّ لـ${place} ينتظر قراراً`,
     disbursed: (eur: string, place: string) => `صرفٌ إلى مكتب ألبانيا: ${eur} لـ${place}`,
     session: (place: string, n: number, of: number) => `${place}: جلسة ${n} من ${of}`,
-    cycleDone: (place: string) => `${place}: اكتملت الدورة — جاهزة للقياس البعدي`,
+    cycleDone: (place: string) => `${place}: اكتملت الدورة وهي جاهزة للقياس البعدي`,
     measuredOps: (place: string, a: string, b: string) => `${place}: السمة من ${a} إلى ${b}`,
     measuredDec: (n: string) => `في رحلة تأهيلٍ مقيسة الآن: ${n}`,
     decision: {
@@ -187,11 +187,11 @@ const COPY = defineCopy("components/vision/VisionStore", {
       campaign: (place: string) => `قرار: أُطلقت حملةٌ لـ${place}`,
       redirect: (place: string, to: string) => `قرار: أُعيد توجيه فائض ${place} إلى ${to}`,
       fundGroup: (place: string) => `قرار: أُولويةٌ لتمويل ${place}`,
-      scenario: (place: string) => `قرار: اعتُمد سيناريو ميزانية — أوّل وجهاته ${place}`,
+      scenario: (place: string) => `قرار: اعتُمد سيناريو ميزانية، أوّل وجهاته ${place}`,
     } as Record<string, (a: string, b: string) => string>,
     // النموذج
     formH: "عطاءٌ تجريبي",
-    formLead: "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي — ولا يُحصَّل شيء.",
+    formLead: "يمرّ بالطبقات الثلاث كما سيمرّ المال الحقيقي، ولا يُحصَّل شيء.",
     donor: "اسم الداعم (مستعار)",
     donorPh: "مثال: داعمٌ من الرياض",
     amount: "المبلغ",
@@ -200,7 +200,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     card: "بطاقة",
     bank: "تحويل بنكي",
     give: "ادعم الآن",
-    done: "وصل — تابِعه في لوحة القرار والتشغيل",
+    done: "وصل: تابِعه في لوحة القرار والتشغيل",
     reset: "إعادة البيئة إلى البداية",
     resetConfirm: "ستُمحى كلّ التبرعات والقرارات التجريبية في هذا المتصفّح. متابعة؟",
     sandbox: "بيئة تجريبية · لا مال حقيقي",
@@ -210,30 +210,31 @@ const COPY = defineCopy("components/vision/VisionStore", {
     feedEmpty: "No events yet. Try a donation from the money journey or the form.",
     layer: { support: "Support", operations: "Operations", decision: "Decision" },
     moved: (n: number) => `and ${n} more moved across the layers`,
-    month: (m: string) => `A new month began: ${m} — recurring sponsors, sessions and measurement`,
+    month: (m: string) =>
+      `A new month began: ${m}, with recurring sponsors, sessions and measurement`,
     sponsored: (child: string, m: string) =>
-      `Monthly sponsorship for ${child}: ${m} — reached the file in operations`,
+      `Monthly sponsorship for ${child}: ${m}; it reached the file in operations`,
     sponsorDelivered: (child: string, n: string) =>
-      `${child}'s sponsorship delivered for month ${n} with proof — resilience and awareness rose`,
-    kitsPledged: (n: string, g: string) => `${n} learning kits for ${g} — awaiting delivery`,
+      `${child}'s sponsorship delivered for month ${n} with proof; resilience and awareness rose`,
+    kitsPledged: (n: string, g: string) => `${n} learning kits for ${g}, awaiting delivery`,
     kitsDelivered: (n: string, g: string) =>
-      `${n} kits delivered to ${g} with proof — competencies and drive rose`,
+      `${n} kits delivered to ${g} with proof; competencies and drive rose`,
     advance: "Advance a month",
     now: "Now",
     donation: (amt: string, donor: string, place: string) =>
       `${donor} gave ${amt} to ${place} (card)`,
     pending: (amt: string, donor: string, place: string) =>
-      `${donor} declared a ${amt} transfer to ${place} — awaiting reconciliation`,
+      `${donor} declared a ${amt} transfer to ${place}, awaiting reconciliation`,
     settled: (amt: string, net: string, inv: string) =>
       `${amt} recorded in WAMY's account · net ${net} · ${inv}`,
     allocGroup: (amt: string, place: string) => `${amt} allocated to ${place}`,
-    allocFull: (amt: string, place: string) => `${amt} allocated to ${place} — now fully funded`,
+    allocFull: (amt: string, place: string) => `${amt} allocated to ${place}; now fully funded`,
     allocPool: (amt: string, place: string) =>
       `${amt} free balance for ${place}, awaiting a decision`,
     disbursed: (eur: string, place: string) =>
       `Disbursed to the Albania office: ${eur} for ${place}`,
     session: (place: string, n: number, of: number) => `${place}: session ${n} of ${of}`,
-    cycleDone: (place: string) => `${place}: cycle complete — ready for follow-up measurement`,
+    cycleDone: (place: string) => `${place}: cycle complete and ready for follow-up measurement`,
     measuredOps: (place: string, a: string, b: string) => `${place}: trait ${a} → ${b}`,
     measuredDec: (n: string) => `Now in a measured journey: ${n}`,
     decision: {
@@ -242,10 +243,10 @@ const COPY = defineCopy("components/vision/VisionStore", {
       redirect: (place: string, to: string) => `Decision: ${place}'s surplus redirected to ${to}`,
       fundGroup: (place: string) => `Decision: priority funding for ${place}`,
       scenario: (place: string) =>
-        `Decision: a budget scenario approved — first destination ${place}`,
+        `Decision: a budget scenario approved; first destination ${place}`,
     } as Record<string, (a: string, b: string) => string>,
     formH: "Test donation",
-    formLead: "It passes through the three layers as real money will — nothing is collected.",
+    formLead: "It passes through the three layers as real money will; nothing is collected.",
     donor: "Supporter name (pseudonym)",
     donorPh: "e.g. a supporter from Riyadh",
     amount: "Amount",
@@ -254,7 +255,7 @@ const COPY = defineCopy("components/vision/VisionStore", {
     card: "Card",
     bank: "Bank transfer",
     give: "Donate now",
-    done: "Received — follow it on the decision and operations boards",
+    done: "Received: follow it on the decision and operations boards",
     reset: "Reset the sandbox",
     resetConfirm: "All test donations and decisions in this browser will be cleared. Continue?",
     sandbox: "Sandbox · no real money",

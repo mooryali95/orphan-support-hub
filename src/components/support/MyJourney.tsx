@@ -17,7 +17,7 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 const COPY = defineCopy("components/support/MyJourney", {
   ar: {
     title: "رحلتي",
-    description: "كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات — الأحدث أولاً.",
+    description: "كل ما صنعه دعمك: تقارير، ووصول، وجلسات، وقياسات، الأحدث أولاً.",
     preview: "معاينة رسالة الشهر",
     previewHint: "هكذا ستصلك رسالة الشهر",
     close: "إغلاق",
@@ -29,7 +29,7 @@ const COPY = defineCopy("components/support/MyJourney", {
   en: {
     title: "My journey",
     description:
-      "Everything your support has made happen: reports, deliveries, sessions and measurements — newest first.",
+      "Everything your support has made happen: reports, deliveries, sessions and measurements; newest first.",
     preview: "Preview the monthly letter",
     previewHint: "This is how your monthly letter will arrive",
     close: "Close",

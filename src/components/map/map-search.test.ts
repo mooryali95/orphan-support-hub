@@ -4,7 +4,7 @@ import { rankSearch, type SearchItem } from "./map-search";
 const item = (label: string, kind: SearchItem["kind"] = "country", alt: string[] = []) =>
   ({ key: label, label, alt, kind, go: () => {} }) satisfies SearchItem;
 
-describe("بحث الخارطة", () => {
+describe("بحث الخريطة", () => {
   const items = [
     item("كوسوفو"),
     item("ألبانيا", "country", ["Albania", "AL"]),

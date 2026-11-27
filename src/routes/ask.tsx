@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { z } from "zod";
+import { searchUuid } from "@/lib/search-params";
 import { listOrphanCards } from "@/lib/protection.functions";
 import { pageTitle } from "@/config/brand";
 
@@ -12,8 +12,8 @@ export const cardsQuery = queryOptions({
 // فلا يثقلان حزمة بقية الصفحات.
 export const Route = createFileRoute("/ask")({
   validateSearch: (search: Record<string, unknown>) => {
-    const child = z.string().uuid().safeParse(search["child"]);
-    return child.success ? { child: child.data } : {};
+    const child = searchUuid(search["child"]);
+    return child ? { child } : {};
   },
   loader: ({ context }) => context.queryClient.ensureQueryData(cardsQuery),
   head: () => ({

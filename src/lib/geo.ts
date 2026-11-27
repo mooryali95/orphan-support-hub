@@ -7,8 +7,8 @@ import { DEMO_MODE, demoGeography } from "@/lib/demo-network";
 /**
  * الجغرافيا من مصدرٍ واحد — `geo_stats` في القاعدة.
  *
- * تقرأ منها الخارطة (أيّ الدول تُفتح وأيّ المناطق تُلوَّن) والدليل
- * (قائمتا البلد والمنطقة وأعدادهما). فما تُظهره الخارطة يجده الدليل.
+ * تقرأ منها الخريطة (أيّ الدول تُفتح وأيّ المناطق تُلوَّن) والدليل
+ * (قائمتا البلد والمنطقة وأعدادهما). فما تُظهره الخريطة يجده الدليل.
  */
 export type GeoCount = {
   total: number | null;
@@ -42,7 +42,7 @@ function countOf(r: {
 export type GeoCountry = GeoCount & {
   /** النصّ كما في القاعدة — به يُفلتَر الدليل. */
   value: string;
-  /** رمز ISO إن عُرف — به تُرسم الخارطة. */
+  /** رمز ISO إن عُرف — به تُرسم الخريطة. */
   code: string | null;
   regions: Array<GeoCount & { value: string }>;
 };

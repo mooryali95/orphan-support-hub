@@ -11,7 +11,7 @@ const COPY = defineCopy("components/vision/VisionTeaser", {
   ar: {
     tag: "تجربةٌ حيّة · بلا حساب",
     h: "منصّة الرؤية والتوجهات",
-    lead: "التشغيل والدعم والقرار في منظومةٍ واحدة: تبرّعٌ يصل مجموعة، فتُعقد جلساتها وتُقاس، فيتغيّر القرار. جرّبها بنفسك — كلّ شيءٍ يُحفظ في متصفّحك.",
+    lead: "التشغيل والدعم والقرار في منظومةٍ واحدة: تبرّعٌ يصل مجموعة، فتُعقد جلساتها وتُقاس، فيتغيّر القرار. جرّبها بنفسك، كلّ شيءٍ يُحفظ في متصفّحك.",
     supporter: "داعم",
     supervisor: "مشرف",
     decider: "صاحب قرار",
@@ -21,7 +21,7 @@ const COPY = defineCopy("components/vision/VisionTeaser", {
   en: {
     tag: "Live demo · no account",
     h: "The Vision and Directions platform",
-    lead: "Operations, support and decision in one system: a donation reaches a group, its sessions are held and measured, and the decision changes. Try it yourself — everything stays in your browser.",
+    lead: "Operations, support and decision in one system: a donation reaches a group, its sessions are held and measured, and the decision changes. Try it yourself; everything stays in your browser.",
     supporter: "Supporter",
     supervisor: "Supervisor",
     decider: "Decision-maker",

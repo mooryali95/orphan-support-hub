@@ -40,7 +40,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
     endSponsorship: "إنهاء الكفالة",
     cancel: {
       cancelled: "أُلغيت الكفالة",
-      ending: (date: string) => `سُجّل الإنهاء — تبقى الكفالة جاريةً حتى ${date}`,
+      ending: (date: string) => `سُجّل الإنهاء: تبقى الكفالة جاريةً حتى ${date}`,
       titlePending: (name: string) => `إلغاء طلب كفالة ${name}`,
       title: (name: string) => `إنهاء كفالة ${name}`,
       leadPending: "لم يُدفع شيءٌ بعد، فيُلغى الطلب الآن ولا يُطلب منك تحويل.",
@@ -68,7 +68,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       stays: "يبقى ملفّ الطفل في رعاية الندوة وجهتها الميدانية بعد الإنهاء.",
     },
     pauseForm: {
-      paused: (date: string) => `أُوقفت مؤقّتاً — تُستأنف في ${date}`,
+      paused: (date: string) => `أُوقفت مؤقّتاً: تُستأنف في ${date}`,
       title: (name: string) => `إيقاف كفالة ${name} مؤقّتاً`,
       lead: "يبدأ الإيقاف بعد آخر شهرٍ دفعته، ولا يُنتظر منك تحويلٌ خلاله، ثم تُستأنف الكفالة تلقائياً. يبقى مكانك مع الطفل، وتعلم الجهة الميدانية بمدّة الإيقاف. يمكنك الاستئناف قبل ذلك متى شئت.",
       duration: "المدّة",
@@ -81,7 +81,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       resumesOn: (date: string) => `تُستأنف في ${date}.`,
     },
     amountForm: {
-      changed: "تغيّر المبلغ — يسري من التحويل القادم",
+      changed: "تغيّر المبلغ: يسري من التحويل القادم",
       title: (name: string) => `تعديل مبلغ كفالة ${name}`,
       lead: (money: string) =>
         `المبلغ الحالي ${money} شهرياً. الجديد يسري من التحويل القادم، وما دُفع قبله لا يتغيّر. تعلم الجهة الميدانية بالتعديل.`,
@@ -101,7 +101,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
     endSponsorship: "End sponsorship",
     cancel: {
       cancelled: "Sponsorship cancelled",
-      ending: (date: string) => `Ending recorded — the sponsorship continues until ${date}`,
+      ending: (date: string) => `Ending recorded: the sponsorship continues until ${date}`,
       titlePending: (name: string) => `Cancel the sponsorship request for ${name}`,
       title: (name: string) => `End the sponsorship of ${name}`,
       leadPending:
@@ -131,7 +131,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       stays: "The child's file stays in care with WAMY and its field organization after it ends.",
     },
     pauseForm: {
-      paused: (date: string) => `Paused — resumes on ${date}`,
+      paused: (date: string) => `Paused: resumes on ${date}`,
       title: (name: string) => `Pause the sponsorship of ${name}`,
       lead: "The pause starts after the last month you paid for, no transfer is expected during it, and the sponsorship then resumes automatically. Your place with the child is kept, and the field organization is told how long the pause lasts. You can resume earlier whenever you like.",
       duration: "Duration",
@@ -140,7 +140,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       resumesOn: (date: string) => `Resumes on ${date}.`,
     },
     amountForm: {
-      changed: "Amount changed — it applies from the next transfer",
+      changed: "Amount changed: it applies from the next transfer",
       title: (name: string) => `Change the amount for ${name}`,
       lead: (money: string) =>
         `The current amount is ${money} a month. The new amount applies from the next transfer; what was paid before stays the same. The field organization is told about the change.`,
@@ -327,6 +327,7 @@ export function CancelForm({
                 type="button"
                 size="sm"
                 variant="outline"
+                className="min-h-11"
                 onClick={() => onAlternative("pause")}
               >
                 {t.pauseInstead}
@@ -336,6 +337,7 @@ export function CancelForm({
               type="button"
               size="sm"
               variant="outline"
+              className="min-h-11"
               onClick={() => onAlternative("amount")}
             >
               {t.lowerAmount}

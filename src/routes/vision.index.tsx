@@ -30,14 +30,14 @@ const COPY = defineCopy("routes/vision.index", {
     measured: "في رحلة تأهيلٍ مقيسة",
     offices: "مكتباً وشريكاً حول العالم",
     cycleH: "اليتيم في قلب المنظومة",
-    cycleText: "تبرّعٌ واحد يمرّ بالطبقات الثلاث ويعود قراراً — خطوةً بخطوة.",
+    cycleText: "تبرّعٌ واحد يمرّ بالطبقات الثلاث ويعود قراراً، خطوةً بخطوة.",
     moneyH: "رحلة المال",
     moneyText: "أين يصل المال وكيف: من ضغطة الداعم إلى يد المشرف، بسجلٍّ لا يُمحى.",
     watch: "شاهد",
     enter: "ادخل بدورك: داعم، مشرف، صاحب قرار",
     liveH: "نظامٌ يعمل، لا عرضٌ مسجَّل",
     liveLead:
-      "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر — كلّ ذلك يتزامن بين التبويبات.",
+      "تبرّع هنا، ثم افتح «التشغيل» لترى المجموعة تُموَّل وتسجّل جلساتها وقياسها، و«القرار» لترى الفجوة تضيق والتوصية تتغيّر، كلّ ذلك يتزامن بين التبويبات.",
   },
   en: {
     title: "The Vision and Directions platform",
@@ -49,7 +49,7 @@ const COPY = defineCopy("routes/vision.index", {
     offices: "offices and partners worldwide",
     cycleH: "The orphan at the heart of the system",
     cycleText:
-      "One donation passes through the three layers and returns as a decision — step by step.",
+      "One donation passes through the three layers and returns as a decision, step by step.",
     moneyH: "The money journey",
     moneyText:
       "Where the money lands and how: from the supporter's tap to the supervisor's hands, with an indelible record.",
@@ -57,7 +57,7 @@ const COPY = defineCopy("routes/vision.index", {
     enter: "Enter by role: supporter, supervisor, decision-maker",
     liveH: "A working system, not a recording",
     liveLead:
-      "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change — synced across tabs.",
+      "Donate here, then open Operations to see the group funded and its sessions and measurement recorded, and Decision to see the gap narrow and the recommendation change; synced across tabs.",
   },
 });
 

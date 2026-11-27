@@ -19,7 +19,7 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
       hq: "المقرّ الرئيسي",
       office: "مكتب مؤكَّد",
       field: "نشاط ميداني",
-      unconfirmed: "غير مؤكَّد — للإدارة فقط",
+      unconfirmed: "غير مؤكَّد: للإدارة فقط",
     },
     network: {
       title: "شبكة الندوة حول العالم",
@@ -118,7 +118,7 @@ export const HALL_COPY = defineCopy("lib/hall/copy", {
       hq: "Headquarters",
       office: "Confirmed office",
       field: "Field activity",
-      unconfirmed: "Unconfirmed — staff only",
+      unconfirmed: "Unconfirmed: staff only",
     },
     network: {
       title: "The WAMY network worldwide",

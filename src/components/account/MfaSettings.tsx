@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BRAND } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
+import { useDemo } from "@/lib/demo-mode";
 import { defineCopy, useCopy } from "@/lib/locale";
 
 /**
@@ -85,7 +86,9 @@ export function useSessionAal2(): boolean | null {
 export function MfaRequiredNotice() {
   const c = useCopy(MFA_COPY);
   const strong = useSessionAal2();
-  if (strong !== false) return null;
+  // التجربة بلا حساب: لا جلسة تُقوّى، والحسم فيها محاكاة، فالتنبيه ورابطه إلى الحساب طريقٌ مسدود.
+  const demo = useDemo();
+  if (demo || strong !== false) return null;
   return (
     <div
       role="status"

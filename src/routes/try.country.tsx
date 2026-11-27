@@ -5,7 +5,7 @@ import { copyOf, defineCopy } from "@/lib/locale";
 
 // المكوّن في try.country.lazy.tsx: يُحمَّل حين تُفتح الصفحة وحدها.
 const TITLE = defineCopy("routes/try.country.title", {
-  ar: { title: "فريق الدولة — عرض تفاعلي" },
+  ar: { title: "فريق الدولة: عرض تفاعلي" },
   en: { title: "Country team: interactive demo" },
 });
 

@@ -115,7 +115,7 @@ const COPY = defineCopy("routes/orphans.index", {
     inCountries: (n: number) => ` — في ${arCount(n, COUNTRIES)}.`,
     cardH: "ما يُعرض هنا بطاقةٌ لا ملفّ:",
     cardP:
-      "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته — لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
+      "اسمٌ مستعار، وبلدٌ ومنطقة، وفئةٌ عمرية، وحال التمويل. أمّا قصّة الطفل وصورته ومدينته فخلف إذنٍ من الإدارة يُطلَب من صفحته، لأنّ ملفّ طفلٍ ليس صفحةً تُتصفَّح.",
     search: "ابحث بالاسم المستعار أو رقم الملفّ",
     searchLabel: "بحث",
     allCountries: "كل البلدان",
@@ -181,7 +181,7 @@ const COPY = defineCopy("routes/orphans.index", {
     inCountries: pluralOf({ one: " — in {0} country.", other: " — in {0} countries." }),
     cardH: "What you see here is a card, not a file:",
     cardP:
-      "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page — because a child's file isn't a page to browse.",
+      "a pseudonym, country and region, age group and funding status. The child's story, photo and city sit behind permission from the administration, requested from their page; because a child's file isn't a page to browse.",
     search: "Search by pseudonym or file number",
     searchLabel: "Search",
     allCountries: "All countries",
@@ -260,7 +260,7 @@ function RealOrphansPage() {
   const t = useCopy(COPY);
   const { data: first } = useSuspenseQuery(firstPageQuery);
   const { data: options } = useQuery(optionsQuery);
-  // البلد والمنطقة من مصدر الجغرافيا الواحد — ما تُظهره الخارطة يجده الدليل.
+  // البلد والمنطقة من مصدر الجغرافيا الواحد — ما تُظهره الخريطة يجده الدليل.
   const { data: geo } = useQuery(geoQuery);
   // المجموعات من كتالوج الدعم العامّ: اسمٌ ومنطقة وعدد، بلا مشرف ولا أسماء.
   const { data: catalog } = useQuery({

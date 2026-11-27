@@ -77,14 +77,19 @@ export function KindSwitch<K extends string>({
             )}
           >
             <span className="text-sm font-bold leading-tight text-balance">{t.label}</span>
-            <span
-              className={cn(
-                "text-xs tabular-nums leading-4",
-                on && t.count > 0 ? "font-bold text-primary" : "",
-              )}
-            >
-              {t.count}
-            </span>
+            {/* a kind with nothing yet shows no «0»: the panel itself invites */}
+            {t.count > 0 ? (
+              <span
+                className={cn("text-xs tabular-nums leading-4", on && "font-bold text-primary")}
+              >
+                {t.count}
+              </span>
+            ) : (
+              <span
+                aria-hidden="true"
+                className="block size-1 rounded-full bg-current opacity-30"
+              />
+            )}
           </button>
         );
       })}

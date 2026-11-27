@@ -59,7 +59,7 @@ const COPY = defineCopy("routes/office", {
     saveFailed: "تعذّر الحفظ.",
     saved: "حُفظ التقرير.",
     photoAlt: "صورة من تقرير المكتب",
-    fileDenied: "تعذّر فتح الملفّ — قد لا تكون عضواً في هذا المكتب الآن.",
+    fileDenied: "تعذّر فتح الملفّ: قد لا تكون عضواً في هذا المكتب الآن.",
   },
   en: {
     title: "Office dashboard",

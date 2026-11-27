@@ -105,7 +105,7 @@ function useRegions(code: string | null) {
   return useQuery({ ...regionsQuery(code), enabled: !!code });
 }
 
-/** مفتاح المنطقة في الإحصاء ← المنطقة على الخارطة، بأي اسمٍ كُتب. */
+/** مفتاح المنطقة في الإحصاء ← المنطقة على الخريطة، بأي اسمٍ كُتب. */
 function statFor(region: RegionShape, stat: CountryStat | undefined): RegionStat | undefined {
   if (!stat) return undefined;
   const names = new Set([region.n, region.en, ...region.alt.split("|")].map(normalize));
@@ -125,12 +125,12 @@ const COPY = defineCopy("components/map/WorldMap", {
     section: "خارطة الأيتام في العالم",
     mapOf: (place: string) => `خارطة ${place}`,
     worldMap: "خارطة العالم",
-    breadcrumb: "موضعك على الخارطة",
+    breadcrumb: "موضعك على الخريطة",
     world: "العالم",
     demo: "بيانات تجريبية",
-    loading: "تُحمَّل أرقام الخارطة…",
-    unavailable: "أرقام الخارطة غير متاحة الآن",
-    unavailableHere: "لا تتوفّر الأرقام الآن — أعد المحاولة بعد قليل.",
+    loading: "تُحمَّل أرقام الخريطة…",
+    unavailable: "أرقام الخريطة غير متاحة الآن",
+    unavailableHere: "لا تتوفّر الأرقام الآن، أعد المحاولة بعد قليل.",
     list: "قائمة",
     pick: "اختر بلداً",
     introA: "لترى من ينتظر كافلاً هناك —",
@@ -144,7 +144,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     sponsored: "مكفول",
     waiting: "ينتظر كافلاً",
     cohort: (n: number) =>
-      `لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن ${n} — حمايةً للأطفال من أن يُعرَفوا.`,
+      `لا نعرض الأرقام الدقيقة حين يقلّ أحدها عن ${n}، حمايةً للأطفال من أن يُعرَفوا.`,
     browse: "تصفّح من ينتظر هنا",
     regions: "المناطق",
     listLabel: "الدول والمناطق",
@@ -154,8 +154,8 @@ const COPY = defineCopy("components/map/WorldMap", {
     closeList: "إغلاق القائمة",
     reset: "إعادة الضبط",
     expand: "توسيع البطاقة",
-    collapse: "طيّ البطاقة لرؤية الخارطة",
-    layers: "طبقة الخارطة",
+    collapse: "طيّ البطاقة لرؤية الخريطة",
+    layers: "طبقة الخريطة",
     layerWaiting: "ينتظرون",
     layerImpact: "الأثر",
     layerGap: "الفجوة",
@@ -165,7 +165,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     delivered: "وصلهم تسليمٌ موثّق خلال 90 يوماً",
     gap: "الفجوة الشهرية",
     hint: "اقرص أو انقر مرّتين للتكبير، واسحب للتنقّل. وبلوحة المفاتيح: الأسهم بين الدول، وEnter للدخول، و+ و− للتكبير، و/ للبحث.",
-    countryButton: (name: string, n: string) => `${name}: ${n} — اضغط Enter للدخول`,
+    countryButton: (name: string, n: string) => `${name}: ${n}. اضغط Enter للدخول`,
     zoom: "التكبير",
     zoomIn: "تكبير",
     zoomOut: "تصغير",
@@ -191,7 +191,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     demo: "Sample data",
     loading: "Loading map figures…",
     unavailable: "Map figures are unavailable right now",
-    unavailableHere: "Figures are unavailable right now — please try again shortly.",
+    unavailableHere: "Figures are unavailable right now; please try again shortly.",
     list: "List",
     pick: "Choose a country",
     introA: "to see who is waiting for a sponsor there —",
@@ -205,7 +205,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     sponsored: "Sponsored",
     waiting: "Waiting for a sponsor",
     cohort: (n: number) =>
-      `We don't show exact numbers when any of them is below ${n} — so children can't be identified.`,
+      `We don't show exact numbers when any of them is below ${n}, so that no child can be identified.`,
     browse: "Browse who is waiting here",
     regions: "Regions",
     listLabel: "Countries and regions",
@@ -226,7 +226,7 @@ const COPY = defineCopy("components/map/WorldMap", {
     delivered: "Received a documented delivery in the last 90 days",
     gap: "Monthly gap",
     hint: "Pinch or double-tap to zoom, drag to move. Keyboard: arrows move between countries, Enter opens one, + and − zoom, / searches.",
-    countryButton: (name: string, n: string) => `${name}: ${n} — press Enter to open`,
+    countryButton: (name: string, n: string) => `${name}: ${n}. Press Enter to open`,
     zoom: "Zoom",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
@@ -314,7 +314,7 @@ const CountriesLayer = memo(function CountriesLayer({
         if (!within(c.b)) return null;
         const active = !!stats[c.c] || !!extra?.has(c.c);
         const dim = focus && focus !== c.c;
-        // الدولة التي فيها ملفّات زرٌّ على الخارطة نفسها: تُركَّز وتُفتح بـEnter.
+        // الدولة التي فيها ملفّات زرٌّ على الخريطة نفسها: تُركَّز وتُفتح بـEnter.
         const focusable = active && focus !== c.c;
         const text = stats[c.c] ? metricText(layer, stats[c.c], locale, hidden) : "";
         return (
@@ -481,7 +481,7 @@ function CountUp({
   return <span className="tabular-nums">{shown(to < COHORT_MIN ? to : n, useLocale())}</span>;
 }
 
-/* ── الخارطة ───────────────────────────────────────────────────────── */
+/* ── الخريطة ───────────────────────────────────────────────────────── */
 
 export type MapSelection = { country: string | null; region: string | null };
 
@@ -496,7 +496,7 @@ export type MapActionContext = {
 /**
  * الصفحة الأولى خارطةٌ للعالم: الدول التي فيها ملفّات مضيئة، والضغط
  * على دولة يطير إليها وتظهر مناطقها، والضغط على منطقة يطير إليها
- * ويُظهر عدد أيتامها. كل مستوى له رابط، وزرّ «قائمة» يغني عن الخارطة
+ * ويُظهر عدد أيتامها. كل مستوى له رابط، وزرّ «قائمة» يغني عن الخريطة
  * لمن لا يستعملها (قارئ الشاشة، لوحة المفاتيح).
  */
 export function WorldMap({
@@ -523,7 +523,7 @@ export function WorldMap({
   showUnconfirmed?: boolean;
   /**
    * ما يُرسم في طبقة الشبكة بدل ملفّ البحث: سجلّ المكاتب من القاعدة (`public_offices_map`)
-   * على صفحة المكاتب. الخارطة نفسها، والمصدر وحده يتغيّر.
+   * على صفحة المكاتب. الخريطة نفسها، والمصدر وحده يتغيّر.
    */
   networkPaintOverride?: Map<string, NetworkKind>;
   /** بطاقة الدولة في طبقة الشبكة حين يكون للصفحة ما تعرضه عنها (مكاتبها من السجلّ). */
@@ -547,7 +547,7 @@ export function WorldMap({
   className?: string;
   /** سطرا العالم بدل «اختر بلداً». */
   intro?: { title: string; text?: string };
-  /** خلفيّةٌ فقط (صفحة الدخول): الخارطة بلا مسارٍ ولا بطاقاتٍ ولا قائمة. */
+  /** خلفيّةٌ فقط (صفحة الدخول): الخريطة بلا مسارٍ ولا بطاقاتٍ ولا قائمة. */
   bare?: boolean;
 }) {
   const locale = useLocale();
@@ -618,7 +618,7 @@ export function WorldMap({
   const view = useRef<View | null>(null);
   const [size, setSize] = useState({ w: 1280, h: 660 });
   const [settled, setSettled] = useState(true);
-  // على الهاتف البطاقة ورقةٌ سفلية تُطوى لتظهر الخارطة كاملةً، وتعود مع كل اختيارٍ جديد.
+  // على الهاتف البطاقة ورقةٌ سفلية تُطوى لتظهر الخريطة كاملةً، وتعود مع كل اختيارٍ جديد.
   const [collapsed, setCollapsed] = useState(false);
   useEffect(() => setCollapsed(false), [selection.country, selection.region]);
   // طيّ الورقة يحرّك الكاميرا قليلاً لإعادة التوسيط — بلا إخفاء البطاقة ولا رحلةٍ كاملة.
@@ -642,7 +642,7 @@ export function WorldMap({
   const swipe = useRef<{ x: number; y: number } | null>(null);
   // آخر رقمٍ عُرض في البطاقة: الرقم التالي يتدحرج منه.
   const countMemo = useRef(0);
-  // الزائر حرّك الخارطة بيده: الإطار صار إطاره لا إطار الهدف، ويظهر «إعادة الضبط».
+  // الزائر حرّك الخريطة بيده: الإطار صار إطاره لا إطار الهدف، ويظهر «إعادة الضبط».
   const [manual, setManual] = useState(false);
   // الإطار ابتعد عن إطار الهدف (بيد الزائر أو بأزرار التكبير): تصير البوصلة «عودة».
   const [drifted, setDrifted] = useState(false);
@@ -848,7 +848,7 @@ export function WorldMap({
     cancelAnimationFrame(inertia.current);
     const at = localPoint(e);
     samples.current = [{ ...at, t: performance.now() }];
-    // تموّجٌ فوق ما يُلمس من الخارطة (دولة، منطقة، نقطة) — لا فوق الفراغ.
+    // تموّجٌ فوق ما يُلمس من الخريطة (دولة، منطقة، نقطة) — لا فوق الفراغ.
     if ((e.target as Element).closest?.("[data-country],[data-region],[data-at]")) {
       const id = performance.now();
       setRipples((r) => [...r.slice(-3), { id, x: at.x, y: at.y }]);
@@ -866,7 +866,7 @@ export function WorldMap({
     if (!g || !pointers.current.has(e.pointerId) || !view.current) return;
     pointers.current.set(e.pointerId, localPoint(e));
     const pts = [...pointers.current.values()];
-    // إصبعٌ واحد على الجوال يمرّر الصفحة لا الخارطة — إلى أن يقرص الزائر
+    // إصبعٌ واحد على الجوال يمرّر الصفحة لا الخريطة — إلى أن يقرص الزائر
     // (أو يضغط «إعادة الضبط» لاحقاً). وإلا صار كل تمريرٍ سحباً يقفل الصفحة.
     if (e.pointerType === "touch" && pts.length < 2 && !manual) {
       g.center = pts[0]!;
@@ -878,7 +878,7 @@ export function WorldMap({
     // عتبة ٦ بكسل: دونها نقرة، فوقها سحب — وبعدها لا تُحسب نقرة.
     if (!g.moved && Math.hypot(dx, dy) < 6 && Math.abs(now.dist - g.dist) < 6) return;
     if (!g.moved) {
-      // صار سحباً: الآن يُلتقط المؤشّر فلا يضيع إن خرج عن الخارطة، وتُلغى النقرة.
+      // صار سحباً: الآن يُلتقط المؤشّر فلا يضيع إن خرج عن الخريطة، وتُلغى النقرة.
       for (const id of pointers.current.keys()) {
         try {
           wrapRef.current?.setPointerCapture(id);
@@ -1095,9 +1095,9 @@ export function WorldMap({
     [onSelect, selection.country],
   );
 
-  /* ── لوحة المفاتيح على الخارطة نفسها ──
+  /* ── لوحة المفاتيح على الخريطة نفسها ──
    * الأسهم تنتقل إلى أقرب دولةٍ (أو منطقة) في اتّجاهها بالمراكز المسقَطة،
-   * وEnter/Space تدخل. فتكون الخارطة هي المسار لا القائمة البديلة وحدها. */
+   * وEnter/Space تدخل. فتكون الخريطة هي المسار لا القائمة البديلة وحدها. */
   const focusShape = (attr: "country" | "region", id: string) => {
     svgRef.current?.querySelector<SVGPathElement>(`[data-${attr}="${CSS.escape(id)}"]`)?.focus();
   };
@@ -1230,7 +1230,7 @@ export function WorldMap({
     return [...rs, ...cs];
   }, [world, activeSet, net, stats, locale, country, regions, pickCountry, pickRegion]);
 
-  // + و− و0 على الخارطة (لا في حقلٍ يُكتب فيه).
+  // + و− و0 على الخريطة (لا في حقلٍ يُكتب فيه).
   const onMapKey = (e: React.KeyboardEvent) => {
     if (bare || (e.target as HTMLElement).closest("input,textarea")) return;
     if (e.key === "+" || e.key === "=") zoomBy(1.8);
@@ -1270,7 +1270,7 @@ export function WorldMap({
       <div
         ref={wrapRef}
         className="absolute inset-0"
-        // إصبعٌ واحد يمرّر الصفحة عمودياً ما لم يحرّك الزائر الخارطة؛ بعدها الخارطة له كلّها.
+        // إصبعٌ واحد يمرّر الصفحة عمودياً ما لم يحرّك الزائر الخريطة؛ بعدها الخريطة له كلّها.
         style={{ touchAction: bare ? "auto" : manual ? "none" : "pan-y" }}
         onPointerMove={(e) => {
           onPointerMoveGesture(e);
@@ -1354,7 +1354,7 @@ export function WorldMap({
                 layer={layer}
               />
             )}
-            {/* حدّ الدولة المختارة يُرسم بخطٍّ مضيء — تنفصل عن الخارطة كأنها رُفعت. */}
+            {/* حدّ الدولة المختارة يُرسم بخطٍّ مضيء — تنفصل عن الخريطة كأنها رُفعت. */}
             {country && settled && (
               <path
                 key={`outline-${country.c}`}
@@ -1404,7 +1404,7 @@ export function WorldMap({
           </svg>
         )}
 
-        {/* وسوم المناطق على الخارطة بعد أن تستقرّ: الاسم والعدد، وتُضغط. */}
+        {/* وسوم المناطق على الخريطة بعد أن تستقرّ: الاسم والعدد، وتُضغط. */}
         {!bare && !net && country && !region && settled && view.current && (
           <div className="pointer-events-none absolute inset-0">
             {placeLabels(rankedRegions, view.current, size).map(({ r, s: rs, x, y }, i) => {
@@ -1759,7 +1759,7 @@ export function WorldMap({
                 collapsed ? "max-h-36" : "max-h-[42dvh] md:max-h-none",
               )}
             >
-              {/* مقبض الورقة (هاتف): اضغط أو اسحب لأسفل لطيّها فترى الخارطة. */}
+              {/* مقبض الورقة (هاتف): اضغط أو اسحب لأسفل لطيّها فترى الخريطة. */}
               <button
                 type="button"
                 aria-expanded={!collapsed}
@@ -1959,7 +1959,7 @@ export function WorldMap({
                           <Link
                             to="/orphans"
                             search={{
-                              // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخارطة.
+                              // قيم القاعدة نفسها — فالدليل يجد ما وجدته الخريطة.
                               country: cStat?.value ?? country.c,
                               ...(region && rStat ? { region: rStat.value } : {}),
                               funding: "open",
@@ -2003,7 +2003,7 @@ export function WorldMap({
                   platform
                 );
               })()}
-              {/* الخارطة والقاعة منظرٌ واحد: الدولة نفسها في قاعة الأثر ثلاثية الأبعاد. */}
+              {/* الخريطة والقاعة منظرٌ واحد: الدولة نفسها في قاعة الأثر ثلاثية الأبعاد. */}
               {!bare && (
                 <a
                   href={`/hall?c=${country.c}`}

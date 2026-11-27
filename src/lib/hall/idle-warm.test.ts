@@ -7,5 +7,8 @@ describe("hall background warm-up", () => {
   it("skips when the visitor saves data", () =>
     expect(shouldWarm({ saveData: true }, true)).toBe(false));
   it("skips on 2g", () => expect(shouldWarm({ effectiveType: "slow-2g" }, true)).toBe(false));
+  it("skips on 3g", () => expect(shouldWarm({ effectiveType: "3g" }, true)).toBe(false));
+  it("skips on phone-sized screens", () =>
+    expect(shouldWarm({ effectiveType: "4g" }, true, true)).toBe(false));
   it("skips without WebGL 2", () => expect(shouldWarm(undefined, false)).toBe(false));
 });

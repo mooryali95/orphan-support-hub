@@ -1,0 +1,12 @@
+# Static files without a content hash (served by Cloudflare assets, not the worker).
+# Nitro appends its own rules (/assets/* immutable for a year) after these.
+/geo/*
+  cache-control: public, max-age=86400, stale-while-revalidate=604800
+/brand/*
+  cache-control: public, max-age=86400, stale-while-revalidate=604800
+/favicon.svg
+  cache-control: public, max-age=86400, stale-while-revalidate=604800
+/favicon.png
+  cache-control: public, max-age=86400, stale-while-revalidate=604800
+/robots.txt
+  cache-control: public, max-age=3600

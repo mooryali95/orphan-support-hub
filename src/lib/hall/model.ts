@@ -119,7 +119,7 @@ export const byCode = (code: string) => COUNTRIES.find((c) => c.code === code);
 const RESEARCH_ST = new Map(COUNTRIES.map((c) => [c.code, c.st] as const));
 
 /**
- * يطبّق سجلّ المكاتب على دول القاعدة بالقاعدة نفسها التي تطبّقها الخارطة
+ * يطبّق سجلّ المكاتب على دول القاعدة بالقاعدة نفسها التي تطبّقها الخريطة
  * (`withRegister` في `@/lib/office-presence`). يُستدعى قبل تركيب المشهد؛ ويعيد الأصل أوّلاً،
  * فلا يتراكم سجلٌّ على سجلّ.
  */

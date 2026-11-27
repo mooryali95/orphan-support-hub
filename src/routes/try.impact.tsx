@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { ChildStanding } from "@/components/impact/ChildStanding";
 import { ImpactMoment } from "@/components/impact/ImpactMoment";
+import { MyChildrenNow } from "@/components/impact/MyChildrenNow";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { ActionStrip } from "@/components/sponsorship/ActionStrip";
 import { ChildCards, NoSponsorships } from "@/components/sponsorship/ChildCard";
@@ -166,6 +167,9 @@ function TryImpact() {
       <h1 className="text-4xl leading-[1.3] font-bold md:text-5xl">{c.title}</h1>
       <p className="mt-3 text-base leading-8 text-muted-foreground">{c.lead}</p>
 
+      {/* the child is the hero: who you care for, how their month stands, what changed */}
+      {list.length > 0 && <MyChildrenNow list={list} sample className="mt-8" />}
+
       <TryKindSwitch kinds={KINDS} value={tab} onChange={setPicked} counts={counts} />
 
       {tab === "monthly" ? (
@@ -179,6 +183,50 @@ function TryImpact() {
               {gifts.map((g) => ({ id: g.childId, name: local(g.childId)?.name ?? "" }))}
             </TryFollowUpStrip>
           )}
+
+          <section aria-labelledby="try-gifts" className="mt-10">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <h2 id="try-gifts" className="text-xl font-bold">
+                {c.gifts}
+              </h2>
+              {gifts && gifts.length > 0 && (
+                <Link
+                  to={trialRoute(`/try/statements/${new Date().getUTCFullYear()}`)}
+                  className="inline-flex min-h-11 items-center text-sm font-semibold text-primary"
+                >
+                  {c.statement}
+                </Link>
+              )}
+            </div>
+            {/* the real «أثري» blocks, on the session's gifts through the data port */}
+            {ready && (
+              <div className="mt-4 empty:hidden">
+                <ActionStrip list={list} onPay={onPay} paying={null} />
+              </div>
+            )}
+            <div id="sponsorship-cards" className="mt-4 scroll-mt-24">
+              {!ready ? null : list.length === 0 ? (
+                <NoSponsorships browseTo="/try" />
+              ) : (
+                <ChildCards list={list} />
+              )}
+            </div>
+            {(gifts ?? []).some((g) => g.dedication) && (
+              <ul className="mt-4 space-y-2">
+                {(gifts ?? [])
+                  .filter((g) => g.dedication)
+                  .map((g) => (
+                    <li key={g.id} className="rounded-xl bg-card px-4 py-3 text-sm">
+                      <span className="font-bold">{local(g.childId)?.name}</span>
+                      <span className="block text-xs font-bold text-bridge-ink">
+                        {c.dedication(g.dedication!)}
+                      </span>
+                      <TryGiftFollowUp childId={g.childId} />
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </section>
 
           <div>
             <MyImpactHero
@@ -205,50 +253,6 @@ function TryImpact() {
               />
             </>
           )}
-
-          <section aria-labelledby="try-gifts" className="mt-10">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-              <h2 id="try-gifts" className="text-xl font-bold">
-                {c.gifts}
-              </h2>
-              {gifts && gifts.length > 0 && (
-                <Link
-                  to={trialRoute(`/try/statements/${new Date().getUTCFullYear()}`)}
-                  className="inline-flex min-h-11 items-center text-sm font-semibold text-primary"
-                >
-                  {c.statement}
-                </Link>
-              )}
-            </div>
-            {/* the real «أثري» blocks, on the session's gifts through the data port */}
-            {ready && (
-              <div className="mt-4 empty:hidden">
-                <ActionStrip list={list} onPay={onPay} paying={null} />
-              </div>
-            )}
-            <div className="mt-4">
-              {!ready ? null : list.length === 0 ? (
-                <NoSponsorships browseTo="/try" />
-              ) : (
-                <ChildCards list={list} />
-              )}
-            </div>
-            {(gifts ?? []).some((g) => g.dedication) && (
-              <ul className="mt-4 space-y-2">
-                {(gifts ?? [])
-                  .filter((g) => g.dedication)
-                  .map((g) => (
-                    <li key={g.id} className="rounded-xl bg-card px-4 py-3 text-sm">
-                      <span className="font-bold">{local(g.childId)?.name}</span>
-                      <span className="block text-xs font-bold text-bridge-ink">
-                        {c.dedication(g.dedication!)}
-                      </span>
-                      <TryGiftFollowUp childId={g.childId} />
-                    </li>
-                  ))}
-              </ul>
-            )}
-          </section>
 
           {gifts && gifts.length > 0 && (
             <TryShareCard {...(gifts[0]?.dedication ? { dedication: gifts[0].dedication } : {})} />

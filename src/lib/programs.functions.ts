@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { cachedPublic } from "@/lib/public-cache";
 import { createClient } from "@supabase/supabase-js";
 import { withPhase7, type ProgramRow } from "@/integrations/supabase/types.extra";
 
@@ -38,7 +39,12 @@ export type PublicProgram = Pick<
   | "duration_months"
 > & { deliverables: string[]; kind: "service" | "qualification" };
 
-export const listPrograms = createServerFn({ method: "GET" }).handler(async () => {
+// الكتالوج عامّ (المفتاح العامّ) ونادر التغيّر: خمس دقائق في ذاكرة العامل.
+export const listPrograms = createServerFn({ method: "GET" }).handler(() =>
+  cachedPublic("programs", 300_000, loadPrograms, (v) => !v.error),
+);
+
+async function loadPrograms() {
   const supabase = withPhase7(publicClient());
   const { data, error } = await supabase
     .from("programs")
@@ -54,4 +60,4 @@ export const listPrograms = createServerFn({ method: "GET" }).handler(async () =
   // الكتالوج زينة الصفحة لا شرط عملها: خطأٌ فيه يُخفي القسم ولا يُسقط الصفحة.
   if (error) return { programs: [] as PublicProgram[], error: error.message };
   return { programs: (data ?? []) as PublicProgram[], error: null as string | null };
-});
+}

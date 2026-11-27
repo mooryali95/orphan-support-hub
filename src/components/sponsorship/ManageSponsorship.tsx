@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { CircleSlash, Loader2, Pause, Play, SlidersHorizontal } from "lucide-react";
 
@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
   ar: {
     manage: "إدارة الكفالة",
-    back: "→ العودة إلى أثري",
+    back: "العودة إلى أثري",
     title: (name: string) => `كفالة ${name}`,
     lead: "كلّ ما يمكنك تغييره في كفالتك في مكانٍ واحد. لا يحدث شيءٌ قبل أن تؤكّده، وكلّ خطوةٍ تقول ما سيحدث قبل الضغط.",
     monthly: (amount: string) => `${amount} شهرياً`,
@@ -88,7 +88,7 @@ const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
   },
   en: {
     manage: "Manage sponsorship",
-    back: "← Back to my impact",
+    back: "Back to my impact",
     title: (name: string) => `Sponsoring ${name}`,
     lead: "Everything you can change in your sponsorship, in one place. Nothing happens until you confirm, and each step says what will happen before you press.",
     monthly: (amount: string) => `${amount} monthly`,
@@ -170,7 +170,7 @@ export function ManageSponsorshipLink({ s }: { s: MySponsorship }) {
   const demo = useDemo();
   if (sponsorshipActions(s).ended) return null;
   return (
-    <Button asChild size="sm" variant="outline">
+    <Button asChild size="sm" variant="outline" className="min-h-11">
       <Link
         // في التجربة شاشة الإدارة نفسها تحت «جرّب»، على كفالات الجلسة.
         {...(demo
@@ -236,7 +236,14 @@ function ManageBody({ s }: { s: MySponsorship }) {
   const qc = useQueryClient();
   const demo = useDemo();
   const listKey = useDataKey(["my-sponsorships"]);
-  const [mode, setMode] = useState<Mode>(null);
+  const [mode, setModeState] = useState<Mode>(null);
+  // الزرّ الذي فتح الحوار: يعود إليه التركيز بعد الإغلاق، فلا يبدأ مستخدم لوحة المفاتيح من أعلى الصفحة.
+  const opener = useRef<HTMLElement | null>(null);
+  const setMode = (m: Mode) => {
+    if (m !== null && mode === null && document.activeElement instanceof HTMLElement)
+      opener.current = document.activeElement;
+    setModeState(m);
+  };
   const name = s.orphan?.display_name ?? "—";
   const a = sponsorshipActions(s);
   const money = formatMoney(s.amount, s.currency, locale);
@@ -299,7 +306,7 @@ function ManageBody({ s }: { s: MySponsorship }) {
             </Link>
           </Button>
           {s.orphan && (
-            <Button asChild size="sm" variant="ghost">
+            <Button asChild size="sm" variant="ghost" className="min-h-11">
               <Link
                 {...(demo
                   ? { to: trialRoute(`/try/${encodeURIComponent(s.orphan.id)}`) }
@@ -369,7 +376,16 @@ function ManageBody({ s }: { s: MySponsorship }) {
       )}
 
       <Dialog open={mode !== null} onOpenChange={(v) => !v && setMode(null)}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent
+          className="sm:max-w-lg"
+          onCloseAutoFocus={(e) => {
+            const el = opener.current;
+            if (el?.isConnected) {
+              e.preventDefault();
+              el.focus();
+            }
+          }}
+        >
           {mode === "cancel" && (
             <CancelForm
               s={s}

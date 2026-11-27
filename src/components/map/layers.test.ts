@@ -27,7 +27,7 @@ const small: GeoCount = {
   delivered: null,
 };
 
-describe("طبقات الخارطة", () => {
+describe("طبقات الخريطة", () => {
   it("الرابط: الطبقات المعروفة فقط", () => {
     expect(parseLayer("gap")).toBe("gap");
     expect(parseLayer("ops")).toBeUndefined();

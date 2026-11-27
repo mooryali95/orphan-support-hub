@@ -7,21 +7,21 @@ const AL = (
   JSON.parse(readFileSync("public/geo/admin1/AL.json", "utf8")) as { regions: RegionShape[] }
 ).regions;
 
-describe("مناطق الإدخال من ملفّ الخارطة نفسه (UX-10)", () => {
-  it("القائمة تحمل اسم كلّ منطقةٍ كما ترسمه الخارطة", () => {
+describe("مناطق الإدخال من ملفّ الخريطة نفسه (UX-10)", () => {
+  it("القائمة تحمل اسم كلّ منطقةٍ كما ترسمه الخريطة", () => {
     const opts = regionOptions(AL);
     expect(opts).toHaveLength(AL.length);
     expect(opts.map((o) => o.value)).toContain("إشقودرة");
     expect(opts.find((o) => o.value === "تيرانا")?.label).toBe("تيرانا (Tirana)");
   });
 
-  it("التهجئة الشائعة «شكودر» تُردّ إلى منطقة الخارطة ولا تسقط", () => {
+  it("التهجئة الشائعة «شكودر» تُردّ إلى منطقة الخريطة ولا تسقط", () => {
     expect(resolveRegion("شكودر", AL)).toBe("إشقودرة");
     expect(resolveRegion("Shkodra", AL)).toBe("إشقودرة");
     expect(resolveRegion("دوريس", AL)).toBe("دوريس");
   });
 
-  it("ما لا تعرفه الخارطة لا يُخمَّن", () => {
+  it("ما لا تعرفه الخريطة لا يُخمَّن", () => {
     expect(resolveRegion("مكانٌ ما", AL)).toBeNull();
     expect(resolveRegion("", AL)).toBeNull();
   });
