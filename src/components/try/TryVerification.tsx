@@ -2,13 +2,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { FlaskConical } from "lucide-react";
 import { lazy, Suspense, useState, type ReactNode } from "react";
 
+import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
 import { Busy } from "@/components/admin/data/shared";
-import { SourcesPanel } from "@/components/admin/data/SourcesPanel";
+import type { Tab as WorkTab } from "@/components/admin/data/sources/shared";
+import { TodayQueue, type WorkTab as TodayTab } from "@/components/admin/today/TodayQueue";
+import { useUrlFilters } from "@/components/admin/today/useUrlFilters";
 import { useDemo } from "@/lib/demo-mode";
 import { type CountryRole } from "@/lib/golden-record";
 import { countryName } from "@/lib/countries";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { setVerificationActor, verificationCountries } from "@/lib/try-verification";
+import "@/lib/try-today";
 import { cn } from "@/lib/utils";
 
 // مركز الثقة نفسه في الإدارة، يُحمَّل حين يُفتح لسانه.
@@ -73,19 +77,55 @@ function DemoOnly({ children }: { children: ReactNode }) {
   return useDemo() ? <>{children}</> : <Busy />;
 }
 
-/** «مصادر التحقق» بعين الإدارة: الدول الخمس، والحسم، والرفع، ووضع المكتب، والفرق. */
+/** «اليوم» بعين الإدارة: الصندوق وطوابير الدول الخمس، وما رفعه الزائر ينتظر غيره. */
+export function TryAdminToday({
+  openCountry,
+  openTrust,
+}: {
+  openCountry: (code: string, tab: TodayTab) => void;
+  openTrust: () => void;
+}) {
+  const access = setVerificationActor(null);
+  const [filters, setFilters] = useUrlFilters();
+  return (
+    <DemoOnly>
+      <TrySampleNotice />
+      <TodayQueue
+        access={access}
+        scope="admin"
+        filters={filters}
+        setFilters={setFilters}
+        onOpenCountry={openCountry}
+        onOpenTrust={openTrust}
+      />
+    </DemoOnly>
+  );
+}
+
+/** درج الدول بعين الإدارة: الدول الخمس، والحسم، والرفع، ووضع المكتب، والفرق. */
 export function TryAdminSources({
   country,
   setCountry,
+  tab,
+  setTab,
 }: {
   country: string;
   setCountry: (code: string) => void;
+  tab?: WorkTab | undefined;
+  setTab?: ((t: WorkTab) => void) | undefined;
 }) {
   const access = setVerificationActor(null);
   return (
     <DemoOnly>
       <TrySampleNotice />
-      <SourcesPanel country={country} setCountry={setCountry} access={access} />
+      <CountryWorkspace
+        scope="admin"
+        access={access}
+        country={country}
+        setCountry={setCountry}
+        tab={tab}
+        setTab={setTab}
+      />
     </DemoOnly>
   );
 }
@@ -113,6 +153,8 @@ export function TryCountryTeam() {
   const countries = verificationCountries();
   const [country, setCountry] = useState(countries[0]?.code ?? "LK");
   const [role, setRole] = useState<CountryRole>("supervisor");
+  const [tab, setTab] = useState<WorkTab | undefined>(undefined);
+  const [filters, setFilters] = useUrlFilters();
   const access = setVerificationActor({ country, role });
   const change = (next: { country?: string; role?: CountryRole }) => {
     if (next.country) setCountry(next.country);
@@ -166,12 +208,30 @@ export function TryCountryTeam() {
         </div>
         <p className="text-muted-foreground mt-3 text-sm leading-7">{t.roleHint[role]}</p>
       </div>
-      <SourcesPanel
-        key={`${country}:${role}`}
-        country={country}
-        setCountry={() => {}}
-        access={access}
-      />
+      <div key={`${country}:${role}`} className="space-y-12">
+        <TodayQueue
+          access={access}
+          scope="country"
+          filters={filters}
+          setFilters={setFilters}
+          onOpenCountry={(_code, t) => {
+            setTab(t);
+            requestAnimationFrame(() =>
+              document
+                .getElementById("country-work-title")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+            );
+          }}
+        />
+        <CountryWorkspace
+          scope="country"
+          access={access}
+          country={country}
+          setCountry={() => {}}
+          tab={tab}
+          setTab={setTab}
+        />
+      </div>
     </DemoOnly>
   );
 }
