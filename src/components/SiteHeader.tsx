@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sponsorEntry } from "@/config/platform";
 import { Button } from "@/components/ui/button";
 import { KahataynLockup } from "@/components/brand/KahataynMark";
@@ -45,11 +45,28 @@ export function SiteHeader() {
   const c = useCopy(COPY);
   const brand = brandFor(useLocale());
   const NAV = ROUTES.map((to, i) => ({ to, label: c.nav[i] }));
+  // ارتفاع الرأس الفعلي (يزيد بشريط الدفع المنتظر أو القائمة المفتوحة) في `--site-header-h`،
+  // فيلتصق ما تحته (شريط التجربة) أسفله تماماً ولا ينزلق تحته عند التمرير.
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const root = document.documentElement;
+    const set = () => root.style.setProperty("--site-header-h", `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--site-header-h");
+    };
+  }, []);
 
   return (
     <header
-      className="sticky top-0 z-50 bg-background/85 backdrop-blur"
-      style={{ viewTransitionName: "site-header" }}
+      ref={ref}
+      className="sticky z-50 bg-background/85 backdrop-blur"
+      style={{ viewTransitionName: "site-header", top: "var(--demo-bar-h, 0px)" }}
     >
       {/* رابط التخطّي أول ما يبلغه التبويب: يقفز بمستخدم لوحة المفاتيح فوق التنقّل. */}
       <a
