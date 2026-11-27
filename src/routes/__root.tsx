@@ -10,6 +10,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { warmHallWhenIdle } from "@/lib/hall/idle-warm";
+import { TRIAL_ENABLED } from "@/lib/trial-gate";
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -265,13 +266,21 @@ function RootShell({ children }: { children: ReactNode }) {
 const DEMO_KEY = "platform-demo-mode";
 
 // شريط التجربة في قطعته: لا يدخل حزمة أيّ صفحة إلا لزائرٍ في الوضع التجريبي.
-const DemoModeBar = lazy(() => import("@/components/DemoModeBar"));
+const loadDemoBar = () => import("@/components/DemoModeBar");
+const DemoModeBar = lazy(loadDemoBar);
+// على الخادم تُحمَّل القطعة مع العامل، فيُرسم الشريط في أوّل HTML لمسارات التجربة لا بعده.
+if (import.meta.env.SSR && TRIAL_ENABLED) void loadDemoBar();
 
 /**
  * يقرأ جلسة التجربة بعد التركيب (المفتاح والحدث نفسهما في `@/lib/demo-mode`)، دون استيراد
  * الوحدة: لا يدخل حزمة الدخول من الوضع التجريبي إلا هذا السطر.
+ *
+ * مسارات التجربة (`/try…`) تدخل الوضع التجريبي دائماً، فيُرسم الشريط فيها من الخادم
+ * ويُحفظ مكانه قبل الترطيب؛ لولا ذلك لظهر بعده فدفع الصفحة إلى الأسفل (CLS نحو 0.16 على 360px).
  */
 function DemoBarSlot() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const onTry = TRIAL_ENABLED && (pathname === "/try" || pathname.startsWith("/try/"));
   const [demo, setDemo] = useState(false);
   useEffect(() => {
     const read = () => {
@@ -285,9 +294,9 @@ function DemoBarSlot() {
     window.addEventListener(DEMO_KEY, read);
     return () => window.removeEventListener(DEMO_KEY, read);
   }, []);
-  return demo ? (
+  return demo || onTry ? (
     <Suspense fallback={null}>
-      <DemoModeBar />
+      <DemoModeBar force={onTry} />
     </Suspense>
   ) : null;
 }

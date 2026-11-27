@@ -106,6 +106,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     sourceRole: "المصدر",
     file: "الملف (CSV)",
     template: "نزّل القالب",
+    sampleSheet: "جرّب بملفٍّ نموذجي",
     preview: (records: number, fields: number) => `${records} سجلّ جاهز، بـ${fields} حقل.`,
     ignored: (cols: string) => `أعمدةٌ تُتجاهل: ${cols}`,
     missingRef: (lines: string) => `أسطرٌ بلا معرّف لن تُرسل: ${lines}`,
@@ -430,6 +431,7 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
     sourceRole: "Source",
     file: "File (CSV)",
     template: "Download template",
+    sampleSheet: "Try a sample file",
     preview: (records: number, fields: number) =>
       `${records} records ready, with ${fields} fields.`,
     ignored: (cols: string) => `Ignored columns: ${cols}`,

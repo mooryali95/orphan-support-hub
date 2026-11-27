@@ -3,6 +3,7 @@ import { Download, FileUp, Upload as UploadIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useDataFn, useDataKey } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
 import { Button } from "@/components/ui/button";
 import {
   goldenTemplate,
@@ -21,6 +22,9 @@ import { WORK_COPY } from "../work-copy";
 import { useWorkErr } from "../WorkTools";
 import { Step } from "./shared";
 
+/** the real platform ships no sample sheet: the trial registers its own under the same name */
+const noSampleSheet = async (_input?: unknown): Promise<string | null> => null;
+
 export function UploadCard({ row }: { row: CountryHealth }) {
   const c = useCopy(SOURCES_COPY);
   const w = useCopy(WORK_COPY);
@@ -28,6 +32,9 @@ export function UploadCard({ row }: { row: CountryHealth }) {
   const qc = useQueryClient();
   const dk = useDataKey([]);
   const send = useDataFn("golden.import", importGolden);
+  // only the trial registers a ready sample; the real platform has none, so the button never shows there
+  const demo = useDemo();
+  const sample = useDataFn("golden.sampleSheet", noSampleSheet);
   const [role, setRole] = useState<SourceRole>("wamy");
   const [text, setText] = useState("");
   const [fileName, setFileName] = useState("");
@@ -74,6 +81,18 @@ export function UploadCard({ row }: { row: CountryHealth }) {
     const a = document.createElement("a");
     a.href = url;
     a.download = `template-${role}-${row.code}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  async function loadSample() {
+    const csv: string | null = await sample({ data: { country: row.code, role } });
+    if (!csv) return;
+    setFileName(`sample-${role}-${row.code}.csv`);
+    setText(csv);
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sample-${role}-${row.code}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -125,6 +144,19 @@ export function UploadCard({ row }: { row: CountryHealth }) {
             <Download className="size-4" aria-hidden="true" />
             {c.template}
           </Button>
+          {demo && (
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-1 min-h-11 sm:ms-3"
+              data-sample-sheet
+              disabled={officeBlocked}
+              onClick={() => void loadSample()}
+            >
+              <FileUp className="size-4" aria-hidden="true" />
+              {c.sampleSheet}
+            </Button>
+          )}
         </Step>
 
         <Step n="2" title={w.stepFile} done={!!sheet}>

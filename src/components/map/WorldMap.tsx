@@ -1529,7 +1529,7 @@ export function WorldMap({
                     type="button"
                     onClick={() => onSelect({ country: null, region: null })}
                     className={cn(
-                      "inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 transition-colors",
+                      "inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 transition-colors max-md:min-h-11",
                       !country ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
                     )}
                   >
@@ -1546,7 +1546,7 @@ export function WorldMap({
                       type="button"
                       onClick={() => onSelect({ country: country.c, region: null })}
                       className={cn(
-                        "min-h-9 rounded-full px-3 transition-colors",
+                        "min-h-9 rounded-full px-3 transition-colors max-md:min-h-11",
                         !region ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
                       )}
                     >
@@ -1653,7 +1653,7 @@ export function WorldMap({
                   aria-pressed={touring}
                   onClick={() => setTouring((t) => !t)}
                   className={cn(
-                    "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm shadow-sm backdrop-blur transition-[background-color,color,scale] active:scale-[0.97]",
+                    "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm shadow-sm max-md:min-h-11 backdrop-blur transition-[background-color,color,scale] active:scale-[0.97]",
                     touring ? "bg-bridge text-bridge-foreground" : "bg-card/85 hover:bg-card",
                   )}
                 >
@@ -1802,7 +1802,7 @@ export function WorldMap({
                         aria-label={c$.prev}
                         title={c$.prev}
                         onClick={() => stepPlace(-1)}
-                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
+                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90 max-md:size-11"
                       >
                         <ChevronRight className="size-4 ltr:-scale-x-100" aria-hidden="true" />
                       </button>
@@ -1811,7 +1811,7 @@ export function WorldMap({
                         aria-label={c$.next}
                         title={c$.next}
                         onClick={() => stepPlace(1)}
-                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
+                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90 max-md:size-11"
                       >
                         <ChevronLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
                       </button>
@@ -1827,7 +1827,7 @@ export function WorldMap({
                           : { country: null, region: null },
                       )
                     }
-                    className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
+                    className="grid size-9 shrink-0 place-items-center rounded-full max-md:size-11 text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
                   >
                     <X className="size-4" aria-hidden="true" />
                   </button>
@@ -2037,7 +2037,7 @@ export function WorldMap({
                   type="button"
                   aria-label={c$.closeList}
                   onClick={() => setListOpen(false)}
-                  className="grid size-9 place-items-center rounded-full hover:bg-secondary"
+                  className="grid size-9 place-items-center rounded-full hover:bg-secondary max-md:size-11"
                 >
                   <X className="size-4" aria-hidden="true" />
                 </button>

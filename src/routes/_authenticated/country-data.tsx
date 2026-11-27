@@ -20,11 +20,17 @@ const COPY = defineCopy("routes/country-data", {
     title: "بيانات الدولة",
     lead: "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
     none: "حسابك ليس في فريق أي دولة بعد. يضيفك مشرف الدولة أو الإدارة من «فريق الدولة».",
+    all: "كل البنود بحسب الدولة",
+    allNote:
+      "«اليوم» أعلاه تجمع ما ينتظرك من هذه البنود نفسها؛ وهنا ألسنتها كاملةً لكل دولة، مع الرفع والربط.",
   },
   en: {
     title: "Country data",
     lead: "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
     none: "Your account isn't on any country team yet. The country supervisor or the admin team adds you under Country team.",
+    all: "All items by country",
+    allNote:
+      "Today, above, gathers what is waiting for you from these same items; here are their full tabs for each country, with uploads and linking.",
   },
 });
 
@@ -46,6 +52,8 @@ function CountryDataPage() {
   const [country, setCountry] = useState("");
   const [tab, setTab] = useState<WorkTab | undefined>(undefined);
   const [fileId, setFileId] = useState<string | null>(null);
+  // the country tabs show the same items as Today: they stay folded until asked for
+  const [allOpen, setAllOpen] = useState(false);
   const [filters, setFilters] = useUrlFilters();
   const res = access.data;
 
@@ -77,6 +85,7 @@ function CountryDataPage() {
             onOpenCountry={(code, t) => {
               setCountry(code);
               setTab(t);
+              setAllOpen(true);
               requestAnimationFrame(() =>
                 document
                   .getElementById("country-work-title")
@@ -84,14 +93,28 @@ function CountryDataPage() {
               );
             }}
           />
-          <CountryWorkspace
-            scope="country"
-            access={res.data}
-            country={country}
-            setCountry={setCountry}
-            tab={tab}
-            setTab={setTab}
-          />
+          <details
+            open={allOpen}
+            onToggle={(e) => setAllOpen(e.currentTarget.open)}
+            className="group rounded-2xl border border-border"
+          >
+            <summary className="flex min-h-11 cursor-pointer items-center px-4 py-3 font-bold">
+              {c.all}
+            </summary>
+            <div className="space-y-4 border-t border-border p-4">
+              <p className="text-sm leading-7 text-muted-foreground">{c.allNote}</p>
+              {allOpen && (
+                <CountryWorkspace
+                  scope="country"
+                  access={res.data}
+                  country={country}
+                  setCountry={setCountry}
+                  tab={tab}
+                  setTab={setTab}
+                />
+              )}
+            </div>
+          </details>
         </div>
       )}
     </DashboardShell>

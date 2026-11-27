@@ -55,7 +55,7 @@ export function MapSearch({
         type="button"
         onClick={() => setOpen(true)}
         aria-keyshortcuts="/"
-        className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full bg-card/85 px-3 text-sm shadow-sm backdrop-blur transition-[background-color,scale] hover:bg-card active:scale-[0.97]"
+        className="inline-flex min-h-9 shrink-0 items-center max-md:min-h-11 gap-2 rounded-full bg-card/85 px-3 text-sm shadow-sm backdrop-blur transition-[background-color,scale] hover:bg-card active:scale-[0.97]"
       >
         <Search className="size-4" aria-hidden="true" />
         <span className="max-sm:sr-only">{copy.open}</span>
@@ -68,7 +68,7 @@ export function MapSearch({
 
   return (
     <div className="map-search relative w-full md:w-80">
-      <div className="flex min-h-10 items-center gap-2 rounded-full bg-card/95 ps-3 pe-1 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-8px_rgb(0_0_0/0.25)] backdrop-blur">
+      <div className="flex min-h-10 items-center gap-2 rounded-full max-md:min-h-11 bg-card/95 ps-3 pe-1 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-8px_rgb(0_0_0/0.25)] backdrop-blur">
         <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         <input
           ref={input}
@@ -130,7 +130,7 @@ export function MapSearch({
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => choose(it)}
               className={cn(
-                "flex min-h-10 cursor-pointer items-center gap-2.5 rounded-xl px-3 text-sm transition-colors",
+                "flex min-h-10 cursor-pointer items-center max-md:min-h-11 gap-2.5 rounded-xl px-3 text-sm transition-colors",
                 i === active && "bg-secondary",
               )}
             >

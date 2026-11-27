@@ -224,6 +224,12 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
             {sp.started_at && <> · {c.since(formatDate(sp.started_at, locale))}</>}
           </p>
         </div>
+        {/* the one action a sponsor comes back for sits beside the status, not after the timeline */}
+        {s && (
+          <div className="shrink-0 sm:self-start">
+            <ManageSponsorshipLink s={s} />
+          </div>
+        )}
       </header>
 
       {verification?.level === "under_review" && (
@@ -326,7 +332,6 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
             {c.childFile}
           </Link>
         </Button>
-        {s && <ManageSponsorshipLink s={s} />}
       </nav>
     </div>
   );
