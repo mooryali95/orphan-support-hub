@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { OfficesMap } from "@/components/offices/OfficesMap";
 import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { brandFor, pageTitle } from "@/config/brand";
-import { copyOf, defineCopy, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const COPY = defineCopy("routes/organizations", {
   ar: {
@@ -59,6 +59,7 @@ export const Route = createFileRoute("/organizations")({
 function OrganizationsPage() {
   const { data } = useSuspenseQuery(orgsQuery);
   const c = useCopy(COPY);
+  const locale = useLocale();
 
   return (
     <div className="min-h-dvh">
@@ -87,7 +88,7 @@ function OrganizationsPage() {
                     <div>
                       <h2 className="font-bold">{org.name}</h2>
                       <p className="text-xs text-muted-foreground">
-                        {[org.city, org.region].filter(Boolean).join(" — ")}
+                        {[org.city, org.region].filter(Boolean).join(locale === "ar" ? "، " : ", ")}
                       </p>
                     </div>
                   </div>

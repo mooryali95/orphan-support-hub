@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5148,
+ "count": 5152,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -28128,11 +28128,25 @@
    "hash": "597b00c638bc",
    "file": "src/lib/workspaces.functions.ts"
   },
+  "routes/__root/error.browse": {
+   "en": "Browse children",
+   "ar": "تصفّح الأطفال",
+   "kind": "text",
+   "hash": "43a7ea2a7a71",
+   "file": "src/routes/__root.tsx"
+  },
   "routes/__root/error.home": {
    "en": "Home",
    "ar": "الرئيسية",
    "kind": "text",
    "hash": "349c3dbe2662",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/error.ref": {
+   "en": "Reference code",
+   "ar": "رمز المرجع",
+   "kind": "text",
+   "hash": "47ecb589ce59",
    "file": "src/routes/__root.tsx"
   },
   "routes/__root/error.retry": {
@@ -28163,6 +28177,13 @@
    "hash": "2639328d7047",
    "file": "src/routes/__root.tsx"
   },
+  "routes/__root/not_found.browse": {
+   "en": "Browse children",
+   "ar": "تصفّح الأطفال",
+   "kind": "text",
+   "hash": "43a7ea2a7a71",
+   "file": "src/routes/__root.tsx"
+  },
   "routes/__root/not_found.home": {
    "en": "Back to home",
    "ar": "العودة للرئيسية",
@@ -28178,10 +28199,17 @@
    "file": "src/routes/__root.tsx"
   },
   "routes/__root/not_found.title": {
-   "en": "Page not found",
-   "ar": "الصفحة غير موجودة",
+   "en": "This page does not exist",
+   "ar": "هذه الصفحة غير موجودة",
    "kind": "text",
-   "hash": "969b0941692d",
+   "hash": "b33aa03868fd",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/not_found.try": {
+   "en": "Try the platform",
+   "ar": "جرّب المنصّة",
+   "kind": "text",
+   "hash": "8b2850eaf906",
    "file": "src/routes/__root.tsx"
   },
   "routes/_authenticated/dashboard.cancelledLead": {
@@ -29255,10 +29283,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.h1a": {
-   "en": "We don't offer temporary care —",
+   "en": "We don't offer temporary care:",
    "ar": "لا نقدّم رعايةً مؤقّتة،",
    "kind": "text",
-   "hash": "5cdec3649be1",
+   "hash": "a63fd5f1b186",
    "file": "src/routes/index.tsx"
   },
   "routes/index.h1b": {
@@ -29663,11 +29691,11 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.title": {
-   "en": "{0} — Carrying the orphan from the shore of loss to the shore of thriving",
-   "ar": "{0} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران",
+   "en": "{0} | Carrying the orphan from the shore of loss to the shore of thriving",
+   "ar": "{0} | عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران",
    "kind": "template",
    "params": 1,
-   "hash": "2f72217ca79b",
+   "hash": "d2bd091eef9f",
    "file": "src/routes/index.tsx"
   },
   "routes/index.tryIt": {
@@ -30148,17 +30176,17 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.inCountries.one": {
-   "en": " — in {0} country.",
+   "en": ", in {0} country.",
    "ar": "",
    "kind": "plural",
-   "hash": "860a330f8ab3",
+   "hash": "737bd07c3f85",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.inCountries.other": {
-   "en": " — in {0} countries.",
+   "en": ", in {0} countries.",
    "ar": "",
    "kind": "plural",
-   "hash": "9264577be806",
+   "hash": "f3797b6b0071",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.launchSupport": {
@@ -30452,11 +30480,11 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.continueTo": {
-   "en": "Continue — {0} for {1}",
-   "ar": "تابع — {0} لـ{1}",
+   "en": "Continue: {0} for {1}",
+   "ar": "تابع: {0} لـ{1}",
    "kind": "template",
    "params": 2,
-   "hash": "689665114722",
+   "hash": "cbf56e8dde22",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.covered": {
