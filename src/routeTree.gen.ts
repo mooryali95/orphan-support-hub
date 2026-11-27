@@ -41,6 +41,7 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as TryIndexRouteImport } from './routes/try.index'
 import { Route as TryChildIdRouteImport } from './routes/try.$childId'
 import { Route as TryAdminRouteImport } from './routes/try.admin'
+import { Route as TryAskRouteImport } from './routes/try.ask'
 import { Route as TryCountryRouteImport } from './routes/try.country'
 import { Route as TryCycleRouteImport } from './routes/try.cycle'
 import { Route as TryImpactRouteImport } from './routes/try.impact'
@@ -241,6 +242,11 @@ const TryAdminRoute = TryAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => TryRoute,
 } as any).lazy(() => import('./routes/try.admin.lazy').then((d) => d.Route))
+const TryAskRoute = TryAskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => TryRoute,
+} as any)
 const TryCountryRoute = TryCountryRouteImport.update({
   id: '/country',
   path: '/country',
@@ -528,6 +534,7 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
@@ -606,6 +613,7 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
@@ -687,6 +695,7 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
@@ -768,6 +777,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
@@ -846,6 +856,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
@@ -926,6 +937,7 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
@@ -1234,6 +1246,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/try/admin'
       preLoaderRoute: typeof TryAdminRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/ask': {
+      id: '/try/ask'
+      path: '/ask'
+      fullPath: '/try/ask'
+      preLoaderRoute: typeof TryAskRouteImport
       parentRoute: typeof TryRoute
     }
     '/try/country': {
@@ -1628,6 +1647,7 @@ const AuthenticatedRouteRouteWithChildren =
 interface TryRouteChildren {
   TryChildIdRoute: typeof TryChildIdRoute
   TryAdminRoute: typeof TryAdminRoute
+  TryAskRoute: typeof TryAskRoute
   TryCountryRoute: typeof TryCountryRoute
   TryCycleRoute: typeof TryCycleRoute
   TryImpactRoute: typeof TryImpactRoute
@@ -1648,6 +1668,7 @@ interface TryRouteChildren {
 const TryRouteChildren: TryRouteChildren = {
   TryChildIdRoute: TryChildIdRoute,
   TryAdminRoute: TryAdminRoute,
+  TryAskRoute: TryAskRoute,
   TryCountryRoute: TryCountryRoute,
   TryCycleRoute: TryCycleRoute,
   TryImpactRoute: TryImpactRoute,

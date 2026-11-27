@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5319,
+ "count": 5372,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -839,6 +839,216 @@
    "kind": "text",
    "hash": "62fd7babf158",
    "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SupporterAssistant.conversation": {
+   "en": "Supporter assistant conversation",
+   "ar": "محادثة مساعد الداعمين",
+   "kind": "text",
+   "hash": "0565c498d953",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copied": {
+   "en": "Answer copied.",
+   "ar": "نُسخت الإجابة.",
+   "kind": "text",
+   "hash": "bec65d6fab4b",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copyAnswer": {
+   "en": "Copy answer",
+   "ar": "نسخ الإجابة",
+   "kind": "text",
+   "hash": "e328ceda29bb",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copyFailed": {
+   "en": "Couldn't copy the answer.",
+   "ar": "تعذّر نسخ الإجابة.",
+   "kind": "text",
+   "hash": "26483cc28d31",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.disclaimer": {
+   "en": "Automated answers can be wrong. The published file and sponsorship terms are the reference. This conversation lasts for this session only and isn't saved to your account.",
+   "ar": "إجابات آلية قد تخطئ، والمرجع هو الملفّ المنشور وشروط الكفالة. المحادثة لهذه الجلسة فقط ولا تُحفظ في حسابك.",
+   "kind": "text",
+   "hash": "e29995677102",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.emptyText": {
+   "en": "Pick a common question or write your own. Answers come only from published files and the sponsorship terms.",
+   "ar": "اختر سؤالاً شائعاً أو اكتب سؤالك. الإجابة من الملفّات المنشورة وشروط الكفالة وحدها.",
+   "kind": "text",
+   "hash": "1505d122348e",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.emptyTitle": {
+   "en": "What would you like to know?",
+   "ar": "ما الذي تودّ معرفته؟",
+   "kind": "text",
+   "hash": "0d882b564f6b",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.file": {
+   "en": "Published file",
+   "ar": "الملفّ المنشور",
+   "kind": "text",
+   "hash": "5b419e2b0a61",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.latest": {
+   "en": "Latest answer",
+   "ar": "آخر إجابة",
+   "kind": "text",
+   "hash": "c94e6dc45245",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.limit": {
+   "en": "This conversation reached its limit. Start a new one.",
+   "ar": "وصلت المحادثة إلى حدّها. ابدأ محادثة جديدة.",
+   "kind": "text",
+   "hash": "13c80907ca7a",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.log": {
+   "en": "Questions and answers",
+   "ar": "الأسئلة والإجابات",
+   "kind": "text",
+   "hash": "6993ab2254d8",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.newChat": {
+   "en": "New conversation",
+   "ar": "محادثة جديدة",
+   "kind": "text",
+   "hash": "4d361881f4c3",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.noAnswer": {
+   "en": "No answer was available for this question. No sponsorship request was recorded.",
+   "ar": "لم تتوفر إجابة لهذا السؤال. لم يُسجّل أي طلب كفالة.",
+   "kind": "text",
+   "hash": "77fededf18d5",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.noPersonal": {
+   "en": "Don't write personal details or payment information",
+   "ar": "لا تكتب بيانات شخصية أو معلومات دفع",
+   "kind": "text",
+   "hash": "5f6403fc8c35",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.placeholder": {
+   "en": "Write your question about sponsorship…",
+   "ar": "اكتب سؤالك عن الكفالة…",
+   "kind": "text",
+   "hash": "5f097d9ce4dd",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.placeholderFile": {
+   "en": "Ask about this file's published information…",
+   "ar": "اسأل عن المعلومات المنشورة لهذا الملفّ…",
+   "kind": "text",
+   "hash": "9f358a950ca2",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.publishedOnly": {
+   "en": "Published information only",
+   "ar": "المعلومات المنشورة فقط",
+   "kind": "text",
+   "hash": "ebd4df1c8e84",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.reviewing": {
+   "en": "Reviewing the information",
+   "ar": "مراجعة المعلومات",
+   "kind": "text",
+   "hash": "be425b5318a3",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.sampleDisclaimer": {
+   "en": "Demo answers are prepared in advance from the platform's published text, and your question is sent to no service.",
+   "ar": "إجابات العرض جاهزة مسبقاً من نصوص المنصّة المنشورة، ولا يُرسل سؤالك إلى أيّ خدمة.",
+   "kind": "text",
+   "hash": "066b8778fd13",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.send": {
+   "en": "Send question",
+   "ar": "إرسال السؤال",
+   "kind": "text",
+   "hash": "d5ed79e9685f",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.signIn": {
+   "en": "Sign in to ask your question",
+   "ar": "سجّل الدخول لطرح سؤالك",
+   "kind": "text",
+   "hash": "f4ab325cf850",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.steps": {
+   "en": "Sponsorship steps",
+   "ar": "خطوات الكفالة",
+   "kind": "text",
+   "hash": "ae9d5ee9806a",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.stop": {
+   "en": "Stop the answer",
+   "ar": "إيقاف الإجابة",
+   "kind": "text",
+   "hash": "7196a8b54815",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.stopped": {
+   "en": "The answer was stopped. What was written stays.",
+   "ar": "تم إيقاف الإجابة، وبقي الجزء المكتوب.",
+   "kind": "text",
+   "hash": "ef07ac352ebc",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.0": {
+   "en": "How do I start a sponsorship?",
+   "ar": "كيف أبدأ الكفالة؟",
+   "kind": "text",
+   "hash": "2784d40b96aa",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.1": {
+   "en": "Can I pause a sponsorship?",
+   "ar": "هل يمكنني إيقاف الكفالة؟",
+   "kind": "text",
+   "hash": "cc741176dd32",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.2": {
+   "en": "How is a child's information protected?",
+   "ar": "كيف تُحمى معلومات الطفل؟",
+   "kind": "text",
+   "hash": "2c63d516054d",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.unreachable": {
+   "en": "We couldn't reach the question assistant. Try again later.",
+   "ar": "تعذّر الوصول إلى مساعد الأسئلة. حاول لاحقاً.",
+   "kind": "text",
+   "hash": "c118e52d6187",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.waiting": {
+   "en": "Reviewing the published information…",
+   "ar": "جارٍ مراجعة المعلومات المنشورة…",
+   "kind": "text",
+   "hash": "073f9a29bb5f",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.yourQuestion": {
+   "en": "Your question",
+   "ar": "سؤالك",
+   "kind": "text",
+   "hash": "42c9d47c2fd5",
+   "file": "src/components/SupporterAssistant.tsx"
   },
   "components/SupporterModeGate.note": {
    "en": "You are in the “{0}” mode. Personal support is recorded from the supporter mode, so it never mixes with your role's work.",
@@ -10777,6 +10987,90 @@
    "kind": "text",
    "hash": "b1f10e41c375",
    "file": "src/components/admin/trust/copy.ts"
+  },
+  "components/ask/AskView.eyebrow": {
+   "en": "Ask with confidence",
+   "ar": "اسأل باطمئنان",
+   "kind": "text",
+   "hash": "518de7a13766",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.listFailed": {
+   "en": "We couldn't load the list of files. You can still ask about sponsorship steps.",
+   "ar": "تعذّر تحميل قائمة الملفات. يمكنك السؤال عن خطوات الكفالة.",
+   "kind": "text",
+   "hash": "0fce94504d24",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.noFiles": {
+   "en": "No files are published right now. You can still ask about sponsorship steps.",
+   "ar": "لا ملفّات منشورة الآن. يمكنك السؤال عن خطوات الكفالة.",
+   "kind": "text",
+   "hash": "465e99bfb7ec",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.title": {
+   "en": "Supporter assistant",
+   "ar": "مساعد الداعمين",
+   "kind": "text",
+   "hash": "bf32beca816e",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.topic": {
+   "en": "Question topic",
+   "ar": "موضوع السؤال",
+   "kind": "text",
+   "hash": "c1c483dcf16c",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.topicHint": {
+   "en": "General sponsorship steps, or one published file by its code and published name only.",
+   "ar": "خطوات الكفالة عامّة، أو ملفٌّ منشور برمزه واسمه المنشور فقط.",
+   "kind": "text",
+   "hash": "ca00dcfbb123",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.trial": {
+   "en": "Try the assistant with sample answers, no account needed",
+   "ar": "جرّب المساعد بإجاباتٍ نموذجية بلا حساب",
+   "kind": "text",
+   "hash": "36cf06c47ed2",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/TopicCombobox.chosen": {
+   "en": "The selected file",
+   "ar": "الملفّ المحدد",
+   "kind": "text",
+   "hash": "371082252123",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.empty": {
+   "en": "No published file matches that code or name.",
+   "ar": "لا ملفّ منشور بهذا الرمز أو الاسم.",
+   "kind": "text",
+   "hash": "78739b1bd797",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.files": {
+   "en": "Published files",
+   "ar": "الملفّات المنشورة",
+   "kind": "text",
+   "hash": "e7d2e72b96df",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.general": {
+   "en": "Sponsorship steps",
+   "ar": "خطوات الكفالة",
+   "kind": "text",
+   "hash": "ae9d5ee9806a",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.search": {
+   "en": "Search by file code or published name",
+   "ar": "ابحث برمز الملفّ أو الاسم المنشور",
+   "kind": "text",
+   "hash": "b64eb85b2a8c",
+   "file": "src/components/ask/TopicCombobox.tsx"
   },
   "components/auth/AuthDialog.consent": {
    "en": "By continuing you agree to the terms of use and privacy policy; this platform handles children's data.",
@@ -27420,6 +27714,42 @@
    "hash": "047251131d56",
    "file": "src/lib/office-gap.ts"
   },
+  "lib/try-ask.child": {
+   "en": "From the public card of file {1}: {0} in {2}, {3}. The monthly sponsorship covers {4}. That is all that is published; the rest of the file is protected.",
+   "ar": "من البطاقة العامّة للملفّ {1}: {0} في {2}، {3}. الكفالة الشهرية تغطّي {4}. هذا كلّ ما هو منشور، وبقية الملفّ محميّة.",
+   "kind": "template",
+   "params": 5,
+   "hash": "db08e41b8ab4",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.general": {
+   "en": "In this demo I answer three things: starting a sponsorship, pausing it, and how a child's information is protected. Try a suggested question, or pick a file from the list.",
+   "ar": "أجيب في هذا العرض عن ثلاثة أمور: بدء الكفالة، وإيقافها، وحماية معلومات الطفل. جرّب أحد الأسئلة المقترحة، أو اختر ملفّاً من القائمة.",
+   "kind": "text",
+   "hash": "072a10be171f",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.pause": {
+   "en": "Yes. From the sponsorship page in your account you can pause or end it, and the following office is told so it can look for another sponsor. Nothing is charged after you pause.",
+   "ar": "نعم. من صفحة الكفالة في حسابك تختار الإيقاف المؤقّت أو الإنهاء، ويُخبَر المكتب المتابع ليبحث للطفل عن كافلٍ آخر. لا يُخصم شيءٌ بعد الإيقاف.",
+   "kind": "text",
+   "hash": "3e4004325eb1",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.privacy": {
+   "en": "Only a child's public card is published: the published name, file code, country and stage. Photos, address and family details stay behind the access gate, visible only to those with a verified link to the child.",
+   "ar": "لا يُنشر من ملفّ الطفل إلا بطاقته العامّة: الاسم المنشور ورمز الملفّ والبلد والمرحلة. الصور والعنوان ومعلومات الأسرة تبقى خلف بوّابة الوصول، ولا يراها إلا من له صلةٌ موثّقة بالطفل.",
+   "kind": "text",
+   "hash": "4561a45e3081",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.start": {
+   "en": "A sponsorship starts in the orphan directory: pick a published file, choose the monthly amount, then sign in and pay. After the first payment, impact reports arrive from the office that follows the child. [Sponsorship steps](/how-it-works)",
+   "ar": "تبدأ الكفالة من دليل الأيتام: اختر ملفّاً منشوراً، ثم المبلغ الشهري، ثم سجّل الدخول وادفع. بعد أوّل دفعة تصلك تقارير الأثر من المكتب المتابع. [خطوات الكفالة](/how-it-works)",
+   "kind": "text",
+   "hash": "826c02aabf0b",
+   "file": "src/lib/try-ask.ts"
+  },
   "lib/try-demo.children.try-01.covers": {
    "en": "Schooling, food and healthcare",
    "ar": "الدراسة والغذاء والرعاية الصحية",
@@ -29345,6 +29675,27 @@
    "kind": "text",
    "hash": "05d433670107",
    "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/ask.description": {
+   "en": "Questions and answers about published orphan files and sponsorship steps, with children's private information protected.",
+   "ar": "أسئلة وإجابات عن ملفات الأيتام المنشورة وخطوات الكفالة، مع حماية معلومات الأطفال الخاصة.",
+   "kind": "text",
+   "hash": "7e601d26cca9",
+   "file": "src/routes/ask.tsx"
+  },
+  "routes/ask.ogDescription": {
+   "en": "Answers about published information and sponsorship steps for supporters.",
+   "ar": "إجابات عن المعلومات المنشورة وخطوات الكفالة للداعمين.",
+   "kind": "text",
+   "hash": "0e9a4c32b97c",
+   "file": "src/routes/ask.tsx"
+  },
+  "routes/ask.section": {
+   "en": "Supporter assistant",
+   "ar": "مساعد الداعمين",
+   "kind": "text",
+   "hash": "bf32beca816e",
+   "file": "src/routes/ask.tsx"
   },
   "routes/auth.agree": {
    "en": "By continuing you agree to the",
@@ -32637,6 +32988,27 @@
    "kind": "text",
    "hash": "042836eb154d",
    "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.ask.pageTitle": {
+   "en": "Supporter assistant: interactive demo",
+   "ar": "مساعد الداعمين: عرض تفاعلي",
+   "kind": "text",
+   "hash": "9eeb5e6aec8c",
+   "file": "src/routes/try.ask.tsx"
+  },
+  "routes/try.ask.sample": {
+   "en": "Sample answers",
+   "ar": "إجابات نموذجية",
+   "kind": "text",
+   "hash": "e7c0e1e810e7",
+   "file": "src/routes/try.ask.tsx"
+  },
+  "routes/try.ask.simulated": {
+   "en": "Answers here are simulated in advance, and your question is sent to no service.",
+   "ar": "الإجابات هنا محاكاة جاهزة، ولا يُرسل سؤالك إلى أيّ خدمة.",
+   "kind": "text",
+   "hash": "9e4ae01e93b8",
+   "file": "src/routes/try.ask.tsx"
   },
   "routes/try.childId.activation": {
    "en": "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
