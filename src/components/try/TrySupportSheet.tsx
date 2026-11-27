@@ -45,7 +45,7 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     kind: "نوع الدعم",
     amount: "المبلغ الشهري",
     other: "مبلغ آخر",
-    confirm: (a: string) => `سجّل دعمي (محاكاة): ${a}`,
+    confirm: (a: string) => `سجّل دعمي بمبلغ ${a} (محاكاة)`,
     note: "محاكاة: يُحفظ في متصفّحك وحده، ولا يُرسل شيء ولا يُخصم.",
     sampleRegions: (a: string, b: string) =>
       `منطقتا التجربة هنا: ${a} و${b}. اختر إحداهما لتدعمها، أو ادعم الدولة كلّها.`,
@@ -71,7 +71,7 @@ const COPY = defineCopy("components/try/TrySupportSheet", {
     kind: "Kind of support",
     amount: "Monthly amount",
     other: "Other amount",
-    confirm: (a: string) => `Record my support (simulated): ${a}`,
+    confirm: (a: string) => `Record my support of ${a} (simulated)`,
     note: "Simulated: kept in your browser only. Nothing is sent and nothing is charged.",
     sampleRegions: (a: string, b: string) =>
       `The trial's regions here are ${a} and ${b}. Choose one to support it, or support the whole country.`,
@@ -304,7 +304,12 @@ export function TrySupportSheet({
         )
       }
       confirm={
-        <Button size="lg" className="w-full whitespace-normal" data-try-confirm onClick={confirm}>
+        <Button
+          size="lg"
+          className="min-h-12 w-full whitespace-normal"
+          data-try-confirm
+          onClick={confirm}
+        >
           {t.confirm(formatMoney(amount, currency, locale))}
         </Button>
       }

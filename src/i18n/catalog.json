@@ -20179,11 +20179,11 @@
    "file": "src/components/try/TrySupportSheet.tsx"
   },
   "components/try/TrySupportSheet.confirm": {
-   "en": "Record my support (simulated): {0}",
-   "ar": "سجّل دعمي (محاكاة): {0}",
+   "en": "Record my support of {0} (simulated)",
+   "ar": "سجّل دعمي بمبلغ {0} (محاكاة)",
    "kind": "template",
    "params": 1,
-   "hash": "72f684eb39b5",
+   "hash": "14a4621b30b8",
    "file": "src/components/try/TrySupportSheet.tsx"
   },
   "components/try/TrySupportSheet.done.in_kind": {
