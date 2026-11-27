@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5152,
+ "count": 5153,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -30098,6 +30098,13 @@
    "hash": "663da03742b3",
    "file": "src/routes/orphans.index.tsx"
   },
+  "routes/orphans.index.clearFilters": {
+   "en": "Clear filters",
+   "ar": "امسح الفلاتر",
+   "kind": "text",
+   "hash": "db32b8679786",
+   "file": "src/routes/orphans.index.tsx"
+  },
   "routes/orphans.index.empty": {
    "en": "No matching results.",
    "ar": "لا توجد نتائج مطابقة.",
@@ -30374,10 +30381,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.tryA": {
-   "en": "Try removing one of the filters above, or",
-   "ar": "جرّب إزالة أحد الفلاتر أعلاه، أو",
+   "en": "Try removing one of these filters:",
+   "ar": "جرّب إزالة أحد هذه الفلاتر:",
    "kind": "text",
-   "hash": "2587f86d6e24",
+   "hash": "2d48a125c27b",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.orphanId.activates": {
