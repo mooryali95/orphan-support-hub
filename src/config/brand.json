@@ -13,7 +13,8 @@
   "partner": {
     "name": "الأهلية للأيتام",
     "nameLatin": "Al-Ahliya for Orphans",
-    "with": "بالشراكة مع"
+    "with": "بالشراكة مع",
+    "withLatin": "In partnership with"
   },
   "descriptionTemplate": "اكفل يتيماً بملف توثّقه مكاتب الندوة وشركاؤها الميدانيون. منصة {name} تربطك بيتيم حقيقي بكفالة شهرية شفافة وتقارير أثر دورية.",
   "colors": {

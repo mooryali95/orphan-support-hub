@@ -493,7 +493,7 @@ function RealOrphansPage() {
                 })
               }
               aria-label={t.sortLabel}
-              className="h-11 rounded-md border border-input bg-background px-3 text-base md:text-sm"
+              className="h-11 flex-1 rounded-md border border-input bg-background px-3 text-base sm:flex-none md:text-sm"
             >
               {SORTS.map((key) => (
                 <option key={key} value={key}>
@@ -505,7 +505,7 @@ function RealOrphansPage() {
             <div
               role="group"
               aria-label={t.fundingLabel}
-              className="flex rounded-md border border-input p-1"
+              className="flex w-full rounded-lg border border-input p-1 sm:w-auto"
             >
               {(
                 [
@@ -520,7 +520,7 @@ function RealOrphansPage() {
                   aria-pressed={funding === key}
                   onClick={() => set({ funding: key === "any" ? undefined : key })}
                   className={cn(
-                    "min-h-11 rounded px-3 py-1 text-sm font-medium transition-colors",
+                    "min-h-10 flex-1 rounded-md px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring sm:flex-none",
                     funding === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",

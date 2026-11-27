@@ -13,6 +13,7 @@ import type { PublicQualification, QualificationStage } from "@/integrations/sup
 import type { ProgressReportView } from "@/lib/impact.functions";
 import { copyOf, defineCopy, parseLocale, type Locale } from "@/lib/locale";
 import { registerDemo } from "@/lib/data-port";
+import { registerChildUpdateDemos } from "@/lib/try-child-updates";
 import { LIFECYCLE_ERRORS } from "@/lib/sponsorship-lifecycle";
 import type { FeedItem } from "@/lib/journey.functions";
 import type { LedgerMonth, SponsorshipLedger } from "@/lib/ledger.functions";
@@ -500,6 +501,7 @@ type Input<T> = { data: T };
 const uiLocale = (): Locale =>
   typeof document === "undefined" ? "ar" : parseLocale(document.cookie);
 
+registerChildUpdateDemos();
 registerDemo("verify.public", async ({ data }: Input<{ orphanId: string }>) =>
   tryVerification(data.orphanId),
 );

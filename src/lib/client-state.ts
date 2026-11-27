@@ -17,6 +17,8 @@ export const USER_DATA_PREFIXES = [
   "office-draft:",
   // ما اختاره الزائر في نموذج الكفالة قبل الدخول (المبلغ ورسالته للطفل).
   "kh:sponsor-draft:",
+  // آخر مبلغٍ وعملةٍ أكّدهما الداعم (src/lib/last-gift.ts).
+  "kh:last-gift",
 ] as const;
 
 /** صاحب ما في هذا المتصفّح من بيانات عمل — به يُعرف تبدّل المستخدم. */

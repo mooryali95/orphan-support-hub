@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CloudOff, RotateCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { defineCopy, useCopy } from "@/lib/locale";
@@ -37,15 +38,19 @@ export function LoadFailed({
     <div
       role="alert"
       className={cn(
-        "rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground",
+        "rounded-2xl border border-border bg-card/60 px-6 py-12 text-center text-sm text-muted-foreground",
         className,
       )}
     >
-      <p className="text-base font-bold text-foreground">{c.title}</p>
+      <span className="mx-auto grid size-12 place-items-center rounded-full bg-secondary text-muted-foreground">
+        <CloudOff className="size-6" strokeWidth={1.5} aria-hidden="true" />
+      </span>
+      <p className="mt-4 text-lg font-bold text-foreground">{c.title}</p>
       <p className="mx-auto mt-2 max-w-md leading-7">{c.text}</p>
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
+      <div className="mt-6 flex flex-wrap justify-center gap-2">
         {onRetry && (
           <Button type="button" variant="outline" disabled={busy} onClick={onRetry}>
+            <RotateCw className={cn(busy && "animate-spin")} aria-hidden="true" />
             {c.retry}
           </Button>
         )}

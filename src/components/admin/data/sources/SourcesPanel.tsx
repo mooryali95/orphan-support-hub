@@ -5,6 +5,7 @@ import { useDataFn, useDataKey } from "@/lib/data-port";
 import { flagOf } from "@/lib/countries";
 import { canDo, type CountryAccess } from "@/lib/golden-record";
 import { getDataHealth } from "@/lib/golden-record.functions";
+import { listChildUpdateQueue } from "@/lib/child-updates.functions";
 import { useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import { Busy, CARD, Failed, NeedsUpdate, SectionHead } from "../shared";
@@ -19,6 +20,7 @@ import { ModeControl, Matrix } from "./ModeControl";
 import { StartHere } from "./StartHere";
 import { Team } from "./Team";
 import { UploadCard } from "./UploadCard";
+import { ChildUpdatesCard } from "./ChildUpdatesCard";
 import { type Tab } from "./shared";
 
 /**
@@ -53,6 +55,13 @@ export function SourcesPanel({
     setTabIn?.(t);
   };
   const [fileId, setFileId] = useState<string | null>(null);
+  // المفتاح نفسه في لسان «التحديثات»: الحسم هناك يحدّث العدّاد هنا.
+  const fetchUpdates = useDataFn("childUpdates.queue", listChildUpdateQueue);
+  const updates = useQuery({
+    queryKey: useDataKey(["child-updates-queue", code]),
+    queryFn: () => fetchUpdates({ data: { country: code } }),
+    enabled: !!code,
+  });
 
   if (health.isPending) return <Busy />;
   if (!health.data?.ok) {
@@ -63,7 +72,7 @@ export function SourcesPanel({
     );
   }
 
-  const can = (need: "import" | "approve" | "manage") =>
+  const can = (need: "import" | "upload" | "approve" | "manage") =>
     selected ? canDo(access, selected.code, need) : false;
   const tabs: Array<{ key: Tab; count: number; urgent: boolean }> = selected
     ? [
@@ -79,6 +88,11 @@ export function SourcesPanel({
         },
         { key: "links", count: selected.link_pending, urgent: false },
         ...(can("import") ? [{ key: "upload" as const, count: 0, urgent: false }] : []),
+        {
+          key: "updates" as const,
+          count: updates.data?.ok ? updates.data.data.length : 0,
+          urgent: false,
+        },
         { key: "mode" as const, count: 0, urgent: false },
         ...(can("manage") ? [{ key: "team" as const, count: 0, urgent: false }] : []),
       ]
@@ -208,6 +222,13 @@ export function SourcesPanel({
               <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
             )}
             {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
+            {current === "updates" && (
+              <ChildUpdatesCard
+                country={selected.code}
+                canUpload={can("upload")}
+                canApprove={can("approve")}
+              />
+            )}
             {current === "mode" &&
               (access.admin ? (
                 <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />

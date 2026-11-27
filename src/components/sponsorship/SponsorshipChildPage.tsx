@@ -9,6 +9,7 @@ import { Name } from "@/components/kit/Name";
 import { usePublicVerification } from "@/components/orphans/public-verification";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
+import { ChildUpdates } from "@/components/sponsorship/ChildUpdates";
 import { useLedger } from "@/components/sponsorship/ledger-query";
 import { ManageSponsorshipLink } from "@/components/sponsorship/ManageSponsorship";
 import { QualificationJourney } from "@/components/sponsorship/QualificationJourney";
@@ -272,6 +273,9 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
         onPay={onPay}
         paying={paying}
       />
+
+      {/* تحديثات الطفل المعتمدة: صورٌ ومقاطع وملاحظات، شهراً شهراً */}
+      <ChildUpdates orphanId={l.orphan.id} />
 
       {/* 3. محطّات التأهيل */}
       <QualificationJourney q={qualification} name={l.orphan.display_name} />

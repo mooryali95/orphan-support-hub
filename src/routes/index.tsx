@@ -534,21 +534,24 @@ function HomePage() {
                       <ArrowLeft className="size-4 ltr:-scale-x-100" />
                     </Link>
                   </Button>
-                  <Link
-                    to="/support"
-                    className="inline-flex min-h-11 items-center px-3 text-sm font-bold text-primary underline decoration-primary/30 underline-offset-[6px] transition-colors hover:decoration-primary"
-                  >
-                    {c.supportNow}
-                  </Link>
-                  {/* القاعة ثلاثية الأبعاد: رابطٌ عاديّ — المشهد يُحمَّل عند الدخول وحده */}
-                  <a
-                    href={hallEntryHref()}
-                    data-to-hall
-                    className="inline-flex min-h-11 items-center gap-1.5 px-3 text-sm font-bold text-bridge-ink underline decoration-bridge/40 underline-offset-[6px] transition-colors hover:decoration-bridge"
-                  >
-                    <Box className="size-4" aria-hidden="true" />
-                    {c.hallHero}
-                  </a>
+                  {/* the two quiet links share one line of their own, aligned with the buttons' edge */}
+                  <div className="flex basis-full flex-wrap items-center justify-center gap-x-1 lg:justify-start">
+                    <Link
+                      to="/support"
+                      className="inline-flex min-h-11 items-center px-3 text-sm font-bold text-primary underline decoration-primary/30 underline-offset-[6px] transition-colors hover:decoration-primary"
+                    >
+                      {c.supportNow}
+                    </Link>
+                    {/* القاعة ثلاثية الأبعاد: رابطٌ عاديّ — المشهد يُحمَّل عند الدخول وحده */}
+                    <a
+                      href={hallEntryHref()}
+                      data-to-hall
+                      className="inline-flex min-h-11 items-center gap-1.5 px-3 text-sm font-bold text-bridge-ink underline decoration-bridge/40 underline-offset-[6px] transition-colors hover:decoration-bridge"
+                    >
+                      <Box className="size-4" aria-hidden="true" />
+                      {c.hallHero}
+                    </a>
+                  </div>
                 </div>
                 {showTrialLink() && (
                   <Link

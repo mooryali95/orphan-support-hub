@@ -42,9 +42,10 @@ import {
   type QueueItem,
 } from "./queue";
 import { useToday } from "./useToday";
+import { ChildUpdateReview } from "@/components/admin/data/sources/ChildUpdatesCard";
 import { FILTER_KEYS } from "./useUrlFilters";
 
-export type WorkTab = "alerts" | "conflicts" | "links";
+export type WorkTab = "alerts" | "conflicts" | "links" | "updates";
 export type FullScreen = "orphan" | "access" | "integrity";
 
 const DAY = 86_400_000;
@@ -676,6 +677,9 @@ function Detail({
   return (
     <div className="space-y-4 pb-20 sm:pb-0">
       <Head item={item} />
+      {item.update && (
+        <ChildUpdateReview item={item.update} canApprove={item.can_settle} onDone={onInboxDone} />
+      )}
       {item.alert && (
         <>
           <p className="text-sm">
@@ -844,7 +848,9 @@ function Detail({
                   ? "alerts"
                   : item.source === "conflict"
                     ? "conflicts"
-                    : "links",
+                    : item.source === "update"
+                      ? "updates"
+                      : "links",
               )
             }
           >

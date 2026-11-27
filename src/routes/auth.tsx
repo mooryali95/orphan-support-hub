@@ -153,8 +153,12 @@ function AuthPage() {
             />
           </span>
           <span className="flex flex-col leading-tight">
-            <span className="text-xs text-white/75">{BRAND.partner.with}</span>
-            <span className="font-display text-xl font-bold">{BRAND.partner.name}</span>
+            <span className="text-xs text-white/75">
+              {locale === "ar" ? BRAND.partner.with : BRAND.partner.withLatin}
+            </span>
+            <span className="font-display text-xl font-bold">
+              {locale === "ar" ? BRAND.partner.name : BRAND.partner.nameLatin}
+            </span>
           </span>
         </p>
       </aside>

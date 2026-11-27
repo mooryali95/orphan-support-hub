@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 
 import { PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import {
@@ -13,8 +13,20 @@ import { defineCopy, useCopy } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/support/SupportSheetBody", {
-  ar: { whom: "إلى من؟", amount: "المبلغ الشهري", other: "مبلغ آخر" },
-  en: { whom: "For whom?", amount: "Monthly amount", other: "Other amount" },
+  ar: {
+    whom: "إلى من؟",
+    amount: "المبلغ الشهري",
+    other: "مبلغ آخر",
+    tooLow: "اكتب مبلغاً من 1 فأكثر.",
+    tooHigh: (max: string) => `الحدّ الأعلى لمرّةٍ واحدة ${max}.`,
+  },
+  en: {
+    whom: "For whom?",
+    amount: "Monthly amount",
+    other: "Other amount",
+    tooLow: "Enter an amount of 1 or more.",
+    tooHigh: (max: string) => `The most for one pledge is ${max}.`,
+  },
 });
 
 /** هدفٌ في الورقة، كما يقدّمه المصدر (حقيقياً أو تجريبياً). */
@@ -153,18 +165,7 @@ export function SupportSheetBody({
                   {a.sub && <span className="text-xs opacity-80">{a.sub}</span>}
                 </button>
               ))}
-              <Input
-                aria-label={t.other}
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={max}
-                className="h-11 w-28 rounded-full"
-                value={amount}
-                onChange={(e) =>
-                  onAmount(Math.min(max, Math.max(1, Math.floor(Number(e.target.value)) || 1)))
-                }
-              />
+              <OtherAmount amount={amount} max={max} onAmount={onAmount} />
             </div>
           </fieldset>
 
@@ -176,5 +177,67 @@ export function SupportSheetBody({
       )}
       {after}
     </div>
+  );
+}
+
+/**
+ * «مبلغ آخر» يُكتب بحرّية ويُقال خطؤه بجانبه: لا يقفز الرقم إلى ١ حين يُمسح الحقل،
+ * ولا يُقصّ ما فوق الحدّ بصمت. المبلغ الصالح وحده يصل إلى النموذج.
+ */
+function OtherAmount({
+  amount,
+  max,
+  onAmount,
+}: {
+  amount: number;
+  max: number;
+  onAmount: (value: number) => void;
+}) {
+  const t = useCopy(COPY);
+  // مسودّةٌ غير صالحة تخصّ المبلغ الذي كُتبت فوقه: اختيار مبلغٍ مقترح يطويها.
+  const [typed, setTyped] = useState<{ raw: string; over: number } | null>(null);
+  const draft = typed && typed.over === amount ? typed.raw : null;
+  const setDraft = (raw: string | null) => setTyped(raw === null ? null : { raw, over: amount });
+  const id = useId();
+  const n = draft === null ? amount : Math.floor(Number(draft));
+  const error =
+    draft === null
+      ? null
+      : !Number.isFinite(n) || n < 1
+        ? t.tooLow
+        : n > max
+          ? t.tooHigh(max.toLocaleString("en"))
+          : null;
+  return (
+    <span className="inline-flex flex-col gap-1">
+      <Input
+        aria-label={t.other}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? id : undefined}
+        type="number"
+        inputMode="numeric"
+        min={1}
+        max={max}
+        className={cn("h-11 w-28 rounded-full tabular-nums", error && "border-destructive")}
+        value={draft ?? amount}
+        onChange={(e) => {
+          // الصالح يصل إلى النموذج فوراً؛ وغيره يبقى في الحقل مع سببه.
+          const raw = e.target.value;
+          const v = Math.floor(Number(raw));
+          if (raw !== "" && Number.isFinite(v) && v >= 1 && v <= max) {
+            setDraft(null);
+            onAmount(v);
+          } else setDraft(raw);
+        }}
+        onBlur={() => {
+          if (!error) setDraft(null);
+        }}
+      />
+      {error && (
+        <span id={id} role="alert" className="text-xs text-destructive">
+          {error}
+        </span>
+      )}
+    </span>
   );
 }
