@@ -158,7 +158,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verifica
 
 ## الجدولة والمراقبة من الخارج (ARC-06)
 
-التنبيه داخل المنصّة لا يُنبّه إن ماتت المنصّة أو مات المجدول. فأربعة مراقبين
+التنبيه داخل المنصّة لا يُنبّه إن ماتت المنصّة أو مات المجدول. فخمسة مراقبين
 من خارجها، كلٌّ منها مجّانيٌّ في healthchecks.io أو Better Stack أو UptimeRobot:
 
 | ما يُراقَب                | كيف                                                                                                            | المتغيّر                  | التنبيه                                 |
@@ -167,6 +167,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verifica
 | فحص الصحّة يجري           | المجدول يستدعي `POST /api/ops/health` كلّ ساعة؛ وهو ينقر النبض بعد كلّ تشغيل                                   | `HEARTBEAT_URL_OPS`       | لا نبض خلال ساعتين، أو نقرٌ على `/fail` |
 | تصريف البريد يجري         | المجدول يستدعي `POST /api/notifications/dispatch` كلّ ٥ دقائق؛ ينقر النبض بعد كلّ تشغيل                        | `HEARTBEAT_URL_DISPATCH`  | لا نبض خلال ٣٠ دقيقة، أو `/fail`        |
 | مطابقة المال تجري         | المجدول يستدعي `POST /api/payments/reconcile` كلّ ساعة؛ ينقر النبض بعد كلّ تشغيل                               | `HEARTBEAT_URL_RECONCILE` | لا نبض خلال ساعتين، أو `/fail`          |
+| استبقاء وسائط الطفل يجري  | المجدول يستدعي `POST /api/child-updates/retention` يومياً؛ ينقر النبض بعد كلّ تشغيل                            | `HEARTBEAT_URL_RETENTION` | لا نبض خلال يومين، أو `/fail`           |
 
 - **GET الصحّة** لا يُعيد إلا قيماً منطقية (`database`، `config_ok`، وحال كلّ ميزة:
   admin/cron/email/payments/grants) ومرجع الطلب عند الفشل؛ لا رسالة خطأٍ ولا اسم
