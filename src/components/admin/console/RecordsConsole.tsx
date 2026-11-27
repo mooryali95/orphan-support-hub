@@ -1094,7 +1094,7 @@ export function RecordsConsole({
 
   const chip = (on: boolean) =>
     cn(
-      "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-colors",
+      "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-colors",
       on
         ? "border-primary bg-primary text-primary-foreground"
         : "border-border bg-card hover:border-primary/50",

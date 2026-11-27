@@ -21,6 +21,7 @@ import {
   type SupportRow,
   type SupportSummary,
 } from "@/lib/admin-overview";
+import { PanelSkeleton } from "@/components/admin/PanelState";
 import { useGivingCopy } from "@/config/giving-tracks";
 import { CONTINENT_LABEL, countryName } from "@/lib/countries";
 import { approxMoney, currencyName } from "@/lib/currency";
@@ -382,7 +383,7 @@ export function SupportPanel({
               <summary className="ov-noprint inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 {t.trendTitle(t.periodMonths(period))} — {t.trendTable}
               </summary>
-              <Suspense fallback={null}>
+              <Suspense fallback={<PanelSkeleton shape="block" />}>
                 <TrendTable
                   view={view}
                   kinds={kinds}

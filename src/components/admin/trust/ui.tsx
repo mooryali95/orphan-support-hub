@@ -1,6 +1,7 @@
+import { PanelSkeleton } from "@/components/admin/PanelState";
 import type { ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { DatabaseZap, Loader2, Lock } from "lucide-react";
+import { DatabaseZap, Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { countryName, flagOf } from "@/lib/countries";
@@ -97,11 +98,7 @@ export function Loadable<T>({
 }) {
   const c = useCopy(TRUST_COPY);
   if (query.isPending) {
-    return (
-      <div className="flex justify-center py-12" role="status" aria-label={c.loading}>
-        <Loader2 className="text-muted-foreground size-5 animate-spin" aria-hidden="true" />
-      </div>
-    );
+    return <PanelSkeleton shape="cards" count={4} />;
   }
   const r = query.data;
   if (!r || !r.ok) {

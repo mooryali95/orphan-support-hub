@@ -1,3 +1,4 @@
+import { FourEyesNote } from "@/components/admin/FourEyesNote";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldAlert } from "lucide-react";
 import { useRef, useState } from "react";
@@ -120,6 +121,7 @@ export function AlertActions({
     );
   return (
     <div className="mt-3 flex flex-wrap gap-2">
+      <FourEyesNote className="basis-full" />
       <Button size="sm" className="min-h-11" disabled={busy} onClick={() => onSettle("reviewed")}>
         {c.reviewed}
       </Button>
