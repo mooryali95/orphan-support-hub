@@ -10,7 +10,6 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { warmHallWhenIdle } from "@/lib/hall/idle-warm";
-import { TRIAL_ENABLED } from "@/lib/trial-gate";
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";

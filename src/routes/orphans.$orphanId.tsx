@@ -41,6 +41,7 @@ import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
 import { OrphanUnavailable } from "@/components/orphan/OrphanUnavailable";
 import { ScopedSections } from "@/components/orphan/ScopedSections";
 import { TrustSignals } from "@/components/orphan/TrustSignals";
+import { ChildPublicHeader, SponsorCtaPanel } from "@/components/orphan/ChildPublicSections";
 import { KIND_INFO, type SupportKind } from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 import { brandFor, pageTitle } from "@/config/brand";
@@ -485,45 +486,43 @@ function OrphanDetail() {
                 priority
               />
               <div className="p-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-[1.75rem] leading-tight font-extrabold md:text-[2rem]">
-                    <Name>{orphan.display_name}</Name>
-                  </h1>
-                  <FollowButton
-                    child={{ id: orphan.id, name: orphan.display_name }}
-                    className="ms-auto"
-                  />
-                  {detail?.real_name && (
-                    <span className="text-sm text-muted-foreground">
-                      (<Name>{detail.real_name}</Name>)
-                    </span>
-                  )}
-                  <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
-                  <VerificationBadge orphanId={orphan.id} />
-                  {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                  <span>{orphan.gender === "female" ? t.female : t.male}</span>
-                  {orphan.age_band !== "unknown" && (
-                    <span>
-                      {t.ages[orphan.age_band]} {t.years}
-                    </span>
-                  )}
-                  {(orphan.country ?? orphan.region) && (
-                    <span className="inline-flex items-center gap-1">
-                      <MapPin className="size-4" />{" "}
-                      {[placeLabel(orphan.country, orphan.region, locale), detail?.city]
-                        .filter(Boolean)
-                        .join(" — ")}
-                    </span>
-                  )}
-                  {orphan.education_stage && (
-                    <span className="inline-flex items-center gap-1">
-                      <GraduationCap className="size-4" /> {orphan.education_stage}
-                    </span>
-                  )}
-                </div>
+                <ChildPublicHeader
+                  orphanId={orphan.id}
+                  name={<Name>{orphan.display_name}</Name>}
+                  badges={
+                    <>
+                      <FollowButton
+                        child={{ id: orphan.id, name: orphan.display_name }}
+                        className="ms-auto"
+                      />
+                      {detail?.real_name && (
+                        <span className="text-sm text-muted-foreground">
+                          (<Name>{detail.real_name}</Name>)
+                        </span>
+                      )}
+                      <Badge variant="secondary">{t.fileNo(orphan.code)}</Badge>
+                      {orphan.status === "fully_sponsored" && <Badge>{t.full}</Badge>}
+                    </>
+                  }
+                  meta={[
+                    orphan.gender === "female" ? t.female : t.male,
+                    orphan.age_band !== "unknown" && `${t.ages[orphan.age_band]} ${t.years}`,
+                    (orphan.country ?? orphan.region) && (
+                      <>
+                        <MapPin className="size-4" aria-hidden="true" />{" "}
+                        {[placeLabel(orphan.country, orphan.region, locale), detail?.city]
+                          .filter(Boolean)
+                          .join(locale === "ar" ? "، " : ", ")}
+                      </>
+                    ),
+                    orphan.education_stage && (
+                      <>
+                        <GraduationCap className="size-4" aria-hidden="true" />{" "}
+                        {orphan.education_stage}
+                      </>
+                    ),
+                  ]}
+                />
 
                 {/* كم نعرف عنه — قبل القصّة، لأنّ الثقة تسبق التعاطف. */}
                 <TrustSignals
@@ -907,41 +906,22 @@ function OrphanDetail() {
       {/* على الجوال يقع نموذج الكفالة أسفل الصفحة بأربع شاشات؛ هذا الشريط
           يُبقي الفعل حاضراً ويقفز إليه. يُخفى على الشاشات الكبيرة حيث
           النموذج مثبّت في العمود الجانبي أصلاً. */}
-      <div className="border-border bg-background/95 sticky bottom-0 z-40 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
-        <div className="flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            {verifying ? (
-              <p className="flex items-center gap-1.5 text-sm leading-6 font-semibold">
-                <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
-                {t.barVerifying}
-              </p>
-            ) : (
-              <>
-                <p className="text-xs text-muted-foreground">{t.remainingMonthly}</p>
-                <p className="text-bridge-ink text-base font-extrabold tabular-nums">
-                  {formatMoney(remaining, orphan.currency, locale)}
-                </p>
-              </>
-            )}
-          </div>
-          {verifying && hasSimilar ? (
-            // الفعل المتاح فعلاً: لا زرّ كفالةٍ يُضغط فيفشل، بل الطريق إلى طفلٍ جاهز.
-            <Button asChild size="lg" variant="outline" className="min-h-11 flex-1">
-              <a href={`#${SIMILAR_READY_ID}`}>{t.barSimilar}</a>
-            </Button>
-          ) : verifying ? (
-            <Button size="lg" className="min-h-11 flex-1" disabled>
-              {t.support(isolate(orphan.display_name))}
-            </Button>
-          ) : (
-            <Button asChild size="lg" className="min-h-11 min-w-0 flex-1">
-              <a href="#sponsor-form" className="truncate">
-                {t.support(isolate(orphan.display_name))}
-              </a>
-            </Button>
-          )}
-        </div>
-      </div>
+      <SponsorCtaPanel
+        className="sticky bottom-0"
+        label={t.support(isolate(orphan.display_name))}
+        verifying={verifying}
+        verifyingText={t.barVerifying}
+        similarLabel={t.barSimilar}
+        hasSimilar={hasSimilar}
+        lead={
+          <>
+            <p className="text-xs text-muted-foreground">{t.remainingMonthly}</p>
+            <p className="text-bridge-ink text-base font-extrabold tabular-nums">
+              {formatMoney(remaining, orphan.currency, locale)}
+            </p>
+          </>
+        }
+      />
 
       <SiteFooter />
     </div>
