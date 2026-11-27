@@ -715,7 +715,7 @@ function OrphanDetail() {
                         className={cn(
                           "min-h-11 rounded-lg text-sm font-bold transition-colors",
                           cadence === k
-                            ? "bg-card text-foreground shadow-soft"
+                            ? "bg-card text-foreground shadow-soft dark:bg-foreground/10"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >

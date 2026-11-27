@@ -23,7 +23,7 @@ const COPY = defineCopy("components/DemoModeBar", {
 });
 
 const LINK =
-  "inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold hover:bg-background/15";
+  "inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold hover:bg-background/15 dark:hover:bg-foreground/10";
 
 /**
  * روابط عاديّة لا روابط الموجّه: الشريط قطعةٌ تُحمَّل وحدها، فلا يشارك صفحاتِ المنصّة وحداتِها.
@@ -40,7 +40,7 @@ export default function DemoModeBar() {
       role="region"
       data-demo-bar
       aria-label={c.label}
-      className="sticky top-0 z-50 bg-foreground text-background print:hidden"
+      className="sticky top-0 z-50 bg-foreground text-background dark:border-b dark:border-border dark:bg-secondary dark:text-foreground print:hidden"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
         <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>
