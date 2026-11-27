@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5140,
+ "count": 5169,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -18286,11 +18286,11 @@
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.confirm": {
-   "en": "Record my support — {0}",
-   "ar": "سجّل دعمي — {0}",
+   "en": "Record my support of {0}",
+   "ar": "سجّل دعمي بمبلغ {0}",
    "kind": "template",
    "params": 1,
-   "hash": "50a07212f14f",
+   "hash": "67592795ec1d",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.failed": {
@@ -30767,6 +30767,210 @@
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/settings.notifications.all": {
+   "en": "Receive email from {0}",
+   "ar": "استقبال البريد من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f22d74b3848f",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.allHint": {
+   "en": "Turning it off stops every email without exception, including payment receipts and failure alerts.",
+   "ar": "إيقافه يوقف كل رسائل البريد بلا استثناء، بما فيها إيصالات الدفع وتنبيهات تعثّره.",
+   "kind": "text",
+   "hash": "4a74ce44d6dd",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.description": {
+   "en": "You decide what reaches your inbox. Anything you stop here stays visible inside the platform.",
+   "ar": "أنت تقرّر ما يصل بريدك. وما توقفه هنا يبقى ظاهراً لك داخل المنصّة.",
+   "kind": "text",
+   "hash": "4576a71d8b50",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_approved.hint": {
+   "en": "For field teams: the admin's decision on a file you uploaded",
+   "ar": "",
+   "kind": "text",
+   "hash": "2ee168e95930",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_approved.label": {
+   "en": "File approvals",
+   "ar": "",
+   "kind": "text",
+   "hash": "d309b5a6d8e8",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_rejected.hint": {
+   "en": "For field teams: a file that needs changes",
+   "ar": "",
+   "kind": "text",
+   "hash": "f3263a2b33d9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_rejected.label": {
+   "en": "Files returned for correction",
+   "ar": "",
+   "kind": "text",
+   "hash": "82e35c0dc254",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_failed.hint": {
+   "en": "When a payment doesn't go through; muting it could end your sponsorship unnoticed",
+   "ar": "",
+   "kind": "text",
+   "hash": "4a5085454348",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_failed.label": {
+   "en": "Failed payments",
+   "ar": "",
+   "kind": "text",
+   "hash": "b734ee5b20d0",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_succeeded.hint": {
+   "en": "Confirmation of each successful monthly payment",
+   "ar": "",
+   "kind": "text",
+   "hash": "4b66c762bd0b",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_succeeded.label": {
+   "en": "Payment receipts",
+   "ar": "",
+   "kind": "text",
+   "hash": "e6da05910c55",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_delivered.hint": {
+   "en": "When the office delivers your gift with a verified document",
+   "ar": "",
+   "kind": "text",
+   "hash": "4618a26f8d28",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_delivered.label": {
+   "en": "In-kind and training delivered",
+   "ar": "",
+   "kind": "text",
+   "hash": "900e7f641279",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_preparing.hint": {
+   "en": "When the office starts preparing your gift",
+   "ar": "",
+   "kind": "text",
+   "hash": "d3510918359a",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_preparing.label": {
+   "en": "In-kind and training in preparation",
+   "ar": "",
+   "kind": "text",
+   "hash": "b1206df83dab",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.report_published.hint": {
+   "en": "When a periodic report is published for a file you sponsor",
+   "ar": "",
+   "kind": "text",
+   "hash": "3f2aa63ee047",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.report_published.label": {
+   "en": "Impact reports",
+   "ar": "",
+   "kind": "text",
+   "hash": "334a34581cee",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.sponsorship_started.hint": {
+   "en": "When a new sponsorship becomes active",
+   "ar": "",
+   "kind": "text",
+   "hash": "12c6d60b5f05",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.sponsorship_started.label": {
+   "en": "Sponsorship started",
+   "ar": "",
+   "kind": "text",
+   "hash": "5c68bf7464d8",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.loadError": {
+   "en": "Your preferences couldn't be loaded. Nothing was changed.",
+   "ar": "تعذّر تحميل تفضيلاتك. لم يتغيّر شيء منها.",
+   "kind": "text",
+   "hash": "51cfadbef8e5",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.loading": {
+   "en": "Loading your preferences…",
+   "ar": "جارٍ تحميل تفضيلاتك…",
+   "kind": "text",
+   "hash": "01c1a440307f",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.offNote": {
+   "en": "Email is off. Notifications stay visible inside the platform, but nothing reaches you outside it, including a failed payment that could end your sponsorship.",
+   "ar": "البريد موقوف. ستبقى الإشعارات ظاهرة داخل المنصّة، لكن لن يصلك خبرٌ خارجها، ومنها تعثّر دفعةٍ قد يُنهي كفالتك.",
+   "kind": "text",
+   "hash": "a52eb7c86e21",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.saveError": {
+   "en": "Couldn't save. Please try again shortly.",
+   "ar": "تعذّر الحفظ. أعد المحاولة بعد قليل.",
+   "kind": "text",
+   "hash": "48b3fc104b8d",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.saved": {
+   "en": "Your preferences are saved",
+   "ar": "حُفظت تفضيلاتك",
+   "kind": "text",
+   "hash": "b889427520e5",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.someHint": {
+   "en": "Choose which kinds reach your inbox. Disabled kinds stay in the notification bell.",
+   "ar": "اختر ما يصل بريدك من الأنواع. المعطَّل منها يبقى في جرس الإشعارات.",
+   "kind": "text",
+   "hash": "ec3d52fc6469",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.someTitle": {
+   "en": "Or keep only some of it",
+   "ar": "وإن أردت بعضه لا كلّه",
+   "kind": "text",
+   "hash": "1931fd2c09d9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.stopAll": {
+   "en": "Stop all email",
+   "ar": "أوقف كل البريد",
+   "kind": "text",
+   "hash": "dd426d6f1311",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.title": {
+   "en": "Notification preferences",
+   "ar": "تفضيلات الإشعارات",
+   "kind": "text",
+   "hash": "8cfc1db6565e",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
   "routes/sso.failed": {
    "en": "We couldn't complete your sign-in from WAMY's platform.",
    "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
@@ -30894,11 +31098,11 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.confirm": {
-   "en": "Record my support — {0}",
-   "ar": "سجّل دعمي — {0}",
+   "en": "Record my support of {0}",
+   "ar": "سجّل دعمي بمبلغ {0}",
    "kind": "template",
    "params": 1,
-   "hash": "50a07212f14f",
+   "hash": "67592795ec1d",
    "file": "src/routes/support.tsx"
   },
   "routes/support.country": {
@@ -31183,10 +31387,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.sumPending": {
-   "en": "—",
-   "ar": "—",
+   "en": "Not chosen yet",
+   "ar": "لم يُحدَّد بعد",
    "kind": "text",
-   "hash": "e3913b1621f1",
+   "hash": "a6ded83fac0f",
    "file": "src/routes/support.tsx"
   },
   "routes/support.sumTarget": {
