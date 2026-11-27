@@ -6,12 +6,16 @@ import { currentRequest } from "@/lib/request-context";
  * المجدول أو التطبيق انقطع النبض، ونبّه المراقب من خارج المنصّة — وهو ما لا
  * يستطيعه تنبيهٌ يسكن داخلها.
  *
- * الرابط من البيئة (HEARTBEAT_URL_OPS / HEARTBEAT_URL_DISPATCH / HEARTBEAT_URL_RECONCILE)؛ بلاه لا شيء.
+ * الرابط من البيئة (HEARTBEAT_URL_OPS / _DISPATCH / _RECONCILE / _RETENTION)؛ بلاه لا شيء.
  * والفشل يُرسل إلى `<url>/fail` (اصطلاح healthchecks.io). ولا يُسقط النبضُ
  * المسارَ أبداً.
  */
 export function pingHeartbeat(
-  name: "HEARTBEAT_URL_OPS" | "HEARTBEAT_URL_DISPATCH" | "HEARTBEAT_URL_RECONCILE",
+  name:
+    | "HEARTBEAT_URL_OPS"
+    | "HEARTBEAT_URL_DISPATCH"
+    | "HEARTBEAT_URL_RECONCILE"
+    | "HEARTBEAT_URL_RETENTION",
   ok: boolean,
 ): void {
   const url = process.env[name]?.trim();

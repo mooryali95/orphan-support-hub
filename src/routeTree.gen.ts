@@ -61,6 +61,7 @@ import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authe
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
 import { Route as AuthenticatedStatementsYearRouteImport } from './routes/_authenticated/statements.$year'
 import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
+import { Route as ApiChildUpdatesRetentionRouteImport } from './routes/api/child-updates/retention'
 import { Route as ApiIntegrationsMirrorRouteImport } from './routes/api/integrations/mirror'
 import { Route as ApiIntegrationsOrphansRouteImport } from './routes/api/integrations/orphans'
 import { Route as ApiIntegrationsRecordsRouteImport } from './routes/api/integrations/records'
@@ -359,6 +360,12 @@ const AuthenticatedTranslateLocaleRoute =
     path: '/translate/$locale',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiChildUpdatesRetentionRoute =
+  ApiChildUpdatesRetentionRouteImport.update({
+    id: '/api/child-updates/retention',
+    path: '/api/child-updates/retention',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiIntegrationsMirrorRoute = ApiIntegrationsMirrorRouteImport.update({
   id: '/api/integrations/mirror',
   path: '/api/integrations/mirror',
@@ -534,6 +541,7 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
+  '/api/child-updates/retention': typeof ApiChildUpdatesRetentionRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
@@ -609,6 +617,7 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
+  '/api/child-updates/retention': typeof ApiChildUpdatesRetentionRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
@@ -687,6 +696,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
+  '/api/child-updates/retention': typeof ApiChildUpdatesRetentionRoute
   '/api/integrations/mirror': typeof ApiIntegrationsMirrorRoute
   '/api/integrations/orphans': typeof ApiIntegrationsOrphansRoute
   '/api/integrations/records': typeof ApiIntegrationsRecordsRoute
@@ -765,6 +775,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/statements/$year'
     | '/translate/$locale'
+    | '/api/child-updates/retention'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/integrations/records'
@@ -840,6 +851,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/statements/$year'
     | '/translate/$locale'
+    | '/api/child-updates/retention'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/integrations/records'
@@ -917,6 +929,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/statements/$year'
     | '/_authenticated/translate/$locale'
+    | '/api/child-updates/retention'
     | '/api/integrations/mirror'
     | '/api/integrations/orphans'
     | '/api/integrations/records'
@@ -971,6 +984,7 @@ export interface RootRouteChildren {
   VisionPaymentsRoute: typeof VisionPaymentsRoute
   OrphansIndexRoute: typeof OrphansIndexRoute
   VisionIndexRoute: typeof VisionIndexRoute
+  ApiChildUpdatesRetentionRoute: typeof ApiChildUpdatesRetentionRoute
   ApiIntegrationsMirrorRoute: typeof ApiIntegrationsMirrorRoute
   ApiIntegrationsOrphansRoute: typeof ApiIntegrationsOrphansRoute
   ApiIntegrationsRecordsRoute: typeof ApiIntegrationsRecordsRoute
@@ -1359,6 +1373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTranslateLocaleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/child-updates/retention': {
+      id: '/api/child-updates/retention'
+      path: '/api/child-updates/retention'
+      fullPath: '/api/child-updates/retention'
+      preLoaderRoute: typeof ApiChildUpdatesRetentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/integrations/mirror': {
       id: '/api/integrations/mirror'
       path: '/api/integrations/mirror'
@@ -1636,6 +1657,7 @@ const rootRouteChildren: RootRouteChildren = {
   VisionPaymentsRoute: VisionPaymentsRoute,
   OrphansIndexRoute: OrphansIndexRoute,
   VisionIndexRoute: VisionIndexRoute,
+  ApiChildUpdatesRetentionRoute: ApiChildUpdatesRetentionRoute,
   ApiIntegrationsMirrorRoute: ApiIntegrationsMirrorRoute,
   ApiIntegrationsOrphansRoute: ApiIntegrationsOrphansRoute,
   ApiIntegrationsRecordsRoute: ApiIntegrationsRecordsRoute,

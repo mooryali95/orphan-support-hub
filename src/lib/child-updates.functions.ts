@@ -171,10 +171,23 @@ export const reviewChildUpdate = createServerFn({ method: "POST" })
       })
       .parse(i),
   )
-  .handler(({ data, context }) =>
-    callRpc<{ ok: true }>(context.supabase, "child_update_review", {
-      _id: data.id,
-      _decision: data.decision,
-      _reason: data.reason,
-    }),
-  );
+  .handler(async ({ data, context }): Promise<RpcResult<{ ok: true }>> => {
+    const res = await callRpc<{ ok: true; purge?: string[] }>(
+      context.supabase,
+      "child_update_review",
+      { _id: data.id, _decision: data.decision, _reason: data.reason },
+    );
+    if (!res.ok) return res;
+    // المرفوض يُحذف ملفّه الآن بعميل الخدمة؛ وإن تعذّر التقطه الاستبقاء الدوري.
+    const purge = res.data.purge ?? [];
+    if (purge.length > 0) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { purgeChildUpdateMedia } = await import("@/lib/child-updates-retention");
+      type Db = Parameters<typeof purgeChildUpdateMedia>[0];
+      if (!(await purgeChildUpdateMedia(supabaseAdmin as unknown as Db, purge))) {
+        const { logServerEvent } = await import("@/lib/server-log");
+        logServerEvent("warn", "child_updates.purge_deferred", { count: purge.length });
+      }
+    }
+    return { ok: true, data: { ok: true } };
+  });

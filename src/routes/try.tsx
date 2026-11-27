@@ -15,7 +15,7 @@ export const Route = createFileRoute("/try")({
       import("@/lib/try-places"),
       import("@/lib/try-cycle"),
       // نسخ مركز الكافل التجريبية في منفذ البيانات: تُسجَّل قبل أن تُرسم أيّ شاشة تحت «جرّب».
-      import("@/lib/try-sponsor-center"),
+      import("@/lib/try-sponsor-center").then((m) => m.registerSponsorCenterDemos()),
     ]).then(() => {}),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";

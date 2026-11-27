@@ -629,7 +629,7 @@ export function AuthPanel({
                   className={cn(
                     "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
                     method === m
-                      ? "bg-card text-foreground shadow-sm"
+                      ? "bg-card text-foreground shadow-sm dark:bg-foreground/10"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >

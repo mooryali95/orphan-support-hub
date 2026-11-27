@@ -501,74 +501,85 @@ type Input<T> = { data: T };
 const uiLocale = (): Locale =>
   typeof document === "undefined" ? "ar" : parseLocale(document.cookie);
 
-registerChildUpdateDemos();
-registerDemo("verify.public", async ({ data }: Input<{ orphanId: string }>) =>
-  tryVerification(data.orphanId),
-);
-registerDemo(
-  "sponsor.readySimilar",
-  async ({ data }: Input<{ orphanId: string; amount: number }>) => ({
-    suggestions: tryReadySimilar(data.orphanId, data.amount, uiLocale()),
+/**
+ * يسجّل نسخ مركز الكافل في منفذ البيانات (مرّةً، ثم لا شيء). نداءٌ صريح لا استيرادٌ عارٍ:
+ * `sideEffects: false` في package.json يُسقط `import "…"` بلا اسمٍ مستعمل من الحزمة.
+ */
+let registered = false;
+export function registerSponsorCenterDemos() {
+  if (registered) return;
+  registered = true;
+  registerChildUpdateDemos();
+  registerDemo("verify.public", async ({ data }: Input<{ orphanId: string }>) =>
+    tryVerification(data.orphanId),
+  );
+  registerDemo(
+    "sponsor.readySimilar",
+    async ({ data }: Input<{ orphanId: string; amount: number }>) => ({
+      suggestions: tryReadySimilar(data.orphanId, data.amount, uiLocale()),
+      error: null,
+    }),
+  );
+  registerDemo("sponsor.timeline.reports", async ({ data }: Input<{ orphanId: string }>) => ({
+    ok: true as const,
+    reports: tryReports(data.orphanId, uiLocale()),
+  }));
+  registerDemo("sponsor.timeline.qualification", async ({ data }: Input<{ orphanId: string }>) => ({
+    programs: tryQualificationTrack(data.orphanId, uiLocale()),
     error: null,
-  }),
-);
-registerDemo("sponsor.timeline.reports", async ({ data }: Input<{ orphanId: string }>) => ({
-  ok: true as const,
-  reports: tryReports(data.orphanId, uiLocale()),
-}));
-registerDemo("sponsor.timeline.qualification", async ({ data }: Input<{ orphanId: string }>) => ({
-  programs: tryQualificationTrack(data.orphanId, uiLocale()),
-  error: null,
-}));
-registerDemo("sponsor.ledger", async ({ data }: Input<{ sponsorshipId: string }>) => {
-  const ledger = tryLedger(data.sponsorshipId, uiLocale());
-  return ledger ? { ok: true as const, ledger } : { ok: false as const, ledger: null };
-});
-registerDemo("sponsor.qualification", async ({ data }: Input<{ orphanId: string }>) =>
-  JSON.stringify(trySponsorQualification(data.orphanId, uiLocale())),
-);
-registerDemo("impact.reports", async ({ data }: Input<{ orphanId: string }>) => ({
-  ok: true as const,
-  reports: tryReports(data.orphanId, uiLocale()),
-}));
-registerDemo(
-  "sponsor.verifyReceipt",
-  async ({ data }: Input<{ sponsorshipId: string; month: string; receipt: string }>) => {
-    const m = tryLedger(data.sponsorshipId, uiLocale())?.months.find((x) => x.month === data.month);
-    const clean = (v: string) => v.trim().toUpperCase();
-    return m?.receipt
-      ? { ok: true as const, match: clean(m.receipt) === clean(data.receipt), current: m.receipt }
-      : { ok: false as const };
-  },
-);
-registerDemo("impact.timeline", async () => ({ ok: true as const, events: [] }));
-registerDemo("sponsor.journeyFeed", async () => tryJourneyFeed(uiLocale()));
-registerDemo("sponsor.digestPreview", async () => ({
-  ok: false as const,
-  html: null,
-  subject: null,
-}));
-// لا دفع في التجربة: «ادفع الآن» يقول إنّه محاكاة، ولا يفتح بوابة.
-registerDemo("sponsor.pay", async () => ({
-  ok: false as const,
-  error: copyOf(COPY, uiLocale()).payDemo,
-}));
-registerDemo("sponsor.manage.list", async () => ({
-  sponsorships: trySponsorships(uiLocale()),
-  error: null,
-}));
-registerDemo("sponsor.manage.pause", async ({ data }: Input<{ id: string; months: number }>) =>
-  tryPause(data.id, data.months),
-);
-registerDemo("sponsor.manage.resume", async ({ data }: Input<{ id: string }>) =>
-  tryResume(data.id),
-);
-registerDemo("sponsor.manage.amount", async ({ data }: Input<{ id: string; amount: number }>) =>
-  tryChangeAmount(data.id, data.amount),
-);
-registerDemo("sponsor.manage.cancel", async ({ data }: Input<{ id: string }>) =>
-  tryCancel(data.id),
-);
+  }));
+  registerDemo("sponsor.ledger", async ({ data }: Input<{ sponsorshipId: string }>) => {
+    const ledger = tryLedger(data.sponsorshipId, uiLocale());
+    return ledger ? { ok: true as const, ledger } : { ok: false as const, ledger: null };
+  });
+  registerDemo("sponsor.qualification", async ({ data }: Input<{ orphanId: string }>) =>
+    JSON.stringify(trySponsorQualification(data.orphanId, uiLocale())),
+  );
+  registerDemo("impact.reports", async ({ data }: Input<{ orphanId: string }>) => ({
+    ok: true as const,
+    reports: tryReports(data.orphanId, uiLocale()),
+  }));
+  registerDemo(
+    "sponsor.verifyReceipt",
+    async ({ data }: Input<{ sponsorshipId: string; month: string; receipt: string }>) => {
+      const m = tryLedger(data.sponsorshipId, uiLocale())?.months.find(
+        (x) => x.month === data.month,
+      );
+      const clean = (v: string) => v.trim().toUpperCase();
+      return m?.receipt
+        ? { ok: true as const, match: clean(m.receipt) === clean(data.receipt), current: m.receipt }
+        : { ok: false as const };
+    },
+  );
+  registerDemo("impact.timeline", async () => ({ ok: true as const, events: [] }));
+  registerDemo("sponsor.journeyFeed", async () => tryJourneyFeed(uiLocale()));
+  registerDemo("sponsor.digestPreview", async () => ({
+    ok: false as const,
+    html: null,
+    subject: null,
+  }));
+  // لا دفع في التجربة: «ادفع الآن» يقول إنّه محاكاة، ولا يفتح بوابة.
+  registerDemo("sponsor.pay", async () => ({
+    ok: false as const,
+    error: copyOf(COPY, uiLocale()).payDemo,
+  }));
+  registerDemo("sponsor.manage.list", async () => ({
+    sponsorships: trySponsorships(uiLocale()),
+    error: null,
+  }));
+  registerDemo("sponsor.manage.pause", async ({ data }: Input<{ id: string; months: number }>) =>
+    tryPause(data.id, data.months),
+  );
+  registerDemo("sponsor.manage.resume", async ({ data }: Input<{ id: string }>) =>
+    tryResume(data.id),
+  );
+  registerDemo("sponsor.manage.amount", async ({ data }: Input<{ id: string; amount: number }>) =>
+    tryChangeAmount(data.id, data.amount),
+  );
+  registerDemo("sponsor.manage.cancel", async ({ data }: Input<{ id: string }>) =>
+    tryCancel(data.id),
+  );
+}
 
 /** لصفحات التجربة: هل يقبل طفل التجربة كفالةً جديدة الآن؟ */
 export const tryAccepts = (c: Pick<TryChild, "id">) => tryVerification(c.id)?.accepts !== false;

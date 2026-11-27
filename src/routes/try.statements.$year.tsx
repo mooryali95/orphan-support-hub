@@ -14,7 +14,11 @@ const COPY = defineCopy("routes/try.statements", {
  * (`DEMO-INV-`) وشارة «نموذجي · محاكاة» ظاهرة في الشاشة والمطبوع.
  */
 export const Route = createFileRoute("/try/statements/$year")({
-  loader: () => import("@/lib/try-sponsor-center").then(() => null),
+  loader: () =>
+    import("@/lib/try-sponsor-center").then((m) => {
+      m.registerSponsorCenterDemos();
+      return null;
+    }),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

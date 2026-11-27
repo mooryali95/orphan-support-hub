@@ -12,7 +12,11 @@ import { copyOf, defineCopy, useCopy } from "@/lib/locale";
  */
 export const Route = createFileRoute("/try/sponsorships/$sponsorshipId/")({
   // نسخ المنفذ تُسجَّل في `beforeLoad` لـ`/try`؛ وهذا احتياطٌ لرابطٍ يُفتح مباشرةً.
-  loader: () => import("@/lib/try-sponsor-center").then(() => null),
+  loader: () =>
+    import("@/lib/try-sponsor-center").then((m) => {
+      m.registerSponsorCenterDemos();
+      return null;
+    }),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

@@ -41,7 +41,7 @@ export const Route = createFileRoute("/try/$childId")({
     await Promise.all([
       import("@/lib/try-places"),
       import("@/lib/try-cycle"),
-      import("@/lib/try-sponsor-center"),
+      import("@/lib/try-sponsor-center").then((m) => m.registerSponsorCenterDemos()),
     ]);
     return { child: tryChild(params.childId) ?? null };
   },
@@ -355,7 +355,7 @@ function TryChildPage({ data }: { data: TryChild }) {
                 className={cn(
                   "min-h-11 rounded-lg text-sm font-bold transition-colors",
                   cadence === k
-                    ? "bg-card text-foreground shadow-soft"
+                    ? "bg-card text-foreground shadow-soft dark:bg-foreground/10"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >

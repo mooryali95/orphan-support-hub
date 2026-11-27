@@ -149,7 +149,7 @@ const COPY = defineCopy("routes/index", {
     hallNote: "تجربةٌ ببياناتٍ نموذجية، بلا حسابٍ ولا خصم.",
     hallNoteLive: "شبكة الندوة حقيقية، وأرقام الدعم فيها محاكاة — بلا حسابٍ ولا خصم.",
     tryIt: "ادخل التجربة — بلا حساب ولا خصم",
-    browse: "تصفّح ملفات الأيتام",
+    sponsor: "اكفل يتيمًا",
     hadithMeaning: null as string | null,
     hadithSource: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
     moneyFunded: "مبالغ الكفالة الشهرية",
@@ -289,7 +289,7 @@ const COPY = defineCopy("routes/index", {
     hallNoteLive:
       "WAMY's network is real; the support figures inside are simulated — no account, nothing charged.",
     tryIt: "Enter the demo — no account, nothing charged",
-    browse: "Browse children's files",
+    sponsor: "Sponsor an orphan",
     hadithMeaning:
       "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
     hadithSource: "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
@@ -512,28 +512,25 @@ function HomePage() {
                 <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg md:leading-9 lg:mx-0">
                   {c.lead}
                 </p>
-                {/* وضع المنصّة (src/config/platform.ts): في التجربة تبدأ الرحلة من /try؛ وبعد الاعتماد من الدليل. */}
-                {/* two buttons and one quiet link: three equal buttons wrapped and left the last alone on its line */}
+                {/* الفعل الأوّل كفالة طفلٍ من الدليل؛ والتجربة بابٌ ثانٍ ما دامت مفعّلة (src/config/platform.ts). */}
+                {/* two buttons and a line of quiet links: three equal buttons wrapped and left the last alone */}
                 <div className="mt-9 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 lg:justify-start">
-                  {isTrial() && (
-                    <Button asChild size="lg">
+                  {/* the one primary act is sponsoring a real child; the trial stays a secondary door
+                      (behind TRIAL_ENABLED through trialRoute, so trial removal drops it) */}
+                  <Button asChild size="lg">
+                    <Link to="/orphans">
+                      {c.sponsor}
+                      <ArrowLeft className="size-4 ltr:-scale-x-100" />
+                    </Link>
+                  </Button>
+                  {(isTrial() || showTrialLink()) && (
+                    <Button asChild size="lg" variant="outline" className="bg-background/70">
                       <Link to={trialRoute("/try")} onClick={enterDemo}>
                         <FlaskConical className="size-4" aria-hidden="true" />
                         {c.tryIt}
                       </Link>
                     </Button>
                   )}
-                  <Button
-                    asChild
-                    size="lg"
-                    variant={isTrial() ? "outline" : "default"}
-                    className={isTrial() ? "bg-background/70" : undefined}
-                  >
-                    <Link to="/orphans">
-                      {c.browse}
-                      <ArrowLeft className="size-4 ltr:-scale-x-100" />
-                    </Link>
-                  </Button>
                   {/* the two quiet links share one line of their own, aligned with the buttons' edge */}
                   <div className="flex basis-full flex-wrap items-center justify-center gap-x-1 lg:justify-start">
                     <Link
@@ -553,16 +550,6 @@ function HomePage() {
                     </a>
                   </div>
                 </div>
-                {showTrialLink() && (
-                  <Link
-                    to={trialRoute("/try")}
-                    onClick={enterDemo}
-                    className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-                  >
-                    <FlaskConical className="size-4" aria-hidden="true" />
-                    {c.tryIt}
-                  </Link>
-                )}
               </div>
               <PartnerPlate className="mx-auto mt-12 w-full max-w-xs lg:mx-0 lg:mt-0 lg:max-w-sm lg:justify-self-end" />
             </div>

@@ -72,7 +72,7 @@ export function KindSwitch<K extends string>({
             className={cn(
               "flex min-h-14 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1.5 text-center transition-[color,background-color,box-shadow] duration-[var(--dur-2)] motion-reduce:transition-none",
               on
-                ? "bg-card text-foreground shadow-soft"
+                ? "bg-card text-foreground shadow-soft dark:bg-foreground/10"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

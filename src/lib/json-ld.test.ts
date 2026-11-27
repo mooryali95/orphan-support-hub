@@ -54,7 +54,7 @@ describe("حارس الحقن في الصفحات", () => {
   });
 
   it("dangerouslySetInnerHTML في المواضع المراجَعة وحدها", () => {
-    const allowed = ["routes/__root.tsx", "components/ui/chart.tsx"];
+    const allowed = ["routes/__root.tsx"];
     const offenders = files
       .filter((f) => readFileSync(f, "utf8").includes("dangerouslySetInnerHTML"))
       .map((f) => f.replace(/\\/g, "/").split("/src/")[1])

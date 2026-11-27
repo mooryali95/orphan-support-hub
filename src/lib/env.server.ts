@@ -54,6 +54,9 @@ const Schema = z.object({
   HEARTBEAT_URL_OPS: url.optional(),
   HEARTBEAT_URL_DISPATCH: url.optional(),
   HEARTBEAT_URL_RECONCILE: url.optional(),
+  HEARTBEAT_URL_RETENTION: url.optional(),
+  /** مدّة استبقاء وسائط الطفل المؤرشَف بالأيام (≥30؛ الافتراض 365). */
+  CHILD_UPDATES_ARCHIVE_DAYS: z.string().trim().regex(/^\d+$/).optional(),
 });
 
 export type ServerEnv = z.infer<typeof Schema>;

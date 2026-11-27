@@ -48,19 +48,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
   --color-shore-need: var(--shore-need);
   --color-bridge: var(--bridge);
   --color-bridge-bright: var(--bridge-bright);
@@ -147,6 +134,20 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+  }
+
+  /* القائمة الأصلية: سهمها في طرف السطر بحسب الاتجاه (Safari يُبقيه يميناً في RTL)،
+     بمسافةٍ لا يلتصق فيها النصّ به. */
+  select:not([multiple], [size]) {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    background-position: right 0.625rem center;
+    padding-inline-end: 2.25rem !important;
+  }
+  select:dir(rtl) {
+    background-position-x: left 0.625rem;
   }
 
   /* لا مسافة بين الحروف: تقطّع وصل العربية. والعناوين متوازنة الأسطر،
@@ -1002,10 +1003,6 @@ header.sticky {
     ),
     var(--card);
 }
-.impact-orbit {
-  stroke-dasharray: 2 5;
-  opacity: 0.8;
-}
 .impact-ray {
   stroke-width: 0.8;
   stroke-dasharray: 1;
@@ -1025,13 +1022,6 @@ header.sticky {
   transform-box: fill-box;
   transform-origin: center;
   animation: impact-pulse 4s ease-in-out 1.6s infinite;
-}
-.impact-cta {
-  background-image: linear-gradient(
-    135deg,
-    var(--primary),
-    color-mix(in oklab, var(--primary) 70%, var(--bridge))
-  );
 }
 @keyframes impact-draw {
   from {
