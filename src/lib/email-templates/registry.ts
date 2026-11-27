@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 
+import { BRAND } from "@/config/brand";
 import { NotificationEmail } from "./notification";
 
 export interface TemplateEntry {
@@ -52,7 +53,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
     displayName: "إشعار المنصّة",
     subject: (data) => data.title,
     previewData: {
-      siteName: "IOCO",
+      siteName: BRAND.name,
       siteUrl: "https://ioco.sunkvalue.com",
       kind: "report_published",
       title: "نُشر تقرير أثر جديد عن محمد",

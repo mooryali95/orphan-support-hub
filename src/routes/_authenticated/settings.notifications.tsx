@@ -8,19 +8,20 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { BRAND, pageTitle } from "@/config/brand";
 import {
   getNotificationPrefs,
   saveNotificationPrefs,
   MUTABLE_KINDS,
 } from "@/lib/notification-prefs.functions";
 
-const TITLE = "تفضيلات الإشعارات — IOCO";
+const TITLE = pageTitle("تفضيلات الإشعارات", false, "ar");
 
 export const Route = createFileRoute("/_authenticated/settings/notifications")({
   head: () => ({
     meta: [
       { title: TITLE },
-      { name: "description", content: "تحكّم في البريد الذي يصلك من IOCO." },
+      { name: "description", content: `تحكّم في البريد الذي يصلك من ${BRAND.name}.` },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -94,7 +95,7 @@ function NotificationSettingsPage() {
               <div>
                 <Label htmlFor="email-all" className="flex items-center gap-2 text-base font-bold">
                   <BellRing className="size-4 text-primary" aria-hidden="true" />
-                  استقبال البريد من IOCO
+                  استقبال البريد من {BRAND.name}
                 </Label>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
                   إيقافه يوقف <strong>كل</strong> رسائل البريد بلا استثناء — بما فيها إيصالات الدفع
@@ -106,7 +107,7 @@ function NotificationSettingsPage() {
                 checked={emailEnabled}
                 disabled={saving}
                 onCheckedChange={toggleAll}
-                aria-label="استقبال البريد من IOCO"
+                aria-label={`استقبال البريد من ${BRAND.name}`}
               />
             </div>
 
