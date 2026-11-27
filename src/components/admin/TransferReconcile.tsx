@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { PanelSkeleton, PanelState } from "@/components/admin/PanelState";
 import { Loader2, TriangleAlert } from "lucide-react";
 
 import {
@@ -57,7 +58,11 @@ export function TransferReconcile({
   const qc = useQueryClient();
   const fetchContext = useServerFn(getDecisionContext);
   const confirm = useServerFn(confirmManualTransfer);
-  const { data: raw, isPending } = useQuery({
+  const {
+    data: raw,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ["decision-context", "transfer", sponsorshipId],
     queryFn: () => fetchContext({ data: { kind: "transfer", id: sponsorshipId } }),
   });
@@ -72,9 +77,14 @@ export function TransferReconcile({
   const [busy, setBusy] = useState(false);
 
   if (isPending) {
-    return <Loader2 className="text-muted-foreground mx-auto my-6 size-5 animate-spin" />;
+    return <PanelSkeleton shape="block" />;
   }
-  if (!ctx) return <p className="text-destructive text-sm">تعذّر تحميل التحويل.</p>;
+  if (!ctx)
+    return (
+      <PanelState pending={false} failed onRetry={() => void refetch()}>
+        {null}
+      </PanelState>
+    );
   if (!ctx.awaiting) {
     return <p className="text-muted-foreground text-sm">هذه الكفالة لا تنتظر تحويلاً بنكياً.</p>;
   }
