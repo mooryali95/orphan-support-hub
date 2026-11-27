@@ -84,7 +84,7 @@ BEGIN
   _ok := false;
   BEGIN
     SET LOCAL ROLE authenticated;
-    SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+    SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
     UPDATE public.orphans SET display_name = 'اسمٌ آخر' WHERE id = _o;
   EXCEPTION WHEN insufficient_privilege THEN _ok := true;
   END;
@@ -133,17 +133,16 @@ BEGIN
 
   -- ٥) الفكّ: الطالب لا يوافق، وموافقةٌ واحدة لا تكفي، والتطبيق مرّة
   SET LOCAL ROLE authenticated;
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
   _req := public.admin_request_unlock(_o, 'edit', '{"display_name":"الاسم المصحَّح"}'::jsonb,
             'خطأ إملائي في الاسم بحسب الوثيقة الرسمية', 'doc://birth-cert');
-  _ok := false;
-  BEGIN PERFORM public.admin_approve_unlock(_req); EXCEPTION WHEN insufficient_privilege THEN _ok := true; END;
-  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — الطالب وافق على طلبه'; END IF;
+  -- الرفض رمزٌ لا استثناء، فيبقى سطره في سجلّ السلامة.
+  IF public.admin_approve_unlock(_req)->>'code' IS DISTINCT FROM 'four_eyes_required' THEN RAISE EXCEPTION 'FAIL — الطالب وافق على طلبه'; END IF;
   _ok := false;
   BEGIN PERFORM public.admin_request_unlock(_o, 'edit', '{"monthly_need":1}'::jsonb, 'تعديل حقلٍ غير مسموح به'); EXCEPTION WHEN OTHERS THEN _ok := true; END;
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — طلبٌ فتح حقلاً خارج القائمة'; END IF;
 
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
   _ok := false;
   BEGIN PERFORM public.admin_approve_unlock(_req); EXCEPTION WHEN OTHERS THEN _ok := true; END;
@@ -152,7 +151,7 @@ BEGIN
   BEGIN PERFORM public.admin_apply_unlock(_req); EXCEPTION WHEN OTHERS THEN _ok := true; END;
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — طُبّق طلبٌ بموافقةٍ واحدة'; END IF;
 
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
   _r := public.admin_apply_unlock(_req);
   _ok := false;
@@ -173,11 +172,11 @@ BEGIN
 
   -- ٦) النافذة تنتهي
   SET LOCAL ROLE authenticated;
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
   _req := public.admin_request_unlock(_o, 'archive', '{"exit_reason":"returned_to_family"}'::jsonb, 'انتقال الطفل إلى رعاية أسرته');
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
   RESET ROLE;
   ALTER TABLE public.unlock_requests DISABLE TRIGGER USER;
@@ -193,11 +192,11 @@ BEGIN
 
   -- ٧) الإذن لمنصّة التشغيل
   SET LOCAL ROLE authenticated;
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
   _req := public.admin_request_unlock(_o, 'rowad_update', '{"group_id":null}'::jsonb, 'نقل الطفل إلى صفٍّ آخر في الرواد');
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000b","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000c","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_approve_unlock(_req);
   _r := public.admin_grant_payload(_req);
   _ok := false;
@@ -213,7 +212,7 @@ BEGIN
   _ok := false;
   BEGIN
     SET LOCAL ROLE authenticated;
-    SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-000000000005","role":"authenticated"}';
+    SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-000000000005","role":"authenticated","aal":"aal2"}';
     PERFORM public.admin_request_unlock(_o, 'unlock', '{}'::jsonb, 'محاولة من غير مسؤول');
   EXCEPTION WHEN insufficient_privilege THEN _ok := true;
   END;
@@ -230,7 +229,7 @@ BEGIN
   BEGIN DELETE FROM public.integrity_log; EXCEPTION WHEN insufficient_privilege THEN _ok := true; END;
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — حُذف سجلّ السلامة'; END IF;
   SET LOCAL ROLE authenticated;
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
   _r := public.integrity_verify();
   RESET ROLE;
   IF NOT (_r->>'ok')::boolean OR (_r->>'checked')::int < 8 THEN
@@ -264,7 +263,7 @@ BEGIN
 
   -- ١١) الطوارئ توقف الكفالة الجديدة
   SET LOCAL ROLE authenticated;
-  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"af100000-0000-4000-8000-00000000000a","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_set_country_emergency('AL', true, 'انقطاع المكتب الوطني');
   RESET ROLE;
   _ok := false;

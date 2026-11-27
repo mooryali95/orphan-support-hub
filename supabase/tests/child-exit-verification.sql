@@ -55,7 +55,7 @@ DECLARE _req UUID;
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}', true);
   BEGIN
     PERFORM public.admin_request_unlock('b3f20000-0000-4000-8000-000000000001', 'archive', '{}'::jsonb,
       'تخرّج الطفل من البرنامج هذا العام');
@@ -79,14 +79,14 @@ DECLARE _req UUID; _r JSONB; _o public.orphans; _a public.sponsorships; _b publi
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}', true);
   _req := public.admin_request_unlock('b3f20000-0000-4000-8000-000000000001', 'archive',
     '{"exit_reason":"graduated","exit_note":"أتمّ الثانوية"}'::jsonb, 'تخرّج الطفل من البرنامج هذا العام');
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000002","role":"authenticated","aal":"aal2"}', true);
   PERFORM public.admin_approve_unlock(_req);
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000003","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000003","role":"authenticated","aal":"aal2"}', true);
   PERFORM public.admin_approve_unlock(_req);
   _r := public.admin_apply_unlock(_req);
   RESET ROLE;
@@ -137,7 +137,7 @@ DECLARE _inbox JSONB;
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}', true);
   _inbox := public.admin_decision_inbox();
   RESET ROLE;
   IF NOT EXISTS (SELECT 1 FROM jsonb_array_elements(_inbox) i
@@ -203,14 +203,14 @@ DO $$
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000005","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000005","role":"authenticated","aal":"aal2"}', true);
   BEGIN
     PERFORM public.admin_archive_child('b3f20000-0000-4000-8000-000000000004', 'transferred', NULL);
     RAISE EXCEPTION 'FAIL — غير المشرف أخرج طفلاً';
   EXCEPTION WHEN insufficient_privilege THEN NULL;
   END;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}', true);
   BEGIN
     PERFORM public.admin_archive_child('b3f20000-0000-4000-8000-000000000004', 'nope', NULL);
     RAISE EXCEPTION 'FAIL — سببٌ خارج القائمة';
@@ -230,7 +230,7 @@ DO $$
 BEGIN
   SET LOCAL ROLE authenticated;
   PERFORM set_config('request.jwt.claims',
-    '{"sub":"b3f00000-0000-4000-8000-000000000006","role":"authenticated"}', true);
+    '{"sub":"b3f00000-0000-4000-8000-000000000006","role":"authenticated","aal":"aal2"}', true);
   BEGIN
     UPDATE public.orphans SET exit_reason = 'deceased' WHERE id = 'b3f20000-0000-4000-8000-000000000003';
     RAISE EXCEPTION 'FAIL — الجهة كتبت سبب الخروج';

@@ -19,7 +19,7 @@ BEGIN
   END IF;
   RAISE NOTICE 'PASS — التطبيع يطوي التشكيل والهمزات والتاء والمحارف الخفية والحروف المتشابهة';
 
-  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,
     '[{"external_ref":"g-1","observed_at":"2026-11-01T00:00:00Z",
        "fields":{"display_name":"فاطمة أحمد","birth_date":"2012-05-01","gender":"female","education_stage":"السادس"}}]'::jsonb);
@@ -62,11 +62,11 @@ BEGIN
 
   -- الإنذار الكاذب لا يعود للقيمة نفسها، والتأكيد يحتاج ملاحظة
   SELECT id INTO _a FROM public.data_alerts WHERE orphan_id = _o AND code = 'age_shift' AND status = 'open';
-  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000009","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000009","role":"authenticated","aal":"aal2"}';
   _r := public.admin_alert_resolve(_a, 'confirmed');
   IF _r->>'code' <> 'note_required' THEN RAISE EXCEPTION 'FAIL — تأكيد بلا ملاحظة'; END IF;
   _r := public.admin_alert_resolve(_a, 'false_positive', 'تصحيح من السجل المدني');
-  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000001","role":"authenticated"}';
+  SET LOCAL request.jwt.claims = '{"sub":"a9500000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}';
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,
     '[{"external_ref":"g-1","observed_at":"2026-11-06T00:00:00Z","fields":{"birth_date":"2012-05-01"}}]'::jsonb);
   PERFORM public.admin_golden_import('wamy', 'AL', NULL,
