@@ -149,7 +149,7 @@ function TryPay() {
       });
       // replace: زرّ الرجوع من «أثري» يعود إلى ملفّ الطفل لا إلى شاشة دفعٍ تمّ،
       // فلا يُسجَّل العطاء مرّتين بضغطةٍ ثانية.
-      void navigate({ to: "/try/impact", search: { done: child!.id }, replace: true });
+      void navigate({ to: "/try/pay/return", search: { child: child!.id }, replace: true });
     }, 1400);
   }
 

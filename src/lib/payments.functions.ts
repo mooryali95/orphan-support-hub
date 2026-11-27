@@ -209,7 +209,7 @@ export const startCheckout = createServerFn({ method: "POST" })
         recurring: sponsorship.type === "monthly" && provider.supportsRecurring(),
         idempotencyKey,
         description: `كفالة ${orphanName} — ${charge.currency} ${charge.amount}`,
-        returnUrl: `${origin}/dashboard?payment=done`,
+        returnUrl: `${origin}/payment/return?s=${sponsorship.id}`,
         cancelUrl: `${origin}/dashboard?payment=cancelled`,
       });
     } catch (cause) {

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5227,
+ "count": 5255,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -14545,6 +14545,182 @@
    "kind": "text",
    "hash": "d050b3dcba89",
    "file": "src/components/orphans/VerificationBadge.tsx"
+  },
+  "components/payment/PaymentReturnView.checking": {
+   "en": "Checking…",
+   "ar": "نتحقّق…",
+   "kind": "text",
+   "hash": "8665ba5cc96b",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.child": {
+   "en": "Sponsorship: {0}",
+   "ar": "الكفالة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e62fb45542ab",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.loadError": {
+   "en": "Could not read the payment status. Nothing was charged because of this page.",
+   "ar": "تعذّرت قراءة حال الدفعة. لم يُخصم شيءٌ بسبب هذه الصفحة.",
+   "kind": "text",
+   "hash": "e6ff76cc41ec",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.loading": {
+   "en": "Reading your payment status from our records…",
+   "ar": "نقرأ حال دفعتك من سجلّنا…",
+   "kind": "text",
+   "hash": "6e250fdc20b2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.reference": {
+   "en": "Payment reference",
+   "ar": "مرجع الدفعة",
+   "kind": "text",
+   "hash": "804c5477bed4",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.refresh": {
+   "en": "Refresh status now",
+   "ar": "حدّث الحال الآن",
+   "kind": "text",
+   "hash": "2b3f3b169deb",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.simulated": {
+   "en": "This is a simulated return from a sample payment gateway. Nothing was paid.",
+   "ar": "هذه عودةٌ محاكاة من بوابة دفعٍ تجريبية. لم يُدفع شيء.",
+   "kind": "text",
+   "hash": "04688e5407e7",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.label": {
+   "en": "Ended",
+   "ar": "منتهية",
+   "kind": "text",
+   "hash": "92dd7da9fdf2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.next": {
+   "en": "Start again from my sponsorships",
+   "ar": "ابدأ من كفالاتي",
+   "kind": "text",
+   "hash": "c6402c0f293b",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.text": {
+   "en": "We found no open payment for this sponsorship, or its time ran out. Start the payment again if you wish.",
+   "ar": "لم نجد دفعةً قائمة لهذه الكفالة، أو انتهت مهلتها. ابدأ الدفع من جديد إن أردت.",
+   "kind": "text",
+   "hash": "a88f603d5aed",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.title": {
+   "en": "The payment session ended",
+   "ar": "انتهت جلسة الدفع",
+   "kind": "text",
+   "hash": "2da4d3b2db49",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.label": {
+   "en": "Not completed",
+   "ar": "لم تتمّ",
+   "kind": "text",
+   "hash": "39eb462427b3",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.next": {
+   "en": "Complete payment from my sponsorships",
+   "ar": "أكمل الدفع من كفالاتي",
+   "kind": "text",
+   "hash": "cd3f154181d0",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.text": {
+   "en": "The gateway declined or cancelled the payment. Your sponsorship is saved and waits for payment, and nothing was charged.",
+   "ar": "رفضت البوابة الدفعة أو أُلغيت. كفالتك محفوظة تنتظر الدفع، ولم يُخصم منك شيء.",
+   "kind": "text",
+   "hash": "d727a17db506",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.title": {
+   "en": "The payment did not go through",
+   "ar": "لم تتمّ الدفعة",
+   "kind": "text",
+   "hash": "a10818eb05ec",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.label": {
+   "en": "Being confirmed",
+   "ar": "قيد التأكيد",
+   "kind": "text",
+   "hash": "86cb5f86a3d4",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.next": {
+   "en": "Go to my sponsorships",
+   "ar": "اذهب إلى كفالاتي",
+   "kind": "text",
+   "hash": "2395d4372e66",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.text": {
+   "en": "The gateway sent you back but its confirmation has not reached us yet. This usually takes a few minutes, and the status here refreshes on its own.",
+   "ar": "وصلنا خبر البوابة ولم يصل تأكيدها بعد. يحدث هذا عادةً خلال دقائق، ونحدّث الحال هنا تلقائياً.",
+   "kind": "text",
+   "hash": "d6b1d4be7e20",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.title": {
+   "en": "Your payment is being confirmed",
+   "ar": "دفعتك قيد التأكيد",
+   "kind": "text",
+   "hash": "28a87d86b704",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.label": {
+   "en": "Completed",
+   "ar": "تمّت",
+   "kind": "text",
+   "hash": "4407f9934a6d",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.next": {
+   "en": "Go to my sponsorships",
+   "ar": "اذهب إلى كفالاتي",
+   "kind": "text",
+   "hash": "2395d4372e66",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.text": {
+   "en": "The payment is recorded, and the sponsorship starts this month.",
+   "ar": "سُجّلت الدفعة في سجلّنا، وتبدأ الكفالة من هذا الشهر.",
+   "kind": "text",
+   "hash": "e0e94f4c5ef2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.title": {
+   "en": "Your payment arrived",
+   "ar": "وصلت دفعتك",
+   "kind": "text",
+   "hash": "0c2f9013dcb1",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.stopped": {
+   "en": "Still pending. Automatic refresh has stopped; refresh whenever you like.",
+   "ar": "ما زالت معلّقة. توقّفنا عن التحديث التلقائي؛ حدّثها متى شئت.",
+   "kind": "text",
+   "hash": "3025fad5b2b8",
+   "file": "src/components/payment/PaymentReturnView.tsx"
   },
   "components/profile/OrphanProfilePanel.cancel": {
    "en": "Cancel",
@@ -31159,6 +31335,13 @@
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/payment.return.title": {
+   "en": "Payment status",
+   "ar": "حال الدفعة",
+   "kind": "text",
+   "hash": "19d131e3e645",
+   "file": "src/routes/_authenticated/payment.return.tsx"
+  },
   "routes/settings.notifications.all": {
    "en": "Receive email from {0}",
    "ar": "استقبال البريد من {0}",
@@ -33707,6 +33890,20 @@
    "kind": "text",
    "hash": "e6b845ebcfba",
    "file": "src/routes/try.pay.tsx"
+  },
+  "routes/try.pay.return.pageTitle": {
+   "en": "Payment status · Try the platform",
+   "ar": "حال الدفعة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "2cdfcd9bff15",
+   "file": "src/routes/try.pay_.return.tsx"
+  },
+  "routes/try.pay.return.title": {
+   "en": "Payment status",
+   "ar": "حال الدفعة",
+   "kind": "text",
+   "hash": "19d131e3e645",
+   "file": "src/routes/try.pay_.return.tsx"
   },
   "routes/try.pay.simulated": {
    "en": "Simulated",
