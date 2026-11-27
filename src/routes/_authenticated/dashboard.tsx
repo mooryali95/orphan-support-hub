@@ -30,7 +30,8 @@ import {
   fundingPercent,
   totalsByCurrency,
 } from "@/lib/format";
-import { BRAND, pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
+import { copyOf, defineCopy, useCopy, useLocale, type Locale } from "@/lib/locale";
 import { StatTile } from "@/components/kit/StatTile";
 import { EmptyState } from "@/components/kit/EmptyState";
 import { CelebrateOverlay } from "@/components/kit/Celebrate";
@@ -42,6 +43,113 @@ import { MyEvidence } from "@/components/impact/MyEvidence";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
 import { myImpact } from "@/lib/my-impact";
 
+const COPY = defineCopy("routes/_authenticated/dashboard", {
+  ar: {
+    pageTitle: "كفالاتي",
+    title: "أثري",
+    description: "أثر كفالاتك، ومتابعة كلّ كفالة وحالة كلّ ملفّ.",
+    payFailed: "تعذّر بدء الدفع",
+    unexpected: "حدث خطأ غير متوقع",
+    celebrateTitle: "بدأت كفالتك",
+    celebrateText:
+      "وصل دفعك، ويتأكّد خلال دقائق. ثم ترى كل شهرٍ في «كفالاتي»: متى حُوِّل المبلغ للجهة، ومتى وصل الطفلَ بمستند، وما تغيّر في رحلته.",
+    celebrateAction: "إلى كفالاتي",
+    cancelledLead: "لم يكتمل الدفع، ولم يُخصم شيء.",
+    cancelledText: "كفالتك محفوظة تنتظر الدفع في «يحتاج إجراءك» أدناه، وتكملها متى شئت.",
+    gotIt: "فهمت",
+    statCount: "عدد الكفالات",
+    statPledges: "تعهّداتك",
+    statActive: "الكفالات النشطة",
+    statMonthly: "التزامك الشهري",
+    needsAction: "يحتاج إجراءك",
+    needsOnline: "أكمل الدفع لتبدأ الكفالة؛ لا يُعلَن الطفل مكفولاً قبل تأكيده.",
+    needsTransfer: "تُستكمل الكفالة بتحويلٍ بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.",
+    onHold: "التحصيل الإلكتروني موقوف مؤقتاً.",
+    onHoldUntil:
+      "وحتى ذلك الحين تُستكمل الكفالة بتحويل بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.",
+    deletedFile: "ملفّ محذوف",
+    monthly: "شهرياً",
+    once: "لمرة واحدة",
+    requested: (date: string) => `— طُلبت ${date}`,
+    started: (date: string) => `— بدأت ${date}`,
+    completePayment: "أكمل الدفع",
+    transferSteps: "تعليمات التحويل",
+    file: "الملفّ",
+    mySponsorships: "كفالاتك",
+    loadFailed: "تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.",
+    retry: "إعادة المحاولة",
+    emptyPendingTitle: "لا كفالة جارية بعد",
+    emptyPendingText: "حين يُؤكَّد دفع الكفالة أعلاه تظهر هنا بجدولها وأثرها.",
+    emptyTitle: "لم تبدأ أي كفالة بعد",
+    emptyText: "اختر ملفاً معتمداً من الدليل وابدأ كفالتك الأولى، أو ادعم مجموعةً أو منطقة.",
+    browse: "تصفّح الملفات",
+    schedule: "الجدول والتفاصيل",
+    showImpact: "عرض الأثر والتقارير",
+    hideImpact: "إخفاء الأثر",
+    endsOn: (date: string) => `تنتهي في ${date} بعد آخر شهرٍ مدفوع، ولا يُحصَّل منك شيءٌ بعدها.`,
+    pausedUntil: (date: string) => `موقوفة مؤقّتاً بطلبك — تُستأنف تلقائياً في ${date}.`,
+    pausedByProvider: "أوقف مزوّد الدفع التحصيل مؤقّتاً.",
+    childExit: (date: string) =>
+      `انتهت في ${date} لأن الطفل غادر البرنامج — راجع إشعاراتك للتفاصيل.`,
+    endedOn: (date: string) => `انتهت في ${date}.`,
+  },
+  en: {
+    pageTitle: "My sponsorships",
+    title: "My impact",
+    description: "The impact of your sponsorships, and where each sponsorship and file stands.",
+    payFailed: "Couldn't start the payment",
+    unexpected: "Something went wrong",
+    celebrateTitle: "Your sponsorship has begun",
+    celebrateText:
+      'Your payment arrived and will be confirmed within minutes. Then each month you\'ll see in "My sponsorships" when the amount was sent to the field organization, when it reached the child with a document, and what changed in their journey.',
+    celebrateAction: "Go to my sponsorships",
+    cancelledLead: "The payment wasn't completed, and nothing was charged.",
+    cancelledText:
+      'Your sponsorship is saved and waits for payment under "Needs your action" below. Complete it whenever you like.',
+    gotIt: "Got it",
+    statCount: "Sponsorships",
+    statPledges: "Your pledges",
+    statActive: "Active sponsorships",
+    statMonthly: "Your monthly commitment",
+    needsAction: "Needs your action",
+    needsOnline:
+      "Complete the payment to start the sponsorship; the child isn't shown as sponsored until it's confirmed.",
+    needsTransfer:
+      "The sponsorship is completed by a bank transfer that the administration confirms, and starts as soon as receipt is confirmed.",
+    onHold: "Online payment is paused for now.",
+    onHoldUntil:
+      "Until then, sponsorships are completed by a bank transfer that the administration confirms, and start as soon as receipt is confirmed.",
+    deletedFile: "Deleted file",
+    monthly: "monthly",
+    once: "once",
+    requested: (date: string) => `— requested ${date}`,
+    started: (date: string) => `— started ${date}`,
+    completePayment: "Complete payment",
+    transferSteps: "Transfer instructions",
+    file: "File",
+    mySponsorships: "Your sponsorships",
+    loadFailed: "Couldn't load your sponsorships. Please try again.",
+    retry: "Try again",
+    emptyPendingTitle: "No ongoing sponsorship yet",
+    emptyPendingText:
+      "Once the payment above is confirmed, the sponsorship appears here with its schedule and impact.",
+    emptyTitle: "You haven't started a sponsorship yet",
+    emptyText:
+      "Choose an approved file from the directory and start your first sponsorship, or support a group or a region.",
+    browse: "Browse files",
+    schedule: "Schedule and details",
+    showImpact: "Show impact and reports",
+    hideImpact: "Hide impact",
+    endsOn: (date: string) =>
+      `Ends on ${date} after the last paid month; nothing is charged after that.`,
+    pausedUntil: (date: string) => `Paused at your request — resumes automatically on ${date}.`,
+    pausedByProvider: "The payment provider has paused collection for now.",
+    childExit: (date: string) =>
+      `Ended on ${date} because the child left the program — see your notifications for details.`,
+    endedOn: (date: string) => `Ended on ${date}.`,
+  },
+});
+
 /** من التجربة إن وُجدت (`@/lib/trial-slots`) */
 const ProposalCard = trialSlots?.ProposalCard;
 
@@ -52,23 +160,22 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
     const p = raw["payment"];
     return p === "done" || p === "cancelled" ? { payment: p } : {};
   },
-  head: () => ({
-    meta: [
-      { title: pageTitle("كفالاتي") },
-      {
-        name: "description",
-        content: BRAND.description,
-      },
-      { property: "og:title", content: pageTitle("كفالاتي") },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      {
-        property: "og:description",
-        content: BRAND.description,
-      },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    const title = pageTitle(copyOf(COPY, l).pageTitle, true, l);
+    const description = brandFor(l).description;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
+        { property: "og:description", content: description },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: DashboardPage,
 });
 
@@ -76,6 +183,8 @@ function DashboardPage() {
   const { payment } = Route.useSearch();
   const navigate = Route.useNavigate();
   const statusLabel = useStatusLabel();
+  const c = useCopy(COPY);
+  const locale = useLocale();
   const fetchList = useServerFn(listMySponsorships);
   const pay = useServerFn(startCheckout);
   const fetchMode = useServerFn(getPaymentMode);
@@ -101,13 +210,13 @@ function DashboardPage() {
     try {
       const res = await pay({ data: { sponsorshipId: id } });
       if (!res.ok) {
-        toast.error(res.error ?? "تعذّر بدء الدفع");
+        toast.error(res.error ?? c.payFailed);
         return;
       }
       // التحويل اليدوي صفحة داخلية، وبوابة الدفع عنوان خارجي.
       window.location.href = res.checkoutUrl;
     } catch {
-      toast.error("حدث خطأ غير متوقع");
+      toast.error(c.unexpected);
     } finally {
       setPaying(null);
     }
@@ -125,12 +234,12 @@ function DashboardPage() {
   const ready = !isLoading && !listFailed;
 
   return (
-    <DashboardShell title="أثري" description="أثر كفالاتك، ومتابعة كلّ كفالة وحالة كلّ ملفّ.">
+    <DashboardShell title={c.title} description={c.description}>
       {payment === "done" && (
         <CelebrateOverlay
-          title="بدأت كفالتك"
-          text="وصل دفعك، ويتأكّد خلال دقائق. ثم ترى كل شهرٍ في «كفالاتي»: متى حُوِّل المبلغ للجهة، ومتى وصل الطفلَ بمستند، وما تغيّر في رحلته."
-          action="إلى كفالاتي"
+          title={c.celebrateTitle}
+          text={c.celebrateText}
+          action={c.celebrateAction}
           onClose={() => void navigate({ search: {}, replace: true, resetScroll: false })}
         />
       )}
@@ -142,8 +251,7 @@ function DashboardPage() {
           className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-bridge/40 bg-bridge/8 p-4 text-sm leading-7"
         >
           <p className="min-w-0 flex-1">
-            <strong>لم يكتمل الدفع، ولم يُخصم شيء.</strong> كفالتك محفوظة تنتظر الدفع في «يحتاج
-            إجراءك» أدناه، وتكملها متى شئت.
+            <strong>{c.cancelledLead}</strong> {c.cancelledText}
           </p>
           <Button
             type="button"
@@ -151,7 +259,7 @@ function DashboardPage() {
             size="sm"
             onClick={() => void navigate({ search: {}, replace: true, resetScroll: false })}
           >
-            فهمت
+            {c.gotIt}
           </Button>
         </div>
       )}
@@ -184,17 +292,17 @@ function DashboardPage() {
       {/* 1. الخلاصة أوّلاً (UI-05): ثلاثة أرقام، بهيكلٍ بارتفاعها أثناء التحميل فلا يقفز ما تحتها. */}
       {!listFailed && (
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <StatTile label="عدد الكفالات" value={String(sponsorships.length)} loading={isLoading} />
+          <StatTile label={c.statCount} value={String(sponsorships.length)} loading={isLoading} />
           {/* التعهّدات (بناء الأهلية والعيني) جزءٌ من دعمك؛ كانت لا تظهر إلا أسفل الصفحة. */}
-          <StatTile label="تعهّداتك" value={String(pledgeCount)} loading={pledgesLoading} />
+          <StatTile label={c.statPledges} value={String(pledgeCount)} loading={pledgesLoading} />
           <StatTile
-            label="الكفالات النشطة"
+            label={c.statActive}
             value={String(sponsorships.filter((s) => s.status === "active").length)}
             loading={isLoading}
           />
           <StatTile
-            label="التزامك الشهري"
-            value={formatMoneyTotals(activeTotals, fallbackCurrency)}
+            label={c.statMonthly}
+            value={formatMoneyTotals(activeTotals, fallbackCurrency, locale)}
             loading={isLoading}
           />
         </div>
@@ -215,18 +323,16 @@ function DashboardPage() {
           className="mt-8 rounded-2xl border border-bridge/40 bg-bridge/8 p-5"
         >
           <h2 id="needs-action" className="text-xl font-bold">
-            يحتاج إجراءك
+            {c.needsAction}
           </h2>
           <p className="mt-1 text-sm leading-7 text-muted-foreground">
-            {mode?.online
-              ? "أكمل الدفع لتبدأ الكفالة؛ لا يُعلَن الطفل مكفولاً قبل تأكيده."
-              : "تُستكمل الكفالة بتحويلٍ بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام."}
+            {mode?.online ? c.needsOnline : c.needsTransfer}
           </p>
           {mode?.onHold && (
             // التعليق يُشرَح لا يُخفى: زرّ لا يعمل بلا سبب معلن يُفسَّر عطلاً،
             // والكافل الذي يظنّ المنصّة معطوبة لا يعود.
             <p className="mt-3 text-sm leading-7">
-              <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason}
+              <strong>{c.onHold}</strong> {mode.holdReason}
             </p>
           )}
           <ul className="mt-4 space-y-3">
@@ -239,23 +345,23 @@ function DashboardPage() {
                 >
                   <div className="flex-1">
                     <p className="font-bold">
-                      <Name>{orphan?.display_name ?? "ملفّ محذوف"}</Name>
+                      <Name>{orphan?.display_name ?? c.deletedFile}</Name>
                     </p>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {formatMoney(s.amount, s.currency)}{" "}
-                      {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — طُلبت{" "}
-                      {formatDate(s.created_at)}
+                    <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
+                      {formatMoney(s.amount, s.currency, locale)}{" "}
+                      {s.type === "monthly" ? c.monthly : c.once}{" "}
+                      {c.requested(formatDate(s.created_at, locale))}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button onClick={() => onPay(s.id)} disabled={paying === s.id}>
                       {paying === s.id && <Loader2 className="size-4 animate-spin" />}
-                      {mode?.online ? "أكمل الدفع" : "تعليمات التحويل"}
+                      {mode?.online ? c.completePayment : c.transferSteps}
                     </Button>
                     {orphan && (
                       <Button asChild variant="outline">
                         <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
-                          الملفّ
+                          {c.file}
                         </Link>
                       </Button>
                     )}
@@ -270,8 +376,7 @@ function DashboardPage() {
 
       {ready && mode?.onHold && pending.length === 0 && (
         <p className="mt-6 rounded-2xl border border-bridge/30 bg-bridge/8 p-4 text-sm leading-7 text-foreground">
-          <strong>التحصيل الإلكتروني موقوف مؤقتاً.</strong> {mode.holdReason} وحتى ذلك الحين تُستكمل
-          الكفالة بتحويل بنكي تؤكّده الإدارة، وتُفعّل فور تأكيد الاستلام.
+          <strong>{c.onHold}</strong> {mode.holdReason} {c.onHoldUntil}
         </p>
       )}
 
@@ -287,7 +392,7 @@ function DashboardPage() {
       <div className="reveal-scroll mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <section aria-labelledby="my-sponsorships">
           <h2 id="my-sponsorships" className="text-xl font-bold">
-            كفالاتك
+            {c.mySponsorships}
           </h2>
           <div className="mt-4 space-y-4">
             {isLoading ? (
@@ -311,22 +416,18 @@ function DashboardPage() {
                 role="alert"
                 className="space-y-3 rounded-2xl border border-border bg-card p-8 text-center"
               >
-                <p className="text-destructive">تعذّر تحميل كفالاتك. يرجى إعادة المحاولة.</p>
+                <p className="text-destructive">{c.loadFailed}</p>
                 <Button variant="outline" onClick={() => void refetch()}>
-                  إعادة المحاولة
+                  {c.retry}
                 </Button>
               </div>
             ) : others.length === 0 ? (
               <EmptyState
-                title={pending.length > 0 ? "لا كفالة جارية بعد" : "لم تبدأ أي كفالة بعد"}
-                text={
-                  pending.length > 0
-                    ? "حين يُؤكَّد دفع الكفالة أعلاه تظهر هنا بجدولها وأثرها."
-                    : "اختر ملفاً معتمداً من الدليل وابدأ كفالتك الأولى، أو ادعم مجموعةً أو منطقة."
-                }
+                title={pending.length > 0 ? c.emptyPendingTitle : c.emptyTitle}
+                text={pending.length > 0 ? c.emptyPendingText : c.emptyText}
                 action={
                   <Button asChild>
-                    <Link to="/orphans">تصفّح الملفات</Link>
+                    <Link to="/orphans">{c.browse}</Link>
                   </Button>
                 }
               />
@@ -345,7 +446,7 @@ function DashboardPage() {
                       <div className="flex min-w-0 flex-1 basis-full items-center gap-4 sm:basis-auto">
                         <MuralImage
                           photoUrl={null}
-                          displayName={orphan?.display_name ?? "ملفّ محذوف"}
+                          displayName={orphan?.display_name ?? c.deletedFile}
                           register={registerFor("", percent)}
                           className="size-16 shrink-0 rounded-xl bg-secondary"
                         />
@@ -353,18 +454,18 @@ function DashboardPage() {
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-lg font-bold">
-                              <Name>{orphan?.display_name ?? "ملفّ محذوف"}</Name>
+                              <Name>{orphan?.display_name ?? c.deletedFile}</Name>
                             </h3>
                             <Badge variant={s.status === "active" ? "default" : "secondary"}>
                               {statusLabel(s.status)}
                             </Badge>
                           </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {formatMoney(s.amount, s.currency)}{" "}
-                            {s.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — بدأت{" "}
-                            {formatDate(s.started_at ?? s.created_at)}
+                          <p className="mt-1 text-sm text-muted-foreground tabular-nums">
+                            {formatMoney(s.amount, s.currency, locale)}{" "}
+                            {s.type === "monthly" ? c.monthly : c.once}{" "}
+                            {c.started(formatDate(s.started_at ?? s.created_at, locale))}
                           </p>
-                          <LifecycleNote s={s} />
+                          <LifecycleNote s={s} c={c} locale={locale} />
                           {orphan && (
                             <CrossingProgress percent={percent} className="mt-3 max-w-sm" />
                           )}
@@ -374,13 +475,13 @@ function DashboardPage() {
                       <div className="flex flex-wrap gap-2">
                         <Button asChild size="sm">
                           <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
-                            الجدول والتفاصيل
+                            {c.schedule}
                           </Link>
                         </Button>
                         {orphan && (
                           <Button asChild variant="outline" size="sm">
                             <Link to="/orphans/$orphanId" params={{ orphanId: orphan.id }}>
-                              الملفّ
+                              {c.file}
                             </Link>
                           </Button>
                         )}
@@ -398,8 +499,8 @@ function DashboardPage() {
                     {orphan && (
                       <details className="group mt-4">
                         <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-sm font-bold text-primary">
-                          <span className="group-open:hidden">عرض الأثر والتقارير</span>
-                          <span className="hidden group-open:inline">إخفاء الأثر</span>
+                          <span className="group-open:hidden">{c.showImpact}</span>
+                          <span className="hidden group-open:inline">{c.hideImpact}</span>
                         </summary>
                         <ImpactPanel orphanId={orphan.id} orphanName={orphan.display_name} />
                       </details>
@@ -424,18 +525,27 @@ function DashboardPage() {
 }
 
 /** ما سيحدث للكفالة، بتاريخه — لا حالةٌ مبهمة. */
-function LifecycleNote({ s }: { s: MySponsorship }) {
+function LifecycleNote({
+  s,
+  c,
+  locale,
+}: {
+  s: MySponsorship;
+  c: (typeof COPY)["ar"];
+  locale: Locale;
+}) {
+  const date = (v: string | null | undefined) => formatDate(v, locale);
   const text =
     s.cancel_effective_at && (s.status === "active" || s.status === "paused")
-      ? `تنتهي في ${formatDate(s.cancel_effective_at)} بعد آخر شهرٍ مدفوع، ولا يُحصَّل منك شيءٌ بعدها.`
+      ? c.endsOn(date(s.cancel_effective_at))
       : s.status === "paused" && s.paused_until
-        ? `موقوفة مؤقّتاً بطلبك — تُستأنف تلقائياً في ${formatDate(s.paused_until)}.`
+        ? c.pausedUntil(date(s.paused_until))
         : s.status === "paused"
-          ? "أوقف مزوّد الدفع التحصيل مؤقّتاً."
+          ? c.pausedByProvider
           : s.status === "completed" && s.end_reason === "child_exit"
-            ? `انتهت في ${formatDate(s.ended_at)} لأن الطفل غادر البرنامج — راجع إشعاراتك للتفاصيل.`
+            ? c.childExit(date(s.ended_at))
             : s.status === "cancelled" && s.ended_at
-              ? `انتهت في ${formatDate(s.ended_at)}.`
+              ? c.endedOn(date(s.ended_at))
               : null;
   return text ? <p className="mt-1 text-sm leading-7 text-bridge-ink">{text}</p> : null;
 }
