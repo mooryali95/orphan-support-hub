@@ -99,8 +99,11 @@ export function VisionShell({ children }: { children: ReactNode }) {
         <main id="main" tabIndex={-1}>
           <nav
             aria-label={c.nav}
-            className="sticky top-16 z-30 border-b border-wine/10 bg-ivory/90 backdrop-blur"
-            style={{ viewTransitionName: "vision-nav" }}
+            className="sticky z-30 border-b border-wine/10 bg-ivory/90 backdrop-blur"
+            style={{
+              viewTransitionName: "vision-nav",
+              top: "calc(var(--demo-bar-h, 0px) + var(--site-header-h, 4rem))",
+            }}
           >
             <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none]">
               {TABS.map((tab) => {

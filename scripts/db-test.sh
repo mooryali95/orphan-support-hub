@@ -94,7 +94,8 @@ for suite in supabase/tests/phase0-verification.sql \
               supabase/tests/data-building-verification.sql \
               supabase/tests/operating-link-verification.sql \
               supabase/tests/child-updates-verification.sql \
-              supabase/tests/child-updates-retention-verification.sql; do
+              supabase/tests/child-updates-retention-verification.sql \
+              supabase/tests/admin-pass2-verification.sql; do
   echo "▸ $(basename "$suite")"
   # ROLLBACK في نهاية كل مجموعة، فلا تتسرّب حالة بينها.
   if out=$("${PSQL[@]}" -f "$suite" 2>&1); then

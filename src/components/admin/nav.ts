@@ -13,6 +13,7 @@ export type Tab =
   | "today"
   | "countries"
   | "trust"
+  | "decisions"
   | "data"
   | "report"
   | "transfers"
@@ -38,7 +39,7 @@ export type Tab =
 export const JOB_TABS: Record<Job, readonly Tab[]> = {
   today: ["today"],
   countries: ["countries"],
-  quality: ["trust", "data", "report"],
+  quality: ["trust", "decisions", "data", "report"],
   money: ["transfers", "pledges", "rec_payments", "sponsorships"],
   people: [
     "sponsors",

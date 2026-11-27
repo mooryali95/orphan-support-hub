@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { exitDemo, useDemo } from "@/lib/demo-mode";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -34,13 +36,37 @@ const LINK =
 export default function DemoModeBar() {
   const demo = useDemo();
   const c = useCopy(COPY);
+  // يلتصق من الشاشة الصغيرة فما فوق وحدها (سطرٌ واحد)؛ على 360px يلتفّ ثلاثة أسطر فيمرّ
+  // مع الصفحة، ويبقى شريط التجربة تحت الرأس دليلاً. ارتفاعه الملتصق في `--demo-bar-h`
+  // ليلتصق الرأس تحته لا فوقه.
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const root = document.documentElement;
+    const set = () =>
+      root.style.setProperty(
+        "--demo-bar-h",
+        getComputedStyle(el).position === "sticky" ? `${el.offsetHeight}px` : "0px",
+      );
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    window.addEventListener("resize", set);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", set);
+      root.style.removeProperty("--demo-bar-h");
+    };
+  }, [demo]);
   if (!demo) return null;
   return (
     <div
+      ref={ref}
       role="region"
       data-demo-bar
       aria-label={c.label}
-      className="sticky top-0 z-50 bg-foreground text-background dark:border-b dark:border-border dark:bg-secondary dark:text-foreground print:hidden"
+      className="relative top-0 z-50 bg-foreground sm:sticky text-background dark:border-b dark:border-border dark:bg-secondary dark:text-foreground print:hidden"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
         <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>

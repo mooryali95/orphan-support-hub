@@ -6,6 +6,8 @@ import { useState } from "react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
 import { Busy, Failed, NeedsUpdate } from "@/components/admin/data/shared";
+import { ChildFileSheet } from "@/components/admin/data/WorkTools";
+import { AdminSearch } from "@/components/admin/search/AdminSearch";
 import { type Tab as WorkTab } from "@/components/admin/data/sources/shared";
 import { TodayQueue } from "@/components/admin/today/TodayQueue";
 import { useUrlFilters } from "@/components/admin/today/useUrlFilters";
@@ -43,6 +45,7 @@ function CountryDataPage() {
   const access = useQuery({ queryKey: ["my-country-access"], queryFn: () => fetchAccess() });
   const [country, setCountry] = useState("");
   const [tab, setTab] = useState<WorkTab | undefined>(undefined);
+  const [fileId, setFileId] = useState<string | null>(null);
   const [filters, setFilters] = useUrlFilters();
   const res = access.data;
 
@@ -63,6 +66,9 @@ function CountryDataPage() {
       ) : (
         // «اليوم» بنطاق دول الفريق، ثم درج الدولة نفسه الذي تفتحه الإدارة.
         <div className="space-y-12">
+          {/* البحث بنطاق دول الفريق: أطفالها وحدهم (`admin_search` يحرس بـcountry_can). */}
+          <AdminSearch onPick={(h) => h.kind === "child" && setFileId(h.item.id)} />
+          <ChildFileSheet id={fileId} onClose={() => setFileId(null)} />
           <TodayQueue
             access={res.data}
             scope={res.data.admin ? "admin" : "country"}

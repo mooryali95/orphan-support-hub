@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5061,
+ "count": 5114,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -4565,6 +4565,28 @@
    "hash": "2d474edc9504",
    "file": "src/components/admin/data/copy.ts"
   },
+  "components/admin/data/keyset.loading": {
+   "en": "Loading…",
+   "ar": "يُحمَّل…",
+   "kind": "text",
+   "hash": "95c350e189f3",
+   "file": "src/components/admin/data/keyset.tsx"
+  },
+  "components/admin/data/keyset.more": {
+   "en": "Load more",
+   "ar": "عرض المزيد",
+   "kind": "text",
+   "hash": "a89be69881f2",
+   "file": "src/components/admin/data/keyset.tsx"
+  },
+  "components/admin/data/keyset.of": {
+   "en": "Showing {0} of {1}",
+   "ar": "عُرض {0} من {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "348c2f2e13d9",
+   "file": "src/components/admin/data/keyset.tsx"
+  },
   "components/admin/data/sources.accept": {
    "en": "Approve proposal",
    "ar": "اعتمد المقترح",
@@ -7159,6 +7181,269 @@
    "hash": "0858802c8b99",
    "file": "src/components/admin/data/work-copy.ts"
   },
+  "components/admin/decisions.childTitle": {
+   "en": "Decisions on this file",
+   "ar": "قرارات هذا الملفّ",
+   "kind": "text",
+   "hash": "a355ec19db8d",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.empty": {
+   "en": "No decisions recorded yet.",
+   "ar": "لا قرارات مسجَّلة بعد.",
+   "kind": "text",
+   "hash": "c85511b9e316",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.emptySecurity": {
+   "en": "No security events recorded.",
+   "ar": "لا أحداث أمنية مسجَّلة.",
+   "kind": "text",
+   "hash": "e11ad233e202",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.filter": {
+   "en": "Event type",
+   "ar": "نوع الحدث",
+   "kind": "text",
+   "hash": "fc430ca9d667",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.filters.all": {
+   "en": "All",
+   "ar": "الكلّ",
+   "kind": "text",
+   "hash": "5d0d43bf584a",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.filters.decisions": {
+   "en": "Decisions",
+   "ar": "القرارات",
+   "kind": "text",
+   "hash": "42d766c441c1",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.filters.security": {
+   "en": "Security",
+   "ar": "الأمن",
+   "kind": "text",
+   "hash": "e60ec99c59fb",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.lead": {
+   "en": "Who settled what and when, as readable sentences from the audit and integrity logs. Administration only; security events have their own filter.",
+   "ar": "من حسم ماذا ومتى، جملاً مقروءة من سجلّ التدقيق وسجلّ السلامة. للإدارة وحدها؛ وأحداث الأمن في مرشّحها.",
+   "kind": "text",
+   "hash": "5de83384138f",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sample": {
+   "en": "Sample",
+   "ar": "عيّنة",
+   "kind": "text",
+   "hash": "77c1ab3d3612",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.securityTag": {
+   "en": "Security event",
+   "ar": "حدث أمني",
+   "kind": "text",
+   "hash": "302e9cc0890a",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.child_update_create": {
+   "en": "uploaded an update for a child",
+   "ar": "رفع تحديثاً لطفل",
+   "kind": "text",
+   "hash": "93399350ac90",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.orphan.exited": {
+   "en": "recorded a child leaving the programme",
+   "ar": "سجّل خروج طفل من البرنامج",
+   "kind": "text",
+   "hash": "b4fad16df7c5",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.payment.manual_confirmed": {
+   "en": "confirmed a bank transfer",
+   "ar": "أكّد تحويلاً بنكياً",
+   "kind": "text",
+   "hash": "c5155a526af0",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.sponsorship.created": {
+   "en": "created a sponsorship",
+   "ar": "أنشأ كفالة",
+   "kind": "text",
+   "hash": "890c82afe9c1",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.sponsorship.status_changed": {
+   "en": "changed a sponsorship status",
+   "ar": "غيّر حالة كفالة",
+   "kind": "text",
+   "hash": "f6086164c942",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.actions.sso_linked": {
+   "en": "linked an account to single sign-on",
+   "ar": "ربط حساباً بالدخول الموحّد",
+   "kind": "text",
+   "hash": "cc5a9ff4237f",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.alert": {
+   "en": "{0} settled the “{1}” alert: {2}",
+   "ar": "{0} حسم تنبيه «{1}»: {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "d6df91baf3c8",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.approved": {
+   "en": "{0} approved {1} {2} instead of {3}",
+   "ar": "{0} اعتمد {1} {2} بدل {3}",
+   "kind": "template",
+   "params": 4,
+   "hash": "21b6bc5153bc",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.approvedNew": {
+   "en": "{0} approved {1} {2}",
+   "ar": "{0} اعتمد {1} {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "e63978a7dc33",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.empty": {
+   "en": "—",
+   "ar": "—",
+   "kind": "text",
+   "hash": "e3913b1621f1",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.ingest": {
+   "en": "{0} uploaded {1} records",
+   "ar": "{0} رفع {1} سجلّاً",
+   "kind": "template",
+   "params": 2,
+   "hash": "602c2f7cd244",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.kept": {
+   "en": "{0} kept {1} at {2} and rejected {3}",
+   "ar": "{0} أبقى {1} على {2} ورفض {3}",
+   "kind": "template",
+   "params": 4,
+   "hash": "7782ad603ad8",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.mode": {
+   "en": "{0} moved the office platform from “{1}” to “{2}”",
+   "ar": "{0} نقل منصّة المكتب من «{1}» إلى «{2}»",
+   "kind": "template",
+   "params": 3,
+   "hash": "b0aa1ee343bb",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.other": {
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "869f6c298bef",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.api_client_revoked": {
+   "en": "A partner key was revoked",
+   "ar": "أُبطل مفتاح شريك",
+   "kind": "text",
+   "hash": "59b96ab25005",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.four_eyes_refused": {
+   "en": "A settlement was refused because its author uploaded the change",
+   "ar": "رُفض حسمٌ لأنّ صاحبه رفع التغيير بنفسه",
+   "kind": "text",
+   "hash": "7c01d4ac8dbc",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.mfa_required": {
+   "en": "A settlement was refused without the second factor",
+   "ar": "رُفض حسمٌ بلا العامل الثاني",
+   "kind": "text",
+   "hash": "127a9277e8be",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.orphan_frozen": {
+   "en": "A child's file was frozen",
+   "ar": "جُمّد ملفّ طفل",
+   "kind": "text",
+   "hash": "eeca93146735",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.orphan_unfrozen": {
+   "en": "A child's file was unfrozen",
+   "ar": "رُفع تجميد ملفّ طفل",
+   "kind": "text",
+   "hash": "e5b140aa1d1c",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.secKinds.sso_failure": {
+   "en": "A sign-in from the partner platform failed",
+   "ar": "أخفق دخولٌ من منصّة الشريك",
+   "kind": "text",
+   "hash": "47bec802b847",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.security": {
+   "en": "{0} · {1}",
+   "ar": "{0} · {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "1a34d36308c1",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.someone": {
+   "en": "The system",
+   "ar": "النظام",
+   "kind": "text",
+   "hash": "485ca992e01d",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.staff": {
+   "en": "{0} changed a country team role: {1} → {2}",
+   "ar": "{0} غيّر دوراً في فريق الدولة: {1} ← {2}",
+   "kind": "template",
+   "params": 3,
+   "hash": "12e47e65ad4a",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.updateApproved": {
+   "en": "{0} approved an update for the sponsor",
+   "ar": "{0} اعتمد تحديثاً للكافل",
+   "kind": "template",
+   "params": 1,
+   "hash": "6619ad8f268e",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.sentences.updateRejected": {
+   "en": "{0} rejected an update for the sponsor",
+   "ar": "{0} رفض تحديثاً للكافل",
+   "kind": "template",
+   "params": 1,
+   "hash": "8bc0107e3d46",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
+  "components/admin/decisions.title": {
+   "en": "Decision log",
+   "ar": "سجلّ القرارات",
+   "kind": "text",
+   "hash": "bef9adb4db84",
+   "file": "src/components/admin/decisions/copy.ts"
+  },
   "components/admin/overview.attentionAll": {
    "en": "All items ({0})",
    "ar": "كلّ البنود ({0})",
@@ -8806,6 +9091,90 @@
    "kind": "text",
    "hash": "e183cc156f4c",
    "file": "src/components/admin/overview/copy.ts"
+  },
+  "components/admin/search.failed": {
+   "en": "Search failed. Try again.",
+   "ar": "تعذّر البحث. أعد المحاولة.",
+   "kind": "text",
+   "hash": "71e1170d5dcd",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.field": {
+   "en": "Search administration",
+   "ar": "ابحث في الإدارة",
+   "kind": "text",
+   "hash": "fe056b153d09",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.groups.child": {
+   "en": "Children",
+   "ar": "الأطفال",
+   "kind": "text",
+   "hash": "083c5f480b4f",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.groups.sponsor": {
+   "en": "Sponsors",
+   "ar": "الكفلاء",
+   "kind": "text",
+   "hash": "9653b0302b10",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.groups.sponsorship": {
+   "en": "Sponsorships",
+   "ar": "الكفالات",
+   "kind": "text",
+   "hash": "f2bed03ffd76",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.groups.transfer": {
+   "en": "Transfers",
+   "ar": "التحويلات",
+   "kind": "text",
+   "hash": "094bc5c509e8",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.hint": {
+   "en": "Children, sponsors, sponsorships and transfers, within your access. Arrow keys to move, Enter to open.",
+   "ar": "أطفال، وكفلاء، وكفالات، وتحويلات — بنطاق صلاحيتك. الأسهم للتنقّل وEnter للفتح.",
+   "kind": "text",
+   "hash": "93cd0ce08e67",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.none": {
+   "en": "No results.",
+   "ar": "لا نتائج.",
+   "kind": "text",
+   "hash": "4cba38d02915",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.placeholder": {
+   "en": "Child code or name, sponsor email, transfer reference…",
+   "ar": "رمز طفل أو اسمه، بريد كافل، مرجع تحويل…",
+   "kind": "text",
+   "hash": "0d80d9704c0d",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.ref": {
+   "en": "Ref",
+   "ar": "مرجع",
+   "kind": "text",
+   "hash": "8e6df317829b",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.short": {
+   "en": "Type at least two characters.",
+   "ar": "اكتب حرفين على الأقلّ.",
+   "kind": "text",
+   "hash": "80c5e86fe275",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.title": {
+   "en": "Search administration",
+   "ar": "بحثٌ في الإدارة",
+   "kind": "text",
+   "hash": "59e491a833df",
+   "file": "src/components/admin/search/AdminSearch.tsx"
   },
   "components/admin/today.acceptProposed": {
    "en": "Accept proposed",
@@ -31011,6 +31380,13 @@
    "hash": "44b68d78e93b",
    "file": "src/routes/try.admin.lazy.tsx"
   },
+  "routes/try.admin.verify.decisions": {
+   "en": "Decision log",
+   "ar": "سجلّ القرارات",
+   "kind": "text",
+   "hash": "bef9adb4db84",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
   "routes/try.admin.verify.sources": {
    "en": "Country workspace",
    "ar": "درج الدول",
@@ -31023,6 +31399,13 @@
    "ar": "مركز الثقة",
    "kind": "text",
    "hash": "1214c4f2cb38",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.verifyCards.decisions": {
+   "en": "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
+   "ar": "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها — وحسمك يظهر فيه فوراً",
+   "kind": "text",
+   "hash": "e8b583ddb04e",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.sources": {

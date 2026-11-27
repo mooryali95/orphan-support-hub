@@ -217,7 +217,8 @@ function TryShellInner() {
         role="note"
         aria-label={c.modeLabel}
         data-try-bar
-        className="sticky top-16 z-40 border-b border-bridge/30 bg-background/85 backdrop-blur"
+        className="sticky z-40 border-b border-bridge/30 bg-background/85 backdrop-blur"
+        style={{ top: "calc(var(--demo-bar-h, 0px) + var(--site-header-h, 4rem))" }}
       >
         <div className="mx-auto flex min-h-11 max-w-6xl items-center gap-x-2 px-4 text-sm">
           <span className="inline-flex shrink-0 items-center gap-2 font-bold text-bridge-ink">

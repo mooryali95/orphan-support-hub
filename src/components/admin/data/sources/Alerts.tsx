@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
 import { Val, OpenFile } from "./shared";
+import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function AlertDetail({ a }: { a: DataAlert }) {
   const c = useCopy(SOURCES_COPY);
@@ -163,10 +164,9 @@ export function Alerts({
   const qc = useQueryClient();
   const dk = useDataKey([]);
   const fetchList = useDataFn("golden.alerts", listAlerts);
-  const list = useQuery({
-    queryKey: useDataKey(["golden-alerts", country]),
-    queryFn: () => fetchList({ data: { country } }),
-  });
+  const list = useKeysetList(useDataKey(["golden-alerts", country]), (after) =>
+    fetchList({ data: { country, after, limit: QUEUE_PAGE } }),
+  );
   const resolve = useDataFn("golden.resolveAlert", resolveAlert);
   const m = useMutation({
     mutationFn: (v: {
@@ -179,6 +179,8 @@ export function Alerts({
       toast.success(c.done);
       void qc.invalidateQueries({ queryKey: [...dk, "golden-alerts"] });
       void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "decision-log"] });
     },
   });
   const all = list.data?.ok ? list.data.data : [];
@@ -313,6 +315,7 @@ export function Alerts({
           )}
         </>
       )}
+      <LoadMore {...list} shown={all.length} />
     </section>
   );
 }

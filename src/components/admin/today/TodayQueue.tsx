@@ -9,6 +9,7 @@ import { SELECT } from "@/components/admin/data/shared";
 import { SOURCES_COPY } from "@/components/admin/data/sources-copy";
 import { AlertDetail } from "@/components/admin/data/sources/Alerts";
 import { V } from "@/components/admin/data/sources/shared";
+import { LoadMore } from "@/components/admin/data/keyset";
 import { ChildFileSheet, ROW_FOCUS, useWorkErr } from "@/components/admin/data/WorkTools";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,7 +81,8 @@ export function TodayQueue({
   const t = useCopy(TODAY_COPY);
   const locale = useLocale();
   const demo = useDemo();
-  const { items, pending, failed, refetch } = useToday(access);
+  const { items, total, hasMore, loadMore, loadingMore, pending, failed, refetch } =
+    useToday(access);
   const [now] = useState(() => Date.now());
   const shown = useMemo(
     () => applyFilters(items, filters, matchesQuery, now),
@@ -201,7 +203,7 @@ export function TodayQueue({
           <h3 id="today-title" className="font-display text-xl font-bold">
             {t.title}
             <span className="text-muted-foreground ms-2 text-sm font-medium tabular-nums">
-              {t.items(items.length)}
+              {t.items(total)}
             </span>
           </h3>
           <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-7 text-pretty">
@@ -379,6 +381,13 @@ export function TodayQueue({
           ),
         )}
       </div>
+      <LoadMore
+        hasMore={hasMore}
+        loadingMore={loadingMore}
+        loadMore={loadMore}
+        shown={items.length}
+        total={total}
+      />
       <p className="sr-only" aria-live="polite">
         {live}
       </p>
@@ -597,7 +606,14 @@ function useSettle() {
     },
     onSuccess: (res) => {
       if (!res.ok) return void toast.error(err(res.error));
-      for (const k of ["golden-alerts", "golden-conflicts", "data-health", "child-file"])
+      for (const k of [
+        "golden-alerts",
+        "golden-conflicts",
+        "data-health",
+        "child-file",
+        "queue-counts",
+        "decision-log",
+      ])
         void qc.invalidateQueries({ queryKey: [...dk, k] });
       for (const k of ["trust-overview", "trust-aging"])
         void qc.invalidateQueries({ queryKey: [...dk, k] });

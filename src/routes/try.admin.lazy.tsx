@@ -7,7 +7,13 @@ import { AdminNav } from "@/components/admin/AdminNav";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { CycleAdminTask } from "@/components/try/TryCycleTasks";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
-import { TryAdminSources, TryAdminToday, TryAdminTrust } from "@/components/try/TryVerification";
+import {
+  TryAdminDecisions,
+  TryAdminSources,
+  TryAdminToday,
+  TryAdminTrust,
+  TrySearch,
+} from "@/components/try/TryVerification";
 import type { Tab as WorkTab } from "@/components/admin/data/sources/shared";
 import type { RecordKind } from "@/lib/admin-console.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
@@ -29,7 +35,7 @@ const TAB_TO_RECORDS: Partial<Record<AdminTab, RecordKind>> = {
 
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
 
-type Verify = "sources" | "trust";
+type Verify = "sources" | "trust" | "decisions";
 type Key = RecordKind | Verify | "home" | "today";
 
 const COPY = defineCopy("routes/try.admin", {
@@ -47,11 +53,16 @@ const COPY = defineCopy("routes/try.admin", {
     } satisfies Record<RecordKind, string>,
     sections: ["اليوم", "الدول", "جودة البيانات", "المال", "الناس"],
     today: "ما ينتظر قرارك",
-    verify: { sources: "درج الدول", trust: "مركز الثقة" } satisfies Record<Verify, string>,
+    verify: {
+      sources: "درج الدول",
+      trust: "مركز الثقة",
+      decisions: "سجلّ القرارات",
+    } satisfies Record<Verify, string>,
     verifyCards: {
       sources:
         "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV — وتتغيّر العدّادات",
       trust: "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+      decisions: "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها — وحسمك يظهر فيه فوراً",
     } satisfies Record<Verify, string>,
     role: "الإدارة",
     title: "لوحة الإدارة",
@@ -84,15 +95,18 @@ const COPY = defineCopy("routes/try.admin", {
     } satisfies Record<RecordKind, string>,
     sections: ["Today", "Countries", "Data quality", "Money", "People"],
     today: "Waiting for you",
-    verify: { sources: "Country workspace", trust: "Trust center" } satisfies Record<
-      Verify,
-      string
-    >,
+    verify: {
+      sources: "Country workspace",
+      trust: "Trust center",
+      decisions: "Decision log",
+    } satisfies Record<Verify, string>,
     verifyCards: {
       sources:
         "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
       trust:
         "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
+      decisions:
+        "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
     } satisfies Record<Verify, string>,
     role: "Administration",
     title: "Administration console",
@@ -139,7 +153,7 @@ function TryAdmin() {
     setTabState(k);
     void qc.invalidateQueries({ queryKey: ["demo"] });
   };
-  const VERIFY: Verify[] = ["sources", "trust"];
+  const VERIFY: Verify[] = ["sources", "trust", "decisions"];
   return (
     <div>
       <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
@@ -154,7 +168,10 @@ function TryAdmin() {
             },
             {
               label: t.sections[2] ?? "",
-              items: [{ key: "trust", label: t.verify.trust, count: null }],
+              items: [
+                { key: "trust", label: t.verify.trust, count: null },
+                { key: "decisions", label: t.verify.decisions, count: null },
+              ],
             },
             ...SECTIONS.map((items, i) => ({
               label: t.sections[i + 3] ?? "",
@@ -171,6 +188,16 @@ function TryAdmin() {
           onHome={() => setTab("home")}
         />
         <div className="min-w-0">
+          <div className="mb-5">
+            <TrySearch
+              admin
+              onPick={(h) =>
+                setTab(
+                  h.kind === "sponsorship" || h.kind === "sponsor" ? "sponsorships" : "payments",
+                )
+              }
+            />
+          </div>
           {tab === "home" ? (
             <>
               <div className="mb-6">
@@ -250,6 +277,8 @@ function TryAdmin() {
               tab={workTab}
               setTab={setWorkTab}
             />
+          ) : tab === "decisions" ? (
+            <TryAdminDecisions />
           ) : tab === "trust" ? (
             <TryAdminTrust
               openCountry={(code) => {
