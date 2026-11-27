@@ -5,6 +5,7 @@ import { useDataFn, useDataKey } from "@/lib/data-port";
 import type { CountryAccess } from "@/lib/golden-record";
 import { listAlerts, listConflicts, listLinkQueue } from "@/lib/golden-record.functions";
 import { getDecisionInbox } from "@/lib/inbox.functions";
+import { listChildUpdateQueue } from "@/lib/child-updates.functions";
 
 import { buildQueue, type QueueInput, type QueueItem } from "./queue";
 
@@ -18,6 +19,7 @@ export function useToday(access: CountryAccess, enabled = true) {
   const fetchAlerts = useDataFn("golden.alerts", listAlerts);
   const fetchConflicts = useDataFn("golden.conflicts", listConflicts);
   const fetchLinks = useDataFn("golden.links", listLinkQueue);
+  const fetchUpdates = useDataFn("childUpdates.queue", listChildUpdateQueue);
   const dk = useDataKey([]);
   const scopes: Array<string | null> = access.admin ? [null] : access.countries.map((c) => c.code);
 
@@ -44,24 +46,43 @@ export function useToday(access: CountryAccess, enabled = true) {
           queryFn: () => fetchLinks({ data: { country } }),
           enabled,
         },
+        {
+          // المفتاح نفسه في لسان «التحديثات» بدرج الدولة.
+          queryKey: [...dk, "child-updates-queue", country],
+          queryFn: () => fetchUpdates({ data: { country } }),
+          enabled,
+        },
       ]),
     ],
   });
 
   const pending = results.some((r) => r.isPending && r.fetchStatus !== "idle");
   const failed = results.some(
-    (r) => r.isError || (r.data && typeof r.data === "object" && "ok" in r.data && !r.data.ok),
+    (r) =>
+      r.isError ||
+      // دالّةٌ لم تُطبَّق هجرتها بعد (`missing`) لا تُفشل الطابور كلّه.
+      (r.data &&
+        typeof r.data === "object" &&
+        "ok" in r.data &&
+        !r.data.ok &&
+        !("missing" in r.data && r.data.missing)),
   );
   const stamp = results.map((r) => r.dataUpdatedAt).join(":");
 
   const items: QueueItem[] = useMemo(() => {
-    const input: Required<QueueInput> = { inbox: [], alerts: [], conflicts: [], links: [] };
+    const input: Required<QueueInput> = {
+      inbox: [],
+      alerts: [],
+      conflicts: [],
+      links: [],
+      updates: [],
+    };
     const [inbox, ...golden] = results;
     if (Array.isArray(inbox?.data)) input.inbox = inbox.data;
     golden.forEach((r, i) => {
       const d = r.data as { ok: boolean; data?: unknown[] } | undefined;
       if (!d?.ok || !Array.isArray(d.data)) return;
-      const slot = (["alerts", "conflicts", "links"] as const)[i % 3]!;
+      const slot = (["alerts", "conflicts", "links", "updates"] as const)[i % 4]!;
       (input[slot] as unknown[]).push(...d.data);
     });
     return buildQueue(input, access);

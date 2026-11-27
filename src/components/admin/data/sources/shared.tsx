@@ -13,7 +13,7 @@ export function useErr() {
   return (code: string | undefined) => c.errors[code ?? ""] ?? c.errors["failed"]!;
 }
 
-export type Tab = "alerts" | "conflicts" | "links" | "upload" | "mode" | "team";
+export type Tab = "alerts" | "conflicts" | "links" | "upload" | "updates" | "mode" | "team";
 
 /** تاريخٌ بلغة الواجهة، معزولٌ عن اتجاه السطر. */
 export function useWhen() {

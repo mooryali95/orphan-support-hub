@@ -416,7 +416,7 @@ export function showValue(
 /* ── صلاحيات الدول (country_staff) ───────────────────────────── */
 
 export type CountryRole = "supervisor" | "data_entry" | "viewer";
-export type CountryNeed = "read" | "import" | "approve" | "manage";
+export type CountryNeed = "read" | "import" | "upload" | "approve" | "manage";
 
 /** ما يعيده `my_country_access`: الإدارة، أو أدوار الدول. */
 export type CountryAccess = {
@@ -435,7 +435,7 @@ export function canDo(access: CountryAccess, country: string, need: CountryNeed)
   const role = access.countries.find((c) => c.code === country)?.role;
   if (!role) return false;
   if (need === "read") return true;
-  if (need === "import") return role === "supervisor" || role === "data_entry";
+  if (need === "import" || need === "upload") return role === "supervisor" || role === "data_entry";
   return role === "supervisor";
 }
 

@@ -120,7 +120,7 @@ const TAB_LABELS: Record<Tab, string> = {
   golive: "جاهزية الإطلاق والتصدير",
 };
 
-const WORK_TABS = ["alerts", "conflicts", "links", "upload", "mode", "team"] as const;
+const WORK_TABS = ["alerts", "conflicts", "links", "upload", "updates", "mode", "team"] as const;
 type WorkTab = (typeof WORK_TABS)[number];
 const isWorkTab = (v: unknown): v is WorkTab => WORK_TABS.includes(v as WorkTab);
 

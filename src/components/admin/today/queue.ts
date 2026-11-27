@@ -12,11 +12,12 @@ import {
   type DataAlert,
   type LinkItem,
 } from "@/lib/golden-record";
+import type { PendingChildUpdate } from "@/lib/child-updates";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import type { AgingKey } from "@/lib/trust-center";
 
-export type QueueSource = "inbox" | "alert" | "conflict" | "link";
-export type QueueKind = InboxKind | "alert" | "conflict" | "link";
+export type QueueSource = "inbox" | "alert" | "conflict" | "link" | "update";
+export type QueueKind = InboxKind | "alert" | "conflict" | "link" | "child_update";
 export type BlockReason = "own_upload" | "needs_aal2" | "scope";
 export type Severity = "critical" | "normal";
 
@@ -44,6 +45,7 @@ export type QueueItem = {
   conflict?: Conflict;
   link?: LinkItem;
   inbox?: InboxItem;
+  update?: PendingChildUpdate;
 };
 
 /** مهلة كل نوعٍ بالساعات: إعدادٌ في الكود لا في القاعدة. */
@@ -85,6 +87,7 @@ export const isOverdue = (it: QueueItem, now: number = Date.now()) =>
 export const KIND_GROUPS: Readonly<Record<string, readonly QueueKind[]>> = {
   integrity: ["unlock", "discrepancy"],
   golden: ["alert", "conflict", "link"],
+  updates: ["child_update"],
   money: ["transfer", "money_issue", "pledge"],
 };
 export const kindMatches = (filter: string, kind: QueueKind) =>
@@ -95,7 +98,7 @@ export const kindMatches = (filter: string, kind: QueueKind) =>
  * المصدرين يحسمه رافعه. التلميح أحوط من القاعدة، والقاعدة تقرّر.
  */
 function ownBlocks(it: { source: QueueSource; severity: Severity; conflict?: Conflict }): boolean {
-  if (it.source === "alert") return true;
+  if (it.source === "alert" || it.source === "update") return true;
   if (it.source === "conflict")
     return it.severity === "critical" || it.conflict?.kind !== "disagreement";
   return false;
@@ -121,6 +124,7 @@ export type QueueInput = {
   alerts?: ReadonlyArray<DataAlert & Mine>;
   conflicts?: ReadonlyArray<Conflict & Mine>;
   links?: ReadonlyArray<LinkItem & Mine>;
+  updates?: readonly PendingChildUpdate[];
 };
 
 /** يوحّد المصادر في صفوفٍ واحدة، بلا تكرارٍ ولا قيم حقول في العنوان. */
@@ -191,6 +195,21 @@ export function buildQueue(input: QueueInput, access: CountryAccess): QueueItem[
       severity: "normal",
       mine: typeof l.mine === "boolean" ? l.mine : null,
       link: l,
+    });
+  for (const u of input.updates ?? [])
+    push({
+      key: `update:${u.id}`,
+      source: "update",
+      kind: "child_update",
+      id: u.id,
+      country_code: u.country_code,
+      orphan_id: u.orphan_id,
+      title: u.orphan_code,
+      subtitle: u.orphan_name,
+      created_at: u.created_at,
+      severity: "normal",
+      mine: u.mine,
+      update: u,
     });
   // الأقدم أوّلاً داخل كل مجموعة: الحرج المتأخّر لا يغرق تحت الجديد.
   return out.sort(
