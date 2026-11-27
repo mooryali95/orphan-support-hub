@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5153,
+ "count": 5155,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -402,6 +402,13 @@
    "kind": "template",
    "params": 3,
    "hash": "5299672b123f",
+   "file": "src/components/LegalPage.tsx"
+  },
+  "components/LegalPage.toc": {
+   "en": "On this page",
+   "ar": "محتويات الصفحة",
+   "kind": "text",
+   "hash": "abd4d5a8d040",
    "file": "src/components/LegalPage.tsx"
   },
   "components/LegalPage.updated": {
@@ -29035,6 +29042,13 @@
    "ar": "كيف تعمل الكفالة",
    "kind": "text",
    "hash": "8b29dbb7f872",
+   "file": "src/routes/how-it-works.tsx"
+  },
+  "routes/how-it-works.tryIt": {
+   "en": "Try the journey first",
+   "ar": "جرّب الرحلة أولاً",
+   "kind": "text",
+   "hash": "7dd18f39861e",
    "file": "src/routes/how-it-works.tsx"
   },
   "routes/index.categories.education": {
