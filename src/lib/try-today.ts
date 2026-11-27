@@ -7,6 +7,7 @@
  * الحسم في صندوق القرارات لا يُحاكى هنا: لوحه في المنصّة يحمل وثائق وسياقاً حقيقيَّين.
  */
 import { registerDemo } from "@/lib/data-port";
+import "@/lib/try-child-updates";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import { demoId } from "@/lib/try-verification.data";
 
