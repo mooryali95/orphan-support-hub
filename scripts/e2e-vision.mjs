@@ -194,7 +194,7 @@ for (const [lang, dir] of [
   await page.getByRole("tab", { name: "ماذا لو" }).click();
   await page.getByRole("button", { name: "اعتمد السيناريو" }).click();
   await page.waitForTimeout(400);
-  if (!(await page.getByText(/اعتُمد —/).count())) fail("decider", "scenario not applied");
+  if (!(await page.getByText(/اعتُمد:/).count())) fail("decider", "scenario not applied");
   ok("decider: advanced a month, approved a decision and a scenario");
 
   // البقاء بعد إعادة التحميل (في الجلسة نفسها؛ يختفي بإغلاق المتصفّح)
