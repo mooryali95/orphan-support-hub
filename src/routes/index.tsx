@@ -291,7 +291,7 @@ const COPY = defineCopy("routes/index", {
     tryIt: "Enter the demo — no account, nothing charged",
     sponsor: "Sponsor an orphan",
     hadithMeaning:
-      "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers, slightly apart.",
+      "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
     hadithSource: "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
     moneyFunded: "Monthly sponsorship",
     moneyNeed: "Total monthly need",
@@ -931,7 +931,7 @@ function HomePage() {
                 lang="ar"
                 dir="rtl"
               >
-                «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى وفرَّجَ بينهما شيئاً.
+                «أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وقال بإصبعَيه السبّابةِ والوسطى.
               </p>
               {c.hadithMeaning && (
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground">

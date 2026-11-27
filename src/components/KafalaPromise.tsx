@@ -2,13 +2,13 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const COPY = defineCopy("components/KafalaPromise", {
   ar: {
-    hadith: "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وأشارَ بالسبّابةِ والوسطى.",
-    source: "رواه البخاري (6005)",
+    hadith: "«أنا وكافلُ اليتيمِ في الجنّةِ هكذا» وقال بإصبعَيه السبّابةِ والوسطى.",
+    source: "رواه البخاري (6005) عن سهل بن سعد رضي الله عنه",
   },
   en: {
     hadith:
-      "“I and the one who sponsors an orphan will be in Paradise like this,” and he gestured with his index and middle fingers.",
-    source: "Narrated by al-Bukhari (6005)",
+      "“I and the one who sponsors an orphan will be in Paradise like this,” and he showed this with his index and middle fingers.",
+    source: "Sahih al-Bukhari 6005, narrated by Sahl ibn Sa‘d",
   },
 });
 
