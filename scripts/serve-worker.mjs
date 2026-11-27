@@ -54,8 +54,13 @@ function pack(key, body, type, accept) {
   }
   return { body: out, enc };
 }
+// كما في public/_headers.
 const cacheFor = (pathname) =>
-  pathname.startsWith("/assets/") ? "public, max-age=31536000, immutable" : "public, max-age=3600";
+  pathname.startsWith("/assets/")
+    ? "public, max-age=31536000, immutable"
+    : /^\/(geo|brand)\/|^\/favicon\./.test(pathname)
+      ? "public, max-age=86400, stale-while-revalidate=604800"
+      : "public, max-age=3600";
 
 const env = { ASSETS: { fetch: async () => new Response("not found", { status: 404 }) } };
 

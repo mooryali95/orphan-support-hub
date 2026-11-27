@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { z } from "zod";
+import { compact, searchString } from "@/lib/search-params";
 
 import { KahataynLockup } from "@/components/brand/KahataynMark";
 import { AuthPanel } from "@/components/auth/AuthPanel";
@@ -48,7 +48,8 @@ const COPY = defineCopy("routes/auth", {
   },
 });
 
-const searchSchema = z.object({ redirect: z.string().optional() });
+const searchSchema = (raw: Record<string, unknown>): { redirect?: string } =>
+  compact({ redirect: searchString(raw["redirect"]) });
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,

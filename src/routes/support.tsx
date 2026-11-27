@@ -2,7 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
-import { z } from "zod";
+import {
+  compact,
+  searchMatch,
+  searchOneOf,
+  searchPositive,
+  searchString,
+  searchUuid,
+} from "@/lib/search-params";
 import { Check, Loader2 } from "lucide-react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { SupportPicks } from "@/components/support/SupportPicks";
@@ -44,23 +51,28 @@ import { MapHallSwitch } from "@/components/support/MapHallSwitch";
 import { useDemo } from "@/lib/demo-mode";
 import { trialSlots } from "@/lib/trial-slots";
 
-const search = z.object({
-  orphan: z.string().uuid().optional(),
-  name: z.string().max(120).optional(),
-  kind: z.enum(["qualification", "in_kind"]).optional(),
-  // موضع الخريطة: الدولة (رمز) والمنطقة (كما في القاعدة).
-  c: z
-    .string()
-    .regex(/^[A-Z]{2}$/)
-    .optional(),
-  r: z.string().max(120).optional(),
-  // فجوة الطفل بعملته (من ملفّه) — منها يُقترح المبلغ.
-  gap: z.coerce.number().positive().max(1_000_000).optional(),
-  cur: z
-    .string()
-    .regex(/^[A-Z]{3}$/)
-    .optional(),
-});
+type SupportSearch = {
+  orphan?: string;
+  name?: string;
+  kind?: "qualification" | "in_kind";
+  c?: string;
+  r?: string;
+  gap?: number;
+  cur?: string;
+};
+
+const search = (raw: Record<string, unknown>): SupportSearch =>
+  compact({
+    orphan: searchUuid(raw["orphan"]),
+    name: searchString(raw["name"], 120),
+    kind: searchOneOf(raw["kind"], ["qualification", "in_kind"] as const),
+    // موضع الخريطة: الدولة (رمز) والمنطقة (كما في القاعدة).
+    c: searchMatch(raw["c"], /^[A-Z]{2}$/),
+    r: searchString(raw["r"], 120),
+    // فجوة الطفل بعملته (من ملفّه) — منها يُقترح المبلغ.
+    gap: searchPositive(raw["gap"], 1_000_000),
+    cur: searchMatch(raw["cur"], /^[A-Z]{3}$/),
+  });
 
 export const Route = createFileRoute("/support")({
   validateSearch: search,

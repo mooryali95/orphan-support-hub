@@ -38,6 +38,9 @@ export const getRouter = () => {
     context: { queryClient },
     ...(nonce ? { ssr: { nonce } } : {}),
     scrollRestoration: true,
+    // تحميلٌ مسبق عند النيّة (مرور المؤشّر أو اللمس) لكلّ رابط: حزمة الصفحة
+    // وبياناتها تبدأ قبل النقر. والبيانات تحكمها staleTime في react-query.
+    defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     // لا يظهر مؤشّر التنقّل قبل 250ms حتى لا يومض في التنقّلات الفورية،
     // وإذا ظهر يبقى 400ms على الأقل فلا يُرى كوميض مبتور.
