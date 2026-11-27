@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Play, Sparkles } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,7 +50,8 @@ const COPY = defineCopy("components/impact/MyImpactHero", {
     replay: "منذ البداية",
     rail: "مسار أثرك عبر الأشهر",
     empty: "حين تبدأ كفالتك الأولى تظهر هنا جوهرةً حولك.",
-    more: (n: number) => `و${n} آخرون في قائمة كفالاتك أدناه.`,
+    more: (n: number) => `و${n} آخرون في قائمة كفالاتك.`,
+    milestones: "محطّاتك",
   },
   en: {
     today: "Today",
@@ -73,7 +74,8 @@ const COPY = defineCopy("components/impact/MyImpactHero", {
     replay: "From the start",
     rail: "Your impact across the months",
     empty: "When your first sponsorship begins, it appears here as a gem around you.",
-    more: (n: number) => `And ${n} more in your sponsorship list below.`,
+    more: (n: number) => `And ${n} more in your sponsorship list.`,
+    milestones: "Your milestones",
   },
 });
 
@@ -93,6 +95,7 @@ export function MyImpactHero({
   loading,
   anotherTo = "/orphans",
   hallSearch,
+  milestones,
 }: {
   impact: MyImpact;
   loading: boolean;
@@ -100,6 +103,8 @@ export function MyImpactHero({
   anotherTo?: "/orphans" | TrialPath;
   /** the demo opens the hall in demo mode, on the visitor's latest gift; `from` is the way back */
   hallSearch?: HallSearch;
+  /** «محطّاتك» تُطوى داخل البطاقة (لوحة الداعم) */
+  milestones?: ReactNode;
 }) {
   /* the time rail: how many whole months back the picture stands (0 = today) */
   const span = impactSpan(impact);
@@ -421,6 +426,15 @@ export function MyImpactHero({
           )}
         </figure>
       </div>
+      {/* محطّاتك داخل البطاقة نفسها، مطويّةً: لا رقمٌ يتكرّر في بطاقةٍ ثانية */}
+      {milestones && (
+        <details className="group mt-6 border-t border-border pt-4">
+          <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 text-sm font-bold text-primary">
+            {c.milestones}
+          </summary>
+          <div className="mt-2">{milestones}</div>
+        </details>
+      )}
     </section>
   );
 }

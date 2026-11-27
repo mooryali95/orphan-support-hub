@@ -43,7 +43,7 @@ const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
     providerPaused: "أوقف مزوّد الدفع التحصيل مؤقّتاً؛ يُرفع الإيقاف من جهته.",
     endsOn: (date: string) => `تنتهي في ${date} بعد آخر شهرٍ مدفوع، ولا يُحصَّل منك شيءٌ بعدها.`,
     ended: "انتهت هذه الكفالة، فلا شيء فيها يُغيَّر. يبقى سجلّها وأثرها في صفحتها.",
-    details: "الجدول والتفاصيل",
+    details: "رحلة الطفل والإيصالات",
     childFile: "ملفّ الطفل",
     pause: {
       title: "إيقاف مؤقّت",
@@ -101,7 +101,7 @@ const COPY = defineCopy("components/sponsorship/ManageSponsorship", {
       `Ends on ${date} after the last paid month. Nothing is collected after that.`,
     ended:
       "This sponsorship has ended, so nothing in it can change. Its record and impact stay on its page.",
-    details: "Schedule and details",
+    details: "The child's journey and receipts",
     childFile: "Child's file",
     pause: {
       title: "Pause",
@@ -288,14 +288,16 @@ function ManageBody({ s }: { s: MySponsorship }) {
           {c.lead}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {/* التجربة لا صفحة جدولٍ لها: سجلّ أشهرها في «أثري» */}
-          {!demo && (
-            <Button asChild size="sm" variant="outline">
-              <Link to="/sponsorships/$sponsorshipId" params={{ sponsorshipId: s.id }}>
-                {c.details}
-              </Link>
-            </Button>
-          )}
+          {/* صفحة الطفل نفسها؛ في التجربة على كفالات الجلسة */}
+          <Button asChild size="sm" variant="outline" className="min-h-11">
+            <Link
+              {...(demo
+                ? { to: trialRoute(`/try/sponsorships/${encodeURIComponent(s.id)}`) }
+                : { to: "/sponsorships/$sponsorshipId", params: { sponsorshipId: s.id } })}
+            >
+              {c.details}
+            </Link>
+          </Button>
           {s.orphan && (
             <Button asChild size="sm" variant="ghost">
               <Link

@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Loader2, Printer } from "lucide-react";
 
@@ -8,7 +6,8 @@ import { KahataynMark } from "@/components/brand/KahataynMark";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/config/brand";
 import { formatDate, formatMoney } from "@/lib/format";
-import { getSponsorshipLedger, monthState } from "@/lib/ledger.functions";
+import { monthState } from "@/lib/ledger.functions";
+import { useLedger } from "@/components/sponsorship/ledger-query";
 import { Name } from "@/components/kit/Name";
 
 export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipId/report")({
@@ -24,11 +23,7 @@ export const Route = createFileRoute("/_authenticated/sponsorships/$sponsorshipI
  */
 function ReportPage() {
   const { sponsorshipId } = Route.useParams();
-  const fetchLedger = useServerFn(getSponsorshipLedger);
-  const { data, isPending } = useQuery({
-    queryKey: ["ledger", sponsorshipId],
-    queryFn: () => fetchLedger({ data: { sponsorshipId } }),
-  });
+  const { data, isPending } = useLedger(sponsorshipId);
   const thisYear = String(new Date().getFullYear());
   const [year, setYear] = useState(thisYear);
 

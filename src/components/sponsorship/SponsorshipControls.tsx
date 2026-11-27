@@ -24,7 +24,9 @@ import {
   resumeSponsorship,
   type MySponsorship,
 } from "@/lib/sponsorships.functions";
+import { useLedger } from "@/components/sponsorship/ledger-query";
 import { formatDate, formatMoney, isolate } from "@/lib/format";
+import { coverageWith, endsOn, resumesOn } from "@/lib/sponsor-center";
 import { defineCopy, pluralOf, useCopy, useLocale } from "@/lib/locale";
 
 const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
@@ -61,6 +63,9 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       note: "كلمةٌ للجهة (اختياري)",
       submitPending: "ألغِ الطلب",
       submit: "أنهِ الكفالة آخر الشهر المدفوع",
+      effective: (date: string) => `تنتهي الكفالة في ${date}.`,
+      effectiveNow: "يُلغى الطلب فور التأكيد.",
+      stays: "يبقى ملفّ الطفل في رعاية الندوة وجهتها الميدانية بعد الإنهاء.",
     },
     pauseForm: {
       paused: (date: string) => `أُوقفت مؤقّتاً — تُستأنف في ${date}`,
@@ -73,6 +78,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
         "ar",
       ),
       submit: "أوقفها مؤقّتاً",
+      resumesOn: (date: string) => `تُستأنف في ${date}.`,
     },
     amountForm: {
       changed: "تغيّر المبلغ — يسري من التحويل القادم",
@@ -82,6 +88,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       label: (currency: string) => `المبلغ الشهري الجديد (${currency})`,
       invalid: "مبلغٌ صحيح من 5 فأكثر.",
       submit: "احفظ المبلغ",
+      coverage: (name: string, pct: number) => `ستُغطّى حاجة ${name} الشهرية بنسبة ${pct}%.`,
     },
   },
   en: {
@@ -119,6 +126,9 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       note: "A note for the organization (optional)",
       submitPending: "Cancel the request",
       submit: "End at the close of the paid month",
+      effective: (date: string) => `The sponsorship ends on ${date}.`,
+      effectiveNow: "The request is cancelled as soon as you confirm.",
+      stays: "The child's file stays in care with WAMY and its field organization after it ends.",
     },
     pauseForm: {
       paused: (date: string) => `Paused — resumes on ${date}`,
@@ -127,6 +137,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       duration: "Duration",
       months: pluralOf({ one: "{0} month", other: "{0} months" }),
       submit: "Pause it",
+      resumesOn: (date: string) => `Resumes on ${date}.`,
     },
     amountForm: {
       changed: "Amount changed — it applies from the next transfer",
@@ -136,6 +147,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipControls", {
       label: (currency: string) => `New monthly amount (${currency})`,
       invalid: "Enter a whole amount of 5 or more.",
       submit: "Save amount",
+      coverage: (name: string, pct: number) => `${name}'s monthly need will be ${pct}% covered.`,
     },
   },
 });
@@ -263,6 +275,8 @@ export function CancelForm({
   const pending = s.status === "pending_payment";
   const t = useCopy(COPY).cancel;
   const locale = useLocale();
+  const ledger = useLedger(s.id, !pending);
+  const ends = endsOn(s, ledger.data?.ledger?.sponsorship.next_charge_at ?? null);
 
   return (
     <form
@@ -298,6 +312,12 @@ export function CancelForm({
         </DialogDescription>
       </DialogHeader>
 
+      <p className="mt-4 rounded-xl bg-bridge/8 p-3 text-sm leading-7">
+        <strong>
+          {ends.immediate ? t.effectiveNow : t.effective(formatDate(ends.at, locale))}
+        </strong>{" "}
+        {t.stays}
+      </p>
       {!pending && !card && (
         <div className="mt-4 rounded-xl bg-secondary/60 p-3 text-sm leading-7">
           {t.alternatives}
@@ -378,6 +398,8 @@ export function PauseForm({
   const [busy, setBusy] = useState(false);
   const t = useCopy(COPY).pauseForm;
   const locale = useLocale();
+  const ledger = useLedger(s.id);
+  const resumes = resumesOn(ledger.data?.ledger?.sponsorship.next_charge_at ?? null, months);
   return (
     <form
       onSubmit={async (e) => {
@@ -409,6 +431,9 @@ export function PauseForm({
             </Button>
           ))}
         </div>
+        <p className="mt-3 text-sm font-semibold" aria-live="polite">
+          {t.resumesOn(formatDate(resumes, locale))}
+        </p>
       </fieldset>
       <DialogFooter className="mt-6">
         <Button type="submit" disabled={busy}>
@@ -436,6 +461,7 @@ export function AmountForm({
   const valid = Number.isInteger(amount) && amount >= 5 && amount <= 100000;
   const t = useCopy(COPY).amountForm;
   const locale = useLocale();
+  const coverage = coverageWith(s, amount);
   return (
     <form
       onSubmit={async (e) => {
@@ -467,6 +493,11 @@ export function AmountForm({
           aria-invalid={!valid}
         />
         {!valid && <p className="mt-1 text-xs text-destructive">{t.invalid}</p>}
+        {valid && coverage !== null && (
+          <p className="mt-3 text-sm leading-7" aria-live="polite">
+            {t.coverage(isolate(name), coverage)}
+          </p>
+        )}
       </div>
       <DialogFooter className="mt-6">
         <Button type="submit" disabled={busy || !valid}>

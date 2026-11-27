@@ -27,6 +27,21 @@ export function formatMoney(
   return `\u2068${text}\u2069`;
 }
 
+/**
+ * المبلغ بكسوره كما في الفاتورة (سجلّ التبرّعات لا يقرّب)، بالعزل نفسه. الكسور بعدد خانات
+ * العملة نفسها (اليورو والدولار خانتان، والين بلا خانات).
+ */
+export function formatMoneyExact(amount: number | string, currency: string, locale = "ar") {
+  const text = new Intl.NumberFormat(locale === "ar" ? AR_NUM : locale, {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+  })
+    .format(Number(amount))
+    .replace("US$", "$");
+  return `\u2068${text}\u2069`;
+}
+
 export type CurrencyTotal = { currency: string; amount: number };
 
 /**
