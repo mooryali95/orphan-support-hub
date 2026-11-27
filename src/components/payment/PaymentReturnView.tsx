@@ -202,20 +202,18 @@ export function PaymentReturnView({
       </div>
 
       {(d.childName || d.reference || d.amount != null) && (
-        <dl className="mt-5 space-y-1 text-sm">
-          {d.childName && <dd className="font-semibold">{t.child(d.childName)}</dd>}
-          {d.amount != null && d.currency && <dd>{formatMoney(d.amount, d.currency, locale)}</dd>}
+        <div className="mt-5 space-y-1 text-sm">
+          {d.childName && <p className="font-semibold">{t.child(d.childName)}</p>}
+          {d.amount != null && d.currency && <p>{formatMoney(d.amount, d.currency, locale)}</p>}
           {d.reference && (
-            <div className="flex flex-wrap gap-2">
-              <dt className="text-muted-foreground">{t.reference}</dt>
-              <dd>
-                <bdi dir="ltr" className="font-mono">
-                  {d.reference}
-                </bdi>
-              </dd>
-            </div>
+            <p className="flex flex-wrap gap-2">
+              <span className="text-muted-foreground">{t.reference}</span>
+              <bdi dir="ltr" className="font-mono">
+                {d.reference}
+              </bdi>
+            </p>
           )}
-        </dl>
+        </div>
       )}
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
