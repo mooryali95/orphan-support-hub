@@ -122,3 +122,12 @@ REVOKE ALL ON FUNCTION public.child_updates_retention_done(uuid[], integer) FROM
 GRANT EXECUTE ON FUNCTION public.child_updates_retention_ids(integer) TO service_role;
 GRANT EXECUTE ON FUNCTION public.child_updates_retention_due(integer, integer) TO service_role;
 GRANT EXECUTE ON FUNCTION public.child_updates_retention_done(uuid[], integer) TO service_role;
+
+-- سجلّ سياسة الاستبقاء المعروض للإدارة: البندان مع غيرهما.
+INSERT INTO public.data_retention_policy (entity, basis, retain_months, note) VALUES
+  ('child_updates.rejected', 'guardian_consent', 1,
+   'تحديث الطفل المرفوض: يُحذف ملفّه من الخزنة فور الرفض، وصفّه بعد 30 يوماً.'),
+  ('child_updates', 'guardian_consent', 12,
+   'صور الطفل ومقاطعه للكافل: تُمحى بعد سنةٍ (CHILD_UPDATES_ARCHIVE_DAYS) من أرشفة ملفّه وانتهاء آخر كفالة.')
+ON CONFLICT (entity) DO UPDATE
+  SET basis = EXCLUDED.basis, retain_months = EXCLUDED.retain_months, note = EXCLUDED.note, updated_at = now();
