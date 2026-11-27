@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5159,
+ "count": 5164,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -9910,6 +9910,41 @@
    "kind": "text",
    "hash": "1ba980b7173f",
    "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today/CountryTodayStrip.awaiting": {
+   "en": "Awaiting your decision",
+   "ar": "تنتظر حسمك",
+   "kind": "text",
+   "hash": "e0b22d37beb8",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.label": {
+   "en": "Your day at a glance",
+   "ar": "ملخّص يومك",
+   "kind": "text",
+   "hash": "426b1e6419e5",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.last": {
+   "en": "Latest upload",
+   "ar": "آخر رفع",
+   "kind": "text",
+   "hash": "723e115df36e",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.none": {
+   "en": "Nothing yet",
+   "ar": "لا شيء بعد",
+   "kind": "text",
+   "hash": "f0f7ada81e95",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.overdue": {
+   "en": "Overdue",
+   "ar": "متأخرة",
+   "kind": "text",
+   "hash": "e9297fc1c27d",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
   },
   "components/admin/trust.actions.country_source_mode": {
    "en": "Office mode switch",
