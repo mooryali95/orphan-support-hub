@@ -31,8 +31,8 @@ export function ThemeSwitch({ className, withLabel }: { className?: string; with
       }}
       className={cn(
         withLabel
-          ? "inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium"
-          : "inline-grid size-9 place-items-center rounded-lg",
+          ? "inline-flex h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium"
+          : "inline-grid size-11 place-items-center rounded-lg",
         "relative text-muted-foreground transition-[background-color,color,scale] duration-200 hover:bg-secondary hover:text-foreground active:scale-[0.94]",
         className,
       )}

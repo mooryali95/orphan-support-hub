@@ -43,6 +43,13 @@ export function SiteHeader() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  // the open menu holds focus: the first link takes it, Tab cycles through the menu and its
+  // button, and Esc closes it and hands focus back to the button
+  useEffect(() => {
+    if (!open) return;
+    menu.current?.querySelector<HTMLElement>("a, button")?.focus();
+  }, [open]);
   const c = useCopy(COPY);
   const brand = brandFor(useLocale());
   const NAV = ROUTES.map((to, i) => ({ to, label: c.nav[i] }));
@@ -136,6 +143,20 @@ export function SiteHeader() {
             type="button"
             ref={menuButton}
             onClick={() => setOpen((v) => !v)}
+            onKeyDown={(e) => {
+              if (!open) return;
+              if (e.key === "Escape") setOpen(false);
+              if (e.key === "Tab" && e.shiftKey) {
+                const items = menu.current?.querySelectorAll<HTMLElement>(
+                  "a[href], button:not([disabled])",
+                );
+                const last = items?.[items.length - 1];
+                if (last) {
+                  e.preventDefault();
+                  last.focus();
+                }
+              }
+            }}
             aria-label={c.menu}
             aria-expanded={open}
             aria-controls="site-mobile-nav"
@@ -148,10 +169,24 @@ export function SiteHeader() {
 
       <div
         id="site-mobile-nav"
+        ref={menu}
         onKeyDown={(e) => {
-          if (e.key !== "Escape") return;
-          setOpen(false);
-          menuButton.current?.focus();
+          if (e.key === "Escape") {
+            setOpen(false);
+            menuButton.current?.focus();
+            return;
+          }
+          if (e.key !== "Tab" || !menu.current || !menuButton.current) return;
+          const items = [
+            menuButton.current,
+            ...menu.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+          ];
+          const at = items.indexOf(document.activeElement as HTMLElement);
+          const next = e.shiftKey ? at - 1 : at + 1;
+          if (next < 0 || next >= items.length) {
+            e.preventDefault();
+            items[next < 0 ? items.length - 1 : 0]?.focus();
+          }
         }}
         className={cn("border-t border-border/70 lg:hidden", open ? "block" : "hidden")}
       >
