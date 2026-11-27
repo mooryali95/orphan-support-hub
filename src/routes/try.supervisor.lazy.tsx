@@ -37,6 +37,8 @@ const COPY = defineCopy("routes/try.supervisor", {
     cancel: "إلغاء",
     log: "سجلّ الزيارات",
     empty: "لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.",
+    recordNamed: (n: string) => `سجّل زيارة ${n}`,
+    progress: (done: number, all: number) => `زرت ${done} من ${all} هذا الشهر`,
   },
   en: {
     saved: (n: string) => `Visit to ${n} recorded`,
@@ -61,6 +63,8 @@ const COPY = defineCopy("routes/try.supervisor", {
     cancel: "Cancel",
     log: "Visit log",
     empty: "No visits yet. Record a visit and it appears here with its date.",
+    recordNamed: (n: string) => `Record a visit for ${n}`,
+    progress: (done: number, all: number) => `${done} of ${all} visited this month`,
   },
 });
 
@@ -116,7 +120,7 @@ function TrySupervisor() {
     <div>
       <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section aria-labelledby="sup-kids">
           <h2 id="sup-kids" className="text-lg font-bold">
             {t.kids}
@@ -146,7 +150,11 @@ function TrySupervisor() {
                       </span>
                     </span>
                     {!editing && (
-                      <Button size="sm" onClick={() => setOpen(k.id)}>
+                      <Button
+                        className="min-h-11"
+                        aria-label={t.recordNamed(k.name)}
+                        onClick={() => setOpen(k.id)}
+                      >
                         <ClipboardCheck className="size-4" aria-hidden="true" />
                         {t.record}
                       </Button>
@@ -215,8 +223,29 @@ function TrySupervisor() {
           <h2 id="sup-log" className="text-lg font-bold">
             {t.log}
           </h2>
+          {(() => {
+            const done = kids.filter((k) => visits.some((v) => v.childId === k.id)).length;
+            return (
+              <div className="mt-3">
+                <p className="text-sm font-bold tabular-nums">{t.progress(done, kids.length)}</p>
+                <div
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={kids.length}
+                  aria-valuenow={done}
+                  aria-label={t.progress(done, kids.length)}
+                  className="mt-2 h-2 overflow-hidden rounded-full bg-muted"
+                >
+                  <div
+                    className="h-full rounded-full bg-primary transition-[width]"
+                    style={{ width: `${kids.length ? (done / kids.length) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })()}
           {visits.length === 0 ? (
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">{t.empty}</p>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{t.empty}</p>
           ) : (
             <ol className="mt-3 space-y-3">
               {visits.map((v) => (

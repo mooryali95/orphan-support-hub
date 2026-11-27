@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5157,
+ "count": 5159,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -33391,6 +33391,14 @@
    "hash": "d5e6ccb31143",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
+  "routes/try.supervisor.progress": {
+   "en": "{0} of {1} visited this month",
+   "ar": "زرت {0} من {1} هذا الشهر",
+   "kind": "template",
+   "params": 2,
+   "hash": "eb35dd37e2b9",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
   "routes/try.supervisor.real": {
    "en": "a certified supervisor, independent of the organization, who sees only assigned children",
    "ar": "مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم",
@@ -33403,6 +33411,14 @@
    "ar": "سجّل زيارة",
    "kind": "text",
    "hash": "50fde62421c7",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.recordNamed": {
+   "en": "Record a visit for {0}",
+   "ar": "سجّل زيارة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "865e0cd49d8f",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
   "routes/try.supervisor.role": {
