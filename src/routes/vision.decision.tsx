@@ -169,7 +169,7 @@ const COPY = defineCopy("routes/vision.decision", {
     proposal: "Proposed decision",
     campaign: "A Tirana campaign",
     campaignText:
-      "Appears in the support platform as its own door, “Complete the Tirana groups”, with a target that closes the gap.",
+      "Appears in the support platform as a separate entry point, “Complete the Tirana groups”, with a target that closes the gap.",
     newGroup: "A new group",
     newGroupText:
       "A fifth supervised group opens in Tirana in the operations platform, led by a qualified supervisor.",
@@ -192,7 +192,7 @@ const COPY = defineCopy("routes/vision.decision", {
       campaign: {
         h: (p: string) => `A campaign for ${p}`,
         why: (gap: number, pct: number, amt: string) =>
-          `Largest gap: ${gap} children, funding at ${pct}%. Campaign target ${amt}; it appears in the support platform as its own door.`,
+          `Largest gap: ${gap} children, funding at ${pct}%. Campaign target ${amt}; it appears in the support platform as a separate entry point.`,
       },
       newGroup: {
         h: (p: string) => `A new group in ${p}`,

@@ -135,7 +135,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipJourney", {
     provider: "the provider",
     copyTx: "Copy transaction number",
     copiedTx: "Transaction number copied",
-    receipt: "Month receipt",
+    receipt: "Monthly receipt",
     copyReceipt: "Copy receipt",
     copiedReceipt: "Receipt copied",
     verifyOpen: "Check a saved receipt",

@@ -17512,10 +17512,10 @@
    "file": "src/components/sponsorship/SponsorshipJourney.tsx"
   },
   "components/sponsorship/SponsorshipJourney.receipt": {
-   "en": "Month receipt",
+   "en": "Monthly receipt",
    "ar": "إيصال الشهر",
    "kind": "text",
-   "hash": "3b27cbb9e426",
+   "hash": "33c436f41604",
    "file": "src/components/sponsorship/SponsorshipJourney.tsx"
   },
   "components/sponsorship/SponsorshipJourney.receiptHint": {
@@ -28830,9 +28830,9 @@
   },
   "routes/index.childP1": {
    "en": "A file on the platform isn't an appeal for pity. It's a verified record of a child with a name, a school, a city and a need stated in numbers; because what isn't measured isn't followed, and what isn't followed doesn't change.",
-   "ar": "الملفّ في المنصّة ليس نداء استعطاف. هو سجلّ مُدقَّق لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم، لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
+   "ar": "الملفّ في المنصّة ليس نداء استعطاف. هو سجلٌّ مُراجَع لطفلٍ له اسم ومدرسة ومدينة واحتياج مُحدَّد بالرقم، لأن ما لا يُقاس لا يُتابَع، وما لا يُتابَع لا يتغيّر.",
    "kind": "text",
-   "hash": "cbeec9e599de",
+   "hash": "8af369a72049",
    "file": "src/routes/index.tsx"
   },
   "routes/index.childP2": {
@@ -33435,10 +33435,10 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.campaignText": {
-   "en": "Appears in the support platform as its own door, “Complete the Tirana groups”, with a target that closes the gap.",
+   "en": "Appears in the support platform as a separate entry point, “Complete the Tirana groups”, with a target that closes the gap.",
    "ar": "تظهر في منصّة الدعم بابًا مستقلاً «أكمل مجموعات تيرانا»، بهدفٍ يضيّق الفجوة.",
    "kind": "text",
-   "hash": "7f13debf7839",
+   "hash": "f8775760ebd3",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.childrenNeed": {
@@ -33686,11 +33686,11 @@
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.campaign.why": {
-   "en": "Largest gap: {0} children, funding at {1}%. Campaign target {2}; it appears in the support platform as its own door.",
+   "en": "Largest gap: {0} children, funding at {1}%. Campaign target {2}; it appears in the support platform as a separate entry point.",
    "ar": "أكبر فجوة: {0} طفلاً، والتمويل {1}%. هدف الحملة {2}، وتظهر في منصّة الدعم باباً مستقلاً.",
    "kind": "template",
    "params": 3,
-   "hash": "124c8b9ffb05",
+   "hash": "905f45a7615f",
    "file": "src/routes/vision.decision.tsx"
   },
   "routes/vision.decision.rec.fundGroup.h": {
