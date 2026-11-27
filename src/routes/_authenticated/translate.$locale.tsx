@@ -75,6 +75,11 @@ function ReviewPage() {
 
   const rows = data?.ok ? data.data.rows : [];
   const namespaces = useMemo(() => [...new Set(rows.map((r) => r.ns))].sort(), [rows]);
+  const missingByNs = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const r of rows) if (r.status === "missing") m.set(r.ns, (m.get(r.ns) ?? 0) + 1);
+    return m;
+  }, [rows]);
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return rows.filter((r) => {
@@ -201,12 +206,12 @@ function ReviewPage() {
                 setPage(0);
               }}
               aria-label="الصفحة أو المكوّن"
-              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+              className="h-11 rounded-md border border-input bg-background px-3 text-sm"
             >
               <option value="">كل الصفحات</option>
               {namespaces.map((n) => (
                 <option key={n} value={n}>
-                  {n}
+                  {missingByNs.get(n) ? `${n} (${missingByNs.get(n)} ناقص)` : n}
                 </option>
               ))}
             </select>
