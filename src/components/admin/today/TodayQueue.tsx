@@ -561,8 +561,9 @@ function Row({
               size="sm"
               variant="outline"
               tabIndex={-1}
-              className="min-h-10"
+              className="min-h-11"
               disabled={busy}
+              aria-label={`${it.source === "alert" ? t.reviewed : t.acceptProposed} · ${it.title}`}
               onClick={onSettle}
             >
               {it.source === "alert" ? t.reviewed : t.acceptProposed}
