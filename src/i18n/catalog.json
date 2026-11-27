@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5167,
+ "count": 5169,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -28446,6 +28446,13 @@
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
   },
+  "routes/auth.trial": {
+   "en": "Try the platform with sample data, no account needed",
+   "ar": "جرّب المنصّة ببياناتٍ تجريبية بلا حساب",
+   "kind": "text",
+   "hash": "8aa1319a57d8",
+   "file": "src/routes/auth.tsx"
+  },
   "routes/country-data.all": {
    "en": "All items by country",
    "ar": "كل البنود بحسب الدولة",
@@ -30808,6 +30815,14 @@
    "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
    "kind": "text",
    "hash": "d65c0cfb1c1d",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.handover": {
+   "en": "{0} is handing you over to its sponsorship platform.",
+   "ar": "تنقلك {0} إلى منصّة الكفالة الخاصة بها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "daaa1b0534d3",
    "file": "src/routes/sso.tsx"
   },
   "routes/sso.reasons.email_unconfirmed": {

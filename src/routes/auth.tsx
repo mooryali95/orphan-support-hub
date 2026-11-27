@@ -8,6 +8,7 @@ import { GivingOnceLine } from "@/components/auth/GivingOnceLine";
 import { BrandHalo } from "@/components/brand/BrandPattern";
 import { KafalaPromise } from "@/components/KafalaPromise";
 import { trialSlots } from "@/lib/trial-slots";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 import { supabase } from "@/integrations/supabase/client";
 import { BRAND, brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -29,6 +30,7 @@ const COPY = defineCopy("routes/auth", {
     and: " و",
     privacy: "سياسة الخصوصية",
     note: ". وهذه منصّة تعالج بيانات أطفال، فاقرأهما.",
+    trial: "جرّب المنصّة ببياناتٍ تجريبية بلا حساب",
     sponsoring: (name: string, amount: string) =>
       `أنت على وشك كفالة ${name} بـ${amount} شهرياً. بعد الدخول تعود إلى ملفّه بما اخترته.`,
   },
@@ -43,6 +45,7 @@ const COPY = defineCopy("routes/auth", {
     and: " and ",
     privacy: "privacy policy",
     note: ". This platform handles children's data, so please read them.",
+    trial: "Try the platform with sample data, no account needed",
     sponsoring: (name: string, amount: string) =>
       `You're about to sponsor ${name} with ${amount} a month. After signing in you'll return to their file with what you chose.`,
   },
@@ -175,7 +178,12 @@ function AuthPage() {
           <KahataynLockup />
         </Link>
         <span aria-hidden="true" className="rule-champagne mx-auto mt-6 block w-32 lg:hidden" />
-        <h1 className="sr-only">{c.h1}</h1>
+        <p className="mt-4 text-center text-xs leading-6 text-muted-foreground lg:hidden">
+          {brand.ownerLine}
+        </p>
+        <h1 className="mt-6 text-center text-sm font-semibold text-muted-foreground lg:mt-0 lg:text-start">
+          {c.h1}
+        </h1>
         {draft && (
           <p className="mt-6 rounded-xl border border-border bg-secondary/60 px-4 py-3 text-center text-sm leading-7">
             {draft.cadence === "one_time" ? (
@@ -203,19 +211,27 @@ function AuthPage() {
           {c.agree}{" "}
           <Link
             to="/legal/terms"
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="inline-flex min-h-11 items-center font-medium text-primary underline-offset-4 hover:underline"
           >
             {c.terms}
           </Link>
           {c.and}
           <Link
             to="/legal/privacy"
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="inline-flex min-h-11 items-center font-medium text-primary underline-offset-4 hover:underline"
           >
             {c.privacy}
           </Link>
           {c.note}
         </p>
+        {TRIAL_ENABLED && (
+          <Link
+            to={trialRoute("/try")}
+            className="mx-auto mt-2 inline-flex min-h-11 items-center text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            {c.trial}
+          </Link>
+        )}
       </main>
     </div>
   );
