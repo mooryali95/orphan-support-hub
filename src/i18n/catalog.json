@@ -1,7 +1,14 @@
 {
  "version": 1,
- "count": 5169,
+ "count": 5220,
  "entries": {
+  "account/mfa.badge": {
+   "en": "Verified session (aal2)",
+   "ar": "جلسة موثّقة (aal2)",
+   "kind": "text",
+   "hash": "297e3ca2b9d7",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
   "account/mfa.code": {
    "en": "Code",
    "ar": "الرمز",
@@ -9,11 +16,39 @@
    "hash": "6c6ec4877448",
    "file": "src/components/account/MfaSettings.tsx"
   },
+  "account/mfa.codeHint": {
+   "en": "Six digits",
+   "ar": "ستّة أرقام",
+   "kind": "text",
+   "hash": "2651a77c7994",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
   "account/mfa.confirm": {
    "en": "Confirm",
    "ar": "تأكيد",
    "kind": "text",
    "hash": "cfe80a65f538",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copied": {
+   "en": "Key copied. Paste it into your authenticator app.",
+   "ar": "نُسخ المفتاح. الصقه في تطبيق المصادقة.",
+   "kind": "text",
+   "hash": "3af7989384ca",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copyFailed": {
+   "en": "Copying failed. Select the key and copy it yourself.",
+   "ar": "تعذّر النسخ. حدّد المفتاح وانسخه بنفسك.",
+   "kind": "text",
+   "hash": "29fdadca390c",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copySecret": {
+   "en": "Copy key",
+   "ar": "نسخ المفتاح",
+   "kind": "text",
+   "hash": "1a47f6b6bfde",
    "file": "src/components/account/MfaSettings.tsx"
   },
   "account/mfa.enrollIntro": {
@@ -28367,6 +28402,333 @@
    "params": 1,
    "hash": "ed50660f10e5",
    "file": "src/routes/_authenticated/statements.$year.tsx"
+  },
+  "routes/account.addMine": {
+   "en": "Add my passkey",
+   "ar": "أضف بصمتي",
+   "kind": "text",
+   "hash": "40fbb1629570",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.addName": {
+   "en": "Add your name",
+   "ar": "أضف اسمك",
+   "kind": "text",
+   "hash": "d518877f5624",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.addThis": {
+   "en": "Add this device's passkey",
+   "ar": "أضف بصمة هذا الجهاز",
+   "kind": "text",
+   "hash": "fdecb8bf1788",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.added": {
+   "en": "Added {0}",
+   "ar": "أُضيفت {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "84703a3365f9",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirming": {
+   "en": "Confirm it's you on your device…",
+   "ar": "أكّد هويتك على جهازك…",
+   "kind": "text",
+   "hash": "96d15f1886a6",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.description": {
+   "en": "Who you are, how you sign in, and where to go.",
+   "ar": "من أنت، وكيف تدخل، وإلى أين تذهب.",
+   "kind": "text",
+   "hash": "86617dbe85ee",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.editName": {
+   "en": "Edit name",
+   "ar": "تعديل الاسم",
+   "kind": "text",
+   "hash": "c5b2f11bc67d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.emailCode": {
+   "en": "Code to your email",
+   "ar": "رمزٌ إلى البريد",
+   "kind": "text",
+   "hash": "cd9a90a1ece4",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.google": {
+   "en": "Google account",
+   "ar": "حساب جوجل",
+   "kind": "text",
+   "hash": "fa573bfe1208",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.lastUsed": {
+   "en": " · last used {0}",
+   "ar": " · آخر استعمال {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "067e6b02206c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.linked": {
+   "en": "Linked",
+   "ar": "مربوط",
+   "kind": "text",
+   "hash": "d746729e2b8d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.name": {
+   "en": "Name",
+   "ar": "الاسم",
+   "kind": "text",
+   "hash": "865c3e992933",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.nameSaved": {
+   "en": "Your name was saved",
+   "ar": "حُفظ اسمك",
+   "kind": "text",
+   "hash": "fc3c03913e72",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.noPasskey": {
+   "en": "This browser doesn't support passkeys.",
+   "ar": "هذا المتصفّح لا يدعم البصمة.",
+   "kind": "text",
+   "hash": "4bbf36156143",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notLinked": {
+   "en": "Not linked. Sign in with Google once to link it",
+   "ar": "غير مربوط. ادخل بجوجل مرّةً ليُربط",
+   "kind": "text",
+   "hash": "e78a96bccf42",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notifications": {
+   "en": "Notifications",
+   "ar": "الإشعارات",
+   "kind": "text",
+   "hash": "5818d8bb798c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notificationsText": {
+   "en": "What reaches you, and when",
+   "ar": "ما يصلك، ومتى",
+   "kind": "text",
+   "hash": "34a562ab1cf7",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.off": {
+   "en": "Off",
+   "ar": "غير مفعّل",
+   "kind": "text",
+   "hash": "08ded0ea4546",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.on": {
+   "en": "On",
+   "ar": "مفعّل",
+   "kind": "text",
+   "hash": "68d757775b52",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkey": {
+   "en": "Passkey",
+   "ar": "البصمة",
+   "kind": "text",
+   "hash": "29c2ecaa581e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyAddFailed": {
+   "en": "Couldn't add the passkey.",
+   "ar": "تعذّرت إضافة البصمة.",
+   "kind": "text",
+   "hash": "867f76bbdb8c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyAdded": {
+   "en": "Passkey added",
+   "ar": "أُضيفت البصمة",
+   "kind": "text",
+   "hash": "f888a2b6e651",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDisabledClient": {
+   "en": "Passkeys are off in the published site. Publish the latest update, then reload the page.",
+   "ar": "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة.",
+   "kind": "text",
+   "hash": "c6ab495d174e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDisabledServer": {
+   "en": "Passkeys aren't enabled in the server's auth settings (Supabase).",
+   "ar": "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
+   "kind": "text",
+   "hash": "a0c4cbd8ac2c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDuplicate": {
+   "en": "This device already holds a passkey for your account.",
+   "ar": "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
+   "kind": "text",
+   "hash": "883ae3ecac3d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyFallback": {
+   "en": "the passkey",
+   "ar": "البصمة",
+   "kind": "text",
+   "hash": "c403f2b7c186",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyName": {
+   "en": "Passkey name",
+   "ar": "اسم البصمة",
+   "kind": "text",
+   "hash": "59fe75f88653",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyShort": {
+   "en": "Passkey",
+   "ar": "بصمة",
+   "kind": "text",
+   "hash": "507a0442b27f",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyText": {
+   "en": "Sign in with your face, finger or device lock. Your passkey never leaves your device.",
+   "ar": "دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.",
+   "kind": "text",
+   "hash": "da417ad7522e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.phoneCode": {
+   "en": "Code to your phone",
+   "ar": "رمزٌ إلى الجوال",
+   "kind": "text",
+   "hash": "f60980b41a72",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.remove": {
+   "en": "Remove {0}",
+   "ar": "حذف {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "70f44fc40078",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.removeFailed": {
+   "en": "Couldn't remove",
+   "ar": "تعذّر الحذف",
+   "kind": "text",
+   "hash": "85c6d4820ce9",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.removed": {
+   "en": "The passkey was removed from your account",
+   "ar": "حُذفت البصمة من حسابك",
+   "kind": "text",
+   "hash": "df86e780b194",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.rename": {
+   "en": "Rename {0}",
+   "ar": "إعادة تسمية {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9e6d80ed79c1",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.renameFailed": {
+   "en": "Couldn't rename",
+   "ar": "تعذّرت إعادة التسمية",
+   "kind": "text",
+   "hash": "878ba41f6dba",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.save": {
+   "en": "Save",
+   "ar": "حفظ",
+   "kind": "text",
+   "hash": "95ac72a0305a",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.saveFailed": {
+   "en": "Couldn't save",
+   "ar": "تعذّر الحفظ",
+   "kind": "text",
+   "hash": "400225b3bf0f",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.shortcuts": {
+   "en": "Shortcuts",
+   "ar": "اختصارات",
+   "kind": "text",
+   "hash": "280ff603da22",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.signInMethods": {
+   "en": "Ways to sign in",
+   "ar": "طرق الدخول",
+   "kind": "text",
+   "hash": "b4987c5dd798",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.signOut": {
+   "en": "Sign out",
+   "ar": "تسجيل الخروج",
+   "kind": "text",
+   "hash": "a09b8eb40a40",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.since": {
+   "en": "With us since {0}",
+   "ar": "معنا منذ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7f3f51820a36",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.sponsorships": {
+   "en": "My sponsorships",
+   "ar": "كفالاتي",
+   "kind": "text",
+   "hash": "b965001ea812",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.sponsorshipsText": {
+   "en": "Who you sponsor, and what reached them lately",
+   "ar": "من تكفل، وآخر ما وصلهم",
+   "kind": "text",
+   "hash": "dd124845637d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.title": {
+   "en": "My account",
+   "ar": "حسابي",
+   "kind": "text",
+   "hash": "774ea5f16582",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.workspaces": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.workspacesText": {
+   "en": "Everything you have access to",
+   "ar": "كل ما لك صلاحيةٌ عليه",
+   "kind": "text",
+   "hash": "05d433670107",
+   "file": "src/routes/_authenticated/account.tsx"
   },
   "routes/auth.agree": {
    "en": "By continuing you agree to the",
