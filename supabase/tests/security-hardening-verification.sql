@@ -42,7 +42,15 @@ BEGIN
   PERFORM public.admin_golden_import('wamy', 'SD', NULL,
     '[{"external_ref":"sh-1","observed_at":"2026-11-02T00:00:00Z","fields":{"birth_date":"2013-07-01"}}]'::jsonb);
   SELECT id INTO _c FROM public.data_conflicts WHERE orphan_id = _o AND field = 'birth_date' AND status = 'open';
+  IF NOT (SELECT bool_or((x->>'mine')::boolean) FROM jsonb_array_elements(public.admin_conflicts('SD', 50)) x
+          WHERE x->>'id' = _c::text) THEN
+    RAISE EXCEPTION 'FAIL — البند لا يقول لرافعه إنه رفعه';
+  END IF;
   SET LOCAL request.jwt.claims = '{"sub":"a9b00000-0000-4000-8000-000000000002","role":"authenticated"}';
+  IF (SELECT bool_or((x->>'mine')::boolean) FROM jsonb_array_elements(public.admin_conflicts('SD', 50)) x
+      WHERE x->>'id' = _c::text) THEN
+    RAISE EXCEPTION 'FAIL — البند يظهر لغير رافعه كأنه رفعه';
+  END IF;
   _ok := (public.admin_conflict_resolve(_c, 'accept')->>'ok')::boolean;
   IF NOT _ok
      OR (SELECT birth_date FROM public.orphans WHERE id = _o) <> DATE '2013-07-01' THEN
