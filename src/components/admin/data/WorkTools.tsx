@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 import { Busy, CARD, Failed, NeedsUpdate, Pill, SELECT } from "./shared";
 import { SOURCES_COPY } from "./sources-copy";
+import { FreezeControl } from "./sources/KillSwitches";
 import { WORK_COPY } from "./work-copy";
 
 /** رمز خطأٍ من القاعدة ← جملة، من نصوص الخانتين معاً. */
@@ -411,7 +412,10 @@ function ChildFileBody({ id, onClose }: { id: string; onClose: () => void }) {
           )}
         </SheetDescription>
       </SheetHeader>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">{body}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+        {body}
+        <FreezeControl id={id} />
+      </div>
     </>
   );
 }

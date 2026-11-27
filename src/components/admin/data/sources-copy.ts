@@ -329,6 +329,9 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       alert_closed: "حُسم هذا التنبيه من قبل.",
       country_forbidden: "لا صلاحية لك على هذه الدولة لهذا الإجراء.",
       four_eyes_required: "رفعتَ هذا التغيير بنفسك: يحسمه مشرفٌ آخر أو مديرٌ آخر.",
+      mfa_required:
+        "هذا القرار يحتاج المصادقة الثنائية. فعّلها أو اكتب رمزها من «حسابي ← المصادقة الثنائية»، ثم أعد المحاولة.",
+      orphan_frozen: "جمّدت الإدارة هذا الملف: لا يتغيّر ولا يُكفل حتى يُرفع التجميد.",
       user_not_found: "لا حساب مسجّل بهذا البريد.",
       invite_failed: "تعذّر إرسال الدعوة. تحقّق من البريد وأعد المحاولة.",
       role_forbidden: "لا تملك منح هذا الدور أو تعديل هذا العضو.",
@@ -615,6 +618,10 @@ export const SOURCES_COPY = defineCopy("components/admin/data/sources", {
       country_forbidden: "You don't have this permission for this country.",
       four_eyes_required:
         "You uploaded this change yourself: another supervisor or another admin settles it.",
+      mfa_required:
+        "This decision needs two-step verification. Turn it on or enter its code in My account → Two-step verification, then try again.",
+      orphan_frozen:
+        "The admin team froze this file: it can't change or take new sponsorships until it's unfrozen.",
       user_not_found: "No registered account with this email.",
       invite_failed: "The invitation couldn't be sent. Check the email and try again.",
       role_forbidden: "You can't grant this role or change this member.",

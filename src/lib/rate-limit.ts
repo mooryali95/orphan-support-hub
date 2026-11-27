@@ -8,7 +8,8 @@ import { withPhase7 } from "@/integrations/supabase/types.extra";
  * أضعافه فعلياً — وهو أسوأ من غيابه لأنه يوهم بالحماية.
  */
 
-export type Bucket = "auth" | "search" | "checkout" | "intake" | "api" | "api_client" | "cron";
+export type Bucket =
+  "auth" | "search" | "checkout" | "intake" | "api" | "api_client" | "cron" | "sso";
 
 /** حدود محافظة: تُوقف الآلة ولا تُزعج الإنسان. */
 const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
@@ -27,6 +28,8 @@ const LIMITS: Record<Bucket, { limit: number; windowSeconds: number }> = {
   api_client: { limit: 300, windowSeconds: 60 },
   // مسارات المجدول (التصريف والصحّة): قبل فحص السرّ، فلا يُخمَّن بلا حدّ.
   cron: { limit: 30, windowSeconds: 60 },
+  // دخول الندوة (F8): دلوٌ وحده، فلا يستهلك تدفّقُ إطلاقٍ حصّةَ بوّابات التكامل ولا العكس.
+  sso: { limit: 20, windowSeconds: 60 },
 };
 
 /**
@@ -42,6 +45,7 @@ export const FAIL_CLOSED: ReadonlySet<Bucket> = new Set<Bucket>([
   "api",
   "api_client",
   "cron",
+  "sso",
 ]);
 
 /**

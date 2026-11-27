@@ -14,7 +14,7 @@ const state = {
   createUser: vi.fn(),
 };
 
-vi.mock("@/lib/integrations/client", () => ({ guardApiRate: async () => null }));
+vi.mock("@/lib/integrations/client", () => ({ guardSsoRate: async () => null }));
 vi.mock("@/lib/env.server", () => ({
   serverConfig: () => ({
     features: { sso: { ready: true } },
@@ -76,9 +76,13 @@ beforeEach(() => {
   delete process.env["WAMY_SSO_JWKS_URL"];
   for (const f of Object.values(state)) f.mockReset();
   state.rpc.mockImplementation(async (fn: string) =>
-    fn === "sso_claim_jti"
-      ? { data: true, error: null }
-      : { data: { ok: true, user_id: "user-A", linked: "existing" }, error: null },
+    fn === "sso_disabled"
+      ? { data: false, error: null }
+      : fn === "sso_claim_jti"
+        ? { data: true, error: null }
+        : fn === "sso_log_failure"
+          ? { data: null, error: null }
+          : { data: { ok: true, user_id: "user-A", linked: "existing" }, error: null },
   );
   state.getUserById.mockResolvedValue({ data: { user: { email: "a@wamy.example" } }, error: null });
   state.generateLink.mockImplementation(async ({ email }: { email: string }) => ({
@@ -124,10 +128,52 @@ describe("الدخول من الندوة", () => {
     expect(res.headers.get("set-cookie")).toBeNull();
   });
 
-  it("يرفض الرمز المستعمل", async () => {
-    state.rpc.mockResolvedValueOnce({ data: false, error: null });
+  it("يرفض الرمز المستعمل، ويسجّل السبب وحده", async () => {
+    const base = state.rpc.getMockImplementation()!;
+    state.rpc.mockImplementation(async (fn: string, args?: unknown) =>
+      fn === "sso_claim_jti" ? { data: false, error: null } : base(fn, args),
+    );
     const { handle } = await import("./launch.server");
-    const res = await handle(req(), await token("a@wamy.example"));
+    const t = await token("a@wamy.example");
+    const res = await handle(req(), t);
     expect(res.headers.get("location")).toMatch(/#error=token_used$/);
+    expect(state.rpc).toHaveBeenCalledWith("sso_log_failure", { _reason: "token_used" });
+    expect(JSON.stringify(state.rpc.mock.calls)).not.toContain(t);
+  });
+
+  it("يُغلق الباب حين توقفه الإدارة أو يتعذّر معرفة حاله", async () => {
+    const { handle } = await import("./launch.server");
+    for (const off of [
+      { data: true, error: null },
+      { data: null, error: { message: "down" } },
+    ]) {
+      state.rpc.mockImplementation(async (fn: string) =>
+        fn === "sso_disabled" ? off : { data: null, error: null },
+      );
+      const res = await handle(req(), await token("a@wamy.example"));
+      expect(res.headers.get("location")).toMatch(/#error=sso_disabled$/);
+    }
+    expect(state.rpc).not.toHaveBeenCalledWith("sso_claim_jti", expect.anything());
+    expect(state.rpc).toHaveBeenCalledWith("sso_log_failure", { _reason: "sso_disabled" });
+  });
+
+  it("لا يجلب مفاتيح الندوة لمعرّفٍ مجهول أكثر من مرّةٍ في الدقيقة (F9)", async () => {
+    const { handle, resetJwksCacheForTest } = await import("./launch.server");
+    resetJwksCacheForTest();
+    delete process.env["WAMY_SSO_SECRET"];
+    process.env["WAMY_SSO_JWKS_URL"] = "https://youth.wamy.example/jwks.json";
+    const fetchMock = vi.fn(async () =>
+      Response.json({ keys: [{ kty: "RSA", kid: "known", n: "AQAB", e: "AQAB" }] }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const forged = `${b64url(JSON.stringify({ alg: "RS256", kid: "unknown" }))}.${b64url("{}")}.x`;
+      for (let i = 0; i < 5; i++) await handle(req(), forged);
+      // الأوّل يملأ الذاكرة، والثاني يطلب المعرّف المجهول، ثم يُكبح الباقي.
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.unstubAllGlobals();
+      resetJwksCacheForTest();
+    }
   });
 });

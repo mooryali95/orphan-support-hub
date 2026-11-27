@@ -89,7 +89,8 @@ export type IntegrityQueue = {
 /** رسائل القاعدة ← جملٌ مفهومة. */
 function explain(message: string): string {
   const m: Array<[RegExp, string]> = [
-    [/requester_cannot_approve/, "لا يوافق مقدّم الطلب على طلبه."],
+    [/requester_cannot_approve|four_eyes_required/, "لا يوافق مقدّم الطلب على طلبه."],
+    [/mfa_required/, "هذا القرار يحتاج المصادقة الثنائية: فعّلها من «حسابي» ثم أعد المحاولة."],
     [/already_approved/, "وافقتَ على هذا الطلب من قبل."],
     [/request_not_pending|request_not_open/, "الطلب لم يعد مفتوحاً."],
     [/request_not_approved/, "الطلب لم يكتمل اعتماده، أو انتهت نافذته."],
@@ -248,14 +249,17 @@ export const approveUnlock = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => byId.parse(i))
   .handler(async ({ data, context }) => {
-    const r = await call<{ approvals: number; quorum: number }>(
+    const r = await call<{ ok: boolean; code?: string; approvals: number; quorum: number }>(
       context.supabase,
       "admin_approve_unlock",
       {
         _request: data.id,
       },
     );
-    return r.ok ? { ok: true as const, ...r.data } : { ok: false as const, error: r.error };
+    if (!r.ok) return { ok: false as const, error: r.error };
+    // الرفض رمزٌ لا استثناء (يبقى سطره في سجلّ السلامة).
+    if (r.data.ok === false) return { ok: false as const, error: explain(r.data.code ?? "") };
+    return { ok: true as const, approvals: r.data.approvals, quorum: r.data.quorum };
   });
 
 export const rejectUnlock = createServerFn({ method: "POST" })
@@ -277,9 +281,14 @@ export const applyUnlock = createServerFn({ method: "POST" })
       _request: data.id,
     });
     if (!r.ok) return { ok: false as const, error: r.error };
-    return r.data.ok
-      ? { ok: true as const }
-      : { ok: false as const, error: "انتهت نافذة الطلب (15 دقيقة). اطلب من جديد." };
+    if (r.data.ok) return { ok: true as const };
+    return {
+      ok: false as const,
+      error:
+        r.data.code === "expired"
+          ? "انتهت نافذة الطلب (15 دقيقة). اطلب من جديد."
+          : explain(r.data.code ?? ""),
+    };
   });
 
 /**
