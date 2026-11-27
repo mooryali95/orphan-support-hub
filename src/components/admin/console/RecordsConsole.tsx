@@ -533,7 +533,10 @@ function entitiesFor(c: Copy, locale: Locale): { [K in RecordKind]: Entity<RowOf
         [c.code, ltr(r.code)],
         [c.status, label(c.orphanStatus, r.status)],
         [c.org, r.org ? <bdi>{r.org}</bdi> : "—"],
-        [c.place, <bdi>{[r.city, r.country].filter(Boolean).join(c.listSep) || "—"}</bdi>],
+        [
+          c.place,
+          <bdi>{[r.city, r.country].filter(Boolean).map(isolate).join(c.listSep) || "—"}</bdi>,
+        ],
         [c.monthlyNeed, money(r.need, r.currency)],
         [c.funded, money(r.funded, r.currency)],
         [c.activeSponsors, <span className="tabular-nums">{r.sponsors}</span>],
@@ -668,7 +671,10 @@ function entitiesFor(c: Copy, locale: Locale): { [K in RecordKind]: Entity<RowOf
       ],
       details: (r) => [
         [c.status, label(c.orgStatus, r.status)],
-        [c.city, <bdi>{[r.city, r.region].filter(Boolean).join(c.listSep) || "—"}</bdi>],
+        [
+          c.city,
+          <bdi>{[r.city, r.region].filter(Boolean).map(isolate).join(c.listSep) || "—"}</bdi>,
+        ],
         [c.license, ltr(r.license)],
         [c.email, ltr(r.email)],
         [c.children, <span className="tabular-nums">{r.children}</span>],
