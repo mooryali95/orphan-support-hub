@@ -1,9 +1,11 @@
 -- الدخول من منصّة الندوة: الربط بالمعرّف، ورمزٌ لمرّةٍ واحدة — إثبات
 \set ON_ERROR_STOP on
 BEGIN;
-INSERT INTO auth.users (id, email) VALUES
-  ('a9a00000-0000-4000-8000-000000000001', 'staff@wamy.example'),
-  ('a9a00000-0000-4000-8000-000000000002', 'other@wamy.example');
+INSERT INTO auth.users (id, email, email_confirmed_at) VALUES
+  ('a9a00000-0000-4000-8000-000000000001', 'staff@wamy.example', now()),
+  ('a9a00000-0000-4000-8000-000000000002', 'other@wamy.example', now()),
+  -- بريد موظّفٍ سجّله غيره ولم يوثّقه: لا يُربط (تحصين 20261130300000)
+  ('a9a00000-0000-4000-8000-000000000003', 'squatted@wamy.example', NULL);
 
 DO $$
 DECLARE _r JSONB; _ok BOOLEAN;
@@ -42,7 +44,12 @@ BEGIN
   IF public.sso_resolve('wamy', 's9', 'new@wamy.example')->'user_id' <> 'null'::jsonb THEN
     RAISE EXCEPTION 'FAIL — بريدٌ جديد';
   END IF;
+  IF public.sso_resolve('wamy', 's-victim', 'squatted@wamy.example')->>'code' <> 'email_unconfirmed'
+     OR EXISTS (SELECT 1 FROM public.sso_identities WHERE subject = 's-victim') THEN
+    RAISE EXCEPTION 'FAIL — بريدٌ غير موثَّق رُبط بهوية الندوة';
+  END IF;
   RAISE NOTICE 'PASS — الربط بالمعرّف، ولا استيلاء ببريد، والرمز لمرّةٍ واحدة';
+  RAISE NOTICE 'PASS — البريد غير الموثَّق لا يُربط بهوية الندوة';
 END $$;
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص الدخول من الندوة اجتازت ──'; END $$;
 ROLLBACK;
