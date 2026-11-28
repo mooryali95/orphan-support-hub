@@ -40,6 +40,8 @@ import { trialSlots } from "@/lib/trial-slots";
 import { PLEDGE_TRANSITIONS, verificationLevel } from "@/lib/verification";
 import { VerificationBadge, VerificationChecklist } from "./VerificationBadge";
 import { STATUS_COPY } from "@/components/sponsorship/status-copy";
+import { Failed } from "@/components/admin/overview/parts";
+import { PanelSkeleton } from "@/components/admin/PanelState";
 import { copyOf, defineCopy, dirOf, pluralOf, useCopy, useLocale, type Locale } from "@/lib/locale";
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -248,6 +250,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     search: "بحث",
     readFailed: (error: string) => `تعذّرت القراءة: ${error}`,
     noRecords: "لا سجلّات هنا.",
+    retry: "أعد المحاولة",
     records: pluralOf(
       {
         zero: "{0} سجلّ",
@@ -449,6 +452,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     search: "Search",
     readFailed: (error: string) => `Couldn't read: ${error}`,
     noRecords: "No records here.",
+    retry: "Try again",
     records: pluralOf({ one: "{0} record", other: "{0} records" }),
     pageOf: (page: string, pages: string) => `page ${page} of ${pages}`,
     previous: "Previous",
@@ -1180,17 +1184,18 @@ export function RecordsConsole({
           <tbody className="divide-border divide-y">
             {res.isPending ? (
               <tr>
-                <td colSpan={entity.columns.length} className="px-4 py-10 text-center">
-                  <Loader2 className="text-muted-foreground mx-auto size-5 animate-spin" />
+                <td colSpan={entity.columns.length} className="px-4 py-3">
+                  <PanelSkeleton shape="rows" count={4} />
                 </td>
               </tr>
             ) : res.data && !res.data.ok ? (
               <tr>
-                <td
-                  colSpan={entity.columns.length}
-                  className="text-destructive px-4 py-6 text-center"
-                >
-                  {c.readFailed(res.data.error ?? "")}
+                <td colSpan={entity.columns.length} className="px-4 py-3">
+                  <Failed
+                    title={c.readFailed(res.data.error ?? "")}
+                    retry={c.retry}
+                    onRetry={() => void res.refetch()}
+                  />
                 </td>
               </tr>
             ) : rows.length === 0 ? (

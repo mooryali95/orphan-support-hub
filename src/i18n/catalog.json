@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5382,
+ "count": 5385,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -854,6 +854,20 @@
    "kind": "text",
    "hash": "29c84246bd75",
    "file": "src/components/admin/AdminTrustStrip.tsx"
+  },
+  "components/admin/AwaitingTransfers.empty": {
+   "en": "No sponsorships are waiting for payment.",
+   "ar": "لا توجد كفالات عالقة بانتظار الدفع.",
+   "kind": "text",
+   "hash": "e170c57f8385",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.next": {
+   "en": "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
+   "ar": "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
+   "kind": "text",
+   "hash": "82b5ed34fa61",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
   },
   "components/admin/FourEyesNote.note": {
    "en": "Settling needs two-step verification and a reviewer other than the uploader.",
@@ -1843,6 +1857,13 @@
    "ar": "سُجّلت",
    "kind": "text",
    "hash": "8a8bde95f501",
+   "file": "src/components/admin/console/RecordsConsole.tsx"
+  },
+  "components/admin/console/RecordsConsole.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleDoc": {

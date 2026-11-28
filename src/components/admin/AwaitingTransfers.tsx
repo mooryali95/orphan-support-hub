@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { PanelState } from "@/components/admin/PanelState";
+import { defineCopy, useCopy } from "@/lib/locale";
 import { Button } from "@/components/ui/button";
 import { listAwaitingTransfers } from "@/lib/manual-payments.functions";
 import { TransferReconcile } from "@/components/admin/TransferReconcile";
@@ -15,22 +16,26 @@ import { Name } from "@/components/kit/Name";
  * وإن وصل المال، لأن المزوّد اليدوي لا يرسل webhook يُفعّلها. والتفعيل
  * مطابقةٌ بما وصل لا ضغطة (UX-15): `TransferReconcile`.
  */
+const COPY = defineCopy("components/admin/AwaitingTransfers", {
+  ar: {
+    empty: "لا توجد كفالات عالقة بانتظار الدفع.",
+    next: "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
+  },
+  en: {
+    empty: "No sponsorships are waiting for payment.",
+    next: "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
+  },
+});
+
 export function AwaitingTransfers() {
+  const t = useCopy(COPY);
   const fetchRows = useServerFn(listAwaitingTransfers);
   const [open, setOpen] = useState<string | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["awaiting-transfers"],
     queryFn: () => fetchRows(),
   });
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-10">
-        <Loader2 className="text-muted-foreground size-5 animate-spin" />
-      </div>
-    );
-  }
 
   const rows = (data?.allowed && data.rows) || [];
 
@@ -38,11 +43,16 @@ export function AwaitingTransfers() {
     <section>
       <h2 className="text-lg font-bold">تحويلات بانتظار التأكيد ({rows.length})</h2>
       <div className="mt-4 space-y-3">
-        {rows.length === 0 && (
-          <p className="border-border bg-card text-muted-foreground rounded-2xl border border-dashed p-6 text-center text-sm">
-            لا توجد كفالات عالقة بانتظار الدفع.
-          </p>
-        )}
+        <PanelState
+          pending={isPending}
+          failed={isError}
+          onRetry={() => void refetch()}
+          empty={rows.length === 0}
+          emptyTitle={t.empty}
+          emptyNext={t.next}
+        >
+          {null}
+        </PanelState>
         {rows.map((r) => (
           <div
             key={r.id}
