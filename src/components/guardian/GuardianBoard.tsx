@@ -93,7 +93,12 @@ export function GuardianBoard({
     queryFn: () => fetchChildren(),
   });
   const [lang, setLang] = useState<Lang>(uiLang);
-  useEffect(() => setLang(readLang(uiLang)), [uiLang]);
+  // المحفوظ يُقبل إن كان بين ما يُعرض (لغة الواجهة أو الألبانية)، وإلّا فلغة الواجهة:
+  // عربيةٌ محفوظة لا تُبقي البطاقة عربيةً في واجهةٍ إنجليزية بلا زرٍّ يعيدها.
+  useEffect(() => {
+    const saved = readLang(uiLang);
+    setLang(saved === uiLang || saved === "sq" ? saved : uiLang);
+  }, [uiLang]);
 
   const children = kids.data ?? [];
   const orphans = ws.data?.orphans ?? [];

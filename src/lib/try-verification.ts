@@ -175,6 +175,8 @@ export const verificationCountries = () =>
   load().countries.map((c) => ({ code: c.code, name_ar: c.name_ar }));
 
 const allowed = (country: string, need: CountryNeed) => canDo(actor, country, need);
+/** صلاحية الدور الحالي في العيّنة، لمن يبني عليها خارج هذا الملف. */
+export const verificationCan = allowed;
 const visible = (country: string | null | undefined) => (code: string) =>
   (country ? code === country : true) && allowed(code, "read");
 
@@ -1290,6 +1292,33 @@ export function verificationCounts(country: string | null): Omit<QueueCounts, "u
     links: s.links.filter((l) => !l.closed_at && see(l.country) && inFocus(s, null, l.external_ref))
       .length,
   };
+}
+
+/**
+ * بنود شريط «اليوم» التي يحسمها الدور الحالي في دولةٍ واحدة (`admin.todayStrip`):
+ * مشرفٌ أو إدارة، وليس ممّا رفعه هو حين تمنعه العينان. كلٌّ بمهلته بالساعات.
+ */
+export function verificationStripItems(country: string): Array<{ at: string; hours: number }> {
+  if (!allowed(country, "approve")) return [];
+  const s = load();
+  const see = visible(country);
+  return [
+    ...s.alerts
+      .filter((a) => !a.closed_at && see(a.country) && inFocus(s, a.orphan_id) && !a.mine)
+      .map((a) => ({ at: a.created_at, hours: a.severity === "critical" ? 24 : 72 })),
+    ...s.conflicts
+      .filter(
+        (x) =>
+          !x.closed_at &&
+          see(x.country) &&
+          inFocus(s, x.orphan_id) &&
+          !(x.mine && (x.risk === "critical" || x.kind !== "disagreement")),
+      )
+      .map((x) => ({ at: x.created_at, hours: 72 })),
+    ...s.links
+      .filter((l) => !l.closed_at && see(l.country) && inFocus(s, null, l.external_ref))
+      .map((l) => ({ at: l.created_at, hours: 72 })),
+  ];
 }
 
 /** كفلاءٌ نموذجيون بأسماءٍ عامة من example.org: لا يقابلون أحداً. */

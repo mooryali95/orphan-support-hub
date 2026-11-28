@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5735,
+ "count": 5748,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -6926,6 +6926,27 @@
    "hash": "0226b6f9b2cd",
    "file": "src/components/admin/data/sources/ChildUpdatesCard.tsx"
   },
+  "components/admin/data/sources/in-today.chip": {
+   "en": "Shown in Today",
+   "ar": "معروض في اليوم",
+   "kind": "text",
+   "hash": "5dd3a3912adc",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.go": {
+   "en": "Go to Today",
+   "ar": "اذهب إلى اليوم",
+   "kind": "text",
+   "hash": "80b9d02bf482",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.note": {
+   "en": "These same items are in Today at the top of the page, so they are settled there only and never appear twice.",
+   "ar": "هذه البنود نفسها في «اليوم» أعلى الصفحة، فالحسم هناك وحده كي لا يظهر بندٌ مرّتين.",
+   "kind": "text",
+   "hash": "68df8573e0dd",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
   "components/admin/data/work.allFields": {
    "en": "All fields",
    "ar": "كل الحقول",
@@ -9682,6 +9703,20 @@
    "hash": "a2d36efb0aa1",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyCountry": {
+   "en": "Nothing is waiting in your country right now.",
+   "ar": "لا شيء ينتظر في دولتك الآن.",
+   "kind": "text",
+   "hash": "42446c30be8c",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyCountryNext": {
+   "en": "Upload a file from the Upload tab below, or check back later.",
+   "ar": "ارفع ملفّاً من لسان «الرفع» أدناه، أو عد لاحقاً.",
+   "kind": "text",
+   "hash": "6f430e181544",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.emptyFiltered": {
    "en": "No items match these filters.",
    "ar": "لا بنود تطابق المرشّحات.",
@@ -9703,11 +9738,25 @@
    "hash": "b76b1ec19eef",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyViewer": {
+   "en": "Nothing is waiting in your country right now. Your role is view only; the country supervisor settles.",
+   "ar": "لا شيء ينتظر في دولتك الآن. دورك اطّلاع، والحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "01893f72c5f8",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.failed": {
    "en": "Some sources didn't load. What's shown is correct but may be incomplete.",
    "ar": "تعذّر تحميل بعض المصادر. ما ظهر صحيح، وقد ينقص.",
    "kind": "text",
    "hash": "3de828d37a95",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.failedCountry": {
+   "en": "Some of your country's queues didn't load. What's shown is correct but may be incomplete.",
+   "ar": "تعذّر تحميل بعض طوابير دولتك. ما ظهر صحيح، وقد ينقص.",
+   "kind": "text",
+   "hash": "79f007d515ce",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.falsePositive": {
@@ -10058,6 +10107,13 @@
    "ar": "يُحمَّل ما ينتظر…",
    "kind": "text",
    "hash": "c661c4ff45d0",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.loadingCountry": {
+   "en": "Loading what's waiting in your country…",
+   "ar": "يُحمَّل ما ينتظر في دولتك…",
+   "kind": "text",
+   "hash": "f7ca3455ef51",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.normal": {
@@ -22015,6 +22071,13 @@
    "hash": "4fa2436b0589",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.admin": {
+   "en": "Admin panel",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "e018d4c236d2",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.dialogHint": {
    "en": "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
    "ar": "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
@@ -22029,11 +22092,25 @@
    "hash": "6dbd445e4e6c",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.donor": {
+   "en": "Supporter journey",
+   "ar": "رحلة الداعم",
+   "kind": "text",
+   "hash": "f880d107aa56",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.exit": {
    "en": "Back to the real platform",
    "ar": "العودة إلى المنصّة الحقيقية",
    "kind": "text",
    "hash": "6799a76bf157",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.hall": {
+   "en": "Impact hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "a615c42d5729",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.leftAction": {
@@ -22111,6 +22188,20 @@
    "ar": "بدأت التجربة من جديد",
    "kind": "text",
    "hash": "deb6a4a8e71d",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.roles": {
+   "en": "Roles",
+   "ar": "الأدوار",
+   "kind": "text",
+   "hash": "11a555c88642",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.sections": {
+   "en": "Demo sections",
+   "ar": "أبواب التجربة",
+   "kind": "text",
+   "hash": "e0f25c909fa9",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TrySupportMap.anywhere": {

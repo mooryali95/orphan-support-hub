@@ -7,6 +7,9 @@ import type { FieldValue } from "@/lib/golden-record";
 
 export type QueueCounts = { conflicts: number; alerts: number; links: number; updates: number };
 export const NO_COUNTS: QueueCounts = { conflicts: 0, alerts: 0, links: 0, updates: 0 };
+/** شريط «اليوم» لفريق الدولة: ما يحسمه المتّصل، ومنه ما تجاوز مهلته (عددٌ دقيق). */
+export type TodayStrip = { settle: number; overdue: number };
+
 export const sumCounts = (c: QueueCounts) => c.conflicts + c.alerts + c.links + c.updates;
 
 /** ما تعرضه قوائم الإدارة من الطفل، لا أكثر. */

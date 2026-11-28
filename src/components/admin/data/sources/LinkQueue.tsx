@@ -12,18 +12,22 @@ import { Busy, CARD, Failed, NeedsUpdate, Pill, SectionHead } from "../shared";
 import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
-import { Val } from "./shared";
+import { InTodayChip, InTodayNote, Val } from "./shared";
 import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function LinkQueue({
   country,
-  canApprove,
+  canApprove: canApproveIn,
   onOpen,
+  inToday = false,
 }: {
   country: string;
   canApprove: boolean;
   onOpen: (orphanId: string) => void;
+  /** القائمة تحت «اليوم» (بوّابة الدولة): بنودها صفوفٌ هناك، فهنا للاطّلاع بلا حسم. */
+  inToday?: boolean;
 }) {
+  const canApprove = canApproveIn && !inToday;
   const c = useCopy(SOURCES_COPY);
   const w = useCopy(WORK_COPY);
   const err = useWorkErr();
@@ -94,6 +98,7 @@ export function LinkQueue({
           ) : undefined
         }
       />
+      {inToday && <InTodayNote />}
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
@@ -145,6 +150,7 @@ export function LinkQueue({
                         {q.name ?? q.external_ref}
                       </bdi>
                       <Pill tone="quiet">{c.roles[q.role]}</Pill>
+                      {inToday && <InTodayChip />}
                       <span className="ms-auto min-w-0 truncate text-xs text-muted-foreground tabular-nums">
                         <Val>{q.external_ref}</Val>
                         {q.birth_date && (

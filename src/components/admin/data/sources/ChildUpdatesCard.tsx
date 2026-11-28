@@ -361,6 +361,7 @@ function UploadUpdate({ country }: { country: string }) {
       if (fileRef.current) fileRef.current.value = "";
       void qc.invalidateQueries({ queryKey: [...dk, QUEUE_KEY] });
       void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "today-strip"] });
     },
     onError: () => toast.error(err("failed")),
   });
@@ -524,6 +525,7 @@ export function ChildUpdateReview({
       toast.success(decision === "approve" ? c.approved : c.rejected);
       void qc.invalidateQueries({ queryKey: [...dk, QUEUE_KEY] });
       void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "today-strip"] });
       onDone?.();
     },
     onError: () => toast.error(err("failed")),

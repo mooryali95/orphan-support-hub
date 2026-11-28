@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { DecisionLogPage, QueueCounts, SearchResults } from "@/lib/admin-tools";
+import type { DecisionLogPage, QueueCounts, SearchResults, TodayStrip } from "@/lib/admin-tools";
 import { callRpc } from "@/lib/rpc-call";
 
 /**
@@ -17,6 +17,13 @@ export const getQueueCounts = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ country: code2.nullable() }).parse(input))
   .handler(({ data, context }) =>
     callRpc<QueueCounts>(context.supabase, "admin_queue_counts", { _country: data.country }),
+  );
+
+export const getTodayStrip = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ country: code2 }).parse(input))
+  .handler(({ data, context }) =>
+    callRpc<TodayStrip>(context.supabase, "admin_today_strip", { _country: data.country }),
   );
 
 export const adminSearch = createServerFn({ method: "GET" })
