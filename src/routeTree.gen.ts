@@ -93,6 +93,7 @@ import { Route as TrySponsorshipsSponsorshipIdReportRouteImport } from './routes
 import { Route as TrySponsorshipsSponsorshipIdTransferRouteImport } from './routes/try.sponsorships.$sponsorshipId.transfer'
 
 const TryDeciderLazyRouteImport = createFileRoute('/try/decider')()
+const TryGuardianLazyRouteImport = createFileRoute('/try/guardian')()
 const TryOfficeLazyRouteImport = createFileRoute('/try/office')()
 const TrySupervisorLazyRouteImport = createFileRoute('/try/supervisor')()
 
@@ -266,6 +267,11 @@ const TryDeciderLazyRoute = TryDeciderLazyRouteImport.update({
   path: '/decider',
   getParentRoute: () => TryRoute,
 } as any).lazy(() => import('./routes/try.decider.lazy').then((d) => d.Route))
+const TryGuardianLazyRoute = TryGuardianLazyRouteImport.update({
+  id: '/guardian',
+  path: '/guardian',
+  getParentRoute: () => TryRoute,
+} as any).lazy(() => import('./routes/try.guardian.lazy').then((d) => d.Route))
 const TryImpactRoute = TryImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -581,6 +587,7 @@ export interface FileRoutesByFullPath {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/try/decider': typeof TryDeciderLazyRoute
+  '/try/guardian': typeof TryGuardianLazyRoute
   '/try/office': typeof TryOfficeLazyRoute
   '/try/supervisor': typeof TrySupervisorLazyRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -664,6 +671,7 @@ export interface FileRoutesByTo {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/try/decider': typeof TryDeciderLazyRoute
+  '/try/guardian': typeof TryGuardianLazyRoute
   '/try/office': typeof TryOfficeLazyRoute
   '/try/supervisor': typeof TrySupervisorLazyRoute
   '/orphans': typeof OrphansIndexRoute
@@ -750,6 +758,7 @@ export interface FileRoutesById {
   '/vision/operations': typeof VisionOperationsRoute
   '/vision/payments': typeof VisionPaymentsRoute
   '/try/decider': typeof TryDeciderLazyRoute
+  '/try/guardian': typeof TryGuardianLazyRoute
   '/try/office': typeof TryOfficeLazyRoute
   '/try/supervisor': typeof TrySupervisorLazyRoute
   '/orphans/': typeof OrphansIndexRoute
@@ -836,6 +845,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/try/decider'
+    | '/try/guardian'
     | '/try/office'
     | '/try/supervisor'
     | '/orphans/'
@@ -919,6 +929,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/try/decider'
+    | '/try/guardian'
     | '/try/office'
     | '/try/supervisor'
     | '/orphans'
@@ -1004,6 +1015,7 @@ export interface FileRouteTypes {
     | '/vision/operations'
     | '/vision/payments'
     | '/try/decider'
+    | '/try/guardian'
     | '/try/office'
     | '/try/supervisor'
     | '/orphans/'
@@ -1327,6 +1339,13 @@ declare module '@tanstack/react-router' {
       path: '/decider'
       fullPath: '/try/decider'
       preLoaderRoute: typeof TryDeciderLazyRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/guardian': {
+      id: '/try/guardian'
+      path: '/guardian'
+      fullPath: '/try/guardian'
+      preLoaderRoute: typeof TryGuardianLazyRouteImport
       parentRoute: typeof TryRoute
     }
     '/try/impact': {
@@ -1739,6 +1758,7 @@ interface TryRouteChildren {
   TrySupportRoute: typeof TrySupportRoute
   TryWorkspacesRoute: typeof TryWorkspacesRoute
   TryDeciderLazyRoute: typeof TryDeciderLazyRoute
+  TryGuardianLazyRoute: typeof TryGuardianLazyRoute
   TryOfficeLazyRoute: typeof TryOfficeLazyRoute
   TrySupervisorLazyRoute: typeof TrySupervisorLazyRoute
   TryIndexRoute: typeof TryIndexRoute
@@ -1763,6 +1783,7 @@ const TryRouteChildren: TryRouteChildren = {
   TrySupportRoute: TrySupportRoute,
   TryWorkspacesRoute: TryWorkspacesRoute,
   TryDeciderLazyRoute: TryDeciderLazyRoute,
+  TryGuardianLazyRoute: TryGuardianLazyRoute,
   TryOfficeLazyRoute: TryOfficeLazyRoute,
   TrySupervisorLazyRoute: TrySupervisorLazyRoute,
   TryIndexRoute: TryIndexRoute,

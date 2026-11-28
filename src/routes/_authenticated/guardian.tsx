@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { GuardianChildCard } from "@/components/guardian/GuardianChildCard";
 import { getGuardianChildren } from "@/lib/guardian.functions";
+import { useDataFn } from "@/lib/data-port";
 import { readLang, saveLang, t, type Lang } from "@/lib/i18n";
 import { OrgInbox } from "@/components/org/OrgInbox";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,7 @@ function GuardianPage() {
   });
 
   const orphans = data?.orphans ?? [];
-  const fetchChildren = useServerFn(getGuardianChildren);
+  const fetchChildren = useDataFn("guardian.children", getGuardianChildren);
   const { data: children = [] } = useQuery({
     queryKey: ["guardian-children"],
     queryFn: () => fetchChildren(),

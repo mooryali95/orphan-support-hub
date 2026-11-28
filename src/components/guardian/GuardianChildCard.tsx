@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Check, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import {
   CONSENT_AR,
   consentEnrollment,
@@ -25,8 +25,9 @@ import { arNoun, SESSIONS } from "@/lib/plural";
  */
 export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang: Lang }) {
   const qc = useQueryClient();
-  const consent = useServerFn(consentEnrollment);
-  const photo = useServerFn(setPhotoConsent);
+  const consent = useDataFn("guardian.consentEnrollment", consentEnrollment);
+  const photo = useDataFn("guardian.photoConsent", setPhotoConsent);
+  const childrenKey = useDataKey(["guardian-children"]);
   const [confirm, setConfirm] = useState<null | {
     key: string;
     label: string;
@@ -55,7 +56,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
       return;
     }
     toast.success(t("saved", lang));
-    await qc.invalidateQueries({ queryKey: ["guardian-children"] });
+    await qc.invalidateQueries({ queryKey: childrenKey });
   }
 
   const photoOptions: Array<["face_hidden" | "granted" | "withdrawn", string]> = [
@@ -73,7 +74,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
       className="rounded-3xl bg-card p-6 text-base shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_1px_2px_-1px_rgb(0_0_0/0.06),0_2px_4px_0_rgb(0_0_0/0.04)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.08)]"
     >
       <header className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 dir="auto" className="text-xl leading-snug font-bold">
+        <h2 id={`${ids}-n`} dir="auto" className="text-xl leading-snug font-bold">
           {child.name}
         </h2>
         <bdi dir="ltr" className="font-mono text-xs tabular-nums text-muted-foreground">
@@ -81,7 +82,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
         </bdi>
       </header>
 
-      <section className="mt-5" aria-labelledby={`${ids}-p`}>
+      <section className="mt-5" aria-labelledby={`${ids}-p ${ids}-n`}>
         <h3 id={`${ids}-p`} className="text-sm font-semibold">
           {t("progress", lang)}
         </h3>
@@ -207,7 +208,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
           ref={panelRef}
           tabIndex={-1}
           role="alertdialog"
-          aria-labelledby={`${ids}-c`}
+          aria-labelledby={`${ids}-c ${ids}-n`}
           onKeyDown={(ev) => ev.key === "Escape" && !busy && setConfirm(null)}
           className="mt-5 rounded-2xl border-2 border-primary/60 p-4 outline-none transition-[opacity,translate] duration-200 ease-[var(--ease-out)] starting:translate-y-1 starting:opacity-0"
         >
