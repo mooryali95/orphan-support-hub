@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5543,
+ "count": 5553,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -15257,6 +15257,13 @@
    "hash": "6e250fdc20b2",
    "file": "src/components/payment/PaymentReturnView.tsx"
   },
+  "components/payment/PaymentReturnView.nextTrial": {
+   "en": "Go to my impact page",
+   "ar": "اذهب إلى صفحة أثري",
+   "kind": "text",
+   "hash": "09d808b47fc5",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
   "components/payment/PaymentReturnView.reference": {
    "en": "Payment reference",
    "ar": "مرجع الدفعة",
@@ -18979,11 +18986,48 @@
    "hash": "f5b504473379",
    "file": "src/components/sponsorship/TransferInstructions.tsx"
   },
+  "components/sponsorship/TransferInstructions.trialBankNote": {
+   "en": "The trial shows no bank account details and no real contact address.",
+   "ar": "لا تظهر في التجربة بياناتُ حسابٍ بنكيّ ولا عنوانُ تواصلٍ حقيقيّ.",
+   "kind": "text",
+   "hash": "cd6fff872d9d",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
   "components/sponsorship/TransferInstructions.trialNote": {
    "en": "These are simulated steps on a sample sponsorship. Do not transfer any money; the trial confirms no transfer and activates no sponsorship.",
    "ar": "هذه خطواتٌ محاكاة على كفالةٍ نموذجية. لا تحوّل أيّ مبلغ؛ التجربة لا تؤكّد تحويلاً ولا تفعّل كفالة.",
    "kind": "text",
    "hash": "fe15128fd002",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep1": {
+   "en": "Simulated: in a real sponsorship the sponsor transfers {0} to the platform's bank account. Here you transfer nothing.",
+   "ar": "محاكاة: في الكفالة الحقيقية يحوّل الكافل {0} إلى حساب المنصّة البنكي. هنا لا تحوّل شيئاً.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1e4a4ed9ce97",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep2": {
+   "en": "Simulated: the reference {0} goes in the transfer description to match the payment. This sample reference is not valid at any bank.",
+   "ar": "محاكاة: يُكتب رقم المرجع {0} في بيان التحويل لتُربط الدفعة بالكفالة. هذا المرجع نموذجيّ لا يقبله بنك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "abc91454753e",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep3": {
+   "en": "Simulated: in a real sponsorship the transfer proof goes to the support team. Send nothing from the trial.",
+   "ar": "محاكاة: في الكفالة الحقيقية يُرسل إثبات التحويل إلى فريق الدعم. لا ترسل شيئاً من التجربة.",
+   "kind": "text",
+   "hash": "910c190f22dc",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep4": {
+   "en": "Simulated: the administration confirms receipt and activates the sponsorship. The trial confirms nothing and activates nothing.",
+   "ar": "محاكاة: تؤكّد الإدارة الاستلام فتُفعَّل الكفالة. التجربة لا تؤكّد شيئاً ولا تفعّل كفالة.",
+   "kind": "text",
+   "hash": "f4cfc98fe706",
    "file": "src/components/sponsorship/TransferInstructions.tsx"
   },
   "components/sponsorship/status.active": {
@@ -30183,6 +30227,35 @@
    "kind": "template",
    "params": 1,
    "hash": "84703a3365f9",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemove": {
+   "en": "Yes, remove it",
+   "ar": "نعم، احذفها",
+   "kind": "text",
+   "hash": "d5d90447b47e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemoveText": {
+   "en": "You will no longer sign in with this passkey. You can add it again at any time.",
+   "ar": "لن تدخل بهذه البصمة بعد الحذف، ويمكنك إضافتها من جديد متى شئت.",
+   "kind": "text",
+   "hash": "04b737cfbf9c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemoveTitle": {
+   "en": "Remove {0}?",
+   "ar": "أتحذف {0}؟",
+   "kind": "template",
+   "params": 1,
+   "hash": "066617166831",
    "file": "src/routes/_authenticated/account.tsx"
   },
   "routes/account.confirming": {
