@@ -633,7 +633,7 @@ export function TimeControl() {
       <button
         type="button"
         onClick={() => dispatch({ type: "advanceMonth" })}
-        className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-wine/20 bg-white px-3 text-xs font-semibold text-wine transition-[background-color,scale] hover:bg-wine/5 active:scale-[0.96]"
+        className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-wine/20 bg-white px-3 text-xs font-semibold text-wine transition-[background-color,scale] hover:bg-wine/5 active:scale-[0.96]"
       >
         {c.advance}
         <span aria-hidden="true" className="ltr:hidden">
@@ -656,7 +656,7 @@ export function ResetSandbox() {
       onClick={() => {
         if (window.confirm(c.resetConfirm)) dispatch({ type: "reset" });
       }}
-      className="min-h-9 text-sm text-muted-foreground underline underline-offset-4 hover:text-wine"
+      className="min-h-11 text-sm text-muted-foreground underline underline-offset-4 hover:text-wine"
     >
       {c.reset}
     </button>
