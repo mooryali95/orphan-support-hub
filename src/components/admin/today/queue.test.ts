@@ -17,6 +17,7 @@ import {
   groupOf,
   isOverdue,
   NO_FILTERS,
+  stripCounts,
 } from "./queue";
 
 const NOW = Date.parse("2026-11-27T12:00:00Z");
@@ -175,5 +176,35 @@ describe("طابور «اليوم»: المهلة والأعمار والمرش�
   it("لا يتكرّر بندٌ وصل من مصدرين", () => {
     const items = buildQueue({ alerts: [alert({}), alert({})] }, ADMIN_ACCESS);
     expect(items).toHaveLength(1);
+  });
+});
+
+describe("شريط بوّابة الدولة: لا تسرّب بين الدول", () => {
+  const items = buildQueue(
+    {
+      conflicts: [
+        conflict({ id: "lk", country: "LK", created_at: ago(24 * 30) }),
+        conflict({ id: "pk", country: "PK", created_at: ago(24 * 60) }),
+        conflict({ id: "pk2", country: "PK", created_at: ago(1) }),
+      ],
+    },
+    ADMIN_ACCESS,
+  );
+
+  it("مشرف سريلانكا لا يرى متأخّر باكستان ولا آخر رفعها", () => {
+    const s = stripCounts(items, LK_SUP, NOW);
+    expect(s.overdue).toBe(1);
+    expect(s.latest).toBe(ago(24 * 30));
+  });
+
+  it("والإدارة ترى الدول كلّها", () => {
+    const s = stripCounts(items, ADMIN_ACCESS, NOW);
+    expect(s.overdue).toBe(2);
+    expect(s.latest).toBe(ago(1));
+  });
+
+  it("بندٌ بلا دولة لا يُحسب لفريق دولة", () => {
+    const s = stripCounts([{ ...items[0]!, country_code: null }], LK_SUP, NOW);
+    expect(s).toEqual({ overdue: 0, latest: null });
   });
 });

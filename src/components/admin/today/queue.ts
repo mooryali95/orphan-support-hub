@@ -83,6 +83,26 @@ export function ageBucket(createdAt: string, now: number = Date.now()): AgingKey
 export const isOverdue = (it: QueueItem, now: number = Date.now()) =>
   now - Date.parse(it.created_at) > slaHours(it) * 3_600_000;
 
+/**
+ * أرقام شريط بوّابة الدولة («متأخرة» و«آخر رفع») ممّا يراه صاحبها وحده: بندٌ بلا دولة أو
+ * من دولةٍ ليست في نطاقه لا يُحسب، حتى لو وصل خطأً، فلا تكشف دولةٌ شيئاً عن غيرها.
+ */
+export function stripCounts(
+  items: readonly QueueItem[],
+  access: CountryAccess,
+  now: number = Date.now(),
+): { overdue: number; latest: string | null } {
+  const mine = items.filter(
+    (i) =>
+      access.admin ||
+      (i.country_code !== null && access.countries.some((k) => k.code === i.country_code)),
+  );
+  return {
+    overdue: mine.filter((i) => i.can_settle && isOverdue(i, now)).length,
+    latest: mine.reduce<string | null>((a, i) => (!a || i.created_at > a ? i.created_at : a), null),
+  };
+}
+
 /** مرشّح «النوع» يقبل أنواعاً مجمّعة: «السلامة» طلبات الفكّ والاختلافات من المصدر. */
 export const KIND_GROUPS: Readonly<Record<string, readonly QueueKind[]>> = {
   integrity: ["unlock", "discrepancy"],

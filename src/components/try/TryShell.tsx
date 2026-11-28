@@ -1,6 +1,15 @@
 import { Outlet, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
-import { RotateCcw } from "lucide-react";
-import { lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { LogOut, Menu, RotateCcw } from "lucide-react";
+import {
+  type CSSProperties,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { enterDemo, exitDemo } from "@/lib/demo-mode";
 import { toast } from "sonner";
 
@@ -39,7 +48,6 @@ const COPY = defineCopy("components/try/TryShell", {
   ar: {
     mode: "الوضع التجريبي",
     modeLabel: "أنت الآن في الوضع التجريبي",
-    noteLabel: "عن التجربة",
     noteShort: "أنت الآن في الوضع التجريبي: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
     noteLong:
       "أنت الآن في الوضع التجريبي: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
@@ -53,11 +61,13 @@ const COPY = defineCopy("components/try/TryShell", {
       "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
     restarted: "بدأت التجربة من جديد",
     restart: "ابدأ من جديد",
+    menu: "قائمة التجربة",
+    about: "عن الوضع التجريبي",
+    exit: "العودة إلى المنصّة الحقيقية",
   },
   en: {
     mode: "Demo mode",
     modeLabel: "You are now in demo mode",
-    noteLabel: "About the demo",
     noteShort:
       "You are now in demo mode: nothing is charged. The real one begins when you register.",
     noteLong:
@@ -73,6 +83,9 @@ const COPY = defineCopy("components/try/TryShell", {
       "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
     restarted: "The trial has started over",
     restart: "Start over",
+    menu: "Demo menu",
+    about: "About demo mode",
+    exit: "Back to the real platform",
   },
 });
 
@@ -211,11 +224,24 @@ function TryShellInner() {
     [router],
   );
 
+  const restart = () => {
+    // التجربة كلّها: العطاءات والتعهّدات وحالة القاعة والرؤية والمقترحات.
+    resetGifts();
+    resetPledges();
+    resetTrialSession();
+    // بلا هذا لا يتغيّر شيءٌ أمام الزائر خارج «أثري»، فلا يعرف أنّ ضغطته سُجّلت.
+    toast.success(c.restarted);
+  };
+  const item =
+    "flex min-h-11 w-full items-center gap-2 rounded-lg px-3 text-start text-sm hover:bg-secondary";
+
   return (
-    <div className="min-h-dvh bg-background">
+    // ارتفاع شريط التجربة الملتصق، لما يلتصق تحته (ألسنة بوّابة الدولة)
+    <div className="min-h-dvh bg-background" style={{ "--try-bar-h": "2.75rem" } as CSSProperties}>
       <SiteHeader />
       {/* الشريط الدائم: «رحلة افتراضية»، وأين أنت فيها، وبابها إلى الحقيقية. يبقى تحت الترويسة. */}
-      <aside
+      <div
+        role="region"
         aria-label={c.modeLabel}
         data-try-bar
         className="sticky z-40 border-b border-bridge/30 bg-background/85 backdrop-blur"
@@ -231,12 +257,41 @@ function TryShellInner() {
           ) : (
             <TryJourneyRail className="flex-1 overflow-hidden px-1" />
           )}
-          <TryRealButton size="sm" variant="outline" short className="h-11 shrink-0 bg-card" />
+          <TryRealButton size="sm" variant="outline" short className="shrink-0 bg-card" />
+          {/* على الجوال شريطٌ واحد: الشرح والجولة والبدء من جديد والخروج في هذه القائمة */}
+          <details className="relative shrink-0 sm:hidden">
+            <summary className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-lg hover:bg-secondary [&::-webkit-details-marker]:hidden">
+              <Menu className="size-5" aria-hidden="true" />
+              <span className="sr-only">{c.menu}</span>
+            </summary>
+            <div className="absolute end-0 top-full z-50 mt-1 w-72 space-y-1 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-lg">
+              <p className="px-3 py-1 text-xs leading-6 text-muted-foreground">
+                {registered ? c.noteRegistered : c.noteShort}
+              </p>
+              {!present && <TryJourneyGuide />}
+              <button type="button" onClick={restart} className={item}>
+                <RotateCcw className="size-4" aria-hidden="true" />
+                {c.restart}
+              </button>
+              <button
+                type="button"
+                className={item}
+                onClick={() => {
+                  exitDemo();
+                  window.location.assign("/");
+                }}
+              >
+                <LogOut className="size-4" aria-hidden="true" />
+                {c.exit}
+              </button>
+            </div>
+          </details>
         </div>
-      </aside>
-      <aside
-        aria-label={c.noteLabel}
-        className={present ? "hidden" : "border-b border-border bg-bridge/8"}
+      </div>
+      <div
+        role="region"
+        aria-label={c.about}
+        className={present ? "hidden" : "hidden border-b border-border bg-bridge/8 sm:block"}
       >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-1.5 text-sm">
           <p className="min-w-0 basis-full py-1 leading-6 text-foreground sm:flex-1 sm:basis-auto">
@@ -252,14 +307,7 @@ function TryShellInner() {
           <TryJourneyGuide />
           <button
             type="button"
-            onClick={() => {
-              // التجربة كلّها: العطاءات والتعهّدات وحالة القاعة والرؤية والمقترحات.
-              resetGifts();
-              resetPledges();
-              resetTrialSession();
-              // بلا هذا لا يتغيّر شيءٌ أمام الزائر خارج «أثري»، فلا يعرف أنّ ضغطته سُجّلت.
-              toast.success(c.restarted);
-            }}
+            onClick={restart}
             className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg px-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             <RotateCcw className="size-3.5" aria-hidden="true" />
@@ -267,7 +315,7 @@ function TryShellInner() {
             <span className="sr-only sm:hidden">{c.restart}</span>
           </button>
         </div>
-      </aside>
+      </div>
       <main
         id="main"
         tabIndex={-1}

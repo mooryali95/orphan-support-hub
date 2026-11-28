@@ -5,7 +5,8 @@
  * بترتيب الدورة الحقيقية: الجهة تُدخل، والإدارة توثّق، والكافل يكفل، والمكتب يتابع،
  * والمشرف يزور، وصاحب القرار يرى الشبكة.
  */
-export type TryRole = "supporter" | "org" | "admin" | "office" | "supervisor" | "decider";
+export type TryRole =
+  "supporter" | "org" | "admin" | "office" | "supervisor" | "guardian" | "decider";
 
 export const ROLE_PATH = {
   supporter: "/try/support",
@@ -13,6 +14,7 @@ export const ROLE_PATH = {
   admin: "/try/admin",
   office: "/try/office",
   supervisor: "/try/supervisor",
+  guardian: "/try/guardian",
   decider: "/try/decider",
 } as const satisfies Record<TryRole, string>;
 
@@ -23,6 +25,7 @@ export function roleOf(path: string): Exclude<TryRole, "supporter"> | null {
   if (p === "/try/admin") return "admin";
   if (p === "/try/office") return "office";
   if (p === "/try/supervisor") return "supervisor";
+  if (p === "/try/guardian") return "guardian";
   if (p === "/try/decider") return "decider";
   return null;
 }
