@@ -1,20 +1,26 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { DashboardShell } from "@/components/DashboardShell";
-import { ACCOUNT_COPY, AccountBoard } from "@/components/account/AccountBoard";
+import { AccountBoard } from "@/components/account/AccountBoard";
 import { MfaSettings } from "@/components/account/MfaSettings";
 import { pageTitle } from "@/config/brand";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { wipeBrowserUserData } from "@/lib/client-state";
-import { copyOf } from "@/lib/locale";
+import { copyOf, defineCopy } from "@/lib/locale";
+
+// عنوان الصفحة وحده هنا: نسخة الشاشة كلّها تبقى في قطعتها ولا تدخل الحزمة الأولى.
+const HEAD = defineCopy("routes/account.head", {
+  ar: { title: "حسابي" },
+  en: { title: "My account" },
+});
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(copyOf(ACCOUNT_COPY, l).title, false, l) },
+        { title: pageTitle(copyOf(HEAD, l).title, false, l) },
         { name: "robots", content: "noindex" },
       ],
     };

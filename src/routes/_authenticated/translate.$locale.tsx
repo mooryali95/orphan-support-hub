@@ -2,17 +2,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { DashboardShell } from "@/components/DashboardShell";
-import { TRANSLATE_COPY, TranslateBoard } from "@/components/translate/TranslateBoard";
+import { TranslateBoard } from "@/components/translate/TranslateBoard";
 import { pageTitle } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
-import { copyOf } from "@/lib/locale";
+import { copyOf, defineCopy } from "@/lib/locale";
+
+// عنوان الصفحة وحده هنا: نسخة الشاشة كلّها تبقى في قطعتها ولا تدخل الحزمة الأولى.
+const HEAD = defineCopy("routes/translate.head", {
+  ar: { title: "مراجعة الترجمة" },
+  en: { title: "Translation review" },
+});
 
 export const Route = createFileRoute("/_authenticated/translate/$locale")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(copyOf(TRANSLATE_COPY, l).pageTitle, false, l) },
+        { title: pageTitle(copyOf(HEAD, l).title, false, l) },
         { name: "robots", content: "noindex" },
       ],
     };

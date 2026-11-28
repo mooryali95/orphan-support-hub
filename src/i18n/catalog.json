@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5943,
+ "count": 5946,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -31902,6 +31902,13 @@
    "hash": "fa573bfe1208",
    "file": "src/components/account/AccountBoard.tsx"
   },
+  "routes/account.head.title": {
+   "en": "My account",
+   "ar": "حسابي",
+   "kind": "text",
+   "hash": "774ea5f16582",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
   "routes/account.lastUsed": {
    "en": " · last used {0}",
    "ar": " · آخر استعمال {0}",
@@ -35199,6 +35206,13 @@
    "hash": "4576a71d8b50",
    "file": "src/components/account/NotificationPrefsBoard.tsx"
   },
+  "routes/settings.notifications.head.title": {
+   "en": "Notification preferences",
+   "ar": "تفضيلات الإشعارات",
+   "kind": "text",
+   "hash": "8cfc1db6565e",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
   "routes/settings.notifications.kinds.orphan_approved.hint": {
    "en": "For field teams: the admin's decision on a file you uploaded",
    "ar": "",
@@ -36112,6 +36126,13 @@
    "kind": "text",
    "hash": "4690b23702b6",
    "file": "src/components/translate/TranslateBoard.tsx"
+  },
+  "routes/translate.head.title": {
+   "en": "Translation review",
+   "ar": "مراجعة الترجمة",
+   "kind": "text",
+   "hash": "1a5f9a7adda9",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
   },
   "routes/translate.loading": {
    "en": "Loading strings",
