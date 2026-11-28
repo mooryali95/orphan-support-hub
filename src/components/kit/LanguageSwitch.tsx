@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const LanguageMenu = lazy(() => import("./LanguageMenu"));
 
 const BASE =
-  "inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground";
+  "inline-flex h-11 min-w-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground";
 
 /**
  * زرّ اللغة. بلغتين: زرٌّ واحد باسم الأخرى بلغتها («English» / «العربية»)

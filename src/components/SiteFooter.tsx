@@ -85,29 +85,44 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
         </div>
         <div>
           <h2 className="text-sm font-bold">{c.platform}</h2>
-          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
+          <ul className="mt-3 text-sm text-muted-foreground">
             <li>
-              <Link to="/orphans" className="transition-colors hover:text-foreground">
+              <Link
+                to="/orphans"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.orphans}
               </Link>
             </li>
             <li>
-              <Link to="/support" className="transition-colors hover:text-foreground">
+              <Link
+                to="/support"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.support}
               </Link>
             </li>
             <li>
-              <Link to="/how-it-works" className="transition-colors hover:text-foreground">
+              <Link
+                to="/how-it-works"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.how}
               </Link>
             </li>
             <li>
-              <Link to="/organizations" className="transition-colors hover:text-foreground">
+              <Link
+                to="/organizations"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.orgs}
               </Link>
             </li>
             <li>
-              <Link to="/traits" className="transition-colors hover:text-foreground">
+              <Link
+                to="/traits"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.traits}
               </Link>
             </li>
@@ -115,14 +130,20 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
         </div>
         <div>
           <h2 className="text-sm font-bold">{c.account}</h2>
-          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
+          <ul className="mt-3 text-sm text-muted-foreground">
             <li>
-              <Link to="/auth" className="transition-colors hover:text-foreground">
+              <Link
+                to="/auth"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.signIn}
               </Link>
             </li>
             <li>
-              <Link to="/dashboard" className="transition-colors hover:text-foreground">
+              <Link
+                to="/dashboard"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.dashboard}
               </Link>
             </li>
@@ -131,24 +152,36 @@ export function SiteFooter({ hadith = true }: { hadith?: boolean } = {}) {
 
         <div>
           <h2 className="text-sm font-bold">{c.transparency}</h2>
-          <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
+          <ul className="mt-3 text-sm text-muted-foreground">
             <li>
-              <Link to="/legal/privacy" className="transition-colors hover:text-foreground">
+              <Link
+                to="/legal/privacy"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.privacy}
               </Link>
             </li>
             <li>
-              <Link to="/legal/terms" className="transition-colors hover:text-foreground">
+              <Link
+                to="/legal/terms"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.terms}
               </Link>
             </li>
             <li>
-              <Link to="/legal/faq" className="transition-colors hover:text-foreground">
+              <Link
+                to="/legal/faq"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.faq}
               </Link>
             </li>
             <li>
-              <Link to="/developers" className="transition-colors hover:text-foreground">
+              <Link
+                to="/developers"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+              >
                 {c.developers}
               </Link>
             </li>

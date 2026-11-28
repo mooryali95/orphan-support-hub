@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 import { Button } from "@/components/ui/button";
 import { BRAND, brandFor, pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
@@ -69,6 +70,7 @@ const COPY = defineCopy("routes/how-it-works", {
     ctaH: "كن سنداً ليتيم",
     ctaP: "اختر ملفّاً معتمداً، وابدأ عطاءك بأحد المسارات الثلاثة.",
     cta: "تصفّح الملفات",
+    tryIt: "جرّب الرحلة أولاً",
   },
   en: {
     title: "How sponsorship works",
@@ -128,6 +130,7 @@ const COPY = defineCopy("routes/how-it-works", {
     ctaH: "Ready to stand by an orphan?",
     ctaP: "Choose an approved file and start your monthly sponsorship today.",
     cta: "Browse files",
+    tryIt: "Try the journey first",
   },
 });
 
@@ -172,9 +175,16 @@ function HowItWorks() {
           <section className="surface-warm mt-12 rounded-3xl border border-border p-8 text-center">
             <h2 className="text-xl font-extrabold">{c.ctaH}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{c.ctaP}</p>
-            <Button asChild size="lg" className="mt-6">
-              <Link to="/orphans">{c.cta}</Link>
-            </Button>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild size="lg">
+                <Link to="/orphans">{c.cta}</Link>
+              </Button>
+              {TRIAL_ENABLED && (
+                <Button asChild size="lg" variant="outline">
+                  <Link to={trialRoute("/try")}>{c.tryIt}</Link>
+                </Button>
+              )}
+            </div>
           </section>
         </div>
       </main>

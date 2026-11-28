@@ -145,10 +145,11 @@ const COPY = defineCopy("routes/orphans.index", {
       "أول الملفات تُنشر بعد أن يوثّقها مكتبٌ للندوة أو شريكٌ ميداني لها وتعتمدها الإدارة. إلى ذلك الحين ادعم مكاناً بعينه الآن.",
     launchTry: "جرّب الرحلة كاملة",
     launchSupport: "ادعم مكاناً",
-    tryA: "جرّب إزالة أحد الفلاتر أعلاه، أو",
+    tryA: "جرّب إزالة أحد هذه الفلاتر:",
     restart: "ابدأ من جديد",
     emptyGo: "أو اذهب إلى «ادعم» حيث نقترح لك أطفالاً ينتظرون، أو ادعم مكاناً بعينه.",
     emptyCta: "اقترح عليّ طفلاً",
+    clearFilters: "امسح الفلاتر",
     pagesLabel: "صفحات الدليل",
     prev: "السابق",
     next: "التالي",
@@ -211,10 +212,11 @@ const COPY = defineCopy("routes/orphans.index", {
       "The first files are published once a WAMY office or field partner documents them and the administration approves them. Until then, you can support a place now.",
     launchTry: "Try the full journey",
     launchSupport: "Support a place",
-    tryA: "Try removing one of the filters above, or",
+    tryA: "Try removing one of these filters:",
     restart: "start over",
     emptyGo: "Or go to «Support», where we suggest children who are waiting, or support a place.",
     emptyCta: "Suggest for me",
+    clearFilters: "Clear filters",
     pagesLabel: "Directory pages",
     prev: "Previous",
     next: "Next",
@@ -520,7 +522,7 @@ function RealOrphansPage() {
                   aria-pressed={funding === key}
                   onClick={() => set({ funding: key === "any" ? undefined : key })}
                   className={cn(
-                    "min-h-10 flex-1 rounded-md px-3 max-sm:min-h-11 py-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring sm:flex-none",
+                    "min-h-11 flex-1 rounded-md px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring sm:flex-none",
                     funding === key
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -645,7 +647,7 @@ function RealOrphansPage() {
                   <button
                     type="button"
                     onClick={c.clear}
-                    className="inline-flex min-h-9 items-center gap-1 rounded-full bg-secondary px-3 text-sm pointer-coarse:min-h-11 max-sm:min-h-11 transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full bg-secondary px-3 text-sm transition-[background-color,transform] duration-150 hover:bg-secondary/70 active:scale-[0.97]"
                     aria-label={t.remove(c.label)}
                   >
                     <bdi>{c.label}</bdi>
@@ -654,7 +656,7 @@ function RealOrphansPage() {
                 </li>
               ))}
               <li>
-                <Button type="button" size="sm" variant="ghost" onClick={reset}>
+                <Button type="button" size="sm" variant="ghost" className="h-11" onClick={reset}>
                   {t.clearAll}
                 </Button>
               </li>
@@ -691,17 +693,27 @@ function RealOrphansPage() {
               </p>
             )}
             {chips.length > 0 && (
-              <p className="mt-3">
-                {t.tryA}{" "}
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="font-medium text-primary underline underline-offset-4"
+              <>
+                <p className="mt-3">{t.tryA}</p>
+                <ul
+                  className="mt-3 flex flex-wrap items-center justify-center gap-2"
+                  aria-label={t.active}
                 >
-                  {t.restart}
-                </button>
-                .
-              </p>
+                  {chips.map((c) => (
+                    <li key={c.key}>
+                      <button
+                        type="button"
+                        onClick={c.clear}
+                        className="inline-flex min-h-11 items-center gap-1 rounded-full bg-secondary px-3 text-sm text-foreground hover:bg-secondary/70"
+                        aria-label={t.remove(c.label)}
+                      >
+                        <bdi>{c.label}</bdi>
+                        <X className="size-3" aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
             {prelaunch ? (
               <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -723,12 +735,23 @@ function RealOrphansPage() {
             ) : (
               <>
                 <p className="mx-auto mt-4 max-w-md leading-7">{t.emptyGo}</p>
-                <Link
-                  to="/support"
-                  className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
-                >
-                  {t.emptyCta}
-                </Link>
+                <div className="mt-4 flex flex-wrap justify-center gap-3">
+                  <Link
+                    to="/support"
+                    className="inline-flex h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+                  >
+                    {t.emptyCta}
+                  </Link>
+                  {chips.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={reset}
+                      className="inline-flex h-11 items-center rounded-xl border border-border bg-card px-5 text-sm font-bold text-foreground"
+                    >
+                      {t.clearFilters}
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </div>

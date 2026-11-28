@@ -971,25 +971,29 @@ function HomePage() {
             <span aria-hidden="true" className="rule-champagne mx-auto mt-10 block w-40" />
             {/* فعلٌ واحد، بحسب وضع المنصّة: التجربة قبل الاعتماد، والدليل بعده. */}
             <div className="mt-10">
-              {isTrial() ? (
-                <Button
-                  asChild
-                  size="lg"
-                  className="h-auto min-h-11 whitespace-normal py-2 text-center"
-                >
-                  <Link to={trialRoute("/try")}>
-                    <FlaskConical className="size-4" aria-hidden="true" />
-                    {c.tryIt}
-                  </Link>
-                </Button>
-              ) : (
-                <Button asChild size="lg">
+              {/* the page's one primary act stays sponsoring a real child; here it repeats as a
+                  quiet outline, and the trial remains the secondary door behind TRIAL_ENABLED */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button asChild size="lg" variant="outline">
                   <Link to="/orphans">
                     {c.startReal}
                     <ArrowLeft className="size-4 ltr:-scale-x-100" />
                   </Link>
                 </Button>
-              )}
+                {TRIAL_ENABLED && (
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="ghost"
+                    className="h-auto min-h-11 whitespace-normal py-2 text-center"
+                  >
+                    <Link to={trialRoute("/try")}>
+                      <FlaskConical className="size-4" aria-hidden="true" />
+                      {c.tryIt}
+                    </Link>
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </section>
