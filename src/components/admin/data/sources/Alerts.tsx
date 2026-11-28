@@ -13,7 +13,7 @@ import { Busy, CARD, Failed, NeedsUpdate, Pill, SectionHead } from "../shared";
 import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
-import { Val, OpenFile } from "./shared";
+import { InTodayChip, InTodayNote, Val, OpenFile } from "./shared";
 import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function AlertDetail({ a }: { a: DataAlert }) {
@@ -149,13 +149,17 @@ export function AlertActions({
 
 export function Alerts({
   country,
-  canApprove,
+  canApprove: canApproveIn,
   onOpen,
+  inToday = false,
 }: {
   country: string;
   canApprove: boolean;
   onOpen: (orphanId: string) => void;
+  /** القائمة تحت «اليوم» (بوّابة الدولة): بنودها صفوفٌ هناك، فهنا للاطّلاع بلا حسم. */
+  inToday?: boolean;
 }) {
+  const canApprove = canApproveIn && !inToday;
   const c = useCopy(SOURCES_COPY);
   const w = useCopy(WORK_COPY);
   const err = useWorkErr();
@@ -205,6 +209,7 @@ export function Alerts({
   return (
     <section aria-labelledby="alerts-title" onKeyDown={keys.onKeyDown}>
       <SectionHead title={c.alertsTitle} hint={c.alertsHint} />
+      {inToday && <InTodayNote />}
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
@@ -306,8 +311,9 @@ export function Alerts({
                         }
                       />
                     )}
-                    {a.orphan_id && (
-                      <div className="mt-2 flex justify-end">
+                    {(a.orphan_id || inToday) && (
+                      <div className="mt-2 flex flex-wrap items-center justify-end gap-2">
+                        {inToday && <InTodayChip />}
                         <OpenFile id={a.orphan_id} onOpen={onOpen} />
                       </div>
                     )}

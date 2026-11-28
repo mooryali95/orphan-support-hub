@@ -1,9 +1,9 @@
-import { Check, FolderOpen } from "lucide-react";
+import { CalendarCheck, Check, FolderOpen } from "lucide-react";
 import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { showValue, type Conflict } from "@/lib/golden-record";
 import { formatDate } from "@/lib/format";
-import { useCopy, useLocale } from "@/lib/locale";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
@@ -80,5 +80,52 @@ export function OpenFile({ id, onOpen }: { id: string | null; onOpen: (id: strin
       <FolderOpen className="size-4" aria-hidden="true" />
       {w.openFile}
     </Button>
+  );
+}
+
+const IN_TODAY_COPY = defineCopy("components/admin/data/sources/in-today", {
+  ar: {
+    chip: "معروض في اليوم",
+    note: "هذه البنود نفسها في «اليوم» أعلى الصفحة، فالحسم هناك وحده كي لا يظهر بندٌ مرّتين.",
+    go: "اذهب إلى اليوم",
+  },
+  en: {
+    chip: "Shown in Today",
+    note: "These same items are in Today at the top of the page, so they are settled there only and never appear twice.",
+    go: "Go to Today",
+  },
+});
+
+/** علامة الصفّ: البند نفسه صفٌّ قابلٌ للحسم في «اليوم»، فهنا للاطّلاع فقط. */
+export function InTodayChip() {
+  const t = useCopy(IN_TODAY_COPY);
+  return (
+    <span className="bg-secondary text-secondary-foreground inline-flex min-h-6 items-center gap-1 rounded-full px-2 text-xs font-bold">
+      <CalendarCheck className="size-3.5" aria-hidden="true" />
+      {t.chip}
+    </span>
+  );
+}
+
+/** تنبيه رأس القائمة حين تُعرض تحت «اليوم»، مع رابطٍ يعيد إليه. */
+export function InTodayNote() {
+  const t = useCopy(IN_TODAY_COPY);
+  return (
+    <div className="border-border bg-secondary/40 mb-3 flex flex-wrap items-center gap-3 rounded-xl border p-3 text-sm leading-6">
+      <p className="min-w-0 flex-1">{t.note}</p>
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        className="min-h-11"
+        onClick={() =>
+          document
+            .getElementById("today-title")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" })
+        }
+      >
+        {t.go}
+      </Button>
+    </div>
   );
 }

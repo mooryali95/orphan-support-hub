@@ -27,7 +27,9 @@ import {
 } from "react";
 
 import { Busy } from "@/components/admin/data/shared";
-import { Alerts, Conflicts, LinkQueue } from "@/components/admin/data/SourcesPanel";
+import { Alerts } from "@/components/admin/data/sources/Alerts";
+import { Conflicts } from "@/components/admin/data/sources/ConflictsInbox";
+import { LinkQueue } from "@/components/admin/data/sources/LinkQueue";
 import { ReportForm } from "@/components/impact/ReportForm";
 import { VerificationBadge } from "@/components/orphans/VerificationBadge";
 import { ChildTimeline } from "@/components/sponsorship/ChildTimeline";

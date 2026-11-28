@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5735,
+ "count": 5738,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -6925,6 +6925,27 @@
    "kind": "text",
    "hash": "0226b6f9b2cd",
    "file": "src/components/admin/data/sources/ChildUpdatesCard.tsx"
+  },
+  "components/admin/data/sources/in-today.chip": {
+   "en": "Shown in Today",
+   "ar": "معروض في اليوم",
+   "kind": "text",
+   "hash": "5dd3a3912adc",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.go": {
+   "en": "Go to Today",
+   "ar": "اذهب إلى اليوم",
+   "kind": "text",
+   "hash": "80b9d02bf482",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.note": {
+   "en": "These same items are in Today at the top of the page, so they are settled there only and never appear twice.",
+   "ar": "هذه البنود نفسها في «اليوم» أعلى الصفحة، فالحسم هناك وحده كي لا يظهر بندٌ مرّتين.",
+   "kind": "text",
+   "hash": "68df8573e0dd",
+   "file": "src/components/admin/data/sources/shared.tsx"
   },
   "components/admin/data/work.allFields": {
    "en": "All fields",

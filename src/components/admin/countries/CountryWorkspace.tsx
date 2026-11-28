@@ -143,6 +143,7 @@ export function CountryWorkspace({
         access={access}
         tab={tab}
         setTab={setTab}
+        inToday={scope === "country"}
       />
     </div>
   );

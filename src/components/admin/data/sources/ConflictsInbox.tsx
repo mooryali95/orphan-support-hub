@@ -23,18 +23,22 @@ import { ACCENT, Busy, CARD, Failed, NeedsUpdate, Pill, SectionHead } from "../s
 import { SOURCES_COPY } from "../sources-copy";
 import { WORK_COPY } from "../work-copy";
 import { FilterBar, ROW_FOCUS, useListKeys, useWorkErr } from "../WorkTools";
-import { Val, V, fieldOptions, OpenFile } from "./shared";
+import { InTodayChip, InTodayNote, Val, V, fieldOptions, OpenFile } from "./shared";
 import { LoadMore, QUEUE_PAGE, useKeysetList } from "../keyset";
 
 export function Conflicts({
   country,
-  canApprove,
+  canApprove: canApproveIn,
   onOpen,
+  inToday = false,
 }: {
   country: string;
   canApprove: boolean;
   onOpen: (orphanId: string) => void;
+  /** القائمة تحت «اليوم» (بوّابة الدولة): بنودها صفوفٌ هناك، فهنا للاطّلاع بلا حسم. */
+  inToday?: boolean;
 }) {
+  const canApprove = canApproveIn && !inToday;
   const c = useCopy(SOURCES_COPY);
   const w = useCopy(WORK_COPY);
   const err = useWorkErr();
@@ -119,6 +123,7 @@ export function Conflicts({
   return (
     <section aria-labelledby="conflicts-title" onKeyDown={keys.onKeyDown}>
       <SectionHead title={c.conflictsTitle} hint={c.conflictsHint} />
+      {inToday && <InTodayNote />}
       {list.isPending ? (
         <Busy />
       ) : !list.data?.ok ? (
@@ -350,6 +355,7 @@ export function Conflicts({
                             {c.keep}
                           </Button>
                         )}
+                        {inToday && <InTodayChip />}
                         <span className="ms-auto">
                           <OpenFile id={d.orphan_id} onOpen={onOpen} />
                         </span>
