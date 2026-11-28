@@ -208,8 +208,10 @@ function Receipt() {
                     </div>
                   ))}
                 </dl>
-                <section>
-                  <h2 className="text-sm font-bold text-wine">{c.path}</h2>
+                <section aria-labelledby="receipt-path">
+                  <h2 id="receipt-path" className="text-sm font-bold text-wine">
+                    {c.path}
+                  </h2>
                   <ol className="mt-2 space-y-1.5 text-sm">
                     {trail(state, d.invoice).map((e) => (
                       <li key={e.id} className="flex gap-2">
@@ -224,8 +226,10 @@ function Receipt() {
                     ))}
                   </ol>
                 </section>
-                <section className="border-t border-wine/10 pt-4">
-                  <h2 className="text-xs font-semibold text-muted-foreground">{c.fingerprint}</h2>
+                <section aria-labelledby="receipt-fp" className="border-t border-wine/10 pt-4">
+                  <h2 id="receipt-fp" className="text-xs font-semibold text-muted-foreground">
+                    {c.fingerprint}
+                  </h2>
                   <p dir="ltr" className="mt-1 font-mono text-[11px] break-all text-wine">
                     {fp || "…"}
                   </p>

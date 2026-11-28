@@ -313,3 +313,26 @@ describe("القاعة والخريطة: شبكةٌ واحدة", () => {
     }
   });
 });
+
+describe("every sample panel carries the chip and says simulated", () => {
+  /* regions, funding, payment and impact panels; the WAMY network and the directory counts are exempt */
+  const PANELS = [
+    "renderCountry",
+    "trialCountryHtml",
+    "trialSupport",
+    "trialImpact",
+    "trialBig",
+    "liveBig",
+  ];
+  it.each(PANELS)("%s renders the sample chip", (name) => {
+    expect(fn(name)).toMatch(/T\.sample|X\.sample|SAMPLE/);
+  });
+  it("payment and impact copy names itself simulated", () => {
+    const en = HALL_LIVE_COPY.en;
+    expect(en.support.note).toMatch(/simulated/i);
+    expect(en.support.pay).toMatch(/simulated/i);
+    expect(en.screen.impactTitle).toMatch(/simulated/i);
+    expect(en.country.sampleRegion).toMatch(/sample/i);
+    expect(HALL_LIVE_COPY.ar.sample).toMatch(/نموذجية/);
+  });
+});

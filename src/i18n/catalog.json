@@ -33816,10 +33816,10 @@
    "file": "src/routes/try.decider.lazy.tsx"
   },
   "routes/try.decider.lead": {
-   "en": "A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
-   "ar": "أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة، كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة، يحرّك الأرقام ويظهر في سجلّ النشاط.",
+   "en": "Your decision: where does the next support go? Start with the country with the widest gap. A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
+   "ar": "القرار أمامك: أين يذهب الدعم القادم؟ ابدأ بالدولة ذات الفجوة الأكبر. أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة، كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة، يحرّك الأرقام ويظهر في سجلّ النشاط.",
    "kind": "text",
-   "hash": "6252a52a6e26",
+   "hash": "fa86d5896e1d",
    "file": "src/routes/try.decider.lazy.tsx"
   },
   "routes/try.decider.pledgedInKind": {
