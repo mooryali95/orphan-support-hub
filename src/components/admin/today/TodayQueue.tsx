@@ -29,6 +29,8 @@ import { dirOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 import { TODAY_COPY } from "./copy";
+import { TODAY_ROWS } from "@/lib/golden-record";
+
 import { CountryTodayStrip } from "./CountryTodayStrip";
 import { TodayTiles } from "./TodayTiles";
 import {
@@ -82,19 +84,41 @@ export function TodayQueue({
   const t = useCopy(TODAY_COPY);
   const locale = useLocale();
   const demo = useDemo();
-  const { items, total, hasMore, loadMore, loadingMore, pending, failed, refetch } =
-    useToday(access);
+  const {
+    items,
+    total,
+    queueTotal,
+    hasMore: serverMore,
+    loadMore: serverLoad,
+    loadingMore,
+    pending,
+    failed,
+    refetch,
+  } = useToday(access);
+  // عشرون صفاً في كلّ دفعة، مجموعةً عبر الطوابير؛ «عرض المزيد» يكشف ما وصل ثمّ يطلب ما بعده.
+  const [rows, setRows] = useState(TODAY_ROWS);
   const [now] = useState(() => Date.now());
   const shown = useMemo(
     () => applyFilters(items, filters, matchesQuery, now),
     [items, filters, now],
   );
   const grouped = useMemo(() => {
+    const all: Record<Group, QueueItem[]> = { overdue: [], today: [], waiting: [] };
+    for (const it of shown) all[groupOf(it, now)].push(it);
     const g: Record<Group, QueueItem[]> = { overdue: [], today: [], waiting: [] };
-    for (const it of shown) g[groupOf(it, now)].push(it);
+    let left = rows;
+    for (const k of GROUPS) {
+      g[k] = all[k].slice(0, Math.max(left, 0));
+      left -= g[k].length;
+    }
     return g;
-  }, [shown, now]);
+  }, [shown, now, rows]);
   const ordered = useMemo(() => GROUPS.flatMap((g) => grouped[g]), [grouped]);
+  const hasMore = shown.length > ordered.length || serverMore;
+  const loadMore = () => {
+    if (shown.length <= rows + TODAY_ROWS && serverMore) serverLoad();
+    setRows((r) => r + TODAY_ROWS);
+  };
 
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState<{ item: QueueItem; reject: boolean } | null>(null);
@@ -199,7 +223,15 @@ export function TodayQueue({
       {scope === "admin" && onOpenTrust && (
         <TodayTiles items={items} onFilter={setFilters} onOpenTrust={onOpenTrust} />
       )}
-      {scope === "country" && <CountryTodayStrip items={items} now={now} onFilter={setFilters} />}
+      {scope === "country" && (
+        <CountryTodayStrip
+          items={items}
+          awaiting={queueTotal}
+          partial={serverMore}
+          now={now}
+          onFilter={setFilters}
+        />
+      )}
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="min-w-0">
           <h3 id="today-title" className="font-display text-xl font-bold">
@@ -387,7 +419,7 @@ export function TodayQueue({
         hasMore={hasMore}
         loadingMore={loadingMore}
         loadMore={loadMore}
-        shown={items.length}
+        shown={ordered.length}
         total={total}
       />
       <p className="sr-only" aria-live="polite">
@@ -686,7 +718,7 @@ function Detail({
       className="border-border bg-secondary/50 rounded-xl border p-3 text-sm leading-7"
     >
       <strong>{item.settle_block_reason ? t.reasons[item.settle_block_reason] : null}</strong>
-      {" — "}
+      {": "}
       {item.settle_block_reason === "own_upload" ? t.ownHint : t.scopeHint}{" "}
       {item.country_code
         ? t.whoSettles.replace("{0}", countryName(item.country_code, locale))

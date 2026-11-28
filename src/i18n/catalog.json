@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5164,
+ "count": 5163,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -32863,14 +32863,6 @@
    "hash": "76d85a13de38",
    "file": "src/routes/try.office.lazy.tsx"
   },
-  "routes/try.office.approveNamed": {
-   "en": "Pass {0}'s file to admin",
-   "ar": "ارفع ملفّ {0} للإدارة",
-   "kind": "template",
-   "params": 1,
-   "hash": "879d87a63de6",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
   "routes/try.office.approved": {
    "en": "Passed to administration",
    "ar": "رُفع للإدارة",
@@ -32972,19 +32964,19 @@
    "hash": "abfd4860a842",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.named": {
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "869f6c298bef",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.next": {
    "en": "Next step",
    "ar": "الخطوة التالية",
    "kind": "text",
    "hash": "cbfb6042f27a",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
-  "routes/try.office.nextNamed": {
-   "en": "Next step: {0}",
-   "ar": "الخطوة التالية: {0}",
-   "kind": "template",
-   "params": 1,
-   "hash": "c58ce658f25c",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.pickReason": {
@@ -33034,14 +33026,6 @@
    "ar": "أعده للجهة",
    "kind": "text",
    "hash": "5b3ea21628db",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
-  "routes/try.office.returnNamed": {
-   "en": "Return {0}'s file to the organization",
-   "ar": "أعد ملفّ {0} للجهة",
-   "kind": "template",
-   "params": 1,
-   "hash": "1a2ca7edefe0",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.returned": {
@@ -33346,6 +33330,14 @@
    "ar": "لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.",
    "kind": "text",
    "hash": "b9cad33b5016",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.focus": {
+   "en": "Core countries in real mode: {0}",
+   "ar": "الدول الأساسية في الوضع الحقيقي: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "56f3825cae48",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
   "routes/try.supervisor.follow": {

@@ -4,7 +4,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { NO_COUNTS, sumCounts, type QueueCounts } from "@/lib/admin-tools";
 import { getQueueCounts } from "@/lib/admin-tools.functions";
 import { useDataFn, useDataKey } from "@/lib/data-port";
-import { nextCursor, QUEUE_PAGE, type CountryAccess, type QueueCursor } from "@/lib/golden-record";
+import {
+  nextCursor,
+  TODAY_ROWS as QUEUE_PAGE,
+  type CountryAccess,
+  type QueueCursor,
+} from "@/lib/golden-record";
 import { listAlerts, listConflicts, listLinkQueue } from "@/lib/golden-record.functions";
 import { getDecisionInbox } from "@/lib/inbox.functions";
 import { listChildUpdateQueue } from "@/lib/child-updates.functions";
@@ -169,6 +174,8 @@ export function useToday(access: CountryAccess, enabled = true) {
 
   return {
     items,
+    /** ما ينتظر في طوابير الدولة من العدّاد على الخادم (محصورٌ بـ `country_can`). */
+    queueTotal: inboxCount + total,
     /** كلّ ما ينتظر، لا ما وصل منه: الصندوق كاملاً وعدّادات الطوابير. */
     total: Math.max(items.length, inboxCount + total),
     hasMore,
