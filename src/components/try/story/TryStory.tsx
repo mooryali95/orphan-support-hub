@@ -444,10 +444,10 @@ export function TryStory({ audience }: { audience: StoryAudience | null }) {
         </section>
       )}
 
-      {/* شريط التنقّل: ملتصقٌ بأسفل الجوال، وفي آخر القصّة على الشاشة الكبيرة */}
+      {/* شريط التنقّل: ملتصقٌ بأسفل الشاشة دائماً، فالفعل التالي ظاهرٌ في كلّ حجم */}
       <nav
         aria-label={t.stepsLabel}
-        className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 py-3 backdrop-blur sm:static sm:mt-10 sm:rounded-2xl sm:border sm:px-4"
+        className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 py-3 backdrop-blur sm:sticky sm:bottom-4 sm:mt-10 sm:rounded-2xl sm:border sm:px-4"
       >
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2">
           <Button
