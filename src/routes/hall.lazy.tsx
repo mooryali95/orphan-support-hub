@@ -336,7 +336,7 @@ function HallPage() {
       data-stage="gate"
     >
       <style>{CRITICAL_CSS}</style>
-      <canvas id="gl" aria-label={c.canvas} />
+      <canvas id="gl" role="img" aria-label={c.canvas} />
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">
@@ -400,11 +400,11 @@ function HallPage() {
         </nav>
       </header>
 
-      <section id="gate">
+      <section id="gate" aria-labelledby="hall-gate-h">
         <div>
           <MarkStage />
           <div className="eyebrow">{c.eyebrow}</div>
-          <h1>{c.title}</h1>
+          <h1 id="hall-gate-h">{c.title}</h1>
           <p>{donor ? c.donorLead : c.lead}</p>
           <p className="gate-net">
             {(trying ? c.netTrial : c.net)(formatCount(NETWORK_SITES, locale))}
@@ -497,7 +497,7 @@ function HallPage() {
         </button>
       </nav>
       <aside id="panel" aria-live="polite" />
-      <section id="impact" hidden aria-live="polite" />
+      <section id="impact" hidden aria-live="polite" aria-label={c.legend} />
       <div id="veil" />
       <div id="cursor" aria-hidden="true" />
     </div>

@@ -20632,10 +20632,10 @@
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.sample": {
-   "en": "Sample data",
-   "ar": "بيانات نموذجية",
+   "en": "Sample data:",
+   "ar": "بيانات نموذجية:",
    "kind": "text",
-   "hash": "2d11ccdc687f",
+   "hash": "dac012e2a7dc",
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.sampleLead": {

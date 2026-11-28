@@ -84,7 +84,7 @@ const COPY = defineCopy("components/try/story/TryStory", {
     eyebrow: "قصّة الثقة · دقيقتان",
     title: "سلمى، من سجلّ الندوة إلى أثر كافلها",
     lead: "طفلةٌ واحدة نتبعها في سبع خطوات، كلٌّ بعين صاحبها وعلى شاشته الحقيقية. في كلّ خطوةٍ فعلٌ واحد يبني الثقة؛ أدّه بنفسك أو اضغط «أرني».",
-    sample: "بيانات نموذجية",
+    sample: "بيانات نموذجية:",
     sampleLead:
       "سلمى طفلةٌ مستعارة (DEMO-…). كلّ فعلٍ هنا محاكاةٌ في جلستك وحدها: لا يُخصم شيء، ولا يُرسل بريدٌ ولا إشعار.",
     audience: {
@@ -195,7 +195,7 @@ const COPY = defineCopy("components/try/story/TryStory", {
     eyebrow: "The trust story · two minutes",
     title: "Salma, from WAMY's record to her sponsor's impact",
     lead: "One child, followed through seven steps, each through its owner's eyes and on their real screen. Each step has one action that builds trust; do it yourself or press “Show me”.",
-    sample: "Sample data",
+    sample: "Sample data:",
     sampleLead:
       "Salma is a fictional child (DEMO-…). Every action here is simulated in your session only: nothing is charged and no email or notification is sent.",
     audience: {
@@ -381,7 +381,7 @@ export function TryStory({ audience }: { audience: StoryAudience | null }) {
       >
         <FlaskConical className="text-bridge-ink mt-1 size-5 shrink-0" aria-hidden="true" />
         <p className="min-w-0 flex-1 text-pretty">
-          <strong>{t.sample}</strong> — {t.sampleLead}
+          <strong>{t.sample}</strong> {t.sampleLead}
         </p>
       </div>
 
