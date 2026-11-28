@@ -33,137 +33,127 @@ import {
   renamePasskey,
 } from "@/lib/passkey";
 import { pageTitle } from "@/config/brand";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
-import { defineCopy, useCopy, useLocale } from "@/lib/locale";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 const COPY = defineCopy("routes/account", {
   ar: {
     title: "حسابي",
     description: "من أنت، وكيف تدخل، وإلى أين تذهب.",
+    saveFailed: "تعذّر الحفظ",
+    nameSaved: "حُفظ اسمك",
+    passkeyDuplicate: "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
+    passkeyDisabledClient:
+      "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة.",
+    passkeyDisabledServer: "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
+    passkeyAddFailed: "تعذّرت إضافة البصمة.",
+    passkeyAdded: "أُضيفت البصمة",
+    renameFailed: "تعذّرت إعادة التسمية",
+    removeFailed: "تعذّر الحذف",
+    removed: "حُذفت البصمة من حسابك",
     name: "الاسم",
     save: "حفظ",
     addName: "أضف اسمك",
     editName: "تعديل الاسم",
     since: (d: string) => `معنا منذ ${d}`,
-    saveError: "تعذّر الحفظ",
-    nameSaved: "حُفظ اسمك",
-    dupKey: "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
-    disabledClient: "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة.",
-    disabledServer: "البصمة غير مفعّلة في إعدادات المصادقة على الخادم.",
-    addError: "تعذّرت إضافة البصمة.",
-    added: "أُضيفت البصمة",
-    renameError: "تعذّرت إعادة التسمية",
-    removeError: "تعذّر الحذف",
-    removed: "حُذفت البصمة من حسابك",
-    signin: "طرق الدخول",
+    signInMethods: "طرق الدخول",
     emailCode: "رمزٌ إلى البريد",
     phoneCode: "رمزٌ إلى الجوال",
     google: "حساب جوجل",
     linked: "مربوط",
     notLinked: "غير مربوط. ادخل بجوجل مرّةً ليُربط",
     passkey: "البصمة",
-    passkeyHint: "دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.",
-    loading: "جارٍ التحميل…",
-    keyName: "اسم البصمة",
-    keyFallback: "بصمة",
+    passkeyText: "دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.",
+    passkeyName: "اسم البصمة",
+    passkeyFallback: "البصمة",
+    passkeyShort: "بصمة",
     rename: (n: string) => `إعادة تسمية ${n}`,
     remove: (n: string) => `حذف ${n}`,
-    addedOn: (d: string) => `أُضيفت ${d}`,
-    lastUsed: (d: string) => `آخر استعمال ${d}`,
+    added: (d: string) => `أُضيفت ${d}`,
+    lastUsed: (d: string) => ` · آخر استعمال ${d}`,
     confirming: "أكّد هويتك على جهازك…",
     addThis: "أضف بصمة هذا الجهاز",
     addMine: "أضف بصمتي",
-    noSupport: "هذا المتصفّح لا يدعم البصمة.",
+    noPasskey: "هذا المتصفّح لا يدعم البصمة.",
     shortcuts: "اختصارات",
-    links: [
-      ["كفالاتي", "من تكفل، وآخر ما وصلهم"],
-      ["بواباتي", "كل ما لك صلاحيةٌ عليه"],
-      ["الإشعارات", "ما يصلك، ومتى"],
-    ] as readonly (readonly [string, string])[],
+    sponsorships: "كفالاتي",
+    sponsorshipsText: "من تكفل، وآخر ما وصلهم",
+    workspaces: "بواباتي",
+    workspacesText: "كل ما لك صلاحيةٌ عليه",
+    notifications: "الإشعارات",
+    notificationsText: "ما يصلك، ومتى",
     signOut: "تسجيل الخروج",
     on: "مفعّل",
     off: "غير مفعّل",
-    delTitle: (n: string) => `حذف ${n}؟`,
-    delBody: "لن تستطيع الدخول بهذه البصمة بعد حذفها. يمكنك إضافتها من جديد لاحقاً.",
-    cancel: "إلغاء",
-    delConfirm: "احذف البصمة",
   },
   en: {
     title: "My account",
-    description: "Who you are, how you sign in, and where to go next.",
+    description: "Who you are, how you sign in, and where to go.",
+    saveFailed: "Couldn't save",
+    nameSaved: "Your name was saved",
+    passkeyDuplicate: "This device already holds a passkey for your account.",
+    passkeyDisabledClient:
+      "Passkeys are off in the published site. Publish the latest update, then reload the page.",
+    passkeyDisabledServer: "Passkeys aren't enabled in the server's auth settings (Supabase).",
+    passkeyAddFailed: "Couldn't add the passkey.",
+    passkeyAdded: "Passkey added",
+    renameFailed: "Couldn't rename",
+    removeFailed: "Couldn't remove",
+    removed: "The passkey was removed from your account",
     name: "Name",
     save: "Save",
     addName: "Add your name",
     editName: "Edit name",
     since: (d: string) => `With us since ${d}`,
-    saveError: "Could not save",
-    nameSaved: "Your name was saved",
-    dupKey: "This device already holds a passkey for your account.",
-    disabledClient:
-      "Passkeys are off in the published site. Publish the latest update, then reload.",
-    disabledServer: "Passkeys are not enabled in the server sign-in settings.",
-    addError: "Could not add the passkey.",
-    added: "Passkey added",
-    renameError: "Could not rename",
-    removeError: "Could not delete",
-    removed: "The passkey was removed from your account",
-    signin: "Sign-in methods",
-    emailCode: "Code by email",
-    phoneCode: "Code by phone",
+    signInMethods: "Ways to sign in",
+    emailCode: "Code to your email",
+    phoneCode: "Code to your phone",
     google: "Google account",
     linked: "Linked",
     notLinked: "Not linked. Sign in with Google once to link it",
     passkey: "Passkey",
-    passkeyHint:
+    passkeyText:
       "Sign in with your face, finger or device lock. Your passkey never leaves your device.",
-    loading: "Loading…",
-    keyName: "Passkey name",
-    keyFallback: "Passkey",
+    passkeyName: "Passkey name",
+    passkeyFallback: "the passkey",
+    passkeyShort: "Passkey",
     rename: (n: string) => `Rename ${n}`,
-    remove: (n: string) => `Delete ${n}`,
-    addedOn: (d: string) => `Added ${d}`,
-    lastUsed: (d: string) => `last used ${d}`,
-    confirming: "Confirm it is you on your device…",
+    remove: (n: string) => `Remove ${n}`,
+    added: (d: string) => `Added ${d}`,
+    lastUsed: (d: string) => ` · last used ${d}`,
+    confirming: "Confirm it's you on your device…",
     addThis: "Add this device's passkey",
     addMine: "Add my passkey",
-    noSupport: "This browser does not support passkeys.",
+    noPasskey: "This browser doesn't support passkeys.",
     shortcuts: "Shortcuts",
-    links: [
-      ["My sponsorships", "Who you sponsor, and their latest news"],
-      ["My portals", "Everything you have access to"],
-      ["Notifications", "What reaches you, and when"],
-    ] as readonly (readonly [string, string])[],
+    sponsorships: "My sponsorships",
+    sponsorshipsText: "Who you sponsor, and what reached them lately",
+    workspaces: "My workspaces",
+    workspacesText: "Everything you have access to",
+    notifications: "Notifications",
+    notificationsText: "What reaches you, and when",
     signOut: "Sign out",
     on: "On",
     off: "Off",
-    delTitle: (n: string) => `Delete ${n}?`,
-    delBody:
-      "You will not be able to sign in with this passkey once deleted. You can add it again later.",
-    cancel: "Cancel",
-    delConfirm: "Delete passkey",
   },
 });
 
 export const Route = createFileRoute("/_authenticated/account")({
-  head: () => ({
-    meta: [{ title: pageTitle(COPY.ar.title, false) }, { name: "robots", content: "noindex" }],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return {
+      meta: [
+        { title: pageTitle(copyOf(COPY, l).title, false, l) },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: AccountPage,
 });
 
-const fmtDate = (iso: string | undefined, locale: string = "ar") =>
+const fmtDate = (iso: string | undefined, locale = "ar") =>
   iso
-    ? new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ar-u-nu-latn", {
+    ? new Intl.DateTimeFormat(locale === "ar" ? "ar-u-nu-latn" : locale, {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -171,15 +161,14 @@ const fmtDate = (iso: string | undefined, locale: string = "ar") =>
     : "";
 
 /**
- * حسابي — ثلاثة أشياء فقط: من أنا، وكيف أدخل، وإلى أين أذهب.
+ * حسابي: ثلاثة أشياء فقط: من أنا، وكيف أدخل، وإلى أين أذهب.
  * كل حقلٍ يُعدَّل في مكانه ويُحفظ مباشرة، بلا صفحة «تعديل» منفصلة.
  */
 function AccountPage() {
-  const t = useCopy(COPY);
-  const locale = useLocale();
-  const date = (iso: string | undefined) => fmtDate(iso, locale);
-  const [toDelete, setToDelete] = useState<{ id: string; name: string } | null>(null);
   const { user } = useAuth();
+  const c = useCopy(COPY);
+  const locale = useLocale();
+  const fmt = (iso: string | undefined) => fmtDate(iso, locale);
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [name, setName] = useState("");
@@ -220,11 +209,11 @@ function AccountPage() {
     const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } });
     setSaving(false);
     if (error) {
-      toast.error(t.saveError);
+      toast.error(c.saveFailed);
       return;
     }
     setEditing(false);
-    toast.success(t.nameSaved);
+    toast.success(c.nameSaved);
   }
 
   const [adding, setAdding] = useState(false);
@@ -235,13 +224,13 @@ function AccountPage() {
     const r = await addPasskey(locale);
     setAdding(false);
     if (!r.ok) {
-      if (r.why === "duplicate") toast.success(t.dupKey);
+      if (r.why === "duplicate") toast.success(c.passkeyDuplicate);
       else if (r.why === "disabled")
-        toast.error(r.source === "client" ? t.disabledClient : t.disabledServer);
-      else if (r.why !== "cancelled") toast.error(t.addError);
+        toast.error(r.source === "client" ? c.passkeyDisabledClient : c.passkeyDisabledServer);
+      else if (r.why !== "cancelled") toast.error(c.passkeyAddFailed);
       return;
     }
-    toast.success(t.added);
+    toast.success(c.passkeyAdded);
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
   }
 
@@ -253,7 +242,7 @@ function AccountPage() {
     if (!name || name === current) return;
     const { error } = await renamePasskey(renaming.id, name);
     if (error) {
-      toast.error(t.renameError);
+      toast.error(c.renameFailed);
       return;
     }
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
@@ -262,15 +251,15 @@ function AccountPage() {
   async function remove(id: string) {
     const { error } = await removePasskey(id);
     if (error) {
-      toast.error(t.removeError);
+      toast.error(c.removeFailed);
       return;
     }
-    toast.success(t.removed);
+    toast.success(c.removed);
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
   }
 
   return (
-    <DashboardShell title={t.title} description={t.description}>
+    <DashboardShell title={c.title} description={c.description}>
       <div className="max-w-2xl space-y-6 py-2">
         {/* ── من أنا ── */}
         <section className="stagger-in relative overflow-hidden rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_1px_2px_-1px_rgb(0_0_0/0.06),0_2px_4px_0_rgb(0_0_0/0.04)] sm:p-8">
@@ -293,17 +282,17 @@ function AccountPage() {
                 >
                   <Input
                     autoFocus
-                    aria-label={t.name}
+                    aria-label={c.name}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Escape" && (setName(fullName), setEditing(false))}
-                    className="h-11 text-base"
+                    className="h-10 text-base"
                   />
                   <Button
                     type="submit"
                     size="icon"
-                    className="size-11"
-                    aria-label={t.save}
+                    className="size-10"
+                    aria-label={c.save}
                     disabled={saving}
                   >
                     {saving ? <Loader2 className="animate-spin" /> : <Check />}
@@ -313,18 +302,21 @@ function AccountPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="group flex min-h-11 max-w-full items-center gap-2 text-start"
-                  aria-label={`${t.editName}: ${fullName || t.addName}`}
+                  className="group flex max-w-full items-center gap-2 text-start"
                 >
-                  <h1 className="truncate text-2xl font-extrabold">{fullName || t.addName}</h1>
-                  <Pencil className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  <span className="sr-only">{c.editName}: </span>
+                  <h1 className="truncate text-2xl font-extrabold">{fullName || c.addName}</h1>
+                  <Pencil
+                    className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                    aria-hidden="true"
+                  />
                 </button>
               )}
               <p className="mt-1 truncate text-sm text-muted-foreground">
                 <bdi dir="ltr">{user?.email ?? user?.phone}</bdi>
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                {t.since(date(user?.created_at))}
+                {c.since(fmt(user?.created_at))}
               </p>
             </div>
           </div>
@@ -337,16 +329,16 @@ function AccountPage() {
           aria-labelledby="signin-h"
         >
           <h2 id="signin-h" className="font-bold">
-            {t.signin}
+            {c.signInMethods}
           </h2>
           <ul className="mt-4 divide-y divide-border">
-            {user?.email && <Row icon={<Mail />} title={t.emailCode} text={user.email} on />}
-            {user?.phone && <Row icon={<Smartphone />} title={t.phoneCode} text={user.phone} on />}
+            {user?.email && <Row icon={<Mail />} title={c.emailCode} text={user.email} on />}
+            {user?.phone && <Row icon={<Smartphone />} title={c.phoneCode} text={user.phone} on />}
             {(google || methods?.google === true) && (
               <Row
                 icon={<span className="text-sm font-bold">G</span>}
-                title={t.google}
-                text={google ? t.linked : t.notLinked}
+                title={c.google}
+                text={google ? c.linked : c.notLinked}
                 on={!!google}
               />
             )}
@@ -360,12 +352,12 @@ function AccountPage() {
                   <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold">{t.passkey}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{t.passkeyHint}</p>
+                  <p className="font-semibold">{c.passkey}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">{c.passkeyText}</p>
                 </div>
               </div>
               {loadingKeys ? (
-                <p className="mt-3 text-sm text-muted-foreground">{t.loading}</p>
+                <p className="mt-3 text-sm text-muted-foreground">…</p>
               ) : passkeys.length > 0 ? (
                 <ul className="mt-3 space-y-2">
                   {passkeys.map((k) => (
@@ -384,54 +376,52 @@ function AccountPage() {
                           >
                             <Input
                               autoFocus
-                              aria-label={t.keyName}
+                              aria-label={c.passkeyName}
                               maxLength={120}
                               value={renaming.name}
                               onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
                               onKeyDown={(e) => e.key === "Escape" && setRenaming(null)}
                               onBlur={() => void rename()}
-                              className="h-11 text-sm"
+                              className="h-9 text-sm"
                             />
                             <Button
                               type="submit"
                               size="icon"
-                              className="size-11"
-                              aria-label={t.save}
+                              className="size-9"
+                              aria-label={c.save}
                             >
                               <Check />
                             </Button>
                           </form>
                         ) : (
-                          <span className="block truncate text-sm font-medium">
-                            {k.friendly_name || t.keyFallback}
-                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
+                            className="group flex max-w-full items-center gap-2 text-start"
+                            aria-label={c.rename(k.friendly_name || c.passkeyFallback)}
+                          >
+                            <span className="truncate text-sm font-medium">
+                              {k.friendly_name || c.passkeyShort}
+                            </span>
+                            <Pencil
+                              className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                              aria-hidden="true"
+                            />
+                          </button>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          {t.addedOn(date(k.created_at))}
-                          {k.last_used_at ? ` · ${t.lastUsed(date(k.last_used_at))}` : ""}
+                          {c.added(fmt(k.created_at))}
+                          {k.last_used_at ? c.lastUsed(fmt(k.last_used_at)) : ""}
                         </p>
                       </div>
-                      {renaming?.id !== k.id && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={t.rename(k.friendly_name || t.keyFallback)}
-                          onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
-                          className="size-11 shrink-0 text-muted-foreground"
-                        >
-                          <Pencil className="size-4" aria-hidden="true" />
-                        </Button>
-                      )}
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label={t.remove(k.friendly_name || t.keyFallback)}
-                        onClick={() =>
-                          setToDelete({ id: k.id, name: k.friendly_name || t.keyFallback })
-                        }
-                        className="size-11 shrink-0 text-muted-foreground hover:text-destructive"
+                        aria-label={c.remove(k.friendly_name || c.passkeyFallback)}
+                        onClick={() => void remove(k.id)}
+                        className="text-muted-foreground hover:text-destructive"
                       >
-                        <Trash2 className="size-4" aria-hidden="true" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </li>
                   ))}
@@ -444,10 +434,10 @@ function AccountPage() {
                   ) : (
                     <Fingerprint aria-hidden="true" />
                   )}
-                  {adding ? t.confirming : passkeys.length ? t.addThis : t.addMine}
+                  {adding ? c.confirming : passkeys.length ? c.addThis : c.addMine}
                 </Button>
               ) : (
-                <p className="mt-3 text-xs text-muted-foreground">{t.noSupport}</p>
+                <p className="mt-3 text-xs text-muted-foreground">{c.noPasskey}</p>
               )}
             </div>
           )}
@@ -458,15 +448,15 @@ function AccountPage() {
 
         {/* ── إلى أين ── */}
         <nav
-          aria-label={t.shortcuts}
+          aria-label={c.shortcuts}
           className="stagger-in overflow-hidden rounded-3xl bg-card shadow-[0_0_0_1px_rgb(0_0_0/0.06)]"
           style={{ ["--i" as string]: 2 }}
         >
           {(
             [
-              ["/dashboard", t.links[0]![0], t.links[0]![1], HandHeart],
-              ["/workspaces", t.links[1]![0], t.links[1]![1], LayoutGrid],
-              ["/settings/notifications", t.links[2]![0], t.links[2]![1], Bell],
+              ["/dashboard", c.sponsorships, c.sponsorshipsText, HandHeart],
+              ["/workspaces", c.workspaces, c.workspacesText, LayoutGrid],
+              ["/settings/notifications", c.notifications, c.notificationsText, Bell],
             ] as const
           ).map(([to, title, text, Icon]) => (
             <Link
@@ -499,30 +489,10 @@ function AccountPage() {
             }}
           >
             <LogOut aria-hidden="true" />
-            {t.signOut}
+            {c.signOut}
           </Button>
         </div>
       </div>
-      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t.delTitle(toDelete?.name ?? t.keyFallback)}</AlertDialogTitle>
-            <AlertDialogDescription>{t.delBody}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="min-h-11">{t.cancel}</AlertDialogCancel>
-            <AlertDialogAction
-              className="min-h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => {
-                if (toDelete) void remove(toDelete.id);
-                setToDelete(null);
-              }}
-            >
-              {t.delConfirm}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </DashboardShell>
   );
 }
@@ -538,7 +508,7 @@ function Row({
   text: string;
   on: boolean;
 }) {
-  const t = useCopy(COPY);
+  const c = useCopy(COPY);
   return (
     <li className="flex items-center gap-3 py-3">
       <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground [&_svg]:size-4">
@@ -554,7 +524,7 @@ function Row({
           on ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground",
         )}
       >
-        {on ? t.on : t.off}
+        {on ? c.on : c.off}
       </span>
     </li>
   );

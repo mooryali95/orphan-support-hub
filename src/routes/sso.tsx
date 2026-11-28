@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { KahataynMark } from "@/components/brand/KahataynMark";
 
 import { Button } from "@/components/ui/button";
-import { pageTitle } from "@/config/brand";
+import { brandFor, pageTitle } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
-import { copyOf, defineCopy, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { safeNext } from "@/lib/sso/launch-token";
 import { checkSsoNonce } from "@/lib/sso/nonce.functions";
 import { useServerFn } from "@tanstack/react-start";
@@ -17,6 +19,7 @@ const COPY = defineCopy("routes/sso", {
     failed: "تعذّر إكمال الدخول من منصّة الندوة.",
     retry: "عد إلى منصّة الندوة وافتح الرابط من جديد، أو سجّل الدخول هنا مباشرة.",
     signIn: "تسجيل الدخول",
+    handover: (owner: string) => `تنقلك ${owner} إلى منصّة الكفالة الخاصة بها.`,
     reasons: {
       expired: "انتهت صلاحية الرابط. الرابط يعمل دقيقتين فقط.",
       token_used: "استُعمل هذا الرابط من قبل. كل رابطٍ يعمل مرّةً واحدة.",
@@ -35,6 +38,7 @@ const COPY = defineCopy("routes/sso", {
     failed: "We couldn't complete your sign-in from WAMY's platform.",
     retry: "Go back to WAMY's platform and open the link again, or sign in here directly.",
     signIn: "Sign in",
+    handover: (owner: string) => `${owner} is handing you over to its sponsorship platform.`,
     reasons: {
       expired: "The link expired. It works for two minutes only.",
       token_used: "This link was already used. Each link works once.",
@@ -72,6 +76,8 @@ export const Route = createFileRoute("/sso")({
  */
 function SsoPage() {
   const c = useCopy(COPY);
+  const brand = brandFor(useLocale());
+  const alertRef = useRef<HTMLParagraphElement>(null);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const checkNonce = useServerFn(checkSsoNonce);
@@ -101,12 +107,23 @@ function SsoPage() {
     })();
   }, [navigate, checkNonce]);
 
+  // عند الخطأ ينتقل التركيز إلى التنبيه فيُقرأ سببه أوّلاً.
+  useEffect(() => {
+    if (error) alertRef.current?.focus();
+  }, [error]);
+
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
+      <KahataynMark className="size-14" title={brand.name} />
       <h1 className="text-xl font-bold text-balance">{c.title}</h1>
       {error ? (
         <>
-          <p role="alert" className="text-sm leading-7">
+          <p
+            ref={alertRef}
+            role="alert"
+            tabIndex={-1}
+            className="text-sm leading-7 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {c.reasons[error] ?? c.failed}
           </p>
           <p className="text-sm leading-7 text-muted-foreground">{c.retry}</p>
@@ -115,10 +132,13 @@ function SsoPage() {
           </Button>
         </>
       ) : (
-        <p role="status" className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-          {c.working}
-        </p>
+        <div role="status" className="flex flex-col items-center gap-2">
+          <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            {c.working}
+          </p>
+          <p className="text-sm text-muted-foreground">{c.handover(brand.ownerShort)}</p>
+        </div>
       )}
     </main>
   );
