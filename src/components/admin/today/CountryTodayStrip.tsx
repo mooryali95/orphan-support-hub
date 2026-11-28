@@ -3,7 +3,9 @@ import { Clock, Hourglass, Upload } from "lucide-react";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-import { isOverdue, type Filters, type QueueItem } from "./queue";
+import type { CountryAccess } from "@/lib/golden-record";
+
+import { stripCounts, type Filters, type QueueItem } from "./queue";
 
 const COPY = defineCopy("components/admin/today/CountryTodayStrip", {
   ar: {
@@ -28,12 +30,14 @@ const COPY = defineCopy("components/admin/today/CountryTodayStrip", {
  */
 export function CountryTodayStrip({
   items,
+  access,
   awaiting,
   partial,
   now,
   onFilter,
 }: {
   items: readonly QueueItem[];
+  access: CountryAccess;
   /** العدد على الخادم (`admin_queue_counts` محصوراً بـ `country_can`)، لا ما وصل من صفحات. */
   awaiting: number;
   /** بقيت صفحاتٌ لم تصل: عدد المتأخّر حدٌّ أدنى. */
@@ -43,12 +47,8 @@ export function CountryTodayStrip({
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
-  const overdue = items.filter((i) => i.can_settle && isOverdue(i, now)).length;
   // كلّ طابورٍ يصل مرتّباً من الأحدث، فأحدث ما في صفحاته الأولى هو أحدث رفعٍ فعلاً.
-  const latest = items.reduce<string | null>(
-    (a, i) => (!a || i.created_at > a ? i.created_at : a),
-    null,
-  );
+  const { overdue, latest } = stripCounts(items, access, now);
   const lastText = latest
     ? new Date(latest).toLocaleDateString(locale, { numberingSystem: "latn", dateStyle: "medium" })
     : t.none;
