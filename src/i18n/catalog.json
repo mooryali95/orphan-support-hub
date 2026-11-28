@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5559,
+ "count": 5584,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -11871,6 +11871,162 @@
    "kind": "text",
    "hash": "8e33f0c9ebd0",
    "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorReport.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.back": {
+   "en": "Back to the entity",
+   "ar": "العودة إلى الجهة",
+   "kind": "text",
+   "hash": "99ebb68e33c8",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.byKind": {
+   "en": "By kind",
+   "ar": "حسب النوع",
+   "kind": "text",
+   "hash": "35ef84d9e966",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.delivered": {
+   "en": "Delivered and documented",
+   "ar": "سُلّم موثّقاً",
+   "kind": "text",
+   "hash": "8324507298eb",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.delivery": {
+   "en": "Delivery",
+   "ar": "التسليم",
+   "kind": "text",
+   "hash": "591b38bc5e09",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.denied": {
+   "en": "You cannot view this entity.",
+   "ar": "لا تملك الاطّلاع على هذه الجهة.",
+   "kind": "text",
+   "hash": "596bdecc8aba",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.documented": {
+   "en": "Documented {0}",
+   "ar": "موثّق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8fb409953d0e",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.empty": {
+   "en": "This entity has no pledges yet.",
+   "ar": "لا تعهّدات لهذه الجهة بعد.",
+   "kind": "text",
+   "hash": "6e9a29120dd6",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.failed": {
+   "en": "The report could not be read",
+   "ar": "تعذّرت قراءة التقرير",
+   "kind": "text",
+   "hash": "9baab305b8c8",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.failedText": {
+   "en": "The figures are missing right now, not zero.",
+   "ar": "الأرقام غائبة الآن، وليست صفراً.",
+   "kind": "text",
+   "hash": "4bbc913b7b23",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.issued": {
+   "en": "Issued on {0}",
+   "ar": "صدر في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d27dc5ad9034",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.kind": {
+   "en": "Kind",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "9b81d0a755af",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.noTarget": {
+   "en": "General target",
+   "ar": "هدف عام",
+   "kind": "text",
+   "hash": "891a95feaa0c",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.note": {
+   "en": "\"Documented\" means the regional office recorded the delivery and uploaded its document; the document is kept on the platform and available on request, and is not independently reviewed before it is marked. Amounts are in each pledge's currency, and two currencies are never added into one figure. This report carries no real child names or photos.",
+   "ar": "«موثّق» يعني أن مكتب المنطقة سجّل التسليم ورفع مستنده؛ والمستند محفوظ في المنصّة ويُطلب للاطّلاع، ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه. المبالغ بعملة كل تعهّد، ولا تُجمع عملتان في رقم واحد. لا يحمل هذا التقرير أسماء الأطفال الحقيقية ولا صورهم.",
+   "kind": "text",
+   "hash": "9e19ae619f55",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.pending": {
+   "en": "Not delivered yet",
+   "ar": "لم يُسلَّم بعد",
+   "kind": "text",
+   "hash": "f92acd35790d",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.pledges": {
+   "en": "Pledges",
+   "ar": "التعهّدات",
+   "kind": "text",
+   "hash": "556bfe0efc5b",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.print": {
+   "en": "Print or save as PDF",
+   "ar": "طباعة أو حفظ PDF",
+   "kind": "text",
+   "hash": "f9ad934d6aba",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.target": {
+   "en": "Target",
+   "ar": "الهدف",
+   "kind": "text",
+   "hash": "c752fad02f45",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.title": {
+   "en": "Impact report",
+   "ar": "تقرير الأثر",
+   "kind": "text",
+   "hash": "a455d02330df",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.total": {
+   "en": "Total support, excluding cancelled",
+   "ar": "مجموع الدعم بلا الملغى",
+   "kind": "text",
+   "hash": "9caa8ac85c18",
+   "file": "src/components/donor/DonorReport.tsx"
   },
   "components/geo/CountryPicker.country": {
    "en": "Country",
@@ -35114,6 +35270,27 @@
    "kind": "text",
    "hash": "42519b4a49af",
    "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.report.pageTitle": {
+   "en": "Impact report: interactive demo",
+   "ar": "تقرير الأثر: عرض تفاعلي",
+   "kind": "text",
+   "hash": "4ac2df19f828",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
+  },
+  "routes/try.donor.report.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
+  },
+  "routes/try.donor.report.simulated": {
+   "en": "This is a sample entity's report; its figures are simulated, not real results.",
+   "ar": "هذا تقرير جهةٍ نموذجية، والأرقام فيه محاكاة وليست نتائج حقيقية.",
+   "kind": "text",
+   "hash": "a61d680a9ccf",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
   },
   "routes/try.donor.role": {
    "en": "Donor entity",
