@@ -473,6 +473,8 @@ export type ClaimedEmail = {
   link: string | null;
   unsubscribe_token: string;
   attempts: number;
+  /** لغة المستلم من حسابه (user_metadata.locale)؛ null = العربية. */
+  locale?: string | null;
 };
 
 export type DatabaseWithOutbox = Omit<DatabaseWithPrefs, "public"> & {

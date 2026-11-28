@@ -327,6 +327,15 @@ export function AuthPanel({
   }
 
   const here = () => (typeof window === "undefined" ? "/" : window.location.href);
+  const withLang = (href: string, lang: string) => {
+    try {
+      const u = new URL(href, "https://x.invalid");
+      u.searchParams.set("lang", lang);
+      return u.origin === "https://x.invalid" ? `${u.pathname}${u.search}${u.hash}` : u.toString();
+    } catch {
+      return href;
+    }
+  };
 
   async function google() {
     stopAutofill();
@@ -347,7 +356,13 @@ export function AuthPanel({
       method === "email"
         ? await supabase.auth.signInWithOtp({
             email: to,
-            options: { shouldCreateUser: true, emailRedirectTo: here() },
+            // لغة المستلم تسافر مع الطلب: في بيانات الحساب الجديد (لمُصرِّف البريد)
+            // وفي عنوان العودة (لخطاف رسائل المصادقة، الذي لا يقرأ الحساب).
+            options: {
+              shouldCreateUser: true,
+              emailRedirectTo: withLang(here(), locale),
+              data: { locale },
+            },
           })
         : await supabase.auth.signInWithOtp({ phone: normalizePhone(to) });
     setBusy(false);

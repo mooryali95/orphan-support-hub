@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { BrandButton, BrandEmail, BrandText } from "./_brand";
+import { emailCopy, emailLocale } from "./copy";
 import { resolveEmailLink } from "./links";
 
 /**
@@ -14,23 +15,6 @@ import { resolveEmailLink } from "./links";
  * يُشتقّ من النوع هنا في مكان واحد.
  */
 
-/** تصنيف الرسالة ونصّ زرّها — بحسب نوع الإشعار. */
-const KIND_FRAME: Record<string, { eyebrow: string; cta: string }> = {
-  welcome: { eyebrow: "أهلاً بك", cta: "تصفّح الملفات" },
-  orphan_approved: { eyebrow: "قرار اعتماد", cta: "عرض الملفّ" },
-  orphan_rejected: { eyebrow: "الملفّ يحتاج تصحيحاً", cta: "فتح الملفّ" },
-  organization_approved: { eyebrow: "اعتماد الجهة الميدانية", cta: "لوحة الجهة" },
-  organization_rejected: { eyebrow: "طلب الجهة يحتاج تصحيحاً", cta: "لوحة الجهة" },
-  sponsorship_started: { eyebrow: "بدأت الكفالة", cta: "عرض الكفالة" },
-  payment_succeeded: { eyebrow: "إيصال دفعة", cta: "عرض الكفالة" },
-  payment_failed: { eyebrow: "تعثّرت دفعة", cta: "معالجة الدفع" },
-  report_published: { eyebrow: "تقرير أثر", cta: "قراءة التقرير" },
-  report_rejected: { eyebrow: "التقرير يحتاج تصحيحاً", cta: "فتح التقرير" },
-  pledge_preparing: { eyebrow: "يُجهَّز تبرّعك", cta: "متابعة التبرّع" },
-  pledge_delivered: { eyebrow: "وصل تبرّعك", cta: "عرض مستند التسليم" },
-  other: { eyebrow: "إشعار", cta: "فتح المنصّة" },
-};
-
 export type NotificationEmailProps = {
   siteName: string;
   siteUrl: string;
@@ -40,6 +24,8 @@ export type NotificationEmailProps = {
   /** مسار داخل المنصّة (`/dashboard`)، يُحوَّل إلى رابط مطلق هنا. */
   link?: string;
   unsubscribeUrl: string;
+  /** لغة المستلم من حسابه؛ العنوان والنصّ يأتيان جاهزين، والغلاف والزرّ بلغته. */
+  locale?: string;
 };
 
 export const NotificationEmail = ({
@@ -50,13 +36,18 @@ export const NotificationEmail = ({
   body,
   link,
   unsubscribeUrl,
+  locale,
 }: NotificationEmailProps) => {
-  const frame = KIND_FRAME[kind] ?? KIND_FRAME["other"]!;
+  const lang = emailLocale(locale);
+  const kinds = emailCopy(lang).kinds;
+  const [eyebrow, cta] = kinds[kind] ?? kinds["other"]!;
+  const frame = { eyebrow: eyebrow!, cta: cta! };
   // الرابط في القاعدة مسارٌ نسبي؛ والبريد يُقرأ خارج المنصّة.
   const href = resolveEmailLink(siteUrl, link);
 
   return (
     <BrandEmail
+      locale={lang}
       siteName={siteName}
       siteUrl={siteUrl}
       preview={title}

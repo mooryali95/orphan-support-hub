@@ -1,29 +1,37 @@
 import * as React from "react";
 
 import { BrandButton, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
+import { emailCopy, type EmailLocale } from "./copy";
 
 interface InviteEmailProps {
   siteName: string;
   siteUrl: string;
   confirmationUrl: string;
+  locale?: EmailLocale;
 }
 
-export const InviteEmail = ({ siteName, siteUrl, confirmationUrl }: InviteEmailProps) => (
-  <BrandEmail
-    siteName={siteName}
-    siteUrl={siteUrl}
-    preview={`دعوة للانضمام إلى ${siteName}`}
-    eyebrow="دعوة"
-    heading="دُعيت للانضمام إلى المنصّة"
-    footNote="إن وصلتك هذه الدعوة عن طريق الخطأ، فتجاهلها آمن تماماً."
-  >
-    <BrandText>
-      وُجّهت إليك دعوة للانضمام إلى {siteName}؛ حيث يلتقي الكافلون بمكاتب الندوة وشركائها الميدانيين
-      حول ملفّات موثّقة، وتتحوّل الكفالة من إحسانٍ عابر إلى مسار نماء مُتابَع.
-    </BrandText>
-    <BrandButton href={confirmationUrl}>قبول الدعوة</BrandButton>
-    <BrandFallbackLink url={confirmationUrl} />
-  </BrandEmail>
-);
+export const InviteEmail = ({
+  siteName,
+  siteUrl,
+  confirmationUrl,
+  locale = "ar",
+}: InviteEmailProps) => {
+  const c = emailCopy(locale).invite;
+  return (
+    <BrandEmail
+      locale={locale}
+      siteName={siteName}
+      siteUrl={siteUrl}
+      preview={c.subject(siteName)}
+      eyebrow={c.eyebrow}
+      heading={c.heading}
+      footNote={c.foot}
+    >
+      <BrandText>{c.body(siteName)}</BrandText>
+      <BrandButton href={confirmationUrl}>{c.cta}</BrandButton>
+      <BrandFallbackLink url={confirmationUrl} locale={locale} />
+    </BrandEmail>
+  );
+};
 
 export default InviteEmail;
