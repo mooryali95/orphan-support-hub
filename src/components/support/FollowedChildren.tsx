@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 
 import { PageSection } from "@/components/kit/PageSection";
 import { Badge } from "@/components/ui/badge";
@@ -42,13 +44,17 @@ const COPY = defineCopy("components/support/FollowedChildren", {
  * والصفحة نفسها (ملفّ الطفل) هي اللوحة: تتشكّل أقسامها بما مُنح.
  */
 export function FollowedChildren() {
-  const fetchMine = useServerFn(getMyAccess);
-  const fetchCatalog = useServerFn(getScopeCatalog);
+  const fetchMine = useDataFn("access.mine", getMyAccess);
+  const fetchCatalog = useDataFn("access.catalog", getScopeCatalog);
+  // في التجربة يفتح الرابط ملفّ الطفل الخيالي في /try، لا ملفّاً حقيقياً.
+  const demo = useDemo();
+  const mineKey = useDataKey(["my-access"]);
+  const catalogKey = useDataKey(["scope-catalog"]);
   const c = useCopy(COPY);
   const locale = useLocale();
-  const { data: rows = [] } = useQuery({ queryKey: ["my-access"], queryFn: () => fetchMine() });
+  const { data: rows = [] } = useQuery({ queryKey: mineKey, queryFn: () => fetchMine() });
   const { data: catalog } = useQuery({
-    queryKey: ["scope-catalog"],
+    queryKey: catalogKey,
     queryFn: () => fetchCatalog(),
   });
   if (rows.length === 0) return null;
@@ -60,8 +66,9 @@ export function FollowedChildren() {
         {rows.map((r) => (
           <li key={r.id}>
             <Link
-              to="/orphans/$orphanId"
-              params={{ orphanId: r.orphan_id }}
+              {...(demo
+                ? { to: trialRoute(`/try/${encodeURIComponent(r.orphan_id)}`) }
+                : { to: "/orphans/$orphanId" as const, params: { orphanId: r.orphan_id } })}
               className="block rounded-2xl border border-border bg-card p-4 hover:border-primary"
             >
               <div className="flex items-center justify-between gap-2">

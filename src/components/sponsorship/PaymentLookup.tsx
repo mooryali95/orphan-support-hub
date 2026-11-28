@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import { useState } from "react";
 import { ArrowLeft, FileSearch, Loader2 } from "lucide-react";
 
@@ -80,7 +82,8 @@ const COPY = defineCopy("components/sponsorship/PaymentLookup", {
  * البطاقة. يُعرض الربط كاملاً، حلقةً حلقة، حتى بصمتها في سجلّ السلامة.
  */
 export function PaymentLookup({ admin = false }: { admin?: boolean }) {
-  const find = useServerFn(lookupPayment);
+  const find = useDataFn("ledger.lookupPayment", lookupPayment);
+  const demo = useDemo();
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
   const [r, setR] = useState<Result | null>(null);
@@ -165,8 +168,12 @@ export function PaymentLookup({ admin = false }: { admin?: boolean }) {
           <Step label={c.anchor} value={r.anchor ? `${r.anchor}…` : "—"} mono last />
           <li className="pt-3">
             <Link
-              to="/sponsorships/$sponsorshipId"
-              params={{ sponsorshipId: r.sponsorship_id }}
+              {...(demo
+                ? { to: trialRoute(`/try/sponsorships/${encodeURIComponent(r.sponsorship_id)}`) }
+                : {
+                    to: "/sponsorships/$sponsorshipId" as const,
+                    params: { sponsorshipId: r.sponsorship_id },
+                  })}
               className="inline-flex items-center gap-1 text-sm font-medium text-primary"
             >
               {c.open}

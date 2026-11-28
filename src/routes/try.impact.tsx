@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { ChildStanding } from "@/components/impact/ChildStanding";
+import { SuggestionsPanel } from "@/components/matching/SuggestionsPanel";
+import { PaymentLookup } from "@/components/sponsorship/PaymentLookup";
+import { FollowedChildren } from "@/components/support/FollowedChildren";
+import { MyJourney } from "@/components/support/MyJourney";
 import { ImpactMoment } from "@/components/impact/ImpactMoment";
 import { MyChildrenNow } from "@/components/impact/MyChildrenNow";
 import { MyImpactHero } from "@/components/impact/MyImpactHero";
@@ -30,6 +34,7 @@ import {
   tryChild,
   type TryGift,
 } from "@/lib/try-demo";
+import { registerDashboardDemos } from "@/lib/try-dashboard";
 import { tryEvidence } from "@/lib/try-evidence";
 import { trySponsorships } from "@/lib/try-sponsor-center";
 import { loadPledges, tryInKind, tryQualification, type TryPledge } from "@/lib/try-support";
@@ -65,6 +70,7 @@ const COPY = defineCopy("routes/try.impact", {
     statement: "سجلّ التبرّعات (محاكاة)",
     payDemo: "الدفع في التجربة محاكاة، فلا يُفتح بابٌ للدفع ولا يُحصَّل شيء.",
     dedication: (name: string) => `صدقةٌ جارية عن ${name}`,
+    more: "المزيد",
   },
   en: {
     pageTitle: "My impact · Try the platform",
@@ -80,6 +86,7 @@ const COPY = defineCopy("routes/try.impact", {
     statement: "Record of donations (simulated)",
     payDemo: "Payment in the trial is simulated, so no checkout opens and nothing is charged.",
     dedication: (name: string) => `Ongoing charity on behalf of ${name}`,
+    more: "More",
   },
 });
 
@@ -87,6 +94,8 @@ const COPY = defineCopy("routes/try.impact", {
 function TryImpact() {
   const { done, kind } = Route.useSearch();
   const locale = useLocale();
+  // أقسام «المزيد» في لوحة الكافل تُسجَّل نسخها صراحةً قبل الرسم (sideEffects: false).
+  useState(() => registerDashboardDemos(locale));
   const c = useCopy(COPY);
   const local = (id: string) => {
     const k = tryChild(id);
@@ -282,6 +291,25 @@ function TryImpact() {
       )}
 
       {/* the natural end of the trial: what was virtual, what was chosen, and the door to the real one */}
+      {/* «المزيد» كما في لوحة الكافل الحقيقية: الرحلة، ومن أتابعهم، والمقترحون، والبحث عن دفعة */}
+      <section aria-labelledby="try-more" className="mt-12 border-t border-border pt-8">
+        <h2 id="try-more" className="text-xl font-bold">
+          {c.more}
+        </h2>
+        <SamplePanel>
+          <MyJourney limit={5} />
+        </SamplePanel>
+        <SamplePanel>
+          <FollowedChildren />
+        </SamplePanel>
+        <SamplePanel>
+          <SuggestionsPanel />
+        </SamplePanel>
+        <SamplePanel>
+          <PaymentLookup />
+        </SamplePanel>
+      </section>
+
       <TryRealInvite className="mt-14" />
     </>
   );

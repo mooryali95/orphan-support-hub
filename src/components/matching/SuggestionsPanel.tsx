@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useDataFn, useDataKey } from "@/lib/data-port";
+import { useDemo } from "@/lib/demo-mode";
+import { trialRoute } from "@/lib/trial-gate";
 import { toast } from "sonner";
 import { Clock, Hammer, Loader2, MapPin, Settings2, Sparkles } from "lucide-react";
 
@@ -108,18 +110,20 @@ type Copy = (typeof COPY)["ar"];
  */
 export function SuggestionsPanel() {
   const queryClient = useQueryClient();
-  const fetchSuggestions = useServerFn(getSuggestions);
-  const fetchPrefs = useServerFn(getSponsorPreferences);
-  const savePrefs = useServerFn(saveSponsorPreferences);
+  const fetchSuggestions = useDataFn("matching.suggestions", getSuggestions);
+  const fetchPrefs = useDataFn("matching.prefs", getSponsorPreferences);
+  const savePrefs = useDataFn("matching.savePrefs", saveSponsorPreferences);
+  const suggestionsKey = useDataKey(["suggestions"]);
+  const prefsKey = useDataKey(["sponsor-prefs"]);
   const c = useCopy(COPY);
   const locale = useLocale();
 
   const { data, isPending } = useQuery({
-    queryKey: ["suggestions"],
+    queryKey: suggestionsKey,
     queryFn: () => fetchSuggestions({ data: {} }),
   });
   const { data: prefsRes } = useQuery({
-    queryKey: ["sponsor-prefs"],
+    queryKey: prefsKey,
     queryFn: () => fetchPrefs(),
   });
 
@@ -155,8 +159,8 @@ export function SuggestionsPanel() {
       }
       toast.success(c.saved);
       setEditing(false);
-      void queryClient.invalidateQueries({ queryKey: ["sponsor-prefs"] });
-      void queryClient.invalidateQueries({ queryKey: ["suggestions"] });
+      void queryClient.invalidateQueries({ queryKey: prefsKey });
+      void queryClient.invalidateQueries({ queryKey: suggestionsKey });
     } finally {
       setBusy(false);
     }
@@ -253,6 +257,7 @@ export function SuggestionsPanel() {
 }
 
 function SuggestionCard({ row, c, locale }: { row: SuggestedOrphan; c: Copy; locale: Locale }) {
+  const demo = useDemo();
   // `fundingPercent(need, funded)` — عكسُ الوسيطين يقلب كل شريط.
   const percent = fundingPercent(row.monthly_need, row.funded_monthly);
 
@@ -320,7 +325,11 @@ function SuggestionCard({ row, c, locale }: { row: SuggestedOrphan; c: Copy; loc
       )}
 
       <Button asChild size="sm" variant="outline" className="mt-3 w-full">
-        <Link to="/orphans/$orphanId" params={{ orphanId: row.id }}>
+        <Link
+          {...(demo
+            ? { to: trialRoute(`/try/${encodeURIComponent(row.id)}`) }
+            : { to: "/orphans/$orphanId" as const, params: { orphanId: row.id } })}
+        >
           {c.file}
         </Link>
       </Button>

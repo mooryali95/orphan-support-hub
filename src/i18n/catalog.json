@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5942,
+ "count": 5943,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -37714,6 +37714,13 @@
    "ar": "أثر عطاءاتك في هذه التجربة، كما يراه الداعم في لوحته.",
    "kind": "text",
    "hash": "19c8a8176eed",
+   "file": "src/routes/try.impact.tsx"
+  },
+  "routes/try.impact.more": {
+   "en": "More",
+   "ar": "المزيد",
+   "kind": "text",
+   "hash": "63c7d77f4e0c",
    "file": "src/routes/try.impact.tsx"
   },
   "routes/try.impact.pageTitle": {
