@@ -1244,8 +1244,9 @@ export function RecordsConsole({
             disabled={page === 0}
             onClick={() => setPage(page - 1)}
             aria-label={c.previous}
+            className="size-11"
           >
-            <ChevronRight className="size-4 ltr:-scale-x-100" />
+            <ChevronRight aria-hidden="true" className="size-4 ltr:-scale-x-100" />
           </Button>
           <Button
             size="sm"
@@ -1253,8 +1254,9 @@ export function RecordsConsole({
             disabled={page + 1 >= pages}
             onClick={() => setPage(page + 1)}
             aria-label={c.next}
+            className="size-11"
           >
-            <ChevronLeft className="size-4 ltr:-scale-x-100" />
+            <ChevronLeft aria-hidden="true" className="size-4 ltr:-scale-x-100" />
           </Button>
         </div>
       </div>
