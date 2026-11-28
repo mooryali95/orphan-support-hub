@@ -1,10 +1,13 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { ClipboardCheck } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { Button } from "@/components/ui/button";
+import { countryName } from "@/lib/countries";
+import { getFocusCountries } from "@/lib/focus-countries.functions";
 import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { loadGifts, localTryChild, TRY_CHILDREN, type TryChild } from "@/lib/try-demo";
 import { trialChild } from "@/lib/try-cycle";
@@ -21,6 +24,7 @@ const COPY = defineCopy("routes/try.supervisor", {
     title: "زيارات المتابعة",
     lead: "المشرف يزور الطفل، ويسجّل حاله وما يحتاجه. الزيارة تدخل ملفّ الطفل، وتصل الكافل في «أثري». الطفل الذي كفلته أنت يظهر هنا أوّلاً.",
     real: "مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم",
+    focus: (c: string) => `الدول الأساسية في الوضع الحقيقي: ${c}`,
     kids: "أطفال تكليفك",
     age: (n: number) => `${n} سنوات`,
     mine: "كفلته أنت في هذه الجلسة · ",
@@ -47,6 +51,7 @@ const COPY = defineCopy("routes/try.supervisor", {
     title: "Follow-up visits",
     lead: "The supervisor visits the child and records how they are and what they need. The visit joins the child's file and reaches the sponsor in My impact. A child you sponsored appears here first.",
     real: "a certified supervisor, independent of the organization, who sees only assigned children",
+    focus: (c: string) => `Core countries in real mode: ${c}`,
     kids: "Your assigned children",
     age: (n: number) => `${n} years old`,
     mine: "You sponsored this child in this session · ",
@@ -116,9 +121,23 @@ function TrySupervisor() {
     setState("good");
   };
 
+  // الدول الأساسية من `public_focus_countries` (رموزٌ فقط)، لا قائمةٌ منسوخة هنا.
+  const focus =
+    useQuery({
+      queryKey: ["public-focus-countries"],
+      queryFn: () => getFocusCountries().catch(() => [] as string[]),
+      staleTime: 3_600_000,
+    }).data ?? [];
+
   return (
     <div>
-      <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
+      <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real}>
+        {focus.length > 0 && (
+          <p className="text-muted-foreground mt-2 text-sm leading-7">
+            {t.focus(focus.map((c) => countryName(c, locale)).join(locale === "ar" ? "، " : ", "))}
+          </p>
+        )}
+      </TryRoleHeader>
 
       <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section aria-labelledby="sup-kids">
