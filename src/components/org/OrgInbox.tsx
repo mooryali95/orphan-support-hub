@@ -1,12 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FilePicker } from "@/components/kit/FilePicker";
-import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Inbox, Loader2, PackageCheck, X } from "lucide-react";
 
+import { Failed } from "@/components/admin/overview/parts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { formatDate, formatMoney, isolate } from "@/lib/format";
 import { createDocumentUploadUrl } from "@/lib/intake.functions";
 import {
@@ -15,20 +16,86 @@ import {
   moderateMessage,
   type PendingDelivery,
 } from "@/lib/ledger.functions";
+import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { Name } from "@/components/kit/Name";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const INBOX_COPY = defineCopy("components/org/OrgInbox", {
+  ar: {
+    title: "ما ينتظرك",
+    failed: "تعذّرت قراءة ما ينتظرك",
+    failedText: "قد تنتظرك رسائل أو تأكيدات لا تظهر الآن.",
+    retry: "أعد المحاولة",
+    moderateFailed: "تعذّرت المراجعة",
+    deliveriesH: "تأكيد وصول دعم الشهر",
+    deliveriesP:
+      "ارفع إيصالاً أو صورة استلام. تُحفظ في ملفّ الطفل الخاص ولا يراها الكافل؛ يرى أنها موثّقة.",
+    messagesH: "رسائل الكفلاء للأطفال",
+    messagesP: "اعتمد ما يصلح أن يقرأه الطفل. لا يظهر اسم الكافل للطفل.",
+    to: "إلى",
+    approve: "اعتماد",
+    reject: "رفض",
+    approveFor: (n: string) => `اعتماد رسالة ${n}`,
+    rejectFor: (n: string) => `رفض رسالة ${n}`,
+    signFailed: "تعذّر تجهيز الرفع",
+    putFailed: "تعذّر رفع المستند",
+    confirmFailed: "تعذّر التأكيد",
+    confirmed: "أُكّد الوصول، وأُبلغ الكافل",
+    sent: (d: string) => `حُوِّل ${d}`,
+    proof: "مستند الاستلام",
+    proofFor: (n: string) => `مستند استلام ${n}`,
+    note: "ملاحظة",
+    notePh: "ملاحظة (اختياري)",
+    confirm: "تأكيد الوصول",
+  },
+  en: {
+    title: "Waiting for you",
+    failed: "What is waiting for you could not be read",
+    failedText: "Messages or confirmations may be waiting that do not show right now.",
+    retry: "Try again",
+    moderateFailed: "The review could not be saved",
+    deliveriesH: "Confirm this month's support arrived",
+    deliveriesP:
+      "Upload a receipt or a photo of the handover. It is kept in the child's private file and the sponsor never sees it; they see that it is documented.",
+    messagesH: "Sponsor messages to children",
+    messagesP:
+      "Approve what is fit for the child to read. The sponsor's name is never shown to the child.",
+    to: "To",
+    approve: "Approve",
+    reject: "Reject",
+    approveFor: (n: string) => `Approve the message to ${n}`,
+    rejectFor: (n: string) => `Reject the message to ${n}`,
+    signFailed: "The upload could not be prepared",
+    putFailed: "The document could not be uploaded",
+    confirmFailed: "The confirmation could not be saved",
+    confirmed: "Arrival confirmed, and the sponsor was told",
+    sent: (d: string) => `Transferred ${d}`,
+    proof: "Receipt document",
+    proofFor: (n: string) => `Receipt document for ${n}`,
+    note: "Note",
+    notePh: "Note (optional)",
+    confirm: "Confirm arrival",
+  },
+});
+
 /**
- * «ما ينتظرك» — أول ما تراه الجهة الميدانية.
+ * «ما ينتظرك»: أول ما تراه الجهة الميدانية.
  *
  * رسائل الكفلاء لا تصل الطفل قبل مراجعتها هنا، ودعم الشهر لا يُعدّ
- * واصلاً حتى يُرفع مستندٌ يثبته — فيُبلَّغ الكافل تلقائياً.
+ * واصلاً حتى يُرفع مستندٌ يثبته، فيُبلَّغ الكافل تلقائياً. القراءة والمراجعة
+ * عبر منفذ البيانات، فيرسمها العرض التفاعلي برسائل نموذجية.
  */
 export function OrgInbox() {
-  const fetchInbox = useServerFn(getOrgInbox);
-  const moderate = useServerFn(moderateMessage);
+  const c = useCopy(INBOX_COPY);
+  const locale = useLocale();
+  const fetchInbox = useDataFn("org.inbox", getOrgInbox);
+  const moderate = useDataFn("org.moderate", moderateMessage);
   const qc = useQueryClient();
-  const { data, isPending } = useQuery({ queryKey: ["org-inbox"], queryFn: () => fetchInbox() });
+  const key = useDataKey(["org-inbox"]);
+  const { data, isPending, isError, refetch } = useQuery({
+    queryKey: key,
+    queryFn: () => fetchInbox(),
+  });
   const [busy, setBusy] = useState<string | null>(null);
 
   // أثناء التحميل هيكلٌ بارتفاع الصندوق لا «لا شيء» (RT-07): كان الصندوق يُدرج
@@ -44,6 +111,17 @@ export function OrgInbox() {
         <Skeleton className="mt-4 h-14 w-full" />
       </div>
     );
+  if (isError || data?.ok === false)
+    return (
+      <div className="mb-10">
+        <Failed
+          title={c.failed}
+          text={c.failedText}
+          retry={c.retry}
+          onRetry={() => void refetch()}
+        />
+      </div>
+    );
   const messages = data?.messages ?? [];
   const deliveries = data?.deliveries ?? [];
   if (messages.length === 0 && deliveries.length === 0) return null;
@@ -52,15 +130,18 @@ export function OrgInbox() {
     setBusy(id);
     const res = await moderate({ data: { sponsorshipId: id, approve } });
     setBusy(null);
-    if (!res.ok) toast.error("تعذّرت المراجعة");
-    await qc.invalidateQueries({ queryKey: ["org-inbox"] });
+    if (!res.ok) toast.error(c.moderateFailed);
+    await qc.invalidateQueries({ queryKey: key });
   }
 
   return (
-    <section className="mb-10 rounded-2xl border border-bridge/50 bg-card p-5">
-      <h2 className="flex items-center gap-2 text-lg font-bold">
+    <section
+      aria-labelledby="org-inbox-h"
+      className="mb-10 rounded-2xl border border-bridge/50 bg-card p-5"
+    >
+      <h2 id="org-inbox-h" className="flex items-center gap-2 text-lg font-bold">
         <Inbox className="size-5 text-bridge-ink" aria-hidden="true" />
-        ما ينتظرك
+        {c.title}
         <span className="text-sm font-normal text-muted-foreground">
           ({messages.length + deliveries.length})
         </span>
@@ -68,11 +149,8 @@ export function OrgInbox() {
 
       {deliveries.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-sm font-semibold">تأكيد وصول دعم الشهر</h3>
-          <p className="text-xs text-muted-foreground">
-            ارفع إيصالاً أو صورة استلام — تُحفظ في ملفّ الطفل الخاص ولا يراها الكافل؛ يرى أنها
-            موثّقة.
-          </p>
+          <h3 className="text-sm font-semibold">{c.deliveriesH}</h3>
+          <p className="text-xs text-muted-foreground">{c.deliveriesP}</p>
           <ul className="mt-3 divide-y divide-border">
             {deliveries.map((d) => (
               <DeliveryRow key={d.id} d={d} />
@@ -83,10 +161,8 @@ export function OrgInbox() {
 
       {messages.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-sm font-semibold">رسائل الكفلاء للأطفال</h3>
-          <p className="text-xs text-muted-foreground">
-            اعتمد ما يصلح أن يقرأه الطفل. لا يظهر اسم الكافل للطفل.
-          </p>
+          <h3 className="text-sm font-semibold">{c.messagesH}</h3>
+          <p className="text-xs text-muted-foreground">{c.messagesP}</p>
           <ul className="mt-3 divide-y divide-border">
             {messages.map((m) => (
               <li
@@ -95,25 +171,29 @@ export function OrgInbox() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-muted-foreground">
-                    إلى <Name>{m.orphan}</Name> · {formatDate(m.created_at)}
+                    {c.to} <Name>{m.orphan}</Name> · {formatDate(m.created_at, locale)}
                   </p>
-                  <p className="mt-1 whitespace-pre-line text-sm">{m.message}</p>
+                  <p dir="auto" className="mt-1 whitespace-pre-line text-sm">
+                    {m.message}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    size="sm"
+                    className="min-h-11"
+                    aria-label={c.approveFor(isolate(m.orphan))}
                     disabled={busy === m.sponsorship_id}
                     onClick={() => decide(m.sponsorship_id, true)}
                   >
-                    <Check className="size-4" /> اعتماد
+                    <Check className="size-4" aria-hidden="true" /> {c.approve}
                   </Button>
                   <Button
-                    size="sm"
+                    className="min-h-11"
                     variant="outline"
+                    aria-label={c.rejectFor(isolate(m.orphan))}
                     disabled={busy === m.sponsorship_id}
                     onClick={() => decide(m.sponsorship_id, false)}
                   >
-                    <X className="size-4" /> رفض
+                    <X className="size-4" aria-hidden="true" /> {c.reject}
                   </Button>
                 </div>
               </li>
@@ -126,9 +206,12 @@ export function OrgInbox() {
 }
 
 function DeliveryRow({ d }: { d: PendingDelivery }) {
-  const signUpload = useServerFn(createDocumentUploadUrl);
-  const confirm = useServerFn(confirmDelivery);
+  const c = useCopy(INBOX_COPY);
+  const locale = useLocale();
+  const signUpload = useDataFn("org.signUpload", createDocumentUploadUrl);
+  const confirm = useDataFn("org.confirmDelivery", confirmDelivery);
   const qc = useQueryClient();
+  const key = useDataKey(["org-inbox"]);
   const [file, setFile] = useState<File | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -141,7 +224,7 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         data: { orphanId: d.orphan_id, kind: "other", fileName: `delivery-${d.id}-${file.name}` },
       });
       if (!signed.ok) {
-        toast.error("تعذّر تجهيز الرفع");
+        toast.error(c.signFailed);
         return;
       }
       const put = await fetch(signed.signedUrl, {
@@ -150,18 +233,18 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
         body: file,
       });
       if (!put.ok) {
-        toast.error("تعذّر رفع المستند");
+        toast.error(c.putFailed);
         return;
       }
       const res = await confirm({
         data: { disbursementId: d.id, proofPath: signed.path, note: note || undefined },
       });
       if (!res.ok) {
-        toast.error("تعذّر التأكيد");
+        toast.error(c.confirmFailed);
         return;
       }
-      toast.success("أُكّد الوصول، وأُبلغ الكافل");
-      await qc.invalidateQueries({ queryKey: ["org-inbox"] });
+      toast.success(c.confirmed);
+      await qc.invalidateQueries({ queryKey: key });
     } finally {
       setBusy(false);
     }
@@ -174,26 +257,35 @@ function DeliveryRow({ d }: { d: PendingDelivery }) {
           <Name>{d.orphan}</Name> · {formatMoney(d.amount, d.currency)}
         </p>
         <p className="text-xs text-muted-foreground">
-          {d.period_start ? formatDate(d.period_start) : ""} — حُوِّل {formatDate(d.created_at)}
+          {[
+            d.period_start ? formatDate(d.period_start, locale) : "",
+            c.sent(formatDate(d.created_at, locale)),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        {/* زرّ عربيّ يحمل اسم الملفّ لا «Choose File» المتصفّح (UX-17). */}
+        {/* زرٌّ يحمل اسم الملفّ لا «Choose File» المتصفّح (UX-17). */}
         <FilePicker
-          label="مستند الاستلام"
-          accessibleLabel={`مستند استلام ${isolate(d.orphan)}`}
+          label={c.proof}
+          accessibleLabel={c.proofFor(isolate(d.orphan))}
           onPick={setFile}
         />
         <Input
-          aria-label="ملاحظة"
-          placeholder="ملاحظة (اختياري)"
-          className="w-40"
+          aria-label={c.note}
+          placeholder={c.notePh}
+          className="min-h-11 w-40"
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
-        <Button size="sm" disabled={!file || busy} onClick={submit}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <PackageCheck className="size-4" />}
-          تأكيد الوصول
+        <Button className="min-h-11" disabled={!file || busy} onClick={submit}>
+          {busy ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          ) : (
+            <PackageCheck className="size-4" aria-hidden="true" />
+          )}
+          {c.confirm}
         </Button>
       </div>
     </li>

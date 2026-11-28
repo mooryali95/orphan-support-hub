@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/sponsorship/SponsorshipChildPage", {
   ar: {
+    actionsNav: "إجراءات الكفالة",
     loadFailed: "تعذّر تحميل الكفالة.",
     back: "العودة إلى أثري",
     since: (date: string) => `تكفله منذ ${date}`,
@@ -71,6 +72,7 @@ const COPY = defineCopy("components/sponsorship/SponsorshipChildPage", {
     childFile: "ملفّ الطفل",
   },
   en: {
+    actionsNav: "Sponsorship actions",
     loadFailed: "The sponsorship couldn't load.",
     back: "Back to my impact",
     since: (date: string) => `Sponsoring since ${date}`,
@@ -304,7 +306,7 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
       {!demo && <OrphanProfilePanel orphanId={l.orphan.id} orphanName={l.orphan.display_name} />}
 
       {/* 5. روابط */}
-      <nav className="flex flex-wrap gap-2 border-t border-border pt-6">
+      <nav aria-label={c.actionsNav} className="flex flex-wrap gap-2 border-t border-border pt-6">
         {(!demo || TRIAL_ENABLED) && (
           <Button asChild variant="outline" className="min-h-11">
             <Link

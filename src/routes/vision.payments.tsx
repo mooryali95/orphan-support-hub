@@ -216,10 +216,10 @@ function PaymentsPage() {
         <Feed limit={10} className="mt-6" />
         <Stations />
         <Guards />
-        <aside className="mx-auto mt-12 max-w-3xl rounded-3xl bg-[linear-gradient(135deg,var(--color-wine),var(--color-wine-deep))] p-6 text-ivory md:p-8">
+        <section className="mx-auto mt-12 max-w-3xl rounded-3xl bg-[linear-gradient(135deg,var(--color-wine),var(--color-wine-deep))] p-6 text-ivory md:p-8">
           <h2 className="text-xl font-bold">{c.todayH}</h2>
           <p className="mt-2 leading-8 text-ivory/80">{c.todayLead}</p>
-        </aside>
+        </section>
       </section>
     </VisionShell>
   );
@@ -297,7 +297,7 @@ function Routes() {
               aria-selected={route === key}
               onClick={() => setRoute(key)}
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 rounded-full px-4 text-sm transition-colors",
+                "inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm transition-colors",
                 route === key ? "bg-wine text-ivory" : "text-wine-ink hover:bg-wine/5",
               )}
             >

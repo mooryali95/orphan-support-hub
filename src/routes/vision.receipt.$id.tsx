@@ -53,6 +53,7 @@ const COPY = defineCopy("routes/vision.receipt", {
     fpNote: "تُحسب من رقم الفاتورة والمبلغ والوجهة والتاريخ؛ أيّ تغييرٍ فيها يغيّر البصمة.",
     pending: "التحويل بانتظار المطابقة، ويصدر الإيصال بعدها.",
     missing: "لم نجد هذا التبرّع في بيئتك التجريبية.",
+    toolbar: "أدوات الإيصال",
     thanks: "جزاك الله خيراً. أثر دعمك يصلك من منصّة التشغيل.",
   },
   en: {
@@ -77,6 +78,7 @@ const COPY = defineCopy("routes/vision.receipt", {
     fpNote: "Computed from the invoice, amount, destination and date; any change alters it.",
     pending: "The transfer awaits reconciliation; the receipt is issued afterwards.",
     missing: "This donation isn't in your sandbox.",
+    toolbar: "Receipt tools",
     thanks: "Thank you. The impact of your support reaches you from operations.",
   },
 });
@@ -111,10 +113,13 @@ function Receipt() {
 
   return (
     <div className="theme-light min-h-dvh bg-ivory px-4 py-8 text-foreground print:bg-white print:p-0">
-      <div className="mx-auto mb-6 flex max-w-2xl items-center justify-between print:hidden">
+      <nav
+        aria-label={c.toolbar}
+        className="mx-auto mb-6 flex max-w-2xl items-center justify-between print:hidden"
+      >
         <Link
           to="/vision/me"
-          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-wine"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-wine"
         >
           <ArrowRight className="size-4 ltr:-scale-x-100" aria-hidden="true" />
           {c.back}
@@ -123,13 +128,13 @@ function Receipt() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full bg-wine px-5 text-sm font-semibold text-ivory active:scale-[0.97]"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-wine px-5 text-sm font-semibold text-ivory active:scale-[0.97]"
           >
             <Printer className="size-4" aria-hidden="true" />
             {c.print}
           </button>
         )}
-      </div>
+      </nav>
 
       <main
         id="main"
@@ -138,7 +143,9 @@ function Receipt() {
         {!ready ? (
           <div className="h-96 animate-pulse" />
         ) : !d ? (
-          <p className="p-10 text-center text-muted-foreground">{c.missing}</p>
+          <h1 className="p-10 text-center font-sans text-base font-normal text-muted-foreground">
+            {c.missing}
+          </h1>
         ) : (
           <>
             <header className="flex items-center gap-4 bg-[linear-gradient(135deg,var(--color-wine),var(--color-wine-deep))] p-6 text-ivory print:[print-color-adjust:exact]">

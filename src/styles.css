@@ -1140,6 +1140,13 @@ html.try-present {
   display: none;
 }
 
+/* على الجوال داخل /try شريطٌ واحد: شريط التجربة يحمل الوسم والدور، وقائمته المخرج (TryShell) */
+@media (max-width: 639px) {
+  body:has([data-try-bar]) [data-demo-bar] {
+    display: none;
+  }
+}
+
 /* دعوة القاعة في الصفحة الأولى: أقواس القاعة بالتدرّج وحده، بألوان الهوية (routes/index.tsx) */
 .hall-invite-arches {
   background:

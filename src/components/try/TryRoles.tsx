@@ -8,6 +8,7 @@ import {
   Landmark,
   ShieldCheck,
   UserCheck,
+  Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -33,6 +34,7 @@ const COPY = defineCopy("components/try/TryRoles", {
         "يحسم التنبيهات والتعارضات ويرفع ملفّات دولته، بدّل بين المشرف والمدخل والمطّلع.",
       ],
       supervisor: ["المشرف", "يزور الطفل ويسجّل حاله، فتدخل الزيارة ملفّه وتقرير كافله."],
+      guardian: ["الوليّ", "يتابع أطفاله، ويوافق على الالتحاق ونشر الصور أو يسحب موافقته."],
       decider: ["صاحب القرار", "صورة الشبكة: الأطفال والتغطية والتوثيق، ونشاط الجلسة كلّه."],
     },
   },
@@ -66,6 +68,10 @@ const COPY = defineCopy("components/try/TryRoles", {
         "Supervisor",
         "Visits the child and records how they are, feeding the file and the sponsor's report.",
       ],
+      guardian: [
+        "Guardian",
+        "Follows their children and consents to enrollment and photos, or withdraws consent.",
+      ],
       decider: [
         "Decision-maker",
         "The network at a glance: children, coverage, verification, and the session's activity.",
@@ -82,6 +88,7 @@ const ROUTES = {
   office: { to: "/try/office", icon: <Compass /> },
   country: { to: "/try/country", icon: <ClipboardCheck /> },
   supervisor: { to: "/try/supervisor", icon: <UserCheck /> },
+  guardian: { to: "/try/guardian", icon: <Users /> },
   decider: { to: "/try/decider", icon: <Landmark /> },
 } as const satisfies Record<string, { to: string; icon: ReactNode }>;
 

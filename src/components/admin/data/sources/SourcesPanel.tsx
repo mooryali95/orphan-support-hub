@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { MfaRequiredNotice } from "@/components/account/MfaSettings";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useDataFn, useDataKey } from "@/lib/data-port";
 import { flagOf } from "@/lib/countries";
 import { canDo, type CountryAccess } from "@/lib/golden-record";
@@ -16,12 +16,15 @@ import { Conflicts } from "./ConflictsInbox";
 import { HealthCard } from "./HealthCard";
 import { SsoSwitchCard } from "./KillSwitches";
 import { LinkQueue } from "./LinkQueue";
-import { ModeControl, Matrix } from "./ModeControl";
 import { StartHere } from "./StartHere";
-import { Team } from "./Team";
-import { UploadCard } from "./UploadCard";
 import { ChildUpdatesCard } from "./ChildUpdatesCard";
 import { type Tab } from "./shared";
+
+// ألسنة الإدارة والرفع والفريق تُحمَّل حين تُفتح وحدها، فلا تثقل البوّابة لمن لا يفتحها.
+const UploadCard = lazy(() => import("./UploadCard").then((m) => ({ default: m.UploadCard })));
+const Team = lazy(() => import("./Team").then((m) => ({ default: m.Team })));
+const ModeControl = lazy(() => import("./ModeControl").then((m) => ({ default: m.ModeControl })));
+const Matrix = lazy(() => import("./ModeControl").then((m) => ({ default: m.Matrix })));
 
 /**
  * مصادر التحقق: صحة كل دولة، ووضع منصّة مكتبها، والرفع، والتعارضات، والربط.
@@ -153,7 +156,11 @@ export function SourcesPanel({
           <div
             role="tablist"
             aria-label={c.sectionsLabel}
-            className="-mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0"
+            // يلتصق تحت الرأس فتبقى الألسنة وعدّاداتها ظاهرةً أثناء التمرير
+            className="sticky z-20 -mx-4 flex gap-1 overflow-x-auto border-b border-border bg-background/95 px-4 backdrop-blur sm:mx-0 sm:px-0"
+            style={{
+              top: "calc(var(--demo-bar-h, 0px) + var(--site-header-h, 4rem) + var(--try-bar-h, 0px))",
+            }}
             onKeyDown={(e) => {
               // نمط WAI-ARIA للألسنة: الأسهم تتبع اتجاه القراءة، وHome/End للطرفين.
               const i = tabs.findIndex((t) => t.key === current);
@@ -212,38 +219,40 @@ export function SourcesPanel({
             ))}
           </div>
           <div role="tabpanel" id={`panel-${current}`} aria-labelledby={`tab-${current}`}>
-            {current === "alerts" && (
-              <Alerts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
-            )}
-            {current === "conflicts" && (
-              <Conflicts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
-            )}
-            {current === "links" && (
-              <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
-            )}
-            {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
-            {current === "updates" && (
-              <ChildUpdatesCard
-                country={selected.code}
-                canUpload={can("upload")}
-                canApprove={can("approve")}
-              />
-            )}
-            {current === "mode" &&
-              (access.admin ? (
-                <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
-              ) : (
-                <section className={cn(CARD, "p-5")}>
-                  <p className="text-sm">
-                    <span className="font-bold">{c.modeTitle}: </span>
-                    {c.modes[selected.office_mode]}
-                  </p>
-                  <Matrix mode={selected.office_mode} />
-                </section>
-              ))}
-            {current === "team" && (
-              <Team key={`team-${selected.code}`} country={selected.code} access={access} />
-            )}
+            <Suspense fallback={<Busy />}>
+              {current === "alerts" && (
+                <Alerts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+              )}
+              {current === "conflicts" && (
+                <Conflicts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+              )}
+              {current === "links" && (
+                <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+              )}
+              {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
+              {current === "updates" && (
+                <ChildUpdatesCard
+                  country={selected.code}
+                  canUpload={can("upload")}
+                  canApprove={can("approve")}
+                />
+              )}
+              {current === "mode" &&
+                (access.admin ? (
+                  <ModeControl key={`${selected.code}-${selected.office_mode}`} row={selected} />
+                ) : (
+                  <section className={cn(CARD, "p-5")}>
+                    <p className="text-sm">
+                      <span className="font-bold">{c.modeTitle}: </span>
+                      {c.modes[selected.office_mode]}
+                    </p>
+                    <Matrix mode={selected.office_mode} />
+                  </section>
+                ))}
+              {current === "team" && (
+                <Team key={`team-${selected.code}`} country={selected.code} access={access} />
+              )}
+            </Suspense>
           </div>
         </section>
       )}

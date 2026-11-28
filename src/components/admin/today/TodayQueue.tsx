@@ -2,8 +2,8 @@ import { FourEyesNote } from "@/components/admin/FourEyesNote";
 import { PanelSkeleton } from "@/components/admin/PanelState";
 import { Failed, Quiet } from "@/components/admin/overview/parts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { AlertTriangle, Clock, Keyboard, Users } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { AlertTriangle, Circle, Clock, Keyboard, Lock, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { toast } from "sonner";
 
@@ -87,6 +87,8 @@ export function TodayQueue({
   const t = useCopy(TODAY_COPY);
   const locale = useLocale();
   const demo = useDemo();
+  const Heading = scope === "country" ? "h2" : "h3";
+  const GroupHeading = scope === "country" ? "h3" : "h4";
   const {
     items,
     total,
@@ -229,6 +231,7 @@ export function TodayQueue({
       {scope === "country" && (
         <CountryTodayStrip
           items={items}
+          access={access}
           awaiting={queueTotal}
           partial={serverMore}
           now={now}
@@ -237,12 +240,13 @@ export function TodayQueue({
       )}
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="min-w-0">
-          <h3 id="today-title" className="font-display text-xl font-bold">
+          {/* بوّابة الدولة لا عنوانَ ثانياً فوقها، فاليوم فيها h2 (ترتيب العناوين) */}
+          <Heading id="today-title" className="font-display text-xl font-bold">
             {t.title}
             <span className="text-muted-foreground ms-2 text-sm font-medium tabular-nums">
               {t.items(total)}
             </span>
-          </h3>
+          </Heading>
           <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-7 text-pretty">
             {scope === "admin" ? t.lead : t.leadCountry}
           </p>
@@ -378,7 +382,7 @@ export function TodayQueue({
         {GROUPS.map((g) =>
           grouped[g].length === 0 ? null : (
             <section key={g} aria-labelledby={`today-g-${g}`}>
-              <h4
+              <GroupHeading
                 id={`today-g-${g}`}
                 className="flex flex-wrap items-baseline gap-x-2 text-sm font-bold"
               >
@@ -392,7 +396,7 @@ export function TodayQueue({
                 <span className="text-muted-foreground font-medium tabular-nums">
                   {grouped[g].length}
                 </span>
-              </h4>
+              </GroupHeading>
               <p className="text-muted-foreground mt-0.5 text-xs leading-6">{t.groupHint[g]}</p>
               <ul aria-label={t.groups[g]} className="mt-2 space-y-2">
                 {grouped[g].map((it) => {
@@ -520,6 +524,7 @@ function Row({
 }) {
   const t = useCopy(TODAY_COPY);
   const locale = useLocale();
+  const demo = useDemo();
   const days = Math.max(0, Math.floor((now - Date.parse(it.created_at)) / DAY));
   const late = it.can_settle && isOverdue(it, now);
   const country = it.country_code ? countryName(it.country_code, locale) : null;
@@ -544,10 +549,16 @@ function Row({
         <span className="bg-secondary text-foreground rounded-full px-2.5 py-0.5 text-xs font-bold">
           {t.kinds[it.kind]}
         </span>
-        {it.severity === "critical" && (
+        {/* الشدّة كلمةٌ وأيقونة في كلّ صفّ، لا لونٌ وحده */}
+        {it.severity === "critical" ? (
           <span className="text-destructive inline-flex items-center gap-1 text-xs font-bold">
             <AlertTriangle className="size-3.5" aria-hidden="true" />
             {t.critical}
+          </span>
+        ) : (
+          <span className="text-muted-foreground inline-flex items-center gap-1 text-xs font-bold">
+            <Circle className="size-3" aria-hidden="true" />
+            {t.normal}
           </span>
         )}
         <span className="min-w-0 flex-1 basis-40">
@@ -578,16 +589,36 @@ function Row({
         </span>
       </div>
       {!it.can_settle ? (
-        <p className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 text-xs">
-          <span className="text-foreground font-bold">
-            {it.settle_block_reason ? t.reasons[it.settle_block_reason] : null}
+        <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+          {/* العينان الأربع والعامل الثاني: الزرّ ظاهرٌ معطّلٌ بسببه، لا مخفيّ */}
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            tabIndex={-1}
+            className="min-h-11 cursor-not-allowed opacity-60"
+            aria-disabled="true"
+            aria-describedby={`why-${it.key}`}
+            aria-label={`${it.source === "alert" ? t.reviewed : t.acceptProposed} · ${it.title || t.countryWide}`}
+            onClick={(e) => e.preventDefault()}
+          >
+            <Lock className="size-3.5" aria-hidden="true" />
+            {it.source === "alert" ? t.reviewed : t.acceptProposed}
+          </Button>
+          <span id={`why-${it.key}`} className="text-foreground font-bold">
+            {it.settle_block_reason ? t.reasons[it.settle_block_reason] : t.blocked}
           </span>
+          {it.settle_block_reason === "needs_aal2" && !demo && (
+            <Link to="/account" hash="security" className="text-primary font-medium underline">
+              {t.stepUp}
+            </Link>
+          )}
           <span>
             {it.country_code
               ? t.whoSettles.replace("{0}", countryName(it.country_code, locale))
               : t.whoSettlesAny}
           </span>
-        </p>
+        </div>
       ) : (
         directSettle(it) && (
           <div className="mt-2 flex flex-wrap items-center justify-end gap-x-3 gap-y-1">

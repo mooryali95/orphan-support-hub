@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Eye, Loader2, Search } from "lucide-react";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { pageTitle } from "@/config/brand";
+import { supabase } from "@/integrations/supabase/client";
 import { dirOf, LOCALE_COOKIE, nativeName } from "@/lib/locale";
 import {
   getLocaleWork,
@@ -58,6 +59,19 @@ function ReviewPage() {
   const { locale } = Route.useParams();
   const { roles } = Route.useRouteContext();
   const isAdmin = roles.includes("admin");
+  // النشر للإدارة بجلسة aal2 (is_admin في القاعدة يرفض aal1 لمن فعّل عاملاً ثانياً).
+  // هنا نعرف ذلك قبل الضغط، فيُعطَّل الزرّ بسببٍ مقروء ورابطٍ إلى التحقّق بدل خطأٍ بعد النداء.
+  const [needsStepUp, setNeedsStepUp] = useState(false);
+  useEffect(() => {
+    if (!isAdmin) return;
+    let live = true;
+    void supabase.auth.mfa.getAuthenticatorAssuranceLevel().then(({ data }) => {
+      if (live && data) setNeedsStepUp(data.currentLevel !== "aal2" && data.nextLevel === "aal2");
+    });
+    return () => {
+      live = false;
+    };
+  }, [isAdmin]);
   const qc = useQueryClient();
   const fetchWork = useServerFn(getLocaleWork);
   const review = useServerFn(reviewTranslations);
@@ -140,17 +154,23 @@ function ReviewPage() {
   return (
     <DashboardShell title={`مراجعة الترجمة: ${name}`} description="صحّح، وراجِع، ثم تنشر الإدارة.">
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
-        <Link to="/admin" className="text-muted-foreground underline underline-offset-4">
-          ← اللوحة
+        <Link
+          to={isAdmin ? "/admin" : "/workspaces"}
+          className="inline-flex min-h-11 items-center text-muted-foreground underline underline-offset-4"
+        >
+          {isAdmin ? "اللوحة" : "بواباتي"}
         </Link>
         <span className="ms-auto" />
-        <Button size="sm" variant="outline" onClick={preview}>
+        <Button className="min-h-11" variant="outline" onClick={preview}>
           <Eye aria-hidden="true" /> عاين الموقع بهذه اللغة
         </Button>
       </div>
 
       {isPending ? (
-        <Loader2 className="mx-auto mt-10 size-5 animate-spin text-muted-foreground" />
+        <p role="status" className="mt-10 flex justify-center">
+          <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden="true" />
+          <span className="sr-only">جارٍ تحميل النصوص</span>
+        </p>
       ) : !data?.ok ? (
         <EmptyState className="mt-6" title="تعذّر فتح المراجعة" text={data?.error ?? ""} />
       ) : (
@@ -166,7 +186,7 @@ function ReviewPage() {
                   setPage(0);
                 }}
                 className={cn(
-                  "min-h-8 rounded-full px-3 text-xs font-medium transition-colors",
+                  "min-h-11 rounded-full px-4 text-xs font-medium transition-colors",
                   filter === key
                     ? "bg-primary text-primary-foreground"
                     : "bg-secondary hover:bg-secondary/70",
@@ -218,10 +238,10 @@ function ReviewPage() {
           </div>
 
           <div className="sticky top-0 z-10 mt-4 flex flex-wrap items-center gap-2 rounded-2xl bg-background/90 py-2 backdrop-blur">
-            <label className="flex items-center gap-2 text-xs">
+            <label className="flex min-h-11 items-center gap-2 px-1 text-xs">
               <input
                 type="checkbox"
-                className="size-4"
+                className="size-5"
                 checked={pageRows.length > 0 && pageRows.every((r) => picked.has(r.key))}
                 onChange={(e) =>
                   setPicked((p) => {
@@ -237,7 +257,7 @@ function ReviewPage() {
               حدّد الصفحة ({picked.size} محدّد)
             </label>
             <Button
-              size="sm"
+              className="min-h-11"
               variant="outline"
               disabled={busy || picked.size === 0}
               onClick={() => bulk("review")}
@@ -245,13 +265,25 @@ function ReviewPage() {
               <Check aria-hidden="true" /> راجِع المحدّد
             </Button>
             {isAdmin && (
-              <Button
-                size="sm"
-                disabled={busy || picked.size === 0}
-                onClick={() => bulk("publish")}
-              >
-                انشر المحدّد
-              </Button>
+              <>
+                <Button
+                  className="min-h-11"
+                  disabled={busy || (picked.size === 0 && !needsStepUp)}
+                  aria-disabled={needsStepUp || undefined}
+                  aria-describedby={needsStepUp ? "publish-step-up" : undefined}
+                  onClick={() => !needsStepUp && bulk("publish")}
+                >
+                  انشر المحدّد
+                </Button>
+                {needsStepUp && (
+                  <p id="publish-step-up" className="text-xs text-muted-foreground">
+                    النشر يحتاج التحقّق بخطوتين في هذه الجلسة.{" "}
+                    <Link to="/admin" className="underline underline-offset-4">
+                      تحقّق من لوحة الإدارة
+                    </Link>
+                  </p>
+                )}
+              </>
             )}
             <span className="ms-auto text-xs text-muted-foreground tabular-nums">
               {shown.length} نصّاً
@@ -288,7 +320,7 @@ function ReviewPage() {
               aria-label="الصفحات"
             >
               <Button
-                size="sm"
+                className="min-h-11"
                 variant="outline"
                 disabled={page === 0}
                 onClick={() => setPage(page - 1)}
@@ -299,7 +331,7 @@ function ReviewPage() {
                 {page + 1} / {Math.ceil(shown.length / PAGE)}
               </span>
               <Button
-                size="sm"
+                className="min-h-11"
                 variant="outline"
                 disabled={(page + 1) * PAGE >= shown.length}
                 onClick={() => setPage(page + 1)}
@@ -351,14 +383,14 @@ function ReviewRow({
     <li className="grid gap-3 p-4 md:grid-cols-[auto_1fr_1fr_1.2fr]">
       <input
         type="checkbox"
-        className="mt-1 size-4"
+        className="mt-1 size-5"
         checked={picked}
         onChange={(e) => onPick(e.target.checked)}
         aria-label={`حدّد ${row.key}`}
       />
       <div className="min-w-0">
         <p className="text-sm leading-7" dir="rtl" lang="ar">
-          {row.ar || "—"}
+          {row.ar || <span className="text-muted-foreground">بلا أصل عربي</span>}
         </p>
         <p className="mt-1 break-all font-mono text-xs text-muted-foreground" dir="ltr">
           {row.key}
@@ -386,11 +418,16 @@ function ReviewRow({
           )}
           {row.origin === "machine" && <span className="text-xs text-muted-foreground">آلية</span>}
           <span className="ms-auto" />
-          <Button size="sm" variant="ghost" disabled={busy || !dirty} onClick={() => submit(false)}>
+          <Button
+            className="min-h-11"
+            variant="ghost"
+            disabled={busy || !dirty}
+            onClick={() => submit(false)}
+          >
             احفظ
           </Button>
           <Button
-            size="sm"
+            className="min-h-11"
             variant="outline"
             disabled={busy || !text.trim() || (!dirty && row.status !== "draft" && !row.stale)}
             onClick={() => submit(true)}

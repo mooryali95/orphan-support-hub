@@ -54,6 +54,7 @@ function TryDonor() {
   return (
     <DonorBoard
       entityId={entityId}
+      reportHref={`/try/donor/${entityId}/report`}
       shell={({ title, description, children }) => (
         <div>
           <TryRoleHeader role={t.role} title={title} lead={description ?? t.lead} real={t.real}>

@@ -55,7 +55,8 @@ function TryWorkspaces() {
         <WorkspacesBoard
           links={{
             dashboard: "/try/journey",
-            org: "/try/office",
+            org: "/try/org",
+            guardian: "/try/guardian",
             country: "/try/country",
             supervisor: "/try/supervisor",
             admin: "/try/admin",
