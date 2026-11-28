@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5843,
+ "count": 5844,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -15695,6 +15695,13 @@
    "ar": "ما نعرفه عن هذا الطفل",
    "kind": "text",
    "hash": "275049a7ed6d",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.listSep": {
+   "en": ", ",
+   "ar": "، ",
+   "kind": "text",
+   "hash": "b07e750c1a03",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/orphan/TrustSignals.missing": {
