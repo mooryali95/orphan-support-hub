@@ -40,7 +40,7 @@ import { trialSlots } from "@/lib/trial-slots";
 import { PLEDGE_TRANSITIONS, verificationLevel } from "@/lib/verification";
 import { VerificationBadge, VerificationChecklist } from "./VerificationBadge";
 import { STATUS_COPY } from "@/components/sponsorship/status-copy";
-import { Failed } from "@/components/admin/overview/parts";
+import { Failed, Quiet } from "@/components/admin/overview/parts";
 import { PanelSkeleton } from "@/components/admin/PanelState";
 import { copyOf, defineCopy, dirOf, pluralOf, useCopy, useLocale, type Locale } from "@/lib/locale";
 
@@ -250,6 +250,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     search: "بحث",
     readFailed: (error: string) => `تعذّرت القراءة: ${error}`,
     noRecords: "لا سجلّات هنا.",
+    noRecordsNext: "غيّر عامل التصفية أو امسح البحث لترى سجلّات أخرى.",
     retry: "أعد المحاولة",
     records: pluralOf(
       {
@@ -452,6 +453,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     search: "Search",
     readFailed: (error: string) => `Couldn't read: ${error}`,
     noRecords: "No records here.",
+    noRecordsNext: "Change the filter or clear the search to see other records.",
     retry: "Try again",
     records: pluralOf({ one: "{0} record", other: "{0} records" }),
     pageOf: (page: string, pages: string) => `page ${page} of ${pages}`,
@@ -1200,11 +1202,8 @@ export function RecordsConsole({
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td
-                  colSpan={entity.columns.length}
-                  className="text-muted-foreground px-4 py-10 text-center"
-                >
-                  {c.noRecords}
+                <td colSpan={entity.columns.length} className="px-4 py-3" data-panel-state="empty">
+                  <Quiet title={c.noRecords} text={c.noRecordsNext} />
                 </td>
               </tr>
             ) : (

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5543,
+ "count": 5550,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -1100,6 +1100,13 @@
    "hash": "29c84246bd75",
    "file": "src/components/admin/AdminTrustStrip.tsx"
   },
+  "components/admin/AwaitingTransfers.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
   "components/admin/AwaitingTransfers.empty": {
    "en": "No sponsorships are waiting for payment.",
    "ar": "لا توجد كفالات عالقة بانتظار الدفع.",
@@ -1107,11 +1114,48 @@
    "hash": "e170c57f8385",
    "file": "src/components/admin/AwaitingTransfers.tsx"
   },
+  "components/admin/AwaitingTransfers.monthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
   "components/admin/AwaitingTransfers.next": {
    "en": "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
    "ar": "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
    "kind": "text",
    "hash": "82b5ed34fa61",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.once": {
+   "en": "one time",
+   "ar": "لمرة واحدة",
+   "kind": "text",
+   "hash": "285cbbd200e1",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.reconcile": {
+   "en": "Match transfer",
+   "ar": "مطابقة التحويل",
+   "kind": "text",
+   "hash": "ebb5aebd736f",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.reference": {
+   "en": "Reference {0}",
+   "ar": "مرجع {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7a1cfe637094",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.title": {
+   "en": "Transfers awaiting confirmation ({0})",
+   "ar": "تحويلات بانتظار التأكيد ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "ed6b37c3af59",
    "file": "src/components/admin/AwaitingTransfers.tsx"
   },
   "components/admin/FourEyesNote.note": {
@@ -1680,6 +1724,13 @@
    "ar": "لا سجلّات هنا.",
    "kind": "text",
    "hash": "809b0a6e6c74",
+   "file": "src/components/admin/console/RecordsConsole.tsx"
+  },
+  "components/admin/console/RecordsConsole.noRecordsNext": {
+   "en": "Change the filter or clear the search to see other records.",
+   "ar": "غيّر عامل التصفية أو امسح البحث لترى سجلّات أخرى.",
+   "kind": "text",
+   "hash": "41c515b3e606",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.note": {

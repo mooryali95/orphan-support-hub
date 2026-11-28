@@ -20,10 +20,22 @@ const COPY = defineCopy("components/admin/AwaitingTransfers", {
   ar: {
     empty: "لا توجد كفالات عالقة بانتظار الدفع.",
     next: "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
+    title: (n: number) => `تحويلات بانتظار التأكيد (${n})`,
+    monthly: "شهرياً",
+    once: "لمرة واحدة",
+    reference: (ref: string) => `مرجع ${ref}`,
+    close: "إغلاق",
+    reconcile: "مطابقة التحويل",
   },
   en: {
     empty: "No sponsorships are waiting for payment.",
     next: "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
+    title: (n: number) => `Transfers awaiting confirmation (${n})`,
+    monthly: "monthly",
+    once: "one time",
+    reference: (ref: string) => `Reference ${ref}`,
+    close: "Close",
+    reconcile: "Match transfer",
   },
 });
 
@@ -41,7 +53,7 @@ export function AwaitingTransfers() {
 
   return (
     <section>
-      <h2 className="text-lg font-bold">تحويلات بانتظار التأكيد ({rows.length})</h2>
+      <h2 className="text-lg font-bold">{t.title(rows.length)}</h2>
       <div className="mt-4 space-y-3">
         <PanelState
           pending={isPending}
@@ -63,9 +75,12 @@ export function AwaitingTransfers() {
                 <Name>{r.orphanName}</Name>
               </p>
               <p className="text-muted-foreground mt-1 text-xs">
-                {r.orphanCode} — {formatMoney(r.amount, r.currency)}{" "}
-                {r.type === "monthly" ? "شهرياً" : "لمرة واحدة"} — مرجع {r.reference} —{" "}
-                {formatDate(r.createdAt)}
+                {[
+                  r.orphanCode,
+                  `${formatMoney(r.amount, r.currency)} ${r.type === "monthly" ? t.monthly : t.once}`,
+                  t.reference(r.reference),
+                  formatDate(r.createdAt),
+                ].join(" · ")}
               </p>
             </div>
             <Button
@@ -74,7 +89,7 @@ export function AwaitingTransfers() {
               aria-expanded={open === r.id}
               onClick={() => setOpen(open === r.id ? null : r.id)}
             >
-              {open === r.id ? "إغلاق" : "مطابقة التحويل"}
+              {open === r.id ? t.close : t.reconcile}
             </Button>
             {open === r.id && (
               <div className="basis-full">
