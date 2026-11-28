@@ -8,7 +8,7 @@ import { RecoveryEmail } from "@/lib/email-templates/recovery";
 import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
 import { BRAND } from "@/config/brand";
-import { authEmailFrame as frame } from "@/lib/email-templates/copy";
+import { authEmailFrameFor } from "@/lib/email-templates/auth-locale.server";
 
 // Configuration
 const SITE_NAME = `${BRAND.name}`;
@@ -28,10 +28,10 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
           senderDomain: SENDER_DOMAIN,
           sendUrl: process.env["LOVABLE_SEND_URL"],
-          // لغة المستلم من عنوان العودة (authEmailLocale)، والاسم بلغته (brandFor).
+          // لغة المستلم من عنوان العودة، أو من حسابه المخزّن (authEmailFrameFor)، والاسم بلغته.
           emails: {
-            signup: (data) => {
-              const { locale, name, c } = frame(data.url);
+            signup: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.signup.subject,
                 element: React.createElement(SignupEmail, {
@@ -44,8 +44,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
               };
             },
-            invite: (data) => {
-              const { locale, name, c } = frame(data.url);
+            invite: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.invite.subject(name),
                 element: React.createElement(InviteEmail, {
@@ -56,8 +56,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
               };
             },
-            magiclink: (data) => {
-              const { locale, name, c } = frame(data.url);
+            magiclink: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.magic.subject(name),
                 element: React.createElement(MagicLinkEmail, {
@@ -69,8 +69,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
               };
             },
-            recovery: (data) => {
-              const { locale, name, c } = frame(data.url);
+            recovery: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.recovery.subject,
                 element: React.createElement(RecoveryEmail, {
@@ -81,8 +81,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
               };
             },
-            email_change: (data) => {
-              const { locale, name, c } = frame(data.url);
+            email_change: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.change.subject,
                 element: React.createElement(EmailChangeEmail, {
@@ -96,8 +96,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
               };
             },
-            reauthentication: (data) => {
-              const { locale, name, c } = frame(data.url);
+            reauthentication: async (data) => {
+              const { locale, name, c } = await authEmailFrameFor(data);
               return {
                 subject: c.reauth.subject,
                 element: React.createElement(ReauthenticationEmail, {

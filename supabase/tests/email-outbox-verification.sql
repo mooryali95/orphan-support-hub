@@ -229,6 +229,27 @@ BEGIN
   RAISE NOTICE 'PASS — المطالبة تحمل لغة المستلم، والمجهول عربي';
 END $$;
 
+-- ---------------------------------------------------------------------
+-- لغة رسائل المصادقة من الحساب المخزّن، وللخادم وحده
+-- ---------------------------------------------------------------------
+DO $$
+BEGIN
+  IF public.auth_email_locale(' OB-ONE@example.test ') IS DISTINCT FROM 'en'
+     OR public.auth_email_locale('ob-two@example.test') IS DISTINCT FROM 'ar'
+     OR public.auth_email_locale('nobody@example.test') IS NOT NULL THEN
+    RAISE EXCEPTION 'FAIL — لغة رسائل المصادقة لا تتبع الحساب';
+  END IF;
+  SET LOCAL ROLE authenticated;
+  BEGIN
+    PERFORM public.auth_email_locale('ob-one@example.test');
+    RESET ROLE;
+    RAISE EXCEPTION 'FAIL — العميل سأل عن لغة بريدٍ غيره';
+  EXCEPTION WHEN insufficient_privilege THEN
+    RESET ROLE;
+  END;
+  RAISE NOTICE 'PASS — لغة رسائل المصادقة من الحساب، والسؤال خادميّ وحده';
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص مُصرِّف البريد اجتازت ──'; END $$;
 
 ROLLBACK;

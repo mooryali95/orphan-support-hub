@@ -1,5 +1,6 @@
 import type { ClaimedEmail } from "@/integrations/supabase/types.extra";
 import { normalizeBase, unsubscribeUrl } from "@/lib/email-templates/links";
+import { localizeNotification } from "@/lib/notification-text";
 
 /**
  * مُصرِّف طابور البريد — الطريق الوحيد لإرسال الإشعارات بريداً (ARC-02/APP-05).
@@ -72,7 +73,9 @@ export async function drainOutbox(deps: OutboxDeps, limit = 25): Promise<DrainSu
 
   // بالتتابع لا بالتوازي: المزوّد يحدّ المعدّل، ودفعةٌ متوازية تصطدم
   // بالحدّ فتفشل كلها معاً بدل أن تمرّ واحدةً واحدة.
-  for (const row of claimed) {
+  for (const claimedRow of claimed) {
+    // المحتوى بلغة المستلم كالغلاف: القاعدة تكتبه بالعربية، فيُعرض للإنجليزي نصّ نوعه بلغته.
+    const row = localizeNotification(claimedRow, claimedRow.locale ?? "ar");
     try {
       const res = await deps.send(
         row.recipient,

@@ -7,6 +7,8 @@ import { Bell, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listNotifications, markNotificationsRead } from "@/lib/impact.functions";
 import { formatDate } from "@/lib/format";
+import { useLocale } from "@/lib/locale";
+import { localizeNotification } from "@/lib/notification-text";
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,7 +30,9 @@ export function NotificationBell() {
     refetchInterval: 60_000,
   });
 
-  const items = data?.notifications ?? [];
+  // نصّ الإشعار بلغة الواجهة: القاعدة تكتبه بالعربية (localizeNotification).
+  const locale = useLocale();
+  const items = (data?.notifications ?? []).map((n) => localizeNotification(n, locale));
   const unread = data?.unread ?? 0;
 
   return (
