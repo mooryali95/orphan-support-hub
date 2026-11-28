@@ -39,6 +39,7 @@ const COPY = defineCopy("components/try/TryShell", {
   ar: {
     mode: "الوضع التجريبي",
     modeLabel: "أنت الآن في الوضع التجريبي",
+    noteLabel: "عن التجربة",
     noteShort: "أنت الآن في الوضع التجريبي: لا يُخصم شيء. الرحلة الحقيقية تبدأ بتسجيلك.",
     noteLong:
       "أنت الآن في الوضع التجريبي: الأطفال بأسماءٍ مستعارة والدفع محاكاة، فلا يُخصم شيء ولا يُرسل. تدخل الرحلة الحقيقية بتسجيلك.",
@@ -56,6 +57,7 @@ const COPY = defineCopy("components/try/TryShell", {
   en: {
     mode: "Demo mode",
     modeLabel: "You are now in demo mode",
+    noteLabel: "About the demo",
     noteShort:
       "You are now in demo mode: nothing is charged. The real one begins when you register.",
     noteLong:
@@ -213,8 +215,7 @@ function TryShellInner() {
     <div className="min-h-dvh bg-background">
       <SiteHeader />
       {/* الشريط الدائم: «رحلة افتراضية»، وأين أنت فيها، وبابها إلى الحقيقية. يبقى تحت الترويسة. */}
-      <div
-        role="note"
+      <aside
         aria-label={c.modeLabel}
         data-try-bar
         className="sticky z-40 border-b border-bridge/30 bg-background/85 backdrop-blur"
@@ -230,10 +231,13 @@ function TryShellInner() {
           ) : (
             <TryJourneyRail className="flex-1 overflow-hidden px-1" />
           )}
-          <TryRealButton size="sm" variant="outline" short className="shrink-0 bg-card" />
+          <TryRealButton size="sm" variant="outline" short className="h-11 shrink-0 bg-card" />
         </div>
-      </div>
-      <div className={present ? "hidden" : "border-b border-border bg-bridge/8"}>
+      </aside>
+      <aside
+        aria-label={c.noteLabel}
+        className={present ? "hidden" : "border-b border-border bg-bridge/8"}
+      >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-1.5 text-sm">
           <p className="min-w-0 basis-full py-1 leading-6 text-foreground sm:flex-1 sm:basis-auto">
             {registered ? (
@@ -263,7 +267,7 @@ function TryShellInner() {
             <span className="sr-only sm:hidden">{c.restart}</span>
           </button>
         </div>
-      </div>
+      </aside>
       <main
         id="main"
         tabIndex={-1}

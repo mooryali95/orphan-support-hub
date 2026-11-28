@@ -12,6 +12,7 @@ const COPY = defineCopy("components/DemoModeBar", {
     admin: "لوحة الإدارة",
     hall: "قاعة الأثر",
     exit: "العودة إلى المنصّة الحقيقية",
+    links: "أبواب التجربة",
   },
   en: {
     label: "Demo mode",
@@ -21,6 +22,7 @@ const COPY = defineCopy("components/DemoModeBar", {
     admin: "Admin panel",
     hall: "Impact hall",
     exit: "Back to the real platform",
+    links: "Demo sections",
   },
 });
 
@@ -40,7 +42,7 @@ export default function DemoModeBar({ force = false }: { force?: boolean }) {
   // يلتصق من الشاشة الصغيرة فما فوق وحدها (سطرٌ واحد)؛ على 360px يلتفّ ثلاثة أسطر فيمرّ
   // مع الصفحة، ويبقى شريط التجربة تحت الرأس دليلاً. ارتفاعه الملتصق في `--demo-bar-h`
   // ليلتصق الرأس تحته لا فوقه.
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === "undefined") return;
@@ -62,9 +64,8 @@ export default function DemoModeBar({ force = false }: { force?: boolean }) {
   }, [demo]);
   if (!demo) return null;
   return (
-    <div
+    <aside
       ref={ref}
-      role="region"
       data-demo-bar
       aria-label={c.label}
       className="relative top-0 z-50 bg-foreground sm:sticky text-background dark:border-b dark:border-border dark:bg-secondary dark:text-foreground print:hidden"
@@ -72,7 +73,7 @@ export default function DemoModeBar({ force = false }: { force?: boolean }) {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
         <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>
         <span className="text-xs opacity-90">{c.note}</span>
-        <nav className="ms-auto flex flex-wrap items-center gap-1">
+        <nav aria-label={c.links} className="ms-auto flex flex-wrap items-center gap-1">
           <a href="/try" className={LINK}>
             {c.donor}
           </a>
@@ -97,6 +98,6 @@ export default function DemoModeBar({ force = false }: { force?: boolean }) {
           </button>
         </nav>
       </div>
-    </div>
+    </aside>
   );
 }

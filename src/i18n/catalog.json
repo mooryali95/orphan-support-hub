@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5559,
+ "count": 5564,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -350,6 +350,13 @@
    "ar": "الوضع التجريبي",
    "kind": "text",
    "hash": "326e22bcff78",
+   "file": "src/components/DemoModeBar.tsx"
+  },
+  "components/DemoModeBar.links": {
+   "en": "Demo sections",
+   "ar": "أبواب التجربة",
+   "kind": "text",
+   "hash": "e0f25c909fa9",
    "file": "src/components/DemoModeBar.tsx"
   },
   "components/DemoModeBar.note": {
@@ -782,6 +789,13 @@
    "ar": "الصفحة الرئيسية",
    "kind": "text",
    "hash": "18f3b398c040",
+   "file": "src/components/SiteHeader.tsx"
+  },
+  "components/SiteHeader.mainNav": {
+   "en": "Main navigation",
+   "ar": "التنقّل الرئيسي",
+   "kind": "text",
+   "hash": "9a0210feb1d5",
    "file": "src/components/SiteHeader.tsx"
   },
   "components/SiteHeader.menu": {
@@ -17902,6 +17916,13 @@
    "hash": "c59f2fccdffe",
    "file": "src/components/sponsorship/QualificationJourney.tsx"
   },
+  "components/sponsorship/SponsorshipChildPage.actionsNav": {
+   "en": "Sponsorship actions",
+   "ar": "إجراءات الكفالة",
+   "kind": "text",
+   "hash": "fae50cedb1e4",
+   "file": "src/components/sponsorship/SponsorshipChildPage.tsx"
+  },
   "components/sponsorship/SponsorshipChildPage.back": {
    "en": "Back to my impact",
    "ar": "العودة إلى أثري",
@@ -21487,6 +21508,13 @@
    "ar": "أنت الآن في الوضع التجريبي",
    "kind": "text",
    "hash": "503ebfa35bc1",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.noteLabel": {
+   "en": "About the demo",
+   "ar": "عن التجربة",
+   "kind": "text",
+   "hash": "21b1ea629713",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.noteLong": {
@@ -39463,6 +39491,13 @@
    "ar": "الوجهة",
    "kind": "text",
    "hash": "cffd204a68c1",
+   "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/vision.receipt.toolbar": {
+   "en": "Receipt tools",
+   "ar": "أدوات الإيصال",
+   "kind": "text",
+   "hash": "d95e048eab76",
    "file": "src/routes/vision.receipt.$id.tsx"
   },
   "routes/vision.receipt.watermark": {

@@ -491,7 +491,7 @@ function LiveReport() {
 function SyncNote() {
   const c = useCopy(COPY);
   return (
-    <aside className="mx-auto mt-8 max-w-3xl rounded-2xl border border-gold/40 bg-white/70 p-5">
+    <section className="mx-auto mt-8 max-w-3xl rounded-2xl border border-gold/40 bg-white/70 p-5">
       <h2 className="text-sm font-bold text-wine">{c.sync}</h2>
       <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
         {c.syncLines.map((l) => (
@@ -501,6 +501,6 @@ function SyncNote() {
           </li>
         ))}
       </ul>
-    </aside>
+    </section>
   );
 }

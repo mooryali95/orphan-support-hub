@@ -221,7 +221,7 @@ function CyclePage() {
               <ChevronLeft className="size-5 ltr:-scale-x-100" aria-hidden="true" />
             </button>
           </div>
-          <ol className="mt-4 flex justify-center gap-1.5" aria-label={c.step(i + 1, CYCLE.length)}>
+          <ol className="mt-4 flex justify-center" aria-label={c.step(i + 1, CYCLE.length)}>
             {CYCLE.map((s, k) => (
               <li key={s.key}>
                 <button
@@ -229,11 +229,16 @@ function CyclePage() {
                   aria-label={tr(s.title)}
                   aria-current={k === i ? "step" : undefined}
                   onClick={() => go(k)}
-                  className={cn(
-                    "block h-1.5 rounded-full transition-all duration-500",
-                    k === i ? "w-8 bg-wine" : k < i ? "w-3 bg-wine/40" : "w-3 bg-wine/15",
-                  )}
-                />
+                  className="grid min-h-11 min-w-11 place-items-center rounded-full"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "block h-1.5 rounded-full transition-all duration-500",
+                      k === i ? "w-8 bg-wine" : k < i ? "w-3 bg-wine/40" : "w-3 bg-wine/15",
+                    )}
+                  />
+                </button>
               </li>
             ))}
           </ol>
@@ -523,13 +528,13 @@ function Panel({
           : "shadow-[0_10px_30px_-20px_rgb(43_11_20/0.35)]",
       )}
     >
-      <h3 className={cn("flex items-center gap-2 text-xl font-extrabold", !dark && "text-wine")}>
+      <h2 className={cn("flex items-center gap-2 text-xl font-extrabold", !dark && "text-wine")}>
         <span
           aria-hidden="true"
           className={cn("size-2 rounded-full", dark ? "bg-gold" : "bg-wine")}
         />
         {title}
-      </h3>
+      </h2>
       <p className={cn("mt-0.5 text-xs", dark ? "text-gold-soft" : "text-gold-ink")}>{sees}</p>
       <div className={cn("mt-4 border-t pt-4", dark ? "border-white/10" : "border-wine/10")}>
         {children}
