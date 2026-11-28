@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render } from "@react-email/render";
 import { createFileRoute } from "@tanstack/react-router";
+import { emailLocale, type EmailLocale } from "@/lib/email-templates/copy";
 import { TEMPLATES } from "@/lib/email-templates/registry";
 import { safeEqual } from "@/lib/integrations/auth";
 
@@ -21,6 +22,15 @@ export const Route = createFileRoute("/lovable/email/transactional/preview")({
         const token = authHeader?.replace(/^Bearer\s+/i, "");
         if (!safeEqual(token, apiKey)) {
           return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // لغة المعاينة اختيارية في الجسم: «ar» افتراضاً، و«en» لمستلمٍ اختار الإنجليزية.
+        let locale: EmailLocale = "ar";
+        try {
+          const body = (await request.json()) as { locale?: unknown } | null;
+          locale = emailLocale(body?.locale);
+        } catch {
+          locale = "ar";
         }
 
         const templateNames = Object.keys(TEMPLATES);
@@ -50,11 +60,14 @@ export const Route = createFileRoute("/lovable/email/transactional/preview")({
           }
 
           try {
-            const html = await render(React.createElement(entry.component, entry.previewData));
+            const data = {
+              ...entry.previewData,
+              ...(entry.previewByLocale?.[locale] ?? {}),
+              locale,
+            };
+            const html = await render(React.createElement(entry.component, data));
             const resolvedSubject =
-              typeof entry.subject === "function"
-                ? entry.subject(entry.previewData)
-                : entry.subject;
+              typeof entry.subject === "function" ? entry.subject(data) : entry.subject;
 
             results.push({
               templateName: name,

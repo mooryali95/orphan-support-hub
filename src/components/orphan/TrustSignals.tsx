@@ -18,6 +18,7 @@ const COPY = defineCopy("components/orphan/TrustSignals", {
     noReport: "لا تقرير حديث",
     dotsLabel: (n: number, t: number) => `اكتمال البروفايل: ${n} من ${t}`,
     missing: "ينقصه:",
+    listSep: "، ",
     complete: "البروفايل مكتمل",
   },
   en: {
@@ -38,6 +39,7 @@ const COPY = defineCopy("components/orphan/TrustSignals", {
       other: "Profile completeness: {0} of {1}",
     }),
     missing: "Missing:",
+    listSep: ", ",
     complete: "Profile complete",
   },
 });
@@ -179,7 +181,7 @@ export function CompletenessLine({
         <span className="text-primary">{t.complete}</span>
       ) : (
         <span className="text-muted-foreground">
-          {t.missing} {missing.map((m) => labels[m] ?? m).join("، ")}
+          {t.missing} {missing.map((m) => labels[m] ?? m).join(t.listSep)}
         </span>
       )}
     </div>

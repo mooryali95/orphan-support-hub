@@ -51,12 +51,16 @@ export type WorkRow = {
   status: "missing" | "draft" | "reviewed" | "published";
   origin: "human" | "machine" | "import" | null;
   stale: boolean;
+  /** حرّره القارئ نفسه: لا يراجعه ولا ينشره (العينان). */
+  mine: boolean;
 };
 
 function explain(message: string): string {
   const m: Array<[RegExp, string]> = [
     [/reviewer_only/, "لست مراجعاً لهذه اللغة."],
     [/admin_only/, "للإدارة وحدها."],
+    [/four_eyes_review/, "لا يراجع المحرِّر نصّه: يراجعه شخصٌ آخر."],
+    [/four_eyes_publish/, "لا ينشر المحرِّر نصّه: ينشره مديرٌ آخر."],
     [/nothing_published/, "لا تُطلق لغةٌ قبل أن يُنشر فيها نصّ."],
     [/user_not_found/, "لا حساب بهذا البريد."],
     [/locale_not_enabled/, "اللغة غير مفعّلة."],
@@ -101,6 +105,7 @@ export const getLocaleWork = createServerFn({ method: "GET" })
         source_hash: string;
         status: WorkRow["status"];
         origin: WorkRow["origin"];
+        mine?: boolean;
       }>
     >(context.supabase, "ui_translations_for", { _locale: data.locale });
     if (!r.ok) return r;
@@ -117,6 +122,7 @@ export const getLocaleWork = createServerFn({ method: "GET" })
         status: t ? t.status : "missing",
         origin: t?.origin ?? null,
         stale: !!t && t.source_hash !== e.hash,
+        mine: !!t?.mine,
       };
     });
     return { ok: true, data: { rows, total: rows.length } };

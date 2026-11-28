@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5735,
+ "count": 5857,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -6926,6 +6926,27 @@
    "hash": "0226b6f9b2cd",
    "file": "src/components/admin/data/sources/ChildUpdatesCard.tsx"
   },
+  "components/admin/data/sources/in-today.chip": {
+   "en": "Shown in Today",
+   "ar": "معروض في اليوم",
+   "kind": "text",
+   "hash": "5dd3a3912adc",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.go": {
+   "en": "Go to Today",
+   "ar": "اذهب إلى اليوم",
+   "kind": "text",
+   "hash": "80b9d02bf482",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
+  "components/admin/data/sources/in-today.note": {
+   "en": "These same items are in Today at the top of the page, so they are settled there only and never appear twice.",
+   "ar": "هذه البنود نفسها في «اليوم» أعلى الصفحة، فالحسم هناك وحده كي لا يظهر بندٌ مرّتين.",
+   "kind": "text",
+   "hash": "68df8573e0dd",
+   "file": "src/components/admin/data/sources/shared.tsx"
+  },
   "components/admin/data/work.allFields": {
    "en": "All fields",
    "ar": "كل الحقول",
@@ -9682,6 +9703,20 @@
    "hash": "a2d36efb0aa1",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyCountry": {
+   "en": "Nothing is waiting in your country right now.",
+   "ar": "لا شيء ينتظر في دولتك الآن.",
+   "kind": "text",
+   "hash": "42446c30be8c",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyCountryNext": {
+   "en": "Upload a file from the Upload tab below, or check back later.",
+   "ar": "ارفع ملفّاً من لسان «الرفع» أدناه، أو عد لاحقاً.",
+   "kind": "text",
+   "hash": "6f430e181544",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.emptyFiltered": {
    "en": "No items match these filters.",
    "ar": "لا بنود تطابق المرشّحات.",
@@ -9703,11 +9738,25 @@
    "hash": "b76b1ec19eef",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyViewer": {
+   "en": "Nothing is waiting in your country right now. Your role is view only; the country supervisor settles.",
+   "ar": "لا شيء ينتظر في دولتك الآن. دورك اطّلاع، والحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "01893f72c5f8",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.failed": {
    "en": "Some sources didn't load. What's shown is correct but may be incomplete.",
    "ar": "تعذّر تحميل بعض المصادر. ما ظهر صحيح، وقد ينقص.",
    "kind": "text",
    "hash": "3de828d37a95",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.failedCountry": {
+   "en": "Some of your country's queues didn't load. What's shown is correct but may be incomplete.",
+   "ar": "تعذّر تحميل بعض طوابير دولتك. ما ظهر صحيح، وقد ينقص.",
+   "kind": "text",
+   "hash": "79f007d515ce",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.falsePositive": {
@@ -10058,6 +10107,13 @@
    "ar": "يُحمَّل ما ينتظر…",
    "kind": "text",
    "hash": "c661c4ff45d0",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.loadingCountry": {
+   "en": "Loading what's waiting in your country…",
+   "ar": "يُحمَّل ما ينتظر في دولتك…",
+   "kind": "text",
+   "hash": "f7ca3455ef51",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.normal": {
@@ -15174,6 +15230,20 @@
    "hash": "5c720a19ed1d",
    "file": "src/components/offices/OfficesMap.tsx"
   },
+  "components/org-file-notes.noReason": {
+   "en": "Not specified",
+   "ar": "غير محدّد",
+   "kind": "text",
+   "hash": "d047959932fe",
+   "file": "src/components/org/OrgFileNotes.tsx"
+  },
+  "components/org-file-notes.rejectReason": {
+   "en": "Reason for rejection:",
+   "ar": "سبب الرفض:",
+   "kind": "text",
+   "hash": "417fa143a137",
+   "file": "src/components/org/OrgFileNotes.tsx"
+  },
   "components/org/OrgInbox.approve": {
    "en": "Approve",
    "ar": "اعتماد",
@@ -15681,6 +15751,13 @@
    "ar": "ما نعرفه عن هذا الطفل",
    "kind": "text",
    "hash": "275049a7ed6d",
+   "file": "src/components/orphan/TrustSignals.tsx"
+  },
+  "components/orphan/TrustSignals.listSep": {
+   "en": ", ",
+   "ar": "، ",
+   "kind": "text",
+   "hash": "b07e750c1a03",
    "file": "src/components/orphan/TrustSignals.tsx"
   },
   "components/orphan/TrustSignals.missing": {
@@ -22015,6 +22092,13 @@
    "hash": "4fa2436b0589",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.admin": {
+   "en": "Admin panel",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "e018d4c236d2",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.dialogHint": {
    "en": "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
    "ar": "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
@@ -22029,11 +22113,25 @@
    "hash": "6dbd445e4e6c",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.donor": {
+   "en": "Supporter journey",
+   "ar": "رحلة الداعم",
+   "kind": "text",
+   "hash": "f880d107aa56",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.exit": {
    "en": "Back to the real platform",
    "ar": "العودة إلى المنصّة الحقيقية",
    "kind": "text",
    "hash": "6799a76bf157",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.hall": {
+   "en": "Impact hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "a615c42d5729",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.leftAction": {
@@ -22111,6 +22209,20 @@
    "ar": "بدأت التجربة من جديد",
    "kind": "text",
    "hash": "deb6a4a8e71d",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.roles": {
+   "en": "Roles",
+   "ar": "الأدوار",
+   "kind": "text",
+   "hash": "11a555c88642",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.sections": {
+   "en": "Demo sections",
+   "ar": "أبواب التجربة",
+   "kind": "text",
+   "hash": "e0f25c909fa9",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TrySupportMap.anywhere": {
@@ -24502,6 +24614,576 @@
    "kind": "text",
    "hash": "dcf199320b14",
    "file": "src/config/offering.ts"
+  },
+  "email/templates.change.bodyA": {
+   "en": "A change of the account email was requested from",
+   "ar": "طُلب تغيير بريد الحساب من",
+   "kind": "text",
+   "hash": "a14470008acb",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.bodyB": {
+   "en": "to",
+   "ar": "إلى",
+   "kind": "text",
+   "hash": "7893b54cc984",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.bodyC": {
+   "en": ". Confirm the new address to complete the change.",
+   "ar": ". أكّد العنوان الجديد لإتمام التغيير.",
+   "kind": "text",
+   "hash": "e3fadd13c3b6",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.cta": {
+   "en": "Confirm the change",
+   "ar": "تأكيد التغيير",
+   "kind": "text",
+   "hash": "e33945c049c1",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.eyebrow": {
+   "en": "Account security",
+   "ar": "أمان الحساب",
+   "kind": "text",
+   "hash": "3eef2fb05c34",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.foot": {
+   "en": "Nothing changes before you confirm. If you did not ask for this, ignore the message and review your account security.",
+   "ar": "لن يُنفَّذ التغيير قبل التأكيد. إن لم تطلبه، تجاهل الرسالة وراجع أمان حسابك.",
+   "kind": "text",
+   "hash": "fe9acbe31e3a",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.heading": {
+   "en": "Confirm your new email",
+   "ar": "تأكيد بريدك الجديد",
+   "kind": "text",
+   "hash": "d99d8dcac474",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.preview": {
+   "en": "Confirm the email change on {0}",
+   "ar": "تأكيد تغيير البريد في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "2f067dc2678b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.change.subject": {
+   "en": "Confirm your new email",
+   "ar": "تأكيد بريدك الجديد",
+   "kind": "text",
+   "hash": "d99d8dcac474",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.body": {
+   "en": "You are invited to join {0}, where sponsors meet WAMY's offices and field partners around verified files, and sponsorship becomes a followed path of growth rather than passing charity.",
+   "ar": "وُجّهت إليك دعوة للانضمام إلى {0}؛ حيث يلتقي الكافلون بمكاتب الندوة وشركائها الميدانيين حول ملفّات موثّقة، وتتحوّل الكفالة من إحسانٍ عابر إلى مسار نماء مُتابَع.",
+   "kind": "template",
+   "params": 1,
+   "hash": "651545083e76",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.cta": {
+   "en": "Accept the invitation",
+   "ar": "قبول الدعوة",
+   "kind": "text",
+   "hash": "710d20689973",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.eyebrow": {
+   "en": "Invitation",
+   "ar": "دعوة",
+   "kind": "text",
+   "hash": "36fc8746e3e3",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.foot": {
+   "en": "If this invitation reached you by mistake, it is safe to ignore it.",
+   "ar": "إن وصلتك هذه الدعوة عن طريق الخطأ، فتجاهلها آمن تماماً.",
+   "kind": "text",
+   "hash": "7e36648dff83",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.heading": {
+   "en": "You are invited to join the platform",
+   "ar": "دُعيت للانضمام إلى المنصّة",
+   "kind": "text",
+   "hash": "b7f63ead11cd",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.invite.subject": {
+   "en": "An invitation to join {0}",
+   "ar": "دعوة للانضمام إلى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "61bb407b1e7b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.organization_approved.0": {
+   "en": "Field organization approved",
+   "ar": "اعتماد الجهة الميدانية",
+   "kind": "text",
+   "hash": "7d14c42db75c",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.organization_approved.1": {
+   "en": "Organization dashboard",
+   "ar": "لوحة الجهة",
+   "kind": "text",
+   "hash": "c8b80ca04414",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.organization_rejected.0": {
+   "en": "The organization request needs a correction",
+   "ar": "طلب الجهة يحتاج تصحيحاً",
+   "kind": "text",
+   "hash": "7ea801261336",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.organization_rejected.1": {
+   "en": "Organization dashboard",
+   "ar": "لوحة الجهة",
+   "kind": "text",
+   "hash": "c8b80ca04414",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.orphan_approved.0": {
+   "en": "Approval decision",
+   "ar": "قرار اعتماد",
+   "kind": "text",
+   "hash": "1ffe151596e8",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.orphan_approved.1": {
+   "en": "View the file",
+   "ar": "عرض الملفّ",
+   "kind": "text",
+   "hash": "d4370447d551",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.orphan_rejected.0": {
+   "en": "The file needs a correction",
+   "ar": "الملفّ يحتاج تصحيحاً",
+   "kind": "text",
+   "hash": "32d4ea768cb5",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.orphan_rejected.1": {
+   "en": "Open the file",
+   "ar": "فتح الملفّ",
+   "kind": "text",
+   "hash": "e0c052ab81e6",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.other.0": {
+   "en": "Notification",
+   "ar": "إشعار",
+   "kind": "text",
+   "hash": "c91f5c8bf72c",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.other.1": {
+   "en": "Open the platform",
+   "ar": "فتح المنصّة",
+   "kind": "text",
+   "hash": "54091d1ed082",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.payment_failed.0": {
+   "en": "A payment failed",
+   "ar": "تعثّرت دفعة",
+   "kind": "text",
+   "hash": "2311d535f11d",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.payment_failed.1": {
+   "en": "Fix the payment",
+   "ar": "معالجة الدفع",
+   "kind": "text",
+   "hash": "d57760e2378e",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.payment_succeeded.0": {
+   "en": "Payment receipt",
+   "ar": "إيصال دفعة",
+   "kind": "text",
+   "hash": "331ef616577b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.payment_succeeded.1": {
+   "en": "View the sponsorship",
+   "ar": "عرض الكفالة",
+   "kind": "text",
+   "hash": "917f032aa363",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.pledge_delivered.0": {
+   "en": "Your gift was delivered",
+   "ar": "وصل تبرّعك",
+   "kind": "text",
+   "hash": "887897f701a9",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.pledge_delivered.1": {
+   "en": "View the delivery record",
+   "ar": "عرض مستند التسليم",
+   "kind": "text",
+   "hash": "fd8557ea79d0",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.pledge_preparing.0": {
+   "en": "Your gift is being prepared",
+   "ar": "يُجهَّز تبرّعك",
+   "kind": "text",
+   "hash": "b40d851ac986",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.pledge_preparing.1": {
+   "en": "Follow the gift",
+   "ar": "متابعة التبرّع",
+   "kind": "text",
+   "hash": "4f54f1c248e6",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.report_published.0": {
+   "en": "Impact report",
+   "ar": "تقرير أثر",
+   "kind": "text",
+   "hash": "e39b4a1bcdc5",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.report_published.1": {
+   "en": "Read the report",
+   "ar": "قراءة التقرير",
+   "kind": "text",
+   "hash": "fd98c50cabe0",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.report_rejected.0": {
+   "en": "The report needs a correction",
+   "ar": "التقرير يحتاج تصحيحاً",
+   "kind": "text",
+   "hash": "ae559b582550",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.report_rejected.1": {
+   "en": "Open the report",
+   "ar": "فتح التقرير",
+   "kind": "text",
+   "hash": "07cb229cece2",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.sponsorship_started.0": {
+   "en": "Sponsorship started",
+   "ar": "بدأت الكفالة",
+   "kind": "text",
+   "hash": "3180bacbb5a9",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.sponsorship_started.1": {
+   "en": "View the sponsorship",
+   "ar": "عرض الكفالة",
+   "kind": "text",
+   "hash": "917f032aa363",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.welcome.0": {
+   "en": "Welcome",
+   "ar": "أهلاً بك",
+   "kind": "text",
+   "hash": "1f60866db6e8",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.kinds.welcome.1": {
+   "en": "Browse the files",
+   "ar": "تصفّح الملفات",
+   "kind": "text",
+   "hash": "e9c12ad2b64d",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.codeLead": {
+   "en": "Type this code on the page that asked for it:",
+   "ar": "اكتب هذا الرمز في الصفحة التي طلبته منها:",
+   "kind": "text",
+   "hash": "2d9a13a2738b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.cta": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.eyebrow": {
+   "en": "Sign-in link",
+   "ar": "رابط دخول",
+   "kind": "text",
+   "hash": "594aacd9721b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.foot": {
+   "en": "The link works once and for a short time. If you did not ask for it, ignore this message and nothing changes.",
+   "ar": "الرابط صالح لمدة قصيرة ولمرّة واحدة. إن لم تطلبه، تجاهل الرسالة ولن يتغيّر شيء.",
+   "kind": "text",
+   "hash": "25254e1a4649",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.heading": {
+   "en": "Sign in with one click, no password",
+   "ar": "ادخل بنقرة واحدة، دون كلمة مرور",
+   "kind": "text",
+   "hash": "7dfc81a191b5",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.noCode": {
+   "en": "Press the button below to sign in to your {0} account.",
+   "ar": "اضغط الزر أدناه للدخول إلى حسابك في {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "8b01837c590c",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.orButton": {
+   "en": "Or press the button to sign in directly:",
+   "ar": "أو اضغط الزر للدخول مباشرة:",
+   "kind": "text",
+   "hash": "1c3331ae5d48",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.previewCode": {
+   "en": "Your sign-in code for {0}: {1}",
+   "ar": "رمز دخولك إلى {0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "cf3977394892",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.previewLink": {
+   "en": "Your sign-in link for {0}",
+   "ar": "رابط دخولك إلى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9037dd0a3487",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.magic.subject": {
+   "en": "Your sign-in code for {0}",
+   "ar": "رمز دخولك إلى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "0dcf34520808",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.body": {
+   "en": "Enter the following code to complete the action:",
+   "ar": "أدخل الرمز التالي لإتمام العملية:",
+   "kind": "text",
+   "hash": "97fd894d4c9e",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.eyebrow": {
+   "en": "Verification",
+   "ar": "تحقّق",
+   "kind": "text",
+   "hash": "0f307301b396",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.foot": {
+   "en": "Do not share this code with anyone; our team never asks you for it.",
+   "ar": "لا تُشارك هذا الرمز مع أي شخص، ولا يطلبه منك فريقنا مطلقاً.",
+   "kind": "text",
+   "hash": "f4033e0646a0",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.heading": {
+   "en": "Verification code",
+   "ar": "رمز التحقّق",
+   "kind": "text",
+   "hash": "2be4f4edcedd",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.preview": {
+   "en": "Your verification code",
+   "ar": "رمز التحقّق الخاص بك",
+   "kind": "text",
+   "hash": "1e2bf644a5fa",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.reauth.subject": {
+   "en": "Your verification code",
+   "ar": "رمز التحقّق الخاص بك",
+   "kind": "text",
+   "hash": "1e2bf644a5fa",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.body": {
+   "en": "We received a request to reset the password of your {0} account. Choose a new password from the link below.",
+   "ar": "وصلنا طلب لإعادة تعيين كلمة مرور حسابك في {0}. اختر كلمة مرور جديدة من الرابط أدناه.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6d4b404e3bbb",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.cta": {
+   "en": "Set a new password",
+   "ar": "تعيين كلمة مرور جديدة",
+   "kind": "text",
+   "hash": "8feb91450f6e",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.eyebrow": {
+   "en": "Account security",
+   "ar": "أمان الحساب",
+   "kind": "text",
+   "hash": "3eef2fb05c34",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.foot": {
+   "en": "If you did not ask for a reset, your current password is safe and unchanged; ignore this message.",
+   "ar": "إن لم تطلب إعادة التعيين فكلمة مرورك الحالية سليمة ولم تتغيّر؛ تجاهل الرسالة.",
+   "kind": "text",
+   "hash": "504fc3675af9",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.heading": {
+   "en": "Reset your password",
+   "ar": "إعادة تعيين كلمة المرور",
+   "kind": "text",
+   "hash": "dbf8da1e2cc1",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.preview": {
+   "en": "Reset your {0} password",
+   "ar": "إعادة تعيين كلمة المرور في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "96ec1b20dd8c",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.recovery.subject": {
+   "en": "Reset your password",
+   "ar": "إعادة تعيين كلمة المرور",
+   "kind": "text",
+   "hash": "dbf8da1e2cc1",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.dontShare": {
+   "en": ". Do not share its links with anyone.",
+   "ar": ". لا تُشارك روابطها مع أحد.",
+   "kind": "text",
+   "hash": "21c7c68ef7ee",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.fallback": {
+   "en": "Button not working? Copy this link into your browser:",
+   "ar": "تعذّر الزر؟ انسخ الرابط التالي في المتصفّح:",
+   "kind": "text",
+   "hash": "d0a127efb41d",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.motto": {
+   "en": "Sponsoring an orphan is an investment in what comes next, not passing charity.",
+   "ar": "كفالة اليتيم استثمار في عمرانٍ قادم، لا إحسان عابر.",
+   "kind": "text",
+   "hash": "aee1e30296a6",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.sentFrom": {
+   "en": "This message was sent from",
+   "ar": "أُرسلت هذه الرسالة من",
+   "kind": "text",
+   "hash": "c7ca72e51d2b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.stop": {
+   "en": "Stop these emails",
+   "ar": "إيقاف هذه الرسائل",
+   "kind": "text",
+   "hash": "247b8edcbc12",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.shell.stopTail": {
+   "en": "; your notifications stay visible inside the platform.",
+   "ar": "، وتبقى إشعاراتك ظاهرةً داخل المنصّة.",
+   "kind": "text",
+   "hash": "7d4a03c0809a",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.bodyA": {
+   "en": "We received a request to create an account with",
+   "ar": "سجّلنا طلب إنشاء حساب باستخدام البريد",
+   "kind": "text",
+   "hash": "a01d405b5271",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.bodyB": {
+   "en": ". Confirm that this address is yours to activate the account and reach verified orphan files.",
+   "ar": ". أكّد ملكيتك لهذا البريد لتفعيل الحساب والوصول إلى ملفّات الأيتام الموثّقة.",
+   "kind": "text",
+   "hash": "eee73eee5a34",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.codeLead": {
+   "en": "Type this code on the page that asked for it:",
+   "ar": "اكتب هذا الرمز في الصفحة التي طلبته منها:",
+   "kind": "text",
+   "hash": "2d9a13a2738b",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.cta": {
+   "en": "Confirm email",
+   "ar": "تأكيد البريد",
+   "kind": "text",
+   "hash": "429cce6c6d3f",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.eyebrow": {
+   "en": "Account activation",
+   "ar": "تفعيل الحساب",
+   "kind": "text",
+   "hash": "6d8e95eb5058",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.foot": {
+   "en": "If you did not create this account, no action is needed; simply ignore this message.",
+   "ar": "إن لم تُنشئ هذا الحساب فلا حاجة لأي إجراء؛ يكفي تجاهل الرسالة.",
+   "kind": "text",
+   "hash": "ee7bfb1dcba9",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.heading": {
+   "en": "One step and your journey with us begins",
+   "ar": "خطوة واحدة ويبدأ عبورك معنا",
+   "kind": "text",
+   "hash": "f2b93047caa7",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.orButton": {
+   "en": "Or confirm with the button:",
+   "ar": "أو أكّد بالزر:",
+   "kind": "text",
+   "hash": "8abfd8241139",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.preview": {
+   "en": "Confirm your email to join {0}",
+   "ar": "تأكيد بريدك للانضمام إلى {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "94a45bd2f7f8",
+   "file": "src/lib/email-templates/copy.ts"
+  },
+  "email/templates.signup.subject": {
+   "en": "Confirm your email",
+   "ar": "تأكيد بريدك الإلكتروني",
+   "kind": "text",
+   "hash": "d1ee33c63b58",
+   "file": "src/lib/email-templates/copy.ts"
   },
   "lib/event-labels.fallback": {
    "en": "File update",
@@ -29177,6 +29859,111 @@
    "hash": "047251131d56",
    "file": "src/lib/office-gap.ts"
   },
+  "lib/review-labels.rejection.documents_inconsistent": {
+   "en": "Documents contradict each other",
+   "ar": "تعارض بين المستندات",
+   "kind": "text",
+   "hash": "8609b2f7cd37",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.documents_missing": {
+   "en": "Missing documents",
+   "ar": "مستندات ناقصة",
+   "kind": "text",
+   "hash": "f5fbd32b5a13",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.documents_unclear": {
+   "en": "Unclear documents",
+   "ar": "مستندات غير واضحة",
+   "kind": "text",
+   "hash": "a9f2c966399d",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.duplicate_profile": {
+   "en": "Duplicate file",
+   "ar": "ملفّ مكرّر",
+   "kind": "text",
+   "hash": "f8f0f7712788",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.guardianship_unproven": {
+   "en": "Guardianship not proven",
+   "ar": "الوصاية غير مُثبَتة",
+   "kind": "text",
+   "hash": "858796c7af96",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.identity_unverified": {
+   "en": "Identity not verified",
+   "ar": "الهوية غير مُتحقَّق منها",
+   "kind": "text",
+   "hash": "75ec402c6b4f",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.needs_unjustified": {
+   "en": "Need items not justified",
+   "ar": "بنود الاحتياج غير مبرَّرة",
+   "kind": "text",
+   "hash": "c8105c249153",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.other": {
+   "en": "Other reason",
+   "ar": "سبب آخر",
+   "kind": "text",
+   "hash": "b279e6389520",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.photo_consent_missing": {
+   "en": "No photo consent on record",
+   "ar": "لا إقرار بالموافقة على الصورة",
+   "kind": "text",
+   "hash": "e860fcfc2352",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.aspiration": {
+   "en": "Aspirations and interests",
+   "ar": "الطموح والميول",
+   "kind": "text",
+   "hash": "f4ff575d0122",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.education": {
+   "en": "Education",
+   "ar": "التعليم",
+   "kind": "text",
+   "hash": "f5406ee9c0e4",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.family": {
+   "en": "Family and housing",
+   "ar": "الأسرة والسكن",
+   "kind": "text",
+   "hash": "b837a8005ac5",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.health": {
+   "en": "Health",
+   "ar": "الصحّة",
+   "kind": "text",
+   "hash": "93426a5231ee",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.social": {
+   "en": "Psychological and social",
+   "ar": "النفسي والاجتماعي",
+   "kind": "text",
+   "hash": "029702782066",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.supervisor_note": {
+   "en": "Supervisor note",
+   "ar": "ملاحظة المشرف",
+   "kind": "text",
+   "hash": "2015e213cac6",
+   "file": "src/lib/copy/review-labels.ts"
+  },
   "lib/try-ask.child": {
    "en": "From the public card of file {1}: {0} in {2}, {3}. The monthly sponsorship covers {4}. That is all that is published; the rest of the file is protected.",
    "ar": "من البطاقة العامّة للملفّ {1}: {0} في {2}، {3}. الكفالة الشهرية تغطّي {4}. هذا كلّ ما هو منشور، وبقية الملفّ محميّة.",
@@ -33145,13 +33932,6 @@
    "hash": "d59a431dd4d3",
    "file": "src/routes/_authenticated/org.tsx"
   },
-  "routes/org.noReason": {
-   "en": "Not specified",
-   "ar": "غير محدّد",
-   "kind": "text",
-   "hash": "d047959932fe",
-   "file": "src/routes/_authenticated/org.tsx"
-  },
   "routes/org.pageTitle": {
    "en": "Field organization space",
    "ar": "مساحة الجهة الميدانية",
@@ -33192,13 +33972,6 @@
    "ar": "تسجيل جهة ميدانية",
    "kind": "text",
    "hash": "5e8c35db2b60",
-   "file": "src/routes/_authenticated/org.tsx"
-  },
-  "routes/org.rejectReason": {
-   "en": "Reason for rejection:",
-   "ar": "سبب الرفض:",
-   "kind": "text",
-   "hash": "417fa143a137",
    "file": "src/routes/_authenticated/org.tsx"
   },
   "routes/org.report": {
@@ -35052,6 +35825,70 @@
    "hash": "a6ddce060012",
    "file": "src/routes/traits.tsx"
   },
+  "routes/translate.fourEyes": {
+   "en": "Two people before publishing: you do not review a string you edited, and an admin does not publish a string they edited. Admins are not exempt.",
+   "ar": "عينان قبل النشر: لا تراجع نصّاً حرّرته، ولا ينشر المدير نصّاً حرّره. الإدارة غير مستثناة.",
+   "kind": "text",
+   "hash": "4690b23702b6",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.mine": {
+   "en": "You edited this, so someone else reviews it",
+   "ar": "حرّرته أنت: يراجعه غيرك",
+   "kind": "text",
+   "hash": "47e8148f9b51",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingCount": {
+   "en": "{0} missing",
+   "ar": "{0} ناقص",
+   "kind": "template",
+   "params": 1,
+   "hash": "94d69de7d5ce",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingNone": {
+   "en": "No string is missing in this language.",
+   "ar": "لا نصّ ناقص في هذه اللغة.",
+   "kind": "text",
+   "hash": "307b8a2c80e9",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingTitle": {
+   "en": "Missing per page",
+   "ar": "الناقص في كل صفحة",
+   "kind": "text",
+   "hash": "e5e4a70f21cf",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.noDraftsPicked": {
+   "en": "No drafts edited by someone else are selected.",
+   "ar": "لا مسودّات حرّرها غيرك في المحدّد.",
+   "kind": "text",
+   "hash": "2b2f71b383da",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.noReviewedPicked": {
+   "en": "No reviewed strings edited by someone else are selected.",
+   "ar": "لا مراجَع حرّره غيرك في المحدّد.",
+   "kind": "text",
+   "hash": "fed985ca663a",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.save": {
+   "en": "Save draft",
+   "ar": "احفظ مسودّة",
+   "kind": "text",
+   "hash": "f400d29ef568",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.savedDraft": {
+   "en": "Saved as a draft for someone else to review",
+   "ar": "حُفظ مسودّة، ويراجعه شخصٌ آخر",
+   "kind": "text",
+   "hash": "6a819df89289",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
   "routes/try.admin.cards.access_log": {
    "en": "Who opened a child's file and when, including your own views this session",
    "ar": "من اطّلع على ملفّ طفل ومتى، وفيه اطّلاعك أنت في هذه الجلسة",
@@ -36877,6 +37714,27 @@
    "hash": "ed281a01eefb",
    "file": "src/routes/try.org.tsx"
   },
+  "routes/try.org.filePublished": {
+   "en": "A fictional published file",
+   "ar": "ملفّ خيالي منشور",
+   "kind": "text",
+   "hash": "136b0c6cc876",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.fileReturned": {
+   "en": "A fictional file returned by the admin team",
+   "ar": "ملفّ خيالي أعادته الإدارة",
+   "kind": "text",
+   "hash": "7a50bc546b27",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.filesTitle": {
+   "en": "Organization files (sample)",
+   "ar": "ملفّات الجهة (نموذجية)",
+   "kind": "text",
+   "hash": "61b85a37184e",
+   "file": "src/routes/try.org.tsx"
+  },
   "routes/try.org.lead": {
    "en": "What waits for the organization: sponsor messages it reviews before they reach a child, and capability and in-kind giving directed to it.",
    "ar": "ما ينتظر الجهة: رسائل كفلاء تراجعها قبل أن تصل الطفل، وتبرّعات التأهيل والعيني الموجّهة إليها.",
@@ -36896,6 +37754,13 @@
    "ar": "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة الداعم",
    "kind": "text",
    "hash": "f1d7c63c84eb",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.returnedNote": {
+   "en": "the birth certificate scan is unreadable",
+   "ar": "صورة شهادة الميلاد غير مقروءة",
+   "kind": "text",
+   "hash": "cdf60ea6de8d",
    "file": "src/routes/try.org.tsx"
   },
   "routes/try.org.role": {

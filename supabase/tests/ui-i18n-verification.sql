@@ -44,17 +44,22 @@ BEGIN
   PERFORM public.ui_translation_save('sq',
     '[{"key":"x/y.title","text":"Titull (makinë)","source_hash":"aaaaaaaaaaaa","origin":"machine"},
       {"key":"x/y.lead","text":"Hyrje","source_hash":"bbbbbbbbbbbb","origin":"machine"}]');
-  PERFORM public.ui_translation_save('sq', '[{"key":"x/y.title","text":"Titulli","source_hash":"aaaaaaaaaaaa"}]', true);
+  PERFORM public.ui_translation_save('sq', '[{"key":"x/y.title","text":"Titulli","source_hash":"aaaaaaaaaaaa"}]');
   _n := public.ui_translation_save('sq',
     '[{"key":"x/y.title","text":"Titull (makinë 2)","source_hash":"aaaaaaaaaaaa","origin":"machine"}]');
+  RESET ROLE;
+  -- العينان: الإدارة تراجع ما حرّره المراجع (لا يراجع المحرِّر نفسه).
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"bd100000-0000-4000-8000-000000000001","role":"authenticated"}';
+  PERFORM public.ui_translation_review('sq', ARRAY['x/y.title']);
   RESET ROLE;
   IF _n <> 0 OR (SELECT text FROM public.ui_translations WHERE locale = 'sq' AND key = 'x/y.title') <> 'Titulli' THEN
     RAISE EXCEPTION 'FAIL — مسودّةٌ آلية محت تصحيح المراجع';
   END IF;
   IF (SELECT status FROM public.ui_translations WHERE locale = 'sq' AND key = 'x/y.title') <> 'reviewed' THEN
-    RAISE EXCEPTION 'FAIL — حفظ المراجع مع «راجعتُ» لم يُسجَّل مراجَعاً';
+    RAISE EXCEPTION 'FAIL — مراجعة غير المحرِّر لم تُسجَّل';
   END IF;
-  RAISE NOTICE 'PASS — المسودّة الآلية لا تطغى على تصحيح إنسان، والتصحيح يُحفظ مراجَعاً باسمه';
+  RAISE NOTICE 'PASS — المسودّة الآلية لا تطغى على تصحيح إنسان، ويراجعه غير محرِّره';
 
   -- ٤) لا نشر إلا للإدارة، وللمراجَع وحده؛ ولا إطلاق للغةٍ فارغة
   _ok := false;
@@ -120,6 +125,52 @@ BEGIN
   END;
   IF NOT _ok THEN RAISE EXCEPTION 'FAIL — حُذف سجلّ المراجعات'; END IF;
   RAISE NOTICE 'PASS — التعديل يعيد المراجعة، والسجلّ كامل ولا يُحذف';
+
+  -- ٧) العينان: الإدارة غير مستثناة. ما يحرّره المدير لا يراجعه ولا ينشره هو.
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"bd100000-0000-4000-8000-000000000001","role":"authenticated"}';
+  PERFORM public.ui_translation_save('sq', '[{"key":"x/y.cta","text":"Fillo","source_hash":"dddddddddddd"}]');
+  _ok := false;
+  BEGIN
+    PERFORM public.ui_translation_save('sq', '[{"key":"x/y.cta","text":"Fillo!","source_hash":"dddddddddddd"}]', true);
+  EXCEPTION WHEN insufficient_privilege THEN _ok := SQLERRM = 'four_eyes_review';
+  END;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — المدير حفظ وراجع نصّه بنفسه'; END IF;
+  _n := public.ui_translation_review('sq', ARRAY['x/y.cta']);
+  IF _n <> 0 THEN RAISE EXCEPTION 'FAIL — المدير راجع ما حرّره'; END IF;
+  RESET ROLE;
+  -- المراجع (غير المحرِّر) يراجع، ثم المدير المحرِّر لا ينشر.
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"bd100000-0000-4000-8000-000000000002","role":"authenticated"}';
+  _n := public.ui_translation_review('sq', ARRAY['x/y.cta']);
+  RESET ROLE;
+  IF _n <> 1 THEN RAISE EXCEPTION 'FAIL — مراجعة غير المحرِّر لم تمرّ'; END IF;
+  SET LOCAL ROLE authenticated;
+  SET LOCAL request.jwt.claims = '{"sub":"bd100000-0000-4000-8000-000000000001","role":"authenticated"}';
+  _n := public.ui_translation_publish('sq', ARRAY['x/y.cta']);
+  RESET ROLE;
+  IF _n <> 0 OR (SELECT status FROM public.ui_translations WHERE key = 'x/y.cta') <> 'reviewed' THEN
+    RAISE EXCEPTION 'FAIL — المدير نشر نصّاً حرّره';
+  END IF;
+  -- ولا التفاف بالكتابة المباشرة: القيد على الجدول.
+  _ok := false;
+  BEGIN
+    UPDATE public.ui_translations SET status = 'published',
+           published_by = 'bd100000-0000-4000-8000-000000000001', published_at = now()
+     WHERE key = 'x/y.cta';
+  EXCEPTION WHEN insufficient_privilege THEN _ok := SQLERRM = 'four_eyes_publish';
+  END;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — كتابة مباشرة تجاوزت العينين في النشر'; END IF;
+  _ok := false;
+  BEGIN
+    UPDATE public.ui_translations SET status = 'draft', reviewed_by = NULL, reviewed_at = NULL WHERE key = 'x/y.cta';
+    UPDATE public.ui_translations SET status = 'reviewed',
+           reviewed_by = 'bd100000-0000-4000-8000-000000000001', reviewed_at = now()
+     WHERE key = 'x/y.cta';
+  EXCEPTION WHEN insufficient_privilege THEN _ok := SQLERRM = 'four_eyes_review';
+  END;
+  IF NOT _ok THEN RAISE EXCEPTION 'FAIL — كتابة مباشرة تجاوزت العينين في المراجعة'; END IF;
+  RAISE NOTICE 'PASS — المراجِع غير المحرِّر، والناشر غير المحرِّر، والإدارة غير مستثناة';
 END $$;
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص لغات الواجهة اجتازت ──'; END $$;
 ROLLBACK;

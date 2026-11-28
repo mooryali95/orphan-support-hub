@@ -11,16 +11,17 @@ import { cn } from "@/lib/utils";
 import { Busy, CARD, Failed, NeedsUpdate, SectionHead } from "../shared";
 import { SOURCES_COPY } from "../sources-copy";
 import { ChildFileSheet } from "../WorkTools";
-import { Alerts } from "./Alerts";
-import { Conflicts } from "./ConflictsInbox";
 import { HealthCard } from "./HealthCard";
 import { SsoSwitchCard } from "./KillSwitches";
-import { LinkQueue } from "./LinkQueue";
 import { StartHere } from "./StartHere";
 import { ChildUpdatesCard } from "./ChildUpdatesCard";
 import { type Tab } from "./shared";
 
 // ألسنة الإدارة والرفع والفريق تُحمَّل حين تُفتح وحدها، فلا تثقل البوّابة لمن لا يفتحها.
+// الطوابير الثلاث تُحمَّل حين يُفتح لسانها: بوّابة الدولة تبدأ بـ«اليوم» لا بها.
+const Alerts = lazy(() => import("./Alerts").then((m) => ({ default: m.Alerts })));
+const Conflicts = lazy(() => import("./ConflictsInbox").then((m) => ({ default: m.Conflicts })));
+const LinkQueue = lazy(() => import("./LinkQueue").then((m) => ({ default: m.LinkQueue })));
 const UploadCard = lazy(() => import("./UploadCard").then((m) => ({ default: m.UploadCard })));
 const Team = lazy(() => import("./Team").then((m) => ({ default: m.Team })));
 const ModeControl = lazy(() => import("./ModeControl").then((m) => ({ default: m.ModeControl })));
@@ -36,6 +37,7 @@ export function SourcesPanel({
   access,
   tab: tabIn,
   setTab: setTabIn,
+  inToday = false,
 }: {
   country: string;
   setCountry: (code: string) => void;
@@ -44,6 +46,8 @@ export function SourcesPanel({
   /** اللسان المفتوح حين يملكه من يعرض اللوحة (رابطٌ من «اليوم» إلى تعارضات دولة). */
   tab?: Tab | undefined;
   setTab?: ((t: Tab) => void) | undefined;
+  /** تحت «اليوم» (بوّابة الدولة): الطوابير للاطّلاع وعليها علامة «معروض في اليوم». */
+  inToday?: boolean;
 }) {
   const c = useCopy(SOURCES_COPY);
   const fetchHealth = useDataFn("golden.health", getDataHealth);
@@ -221,13 +225,28 @@ export function SourcesPanel({
           <div role="tabpanel" id={`panel-${current}`} aria-labelledby={`tab-${current}`}>
             <Suspense fallback={<Busy />}>
               {current === "alerts" && (
-                <Alerts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+                <Alerts
+                  country={selected.code}
+                  canApprove={can("approve")}
+                  onOpen={setFileId}
+                  inToday={inToday}
+                />
               )}
               {current === "conflicts" && (
-                <Conflicts country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+                <Conflicts
+                  country={selected.code}
+                  canApprove={can("approve")}
+                  onOpen={setFileId}
+                  inToday={inToday}
+                />
               )}
               {current === "links" && (
-                <LinkQueue country={selected.code} canApprove={can("approve")} onOpen={setFileId} />
+                <LinkQueue
+                  country={selected.code}
+                  canApprove={can("approve")}
+                  onOpen={setFileId}
+                  inToday={inToday}
+                />
               )}
               {current === "upload" && <UploadCard key={`up-${selected.code}`} row={selected} />}
               {current === "updates" && (

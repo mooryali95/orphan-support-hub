@@ -169,7 +169,7 @@ export function OrgInbox() {
                 key={m.sponsorship_id}
                 className="flex flex-wrap items-start justify-between gap-3 py-3"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-[min(100%,16rem)] flex-1">
                   <p className="text-xs text-muted-foreground">
                     {c.to} <Name>{m.orphan}</Name> · {formatDate(m.created_at, locale)}
                   </p>

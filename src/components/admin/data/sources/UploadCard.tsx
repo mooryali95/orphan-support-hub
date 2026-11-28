@@ -71,6 +71,7 @@ export function UploadCard({ row }: { row: CountryHealth }) {
         "golden-links",
         "golden-alerts",
         "queue-counts",
+        "today-strip",
       ])
         void qc.invalidateQueries({ queryKey: [...dk, k] });
     },

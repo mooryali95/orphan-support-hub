@@ -7,8 +7,8 @@ import { Eye, FileText, GraduationCap, PencilLine, Plus, UserRound } from "lucid
 import { OrgInbox } from "@/components/org/OrgInbox";
 import { OrgPledges } from "@/components/org/OrgPledges";
 import { OrphanProfilePanel } from "@/components/profile/OrphanProfilePanel";
-import { CompletenessLine } from "@/components/orphan/TrustSignals";
-import { getProfileCompleteness, SECTION_LABELS } from "@/lib/profile.functions";
+import { OrgCompletenessLine, RejectionLine } from "@/components/org/OrgFileNotes";
+import { getProfileCompleteness } from "@/lib/profile.functions";
 import { DashboardShell } from "@/components/DashboardShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,6 @@ import { OrgRegistration } from "@/components/org/OrgRegistration";
 import { QualificationManager } from "@/components/qualification/QualificationManager";
 import { OrphanIntakeForm } from "@/components/intake/OrphanIntakeForm";
 import { ReportForm } from "@/components/impact/ReportForm";
-import { REJECTION_LABELS } from "@/lib/intake.functions";
 import { formatMoney } from "@/lib/format";
 import { brandFor, pageTitle } from "@/config/brand";
 import { PanelSkeleton } from "@/components/admin/PanelState";
@@ -46,8 +45,6 @@ export const ORG_COPY = defineCopy("routes/org", {
     emptyP: "ابدأ بملفّ يتيم جديد؛ يقف قيد المراجعة حتى تعتمده الإدارة.",
     noCity: "بلا مدينة",
     pendingEdit: "تعديلٌ ينتظر مراجعة الإدارة، والصفحة العامّة تعرض النسخة المراجَعة.",
-    rejectReason: "سبب الرفض:",
-    noReason: "غير محدّد",
     close: "إغلاق",
     fix: "صحّح وأعد التقديم",
     resume: "أكمل المسودّة",
@@ -86,8 +83,6 @@ export const ORG_COPY = defineCopy("routes/org", {
     emptyP: "Start with a new orphan file; it stays under review until the admin team approves it.",
     noCity: "No city",
     pendingEdit: "An edit awaits admin review, and the public page shows the reviewed version.",
-    rejectReason: "Reason for rejection:",
-    noReason: "Not specified",
     close: "Close",
     fix: "Fix and resubmit",
     resume: "Continue the draft",
@@ -274,10 +269,7 @@ function OrgPage() {
                   {o.status === "rejected" && (
                     // الرفض بلا سبب لا يُمكّن الجهة من التصحيح، فالسبب
                     // المُهيكل يُعرض هنا لا في بريد منفصل.
-                    <p className="text-bridge-ink mt-1 text-xs font-medium">
-                      {c.rejectReason} {REJECTION_LABELS[o.rejection_code ?? ""] ?? c.noReason}
-                      {o.rejection_reason ? `: ${o.rejection_reason}` : ""}
-                    </p>
+                    <RejectionLine code={o.rejection_code} reason={o.rejection_reason} />
                   )}
                 </div>
 
@@ -396,12 +388,5 @@ function OrgCompleteness({ orphanId }: { orphanId: string }) {
   });
   const c = data?.completeness;
   if (!c) return null;
-  return (
-    <CompletenessLine
-      className="mt-3"
-      filled={c.filled}
-      missing={c.missing}
-      labels={SECTION_LABELS as Record<string, string>}
-    />
-  );
+  return <OrgCompletenessLine filled={c.filled} missing={c.missing} />;
 }

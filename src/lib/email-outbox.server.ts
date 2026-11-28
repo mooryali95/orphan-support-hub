@@ -84,6 +84,8 @@ export async function drainOutbox(deps: OutboxDeps, limit = 25): Promise<DrainSu
           body: row.body ?? undefined,
           link: row.link ?? undefined,
           unsubscribeUrl: unsubscribeUrl(base, row.unsubscribe_token),
+          // لغة المستلم: الغلاف والزرّ بلغته (NotificationEmail).
+          locale: row.locale ?? "ar",
         },
         // معرّف الإشعار مفتاحَ تفرّد: إعادة المحاولة بعد انقطاع لا تُنتج
         // رسالةً ثانية — التكرار يُطرح عند المزوّد.

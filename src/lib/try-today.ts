@@ -7,8 +7,18 @@
  * الحسم في صندوق القرارات لا يُحاكى هنا: لوحه في المنصّة يحمل وثائق وسياقاً حقيقيَّين.
  */
 import { registerDemo } from "@/lib/data-port";
-import { pendingChildUpdates, registerChildUpdateDemos } from "@/lib/try-child-updates";
-import { demoDecisionLog, demoSearch, verificationCounts } from "@/lib/try-verification";
+import {
+  pendingChildUpdates,
+  pendingChildUpdatesForOthers,
+  registerChildUpdateDemos,
+} from "@/lib/try-child-updates";
+import {
+  demoDecisionLog,
+  demoSearch,
+  verificationCan,
+  verificationCounts,
+  verificationStripItems,
+} from "@/lib/try-verification";
 import type { InboxItem, InboxKind } from "@/lib/inbox.functions";
 import { demoId } from "@/lib/try-verification.data";
 
@@ -45,6 +55,21 @@ export function registerTodayDemos() {
     ok: true as const,
     data: { ...verificationCounts(data.country), updates: pendingChildUpdates(data.country) },
   }));
+  registerDemo("admin.todayStrip", async ({ data }: { data: { country: string } }) => {
+    const items = verificationStripItems(data.country);
+    // التحديثات يحسمها المشرف وحده، كبقيّة البنود.
+    if (verificationCan(data.country, "approve"))
+      for (const u of pendingChildUpdatesForOthers(data.country))
+        items.push({ at: u.created_at, hours: 72 });
+    const now = Date.now();
+    return {
+      ok: true as const,
+      data: {
+        settle: items.length,
+        overdue: items.filter((i) => now - Date.parse(i.at) > i.hours * HOUR).length,
+      },
+    };
+  });
   registerDemo("admin.search", async ({ data }: { data: { q: string } }) => {
     await new Promise((r) => setTimeout(r, 120));
     return { ok: true as const, data: demoSearch(data.q) };
