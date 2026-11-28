@@ -551,7 +551,7 @@ function OpsStage({ track, group, child }: { track: Track; group: string; child:
     return (
       <Panel title={c.opsH} Icon={GraduationCap}>
         <p className="text-sm leading-7 text-muted-foreground">
-          {c.opsQualify} — {place(group)}
+          {c.opsQualify}: {place(group)}
         </p>
         <ol className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-7">
           {Array.from({ length: SESSIONS_PER_CYCLE }, (_, i) => (
