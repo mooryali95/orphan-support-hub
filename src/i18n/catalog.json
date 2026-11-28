@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5564,
+ "count": 5719,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -11886,6 +11886,162 @@
    "hash": "8e33f0c9ebd0",
    "file": "src/components/donor/DonorBoard.tsx"
   },
+  "components/donor/DonorReport.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.back": {
+   "en": "Back to the entity",
+   "ar": "العودة إلى الجهة",
+   "kind": "text",
+   "hash": "99ebb68e33c8",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.byKind": {
+   "en": "By kind",
+   "ar": "حسب النوع",
+   "kind": "text",
+   "hash": "35ef84d9e966",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.delivered": {
+   "en": "Delivered and documented",
+   "ar": "سُلّم موثّقاً",
+   "kind": "text",
+   "hash": "8324507298eb",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.delivery": {
+   "en": "Delivery",
+   "ar": "التسليم",
+   "kind": "text",
+   "hash": "591b38bc5e09",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.denied": {
+   "en": "You cannot view this entity.",
+   "ar": "لا تملك الاطّلاع على هذه الجهة.",
+   "kind": "text",
+   "hash": "596bdecc8aba",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.documented": {
+   "en": "Documented {0}",
+   "ar": "موثّق {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8fb409953d0e",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.empty": {
+   "en": "This entity has no pledges yet.",
+   "ar": "لا تعهّدات لهذه الجهة بعد.",
+   "kind": "text",
+   "hash": "6e9a29120dd6",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.failed": {
+   "en": "The report could not be read",
+   "ar": "تعذّرت قراءة التقرير",
+   "kind": "text",
+   "hash": "9baab305b8c8",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.failedText": {
+   "en": "The figures are missing right now, not zero.",
+   "ar": "الأرقام غائبة الآن، وليست صفراً.",
+   "kind": "text",
+   "hash": "4bbc913b7b23",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.issued": {
+   "en": "Issued on {0}",
+   "ar": "صدر في {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d27dc5ad9034",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.kind": {
+   "en": "Kind",
+   "ar": "النوع",
+   "kind": "text",
+   "hash": "9b81d0a755af",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.noTarget": {
+   "en": "General target",
+   "ar": "هدف عام",
+   "kind": "text",
+   "hash": "891a95feaa0c",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.note": {
+   "en": "\"Documented\" means the regional office recorded the delivery and uploaded its document; the document is kept on the platform and available on request, and is not independently reviewed before it is marked. Amounts are in each pledge's currency, and two currencies are never added into one figure. This report carries no real child names or photos.",
+   "ar": "«موثّق» يعني أن مكتب المنطقة سجّل التسليم ورفع مستنده؛ والمستند محفوظ في المنصّة ويُطلب للاطّلاع، ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه. المبالغ بعملة كل تعهّد، ولا تُجمع عملتان في رقم واحد. لا يحمل هذا التقرير أسماء الأطفال الحقيقية ولا صورهم.",
+   "kind": "text",
+   "hash": "9e19ae619f55",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.pending": {
+   "en": "Not delivered yet",
+   "ar": "لم يُسلَّم بعد",
+   "kind": "text",
+   "hash": "f92acd35790d",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.pledges": {
+   "en": "Pledges",
+   "ar": "التعهّدات",
+   "kind": "text",
+   "hash": "556bfe0efc5b",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.portals": {
+   "en": "My portals",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "b7840c387b58",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.print": {
+   "en": "Print or save as PDF",
+   "ar": "طباعة أو حفظ PDF",
+   "kind": "text",
+   "hash": "f9ad934d6aba",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.target": {
+   "en": "Target",
+   "ar": "الهدف",
+   "kind": "text",
+   "hash": "c752fad02f45",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.title": {
+   "en": "Impact report",
+   "ar": "تقرير الأثر",
+   "kind": "text",
+   "hash": "a455d02330df",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
+  "components/donor/DonorReport.total": {
+   "en": "Total support, excluding cancelled",
+   "ar": "مجموع الدعم بلا الملغى",
+   "kind": "text",
+   "hash": "9caa8ac85c18",
+   "file": "src/components/donor/DonorReport.tsx"
+  },
   "components/geo/CountryPicker.country": {
    "en": "Country",
    "ar": "البلد",
@@ -11913,6 +12069,141 @@
    "kind": "text",
    "hash": "c2f38f84cdb5",
    "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/guardian/GuardianBoard.childrenH": {
+   "en": "Children in your care",
+   "ar": "من ترعاهم",
+   "kind": "text",
+   "hash": "fbdc7666ef4a",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.coverage": {
+   "en": "Coverage of {0}'s monthly need",
+   "ar": "تغطية احتياج {0} الشهري",
+   "kind": "template",
+   "params": 1,
+   "hash": "bd44f223a252",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.emptyH": {
+   "en": "No files linked to your account",
+   "ar": "لا ملفات مرتبطة بحسابك",
+   "kind": "text",
+   "hash": "fc3654081ad1",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.emptyP": {
+   "en": "The administration links your account to a file in your care after verifying guardianship. Contact the field organization that uploaded the file.",
+   "ar": "تربط الإدارة حسابك بملف من تحت رعايتك بعد التحقّق من الوصاية. راجع الجهة الميدانية التي رفعت الملفّ.",
+   "kind": "text",
+   "hash": "69b76684410a",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.failed": {
+   "en": "Your files could not be read",
+   "ar": "تعذّرت قراءة ملفّاتك",
+   "kind": "text",
+   "hash": "8a3bf69c765f",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.failedText": {
+   "en": "The files are missing right now, not empty.",
+   "ar": "الملفّات غائبة الآن، وليست فارغة.",
+   "kind": "text",
+   "hash": "810381827868",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.filesH": {
+   "en": "Files and their coverage",
+   "ar": "الملفّات وتغطيتها",
+   "kind": "text",
+   "hash": "73cde40f4b80",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.intro": {
+   "en": "Where the children in your care stand, and what is asked of you.",
+   "ar": "أين وصل من ترعاهم، وما المطلوب منك.",
+   "kind": "text",
+   "hash": "39470976c0f0",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.langGroup": {
+   "en": "Language of the child cards",
+   "ar": "لغة بطاقات الأطفال",
+   "kind": "text",
+   "hash": "80e924f424e7",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.monthly": {
+   "en": "{0} of {1} monthly",
+   "ar": "{0} من {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "5ae391dd914c",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.approved": {
+   "en": "Approved",
+   "ar": "معتمد",
+   "kind": "text",
+   "hash": "4a6e365b6c64",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.archived": {
+   "en": "Archived",
+   "ar": "مؤرشف",
+   "kind": "text",
+   "hash": "26c68a14dffb",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.draft": {
+   "en": "Draft",
+   "ar": "مسودة",
+   "kind": "text",
+   "hash": "683783d92412",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.fully_sponsored": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.rejected": {
+   "en": "Rejected",
+   "ar": "مرفوض",
+   "kind": "text",
+   "hash": "6f3c73f28fae",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.submitted": {
+   "en": "Awaiting review",
+   "ar": "بانتظار المراجعة",
+   "kind": "text",
+   "hash": "4fa1637946e9",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.under_review": {
+   "en": "Under review",
+   "ar": "قيد المراجعة",
+   "kind": "text",
+   "hash": "a11990371e12",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.title": {
+   "en": "Guardian space",
+   "ar": "مساحة ولي الأمر",
+   "kind": "text",
+   "hash": "f9b1a010b3cc",
+   "file": "src/components/guardian/GuardianBoard.tsx"
   },
   "components/impact/ChildStanding.bar": {
    "en": "{0}'s monthly need: {1}% without your share, {2}% with it",
@@ -14868,6 +15159,227 @@
    "kind": "text",
    "hash": "5c720a19ed1d",
    "file": "src/components/offices/OfficesMap.tsx"
+  },
+  "components/org/OrgInbox.approve": {
+   "en": "Approve",
+   "ar": "اعتماد",
+   "kind": "text",
+   "hash": "5be292afff43",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.approveFor": {
+   "en": "Approve the message to {0}",
+   "ar": "اعتماد رسالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c4d4b7b46be1",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.confirm": {
+   "en": "Confirm arrival",
+   "ar": "تأكيد الوصول",
+   "kind": "text",
+   "hash": "1ac11fa8010f",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.confirmFailed": {
+   "en": "The confirmation could not be saved",
+   "ar": "تعذّر التأكيد",
+   "kind": "text",
+   "hash": "434ca894e7e4",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.confirmed": {
+   "en": "Arrival confirmed, and the sponsor was told",
+   "ar": "أُكّد الوصول، وأُبلغ الكافل",
+   "kind": "text",
+   "hash": "f1b04d74e6c5",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.deliveriesH": {
+   "en": "Confirm this month's support arrived",
+   "ar": "تأكيد وصول دعم الشهر",
+   "kind": "text",
+   "hash": "2ea26bf83745",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.deliveriesP": {
+   "en": "Upload a receipt or a photo of the handover. It is kept in the child's private file and the sponsor never sees it; they see that it is documented.",
+   "ar": "ارفع إيصالاً أو صورة استلام. تُحفظ في ملفّ الطفل الخاص ولا يراها الكافل؛ يرى أنها موثّقة.",
+   "kind": "text",
+   "hash": "131a4c1b4430",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.failed": {
+   "en": "What is waiting for you could not be read",
+   "ar": "تعذّرت قراءة ما ينتظرك",
+   "kind": "text",
+   "hash": "cdab93f892d5",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.failedText": {
+   "en": "Messages or confirmations may be waiting that do not show right now.",
+   "ar": "قد تنتظرك رسائل أو تأكيدات لا تظهر الآن.",
+   "kind": "text",
+   "hash": "401238b06a97",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.messagesH": {
+   "en": "Sponsor messages to children",
+   "ar": "رسائل الكفلاء للأطفال",
+   "kind": "text",
+   "hash": "575b232194f6",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.messagesP": {
+   "en": "Approve what is fit for the child to read. The sponsor's name is never shown to the child.",
+   "ar": "اعتمد ما يصلح أن يقرأه الطفل. لا يظهر اسم الكافل للطفل.",
+   "kind": "text",
+   "hash": "0aeaaccad52f",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.moderateFailed": {
+   "en": "The review could not be saved",
+   "ar": "تعذّرت المراجعة",
+   "kind": "text",
+   "hash": "9fa40c568b32",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.note": {
+   "en": "Note",
+   "ar": "ملاحظة",
+   "kind": "text",
+   "hash": "d9f75af1e0b0",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.notePh": {
+   "en": "Note (optional)",
+   "ar": "ملاحظة (اختياري)",
+   "kind": "text",
+   "hash": "ea4c13d492dc",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.proof": {
+   "en": "Receipt document",
+   "ar": "مستند الاستلام",
+   "kind": "text",
+   "hash": "7541568ca53e",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.proofFor": {
+   "en": "Receipt document for {0}",
+   "ar": "مستند استلام {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "8a9a08413e93",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.putFailed": {
+   "en": "The document could not be uploaded",
+   "ar": "تعذّر رفع المستند",
+   "kind": "text",
+   "hash": "632bce9c1388",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.reject": {
+   "en": "Reject",
+   "ar": "رفض",
+   "kind": "text",
+   "hash": "e982a045a080",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.rejectFor": {
+   "en": "Reject the message to {0}",
+   "ar": "رفض رسالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "30852156575d",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.sent": {
+   "en": "Transferred {0}",
+   "ar": "حُوِّل {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "be20d23f10bd",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.signFailed": {
+   "en": "The upload could not be prepared",
+   "ar": "تعذّر تجهيز الرفع",
+   "kind": "text",
+   "hash": "d6867aa69142",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.title": {
+   "en": "Waiting for you",
+   "ar": "ما ينتظرك",
+   "kind": "text",
+   "hash": "0ee2316df0fd",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgInbox.to": {
+   "en": "To",
+   "ar": "إلى",
+   "kind": "text",
+   "hash": "6fd7e2c99350",
+   "file": "src/components/org/OrgInbox.tsx"
+  },
+  "components/org/OrgPledges.delivered": {
+   "en": "Delivered and documented",
+   "ar": "سُلّم موثّقاً",
+   "kind": "text",
+   "hash": "8324507298eb",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.lead": {
+   "en": "The office records its preparation and delivery with a document. The supporter's identity is not shown here.",
+   "ar": "يسجّل المكتب تجهيزها وتسليمها بمستند. هويّة الداعم لا تظهر هنا.",
+   "kind": "text",
+   "hash": "5537a5b5d66d",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.office": {
+   "en": "Awaiting the office",
+   "ar": "بانتظار المكتب",
+   "kind": "text",
+   "hash": "ee7fffd93262",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.pending": {
+   "en": "Awaiting collection to open",
+   "ar": "بانتظار فتح التحصيل",
+   "kind": "text",
+   "hash": "ddd36cae420b",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.preparing": {
+   "en": "Being prepared",
+   "ar": "يُجهَّز",
+   "kind": "text",
+   "hash": "8a8ea26ff0f2",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.title": {
+   "en": "Capability and in-kind giving directed to you",
+   "ar": "تبرّعات التأهيل والعيني الموجّهة إليكم",
+   "kind": "text",
+   "hash": "1de9b7729898",
+   "file": "src/components/org/OrgPledges.tsx"
+  },
+  "components/org/OrgPledges.toOrg": {
+   "en": "For the organization",
+   "ar": "للجهة",
+   "kind": "text",
+   "hash": "300a704eecd1",
+   "file": "src/components/org/OrgPledges.tsx"
   },
   "components/orphan/OrphanUnavailable.browse": {
    "en": "Browse the directory",
@@ -30776,6 +31288,232 @@
    "hash": "58a4af1c234c",
    "file": "src/routes/_authenticated/country-data.tsx"
   },
+  "routes/developers.auth": {
+   "en": "Authentication",
+   "ar": "المصادقة",
+   "kind": "text",
+   "hash": "e3d0818980c7",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.body": {
+   "en": "Request body",
+   "ar": "جسم الطلب",
+   "kind": "text",
+   "hash": "cb5cc74bc0db",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colCode": {
+   "en": "Error",
+   "ar": "الخطأ",
+   "kind": "text",
+   "hash": "91c064ef9bea",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colMeaning": {
+   "en": "Meaning",
+   "ar": "المعنى",
+   "kind": "text",
+   "hash": "6e3c64dfc517",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colStatus": {
+   "en": "Status",
+   "ar": "الرمز",
+   "kind": "text",
+   "hash": "078471500050",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copied": {
+   "en": "The curl command was copied",
+   "ar": "نُسخ أمر curl",
+   "kind": "text",
+   "hash": "c17b1b337b1d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copy": {
+   "en": "Copy",
+   "ar": "نسخ",
+   "kind": "text",
+   "hash": "15d1e3fb165e",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copyFailed": {
+   "en": "Could not copy; the clipboard is not available in this browser",
+   "ar": "تعذّر النسخ؛ الحافظة غير متاحة في هذا المتصفّح",
+   "kind": "text",
+   "hash": "02521911c679",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copyLabel": {
+   "en": "Copy the curl command",
+   "ar": "نسخ أمر curl",
+   "kind": "text",
+   "hash": "a2a22dc1ba1f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.description": {
+   "en": "Connecting partner platforms to {0}: authentication, endpoints and examples.",
+   "ar": "ربط المنصّات الشريكة بـ{0}: المصادقة، والنقاط، والأمثلة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "8cc84e3b9eda",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.endpoints": {
+   "en": "Endpoints",
+   "ar": "النقاط",
+   "kind": "text",
+   "hash": "53957d07a984",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.import.text": {
+   "en": "Up to 100 records. Every imported record stays under review until the admin team approves it. An Idempotency-Key header is recommended.",
+   "ar": "حتى 100 سجلّ. كل مستورَدٍ يقف «قيد المراجعة» حتى تعتمده الإدارة. يُنصح بترويسة Idempotency-Key.",
+   "kind": "text",
+   "hash": "24ed2e24cb23",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.import.title": {
+   "en": "Import beneficiaries",
+   "ar": "استيراد المستفيدين",
+   "kind": "text",
+   "hash": "994d7f78113f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.mirror.text": {
+   "en": "Batches of up to 500 per entity with a cursor, or a full reconciliation by every identifier. Details are in the sync contract.",
+   "ar": "دفعات حتى 500 لكل كيان بمؤشّر، أو مطابقة بكل المعرّفات. التفصيل في عقد المزامنة.",
+   "kind": "text",
+   "hash": "b29ef5d05f3c",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.mirror.title": {
+   "en": "Sync an operating platform",
+   "ar": "مزامنة منصّة تشغيل",
+   "kind": "text",
+   "hash": "5e7fe2433fea",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.read.text": {
+   "en": "Public cards with their filters: a pseudonym, country, age band and funding state. No story, photo or city.",
+   "ar": "البطاقات العامّة بفلترتها: اسمٌ مستعار، بلد، فئة عمرية، حال التمويل. لا قصّة ولا صورة ولا مدينة.",
+   "kind": "text",
+   "hash": "70dd3f62ffc1",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.read.title": {
+   "en": "Read cards",
+   "ar": "قراءة البطاقات",
+   "kind": "text",
+   "hash": "02d9ae369d73",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.batch_too_large": {
+   "en": "The batch is larger than the limit",
+   "ar": "الدفعة أكبر من الحدّ",
+   "kind": "text",
+   "hash": "9597735b710b",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.invalid_credentials": {
+   "en": "A wrong or revoked key or secret (one answer, on purpose)",
+   "ar": "مفتاحٌ أو سرٌّ خاطئ أو مُبطَل (ردٌّ واحد عمداً)",
+   "kind": "text",
+   "hash": "d886439e22cd",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.missing_credentials": {
+   "en": "All three headers are required",
+   "ar": "الرؤوس الثلاثة مطلوبة",
+   "kind": "text",
+   "hash": "6d5e06c4cedc",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.rejected": {
+   "en": "The batch was rejected; see code",
+   "ar": "رُفضت الدفعة؛ انظر code",
+   "kind": "text",
+   "hash": "f419cf1befb9",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.scope_denied": {
+   "en": "The key does not carry the scope",
+   "ar": "المفتاح لا يحمل النطاق",
+   "kind": "text",
+   "hash": "140c2d9c6a1d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.stale_timestamp": {
+   "en": "The timestamp is outside the five minute window",
+   "ar": "الوقت خارج نافذة خمس دقائق",
+   "kind": "text",
+   "hash": "f122a066c044",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.errors": {
+   "en": "Errors",
+   "ar": "الأخطاء",
+   "kind": "text",
+   "hash": "01a69bde2b66",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.key": {
+   "en": "Key (optional, never sent)",
+   "ar": "المفتاح (اختياري، لا يُرسَل)",
+   "kind": "text",
+   "hash": "3e531736924a",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.lead": {
+   "en": "Connect your platform to {0}. Keys are issued by the admin team with a specific scope, and the secret is shown once. Child protection lives in the database, not the gateway: a key never opens a child's file.",
+   "ar": "اربط منصّتك بـ{0}. المفاتيح تُصدرها الإدارة بنطاقٍ محدّد، والسرّ يُعرض مرّة واحدة. حماية الطفل في القاعدة لا في البوّابة: المفتاح لا يفتح ملفّ طفل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6c7c4191885e",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.legacy": {
+   "en": "The older X-IOSO-* headers are still accepted.",
+   "ar": "الرؤوس القديمة X-IOSO-* ما زالت مقبولة.",
+   "kind": "text",
+   "hash": "0c45978c6989",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.origin": {
+   "en": "https://<domain>",
+   "ar": "https://<النطاق>",
+   "kind": "text",
+   "hash": "55766af3d1b4",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.refresh": {
+   "en": "Refresh the timestamp",
+   "ar": "تحديث الوقت",
+   "kind": "text",
+   "hash": "90af0c68f95d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.scope": {
+   "en": "Scope:",
+   "ar": "النطاق:",
+   "kind": "text",
+   "hash": "e60ea2d9bcc0",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.secret": {
+   "en": "Secret (copied, never shown)",
+   "ar": "السرّ (يُنسخ ولا يُعرض)",
+   "kind": "text",
+   "hash": "9c5184de135f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.title": {
+   "en": "For developers",
+   "ar": "للمطوّرين",
+   "kind": "text",
+   "hash": "2b88d06e7a09",
+   "file": "src/routes/developers.tsx"
+  },
   "routes/donor.title": {
    "en": "Donor entity",
    "ar": "الجهة المانحة",
@@ -32196,6 +32934,252 @@
    "kind": "text",
    "hash": "fff7cee8ae60",
    "file": "src/routes/_authenticated/office.$officeId.tsx"
+  },
+  "routes/org.applyTitle": {
+   "en": "Organization approval request",
+   "ar": "طلب اعتماد الجهة",
+   "kind": "text",
+   "hash": "f867f170e4d4",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.approved": {
+   "en": "Approved by the admin team",
+   "ar": "اعتمدتها الإدارة",
+   "kind": "text",
+   "hash": "ed281a01eefb",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.building": {
+   "en": "Capability program",
+   "ar": "بناء الأهلية",
+   "kind": "text",
+   "hash": "cbc025c9dbea",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.emptyH": {
+   "en": "No files yet",
+   "ar": "لا توجد ملفات بعد",
+   "kind": "text",
+   "hash": "ac91a669891b",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.emptyP": {
+   "en": "Start with a new orphan file; it stays under review until the admin team approves it.",
+   "ar": "ابدأ بملفّ يتيم جديد؛ يقف قيد المراجعة حتى تعتمده الإدارة.",
+   "kind": "text",
+   "hash": "60927fb5191f",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.failed": {
+   "en": "The organization space could not be read",
+   "ar": "تعذّرت قراءة مساحة الجهة",
+   "kind": "text",
+   "hash": "50aec14ee8a6",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.failedText": {
+   "en": "The files are missing right now, not empty.",
+   "ar": "الملفّات غائبة الآن، وليست فارغة.",
+   "kind": "text",
+   "hash": "810381827868",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.fix": {
+   "en": "Fix and resubmit",
+   "ar": "صحّح وأعد التقديم",
+   "kind": "text",
+   "hash": "156ec0159edf",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.inactive": {
+   "en": "Not active",
+   "ar": "غير مفعّلة",
+   "kind": "text",
+   "hash": "856185c8713b",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.lead": {
+   "en": "Your organization's orphan files and their status.",
+   "ar": "ملفات الأيتام التابعة لجهتك وحالتها.",
+   "kind": "text",
+   "hash": "b7628f7efa16",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.newFile": {
+   "en": "New orphan file",
+   "ar": "ملفّ يتيم جديد",
+   "kind": "text",
+   "hash": "ab1418ce44e9",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.newFileWhy": {
+   "en": "Uploading files opens once the admin team approves the organization.",
+   "ar": "يُفتح رفع الملفّات بعد اعتماد الإدارة للجهة.",
+   "kind": "text",
+   "hash": "3263c9ee08f6",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.noCity": {
+   "en": "No city",
+   "ar": "بلا مدينة",
+   "kind": "text",
+   "hash": "d59a431dd4d3",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.noReason": {
+   "en": "Not specified",
+   "ar": "غير محدّد",
+   "kind": "text",
+   "hash": "d047959932fe",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.pageTitle": {
+   "en": "Field organization space",
+   "ar": "مساحة الجهة الميدانية",
+   "kind": "text",
+   "hash": "9f39294f871a",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.pendingEdit": {
+   "en": "An edit awaits admin review, and the public page shows the reviewed version.",
+   "ar": "تعديلٌ ينتظر مراجعة الإدارة، والصفحة العامّة تعرض النسخة المراجَعة.",
+   "kind": "text",
+   "hash": "d7b257d3be9d",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.pendingOrg": {
+   "en": "Awaiting admin approval",
+   "ar": "بانتظار اعتماد الإدارة",
+   "kind": "text",
+   "hash": "28486bb6b9a6",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.profile": {
+   "en": "Profile",
+   "ar": "البروفايل",
+   "kind": "text",
+   "hash": "9f79882afae0",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.registerLead": {
+   "en": "For the organization's offices and field partners: record the organization's details and its registration document; the admin team reviews them before child files can be uploaded.",
+   "ar": "لمكاتب الندوة وشركائها الميدانيين: سجّل بيانات الجهة ووثيقة تسجيلها، وتراجعها الإدارة قبل السماح برفع ملفات الأطفال.",
+   "kind": "text",
+   "hash": "ed3af4225240",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.registerTitle": {
+   "en": "Register a field organization",
+   "ar": "تسجيل جهة ميدانية",
+   "kind": "text",
+   "hash": "5e8c35db2b60",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.rejectReason": {
+   "en": "Reason for rejection:",
+   "ar": "سبب الرفض:",
+   "kind": "text",
+   "hash": "417fa143a137",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.report": {
+   "en": "Periodic report",
+   "ar": "تقرير دوري",
+   "kind": "text",
+   "hash": "6d962eca23f0",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.resume": {
+   "en": "Continue the draft",
+   "ar": "أكمل المسودّة",
+   "kind": "text",
+   "hash": "7557a43fbc86",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.sent": {
+   "en": "File {0} was sent for review",
+   "ar": "أُرسل الملفّ {0} للمراجعة",
+   "kind": "template",
+   "params": 1,
+   "hash": "5cb100bee03c",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.approved": {
+   "en": "Approved",
+   "ar": "معتمد",
+   "kind": "text",
+   "hash": "4a6e365b6c64",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.archived": {
+   "en": "Archived",
+   "ar": "مؤرشف",
+   "kind": "text",
+   "hash": "26c68a14dffb",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.draft": {
+   "en": "Draft",
+   "ar": "مسودة",
+   "kind": "text",
+   "hash": "683783d92412",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.fully_sponsored": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.rejected": {
+   "en": "Rejected",
+   "ar": "مرفوض",
+   "kind": "text",
+   "hash": "6f3c73f28fae",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.submitted": {
+   "en": "Awaiting review",
+   "ar": "بانتظار المراجعة",
+   "kind": "text",
+   "hash": "4fa1637946e9",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.status.under_review": {
+   "en": "Under review",
+   "ar": "قيد المراجعة",
+   "kind": "text",
+   "hash": "a11990371e12",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.title": {
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
+   "kind": "text",
+   "hash": "626fb702d798",
+   "file": "src/routes/_authenticated/org.tsx"
+  },
+  "routes/org.view": {
+   "en": "View the file",
+   "ar": "عرض الملفّ",
+   "kind": "text",
+   "hash": "d4370447d551",
+   "file": "src/routes/_authenticated/org.tsx"
   },
   "routes/organizations.cta": {
    "en": "Sponsor a child",
@@ -35143,6 +36127,27 @@
    "hash": "42519b4a49af",
    "file": "src/routes/try.donor.$entityId.tsx"
   },
+  "routes/try.donor.report.pageTitle": {
+   "en": "Impact report: interactive demo",
+   "ar": "تقرير الأثر: عرض تفاعلي",
+   "kind": "text",
+   "hash": "4ac2df19f828",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
+  },
+  "routes/try.donor.report.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
+  },
+  "routes/try.donor.report.simulated": {
+   "en": "This is a sample entity's report; its figures are simulated, not real results.",
+   "ar": "هذا تقرير جهةٍ نموذجية، والأرقام فيه محاكاة وليست نتائج حقيقية.",
+   "kind": "text",
+   "hash": "a61d680a9ccf",
+   "file": "src/routes/try.donor.$entityId_.report.tsx"
+  },
   "routes/try.donor.role": {
    "en": "Donor entity",
    "ar": "جهة مانحة",
@@ -35163,6 +36168,41 @@
    "kind": "text",
    "hash": "987ff26e7296",
    "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.guardian.pageTitle": {
+   "en": "Guardian space: interactive demo",
+   "ar": "مساحة ولي الأمر: عرض تفاعلي",
+   "kind": "text",
+   "hash": "c402d8c29366",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.real": {
+   "en": "a guardian sees only children the admin team linked after verifying guardianship, and never who sponsors them",
+   "ar": "يرى الوليّ من ربطته الإدارة بحسابه بعد التحقّق من الوصاية، ولا يرى من يكفلهم",
+   "kind": "text",
+   "hash": "acf36dfc5390",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.role": {
+   "en": "Guardian",
+   "ar": "ولي أمر",
+   "kind": "text",
+   "hash": "07bf806bdcd6",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.sample": {
+   "en": "Fictional cards",
+   "ar": "بطاقات خيالية",
+   "kind": "text",
+   "hash": "10337c8a6c23",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.simulated": {
+   "en": "The children here are fictional, and consents are kept on this page only and reach no one.",
+   "ar": "الأطفال هنا خياليون، والموافقات تُحفظ في هذه الصفحة وحدها ولا تصل إلى أحد.",
+   "kind": "text",
+   "hash": "60c4791bbe9e",
+   "file": "src/routes/try.guardian.tsx"
   },
   "routes/try.impact.celebrateDedication": {
    "en": "Ongoing charity on behalf of {0}. May God accept it.",
@@ -35717,6 +36757,62 @@
    "kind": "text",
    "hash": "a6a5922ab6cb",
    "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.org.approved": {
+   "en": "Approved by the admin team",
+   "ar": "اعتمدتها الإدارة",
+   "kind": "text",
+   "hash": "ed281a01eefb",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.lead": {
+   "en": "What waits for the organization: sponsor messages it reviews before they reach a child, and capability and in-kind giving directed to it.",
+   "ar": "ما ينتظر الجهة: رسائل كفلاء تراجعها قبل أن تصل الطفل، وتبرّعات التأهيل والعيني الموجّهة إليها.",
+   "kind": "text",
+   "hash": "815c87a6b43d",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.pageTitle": {
+   "en": "Field organization: interactive demo",
+   "ar": "الجهة الميدانية: عرض تفاعلي",
+   "kind": "text",
+   "hash": "e73a9e32399b",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.real": {
+   "en": "an organization uploads no child file before the admin team approves it, and never sees the sponsor's name or the supporter's identity",
+   "ar": "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة الداعم",
+   "kind": "text",
+   "hash": "f1d7c63c84eb",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.role": {
+   "en": "Field organization",
+   "ar": "جهة ميدانية",
+   "kind": "text",
+   "hash": "03c036719e3c",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.simulated": {
+   "en": "The messages and giving here are simulated, and the children are fictional. Approve or reject a message to see the inbox change.",
+   "ar": "الرسائل والتبرّعات هنا محاكاة، والأطفال خياليون. اعتمد رسالةً أو ارفضها لترى الصندوق يتغيّر.",
+   "kind": "text",
+   "hash": "bbf1e2e639d5",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.title": {
+   "en": "A sample field organization",
+   "ar": "جهة ميدانية نموذجية",
+   "kind": "text",
+   "hash": "d556dac337c1",
+   "file": "src/routes/try.org.tsx"
   },
   "routes/try.pay.amount": {
    "en": "Amount",

@@ -223,7 +223,7 @@ describe("العملة: خريطةٌ واحدة وسعرٌ واحد", () => {
       "src/lib/support-amounts.ts": 2,
       "src/lib/support.functions.ts": 1,
       "src/routes/_authenticated/dashboard.tsx": 1,
-      "src/routes/_authenticated/donor.$entityId.report.tsx": 1,
+      "src/components/donor/DonorReport.tsx": 1,
     });
   });
 
