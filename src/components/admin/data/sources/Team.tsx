@@ -5,7 +5,7 @@ import { useDataFn, useDataKey } from "@/lib/data-port";
 import { Button } from "@/components/ui/button";
 import { grantableRoles, type CountryAccess, type CountryRole } from "@/lib/golden-record";
 import { listCountryStaff, setCountryStaff } from "@/lib/golden-record.functions";
-import { useCopy } from "@/lib/locale";
+import { useCopy, useLocale } from "@/lib/locale";
 import { Busy, Failed, Field, Pill, SectionHead, SELECT } from "../shared";
 import { SOURCES_COPY } from "../sources-copy";
 import { useErr } from "./shared";
@@ -17,6 +17,8 @@ export function Team({ country, access }: { country: string; access: CountryAcce
   const dk = useDataKey([]);
   const fetchList = useDataFn("golden.staff", listCountryStaff);
   const save = useDataFn("golden.setStaff", setCountryStaff);
+  // لغة دعوة البريد لمن لا حساب له: لغة الواجهة التي يدعو منها المدير.
+  const lang = useLocale();
   const list = useQuery({
     queryKey: useDataKey(["country-staff", country]),
     queryFn: () => fetchList({ data: { country } }),
@@ -26,7 +28,7 @@ export function Team({ country, access }: { country: string; access: CountryAcce
   const [role, setRole] = useState<CountryRole>(roles[roles.length - 1] ?? "viewer");
   const m = useMutation({
     mutationFn: (v: { email: string; role: CountryRole | null }) =>
-      save({ data: { country, ...v } }),
+      save({ data: { country, ...v, lang } }),
     onSuccess: (res) => {
       if (!res.ok) return void toast.error(err(res.error));
       toast.success(res.invited ? c.invited(email.trim()) : c.done);

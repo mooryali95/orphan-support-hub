@@ -255,6 +255,8 @@ export const setCountryStaff = createServerFn({ method: "POST" })
         country: code2,
         email: z.string().trim().toLowerCase().email().max(254),
         role: z.enum(["supervisor", "data_entry", "viewer"]).nullable(),
+        /** لغة رسالة الدعوة، وتُحفظ لغةً لحساب المدعوّ فتتبعها رسائله اللاحقة. */
+        lang: z.string().max(10).optional(),
       })
       .parse(input),
   )
@@ -268,9 +270,13 @@ export const setCountryStaff = createServerFn({ method: "POST" })
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { appBaseUrl } = await import("@/lib/env.server");
+    const { emailLocale, withEmailLang } = await import("@/lib/email-templates/copy");
     const base = appBaseUrl();
+    const lang = emailLocale(data.lang);
     const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
-      ...(base ? { redirectTo: `${base}/country-data` } : {}),
+      // `lang` في عنوان العودة يقرؤه خطاف البريد، و`locale` في الحساب يتبعه البريد بعدها.
+      data: { locale: lang },
+      ...(base ? { redirectTo: withEmailLang(`${base}/country-data`, lang) } : {}),
     });
     if (error)
       return { ok: false as const, missing: false, error: "invite_failed", invited: false };
