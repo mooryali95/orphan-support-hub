@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5754,
+ "count": 5763,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -35156,6 +35156,70 @@
    "kind": "plural",
    "hash": "a6ddce060012",
    "file": "src/routes/traits.tsx"
+  },
+  "routes/translate.fourEyes": {
+   "en": "Two people before publishing: you do not review a string you edited, and an admin does not publish a string they edited. Admins are not exempt.",
+   "ar": "عينان قبل النشر: لا تراجع نصّاً حرّرته، ولا ينشر المدير نصّاً حرّره. الإدارة غير مستثناة.",
+   "kind": "text",
+   "hash": "4690b23702b6",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.mine": {
+   "en": "You edited this, so someone else reviews it",
+   "ar": "حرّرته أنت: يراجعه غيرك",
+   "kind": "text",
+   "hash": "47e8148f9b51",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingCount": {
+   "en": "{0} missing",
+   "ar": "{0} ناقص",
+   "kind": "template",
+   "params": 1,
+   "hash": "94d69de7d5ce",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingNone": {
+   "en": "No string is missing in this language.",
+   "ar": "لا نصّ ناقص في هذه اللغة.",
+   "kind": "text",
+   "hash": "307b8a2c80e9",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.missingTitle": {
+   "en": "Missing per page",
+   "ar": "الناقص في كل صفحة",
+   "kind": "text",
+   "hash": "e5e4a70f21cf",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.noDraftsPicked": {
+   "en": "No drafts edited by someone else are selected.",
+   "ar": "لا مسودّات حرّرها غيرك في المحدّد.",
+   "kind": "text",
+   "hash": "2b2f71b383da",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.noReviewedPicked": {
+   "en": "No reviewed strings edited by someone else are selected.",
+   "ar": "لا مراجَع حرّره غيرك في المحدّد.",
+   "kind": "text",
+   "hash": "fed985ca663a",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.save": {
+   "en": "Save draft",
+   "ar": "احفظ مسودّة",
+   "kind": "text",
+   "hash": "f400d29ef568",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
+  },
+  "routes/translate.savedDraft": {
+   "en": "Saved as a draft for someone else to review",
+   "ar": "حُفظ مسودّة، ويراجعه شخصٌ آخر",
+   "kind": "text",
+   "hash": "6a819df89289",
+   "file": "src/routes/_authenticated/translate.$locale.tsx"
   },
   "routes/try.admin.cards.access_log": {
    "en": "Who opened a child's file and when, including your own views this session",

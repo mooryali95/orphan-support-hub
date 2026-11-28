@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { pageTitle } from "@/config/brand";
 import { supabase } from "@/integrations/supabase/client";
-import { dirOf, LOCALE_COOKIE, nativeName } from "@/lib/locale";
+import { defineCopy, dirOf, LOCALE_COOKIE, nativeName, useCopy } from "@/lib/locale";
 import {
   getLocaleWork,
   publishTranslations,
@@ -40,6 +40,75 @@ const FILTERS: Array<[Filter, string]> = [
   ["all", "الكل"],
 ];
 const PAGE = 50;
+
+const TRANSLATE_COPY = defineCopy("routes/translate", {
+  ar: {
+    missingTitle: "الناقص في كل صفحة",
+    missingNone: "لا نصّ ناقص في هذه اللغة.",
+    missingCount: (k: number) => `${k} ناقص`,
+    fourEyes:
+      "عينان قبل النشر: لا تراجع نصّاً حرّرته، ولا ينشر المدير نصّاً حرّره. الإدارة غير مستثناة.",
+    mine: "حرّرته أنت: يراجعه غيرك",
+    save: "احفظ مسودّة",
+    savedDraft: "حُفظ مسودّة، ويراجعه شخصٌ آخر",
+    noDraftsPicked: "لا مسودّات حرّرها غيرك في المحدّد.",
+    noReviewedPicked: "لا مراجَع حرّره غيرك في المحدّد.",
+  },
+  en: {
+    missingTitle: "Missing per page",
+    missingNone: "No string is missing in this language.",
+    missingCount: (k: number) => `${k} missing`,
+    fourEyes:
+      "Two people before publishing: you do not review a string you edited, and an admin does not publish a string they edited. Admins are not exempt.",
+    mine: "You edited this, so someone else reviews it",
+    save: "Save draft",
+    savedDraft: "Saved as a draft for someone else to review",
+    noDraftsPicked: "No drafts edited by someone else are selected.",
+    noReviewedPicked: "No reviewed strings edited by someone else are selected.",
+  },
+});
+
+/** عدد الناقص لكل مساحة اسم، مرتّباً من الأكثر؛ النقر يصفّي الناقص فيها. */
+function MissingByNamespace({
+  missingByNs,
+  active,
+  onPick,
+}: {
+  missingByNs: Map<string, number>;
+  active: string;
+  onPick: (ns: string) => void;
+}) {
+  const c = useCopy(TRANSLATE_COPY);
+  const list = [...missingByNs.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  return (
+    <section aria-labelledby="missing-by-ns" className="mt-3">
+      <h2 id="missing-by-ns" className="text-sm font-semibold">
+        {c.missingTitle}
+      </h2>
+      {list.length === 0 ? (
+        <p className="mt-1 text-xs text-muted-foreground">{c.missingNone}</p>
+      ) : (
+        <ul className="mt-2 flex max-h-40 flex-wrap gap-2 overflow-y-auto">
+          {list.map(([n, k]) => (
+            <li key={n}>
+              <button
+                type="button"
+                aria-pressed={active === n}
+                onClick={() => onPick(n)}
+                className={cn(
+                  "min-h-11 rounded-full px-3 text-xs tabular-nums",
+                  active === n ? "bg-primary text-primary-foreground" : "bg-secondary",
+                )}
+              >
+                <bdi dir="ltr">{n}</bdi> {c.missingCount(k)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 const STATUS: Record<WorkRow["status"], [string, string]> = {
   missing: ["ناقص", "border border-dashed border-border text-muted-foreground"],
@@ -72,6 +141,7 @@ function ReviewPage() {
       live = false;
     };
   }, [isAdmin]);
+  const c = useCopy(TRANSLATE_COPY);
   const qc = useQueryClient();
   const fetchWork = useServerFn(getLocaleWork);
   const review = useServerFn(reviewTranslations);
@@ -127,12 +197,16 @@ function ReviewPage() {
   async function bulk(kind: "review" | "publish") {
     const keys = [...picked].filter((k) => {
       const r = rows.find((x) => x.key === k);
-      return r && !r.stale && (kind === "review" ? r.status === "draft" : r.status === "reviewed");
+      // العينان: ما حرّره القارئ لا يراجعه ولا ينشره، والإدارة غير مستثناة.
+      return (
+        r &&
+        !r.stale &&
+        !r.mine &&
+        (kind === "review" ? r.status === "draft" : r.status === "reviewed")
+      );
     });
     if (keys.length === 0)
-      return void toast.info(
-        kind === "review" ? "لا مسودّات في المحدّد." : "لا مراجَع في المحدّد.",
-      );
+      return void toast.info(kind === "review" ? c.noDraftsPicked : c.noReviewedPicked);
     setBusy(true);
     const r = await (kind === "review" ? review : publish)({ data: { locale, keys } });
     setBusy(false);
@@ -201,6 +275,18 @@ function ReviewPage() {
               </button>
             ))}
           </div>
+
+          <MissingByNamespace
+            missingByNs={missingByNs}
+            active={ns}
+            onPick={(n) => {
+              setNs(n);
+              setFilter("missing");
+              setPage(0);
+            }}
+          />
+
+          <p className="mt-3 text-xs text-muted-foreground">{c.fourEyes}</p>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <div className="relative min-w-56 flex-1">
@@ -364,18 +450,17 @@ function ReviewRow({
   const [busy, setBusy] = useState(false);
   const dirty = text.trim() !== (row.text ?? "");
   const [label, cls] = STATUS[row.status];
+  const c = useCopy(TRANSLATE_COPY);
 
-  async function submit(reviewToo: boolean) {
+  async function submit() {
     if (!text.trim()) return;
     setBusy(true);
-    const r = await save({
-      data: { locale, items: [{ key: row.key, text: text.trim() }], review: reviewToo },
-    });
+    const r = await save({ data: { locale, items: [{ key: row.key, text: text.trim() }] } });
     setBusy(false);
     if (!r.ok) return void toast.error(r.error);
     if (r.data.rejected.length)
       return void toast.error("المواضع {0} {1} يجب أن تبقى كما في الأصل.");
-    toast.success(reviewToo ? "حُفظ ورُوجع" : "حُفظ مسودّة");
+    toast.success(c.savedDraft);
     onSaved();
   }
 
@@ -417,23 +502,18 @@ function ReviewRow({
             </span>
           )}
           {row.origin === "machine" && <span className="text-xs text-muted-foreground">آلية</span>}
+          {row.mine && row.status !== "published" && (
+            <span className="text-xs text-muted-foreground">{c.mine}</span>
+          )}
           <span className="ms-auto" />
           <Button
             className="min-h-11"
             variant="ghost"
             disabled={busy || !dirty}
-            onClick={() => submit(false)}
-          >
-            احفظ
-          </Button>
-          <Button
-            className="min-h-11"
-            variant="outline"
-            disabled={busy || !text.trim() || (!dirty && row.status !== "draft" && !row.stale)}
-            onClick={() => submit(true)}
+            onClick={() => submit()}
           >
             {busy && <Loader2 className="animate-spin" aria-hidden="true" />}
-            احفظ وراجِع
+            {c.save}
           </Button>
         </div>
       </div>
