@@ -77,7 +77,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
       className="rounded-3xl bg-card p-6 text-base shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_1px_2px_-1px_rgb(0_0_0/0.06),0_2px_4px_0_rgb(0_0_0/0.04)] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.08)]"
     >
       <header className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 dir="auto" className="text-xl leading-snug font-bold">
+        <h2 id={`${ids}-n`} dir="auto" className="text-xl leading-snug font-bold">
           {child.name}
         </h2>
         <bdi dir="ltr" className="font-mono text-xs tabular-nums text-muted-foreground">
@@ -85,7 +85,7 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
         </bdi>
       </header>
 
-      <section className="mt-5" aria-labelledby={`${ids}-p`}>
+      <section className="mt-5" aria-labelledby={`${ids}-p ${ids}-n`}>
         <h3 id={`${ids}-p`} className="text-sm font-semibold">
           {t("progress", lang)}
         </h3>

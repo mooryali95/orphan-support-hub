@@ -70,7 +70,17 @@ export const REPORT_COPY = defineCopy("components/donor/DonorReport", {
  * يقرأ عبر منفذ البيانات، فيرسمه العرض التفاعلي ببيانات نموذجية والصفحة الحقيقية من الخادم.
  * لا يحمل اسم طفلٍ حقيقياً ولا صورة: الأهداف بأسمائها العامّة.
  */
-export function DonorReport({ entityId, backTo }: { entityId: string; backTo: string }) {
+export function DonorReport({
+  entityId,
+  backTo,
+  embedded = false,
+}: {
+  entityId: string;
+  backTo: string;
+  /** داخل صفحةٍ لها `main` (العرض التفاعلي): يُرسم قسماً لا معلَماً رئيسياً ثانياً. */
+  embedded?: boolean;
+}) {
+  const Root = embedded ? "section" : "main";
   const c = useCopy(REPORT_COPY);
   const locale = useLocale();
   const brand = brandFor(locale);
@@ -200,9 +210,10 @@ export function DonorReport({ entityId, backTo }: { entityId: string; backTo: st
   }
 
   return (
-    <main
-      id="main"
-      tabIndex={-1}
+    <Root
+      id={embedded ? undefined : "main"}
+      aria-label={embedded ? c.title : undefined}
+      tabIndex={embedded ? undefined : -1}
       className="mx-auto max-w-3xl bg-background px-4 py-10 sm:px-6 print:max-w-none print:bg-white print:p-0 print:text-black"
     >
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3 print:hidden">
@@ -225,6 +236,6 @@ export function DonorReport({ entityId, backTo }: { entityId: string; backTo: st
         <KahataynMark className="h-14 w-auto" />
       </header>
       {body}
-    </main>
+    </Root>
   );
 }

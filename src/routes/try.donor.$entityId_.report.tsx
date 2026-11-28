@@ -50,7 +50,7 @@ function TryDonorReport() {
         </span>
         {t.simulated}
       </p>
-      <DonorReport entityId={entityId} backTo={`/try/donor/${entityId}`} />
+      <DonorReport embedded entityId={entityId} backTo={`/try/donor/${entityId}`} />
     </div>
   );
 }

@@ -336,7 +336,12 @@ function DevelopersPage() {
                     </span>
                   </span>
                 </div>
-                <pre className="overflow-x-auto bg-card p-3 text-xs leading-6" dir="ltr">
+                <pre
+                  tabIndex={0}
+                  aria-label="curl"
+                  className="overflow-x-auto bg-card p-3 text-xs leading-6"
+                  dir="ltr"
+                >
                   {curl}
                 </pre>
               </div>
@@ -345,6 +350,8 @@ function DevelopersPage() {
                 <>
                   <p className="mt-4 text-xs font-semibold">{t.body}</p>
                   <pre
+                    tabIndex={0}
+                    aria-label={t.body}
                     className="mt-1 overflow-x-auto rounded-xl border border-border bg-card p-3 text-xs"
                     dir="ltr"
                   >
