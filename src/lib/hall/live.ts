@@ -68,7 +68,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
     initials: ["س", "ع", "م", "ن", "ر", "ي", "ح", "ل", "ف", "ز"],
     donor: "داعم القاعة (محاكاة)",
     screen: {
-      mapTitle: (country: string) => `${country} — الحال الآن`,
+      mapTitle: (country: string) => `${country}: الحال الآن`,
       mapLine: (need: string, pct: string, gap: string) =>
         `بيانات نموذجية · في الحاجة ${need} · مموَّلٌ تأهيلهم ${pct}% · ينتظرون ${gap}`,
       gaps: "أكبر الفجوات",
@@ -243,7 +243,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       dest: "الوجهة",
       city: "المدينة",
       region: "المنطقة",
-      option: (place: string, gap: string) => `${place} — ${gap} ينتظرون`,
+      option: (place: string, gap: string) => `${place}: ${gap} ينتظرون`,
       pay: "ادعم الآن (محاكاة)",
       back: "رجوع",
       note: "الدفع هنا محاكاة: لا يُخصم شيء ولا يُسجَّل تبرّع، والمبالغ وأسعار الوحدات أرقامٌ نموذجية. في المنصّة الحقيقية يمرّ الدفع ببوابة الدفع ويُقيَّد بفاتورة وإيصال.",
@@ -822,7 +822,7 @@ export const HALL_LIVE_COPY = defineCopy("lib/hall/live", {
       dest: "Destination",
       city: "City",
       region: "Region",
-      option: (place: string, gap: string) => `${place} — ${gap} waiting`,
+      option: (place: string, gap: string) => `${place}: ${gap} waiting`,
       pay: "Support now (simulated)",
       back: "Back",
       note: "Payment here is simulated: nothing is charged and no donation is recorded, and the amounts and unit prices are sample figures. On the real platform a payment goes through the payment gateway and is recorded with an invoice and a receipt.",

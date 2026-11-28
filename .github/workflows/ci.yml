@@ -87,6 +87,12 @@ jobs:
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # بوّابة (N5): تنبيهٌ عالٍ أو حرج في تبعيات التشغيل يمنع الدمج. أدوات
+      # التطوير وحدها تبقى في التقرير أعلاه؛ والاستثناء المبرَّر بـ --ignore=<GHSA>
+      # مع سببه في التعليق.
+      - name: تدقيق تبعيات التشغيل (بوّابة)
+        run: bun audit --prod --audit-level=high
+
       - name: فحص الأنواع
         run: bun run typecheck
 

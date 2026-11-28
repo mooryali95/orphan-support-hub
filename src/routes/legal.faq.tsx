@@ -31,7 +31,7 @@ function Faq() {
 
 function FaqAr() {
   return (
-    <LegalPage title="الأسئلة الشائعة" updated="2026-11-07">
+    <LegalPage title="الأسئلة الشائعة" updated="2026-11-07" variant="faq">
       <Section title="ما الذي أدفع مقابله؟">
         <p>
           اشتراك شهري في برامج محدّدة تُقدَّم لليتيم: دعم دراسي أو تأهيل مهني أو دعم نفسي أو متابعة
@@ -122,7 +122,7 @@ function FaqAr() {
 
 function FaqEn() {
   return (
-    <LegalPage title="Frequently asked questions" updated="2026-11-07">
+    <LegalPage title="Frequently asked questions" updated="2026-11-07" variant="faq">
       <Section title="What am I paying for?">
         <p>
           A monthly subscription to specific programs delivered to the orphan: academic support,

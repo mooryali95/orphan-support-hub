@@ -33,18 +33,127 @@ import {
   renamePasskey,
 } from "@/lib/passkey";
 import { pageTitle } from "@/config/brand";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
+const COPY = defineCopy("routes/account", {
+  ar: {
+    title: "حسابي",
+    description: "من أنت، وكيف تدخل، وإلى أين تذهب.",
+    saveFailed: "تعذّر الحفظ",
+    nameSaved: "حُفظ اسمك",
+    passkeyDuplicate: "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
+    passkeyDisabledClient:
+      "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة.",
+    passkeyDisabledServer: "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
+    passkeyAddFailed: "تعذّرت إضافة البصمة.",
+    passkeyAdded: "أُضيفت البصمة",
+    renameFailed: "تعذّرت إعادة التسمية",
+    removeFailed: "تعذّر الحذف",
+    removed: "حُذفت البصمة من حسابك",
+    name: "الاسم",
+    save: "حفظ",
+    addName: "أضف اسمك",
+    editName: "تعديل الاسم",
+    since: (d: string) => `معنا منذ ${d}`,
+    signInMethods: "طرق الدخول",
+    emailCode: "رمزٌ إلى البريد",
+    phoneCode: "رمزٌ إلى الجوال",
+    google: "حساب جوجل",
+    linked: "مربوط",
+    notLinked: "غير مربوط. ادخل بجوجل مرّةً ليُربط",
+    passkey: "البصمة",
+    passkeyText: "دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.",
+    passkeyName: "اسم البصمة",
+    passkeyFallback: "البصمة",
+    passkeyShort: "بصمة",
+    rename: (n: string) => `إعادة تسمية ${n}`,
+    remove: (n: string) => `حذف ${n}`,
+    added: (d: string) => `أُضيفت ${d}`,
+    lastUsed: (d: string) => ` · آخر استعمال ${d}`,
+    confirming: "أكّد هويتك على جهازك…",
+    addThis: "أضف بصمة هذا الجهاز",
+    addMine: "أضف بصمتي",
+    noPasskey: "هذا المتصفّح لا يدعم البصمة.",
+    shortcuts: "اختصارات",
+    sponsorships: "كفالاتي",
+    sponsorshipsText: "من تكفل، وآخر ما وصلهم",
+    workspaces: "بواباتي",
+    workspacesText: "كل ما لك صلاحيةٌ عليه",
+    notifications: "الإشعارات",
+    notificationsText: "ما يصلك، ومتى",
+    signOut: "تسجيل الخروج",
+    on: "مفعّل",
+    off: "غير مفعّل",
+  },
+  en: {
+    title: "My account",
+    description: "Who you are, how you sign in, and where to go.",
+    saveFailed: "Couldn't save",
+    nameSaved: "Your name was saved",
+    passkeyDuplicate: "This device already holds a passkey for your account.",
+    passkeyDisabledClient:
+      "Passkeys are off in the published site. Publish the latest update, then reload the page.",
+    passkeyDisabledServer: "Passkeys aren't enabled in the server's auth settings (Supabase).",
+    passkeyAddFailed: "Couldn't add the passkey.",
+    passkeyAdded: "Passkey added",
+    renameFailed: "Couldn't rename",
+    removeFailed: "Couldn't remove",
+    removed: "The passkey was removed from your account",
+    name: "Name",
+    save: "Save",
+    addName: "Add your name",
+    editName: "Edit name",
+    since: (d: string) => `With us since ${d}`,
+    signInMethods: "Ways to sign in",
+    emailCode: "Code to your email",
+    phoneCode: "Code to your phone",
+    google: "Google account",
+    linked: "Linked",
+    notLinked: "Not linked. Sign in with Google once to link it",
+    passkey: "Passkey",
+    passkeyText:
+      "Sign in with your face, finger or device lock. Your passkey never leaves your device.",
+    passkeyName: "Passkey name",
+    passkeyFallback: "the passkey",
+    passkeyShort: "Passkey",
+    rename: (n: string) => `Rename ${n}`,
+    remove: (n: string) => `Remove ${n}`,
+    added: (d: string) => `Added ${d}`,
+    lastUsed: (d: string) => ` · last used ${d}`,
+    confirming: "Confirm it's you on your device…",
+    addThis: "Add this device's passkey",
+    addMine: "Add my passkey",
+    noPasskey: "This browser doesn't support passkeys.",
+    shortcuts: "Shortcuts",
+    sponsorships: "My sponsorships",
+    sponsorshipsText: "Who you sponsor, and what reached them lately",
+    workspaces: "My workspaces",
+    workspacesText: "Everything you have access to",
+    notifications: "Notifications",
+    notificationsText: "What reaches you, and when",
+    signOut: "Sign out",
+    on: "On",
+    off: "Off",
+  },
+});
+
 export const Route = createFileRoute("/_authenticated/account")({
-  head: () => ({
-    meta: [{ title: pageTitle("حسابي", false) }, { name: "robots", content: "noindex" }],
-  }),
+  head: ({ match }) => {
+    const l = match.context.locale ?? "ar";
+    return {
+      meta: [
+        { title: pageTitle(copyOf(COPY, l).title, false, l) },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: AccountPage,
 });
 
-const fmtDate = (iso: string | undefined) =>
+const fmtDate = (iso: string | undefined, locale = "ar") =>
   iso
-    ? new Intl.DateTimeFormat("ar-u-nu-latn", {
+    ? new Intl.DateTimeFormat(locale === "ar" ? "ar-u-nu-latn" : locale, {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -52,11 +161,14 @@ const fmtDate = (iso: string | undefined) =>
     : "";
 
 /**
- * حسابي — ثلاثة أشياء فقط: من أنا، وكيف أدخل، وإلى أين أذهب.
+ * حسابي: ثلاثة أشياء فقط: من أنا، وكيف أدخل، وإلى أين أذهب.
  * كل حقلٍ يُعدَّل في مكانه ويُحفظ مباشرة، بلا صفحة «تعديل» منفصلة.
  */
 function AccountPage() {
   const { user } = useAuth();
+  const c = useCopy(COPY);
+  const locale = useLocale();
+  const fmt = (iso: string | undefined) => fmtDate(iso, locale);
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [name, setName] = useState("");
@@ -97,11 +209,11 @@ function AccountPage() {
     const { error } = await supabase.auth.updateUser({ data: { full_name: name.trim() } });
     setSaving(false);
     if (error) {
-      toast.error("تعذّر الحفظ");
+      toast.error(c.saveFailed);
       return;
     }
     setEditing(false);
-    toast.success("حُفظ اسمك");
+    toast.success(c.nameSaved);
   }
 
   const [adding, setAdding] = useState(false);
@@ -109,20 +221,16 @@ function AccountPage() {
 
   async function add() {
     setAdding(true);
-    const r = await addPasskey("ar");
+    const r = await addPasskey(locale);
     setAdding(false);
     if (!r.ok) {
-      if (r.why === "duplicate") toast.success("هذا الجهاز يحمل بصمةً لحسابك من قبل.");
+      if (r.why === "duplicate") toast.success(c.passkeyDuplicate);
       else if (r.why === "disabled")
-        toast.error(
-          r.source === "client"
-            ? "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة."
-            : "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
-        );
-      else if (r.why !== "cancelled") toast.error("تعذّرت إضافة البصمة.");
+        toast.error(r.source === "client" ? c.passkeyDisabledClient : c.passkeyDisabledServer);
+      else if (r.why !== "cancelled") toast.error(c.passkeyAddFailed);
       return;
     }
-    toast.success("أُضيفت البصمة");
+    toast.success(c.passkeyAdded);
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
   }
 
@@ -134,7 +242,7 @@ function AccountPage() {
     if (!name || name === current) return;
     const { error } = await renamePasskey(renaming.id, name);
     if (error) {
-      toast.error("تعذّرت إعادة التسمية");
+      toast.error(c.renameFailed);
       return;
     }
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
@@ -143,15 +251,15 @@ function AccountPage() {
   async function remove(id: string) {
     const { error } = await removePasskey(id);
     if (error) {
-      toast.error("تعذّر الحذف");
+      toast.error(c.removeFailed);
       return;
     }
-    toast.success("حُذفت البصمة من حسابك");
+    toast.success(c.removed);
     await qc.invalidateQueries({ queryKey: ["passkeys"] });
   }
 
   return (
-    <DashboardShell title="حسابي" description="من أنت، وكيف تدخل، وإلى أين تذهب.">
+    <DashboardShell title={c.title} description={c.description}>
       <div className="max-w-2xl space-y-6 py-2">
         {/* ── من أنا ── */}
         <section className="stagger-in relative overflow-hidden rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_1px_2px_-1px_rgb(0_0_0/0.06),0_2px_4px_0_rgb(0_0_0/0.04)] sm:p-8">
@@ -174,7 +282,7 @@ function AccountPage() {
                 >
                   <Input
                     autoFocus
-                    aria-label="الاسم"
+                    aria-label={c.name}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Escape" && (setName(fullName), setEditing(false))}
@@ -184,7 +292,7 @@ function AccountPage() {
                     type="submit"
                     size="icon"
                     className="size-10"
-                    aria-label="حفظ"
+                    aria-label={c.save}
                     disabled={saving}
                   >
                     {saving ? <Loader2 className="animate-spin" /> : <Check />}
@@ -196,10 +304,11 @@ function AccountPage() {
                   onClick={() => setEditing(true)}
                   className="group flex max-w-full items-center gap-2 text-start"
                 >
-                  <h1 className="truncate text-2xl font-extrabold">{fullName || "أضف اسمك"}</h1>
+                  <span className="sr-only">{c.editName}: </span>
+                  <h1 className="truncate text-2xl font-extrabold">{fullName || c.addName}</h1>
                   <Pencil
                     className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
-                    aria-label="تعديل الاسم"
+                    aria-hidden="true"
                   />
                 </button>
               )}
@@ -207,7 +316,7 @@ function AccountPage() {
                 <bdi dir="ltr">{user?.email ?? user?.phone}</bdi>
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                معنا منذ {fmtDate(user?.created_at)}
+                {c.since(fmt(user?.created_at))}
               </p>
             </div>
           </div>
@@ -220,18 +329,16 @@ function AccountPage() {
           aria-labelledby="signin-h"
         >
           <h2 id="signin-h" className="font-bold">
-            طرق الدخول
+            {c.signInMethods}
           </h2>
           <ul className="mt-4 divide-y divide-border">
-            {user?.email && <Row icon={<Mail />} title="رمزٌ إلى البريد" text={user.email} on />}
-            {user?.phone && (
-              <Row icon={<Smartphone />} title="رمزٌ إلى الجوال" text={user.phone} on />
-            )}
+            {user?.email && <Row icon={<Mail />} title={c.emailCode} text={user.email} on />}
+            {user?.phone && <Row icon={<Smartphone />} title={c.phoneCode} text={user.phone} on />}
             {(google || methods?.google === true) && (
               <Row
                 icon={<span className="text-sm font-bold">G</span>}
-                title="حساب جوجل"
-                text={google ? "مربوط" : "غير مربوط — ادخل بجوجل مرّةً ليُربط"}
+                title={c.google}
+                text={google ? c.linked : c.notLinked}
                 on={!!google}
               />
             )}
@@ -245,10 +352,8 @@ function AccountPage() {
                   <Fingerprint className="size-5" strokeWidth={1.5} aria-hidden="true" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold">البصمة</p>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.
-                  </p>
+                  <p className="font-semibold">{c.passkey}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">{c.passkeyText}</p>
                 </div>
               </div>
               {loadingKeys ? (
@@ -271,7 +376,7 @@ function AccountPage() {
                           >
                             <Input
                               autoFocus
-                              aria-label="اسم البصمة"
+                              aria-label={c.passkeyName}
                               maxLength={120}
                               value={renaming.name}
                               onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
@@ -279,7 +384,12 @@ function AccountPage() {
                               onBlur={() => void rename()}
                               className="h-9 text-sm"
                             />
-                            <Button type="submit" size="icon" className="size-9" aria-label="حفظ">
+                            <Button
+                              type="submit"
+                              size="icon"
+                              className="size-9"
+                              aria-label={c.save}
+                            >
                               <Check />
                             </Button>
                           </form>
@@ -288,10 +398,10 @@ function AccountPage() {
                             type="button"
                             onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
                             className="group flex max-w-full items-center gap-2 text-start"
-                            aria-label={`إعادة تسمية ${k.friendly_name || "البصمة"}`}
+                            aria-label={c.rename(k.friendly_name || c.passkeyFallback)}
                           >
                             <span className="truncate text-sm font-medium">
-                              {k.friendly_name || "بصمة"}
+                              {k.friendly_name || c.passkeyShort}
                             </span>
                             <Pencil
                               className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
@@ -300,14 +410,14 @@ function AccountPage() {
                           </button>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          أُضيفت {fmtDate(k.created_at)}
-                          {k.last_used_at ? ` · آخر استعمال ${fmtDate(k.last_used_at)}` : ""}
+                          {c.added(fmt(k.created_at))}
+                          {k.last_used_at ? c.lastUsed(fmt(k.last_used_at)) : ""}
                         </p>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label={`حذف ${k.friendly_name || "البصمة"}`}
+                        aria-label={c.remove(k.friendly_name || c.passkeyFallback)}
                         onClick={() => void remove(k.id)}
                         className="text-muted-foreground hover:text-destructive"
                       >
@@ -318,20 +428,16 @@ function AccountPage() {
                 </ul>
               ) : null}
               {canPasskey ? (
-                <Button className="mt-3" disabled={adding} onClick={() => void add()}>
+                <Button className="mt-3 min-h-11" disabled={adding} onClick={() => void add()}>
                   {adding ? (
                     <Loader2 className="animate-spin" />
                   ) : (
                     <Fingerprint aria-hidden="true" />
                   )}
-                  {adding
-                    ? "أكّد هويتك على جهازك…"
-                    : passkeys.length
-                      ? "أضف بصمة هذا الجهاز"
-                      : "أضف بصمتي"}
+                  {adding ? c.confirming : passkeys.length ? c.addThis : c.addMine}
                 </Button>
               ) : (
-                <p className="mt-3 text-xs text-muted-foreground">هذا المتصفّح لا يدعم البصمة.</p>
+                <p className="mt-3 text-xs text-muted-foreground">{c.noPasskey}</p>
               )}
             </div>
           )}
@@ -342,15 +448,15 @@ function AccountPage() {
 
         {/* ── إلى أين ── */}
         <nav
-          aria-label="اختصارات"
+          aria-label={c.shortcuts}
           className="stagger-in overflow-hidden rounded-3xl bg-card shadow-[0_0_0_1px_rgb(0_0_0/0.06)]"
           style={{ ["--i" as string]: 2 }}
         >
           {(
             [
-              ["/dashboard", "كفالاتي", "من تكفل، وآخر ما وصلهم", HandHeart],
-              ["/workspaces", "بواباتي", "كل ما لك صلاحيةٌ عليه", LayoutGrid],
-              ["/settings/notifications", "الإشعارات", "ما يصلك، ومتى", Bell],
+              ["/dashboard", c.sponsorships, c.sponsorshipsText, HandHeart],
+              ["/workspaces", c.workspaces, c.workspacesText, LayoutGrid],
+              ["/settings/notifications", c.notifications, c.notificationsText, Bell],
             ] as const
           ).map(([to, title, text, Icon]) => (
             <Link
@@ -374,7 +480,7 @@ function AccountPage() {
         <div className="flex justify-center pb-6">
           <Button
             variant="ghost"
-            className="text-muted-foreground"
+            className="min-h-11 text-muted-foreground"
             onClick={async () => {
               // يُمحى ما في المتصفّح قبل الخروج نفسه: الجهاز قد يكون مشتركاً (UX-05).
               wipeBrowserUserData();
@@ -383,7 +489,7 @@ function AccountPage() {
             }}
           >
             <LogOut aria-hidden="true" />
-            تسجيل الخروج
+            {c.signOut}
           </Button>
         </div>
       </div>
@@ -402,6 +508,7 @@ function Row({
   text: string;
   on: boolean;
 }) {
+  const c = useCopy(COPY);
   return (
     <li className="flex items-center gap-3 py-3">
       <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-muted-foreground [&_svg]:size-4">
@@ -417,7 +524,7 @@ function Row({
           on ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground",
         )}
       >
-        {on ? "مفعّل" : "—"}
+        {on ? c.on : c.off}
       </span>
     </li>
   );

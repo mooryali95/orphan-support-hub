@@ -22,9 +22,13 @@ export const getQueueCounts = createServerFn({ method: "GET" })
 export const adminSearch = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ q: z.string().trim().max(80) }).parse(input))
-  .handler(({ data, context }) =>
-    callRpc<SearchResults>(context.supabase, "admin_search", { _q: data.q, _limit: 6 }),
-  );
+  .handler(async ({ data, context }) => {
+    // حدّ الخادم قبل القاعدة (N2)؛ والقاعدة تحدّ أيضاً فلا يُتجاوز بنداءٍ مباشر.
+    const { limitCurrentRequest } = await import("@/lib/rate-limit");
+    const verdict = await limitCurrentRequest("search", context.userId);
+    if (!verdict.allowed) return { ok: false as const, missing: false, error: "rate_limited" };
+    return callRpc<SearchResults>(context.supabase, "admin_search", { _q: data.q, _limit: 6 });
+  });
 
 export const getDecisionLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

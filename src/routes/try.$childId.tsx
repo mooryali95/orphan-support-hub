@@ -7,7 +7,7 @@ import { MuralImage, registerFor } from "@/components/brand/MuralImage";
 import { usePublicVerification } from "@/components/orphans/public-verification";
 import { SIMILAR_READY_ID, useSimilarReady } from "@/components/orphans/similar-ready";
 import { SimilarReadyChildren } from "@/components/orphans/SimilarReadyChildren";
-import { VerificationBadge } from "@/components/orphans/VerificationBadge";
+import { ChildPublicHeader, SponsorCtaPanel } from "@/components/orphan/ChildPublicSections";
 import { FxNote, PayCurrencyChoice } from "@/components/sponsorship/PayCurrency";
 import { KafalaPromise } from "@/components/KafalaPromise";
 import { TryChildMissing } from "@/components/try/TryChildMissing";
@@ -273,19 +273,19 @@ function TryChildPage({ data }: { data: TryChild }) {
           priority
         />
         <div className="p-6 md:p-8">
-          <p className="text-xs tabular-nums text-muted-foreground">{child.code}</p>
-          <h1 className="mt-2 text-4xl leading-[1.3] font-bold md:text-[2.75rem]">{child.name}</h1>
-          <div className="mt-2">
-            <VerificationBadge orphanId={data.id} />
-          </div>
-          <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="size-4" aria-hidden="true" />
-              {child.country}
-            </span>
-            <span>{c.age(child.age)}</span>
-            <span>{child.stage}</span>
-          </p>
+          <ChildPublicHeader
+            orphanId={data.id}
+            name={child.name}
+            code={child.code}
+            meta={[
+              <>
+                <MapPin className="size-4" aria-hidden="true" />
+                {child.country}
+              </>,
+              c.age(child.age),
+              child.stage,
+            ]}
+          />
           <div className="mt-7 rounded-xl bg-secondary/60 p-5">
             <div className="flex items-baseline justify-between text-sm">
               <span>
@@ -509,26 +509,15 @@ function TryChildPage({ data }: { data: TryChild }) {
       </aside>
 
       {(formBelow || verifying) && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
-          {verifying ? (
-            <div className="flex items-center gap-3">
-              <p className="flex min-w-0 flex-1 items-center gap-1.5 text-sm leading-6 font-semibold">
-                <Clock className="size-4 shrink-0" strokeWidth={2} aria-hidden="true" />
-                {c.barVerifying}
-              </p>
-              {/* الفعل المتاح فعلاً: لا زرّ كفالةٍ يُضغط فيفشل، بل الطريق إلى طفلٍ جاهز */}
-              {hasSimilar && (
-                <Button asChild size="lg" variant="outline" className="min-h-11 shrink-0">
-                  <a href={`#${SIMILAR_READY_ID}`}>{c.barSimilar}</a>
-                </Button>
-              )}
-            </div>
-          ) : (
-            <Button type="button" size="lg" className="w-full" onClick={toForm}>
-              {c.sponsor(child.name)}
-            </Button>
-          )}
-        </div>
+        <SponsorCtaPanel
+          className="fixed inset-x-0 bottom-0"
+          label={c.sponsor(child.name)}
+          verifying={verifying}
+          verifyingText={c.barVerifying}
+          similarLabel={c.barSimilar}
+          hasSimilar={hasSimilar}
+          onSponsor={toForm}
+        />
       )}
     </div>
   );

@@ -14,6 +14,7 @@ import { TryFollowUpStrip, TryGiftFollowUp } from "@/components/try/TryGiftFollo
 import { TryJourneyAhead } from "@/components/try/TryJourneyAhead";
 import { TryRealInvite, TryVirtualNote } from "@/components/try/TryRealInvite";
 import { TryShareCard } from "@/components/try/TryShareCard";
+import { SampleBadge } from "@/components/impact/SupportImpactParts";
 import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
 import type { GivingTrack } from "@/config/giving-tracks";
@@ -174,20 +175,26 @@ function TryImpact() {
 
       {tab === "monthly" ? (
         <TryKindPanel kind="monthly">
-          {gifts && gifts.length > 0 && !doneChild && (
-            <ImpactMoment moments={impactMoments(impact, rows)} className="mt-6" />
+          {/* the dashboard's order: what needs you, your children, the impact, the evidence, the journey */}
+          {ready && (
+            <div className="mt-6 empty:hidden">
+              <ActionStrip list={list} onPay={onPay} paying={null} />
+            </div>
           )}
 
           {gifts && gifts.length > 0 && (
-            <TryFollowUpStrip className="mt-6">
-              {gifts.map((g) => ({ id: g.childId, name: local(g.childId)?.name ?? "" }))}
-            </TryFollowUpStrip>
+            <SamplePanel>
+              <TryFollowUpStrip>
+                {gifts.map((g) => ({ id: g.childId, name: local(g.childId)?.name ?? "" }))}
+              </TryFollowUpStrip>
+            </SamplePanel>
           )}
 
           <section aria-labelledby="try-gifts" className="mt-10">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-              <h2 id="try-gifts" className="text-xl font-bold">
+              <h2 id="try-gifts" className="flex flex-wrap items-center gap-2 text-xl font-bold">
                 {c.gifts}
+                <SampleBadge />
               </h2>
               {gifts && gifts.length > 0 && (
                 <Link
@@ -198,12 +205,6 @@ function TryImpact() {
                 </Link>
               )}
             </div>
-            {/* the real «أثري» blocks, on the session's gifts through the data port */}
-            {ready && (
-              <div className="mt-4 empty:hidden">
-                <ActionStrip list={list} onPay={onPay} paying={null} />
-              </div>
-            )}
             <div id="sponsorship-cards" className="mt-4 scroll-mt-24">
               {!ready ? null : list.length === 0 ? (
                 <NoSponsorships browseTo="/try" />
@@ -228,7 +229,7 @@ function TryImpact() {
             )}
           </section>
 
-          <div>
+          <SamplePanel>
             <MyImpactHero
               impact={impact}
               loading={gifts === null}
@@ -239,23 +240,34 @@ function TryImpact() {
                   : { try: 1 }
               }
             />
-          </div>
+          </SamplePanel>
 
-          {gifts && gifts.length > 0 && (
-            <>
-              <ChildStanding impact={impact} waited={waited} sample className="mt-6" />
-              <TryJourneyAhead
-                gifts={gifts}
-                impact={impact}
-                rows={rows}
-                ahead={ahead}
-                onAhead={setAhead}
-              />
-            </>
+          {gifts && gifts.length > 0 && !doneChild && (
+            <SamplePanel>
+              <ImpactMoment moments={impactMoments(impact, rows)} />
+            </SamplePanel>
           )}
 
           {gifts && gifts.length > 0 && (
-            <TryShareCard {...(gifts[0]?.dedication ? { dedication: gifts[0].dedication } : {})} />
+            <>
+              <SamplePanel>
+                <ChildStanding impact={impact} waited={waited} sample />
+              </SamplePanel>
+              <SamplePanel>
+                <TryJourneyAhead
+                  gifts={gifts}
+                  impact={impact}
+                  rows={rows}
+                  ahead={ahead}
+                  onAhead={setAhead}
+                />
+              </SamplePanel>
+              <SamplePanel>
+                <TryShareCard
+                  {...(gifts[0]?.dedication ? { dedication: gifts[0].dedication } : {})}
+                />
+              </SamplePanel>
+            </>
           )}
         </TryKindPanel>
       ) : (
@@ -272,5 +284,15 @@ function TryImpact() {
       {/* the natural end of the trial: what was virtual, what was chosen, and the door to the real one */}
       <TryRealInvite className="mt-14" />
     </>
+  );
+}
+
+/** every trial panel carries the sample chip above it, so no invented figure passes as a result */
+function SamplePanel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-6">
+      <SampleBadge className="mb-2 inline-block" />
+      {children}
+    </div>
   );
 }

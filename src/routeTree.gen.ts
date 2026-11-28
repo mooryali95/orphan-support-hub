@@ -41,12 +41,14 @@ import { Route as OrphansOrphanIdRouteImport } from './routes/orphans.$orphanId'
 import { Route as TryIndexRouteImport } from './routes/try.index'
 import { Route as TryChildIdRouteImport } from './routes/try.$childId'
 import { Route as TryAdminRouteImport } from './routes/try.admin'
+import { Route as TryAskRouteImport } from './routes/try.ask'
 import { Route as TryCountryRouteImport } from './routes/try.country'
 import { Route as TryCycleRouteImport } from './routes/try.cycle'
 import { Route as TryImpactRouteImport } from './routes/try.impact'
 import { Route as TryJourneyRouteImport } from './routes/try.journey'
 import { Route as TryPayRouteImport } from './routes/try.pay'
 import { Route as TrySupportRouteImport } from './routes/try.support'
+import { Route as TryWorkspacesRouteImport } from './routes/try.workspaces'
 import { Route as VisionIndexRouteImport } from './routes/vision.index'
 import { Route as VisionCycleRouteImport } from './routes/vision.cycle'
 import { Route as VisionDecisionRouteImport } from './routes/vision.decision'
@@ -58,6 +60,7 @@ import { Route as VisionNetworkRouteImport } from './routes/vision.network'
 import { Route as VisionOperationsRouteImport } from './routes/vision.operations'
 import { Route as VisionPaymentsRouteImport } from './routes/vision.payments'
 import { Route as AuthenticatedOfficeOfficeIdRouteImport } from './routes/_authenticated/office.$officeId'
+import { Route as AuthenticatedPaymentReturnRouteImport } from './routes/_authenticated/payment.return'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings.notifications'
 import { Route as AuthenticatedStatementsYearRouteImport } from './routes/_authenticated/statements.$year'
 import { Route as AuthenticatedTranslateLocaleRouteImport } from './routes/_authenticated/translate.$locale'
@@ -71,6 +74,8 @@ import { Route as ApiPaymentsReconcileRouteImport } from './routes/api/payments/
 import { Route as ApiPaymentsWebhookRouteImport } from './routes/api/payments/webhook'
 import { Route as ApiPublicSupporterAssistantRouteImport } from './routes/api/public.supporter-assistant'
 import { Route as ApiSsoWamyRouteImport } from './routes/api/sso/wamy'
+import { Route as TryDonorEntityIdRouteImport } from './routes/try.donor.$entityId'
+import { Route as TryPayReturnRouteImport } from './routes/try.pay_.return'
 import { Route as TryStatementsYearRouteImport } from './routes/try.statements.$year'
 import { Route as VisionReceiptIdRouteImport } from './routes/vision.receipt.$id'
 import { Route as AuthenticatedDonorEntityIdIndexRouteImport } from './routes/_authenticated/donor.$entityId.index'
@@ -84,6 +89,8 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as TrySponsorshipsSponsorshipIdIndexRouteImport } from './routes/try.sponsorships.$sponsorshipId.index'
 import { Route as TrySponsorshipsSponsorshipIdManageRouteImport } from './routes/try.sponsorships.$sponsorshipId.manage'
+import { Route as TrySponsorshipsSponsorshipIdReportRouteImport } from './routes/try.sponsorships.$sponsorshipId.report'
+import { Route as TrySponsorshipsSponsorshipIdTransferRouteImport } from './routes/try.sponsorships.$sponsorshipId.transfer'
 
 const TryDeciderLazyRouteImport = createFileRoute('/try/decider')()
 const TryOfficeLazyRouteImport = createFileRoute('/try/office')()
@@ -239,6 +246,11 @@ const TryAdminRoute = TryAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => TryRoute,
 } as any).lazy(() => import('./routes/try.admin.lazy').then((d) => d.Route))
+const TryAskRoute = TryAskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => TryRoute,
+} as any)
 const TryCountryRoute = TryCountryRouteImport.update({
   id: '/country',
   path: '/country',
@@ -284,6 +296,11 @@ const TrySupervisorLazyRoute = TrySupervisorLazyRouteImport.update({
 const TrySupportRoute = TrySupportRouteImport.update({
   id: '/support',
   path: '/support',
+  getParentRoute: () => TryRoute,
+} as any)
+const TryWorkspacesRoute = TryWorkspacesRouteImport.update({
+  id: '/workspaces',
+  path: '/workspaces',
   getParentRoute: () => TryRoute,
 } as any)
 const VisionIndexRoute = VisionIndexRouteImport.update({
@@ -342,6 +359,14 @@ const AuthenticatedOfficeOfficeIdRoute =
     path: '/office/$officeId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPaymentReturnRoute =
+  AuthenticatedPaymentReturnRouteImport.update({
+    id: '/payment/return',
+    path: '/payment/return',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/payment.return.lazy').then((d) => d.Route),
+  )
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
     id: '/settings/notifications',
@@ -412,6 +437,16 @@ const ApiSsoWamyRoute = ApiSsoWamyRouteImport.update({
   id: '/api/sso/wamy',
   path: '/api/sso/wamy',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TryDonorEntityIdRoute = TryDonorEntityIdRouteImport.update({
+  id: '/donor/$entityId',
+  path: '/donor/$entityId',
+  getParentRoute: () => TryRoute,
+} as any)
+const TryPayReturnRoute = TryPayReturnRouteImport.update({
+  id: '/pay_/return',
+  path: '/pay/return',
+  getParentRoute: () => TryRoute,
 } as any)
 const TryStatementsYearRoute = TryStatementsYearRouteImport.update({
   id: '/statements/$year',
@@ -487,6 +522,18 @@ const TrySponsorshipsSponsorshipIdManageRoute =
     path: '/sponsorships/$sponsorshipId/manage',
     getParentRoute: () => TryRoute,
   } as any)
+const TrySponsorshipsSponsorshipIdReportRoute =
+  TrySponsorshipsSponsorshipIdReportRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/report',
+    path: '/sponsorships/$sponsorshipId/report',
+    getParentRoute: () => TryRoute,
+  } as any)
+const TrySponsorshipsSponsorshipIdTransferRoute =
+  TrySponsorshipsSponsorshipIdTransferRouteImport.update({
+    id: '/sponsorships/$sponsorshipId/transfer',
+    path: '/sponsorships/$sponsorshipId/transfer',
+    getParentRoute: () => TryRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -516,12 +563,14 @@ export interface FileRoutesByFullPath {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -538,6 +587,7 @@ export interface FileRoutesByFullPath {
   '/try/': typeof TryIndexRoute
   '/vision/': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
+  '/payment/return': typeof AuthenticatedPaymentReturnRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -551,6 +601,8 @@ export interface FileRoutesByFullPath {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
+  '/try/pay/return': typeof TryPayReturnRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -561,6 +613,8 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId/': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -592,12 +646,14 @@ export interface FileRoutesByTo {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -614,6 +670,7 @@ export interface FileRoutesByTo {
   '/try': typeof TryIndexRoute
   '/vision': typeof VisionIndexRoute
   '/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
+  '/payment/return': typeof AuthenticatedPaymentReturnRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -627,6 +684,8 @@ export interface FileRoutesByTo {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
+  '/try/pay/return': typeof TryPayReturnRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -637,6 +696,8 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/donor/$entityId': typeof AuthenticatedDonorEntityIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -671,12 +732,14 @@ export interface FileRoutesById {
   '/orphans/$orphanId': typeof OrphansOrphanIdRoute
   '/try/$childId': typeof TryChildIdRoute
   '/try/admin': typeof TryAdminRoute
+  '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
   '/try/support': typeof TrySupportRoute
+  '/try/workspaces': typeof TryWorkspacesRoute
   '/vision/cycle': typeof VisionCycleRoute
   '/vision/decision': typeof VisionDecisionRoute
   '/vision/hall': typeof VisionHallRoute
@@ -693,6 +756,7 @@ export interface FileRoutesById {
   '/try/': typeof TryIndexRoute
   '/vision/': typeof VisionIndexRoute
   '/_authenticated/office/$officeId': typeof AuthenticatedOfficeOfficeIdRoute
+  '/_authenticated/payment/return': typeof AuthenticatedPaymentReturnRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/statements/$year': typeof AuthenticatedStatementsYearRoute
   '/_authenticated/translate/$locale': typeof AuthenticatedTranslateLocaleRoute
@@ -706,6 +770,8 @@ export interface FileRoutesById {
   '/api/payments/webhook': typeof ApiPaymentsWebhookRoute
   '/api/public/supporter-assistant': typeof ApiPublicSupporterAssistantRoute
   '/api/sso/wamy': typeof ApiSsoWamyRoute
+  '/try/donor/$entityId': typeof TryDonorEntityIdRoute
+  '/try/pay_/return': typeof TryPayReturnRoute
   '/try/statements/$year': typeof TryStatementsYearRoute
   '/vision/receipt/$id': typeof VisionReceiptIdRoute
   '/_authenticated/donor/$entityId/report': typeof AuthenticatedDonorEntityIdReportRoute
@@ -716,6 +782,8 @@ export interface FileRoutesById {
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/try/sponsorships/$sponsorshipId/manage': typeof TrySponsorshipsSponsorshipIdManageRoute
+  '/try/sponsorships/$sponsorshipId/report': typeof TrySponsorshipsSponsorshipIdReportRoute
+  '/try/sponsorships/$sponsorshipId/transfer': typeof TrySponsorshipsSponsorshipIdTransferRoute
   '/_authenticated/donor/$entityId/': typeof AuthenticatedDonorEntityIdIndexRoute
   '/_authenticated/sponsorships/$sponsorshipId/': typeof AuthenticatedSponsorshipsSponsorshipIdIndexRoute
   '/try/sponsorships/$sponsorshipId/': typeof TrySponsorshipsSponsorshipIdIndexRoute
@@ -750,12 +818,14 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -772,6 +842,7 @@ export interface FileRouteTypes {
     | '/try/'
     | '/vision/'
     | '/office/$officeId'
+    | '/payment/return'
     | '/settings/notifications'
     | '/statements/$year'
     | '/translate/$locale'
@@ -785,6 +856,8 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
+    | '/try/pay/return'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
@@ -795,6 +868,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/donor/$entityId/'
     | '/sponsorships/$sponsorshipId/'
     | '/try/sponsorships/$sponsorshipId/'
@@ -826,12 +901,14 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -848,6 +925,7 @@ export interface FileRouteTypes {
     | '/try'
     | '/vision'
     | '/office/$officeId'
+    | '/payment/return'
     | '/settings/notifications'
     | '/statements/$year'
     | '/translate/$locale'
@@ -861,6 +939,8 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
+    | '/try/pay/return'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/donor/$entityId/report'
@@ -871,6 +951,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/donor/$entityId'
     | '/sponsorships/$sponsorshipId'
     | '/try/sponsorships/$sponsorshipId'
@@ -904,12 +986,14 @@ export interface FileRouteTypes {
     | '/orphans/$orphanId'
     | '/try/$childId'
     | '/try/admin'
+    | '/try/ask'
     | '/try/country'
     | '/try/cycle'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
     | '/try/support'
+    | '/try/workspaces'
     | '/vision/cycle'
     | '/vision/decision'
     | '/vision/hall'
@@ -926,6 +1010,7 @@ export interface FileRouteTypes {
     | '/try/'
     | '/vision/'
     | '/_authenticated/office/$officeId'
+    | '/_authenticated/payment/return'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/statements/$year'
     | '/_authenticated/translate/$locale'
@@ -939,6 +1024,8 @@ export interface FileRouteTypes {
     | '/api/payments/webhook'
     | '/api/public/supporter-assistant'
     | '/api/sso/wamy'
+    | '/try/donor/$entityId'
+    | '/try/pay_/return'
     | '/try/statements/$year'
     | '/vision/receipt/$id'
     | '/_authenticated/donor/$entityId/report'
@@ -949,6 +1036,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
     | '/try/sponsorships/$sponsorshipId/manage'
+    | '/try/sponsorships/$sponsorshipId/report'
+    | '/try/sponsorships/$sponsorshipId/transfer'
     | '/_authenticated/donor/$entityId/'
     | '/_authenticated/sponsorships/$sponsorshipId/'
     | '/try/sponsorships/$sponsorshipId/'
@@ -1212,6 +1301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TryAdminRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/ask': {
+      id: '/try/ask'
+      path: '/ask'
+      fullPath: '/try/ask'
+      preLoaderRoute: typeof TryAskRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/try/country': {
       id: '/try/country'
       path: '/country'
@@ -1273,6 +1369,13 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/try/support'
       preLoaderRoute: typeof TrySupportRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/workspaces': {
+      id: '/try/workspaces'
+      path: '/workspaces'
+      fullPath: '/try/workspaces'
+      preLoaderRoute: typeof TryWorkspacesRouteImport
       parentRoute: typeof TryRoute
     }
     '/vision/': {
@@ -1350,6 +1453,13 @@ declare module '@tanstack/react-router' {
       path: '/office/$officeId'
       fullPath: '/office/$officeId'
       preLoaderRoute: typeof AuthenticatedOfficeOfficeIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/payment/return': {
+      id: '/_authenticated/payment/return'
+      path: '/payment/return'
+      fullPath: '/payment/return'
+      preLoaderRoute: typeof AuthenticatedPaymentReturnRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/notifications': {
@@ -1443,6 +1553,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSsoWamyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/try/donor/$entityId': {
+      id: '/try/donor/$entityId'
+      path: '/donor/$entityId'
+      fullPath: '/try/donor/$entityId'
+      preLoaderRoute: typeof TryDonorEntityIdRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/pay_/return': {
+      id: '/try/pay_/return'
+      path: '/pay/return'
+      fullPath: '/try/pay/return'
+      preLoaderRoute: typeof TryPayReturnRouteImport
+      parentRoute: typeof TryRoute
+    }
     '/try/statements/$year': {
       id: '/try/statements/$year'
       path: '/statements/$year'
@@ -1534,6 +1658,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrySponsorshipsSponsorshipIdManageRouteImport
       parentRoute: typeof TryRoute
     }
+    '/try/sponsorships/$sponsorshipId/report': {
+      id: '/try/sponsorships/$sponsorshipId/report'
+      path: '/sponsorships/$sponsorshipId/report'
+      fullPath: '/try/sponsorships/$sponsorshipId/report'
+      preLoaderRoute: typeof TrySponsorshipsSponsorshipIdReportRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/sponsorships/$sponsorshipId/transfer': {
+      id: '/try/sponsorships/$sponsorshipId/transfer'
+      path: '/sponsorships/$sponsorshipId/transfer'
+      fullPath: '/try/sponsorships/$sponsorshipId/transfer'
+      preLoaderRoute: typeof TrySponsorshipsSponsorshipIdTransferRouteImport
+      parentRoute: typeof TryRoute
+    }
   }
 }
 
@@ -1547,6 +1685,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSupervisorRoute: typeof AuthenticatedSupervisorRoute
   AuthenticatedWorkspacesRoute: typeof AuthenticatedWorkspacesRoute
   AuthenticatedOfficeOfficeIdRoute: typeof AuthenticatedOfficeOfficeIdRoute
+  AuthenticatedPaymentReturnRoute: typeof AuthenticatedPaymentReturnRoute
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedStatementsYearRoute: typeof AuthenticatedStatementsYearRoute
   AuthenticatedTranslateLocaleRoute: typeof AuthenticatedTranslateLocaleRoute
@@ -1568,6 +1707,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSupervisorRoute: AuthenticatedSupervisorRoute,
   AuthenticatedWorkspacesRoute: AuthenticatedWorkspacesRoute,
   AuthenticatedOfficeOfficeIdRoute: AuthenticatedOfficeOfficeIdRoute,
+  AuthenticatedPaymentReturnRoute: AuthenticatedPaymentReturnRoute,
   AuthenticatedSettingsNotificationsRoute:
     AuthenticatedSettingsNotificationsRoute,
   AuthenticatedStatementsYearRoute: AuthenticatedStatementsYearRoute,
@@ -1590,37 +1730,51 @@ const AuthenticatedRouteRouteWithChildren =
 interface TryRouteChildren {
   TryChildIdRoute: typeof TryChildIdRoute
   TryAdminRoute: typeof TryAdminRoute
+  TryAskRoute: typeof TryAskRoute
   TryCountryRoute: typeof TryCountryRoute
   TryCycleRoute: typeof TryCycleRoute
   TryImpactRoute: typeof TryImpactRoute
   TryJourneyRoute: typeof TryJourneyRoute
   TryPayRoute: typeof TryPayRoute
   TrySupportRoute: typeof TrySupportRoute
+  TryWorkspacesRoute: typeof TryWorkspacesRoute
   TryDeciderLazyRoute: typeof TryDeciderLazyRoute
   TryOfficeLazyRoute: typeof TryOfficeLazyRoute
   TrySupervisorLazyRoute: typeof TrySupervisorLazyRoute
   TryIndexRoute: typeof TryIndexRoute
+  TryDonorEntityIdRoute: typeof TryDonorEntityIdRoute
+  TryPayReturnRoute: typeof TryPayReturnRoute
   TryStatementsYearRoute: typeof TryStatementsYearRoute
   TrySponsorshipsSponsorshipIdManageRoute: typeof TrySponsorshipsSponsorshipIdManageRoute
+  TrySponsorshipsSponsorshipIdReportRoute: typeof TrySponsorshipsSponsorshipIdReportRoute
+  TrySponsorshipsSponsorshipIdTransferRoute: typeof TrySponsorshipsSponsorshipIdTransferRoute
   TrySponsorshipsSponsorshipIdIndexRoute: typeof TrySponsorshipsSponsorshipIdIndexRoute
 }
 
 const TryRouteChildren: TryRouteChildren = {
   TryChildIdRoute: TryChildIdRoute,
   TryAdminRoute: TryAdminRoute,
+  TryAskRoute: TryAskRoute,
   TryCountryRoute: TryCountryRoute,
   TryCycleRoute: TryCycleRoute,
   TryImpactRoute: TryImpactRoute,
   TryJourneyRoute: TryJourneyRoute,
   TryPayRoute: TryPayRoute,
   TrySupportRoute: TrySupportRoute,
+  TryWorkspacesRoute: TryWorkspacesRoute,
   TryDeciderLazyRoute: TryDeciderLazyRoute,
   TryOfficeLazyRoute: TryOfficeLazyRoute,
   TrySupervisorLazyRoute: TrySupervisorLazyRoute,
   TryIndexRoute: TryIndexRoute,
+  TryDonorEntityIdRoute: TryDonorEntityIdRoute,
+  TryPayReturnRoute: TryPayReturnRoute,
   TryStatementsYearRoute: TryStatementsYearRoute,
   TrySponsorshipsSponsorshipIdManageRoute:
     TrySponsorshipsSponsorshipIdManageRoute,
+  TrySponsorshipsSponsorshipIdReportRoute:
+    TrySponsorshipsSponsorshipIdReportRoute,
+  TrySponsorshipsSponsorshipIdTransferRoute:
+    TrySponsorshipsSponsorshipIdTransferRoute,
   TrySponsorshipsSponsorshipIdIndexRoute:
     TrySponsorshipsSponsorshipIdIndexRoute,
 }

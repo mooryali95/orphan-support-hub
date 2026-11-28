@@ -494,7 +494,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       other: "مبلغ آخر",
       currency: "العملة",
       dest: "الوجهة",
-      destOption: (region: string, n: string) => `${region} — ${n}`,
+      destOption: (region: string, n: string) => `${region}: ${n}`,
       confirm: (money: string) => `سجّل دعمي (محاكاة): ${money}`,
       sponsor: (name: string, money: string) => `اكفل ${name} (محاكاة): ${money} شهرياً`,
       back: "رجوع",
@@ -602,7 +602,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       cadence: { monthly: "شهرية", one_time: "مرّة واحدة" },
     },
     screen: {
-      map: (name: string) => `${name} — بيانات نموذجية`,
+      map: (name: string) => `${name}: بيانات نموذجية`,
       mapLine: (a: string, b: string, c: string) =>
         `${a} يتيماً بملفٍّ موثّق · في التأهيل: ${b} · تسليماتٌ موثّقة: ${c}`,
       regions: "منطقتا التجربة",
@@ -719,7 +719,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       other: "Other amount",
       currency: "Currency",
       dest: "For",
-      destOption: (region: string, n: string) => `${region} — ${n}`,
+      destOption: (region: string, n: string) => `${region}: ${n}`,
       confirm: (money: string) => `Record my support (simulated): ${money}`,
       sponsor: (name: string, money: string) => `Sponsor ${name} (simulated): ${money} a month`,
       back: "Back",
@@ -840,7 +840,7 @@ export const TRIAL_COPY = defineCopy("lib/hall/trial", {
       cadence: { monthly: "Monthly", one_time: "One-time" },
     },
     screen: {
-      map: (name: string) => `${name} — sample data`,
+      map: (name: string) => `${name}: sample data`,
       mapLine: (a: string, b: string, c: string) =>
         `${a} children with a verified file · in qualification: ${b} · documented deliveries: ${c}`,
       regions: "The two trial regions",

@@ -1249,6 +1249,26 @@ export function WorldMap({
   // المجموع من الدول التي يُكشف عددها؛ الصغيرة تُذكر دون رقمها.
   const totals = { total: Object.values(stats).reduce((a, s) => a + (s.total ?? 0), 0) };
 
+  // فتح البطاقة يركّز عنوانها، وإغلاقها يعيد التركيز إلى ما فتحها؛ إلا دخول
+  // الدولة بالأسهم فيبقى على مسار المناطق أدناه.
+  const cardTitle = useRef<HTMLHeadingElement>(null);
+  const cardTrigger = useRef<HTMLElement | null>(null);
+  const cardOpen = !!selection.country;
+  useEffect(() => {
+    if (cardOpen) {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement || active instanceof SVGElement) {
+        if (!cardTitle.current?.closest(".map-card")?.contains(active))
+          cardTrigger.current = active as HTMLElement;
+      }
+      if (!viaKeyboard.current) cardTitle.current?.focus({ preventScroll: true });
+      return;
+    }
+    const back = cardTrigger.current;
+    cardTrigger.current = null;
+    if (back?.isConnected) back.focus({ preventScroll: true });
+  }, [cardOpen]);
+
   // دخلنا دولةً بلوحة المفاتيح: حين تستقرّ وتظهر مناطقها يُركَّز أكبرها.
   const revealedNow = !!country && shownFor === country.c && regions.length > 0 && settled;
   useEffect(() => {
@@ -1790,7 +1810,11 @@ export function WorldMap({
                     <MapPin className="size-3.5" aria-hidden="true" />
                     {region ? country.n : c$.country}
                   </p>
-                  <h2 className="map-title mt-1 text-2xl font-extrabold">
+                  <h2
+                    ref={cardTitle}
+                    tabIndex={-1}
+                    className="map-title mt-1 text-2xl font-extrabold outline-none"
+                  >
                     {region ? region.n : country.n}
                   </h2>
                 </div>

@@ -48,6 +48,7 @@ const Schema = z.object({
   /** الدخول من منصّة الندوة (docs/wamy-sso.ar.md): المُصدِر، ثم سرٌّ مشترك أو مفاتيحها العامّة. */
   WAMY_SSO_ISSUER: url.optional(),
   WAMY_SSO_SECRET: z.string().trim().min(32).optional(),
+  WAMY_SSO_SECRET_PREVIOUS: z.string().trim().min(32).optional(),
   WAMY_SSO_JWKS_URL: url.optional(),
   ERROR_REPORT_WEBHOOK_URL: url.optional(),
   SENTRY_DSN: url.optional(),
@@ -55,6 +56,12 @@ const Schema = z.object({
   HEARTBEAT_URL_DISPATCH: url.optional(),
   HEARTBEAT_URL_RECONCILE: url.optional(),
   HEARTBEAT_URL_RETENTION: url.optional(),
+  HEARTBEAT_URL_SECURITY: url.optional(),
+  SECURITY_EVENTS_THRESHOLD: z
+    .string()
+    .trim()
+    .regex(/^\d{1,5}$/)
+    .optional(),
   /** مدّة استبقاء وسائط الطفل المؤرشَف بالأيام (≥30؛ الافتراض 365). */
   CHILD_UPDATES_ARCHIVE_DAYS: z.string().trim().regex(/^\d+$/).optional(),
 });

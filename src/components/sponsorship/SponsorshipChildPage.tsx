@@ -32,7 +32,7 @@ import {
 } from "@/lib/scopes.functions";
 import { deliveredShare } from "@/lib/sponsor-center";
 import { listMySponsorships, type MySponsorship } from "@/lib/sponsorships.functions";
-import { trialRoute } from "@/lib/trial-gate";
+import { TRIAL_ENABLED, trialRoute } from "@/lib/trial-gate";
 import { cn } from "@/lib/utils";
 
 const COPY = defineCopy("components/sponsorship/SponsorshipChildPage", {
@@ -305,9 +305,15 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
 
       {/* 5. روابط */}
       <nav className="flex flex-wrap gap-2 border-t border-border pt-6">
-        {!demo && (
+        {(!demo || TRIAL_ENABLED) && (
           <Button asChild variant="outline" className="min-h-11">
-            <Link to="/sponsorships/$sponsorshipId/report" params={{ sponsorshipId }}>
+            <Link
+              {...(demo
+                ? {
+                    to: trialRoute(`/try/sponsorships/${encodeURIComponent(sponsorshipId)}/report`),
+                  }
+                : { to: "/sponsorships/$sponsorshipId/report", params: { sponsorshipId } })}
+            >
               <Printer className="size-4" aria-hidden="true" />
               {c.report}
             </Link>

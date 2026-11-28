@@ -117,7 +117,7 @@ export function Inbox() {
   return (
     <Popover onOpenChange={(o) => !o && markRead()}>
       <PopoverTrigger
-        aria-label={unread ? `${c.open} — ${c.unread(unread)}` : c.open}
+        aria-label={unread ? `${c.open}: ${c.unread(unread)}` : c.open}
         className="relative grid size-9 shrink-0 place-items-center rounded-full border border-wine/20 bg-white text-wine transition-[background-color,scale] hover:bg-wine/5 active:scale-[0.94]"
       >
         <Bell className="size-4" aria-hidden="true" />

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Loader2, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Copy, Loader2, ShieldAlert, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,11 @@ export const MFA_COPY = defineCopy("account/mfa", {
     noticeTitle: "قراراتك تحتاج المصادقة الثنائية",
     noticeText: "لن يُقبل حسمٌ من هذه الجلسة حتى تفعّل المصادقة الثنائية أو تكتب رمزها.",
     noticeLink: "افتح المصادقة الثنائية في حسابي",
+    copySecret: "نسخ المفتاح",
+    copied: "نُسخ المفتاح. الصقه في تطبيق المصادقة.",
+    copyFailed: "تعذّر النسخ. حدّد المفتاح وانسخه بنفسك.",
+    badge: "جلسة موثّقة (aal2)",
+    codeHint: "ستّة أرقام",
   },
   en: {
     title: "Two-step verification",
@@ -57,6 +63,11 @@ export const MFA_COPY = defineCopy("account/mfa", {
     noticeText:
       "Decisions from this session won't be accepted until you turn on two-step verification or enter its code.",
     noticeLink: "Open two-step verification in my account",
+    copySecret: "Copy key",
+    copied: "Key copied. Paste it into your authenticator app.",
+    copyFailed: "Copying failed. Select the key and copy it yourself.",
+    badge: "Verified session (aal2)",
+    codeHint: "Six digits",
   },
 });
 
@@ -139,7 +150,7 @@ export function MfaSettings() {
     }
     const { data, error } = await supabase.auth.mfa.enroll({
       factorType: "totp",
-      friendlyName: `${BRAND.name} — ${c.factorName}`,
+      friendlyName: `${BRAND.name} | ${c.factorName}`,
     });
     setBusy(false);
     if (error || !data) return setErr(c.failed);
@@ -174,9 +185,17 @@ export function MfaSettings() {
       <p className="text-muted-foreground mt-2 text-sm leading-7">{c.intro}</p>
 
       {state.kind === "loading" && (
-        <Loader2 className="text-muted-foreground mt-4 size-5 animate-spin" />
+        <Loader2 className="text-muted-foreground mt-4 size-5 animate-spin" aria-hidden="true" />
       )}
-      {state.kind === "on" && <p className="mt-4 text-sm font-medium">{c.on}</p>}
+      {state.kind === "on" && (
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <ShieldCheck className="size-3.5" aria-hidden="true" />
+            {c.badge}
+          </span>
+          <p className="text-sm font-medium">{c.on}</p>
+        </div>
+      )}
       {state.kind === "off" && (
         <Button className="mt-4" disabled={busy} onClick={() => void enroll()}>
           {c.enrollStart}
@@ -193,13 +212,32 @@ export function MfaSettings() {
           {state.kind === "enroll" ? (
             <>
               <p className="text-muted-foreground text-sm leading-7">{c.enrollIntro}</p>
-              <div className="mt-4 flex justify-center rounded-2xl bg-white p-4">
+              {/* بطاقةٌ بيضاء في المظهرين: الماسحات تقرأ الرمز الداكن على الأبيض فقط */}
+              <div className="mx-auto mt-4 w-fit rounded-2xl bg-white p-4 shadow-[0_0_0_1px_rgb(0_0_0/0.08)] [color-scheme:light]">
                 <img src={state.qr} alt={c.qrAlt} className="size-44" />
               </div>
               <p className="text-muted-foreground mt-3 text-center text-xs">{c.manual}</p>
               <p dir="ltr" className="mt-1 text-center font-mono text-xs break-all select-all">
                 {state.secret}
               </p>
+              <div className="mt-2 flex justify-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="min-h-11"
+                  onClick={() => {
+                    // الإشعار لا يكرّر المفتاح: يبقى السرّ في الحافظة وحدها.
+                    void navigator.clipboard
+                      ?.writeText(state.secret)
+                      .then(() => toast.success(c.copied))
+                      .catch(() => toast.error(c.copyFailed));
+                  }}
+                >
+                  <Copy aria-hidden="true" />
+                  {c.copySecret}
+                </Button>
+              </div>
             </>
           ) : (
             <p className="text-muted-foreground text-sm leading-7">{c.verifyIntro}</p>
@@ -212,13 +250,22 @@ export function MfaSettings() {
             dir="ltr"
             inputMode="numeric"
             autoComplete="one-time-code"
+            pattern="[0-9]{6}"
             maxLength={6}
+            aria-describedby="mfa-settings-hint"
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             className="mt-1 text-center font-mono tracking-[0.4em]"
           />
-          {err && <p className="text-destructive mt-2 text-sm">{err}</p>}
-          <Button type="submit" className="mt-4" disabled={busy || code.length !== 6}>
+          <p id="mfa-settings-hint" className="text-muted-foreground mt-1 text-xs">
+            {c.codeHint}
+          </p>
+          {err && (
+            <p role="alert" className="text-destructive mt-2 text-sm">
+              {err}
+            </p>
+          )}
+          <Button type="submit" className="mt-4 min-h-11" disabled={busy || code.length !== 6}>
             {c.confirm}
           </Button>
         </form>

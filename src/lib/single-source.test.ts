@@ -212,6 +212,7 @@ describe("العملة: خريطةٌ واحدة وسعرٌ واحد", () => {
       if (n > 0) counts[p] = n;
     }
     expect(counts).toEqual({
+      "src/components/donor/DonorBoard.tsx": 1,
       "src/components/impact/EvidenceLedger.tsx": 1,
       "src/components/intake/OrphanIntakeForm.tsx": 1,
       "src/components/map/WorldMap.tsx": 1,
@@ -222,7 +223,6 @@ describe("العملة: خريطةٌ واحدة وسعرٌ واحد", () => {
       "src/lib/support-amounts.ts": 2,
       "src/lib/support.functions.ts": 1,
       "src/routes/_authenticated/dashboard.tsx": 1,
-      "src/routes/_authenticated/donor.$entityId.index.tsx": 1,
       "src/routes/_authenticated/donor.$entityId.report.tsx": 1,
     });
   });

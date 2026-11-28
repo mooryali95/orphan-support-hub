@@ -47,7 +47,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     rest: "سدّ المتبقّي",
     other: "مبلغ آخر",
     note: "ملاحظة (اختياري)",
-    confirm: (a: string) => `سجّل دعمي — ${a}`,
+    confirm: (a: string) => `سجّل دعمي بمبلغ ${a}`,
     signIn: "سجّل الدخول لإتمام الدعم",
     signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
@@ -72,7 +72,7 @@ const COPY = defineCopy("components/support/SupportSheet", {
     rest: "Cover the remaining need",
     other: "Other amount",
     note: "Note (optional)",
-    confirm: (a: string) => `Record my support — ${a}`,
+    confirm: (a: string) => `Record my support of ${a}`,
     signIn: "Sign in to complete your support",
     signInHint: "You stay here; after signing in, your support is recorded with the same amount.",
     pledgeNote: "Recorded as a pledge; nothing is charged until online collection opens.",
@@ -368,7 +368,7 @@ export function SupportSheet({
       amountLegend={
         gap && (
           <span className="ms-1 text-muted-foreground/80">
-            — {t.fromGap(formatMoney(gap.gap, gap.currency, locale))}
+            ({t.fromGap(formatMoney(gap.gap, gap.currency, locale))})
           </span>
         )
       }
@@ -389,7 +389,12 @@ export function SupportSheet({
       confirm={
         <SupporterModeGate>
           {signedIn ? (
-            <Button size="lg" className="w-full" disabled={busy} onClick={confirm}>
+            <Button
+              size="lg"
+              className="min-h-12 w-full whitespace-normal"
+              disabled={busy}
+              onClick={confirm}
+            >
               {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
               {t.confirm(formatMoney(amount, currency, locale))}
             </Button>
@@ -400,7 +405,7 @@ export function SupportSheet({
               // after signing in the support is recorded as promised, with no second click
               onDone={() => void confirm()}
               trigger={(open) => (
-                <Button size="lg" className="w-full" onClick={open}>
+                <Button size="lg" className="min-h-12 w-full whitespace-normal" onClick={open}>
                   {t.signIn}
                 </Button>
               )}

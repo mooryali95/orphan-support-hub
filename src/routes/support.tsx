@@ -102,7 +102,7 @@ const COPY = defineCopy("routes/support", {
     sumTarget: "إلى",
     sumAmount: "المبلغ",
     sumEmpty: "اختر نوع الدعم لتبدأ.",
-    sumPending: "—",
+    sumPending: "لم يُحدَّد بعد",
     realNote:
       "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي. للتجربة دون التزام افتح «جرّب المنصّة».",
     realNoteLive: "دعمٌ حقيقي: يُسجَّل باسمك ويصل إلى طفلٍ حقيقي.",
@@ -136,7 +136,7 @@ const COPY = defineCopy("routes/support", {
     fromGap: (g: string) => `الحاجة الشهرية غير المغطّاة هنا ${g}. اختر ما يناسبك:`,
     rest: "سدّ المتبقّي",
     note: "ملاحظة (اختياري)",
-    confirm: (a: string) => `سجّل دعمي — ${a}`,
+    confirm: (a: string) => `سجّل دعمي بمبلغ ${a}`,
     signIn: "سجّل الدخول لإتمام الدعم",
     signInHint: "تبقى هنا؛ بعد الدخول يُسجَّل دعمك بالمبلغ نفسه.",
     pledgeNote: "يُسجَّل الآن تعهّداً، ولا يُخصم شيء حتى يُفتح التحصيل الإلكتروني.",
@@ -153,7 +153,7 @@ const COPY = defineCopy("routes/support", {
     sumTarget: "To",
     sumAmount: "Amount",
     sumEmpty: "Choose a kind of support to begin.",
-    sumPending: "—",
+    sumPending: "Not chosen yet",
     realNote:
       'Real support: recorded in your name and reaching a real child. To explore without commitment, open "Try the platform".',
     realNoteLive: "Real support: recorded in your name and reaching a real child.",
@@ -208,7 +208,7 @@ const COPY = defineCopy("routes/support", {
     fromGap: (g: string) => `The uncovered monthly need here is ${g}. Pick what suits you:`,
     rest: "Cover the remaining need",
     note: "Note (optional)",
-    confirm: (a: string) => `Record my support — ${a}`,
+    confirm: (a: string) => `Record my support of ${a}`,
     signIn: "Sign in to complete your support",
     signInHint: "You stay here; after signing in, your support is recorded with the same amount.",
     pledgeNote:

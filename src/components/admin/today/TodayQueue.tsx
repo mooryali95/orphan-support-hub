@@ -1,3 +1,6 @@
+import { FourEyesNote } from "@/components/admin/FourEyesNote";
+import { PanelSkeleton } from "@/components/admin/PanelState";
+import { Failed, Quiet } from "@/components/admin/overview/parts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { AlertTriangle, Clock, Keyboard, Users } from "lucide-react";
@@ -29,6 +32,7 @@ import { dirOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 import { TODAY_COPY } from "./copy";
+import { CountryTodayStrip } from "./CountryTodayStrip";
 import { TodayTiles } from "./TodayTiles";
 import {
   applyFilters,
@@ -198,6 +202,7 @@ export function TodayQueue({
       {scope === "admin" && onOpenTrust && (
         <TodayTiles items={items} onFilter={setFilters} onOpenTrust={onOpenTrust} />
       )}
+      {scope === "country" && <CountryTodayStrip items={items} now={now} onFilter={setFilters} />}
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="min-w-0">
           <h3 id="today-title" className="font-display text-xl font-bold">
@@ -319,13 +324,9 @@ export function TodayQueue({
       </div>
 
       {failed && (
-        <p role="status" className="text-bridge-ink mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <AlertTriangle className="size-4" aria-hidden="true" />
-          {t.failed}
-          <button type="button" className="font-bold underline" onClick={refetch}>
-            {t.retry}
-          </button>
-        </p>
+        <div className="mt-3">
+          <Failed title={t.failed} retry={t.retry} onRetry={refetch} />
+        </div>
       )}
 
       <p className="text-muted-foreground mt-4 text-xs tabular-nums" aria-live="polite">
@@ -335,10 +336,12 @@ export function TodayQueue({
       </p>
 
       <div ref={listRef} className="mt-2 space-y-6">
-        {!pending && shown.length === 0 && (
-          <p className="border-border text-muted-foreground rounded-2xl border border-dashed p-8 text-center text-sm">
-            {filtered ? t.emptyFiltered : t.empty}
-          </p>
+        {pending && items.length === 0 && <PanelSkeleton shape="rows" count={4} />}
+        {!pending && !failed && shown.length === 0 && (
+          <Quiet
+            title={filtered ? t.emptyFiltered : t.empty}
+            text={filtered ? t.emptyFilteredNext : t.emptyNext}
+          />
         )}
         {GROUPS.map((g) =>
           grouped[g].length === 0 ? null : (
@@ -555,7 +558,8 @@ function Row({
         </p>
       ) : (
         directSettle(it) && (
-          <div className="mt-2 flex justify-end">
+          <div className="mt-2 flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
+            <FourEyesNote className="flex-1" />
             <Button
               type="button"
               size="sm"

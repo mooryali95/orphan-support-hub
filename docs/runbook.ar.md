@@ -168,6 +168,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verifica
 | تصريف البريد يجري         | المجدول يستدعي `POST /api/notifications/dispatch` كلّ ٥ دقائق؛ ينقر النبض بعد كلّ تشغيل                        | `HEARTBEAT_URL_DISPATCH`  | لا نبض خلال ٣٠ دقيقة، أو `/fail`        |
 | مطابقة المال تجري         | المجدول يستدعي `POST /api/payments/reconcile` كلّ ساعة؛ ينقر النبض بعد كلّ تشغيل                               | `HEARTBEAT_URL_RECONCILE` | لا نبض خلال ساعتين، أو `/fail`          |
 | استبقاء وسائط الطفل يجري  | المجدول يستدعي `POST /api/child-updates/retention` يومياً؛ ينقر النبض بعد كلّ تشغيل                            | `HEARTBEAT_URL_RETENTION` | لا نبض خلال يومين، أو `/fail`           |
+| أحداث السلامة هادئة       | `POST /api/ops/health` يعدّ أحداث `sec_*` في الساعة الأخيرة؛ ينقر نبض فشلٍ إن تجاوزت الحدّ                     | `HEARTBEAT_URL_SECURITY`  | نقرٌ على `/fail`                        |
 
 - **GET الصحّة** لا يُعيد إلا قيماً منطقية (`database`، `config_ok`، وحال كلّ ميزة:
   admin/cron/email/payments/grants) ومرجع الطلب عند الفشل؛ لا رسالة خطأٍ ولا اسم
@@ -211,8 +212,11 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/founder-admin-verifica
    (سياسة الاحتفاظ، `data_retention_policy`). فيها بيانات أطفال: لا تُرفع إلى مكانٍ
    مشترك، ولا تُفتح إلا على جهاز المؤسِّس أو قاعدة التمرين.
 3. **الخزائن (Storage):** الصور والوثائق ليست في `pg_dump`. انسخ خزائن
-   `orphan-photos` و`orphan-documents` و`org-documents` شهرياً بواجهة Storage أو
-   `supabase storage cp -r`، بالتشفير نفسه.
+   `orphan-photos` و`orphan-documents` و`org-documents` و`child-updates` شهرياً بواجهة
+   Storage أو `supabase storage cp -r`، بالتشفير نفسه. خزنة `child-updates` فيها صور
+   الأطفال ومقاطعهم بموافقة أوليائهم: نسختها تتبع الاستبقاء نفسه، فما حُذف من الخزنة
+   (المرفوض، والمؤرشَف، وما رُفع ولم يُسجَّل بعد ٢٤ ساعة) لا يُستعاد من نسخةٍ أقدم
+   إلا لتمرين، ثم يُحذف.
 
 ### تمرين الاستعادة (كلّ ثلاثة أشهر، ودوّن نتيجته)
 
@@ -235,9 +239,23 @@ integrity_log` مع البثّ، وتحقّق من سلسلة السلامة (`v
 1. **الاحتواء (الساعة الأولى):**
    - أوقف ما ينزف: الدفع من `platform_settings.payments_on_hold = true`، والبريد من
      `email_on_hold = true`، ومفتاح شريكٍ مسرَّب بالإبطال من الإدارة ← التكامل.
+   - مفتاحا الإيقاف للدخول والأطفال (بجلسة aal2):
+     - دخول الندوة: `select admin_sso_set_disabled(true);` يضبط
+       `platform_settings.sso_disabled`، فيردّ `/api/sso/wamy` بالرفض لكلّ رمز حتى يُعاد
+       بـ `false`. استعمله إن سُرّب السرّ أو اشتُبه في منصّة الندوة.
+     - ملفّ طفل: `select admin_orphan_freeze('<id>', '<السبب>');` يوقف الكفالة الجديدة
+       والكتابة الذهبية ورفع وسائطه، ويُرفع بـ `admin_orphan_unfreeze` بجلسة aal2.
+   - تنبيه السلامة: الفحص الدوري يعدّ أحداث `sec_*` في الساعة الأخيرة
+     (`security_events_recent`، والبحث الإداري خارج العدّ)، فإن تجاوزت
+     `SECURITY_EVENTS_THRESHOLD` (٥٠ افتراضاً) نقر `HEARTBEAT_URL_SECURITY/fail`. ابدأ
+     التقييم من مرشّح «السلامة» في سجلّ القرارات.
    - دوّر الأسرار المتأثّرة: `SUPABASE_SERVICE_ROLE_KEY` (لوحة Supabase ← API)،
      `LOVABLE_CRON_SECRET` (اضبط القديم في `LOVABLE_CRON_SECRET_PREVIOUS` حتى يُحدَّث
      المجدول)، `CREEM_*`، `GRANT_SIGNING_KEY`.
+   - تدوير `WAMY_SSO_SECRET` بلا انقطاع: انقل القيمة الحالية إلى
+     `WAMY_SSO_SECRET_PREVIOUS`، واضبط الجديدة في `WAMY_SSO_SECRET`، ثم سلّمها للندوة.
+     يُقبل الاثنان حتى تبدّل الندوة، ثم امحُ `WAMY_SSO_SECRET_PREVIOUS`. وإن كان السرّ
+     مسرَّباً فأوقف الدخول أوّلاً (أعلاه)، ولا تضع المسرَّب في PREVIOUS.
    - احفظ الأدلّة قبل أيّ إصلاح: سجلّات Workers للفترة، و`audit_log` و`integrity_log`
      (`COPY … TO STDOUT`)، ولقطة `pg_dump`.
 2. **التقييم (خلال ٢٤ ساعة):** ما البيانات، وكم شخصاً، وهل فيها أطفال أو بيانات

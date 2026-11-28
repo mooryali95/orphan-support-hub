@@ -42,6 +42,25 @@ const verifyHs = (t: string) =>
   verifyLaunchToken(t, { issuer: ISS, keys: { secret: SECRET }, now: NOW });
 
 describe("رمز الإطلاق من الندوة", () => {
+  it("يقبل السرّ السابق أثناء التدوير، ولا يقبله بعد محوه", async () => {
+    const t = await hs256(claims());
+    const NEW = "a-brand-new-rotated-secret-long-enough-456";
+    const during = await verifyLaunchToken(t, {
+      issuer: ISS,
+      keys: { secret: NEW, previousSecret: SECRET },
+      now: NOW,
+    });
+    expect(during.ok).toBe(true);
+    const after = await verifyLaunchToken(t, { issuer: ISS, keys: { secret: NEW }, now: NOW });
+    expect(after).toEqual({ ok: false, reason: "bad_signature" });
+    const short = await verifyLaunchToken(t, {
+      issuer: ISS,
+      keys: { secret: NEW, previousSecret: "short" },
+      now: NOW,
+    });
+    expect(short).toEqual({ ok: false, reason: "bad_signature" });
+  });
+
   it("يقبل رمزاً صحيحاً ويطبّع البريد", async () => {
     const r = await verifyHs(await hs256(claims()));
     expect(r.ok && r.claims.email).toBe("staff@wamy.org");

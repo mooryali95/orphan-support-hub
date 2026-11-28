@@ -1,7 +1,14 @@
 {
  "version": 1,
- "count": 5148,
+ "count": 5543,
  "entries": {
+  "account/mfa.badge": {
+   "en": "Verified session (aal2)",
+   "ar": "جلسة موثّقة (aal2)",
+   "kind": "text",
+   "hash": "297e3ca2b9d7",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
   "account/mfa.code": {
    "en": "Code",
    "ar": "الرمز",
@@ -9,11 +16,39 @@
    "hash": "6c6ec4877448",
    "file": "src/components/account/MfaSettings.tsx"
   },
+  "account/mfa.codeHint": {
+   "en": "Six digits",
+   "ar": "ستّة أرقام",
+   "kind": "text",
+   "hash": "2651a77c7994",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
   "account/mfa.confirm": {
    "en": "Confirm",
    "ar": "تأكيد",
    "kind": "text",
    "hash": "cfe80a65f538",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copied": {
+   "en": "Key copied. Paste it into your authenticator app.",
+   "ar": "نُسخ المفتاح. الصقه في تطبيق المصادقة.",
+   "kind": "text",
+   "hash": "3af7989384ca",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copyFailed": {
+   "en": "Copying failed. Select the key and copy it yourself.",
+   "ar": "تعذّر النسخ. حدّد المفتاح وانسخه بنفسك.",
+   "kind": "text",
+   "hash": "29fdadca390c",
+   "file": "src/components/account/MfaSettings.tsx"
+  },
+  "account/mfa.copySecret": {
+   "en": "Copy key",
+   "ar": "نسخ المفتاح",
+   "kind": "text",
+   "hash": "1a47f6b6bfde",
    "file": "src/components/account/MfaSettings.tsx"
   },
   "account/mfa.enrollIntro": {
@@ -402,6 +437,13 @@
    "kind": "template",
    "params": 3,
    "hash": "5299672b123f",
+   "file": "src/components/LegalPage.tsx"
+  },
+  "components/LegalPage.toc": {
+   "en": "On this page",
+   "ar": "محتويات الصفحة",
+   "kind": "text",
+   "hash": "abd4d5a8d040",
    "file": "src/components/LegalPage.tsx"
   },
   "components/LegalPage.updated": {
@@ -805,6 +847,216 @@
    "hash": "62fd7babf158",
    "file": "src/components/SiteHeader.tsx"
   },
+  "components/SupporterAssistant.conversation": {
+   "en": "Supporter assistant conversation",
+   "ar": "محادثة مساعد الداعمين",
+   "kind": "text",
+   "hash": "0565c498d953",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copied": {
+   "en": "Answer copied.",
+   "ar": "نُسخت الإجابة.",
+   "kind": "text",
+   "hash": "bec65d6fab4b",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copyAnswer": {
+   "en": "Copy answer",
+   "ar": "نسخ الإجابة",
+   "kind": "text",
+   "hash": "e328ceda29bb",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.copyFailed": {
+   "en": "Couldn't copy the answer.",
+   "ar": "تعذّر نسخ الإجابة.",
+   "kind": "text",
+   "hash": "26483cc28d31",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.disclaimer": {
+   "en": "Automated answers can be wrong. The published file and sponsorship terms are the reference. This conversation lasts for this session only and isn't saved to your account.",
+   "ar": "إجابات آلية قد تخطئ، والمرجع هو الملفّ المنشور وشروط الكفالة. المحادثة لهذه الجلسة فقط ولا تُحفظ في حسابك.",
+   "kind": "text",
+   "hash": "e29995677102",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.emptyText": {
+   "en": "Pick a common question or write your own. Answers come only from published files and the sponsorship terms.",
+   "ar": "اختر سؤالاً شائعاً أو اكتب سؤالك. الإجابة من الملفّات المنشورة وشروط الكفالة وحدها.",
+   "kind": "text",
+   "hash": "1505d122348e",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.emptyTitle": {
+   "en": "What would you like to know?",
+   "ar": "ما الذي تودّ معرفته؟",
+   "kind": "text",
+   "hash": "0d882b564f6b",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.file": {
+   "en": "Published file",
+   "ar": "الملفّ المنشور",
+   "kind": "text",
+   "hash": "5b419e2b0a61",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.latest": {
+   "en": "Latest answer",
+   "ar": "آخر إجابة",
+   "kind": "text",
+   "hash": "c94e6dc45245",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.limit": {
+   "en": "This conversation reached its limit. Start a new one.",
+   "ar": "وصلت المحادثة إلى حدّها. ابدأ محادثة جديدة.",
+   "kind": "text",
+   "hash": "13c80907ca7a",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.log": {
+   "en": "Questions and answers",
+   "ar": "الأسئلة والإجابات",
+   "kind": "text",
+   "hash": "6993ab2254d8",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.newChat": {
+   "en": "New conversation",
+   "ar": "محادثة جديدة",
+   "kind": "text",
+   "hash": "4d361881f4c3",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.noAnswer": {
+   "en": "No answer was available for this question. No sponsorship request was recorded.",
+   "ar": "لم تتوفر إجابة لهذا السؤال. لم يُسجّل أي طلب كفالة.",
+   "kind": "text",
+   "hash": "77fededf18d5",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.noPersonal": {
+   "en": "Don't write personal details or payment information",
+   "ar": "لا تكتب بيانات شخصية أو معلومات دفع",
+   "kind": "text",
+   "hash": "5f6403fc8c35",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.placeholder": {
+   "en": "Write your question about sponsorship…",
+   "ar": "اكتب سؤالك عن الكفالة…",
+   "kind": "text",
+   "hash": "5f097d9ce4dd",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.placeholderFile": {
+   "en": "Ask about this file's published information…",
+   "ar": "اسأل عن المعلومات المنشورة لهذا الملفّ…",
+   "kind": "text",
+   "hash": "9f358a950ca2",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.publishedOnly": {
+   "en": "Published information only",
+   "ar": "المعلومات المنشورة فقط",
+   "kind": "text",
+   "hash": "ebd4df1c8e84",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.reviewing": {
+   "en": "Reviewing the information",
+   "ar": "مراجعة المعلومات",
+   "kind": "text",
+   "hash": "be425b5318a3",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.sampleDisclaimer": {
+   "en": "Demo answers are prepared in advance from the platform's published text, and your question is sent to no service.",
+   "ar": "إجابات العرض جاهزة مسبقاً من نصوص المنصّة المنشورة، ولا يُرسل سؤالك إلى أيّ خدمة.",
+   "kind": "text",
+   "hash": "066b8778fd13",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.send": {
+   "en": "Send question",
+   "ar": "إرسال السؤال",
+   "kind": "text",
+   "hash": "d5ed79e9685f",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.signIn": {
+   "en": "Sign in to ask your question",
+   "ar": "سجّل الدخول لطرح سؤالك",
+   "kind": "text",
+   "hash": "f4ab325cf850",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.steps": {
+   "en": "Sponsorship steps",
+   "ar": "خطوات الكفالة",
+   "kind": "text",
+   "hash": "ae9d5ee9806a",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.stop": {
+   "en": "Stop the answer",
+   "ar": "إيقاف الإجابة",
+   "kind": "text",
+   "hash": "7196a8b54815",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.stopped": {
+   "en": "The answer was stopped. What was written stays.",
+   "ar": "تم إيقاف الإجابة، وبقي الجزء المكتوب.",
+   "kind": "text",
+   "hash": "ef07ac352ebc",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.0": {
+   "en": "How do I start a sponsorship?",
+   "ar": "كيف أبدأ الكفالة؟",
+   "kind": "text",
+   "hash": "2784d40b96aa",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.1": {
+   "en": "Can I pause a sponsorship?",
+   "ar": "هل يمكنني إيقاف الكفالة؟",
+   "kind": "text",
+   "hash": "cc741176dd32",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.suggestions.2": {
+   "en": "How is a child's information protected?",
+   "ar": "كيف تُحمى معلومات الطفل؟",
+   "kind": "text",
+   "hash": "2c63d516054d",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.unreachable": {
+   "en": "We couldn't reach the question assistant. Try again later.",
+   "ar": "تعذّر الوصول إلى مساعد الأسئلة. حاول لاحقاً.",
+   "kind": "text",
+   "hash": "c118e52d6187",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.waiting": {
+   "en": "Reviewing the published information…",
+   "ar": "جارٍ مراجعة المعلومات المنشورة…",
+   "kind": "text",
+   "hash": "073f9a29bb5f",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
+  "components/SupporterAssistant.yourQuestion": {
+   "en": "Your question",
+   "ar": "سؤالك",
+   "kind": "text",
+   "hash": "42c9d47c2fd5",
+   "file": "src/components/SupporterAssistant.tsx"
+  },
   "components/SupporterModeGate.note": {
    "en": "You are in the “{0}” mode. Personal support is recorded from the supporter mode, so it never mixes with your role's work.",
    "ar": "أنت الآن في وضع «{0}». الدعم الشخصي يُسجَّل من وضع الداعم، فلا يختلط بعمل دورك.",
@@ -847,6 +1099,27 @@
    "kind": "text",
    "hash": "29c84246bd75",
    "file": "src/components/admin/AdminTrustStrip.tsx"
+  },
+  "components/admin/AwaitingTransfers.empty": {
+   "en": "No sponsorships are waiting for payment.",
+   "ar": "لا توجد كفالات عالقة بانتظار الدفع.",
+   "kind": "text",
+   "hash": "e170c57f8385",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.next": {
+   "en": "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
+   "ar": "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
+   "kind": "text",
+   "hash": "82b5ed34fa61",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/FourEyesNote.note": {
+   "en": "Settling needs two-step verification and a reviewer other than the uploader.",
+   "ar": "الحسم يحتاج تحقّقاً بخطوتين، ومراجعاً غير من رفع التغيير.",
+   "kind": "text",
+   "hash": "85a82da7ed6c",
+   "file": "src/components/admin/FourEyesNote.tsx"
   },
   "components/admin/GoLiveReadiness.badgeLive": {
    "en": "Live",
@@ -931,6 +1204,27 @@
    "kind": "text",
    "hash": "3fda408d7e4c",
    "file": "src/components/admin/GoLiveReadiness.tsx"
+  },
+  "components/admin/PanelState.failed": {
+   "en": "This panel could not be read. The figure is missing, not zero.",
+   "ar": "تعذّرت قراءة هذه اللوحة. الرقم غائب لا صفر.",
+   "kind": "text",
+   "hash": "cee296805592",
+   "file": "src/components/admin/PanelState.tsx"
+  },
+  "components/admin/PanelState.loading": {
+   "en": "Loading",
+   "ar": "جارٍ التحميل",
+   "kind": "text",
+   "hash": "dd4242b665fb",
+   "file": "src/components/admin/PanelState.tsx"
+  },
+  "components/admin/PanelState.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/admin/PanelState.tsx"
   },
   "components/admin/SystemHealth.lead": {
    "en": "Operations, dispatch and the data mirror in one card: what's running, what's behind and what needs attention.",
@@ -1808,6 +2102,13 @@
    "ar": "سُجّلت",
    "kind": "text",
    "hash": "8a8bde95f501",
+   "file": "src/components/admin/console/RecordsConsole.tsx"
+  },
+  "components/admin/console/RecordsConsole.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleDoc": {
@@ -9148,6 +9449,20 @@
    "hash": "8b370df1ffbe",
    "file": "src/components/admin/search/AdminSearch.tsx"
   },
+  "components/admin/search.limited": {
+   "en": "Too many searches in a short time. Wait a minute and try again.",
+   "ar": "بحثٌ كثير في وقت قصير. انتظر دقيقة ثم أعد المحاولة.",
+   "kind": "text",
+   "hash": "9d718a87ebc5",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.mfa": {
+   "en": "Sponsors, sponsorships and transfers appear once this session passes two-step verification.",
+   "ar": "الكفلاء والكفالات والتحويلات تظهر بعد تفعيل التحقّق بخطوتين في هذه الجلسة.",
+   "kind": "text",
+   "hash": "ff0da1b32633",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
   "components/admin/search.none": {
    "en": "No results.",
    "ar": "لا نتائج.",
@@ -9300,6 +9615,20 @@
    "ar": "لا بنود تطابق المرشّحات.",
    "kind": "text",
    "hash": "2f6e701af852",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyFilteredNext": {
+   "en": "Clear the filters to see everything waiting.",
+   "ar": "امسح المرشّحات لترى كلّ ما ينتظر.",
+   "kind": "text",
+   "hash": "cc65db0d7635",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyNext": {
+   "en": "Open the trust center to see each country's health.",
+   "ar": "راجع «مركز الثقة» لترى صحة الدول.",
+   "kind": "text",
+   "hash": "b76b1ec19eef",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.failed": {
@@ -9910,6 +10239,41 @@
    "kind": "text",
    "hash": "1ba980b7173f",
    "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today/CountryTodayStrip.awaiting": {
+   "en": "Awaiting your decision",
+   "ar": "تنتظر حسمك",
+   "kind": "text",
+   "hash": "e0b22d37beb8",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.label": {
+   "en": "Your day at a glance",
+   "ar": "ملخّص يومك",
+   "kind": "text",
+   "hash": "426b1e6419e5",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.last": {
+   "en": "Latest upload",
+   "ar": "آخر رفع",
+   "kind": "text",
+   "hash": "723e115df36e",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.none": {
+   "en": "Nothing yet",
+   "ar": "لا شيء بعد",
+   "kind": "text",
+   "hash": "f0f7ada81e95",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
+  },
+  "components/admin/today/CountryTodayStrip.overdue": {
+   "en": "Overdue",
+   "ar": "متأخرة",
+   "kind": "text",
+   "hash": "e9297fc1c27d",
+   "file": "src/components/admin/today/CountryTodayStrip.tsx"
   },
   "components/admin/trust.actions.country_source_mode": {
    "en": "Office mode switch",
@@ -10743,6 +11107,90 @@
    "hash": "b1f10e41c375",
    "file": "src/components/admin/trust/copy.ts"
   },
+  "components/ask/AskView.eyebrow": {
+   "en": "Ask with confidence",
+   "ar": "اسأل باطمئنان",
+   "kind": "text",
+   "hash": "518de7a13766",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.listFailed": {
+   "en": "We couldn't load the list of files. You can still ask about sponsorship steps.",
+   "ar": "تعذّر تحميل قائمة الملفات. يمكنك السؤال عن خطوات الكفالة.",
+   "kind": "text",
+   "hash": "0fce94504d24",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.noFiles": {
+   "en": "No files are published right now. You can still ask about sponsorship steps.",
+   "ar": "لا ملفّات منشورة الآن. يمكنك السؤال عن خطوات الكفالة.",
+   "kind": "text",
+   "hash": "465e99bfb7ec",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.title": {
+   "en": "Supporter assistant",
+   "ar": "مساعد الداعمين",
+   "kind": "text",
+   "hash": "bf32beca816e",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.topic": {
+   "en": "Question topic",
+   "ar": "موضوع السؤال",
+   "kind": "text",
+   "hash": "c1c483dcf16c",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.topicHint": {
+   "en": "General sponsorship steps, or one published file by its code and published name only.",
+   "ar": "خطوات الكفالة عامّة، أو ملفٌّ منشور برمزه واسمه المنشور فقط.",
+   "kind": "text",
+   "hash": "ca00dcfbb123",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/AskView.trial": {
+   "en": "Try the assistant with sample answers, no account needed",
+   "ar": "جرّب المساعد بإجاباتٍ نموذجية بلا حساب",
+   "kind": "text",
+   "hash": "36cf06c47ed2",
+   "file": "src/components/ask/AskView.tsx"
+  },
+  "components/ask/TopicCombobox.chosen": {
+   "en": "The selected file",
+   "ar": "الملفّ المحدد",
+   "kind": "text",
+   "hash": "371082252123",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.empty": {
+   "en": "No published file matches that code or name.",
+   "ar": "لا ملفّ منشور بهذا الرمز أو الاسم.",
+   "kind": "text",
+   "hash": "78739b1bd797",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.files": {
+   "en": "Published files",
+   "ar": "الملفّات المنشورة",
+   "kind": "text",
+   "hash": "e7d2e72b96df",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.general": {
+   "en": "Sponsorship steps",
+   "ar": "خطوات الكفالة",
+   "kind": "text",
+   "hash": "ae9d5ee9806a",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
+  "components/ask/TopicCombobox.search": {
+   "en": "Search by file code or published name",
+   "ar": "ابحث برمز الملفّ أو الاسم المنشور",
+   "kind": "text",
+   "hash": "b64eb85b2a8c",
+   "file": "src/components/ask/TopicCombobox.tsx"
+  },
   "components/auth/AuthDialog.consent": {
    "en": "By continuing you agree to the terms of use and privacy policy; this platform handles children's data.",
    "ar": "بالمتابعة توافق على شروط الاستخدام وسياسة الخصوصية، فهذه منصّةٌ تعالج بيانات أطفال.",
@@ -11138,6 +11586,240 @@
    "kind": "text",
    "hash": "69ebdc2a6aee",
    "file": "src/components/brand/SurplusBadge.tsx"
+  },
+  "components/donor/DonorBoard.back": {
+   "en": "Back to my workspaces",
+   "ar": "العودة إلى بواباتي",
+   "kind": "text",
+   "hash": "9921cf18730b",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.byTarget": {
+   "en": "Support by target",
+   "ar": "توزيع الدعم حسب الهدف",
+   "kind": "text",
+   "hash": "596ef2ac6aa5",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.delivered": {
+   "en": "Delivered and documented {0}",
+   "ar": "سُلّم موثّقاً {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "df01df808f3b",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.denied": {
+   "en": "A donor entity's dashboard is open to the members who accepted its owner's invitation. If you are one, ask the owner to invite your account's email.",
+   "ar": "يطّلع على لوحة الجهة المانحة أعضاؤها الذين قبلوا دعوة مالكها. إن كنت منهم فاطلب من المالك دعوتك ببريد حسابك.",
+   "kind": "text",
+   "hash": "4f6ec83a691a",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.deniedTitle": {
+   "en": "This page is for the entity's members",
+   "ar": "هذه الصفحة لأعضاء الجهة",
+   "kind": "text",
+   "hash": "8a0e4f3de3ad",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.done": {
+   "en": "Done",
+   "ar": "تمّ",
+   "kind": "text",
+   "hash": "9adf50d91655",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.invite": {
+   "en": "Invite",
+   "ar": "دعوة",
+   "kind": "text",
+   "hash": "d9a0b69860ae",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.kindTotal": {
+   "en": "{0}: total pledged",
+   "ar": "{0}: مجموع التعهّدات",
+   "kind": "template",
+   "params": 1,
+   "hash": "69486c88d754",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.lastOwner": {
+   "en": "The entity can't be left without an owner.",
+   "ar": "لا تُترك الجهة بلا مالك.",
+   "kind": "text",
+   "hash": "53108b77b644",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.loading": {
+   "en": "Loading the entity…",
+   "ar": "جارٍ تحميل بيانات الجهة…",
+   "kind": "text",
+   "hash": "ffb9bc508535",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.memberEmail": {
+   "en": "Member email",
+   "ar": "بريد العضو",
+   "kind": "text",
+   "hash": "ea3f17545718",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.members.one": {
+   "en": "1 member",
+   "ar": "عضو واحد",
+   "kind": "plural",
+   "hash": "0c15a4efa67a",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.members.other": {
+   "en": "{0} members",
+   "ar": "{0} عضو",
+   "kind": "plural",
+   "hash": "916c4788f983",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.members.zero": {
+   "en": "No members",
+   "ar": "لا أعضاء",
+   "kind": "plural",
+   "hash": "a9efd679c5b7",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.noEntityPledges": {
+   "en": "No pledges in the entity's name yet.",
+   "ar": "لا تعهّدات باسم الجهة بعد.",
+   "kind": "text",
+   "hash": "e75c08c7bd36",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.noPledges": {
+   "en": "No pledges yet.",
+   "ar": "لا تعهّدات بعد.",
+   "kind": "text",
+   "hash": "ed1ce5831f34",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.noTarget": {
+   "en": "No specific target",
+   "ar": "بلا هدفٍ محدّد",
+   "kind": "text",
+   "hash": "29e6c22b5ab7",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.ownerOnly": {
+   "en": "That didn't go through. Only the owner manages the team.",
+   "ar": "تعذّر التنفيذ. إدارة الفريق للمالك وحده.",
+   "kind": "text",
+   "hash": "e10be3ad4f19",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.pledges": {
+   "en": "The entity's pledges",
+   "ar": "تعهّدات الجهة",
+   "kind": "text",
+   "hash": "249dcd5a3bd4",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.remove": {
+   "en": "Remove",
+   "ar": "إزالة",
+   "kind": "text",
+   "hash": "0d47e2c1c47a",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.removeWho": {
+   "en": "Remove {0}",
+   "ar": "إزالة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "199ff27d775c",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.report": {
+   "en": "Impact report for print or PDF",
+   "ar": "تقرير الأثر للطباعة أو PDF",
+   "kind": "text",
+   "hash": "7c3add11f855",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.role.finance": {
+   "en": "Finance",
+   "ar": "مالي",
+   "kind": "text",
+   "hash": "15b36d5cdd55",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.role.member": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.role.owner": {
+   "en": "Owner",
+   "ar": "مالك",
+   "kind": "text",
+   "hash": "5870106c2fce",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.roleLabel": {
+   "en": "Role",
+   "ar": "الدور",
+   "kind": "text",
+   "hash": "0f9753ebfadb",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.status.active": {
+   "en": "Active",
+   "ar": "نشط",
+   "kind": "text",
+   "hash": "7bc047119a8c",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.status.cancelled": {
+   "en": "Cancelled",
+   "ar": "أُلغي",
+   "kind": "text",
+   "hash": "48deefd7f0f0",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.status.fulfilled": {
+   "en": "Fulfilled",
+   "ar": "اكتمل",
+   "kind": "text",
+   "hash": "87884a6b5ee2",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.status.pending": {
+   "en": "Awaiting collection",
+   "ar": "بانتظار فتح التحصيل",
+   "kind": "text",
+   "hash": "0bac74065881",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.team": {
+   "en": "Entity team",
+   "ar": "فريق الجهة",
+   "kind": "text",
+   "hash": "9fdf841a45c3",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.title": {
+   "en": "Donor entity",
+   "ar": "الجهة المانحة",
+   "kind": "text",
+   "hash": "1d8d17417fa4",
+   "file": "src/components/donor/DonorBoard.tsx"
+  },
+  "components/donor/DonorBoard.underReview": {
+   "en": "The admin team is reviewing this entity. Support in its name opens once approved.",
+   "ar": "الجهة قيد مراجعة الإدارة، ويُفتح الدعم باسمها بعد اعتمادها.",
+   "kind": "text",
+   "hash": "8e33f0c9ebd0",
+   "file": "src/components/donor/DonorBoard.tsx"
   },
   "components/geo/CountryPicker.country": {
    "en": "Country",
@@ -14546,6 +15228,182 @@
    "hash": "d050b3dcba89",
    "file": "src/components/orphans/VerificationBadge.tsx"
   },
+  "components/payment/PaymentReturnView.checking": {
+   "en": "Checking…",
+   "ar": "نتحقّق…",
+   "kind": "text",
+   "hash": "8665ba5cc96b",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.child": {
+   "en": "Sponsorship: {0}",
+   "ar": "الكفالة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "e62fb45542ab",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.loadError": {
+   "en": "Could not read the payment status. Nothing was charged because of this page.",
+   "ar": "تعذّرت قراءة حال الدفعة. لم يُخصم شيءٌ بسبب هذه الصفحة.",
+   "kind": "text",
+   "hash": "e6ff76cc41ec",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.loading": {
+   "en": "Reading your payment status from our records…",
+   "ar": "نقرأ حال دفعتك من سجلّنا…",
+   "kind": "text",
+   "hash": "6e250fdc20b2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.reference": {
+   "en": "Payment reference",
+   "ar": "مرجع الدفعة",
+   "kind": "text",
+   "hash": "804c5477bed4",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.refresh": {
+   "en": "Refresh status now",
+   "ar": "حدّث الحال الآن",
+   "kind": "text",
+   "hash": "2b3f3b169deb",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.simulated": {
+   "en": "This is a simulated return from a sample payment gateway. Nothing was paid.",
+   "ar": "هذه عودةٌ محاكاة من بوابة دفعٍ تجريبية. لم يُدفع شيء.",
+   "kind": "text",
+   "hash": "04688e5407e7",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.label": {
+   "en": "Ended",
+   "ar": "منتهية",
+   "kind": "text",
+   "hash": "92dd7da9fdf2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.next": {
+   "en": "Start again from my sponsorships",
+   "ar": "ابدأ من كفالاتي",
+   "kind": "text",
+   "hash": "c6402c0f293b",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.text": {
+   "en": "We found no open payment for this sponsorship, or its time ran out. Start the payment again if you wish.",
+   "ar": "لم نجد دفعةً قائمة لهذه الكفالة، أو انتهت مهلتها. ابدأ الدفع من جديد إن أردت.",
+   "kind": "text",
+   "hash": "a88f603d5aed",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.expired.title": {
+   "en": "The payment session ended",
+   "ar": "انتهت جلسة الدفع",
+   "kind": "text",
+   "hash": "2da4d3b2db49",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.label": {
+   "en": "Not completed",
+   "ar": "لم تتمّ",
+   "kind": "text",
+   "hash": "39eb462427b3",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.next": {
+   "en": "Complete payment from my sponsorships",
+   "ar": "أكمل الدفع من كفالاتي",
+   "kind": "text",
+   "hash": "cd3f154181d0",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.text": {
+   "en": "The gateway declined or cancelled the payment. Your sponsorship is saved and waits for payment, and nothing was charged.",
+   "ar": "رفضت البوابة الدفعة أو أُلغيت. كفالتك محفوظة تنتظر الدفع، ولم يُخصم منك شيء.",
+   "kind": "text",
+   "hash": "d727a17db506",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.failed.title": {
+   "en": "The payment did not go through",
+   "ar": "لم تتمّ الدفعة",
+   "kind": "text",
+   "hash": "a10818eb05ec",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.label": {
+   "en": "Being confirmed",
+   "ar": "قيد التأكيد",
+   "kind": "text",
+   "hash": "86cb5f86a3d4",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.next": {
+   "en": "Go to my sponsorships",
+   "ar": "اذهب إلى كفالاتي",
+   "kind": "text",
+   "hash": "2395d4372e66",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.text": {
+   "en": "The gateway sent you back but its confirmation has not reached us yet. This usually takes a few minutes, and the status here refreshes on its own.",
+   "ar": "وصلنا خبر البوابة ولم يصل تأكيدها بعد. يحدث هذا عادةً خلال دقائق، ونحدّث الحال هنا تلقائياً.",
+   "kind": "text",
+   "hash": "d6b1d4be7e20",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.pending.title": {
+   "en": "Your payment is being confirmed",
+   "ar": "دفعتك قيد التأكيد",
+   "kind": "text",
+   "hash": "28a87d86b704",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.label": {
+   "en": "Completed",
+   "ar": "تمّت",
+   "kind": "text",
+   "hash": "4407f9934a6d",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.next": {
+   "en": "Go to my sponsorships",
+   "ar": "اذهب إلى كفالاتي",
+   "kind": "text",
+   "hash": "2395d4372e66",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.text": {
+   "en": "The payment is recorded, and the sponsorship starts this month.",
+   "ar": "سُجّلت الدفعة في سجلّنا، وتبدأ الكفالة من هذا الشهر.",
+   "kind": "text",
+   "hash": "e0e94f4c5ef2",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.states.success.title": {
+   "en": "Your payment arrived",
+   "ar": "وصلت دفعتك",
+   "kind": "text",
+   "hash": "0c2f9013dcb1",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
+  "components/payment/PaymentReturnView.stopped": {
+   "en": "Still pending. Automatic refresh has stopped; refresh whenever you like.",
+   "ar": "ما زالت معلّقة. توقّفنا عن التحديث التلقائي؛ حدّثها متى شئت.",
+   "kind": "text",
+   "hash": "3025fad5b2b8",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
   "components/profile/OrphanProfilePanel.cancel": {
    "en": "Cancel",
    "ar": "إلغاء",
@@ -15749,6 +16607,13 @@
    "ar": "المجموع بكلّ عملة",
    "kind": "text",
    "hash": "cfbd8fa45a47",
+   "file": "src/components/sponsorship/AnnualStatement.tsx"
+  },
+  "components/sponsorship/AnnualStatement.watermark": {
+   "en": "A simulated sample for the trial, not an official document",
+   "ar": "نموذجٌ محاكى للتجربة، وليس مستنداً رسمياً",
+   "kind": "text",
+   "hash": "286cb73a79db",
    "file": "src/components/sponsorship/AnnualStatement.tsx"
   },
   "components/sponsorship/AnnualStatement.year": {
@@ -17815,6 +18680,312 @@
    "hash": "32e747073e7d",
    "file": "src/components/sponsorship/SponsorshipJourney.tsx"
   },
+  "components/sponsorship/SponsorshipReport.back": {
+   "en": "Back to the sponsorship",
+   "ar": "العودة إلى الكفالة",
+   "kind": "text",
+   "hash": "44055f0d2a0d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.dashboard": {
+   "en": "My dashboard",
+   "ar": "لوحتي",
+   "kind": "text",
+   "hash": "192153630320",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.delivered": {
+   "en": "Months delivered with proof",
+   "ar": "أشهرٌ وصلت موثّقة",
+   "kind": "text",
+   "hash": "b48e40f5e8e8",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.file": {
+   "en": "file",
+   "ar": "ملفّ",
+   "kind": "text",
+   "hash": "6dba91d35fbd",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.footer": {
+   "en": "“Delivered with proof” means the field organization recorded the handover and uploaded its receipt document; the document is kept on the platform and is not independently reviewed before it is marked. Each month has a receipt computed from its facts: keep this report, and check any receipt in it later from the sponsorship page. If a fact changes, its number changes.",
+   "ar": "«الوصول الموثّق» يعني أن الجهة الميدانية سجّلت التسليم ورفعت مستند استلامه؛ المستند محفوظ في المنصّة ولا يمرّ بمراجعةٍ مستقلّة قبل وسمه. ولكل شهرٍ إيصالٌ يُحسب من حقائقه: احفظ هذا التقرير، وتحقّق من أيّ إيصالٍ فيه لاحقاً من صفحة الكفالة. إن تغيّرت حقيقةٌ تغيّر رقمها.",
+   "kind": "text",
+   "hash": "ca4550a1003d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.issued": {
+   "en": "Issued on {0}.",
+   "ar": "صدر في {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "34b6f4ecf6bf",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.loadError": {
+   "en": "Could not load the sponsorship.",
+   "ar": "تعذّر تحميل الكفالة.",
+   "kind": "text",
+   "hash": "833b942f8c10",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.month": {
+   "en": "Month",
+   "ar": "الشهر",
+   "kind": "text",
+   "hash": "19993f359a79",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.monthly": {
+   "en": "{0} a month",
+   "ar": "{0} شهرياً",
+   "kind": "template",
+   "params": 1,
+   "hash": "abfd4860a842",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.noReceipt": {
+   "en": "No receipt",
+   "ar": "لا إيصال",
+   "kind": "text",
+   "hash": "d38b78a5e36c",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.none": {
+   "en": "No months in this year.",
+   "ar": "لا أشهر في هذه السنة.",
+   "kind": "text",
+   "hash": "fbdae70d0480",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.notPaid": {
+   "en": "Not paid",
+   "ar": "لم يُدفع",
+   "kind": "text",
+   "hash": "81024fedcd0c",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paid": {
+   "en": "Paid",
+   "ar": "المدفوع",
+   "kind": "text",
+   "hash": "a22cf2fa7c23",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paidMonths": {
+   "en": "Months paid",
+   "ar": "أشهرٌ مدفوعة",
+   "kind": "text",
+   "hash": "3b721a930ebe",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.paidYear": {
+   "en": "Paid this year",
+   "ar": "المدفوع في السنة",
+   "kind": "text",
+   "hash": "87d3e7ec0b3d",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.print": {
+   "en": "Print or save as PDF",
+   "ar": "طباعة أو حفظ PDF",
+   "kind": "text",
+   "hash": "f9ad934d6aba",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.receipt": {
+   "en": "Receipt",
+   "ar": "الإيصال",
+   "kind": "text",
+   "hash": "2ce401c0096b",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.sponsorshipOf": {
+   "en": "Sponsorship of",
+   "ar": "كفالة",
+   "kind": "text",
+   "hash": "831cb71a3549",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.title": {
+   "en": "Sponsorship report for {0}",
+   "ar": "تقرير الكفالة لعام {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "6bba7d9722ff",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.watermark": {
+   "en": "A simulated sample for the trial, not an official document.",
+   "ar": "نموذجٌ محاكى للتجربة، وليس مستنداً رسمياً.",
+   "kind": "text",
+   "hash": "c975aed0e9b9",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/SponsorshipReport.year": {
+   "en": "Year",
+   "ar": "السنة",
+   "kind": "text",
+   "hash": "7ba53788b69f",
+   "file": "src/components/sponsorship/SponsorshipReport.tsx"
+  },
+  "components/sponsorship/TransferInstructions.amount": {
+   "en": "Amount",
+   "ar": "المبلغ",
+   "kind": "text",
+   "hash": "550cc7896881",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.awaiting": {
+   "en": "Awaiting transfer confirmation",
+   "ar": "بانتظار تأكيد التحويل",
+   "kind": "text",
+   "hash": "19d2f613d7f9",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.awaitingTrial": {
+   "en": "Simulated: no transfer and no confirmation in the trial",
+   "ar": "محاكاة: لا تحويل ولا تأكيد في التجربة",
+   "kind": "text",
+   "hash": "d5aa33d8ae98",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.back": {
+   "en": "Back to my sponsorships",
+   "ar": "العودة إلى كفالاتي",
+   "kind": "text",
+   "hash": "1a61018f3572",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.backTrial": {
+   "en": "Back to my impact",
+   "ar": "العودة إلى أثري",
+   "kind": "text",
+   "hash": "8e18859f1bb2",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.bankNote": {
+   "en": "The bank account details are sent with your confirmation message if you have not received them yet. For any question, write to the address above.",
+   "ar": "بيانات الحساب البنكي تُرسل إليك مع رسالة التأكيد إن لم تكن قد استلمتها بعد. لأي استفسار تواصل معنا على البريد أعلاه.",
+   "kind": "text",
+   "hash": "f1997e1f1261",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.details": {
+   "en": "Sponsorship details",
+   "ar": "تفاصيل الكفالة",
+   "kind": "text",
+   "hash": "570225148296",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.file": {
+   "en": "File",
+   "ar": "الملفّ",
+   "kind": "text",
+   "hash": "9fb4fd0456b2",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.loadError": {
+   "en": "Could not load your sponsorship right now. It is saved, so try again.",
+   "ar": "تعذّر تحميل كفالتك الآن. كفالتك محفوظة، فأعد المحاولة.",
+   "kind": "text",
+   "hash": "dc10a1e05a70",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.monthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.notFound": {
+   "en": "We did not find this sponsorship among yours",
+   "ar": "لم نجد هذه الكفالة ضمن كفالاتك",
+   "kind": "text",
+   "hash": "1ee517c157ef",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.once": {
+   "en": "one time",
+   "ar": "لمرة واحدة",
+   "kind": "text",
+   "hash": "285cbbd200e1",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.reference": {
+   "en": "Reference number",
+   "ar": "رقم المرجع",
+   "kind": "text",
+   "hash": "73682a5c5fad",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.retry": {
+   "en": "Try again",
+   "ar": "إعادة المحاولة",
+   "kind": "text",
+   "hash": "c32d3c94b178",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.status": {
+   "en": "Status",
+   "ar": "الحالة",
+   "kind": "text",
+   "hash": "62c262327e8e",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step1": {
+   "en": "Transfer {0} to the platform's approved bank account.",
+   "ar": "حوّل مبلغ {0} إلى حساب المنصّة البنكي المعتمد.",
+   "kind": "template",
+   "params": 1,
+   "hash": "0fe88dfce022",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step2": {
+   "en": "Write the reference number {0} in the transfer description, so your payment is matched to your sponsorship.",
+   "ar": "اكتب رقم المرجع {0} في خانة البيان أو الملاحظات، فبه تُربط دفعتك بكفالتك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1c6649db1092",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step3": {
+   "en": "Send a picture of the transfer notice to the support address with the reference number:",
+   "ar": "أرسل صورة إشعار التحويل إلى بريد الدعم مع رقم المرجع:",
+   "kind": "text",
+   "hash": "2b913842caad",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.step4": {
+   "en": "The administration confirms receipt, your sponsorship is activated, you are notified, and impact reports begin.",
+   "ar": "تؤكّد الإدارة الاستلام، فتُفعَّل كفالتك ويصلك إشعار، وتبدأ تقارير الأثر.",
+   "kind": "text",
+   "hash": "e5263f89bda3",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.steps": {
+   "en": "Steps to complete",
+   "ar": "خطوات الإتمام",
+   "kind": "text",
+   "hash": "f5b504473379",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialNote": {
+   "en": "These are simulated steps on a sample sponsorship. Do not transfer any money; the trial confirms no transfer and activates no sponsorship.",
+   "ar": "هذه خطواتٌ محاكاة على كفالةٍ نموذجية. لا تحوّل أيّ مبلغ؛ التجربة لا تؤكّد تحويلاً ولا تفعّل كفالة.",
+   "kind": "text",
+   "hash": "fe15128fd002",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
   "components/sponsorship/status.active": {
    "en": "Active",
    "ar": "نشطة",
@@ -18308,11 +19479,11 @@
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.confirm": {
-   "en": "Record my support — {0}",
-   "ar": "سجّل دعمي — {0}",
+   "en": "Record my support of {0}",
+   "ar": "سجّل دعمي بمبلغ {0}",
    "kind": "template",
    "params": 1,
-   "hash": "50a07212f14f",
+   "hash": "67592795ec1d",
    "file": "src/components/support/SupportSheet.tsx"
   },
   "components/support/SupportSheet.failed": {
@@ -18591,6 +19762,177 @@
    "kind": "text",
    "hash": "dd5c04779f10",
    "file": "src/components/try/TrialProposal.tsx"
+  },
+  "components/try/TryAdminSettings.cards.golive": {
+   "en": "The checklist before launch appears here in the live platform.",
+   "ar": "قائمة ما يلزم قبل الإطلاق تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "574b068c40cb",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.cards.health": {
+   "en": "Service status and scheduled jobs appear here in the live platform.",
+   "ar": "حالة الخدمات والمهامّ المجدولة تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "9723c0097cc3",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.cards.integrations": {
+   "en": "Platform keys and who uses them appear here in the live platform.",
+   "ar": "مفاتيح المنصّات ومن يستعملها تظهر هنا في المنصّة الحقيقية.",
+   "kind": "text",
+   "hash": "81420d56015f",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.counts": {
+   "en": "{0} reviewed · {1} published",
+   "ar": "{0} مراجَعة · {1} منشورة",
+   "kind": "template",
+   "params": 2,
+   "hash": "59f6422b4b06",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.draft": {
+   "en": "Draft",
+   "ar": "مسودّة",
+   "kind": "text",
+   "hash": "6f72db7bbccd",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.empty": {
+   "en": "No items in the sample.",
+   "ar": "لا عناصر في العيّنة.",
+   "kind": "text",
+   "hash": "6feffd9739ed",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.emptyNext": {
+   "en": "Open Today to try settling.",
+   "ar": "افتح «اليوم» لتجرّب الحسم.",
+   "kind": "text",
+   "hash": "4a786621ab51",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.country_sources": {
+   "en": "Country sources",
+   "ar": "مصادر الدول",
+   "kind": "text",
+   "hash": "ff4692a969d5",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.golive": {
+   "en": "Go-live readiness",
+   "ar": "جاهزية الإطلاق",
+   "kind": "text",
+   "hash": "fb3dfe3c4dd1",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.health": {
+   "en": "System health",
+   "ar": "صحة النظام",
+   "kind": "text",
+   "hash": "fd5f92d24cb9",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.integrations": {
+   "en": "Integrations",
+   "ar": "التكاملات",
+   "kind": "text",
+   "hash": "570e1bfe98b7",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.labels.languages": {
+   "en": "Languages",
+   "ar": "اللغات",
+   "kind": "text",
+   "hash": "ddccaf209127",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.live": {
+   "en": "Published",
+   "ar": "منشورة",
+   "kind": "text",
+   "hash": "93d7a4946a80",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.localesLead": {
+   "en": "Languages proposed by the countries, and how much is reviewed and published.",
+   "ar": "لغات الدول المقترحة، وما رُوجع منها وما نُشر.",
+   "kind": "text",
+   "hash": "c0ac93193747",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.mirrored": {
+   "en": "{0} files mirrored",
+   "ar": "{0} ملفّاً منسوخاً",
+   "kind": "template",
+   "params": 1,
+   "hash": "14e5ecefc939",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.noStatus": {
+   "en": "No live status in the demo.",
+   "ar": "لا حالة حيّة في العرض.",
+   "kind": "text",
+   "hash": "901ed911a3f6",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.readOnly": {
+   "en": "Read only in the demo.",
+   "ar": "للقراءة وحدها في العرض.",
+   "kind": "text",
+   "hash": "2ef11faf2622",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.simulated": {
+   "en": "Simulated",
+   "ar": "محاكاة",
+   "kind": "text",
+   "hash": "51f2358848e1",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.sourcesLead": {
+   "en": "One office platform per country, its status and the linking steps left.",
+   "ar": "منصّة مكتبٍ لكل دولة، وحالتها، وما بقي من خطوات ربطها.",
+   "kind": "text",
+   "hash": "4a24dadb9459",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.active": {
+   "en": "Active",
+   "ar": "مفعّلة",
+   "kind": "text",
+   "hash": "a27ae761242a",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.onboarding": {
+   "en": "Onboarding",
+   "ar": "قيد الإعداد",
+   "kind": "text",
+   "hash": "d2446606a45d",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.paused": {
+   "en": "Paused",
+   "ar": "موقوفة",
+   "kind": "text",
+   "hash": "1045c18429c7",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.status.trial": {
+   "en": "Trial",
+   "ar": "تجريبية",
+   "kind": "text",
+   "hash": "283caf082587",
+   "file": "src/components/try/TryAdminSettings.tsx"
+  },
+  "components/try/TryAdminSettings.steps": {
+   "en": "{0} of {1} steps",
+   "ar": "{0} من {1} خطوات",
+   "kind": "template",
+   "params": 2,
+   "hash": "f7e1f9f7fef5",
+   "file": "src/components/try/TryAdminSettings.tsx"
   },
   "components/try/TryChildCard.age.one": {
    "en": "{0} year old",
@@ -20179,11 +21521,11 @@
    "file": "src/components/try/TrySupportSheet.tsx"
   },
   "components/try/TrySupportSheet.confirm": {
-   "en": "Record my support (simulated): {0}",
-   "ar": "سجّل دعمي (محاكاة): {0}",
+   "en": "Record my support of {0} (simulated)",
+   "ar": "سجّل دعمي بمبلغ {0} (محاكاة)",
    "kind": "template",
    "params": 1,
-   "hash": "72f684eb39b5",
+   "hash": "14a4621b30b8",
    "file": "src/components/try/TrySupportSheet.tsx"
   },
   "components/try/TrySupportSheet.done.in_kind": {
@@ -21967,6 +23309,388 @@
    "kind": "text",
    "hash": "ad8e85b1c36d",
    "file": "src/components/vision/WhatIf.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.accept": {
+   "en": "Accept",
+   "ar": "قبول",
+   "kind": "text",
+   "hash": "cf89bd72f6a8",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.admin": {
+   "en": "Platform administration",
+   "ar": "إدارة المنصّة",
+   "kind": "text",
+   "hash": "65f2532d20ea",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.adminText": {
+   "en": "Requests, scopes and offices.",
+   "ar": "الطلبات والنطاقات والمكاتب.",
+   "kind": "text",
+   "hash": "eeddda043774",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.answerFailed": {
+   "en": "We couldn't record your answer. The invitation may have expired.",
+   "ar": "تعذّر تسجيل ردّك. ربما انتهت الدعوة.",
+   "kind": "text",
+   "hash": "8a0c334ad326",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.chip.active": {
+   "en": "Active",
+   "ar": "نشط",
+   "kind": "text",
+   "hash": "7bc047119a8c",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.chip.new": {
+   "en": "Available",
+   "ar": "متاح لك",
+   "kind": "text",
+   "hash": "375f086a8c8b",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.chip.pending": {
+   "en": "Under review",
+   "ar": "قيد المراجعة",
+   "kind": "text",
+   "hash": "a11990371e12",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.chip.returned": {
+   "en": "Returned",
+   "ar": "أُعيد للتصحيح",
+   "kind": "text",
+   "hash": "e77344ab2127",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.country": {
+   "en": "Country data",
+   "ar": "بيانات الدولة",
+   "kind": "text",
+   "hash": "58a4af1c234c",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.countryText": {
+   "en": "Your country's data health, uploads, alerts and conflicts, according to your role in its team.",
+   "ar": "صحة بيانات دولتك والرفع والتنبيهات والتعارضات، بحسب دورك في فريقها.",
+   "kind": "text",
+   "hash": "b9fa2085c53e",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.decline": {
+   "en": "Decline",
+   "ar": "ردّ",
+   "kind": "text",
+   "hash": "4b727494cda5",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.declined": {
+   "en": "Invitation declined",
+   "ar": "رُدّت الدعوة",
+   "kind": "text",
+   "hash": "b4584c7dc348",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.donorRole.finance": {
+   "en": "Finance",
+   "ar": "مالي",
+   "kind": "text",
+   "hash": "15b36d5cdd55",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.donorRole.member": {
+   "en": "Viewer",
+   "ar": "مطّلع",
+   "kind": "text",
+   "hash": "e9d324a82d7a",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.donorRole.owner": {
+   "en": "Owner",
+   "ar": "مالك",
+   "kind": "text",
+   "hash": "5870106c2fce",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.donors": {
+   "en": "Donor entities",
+   "ar": "الجهات المانحة",
+   "kind": "text",
+   "hash": "b476646fa4c2",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.donorsEmpty": {
+   "en": "No donor entity is linked to your account. Register yours below to give in its name once reviewed.",
+   "ar": "لا جهة مانحة مرتبطة بحسابك. سجّل جهتك أدناه لتدعم باسمها بعد مراجعتها.",
+   "kind": "text",
+   "hash": "5da5e31b8601",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.entityName": {
+   "en": "Entity name",
+   "ar": "اسم الجهة",
+   "kind": "text",
+   "hash": "a8b770e2482b",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.entityStatus.approved": {
+   "en": "Approved",
+   "ar": "معتمدة",
+   "kind": "text",
+   "hash": "6d3eff130593",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.entityStatus.pending": {
+   "en": "Under review",
+   "ar": "قيد المراجعة",
+   "kind": "text",
+   "hash": "a11990371e12",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.entityStatus.suspended": {
+   "en": "Suspended",
+   "ar": "موقوفة",
+   "kind": "text",
+   "hash": "5b3429f44f46",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.entityType": {
+   "en": "Its kind (company, endowment, foundation…)",
+   "ar": "صفتها (شركة، وقف، مؤسسة…)",
+   "kind": "text",
+   "hash": "8a4846e5986b",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.guardian": {
+   "en": "Beneficiary and family",
+   "ar": "المستفيد وأسرته",
+   "kind": "text",
+   "hash": "4d201be90085",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.guardianText": {
+   "en": "Those in your care and their files.",
+   "ar": "من ترعاهم وملفّاتهم.",
+   "kind": "text",
+   "hash": "aea1c7b25365",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.invitations": {
+   "en": "Donor entity invitations",
+   "ar": "دعوات الجهات المانحة",
+   "kind": "text",
+   "hash": "8abf81512032",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.invitedAs": {
+   "en": "Invited as {0}",
+   "ar": "دعوةٌ بدور «{0}»",
+   "kind": "template",
+   "params": 1,
+   "hash": "b3a9e76b5a22",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.joined": {
+   "en": "You joined the entity",
+   "ar": "انضممت إلى الجهة",
+   "kind": "text",
+   "hash": "327fc342e74d",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.lead": {
+   "en": "Each role you hold on the platform is its own door. Here you see only what is yours.",
+   "ar": "كل دورٍ لك في المنصّة بابٌ مستقل. ترى هنا ما يحقّ لك وحده.",
+   "kind": "text",
+   "hash": "342392d610e4",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.loadFailed": {
+   "en": "We couldn't load your workspaces. Reload the page in a moment.",
+   "ar": "تعذّر تحميل البوابات. أعد تحميل الصفحة بعد قليل.",
+   "kind": "text",
+   "hash": "ee7fd72e0e20",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.loading": {
+   "en": "Loading your workspaces…",
+   "ar": "جارٍ تحميل بواباتك…",
+   "kind": "text",
+   "hash": "d2edf0e9f675",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.offices": {
+   "en": "Offices",
+   "ar": "المكاتب",
+   "kind": "text",
+   "hash": "ee2bd75aec77",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.onlySponsor": {
+   "en": "You have no other role yet. If a donor entity invites you or your field organization is accredited, its door appears here.",
+   "ar": "ليس لك دورٌ آخر بعد. إن دعتك جهةٌ مانحة أو اعتُمدت جهتك الميدانية ظهر بابها هنا.",
+   "kind": "text",
+   "hash": "fac5bdd4478d",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.open": {
+   "en": "Open",
+   "ar": "افتح",
+   "kind": "text",
+   "hash": "3e250dfa80df",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.org": {
+   "en": "Field organization",
+   "ar": "الجهة الميدانية",
+   "kind": "text",
+   "hash": "626fb702d798",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgNew": {
+   "en": "Register a field organization",
+   "ar": "سجّل جهة ميدانية",
+   "kind": "text",
+   "hash": "2050eb32dd42",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgNewAction": {
+   "en": "Start registering",
+   "ar": "ابدأ التسجيل",
+   "kind": "text",
+   "hash": "94f1feb54cfd",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgNewText": {
+   "en": "A WAMY office or a partner working in the field? Submit its details and registration document for the admin team to review.",
+   "ar": "مكتبٌ للندوة أو جهة تعمل معها ميدانياً؟ قدّم بياناتها ووثيقة تسجيلها لتراجعها الإدارة.",
+   "kind": "text",
+   "hash": "c8ffd0a41821",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgPending": {
+   "en": "Your accreditation request is with the admin team. Complete its documents.",
+   "ar": "طلب الاعتماد عند الإدارة. أكمل وثائقه.",
+   "kind": "text",
+   "hash": "369b34b18682",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgPendingAction": {
+   "en": "Complete documents",
+   "ar": "أكمل الوثائق",
+   "kind": "text",
+   "hash": "9762cfff3cd6",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgReturned": {
+   "en": "Your request was returned for correction. Open it to see why.",
+   "ar": "أُعيد الطلب للتصحيح. افتحه لترى السبب.",
+   "kind": "text",
+   "hash": "918156b2f21f",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgReturnedAction": {
+   "en": "See the reason",
+   "ar": "اعرض السبب",
+   "kind": "text",
+   "hash": "0ec8042d6615",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.orgText": {
+   "en": "Your organization's files and beneficiaries.",
+   "ar": "ملفّات جهتك ومستفيدوها.",
+   "kind": "text",
+   "hash": "65a26be7bb2f",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.register": {
+   "en": "Register a donor entity",
+   "ar": "سجّل جهة مانحة",
+   "kind": "text",
+   "hash": "e8522870d217",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.registerFailed": {
+   "en": "Registration failed. Check the name.",
+   "ar": "تعذّر التسجيل. تحقّق من الاسم.",
+   "kind": "text",
+   "hash": "3ce079a15133",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.registered": {
+   "en": "The entity is registered. The admin team will review it before you give in its name.",
+   "ar": "سُجّلت الجهة، وستراجعها الإدارة قبل أن تدعم باسمها.",
+   "kind": "text",
+   "hash": "ed22e4ce30d5",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.roles": {
+   "en": "Your roles",
+   "ar": "أدوارك",
+   "kind": "text",
+   "hash": "f91f239bda2a",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.sponsor": {
+   "en": "My sponsorships",
+   "ar": "كفالاتي",
+   "kind": "text",
+   "hash": "b965001ea812",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.sponsorText": {
+   "en": "Your sponsorships and pledges, {0} in all.",
+   "ar": "كفالاتك وتعهّداتك، وعددها {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1164d7d3c70b",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.supervisor": {
+   "en": "Supervision",
+   "ar": "الإشراف",
+   "kind": "text",
+   "hash": "8f602a9c3e4e",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.supervisorText": {
+   "en": "The beneficiaries assigned to you and their stages.",
+   "ar": "المستفيدون المُسنَدون إليك ومراحلهم.",
+   "kind": "text",
+   "hash": "af37013ed344",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.title": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.translate": {
+   "en": "Translation review: {0}",
+   "ar": "مراجعة الترجمة: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "376a76c001a3",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.translateText": {
+   "en": "Interface text in {0}: translate and review it.",
+   "ar": "نصوص الواجهة بلغة {0}: ترجمتها ومراجعتها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "b1d3cd81bd83",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
+  },
+  "components/workspaces/WorkspacesBoard.wholeCountry": {
+   "en": "Whole country",
+   "ar": "الدولة كلّها",
+   "kind": "text",
+   "hash": "fff7cee8ae60",
+   "file": "src/components/workspaces/WorkspacesBoard.tsx"
   },
   "config/brand.description": {
    "en": "Sponsor an orphan with a file documented by WAMY's offices and field partners. {0} connects you with a real child through a transparent monthly sponsorship and regular impact reports.",
@@ -24164,10 +25888,10 @@
   },
   "lib/hall/live.screen.mapTitle": {
    "en": "{0}: as it stands",
-   "ar": "{0} — الحال الآن",
+   "ar": "{0}: الحال الآن",
    "kind": "template",
    "params": 1,
-   "hash": "00f50cac9e92",
+   "hash": "c8f113eabddb",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.screen.none": {
@@ -25017,11 +26741,11 @@
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.support.option": {
-   "en": "{0} — {1} waiting",
-   "ar": "{0} — {1} ينتظرون",
+   "en": "{0}: {1} waiting",
+   "ar": "{0}: {1} ينتظرون",
    "kind": "template",
    "params": 2,
-   "hash": "c171b20600be",
+   "hash": "e78a84a4a9bf",
    "file": "src/lib/hall/live.ts"
   },
   "lib/hall/live.support.pay": {
@@ -26187,11 +27911,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.map": {
-   "en": "{0} — sample data",
-   "ar": "{0} — بيانات نموذجية",
+   "en": "{0}: sample data",
+   "ar": "{0}: بيانات نموذجية",
    "kind": "template",
    "params": 1,
-   "hash": "0fcc56daa441",
+   "hash": "de254bf924e9",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.screen.mapLine": {
@@ -26345,11 +28069,11 @@
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.support.destOption": {
-   "en": "{0} — {1}",
-   "ar": "{0} — {1}",
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
    "kind": "template",
    "params": 2,
-   "hash": "5515e2971011",
+   "hash": "869f6c298bef",
    "file": "src/lib/hall/trial.ts"
   },
   "lib/hall/trial.support.kind": {
@@ -26768,6 +28492,42 @@
    "params": 2,
    "hash": "047251131d56",
    "file": "src/lib/office-gap.ts"
+  },
+  "lib/try-ask.child": {
+   "en": "From the public card of file {1}: {0} in {2}, {3}. The monthly sponsorship covers {4}. That is all that is published; the rest of the file is protected.",
+   "ar": "من البطاقة العامّة للملفّ {1}: {0} في {2}، {3}. الكفالة الشهرية تغطّي {4}. هذا كلّ ما هو منشور، وبقية الملفّ محميّة.",
+   "kind": "template",
+   "params": 5,
+   "hash": "db08e41b8ab4",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.general": {
+   "en": "In this demo I answer three things: starting a sponsorship, pausing it, and how a child's information is protected. Try a suggested question, or pick a file from the list.",
+   "ar": "أجيب في هذا العرض عن ثلاثة أمور: بدء الكفالة، وإيقافها، وحماية معلومات الطفل. جرّب أحد الأسئلة المقترحة، أو اختر ملفّاً من القائمة.",
+   "kind": "text",
+   "hash": "072a10be171f",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.pause": {
+   "en": "Yes. From the sponsorship page in your account you can pause or end it, and the following office is told so it can look for another sponsor. Nothing is charged after you pause.",
+   "ar": "نعم. من صفحة الكفالة في حسابك تختار الإيقاف المؤقّت أو الإنهاء، ويُخبَر المكتب المتابع ليبحث للطفل عن كافلٍ آخر. لا يُخصم شيءٌ بعد الإيقاف.",
+   "kind": "text",
+   "hash": "3e4004325eb1",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.privacy": {
+   "en": "Only a child's public card is published: the published name, file code, country and stage. Photos, address and family details stay behind the access gate, visible only to those with a verified link to the child.",
+   "ar": "لا يُنشر من ملفّ الطفل إلا بطاقته العامّة: الاسم المنشور ورمز الملفّ والبلد والمرحلة. الصور والعنوان ومعلومات الأسرة تبقى خلف بوّابة الوصول، ولا يراها إلا من له صلةٌ موثّقة بالطفل.",
+   "kind": "text",
+   "hash": "4561a45e3081",
+   "file": "src/lib/try-ask.ts"
+  },
+  "lib/try-ask.start": {
+   "en": "A sponsorship starts in the orphan directory: pick a published file, choose the monthly amount, then sign in and pay. After the first payment, impact reports arrive from the office that follows the child. [Sponsorship steps](/how-it-works)",
+   "ar": "تبدأ الكفالة من دليل الأيتام: اختر ملفّاً منشوراً، ثم المبلغ الشهري، ثم سجّل الدخول وادفع. بعد أوّل دفعة تصلك تقارير الأثر من المكتب المتابع. [خطوات الكفالة](/how-it-works)",
+   "kind": "text",
+   "hash": "826c02aabf0b",
+   "file": "src/lib/try-ask.ts"
   },
   "lib/try-demo.children.try-01.covers": {
    "en": "Schooling, food and healthcare",
@@ -28128,11 +29888,25 @@
    "hash": "597b00c638bc",
    "file": "src/lib/workspaces.functions.ts"
   },
+  "routes/__root/error.browse": {
+   "en": "Browse children",
+   "ar": "تصفّح الأطفال",
+   "kind": "text",
+   "hash": "43a7ea2a7a71",
+   "file": "src/routes/__root.tsx"
+  },
   "routes/__root/error.home": {
    "en": "Home",
    "ar": "الرئيسية",
    "kind": "text",
    "hash": "349c3dbe2662",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/error.ref": {
+   "en": "Reference code",
+   "ar": "رمز المرجع",
+   "kind": "text",
+   "hash": "47ecb589ce59",
    "file": "src/routes/__root.tsx"
   },
   "routes/__root/error.retry": {
@@ -28163,6 +29937,13 @@
    "hash": "2639328d7047",
    "file": "src/routes/__root.tsx"
   },
+  "routes/__root/not_found.browse": {
+   "en": "Browse children",
+   "ar": "تصفّح الأطفال",
+   "kind": "text",
+   "hash": "43a7ea2a7a71",
+   "file": "src/routes/__root.tsx"
+  },
   "routes/__root/not_found.home": {
    "en": "Back to home",
    "ar": "العودة للرئيسية",
@@ -28178,10 +29959,17 @@
    "file": "src/routes/__root.tsx"
   },
   "routes/__root/not_found.title": {
-   "en": "Page not found",
-   "ar": "الصفحة غير موجودة",
+   "en": "This page does not exist",
+   "ar": "هذه الصفحة غير موجودة",
    "kind": "text",
-   "hash": "969b0941692d",
+   "hash": "b33aa03868fd",
+   "file": "src/routes/__root.tsx"
+  },
+  "routes/__root/not_found.try": {
+   "en": "Try the platform",
+   "ar": "جرّب المنصّة",
+   "kind": "text",
+   "hash": "8b2850eaf906",
    "file": "src/routes/__root.tsx"
   },
   "routes/_authenticated/dashboard.cancelledLead": {
@@ -28368,6 +30156,354 @@
    "hash": "ed50660f10e5",
    "file": "src/routes/_authenticated/statements.$year.tsx"
   },
+  "routes/account.addMine": {
+   "en": "Add my passkey",
+   "ar": "أضف بصمتي",
+   "kind": "text",
+   "hash": "40fbb1629570",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.addName": {
+   "en": "Add your name",
+   "ar": "أضف اسمك",
+   "kind": "text",
+   "hash": "d518877f5624",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.addThis": {
+   "en": "Add this device's passkey",
+   "ar": "أضف بصمة هذا الجهاز",
+   "kind": "text",
+   "hash": "fdecb8bf1788",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.added": {
+   "en": "Added {0}",
+   "ar": "أُضيفت {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "84703a3365f9",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirming": {
+   "en": "Confirm it's you on your device…",
+   "ar": "أكّد هويتك على جهازك…",
+   "kind": "text",
+   "hash": "96d15f1886a6",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.description": {
+   "en": "Who you are, how you sign in, and where to go.",
+   "ar": "من أنت، وكيف تدخل، وإلى أين تذهب.",
+   "kind": "text",
+   "hash": "86617dbe85ee",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.editName": {
+   "en": "Edit name",
+   "ar": "تعديل الاسم",
+   "kind": "text",
+   "hash": "c5b2f11bc67d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.emailCode": {
+   "en": "Code to your email",
+   "ar": "رمزٌ إلى البريد",
+   "kind": "text",
+   "hash": "cd9a90a1ece4",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.google": {
+   "en": "Google account",
+   "ar": "حساب جوجل",
+   "kind": "text",
+   "hash": "fa573bfe1208",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.lastUsed": {
+   "en": " · last used {0}",
+   "ar": " · آخر استعمال {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "067e6b02206c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.linked": {
+   "en": "Linked",
+   "ar": "مربوط",
+   "kind": "text",
+   "hash": "d746729e2b8d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.name": {
+   "en": "Name",
+   "ar": "الاسم",
+   "kind": "text",
+   "hash": "865c3e992933",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.nameSaved": {
+   "en": "Your name was saved",
+   "ar": "حُفظ اسمك",
+   "kind": "text",
+   "hash": "fc3c03913e72",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.noPasskey": {
+   "en": "This browser doesn't support passkeys.",
+   "ar": "هذا المتصفّح لا يدعم البصمة.",
+   "kind": "text",
+   "hash": "4bbf36156143",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notLinked": {
+   "en": "Not linked. Sign in with Google once to link it",
+   "ar": "غير مربوط. ادخل بجوجل مرّةً ليُربط",
+   "kind": "text",
+   "hash": "e78a96bccf42",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notifications": {
+   "en": "Notifications",
+   "ar": "الإشعارات",
+   "kind": "text",
+   "hash": "5818d8bb798c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.notificationsText": {
+   "en": "What reaches you, and when",
+   "ar": "ما يصلك، ومتى",
+   "kind": "text",
+   "hash": "34a562ab1cf7",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.off": {
+   "en": "Off",
+   "ar": "غير مفعّل",
+   "kind": "text",
+   "hash": "08ded0ea4546",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.on": {
+   "en": "On",
+   "ar": "مفعّل",
+   "kind": "text",
+   "hash": "68d757775b52",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkey": {
+   "en": "Passkey",
+   "ar": "البصمة",
+   "kind": "text",
+   "hash": "29c2ecaa581e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyAddFailed": {
+   "en": "Couldn't add the passkey.",
+   "ar": "تعذّرت إضافة البصمة.",
+   "kind": "text",
+   "hash": "867f76bbdb8c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyAdded": {
+   "en": "Passkey added",
+   "ar": "أُضيفت البصمة",
+   "kind": "text",
+   "hash": "f888a2b6e651",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDisabledClient": {
+   "en": "Passkeys are off in the published site. Publish the latest update, then reload the page.",
+   "ar": "البصمة معطّلة في نسخة الموقع المنشورة. انشر آخر تحديث ثم أعد تحميل الصفحة.",
+   "kind": "text",
+   "hash": "c6ab495d174e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDisabledServer": {
+   "en": "Passkeys aren't enabled in the server's auth settings (Supabase).",
+   "ar": "البصمة غير مفعّلة في إعدادات المصادقة على الخادم (Supabase).",
+   "kind": "text",
+   "hash": "a0c4cbd8ac2c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyDuplicate": {
+   "en": "This device already holds a passkey for your account.",
+   "ar": "هذا الجهاز يحمل بصمةً لحسابك من قبل.",
+   "kind": "text",
+   "hash": "883ae3ecac3d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyFallback": {
+   "en": "the passkey",
+   "ar": "البصمة",
+   "kind": "text",
+   "hash": "c403f2b7c186",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyName": {
+   "en": "Passkey name",
+   "ar": "اسم البصمة",
+   "kind": "text",
+   "hash": "59fe75f88653",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyShort": {
+   "en": "Passkey",
+   "ar": "بصمة",
+   "kind": "text",
+   "hash": "507a0442b27f",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.passkeyText": {
+   "en": "Sign in with your face, finger or device lock. Your passkey never leaves your device.",
+   "ar": "دخولٌ بالوجه أو الإصبع أو قفل الجهاز. بصمتك لا تغادر جهازك.",
+   "kind": "text",
+   "hash": "da417ad7522e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.phoneCode": {
+   "en": "Code to your phone",
+   "ar": "رمزٌ إلى الجوال",
+   "kind": "text",
+   "hash": "f60980b41a72",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.remove": {
+   "en": "Remove {0}",
+   "ar": "حذف {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "70f44fc40078",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.removeFailed": {
+   "en": "Couldn't remove",
+   "ar": "تعذّر الحذف",
+   "kind": "text",
+   "hash": "85c6d4820ce9",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.removed": {
+   "en": "The passkey was removed from your account",
+   "ar": "حُذفت البصمة من حسابك",
+   "kind": "text",
+   "hash": "df86e780b194",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.rename": {
+   "en": "Rename {0}",
+   "ar": "إعادة تسمية {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "9e6d80ed79c1",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.renameFailed": {
+   "en": "Couldn't rename",
+   "ar": "تعذّرت إعادة التسمية",
+   "kind": "text",
+   "hash": "878ba41f6dba",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.save": {
+   "en": "Save",
+   "ar": "حفظ",
+   "kind": "text",
+   "hash": "95ac72a0305a",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.saveFailed": {
+   "en": "Couldn't save",
+   "ar": "تعذّر الحفظ",
+   "kind": "text",
+   "hash": "400225b3bf0f",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.shortcuts": {
+   "en": "Shortcuts",
+   "ar": "اختصارات",
+   "kind": "text",
+   "hash": "280ff603da22",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.signInMethods": {
+   "en": "Ways to sign in",
+   "ar": "طرق الدخول",
+   "kind": "text",
+   "hash": "b4987c5dd798",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.signOut": {
+   "en": "Sign out",
+   "ar": "تسجيل الخروج",
+   "kind": "text",
+   "hash": "a09b8eb40a40",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.since": {
+   "en": "With us since {0}",
+   "ar": "معنا منذ {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7f3f51820a36",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.sponsorships": {
+   "en": "My sponsorships",
+   "ar": "كفالاتي",
+   "kind": "text",
+   "hash": "b965001ea812",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.sponsorshipsText": {
+   "en": "Who you sponsor, and what reached them lately",
+   "ar": "من تكفل، وآخر ما وصلهم",
+   "kind": "text",
+   "hash": "dd124845637d",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.title": {
+   "en": "My account",
+   "ar": "حسابي",
+   "kind": "text",
+   "hash": "774ea5f16582",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.workspaces": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.workspacesText": {
+   "en": "Everything you have access to",
+   "ar": "كل ما لك صلاحيةٌ عليه",
+   "kind": "text",
+   "hash": "05d433670107",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/ask.description": {
+   "en": "Questions and answers about published orphan files and sponsorship steps, with children's private information protected.",
+   "ar": "أسئلة وإجابات عن ملفات الأيتام المنشورة وخطوات الكفالة، مع حماية معلومات الأطفال الخاصة.",
+   "kind": "text",
+   "hash": "7e601d26cca9",
+   "file": "src/routes/ask.tsx"
+  },
+  "routes/ask.ogDescription": {
+   "en": "Answers about published information and sponsorship steps for supporters.",
+   "ar": "إجابات عن المعلومات المنشورة وخطوات الكفالة للداعمين.",
+   "kind": "text",
+   "hash": "0e9a4c32b97c",
+   "file": "src/routes/ask.tsx"
+  },
+  "routes/ask.section": {
+   "en": "Supporter assistant",
+   "ar": "مساعد الداعمين",
+   "kind": "text",
+   "hash": "bf32beca816e",
+   "file": "src/routes/ask.tsx"
+  },
   "routes/auth.agree": {
    "en": "By continuing you agree to the",
    "ar": "بالمتابعة أنت توافق على",
@@ -28446,6 +30582,13 @@
    "hash": "1f60866db6e8",
    "file": "src/routes/auth.tsx"
   },
+  "routes/auth.trial": {
+   "en": "Try the platform with sample data, no account needed",
+   "ar": "جرّب المنصّة ببياناتٍ تجريبية بلا حساب",
+   "kind": "text",
+   "hash": "8aa1319a57d8",
+   "file": "src/routes/auth.tsx"
+  },
   "routes/country-data.all": {
    "en": "All items by country",
    "ar": "كل البنود بحسب الدولة",
@@ -28480,6 +30623,13 @@
    "kind": "text",
    "hash": "58a4af1c234c",
    "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/donor.title": {
+   "en": "Donor entity",
+   "ar": "الجهة المانحة",
+   "kind": "text",
+   "hash": "1d8d17417fa4",
+   "file": "src/routes/_authenticated/donor.$entityId.index.tsx"
   },
   "routes/hall.description": {
    "en": "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
@@ -29009,6 +31159,13 @@
    "hash": "8b29dbb7f872",
    "file": "src/routes/how-it-works.tsx"
   },
+  "routes/how-it-works.tryIt": {
+   "en": "Try the journey first",
+   "ar": "جرّب الرحلة أولاً",
+   "kind": "text",
+   "hash": "7dd18f39861e",
+   "file": "src/routes/how-it-works.tsx"
+  },
   "routes/index.categories.education": {
    "en": "Education",
    "ar": "تعليم",
@@ -29255,10 +31412,10 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.h1a": {
-   "en": "We don't offer temporary care —",
+   "en": "We don't offer temporary care:",
    "ar": "لا نقدّم رعايةً مؤقّتة،",
    "kind": "text",
-   "hash": "5cdec3649be1",
+   "hash": "a63fd5f1b186",
    "file": "src/routes/index.tsx"
   },
   "routes/index.h1b": {
@@ -29663,11 +31820,11 @@
    "file": "src/routes/index.tsx"
   },
   "routes/index.title": {
-   "en": "{0} — Carrying the orphan from the shore of loss to the shore of thriving",
-   "ar": "{0} — عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران",
+   "en": "{0} | Carrying the orphan from the shore of loss to the shore of thriving",
+   "ar": "{0} | عبورٌ باليتيم من شطّ الفقد إلى شطّ العمران",
    "kind": "template",
    "params": 1,
-   "hash": "2f72217ca79b",
+   "hash": "d2bd091eef9f",
    "file": "src/routes/index.tsx"
   },
   "routes/index.tryIt": {
@@ -30070,6 +32227,13 @@
    "hash": "663da03742b3",
    "file": "src/routes/orphans.index.tsx"
   },
+  "routes/orphans.index.clearFilters": {
+   "en": "Clear filters",
+   "ar": "امسح الفلاتر",
+   "kind": "text",
+   "hash": "db32b8679786",
+   "file": "src/routes/orphans.index.tsx"
+  },
   "routes/orphans.index.empty": {
    "en": "No matching results.",
    "ar": "لا توجد نتائج مطابقة.",
@@ -30148,17 +32312,17 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.inCountries.one": {
-   "en": " — in {0} country.",
+   "en": ", in {0} country.",
    "ar": "",
    "kind": "plural",
-   "hash": "860a330f8ab3",
+   "hash": "737bd07c3f85",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.inCountries.other": {
-   "en": " — in {0} countries.",
+   "en": ", in {0} countries.",
    "ar": "",
    "kind": "plural",
-   "hash": "9264577be806",
+   "hash": "f3797b6b0071",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.launchSupport": {
@@ -30346,10 +32510,10 @@
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.index.tryA": {
-   "en": "Try removing one of the filters above, or",
-   "ar": "جرّب إزالة أحد الفلاتر أعلاه، أو",
+   "en": "Try removing one of these filters:",
+   "ar": "جرّب إزالة أحد هذه الفلاتر:",
    "kind": "text",
-   "hash": "2587f86d6e24",
+   "hash": "2d48a125c27b",
    "file": "src/routes/orphans.index.tsx"
   },
   "routes/orphans.orphanId.activates": {
@@ -30452,11 +32616,11 @@
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.continueTo": {
-   "en": "Continue — {0} for {1}",
-   "ar": "تابع — {0} لـ{1}",
+   "en": "Continue: {0} for {1}",
+   "ar": "تابع: {0} لـ{1}",
    "kind": "template",
    "params": 2,
-   "hash": "689665114722",
+   "hash": "cbf56e8dde22",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
   "routes/orphans.orphanId.covered": {
@@ -30803,11 +32967,258 @@
    "hash": "8bfa62105318",
    "file": "src/routes/orphans.$orphanId.tsx"
   },
+  "routes/payment.return.title": {
+   "en": "Payment status",
+   "ar": "حال الدفعة",
+   "kind": "text",
+   "hash": "19d131e3e645",
+   "file": "src/routes/_authenticated/payment.return.tsx"
+  },
+  "routes/settings.notifications.all": {
+   "en": "Receive email from {0}",
+   "ar": "استقبال البريد من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "f22d74b3848f",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.allHint": {
+   "en": "Turning it off stops every email without exception, including payment receipts and failure alerts.",
+   "ar": "إيقافه يوقف كل رسائل البريد بلا استثناء، بما فيها إيصالات الدفع وتنبيهات تعثّره.",
+   "kind": "text",
+   "hash": "4a74ce44d6dd",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.description": {
+   "en": "You decide what reaches your inbox. Anything you stop here stays visible inside the platform.",
+   "ar": "أنت تقرّر ما يصل بريدك. وما توقفه هنا يبقى ظاهراً لك داخل المنصّة.",
+   "kind": "text",
+   "hash": "4576a71d8b50",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_approved.hint": {
+   "en": "For field teams: the admin's decision on a file you uploaded",
+   "ar": "",
+   "kind": "text",
+   "hash": "2ee168e95930",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_approved.label": {
+   "en": "File approvals",
+   "ar": "",
+   "kind": "text",
+   "hash": "d309b5a6d8e8",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_rejected.hint": {
+   "en": "For field teams: a file that needs changes",
+   "ar": "",
+   "kind": "text",
+   "hash": "f3263a2b33d9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.orphan_rejected.label": {
+   "en": "Files returned for correction",
+   "ar": "",
+   "kind": "text",
+   "hash": "82e35c0dc254",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_failed.hint": {
+   "en": "When a payment doesn't go through; muting it could end your sponsorship unnoticed",
+   "ar": "",
+   "kind": "text",
+   "hash": "4a5085454348",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_failed.label": {
+   "en": "Failed payments",
+   "ar": "",
+   "kind": "text",
+   "hash": "b734ee5b20d0",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_succeeded.hint": {
+   "en": "Confirmation of each successful monthly payment",
+   "ar": "",
+   "kind": "text",
+   "hash": "4b66c762bd0b",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.payment_succeeded.label": {
+   "en": "Payment receipts",
+   "ar": "",
+   "kind": "text",
+   "hash": "e6da05910c55",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_delivered.hint": {
+   "en": "When the office delivers your gift with a verified document",
+   "ar": "",
+   "kind": "text",
+   "hash": "4618a26f8d28",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_delivered.label": {
+   "en": "In-kind and training delivered",
+   "ar": "",
+   "kind": "text",
+   "hash": "900e7f641279",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_preparing.hint": {
+   "en": "When the office starts preparing your gift",
+   "ar": "",
+   "kind": "text",
+   "hash": "d3510918359a",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.pledge_preparing.label": {
+   "en": "In-kind and training in preparation",
+   "ar": "",
+   "kind": "text",
+   "hash": "b1206df83dab",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.report_published.hint": {
+   "en": "When a periodic report is published for a file you sponsor",
+   "ar": "",
+   "kind": "text",
+   "hash": "3f2aa63ee047",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.report_published.label": {
+   "en": "Impact reports",
+   "ar": "",
+   "kind": "text",
+   "hash": "334a34581cee",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.sponsorship_started.hint": {
+   "en": "When a new sponsorship becomes active",
+   "ar": "",
+   "kind": "text",
+   "hash": "12c6d60b5f05",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.kinds.sponsorship_started.label": {
+   "en": "Sponsorship started",
+   "ar": "",
+   "kind": "text",
+   "hash": "5c68bf7464d8",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.loadError": {
+   "en": "Your preferences couldn't be loaded. Nothing was changed.",
+   "ar": "تعذّر تحميل تفضيلاتك. لم يتغيّر شيء منها.",
+   "kind": "text",
+   "hash": "51cfadbef8e5",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.loading": {
+   "en": "Loading your preferences…",
+   "ar": "جارٍ تحميل تفضيلاتك…",
+   "kind": "text",
+   "hash": "01c1a440307f",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.offNote": {
+   "en": "Email is off. Notifications stay visible inside the platform, but nothing reaches you outside it, including a failed payment that could end your sponsorship.",
+   "ar": "البريد موقوف. ستبقى الإشعارات ظاهرة داخل المنصّة، لكن لن يصلك خبرٌ خارجها، ومنها تعثّر دفعةٍ قد يُنهي كفالتك.",
+   "kind": "text",
+   "hash": "a52eb7c86e21",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.saveError": {
+   "en": "Couldn't save. Please try again shortly.",
+   "ar": "تعذّر الحفظ. أعد المحاولة بعد قليل.",
+   "kind": "text",
+   "hash": "48b3fc104b8d",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.saved": {
+   "en": "Your preferences are saved",
+   "ar": "حُفظت تفضيلاتك",
+   "kind": "text",
+   "hash": "b889427520e5",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.someHint": {
+   "en": "Choose which kinds reach your inbox. Disabled kinds stay in the notification bell.",
+   "ar": "اختر ما يصل بريدك من الأنواع. المعطَّل منها يبقى في جرس الإشعارات.",
+   "kind": "text",
+   "hash": "ec3d52fc6469",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.someTitle": {
+   "en": "Or keep only some of it",
+   "ar": "وإن أردت بعضه لا كلّه",
+   "kind": "text",
+   "hash": "1931fd2c09d9",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.stopAll": {
+   "en": "Stop all email",
+   "ar": "أوقف كل البريد",
+   "kind": "text",
+   "hash": "dd426d6f1311",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/settings.notifications.title": {
+   "en": "Notification preferences",
+   "ar": "تفضيلات الإشعارات",
+   "kind": "text",
+   "hash": "8cfc1db6565e",
+   "file": "src/routes/_authenticated/settings.notifications.tsx"
+  },
+  "routes/sponsorships.report.pageTitle": {
+   "en": "Sponsorship report",
+   "ar": "تقرير الكفالة",
+   "kind": "text",
+   "hash": "ac9ae3bc0750",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.report.tsx"
+  },
+  "routes/sponsorships.transfer.description": {
+   "en": "Complete your sponsorship by bank transfer. It is activated once the administration confirms receipt.",
+   "ar": "أكمل كفالتك بتحويل بنكي، وتُفعَّل فور تأكيد الإدارة استلام المبلغ.",
+   "kind": "text",
+   "hash": "133b13365bab",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/sponsorships.transfer.pageTitle": {
+   "en": "Transfer instructions",
+   "ar": "تعليمات التحويل",
+   "kind": "text",
+   "hash": "4725e2066901",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/sponsorships.transfer.title": {
+   "en": "Bank transfer instructions",
+   "ar": "تعليمات التحويل البنكي",
+   "kind": "text",
+   "hash": "25225d0dfb4a",
+   "file": "src/routes/_authenticated/sponsorships.$sponsorshipId.transfer.tsx"
+  },
   "routes/sso.failed": {
    "en": "We couldn't complete your sign-in from WAMY's platform.",
    "ar": "تعذّر إكمال الدخول من منصّة الندوة.",
    "kind": "text",
    "hash": "d65c0cfb1c1d",
+   "file": "src/routes/sso.tsx"
+  },
+  "routes/sso.handover": {
+   "en": "{0} is handing you over to its sponsorship platform.",
+   "ar": "تنقلك {0} إلى منصّة الكفالة الخاصة بها.",
+   "kind": "template",
+   "params": 1,
+   "hash": "daaa1b0534d3",
    "file": "src/routes/sso.tsx"
   },
   "routes/sso.reasons.email_unconfirmed": {
@@ -30930,11 +33341,11 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.confirm": {
-   "en": "Record my support — {0}",
-   "ar": "سجّل دعمي — {0}",
+   "en": "Record my support of {0}",
+   "ar": "سجّل دعمي بمبلغ {0}",
    "kind": "template",
    "params": 1,
-   "hash": "50a07212f14f",
+   "hash": "67592795ec1d",
    "file": "src/routes/support.tsx"
   },
   "routes/support.country": {
@@ -31219,10 +33630,10 @@
    "file": "src/routes/support.tsx"
   },
   "routes/support.sumPending": {
-   "en": "—",
-   "ar": "—",
+   "en": "Not chosen yet",
+   "ar": "لم يُحدَّد بعد",
    "kind": "text",
-   "hash": "e3913b1621f1",
+   "hash": "a6ded83fac0f",
    "file": "src/routes/support.tsx"
   },
   "routes/support.sumTarget": {
@@ -31437,9 +33848,9 @@
   },
   "routes/try.admin.cycleLead": {
    "en": "For the whole cycle, from file entry to the first monthly report:",
-   "ar": "وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —",
+   "ar": "وللدورة كاملةً من إدخال الملفّ إلى تقرير الشهر الأوّل:",
    "kind": "text",
-   "hash": "5bc5a2c3fcae",
+   "hash": "4b6ddac28f82",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.home": {
@@ -31513,10 +33924,10 @@
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.lead": {
-   "en": "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
-   "ar": "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك، كفالتك وتعهّدك وملفّ جهتك، يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+   "en": "The administration's own tables on sample data, with what you did this session highlighted.",
+   "ar": "جداول الإدارة نفسها على بياناتٍ نموذجية، وما فعلته في جلستك يظهر فيها مظلَّلاً.",
    "kind": "text",
-   "hash": "14cf5b5f3ec4",
+   "hash": "d340ee76e9bf",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.open": {
@@ -31540,39 +33951,46 @@
    "hash": "6a509e4c7c53",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.0": {
-   "en": "Today",
-   "ar": "اليوم",
-   "kind": "text",
-   "hash": "565dc525e754",
-   "file": "src/routes/try.admin.lazy.tsx"
-  },
-  "routes/try.admin.sections.1": {
+  "routes/try.admin.sections.countries": {
    "en": "Countries",
    "ar": "الدول",
    "kind": "text",
    "hash": "7f0e3e766f4f",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.2": {
-   "en": "Data quality",
-   "ar": "جودة البيانات",
-   "kind": "text",
-   "hash": "a021eccb3f8b",
-   "file": "src/routes/try.admin.lazy.tsx"
-  },
-  "routes/try.admin.sections.3": {
+  "routes/try.admin.sections.money": {
    "en": "Money",
    "ar": "المال",
    "kind": "text",
    "hash": "4970affee1c4",
    "file": "src/routes/try.admin.lazy.tsx"
   },
-  "routes/try.admin.sections.4": {
+  "routes/try.admin.sections.people": {
    "en": "People",
    "ar": "الناس",
    "kind": "text",
    "hash": "c37bc9786575",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.quality": {
+   "en": "Data quality",
+   "ar": "جودة البيانات",
+   "kind": "text",
+   "hash": "a021eccb3f8b",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.settings": {
+   "en": "Settings",
+   "ar": "الإعدادات",
+   "kind": "text",
+   "hash": "8e286bdeb19c",
+   "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.admin.sections.today": {
+   "en": "Today",
+   "ar": "اليوم",
+   "kind": "text",
+   "hash": "565dc525e754",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.title": {
@@ -31625,25 +34043,46 @@
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.decisions": {
-   "en": "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
-   "ar": "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها، وحسمك يظهر فيه فوراً",
+   "en": "Who settled what and when; your own settlements appear at once.",
+   "ar": "من حسم ماذا ومتى، وحسمك يظهر فيه فوراً.",
    "kind": "text",
-   "hash": "0ff8e83dfa1d",
+   "hash": "7aa5d0ee01ed",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.sources": {
-   "en": "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
-   "ar": "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV، وتتغيّر العدّادات",
+   "en": "Settle an alert or a conflict, upload a file and watch the counts change.",
+   "ar": "احسم تنبيهاً أو تعارضاً، وارفع ملفّاً، وشاهد العدّادات تتغيّر.",
    "kind": "text",
-   "hash": "855b99ecb659",
+   "hash": "9179df6ac4d5",
    "file": "src/routes/try.admin.lazy.tsx"
   },
   "routes/try.admin.verifyCards.trust": {
-   "en": "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
-   "ar": "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
+   "en": "The health of the five countries at a glance.",
+   "ar": "صحة الدول الخمس في نظرةٍ واحدة.",
    "kind": "text",
-   "hash": "042836eb154d",
+   "hash": "4387163a1d55",
    "file": "src/routes/try.admin.lazy.tsx"
+  },
+  "routes/try.ask.pageTitle": {
+   "en": "Supporter assistant: interactive demo",
+   "ar": "مساعد الداعمين: عرض تفاعلي",
+   "kind": "text",
+   "hash": "9eeb5e6aec8c",
+   "file": "src/routes/try.ask.tsx"
+  },
+  "routes/try.ask.sample": {
+   "en": "Sample answers",
+   "ar": "إجابات نموذجية",
+   "kind": "text",
+   "hash": "e7c0e1e810e7",
+   "file": "src/routes/try.ask.tsx"
+  },
+  "routes/try.ask.simulated": {
+   "en": "Answers here are simulated in advance, and your question is sent to no service.",
+   "ar": "الإجابات هنا محاكاة جاهزة، ولا يُرسل سؤالك إلى أيّ خدمة.",
+   "kind": "text",
+   "hash": "9e4ae01e93b8",
+   "file": "src/routes/try.ask.tsx"
   },
   "routes/try.childId.activation": {
    "en": "The sponsorship is activated once payment is confirmed, and every transfer and delivery is documented.",
@@ -32393,10 +34832,10 @@
    "file": "src/routes/try.decider.lazy.tsx"
   },
   "routes/try.decider.lead": {
-   "en": "A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
-   "ar": "أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة، كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة، يحرّك الأرقام ويظهر في سجلّ النشاط.",
+   "en": "Your decision: where does the next support go? Start with the country with the widest gap. A few figures that say where the network stands and where the gap is. Everything you did in the other roles this session (a sponsorship, a pledge, an approval or a visit) moves the figures and shows in the activity log.",
+   "ar": "القرار أمامك: أين يذهب الدعم القادم؟ ابدأ بالدولة ذات الفجوة الأكبر. أرقامٌ قليلة تقول أين الشبكة اليوم وأين الفجوة. وكلّ ما فعلته بالأدوار الأخرى في هذه الجلسة، كفالةٌ أو تعهّدٌ أو اعتمادٌ أو زيارة، يحرّك الأرقام ويظهر في سجلّ النشاط.",
    "kind": "text",
-   "hash": "6252a52a6e26",
+   "hash": "fa86d5896e1d",
    "file": "src/routes/try.decider.lazy.tsx"
   },
   "routes/try.decider.pledgedInKind": {
@@ -32530,6 +34969,48 @@
    "kind": "text",
    "hash": "83f63327d587",
    "file": "src/routes/try.tsx"
+  },
+  "routes/try.donor.lead": {
+   "en": "A sample entity giving in its own name: its pledge totals by currency, how they spread across targets, and what was delivered and documented.",
+   "ar": "جهةٌ نموذجية تدعم باسمها: مجاميع تعهّداتها بعملاتها، وتوزيعها على الأهداف، وما سُلّم منها موثّقاً.",
+   "kind": "text",
+   "hash": "e003a0b6b9c7",
+   "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.pageTitle": {
+   "en": "Donor entity: interactive demo",
+   "ar": "الجهة المانحة: عرض تفاعلي",
+   "kind": "text",
+   "hash": "f300ddf38eee",
+   "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.real": {
+   "en": "only members who accepted the owner's invitation see the entity, and it is approved before it gives",
+   "ar": "يطّلع على الجهة أعضاؤها الذين قبلوا دعوة مالكها، وتُعتمد الجهة قبل أن تدعم",
+   "kind": "text",
+   "hash": "42519b4a49af",
+   "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.role": {
+   "en": "Donor entity",
+   "ar": "جهة مانحة",
+   "kind": "text",
+   "hash": "d93a396c6643",
+   "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.sample": {
+   "en": "Sample data",
+   "ar": "بيانات نموذجية",
+   "kind": "text",
+   "hash": "2d11ccdc687f",
+   "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.donor.simulated": {
+   "en": "The figures here are simulated, not a real entity's results.",
+   "ar": "الأرقام هنا محاكاة، وليست نتائج جهةٍ حقيقية.",
+   "kind": "text",
+   "hash": "987ff26e7296",
+   "file": "src/routes/try.donor.$entityId.tsx"
   },
   "routes/try.impact.celebrateDedication": {
    "en": "Ongoing charity on behalf of {0}. May God accept it.",
@@ -32828,6 +35309,14 @@
    "hash": "76d85a13de38",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.approveNamed": {
+   "en": "Pass {0}'s file to admin",
+   "ar": "ارفع ملفّ {0} للإدارة",
+   "kind": "template",
+   "params": 1,
+   "hash": "879d87a63de6",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.approved": {
    "en": "Passed to administration",
    "ar": "رُفع للإدارة",
@@ -32841,6 +35330,13 @@
    "kind": "template",
    "params": 1,
    "hash": "dc9018ea00f8",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.confirmReturn": {
+   "en": "Return with this reason",
+   "ar": "أعده بهذا السبب",
+   "kind": "text",
+   "hash": "b207b04202ac",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.deliver": {
@@ -32929,6 +35425,21 @@
    "hash": "cbfb6042f27a",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.nextNamed": {
+   "en": "Next step: {0}",
+   "ar": "الخطوة التالية: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "c58ce658f25c",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.pickReason": {
+   "en": "Pick a reason first",
+   "ar": "اختر سبباً أوّلاً",
+   "kind": "text",
+   "hash": "43623ceedcf3",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.real": {
    "en": "an office sees only its own area, and every decision is logged under its author's name",
    "ar": "المكتب يرى منطقته وحدها، وكلّ قرارٍ باسم صاحبه في السجلّ",
@@ -32936,11 +35447,47 @@
    "hash": "26ffc97e8e42",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.reasons.0": {
+   "en": "Missing document",
+   "ar": "مستند ناقص",
+   "kind": "text",
+   "hash": "3321dbb28c7f",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasons.1": {
+   "en": "Details do not match",
+   "ar": "بيانات غير متطابقة",
+   "kind": "text",
+   "hash": "d1b14155d056",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasons.2": {
+   "en": "Unclear photo",
+   "ar": "صورة غير واضحة",
+   "kind": "text",
+   "hash": "f7f5dae24b5e",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.reasonsLabel": {
+   "en": "Reason for return",
+   "ar": "سبب الإعادة",
+   "kind": "text",
+   "hash": "2b677d399070",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.return": {
    "en": "Return",
    "ar": "أعده للجهة",
    "kind": "text",
    "hash": "5b3ea21628db",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
+  "routes/try.office.returnNamed": {
+   "en": "Return {0}'s file to the organization",
+   "ar": "أعد ملفّ {0} للجهة",
+   "kind": "template",
+   "params": 1,
+   "hash": "1a2ca7edefe0",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.returned": {
@@ -33148,6 +35695,20 @@
    "hash": "e6b845ebcfba",
    "file": "src/routes/try.pay.tsx"
   },
+  "routes/try.pay.return.pageTitle": {
+   "en": "Payment status · Try the platform",
+   "ar": "حال الدفعة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "2cdfcd9bff15",
+   "file": "src/routes/try.pay_.return.tsx"
+  },
+  "routes/try.pay.return.title": {
+   "en": "Payment status",
+   "ar": "حال الدفعة",
+   "kind": "text",
+   "hash": "19d131e3e645",
+   "file": "src/routes/try.pay_.return.tsx"
+  },
   "routes/try.pay.simulated": {
    "en": "Simulated",
    "ar": "محاكاة",
@@ -33217,6 +35778,34 @@
    "kind": "text",
    "hash": "bb4a7e763040",
    "file": "src/routes/try.sponsorships.$sponsorshipId.manage.tsx"
+  },
+  "routes/try.sponsorships.report.pageTitle": {
+   "en": "Sponsorship report · Try the platform",
+   "ar": "تقرير الكفالة · جرّب المنصّة",
+   "kind": "text",
+   "hash": "1e56853f40e5",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.report.tsx"
+  },
+  "routes/try.sponsorships.transfer.lead": {
+   "en": "This is how a sponsor sees the bank transfer steps when payment is manual. Everything here is simulated.",
+   "ar": "هكذا يرى الكافل خطوات التحويل البنكي حين يكون الدفع يدوياً. كلّها هنا محاكاة.",
+   "kind": "text",
+   "hash": "176d9bc3c8a9",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/try.sponsorships.transfer.pageTitle": {
+   "en": "Transfer instructions · Try the platform",
+   "ar": "تعليمات التحويل · جرّب المنصّة",
+   "kind": "text",
+   "hash": "38f58238b50b",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
+  },
+  "routes/try.sponsorships.transfer.title": {
+   "en": "Bank transfer instructions",
+   "ar": "تعليمات التحويل البنكي",
+   "kind": "text",
+   "hash": "25225d0dfb4a",
+   "file": "src/routes/try.sponsorships.$sponsorshipId.transfer.tsx"
   },
   "routes/try.statements.title": {
    "en": "Record of donations · Try the platform",
@@ -33325,6 +35914,14 @@
    "hash": "d5e6ccb31143",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
+  "routes/try.supervisor.progress": {
+   "en": "{0} of {1} visited this month",
+   "ar": "زرت {0} من {1} هذا الشهر",
+   "kind": "template",
+   "params": 2,
+   "hash": "eb35dd37e2b9",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
   "routes/try.supervisor.real": {
    "en": "a certified supervisor, independent of the organization, who sees only assigned children",
    "ar": "مشرفٌ معتمد مستقلّ عن الجهة، يرى أطفال تكليفه وحدهم",
@@ -33337,6 +35934,14 @@
    "ar": "سجّل زيارة",
    "kind": "text",
    "hash": "50fde62421c7",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.recordNamed": {
+   "en": "Record a visit for {0}",
+   "ar": "سجّل زيارة {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "865e0cd49d8f",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
   "routes/try.supervisor.role": {
@@ -33388,6 +35993,177 @@
    "kind": "text",
    "hash": "d9dc19086573",
    "file": "src/routes/try.support.tsx"
+  },
+  "routes/try.workspaces.lead": {
+   "en": "A sample account holding several roles, each with its card, status and next step. Open any door to see its screen with sample data.",
+   "ar": "حسابٌ نموذجي يحمل أدواراً عدّة، كلّ دورٍ ببطاقته وحاله وخطوته التالية. افتح أيّ بابٍ لترى شاشته ببياناتٍ نموذجية.",
+   "kind": "text",
+   "hash": "4e43b677ddc1",
+   "file": "src/routes/try.workspaces.tsx"
+  },
+  "routes/try.workspaces.pageTitle": {
+   "en": "My workspaces: interactive demo",
+   "ar": "بواباتي: عرض تفاعلي",
+   "kind": "text",
+   "hash": "f3b1af36e535",
+   "file": "src/routes/try.workspaces.tsx"
+  },
+  "routes/try.workspaces.real": {
+   "en": "each account sees only its own roles, and the admin team grants each role after review",
+   "ar": "يرى كلّ حسابٍ أدواره هو وحده، وتمنح الإدارة كلّ دورٍ بعد مراجعة",
+   "kind": "text",
+   "hash": "6ee336197a9a",
+   "file": "src/routes/try.workspaces.tsx"
+  },
+  "routes/try.workspaces.role": {
+   "en": "An account with several roles",
+   "ar": "حسابٌ بعدّة أدوار",
+   "kind": "text",
+   "hash": "97ce4b6181d8",
+   "file": "src/routes/try.workspaces.tsx"
+  },
+  "routes/try.workspaces.title": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
+   "file": "src/routes/try.workspaces.tsx"
+  },
+  "routes/unsubscribe.account": {
+   "en": "My receipts in the account",
+   "ar": "إيصالاتي في الحساب",
+   "kind": "text",
+   "hash": "2294a7f5ee17",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.back": {
+   "en": "go back without changes",
+   "ar": "العودة دون تغيير",
+   "kind": "text",
+   "hash": "17ba7dda077a",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.badH": {
+   "en": "Invalid link",
+   "ar": "رابط غير صالح",
+   "kind": "text",
+   "hash": "0b0bca0a7cbf",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.badP": {
+   "en": "This link is incomplete or no longer valid. You can stop email from notification preferences after signing in.",
+   "ar": "هذا الرابط ناقص أو لم يعد صالحاً. يمكنك إيقاف البريد من تفضيلات الإشعارات بعد تسجيل الدخول.",
+   "kind": "text",
+   "hash": "4fbdf84f7cbd",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.confirm": {
+   "en": "Confirm stopping email",
+   "ar": "تأكيد إيقاف البريد",
+   "kind": "text",
+   "hash": "ea6ccdbe9a43",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.description": {
+   "en": "Stop email from {0}.",
+   "ar": "إيقاف رسائل البريد من {0}.",
+   "kind": "template",
+   "params": 1,
+   "hash": "dd7520504410",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneH": {
+   "en": "Email stopped",
+   "ar": "أُوقف البريد",
+   "kind": "text",
+   "hash": "ce0283b8a117",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneP": {
+   "en": "You will no longer receive email from {0}, including payment receipts. Your notifications stay visible inside the platform, and past receipts remain in your account.",
+   "ar": "لن تصلك رسائل بريدية من {0} بعد الآن، ومنها إيصالات الدفع. وإشعاراتك تبقى ظاهرةً داخل المنصّة، وإيصالاتك السابقة محفوظة في حسابك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "5cd909c1aca6",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.doneUndo": {
+   "en": "If you change your mind, turn it back on from notification preferences after signing in.",
+   "ar": "ولو غيّرت رأيك، تُعيده من تفضيلات الإشعارات بعد الدخول.",
+   "kind": "text",
+   "hash": "9ed3835e3292",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.errH": {
+   "en": "Could not complete",
+   "ar": "تعذّر التنفيذ",
+   "kind": "text",
+   "hash": "0fab1534f30f",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.errP": {
+   "en": "Something unexpected happened. Please try again shortly.",
+   "ar": "حدث خطأ غير متوقّع. حاول مرّة أخرى بعد قليل.",
+   "kind": "text",
+   "hash": "ff06fa37b79f",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.home": {
+   "en": "Back to the home page",
+   "ar": "العودة إلى الصفحة الرئيسة",
+   "kind": "text",
+   "hash": "a369e640aae8",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.idleH": {
+   "en": "Stop email from {0}",
+   "ar": "إيقاف البريد من {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "d085b9c62c78",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.idleP": {
+   "en": "Pressing below stops all email, including payment receipts and failed payment alerts. Your notifications stay visible inside the platform, and past receipts stay in your account.",
+   "ar": "بالضغط أدناه تتوقّف كل رسائل البريد، بما فيها إيصالات الدفع وتنبيهات تعثّره. وتبقى إشعاراتك ظاهرةً داخل المنصّة، وإيصالاتك السابقة في حسابك.",
+   "kind": "text",
+   "hash": "24e1d11858a5",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.or": {
+   "en": "or",
+   "ar": "أو",
+   "kind": "text",
+   "hash": "11dc1fd76e41",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.signIn": {
+   "en": "Sign in",
+   "ar": "تسجيل الدخول",
+   "kind": "text",
+   "hash": "807695b36c98",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.title": {
+   "en": "Unsubscribe",
+   "ar": "إلغاء الاشتراك",
+   "kind": "text",
+   "hash": "925fe3f3145e",
+   "file": "src/routes/unsubscribe.tsx"
+  },
+  "routes/unsubscribe.working": {
+   "en": "Stopping email",
+   "ar": "جارٍ إيقاف البريد",
+   "kind": "text",
+   "hash": "5983b004f4ab",
+   "file": "src/routes/unsubscribe.tsx"
   },
   "routes/vision.cycle.again": {
    "en": "From the start",
@@ -36579,6 +39355,28 @@
    "kind": "text",
    "hash": "f3c603f74700",
    "file": "src/routes/vision.receipt.$id.tsx"
+  },
+  "routes/workspaces.description": {
+   "en": "All your roles on {0} in one place.",
+   "ar": "كل أدوارك في {0} في مكانٍ واحد.",
+   "kind": "template",
+   "params": 1,
+   "hash": "259b9b0e2235",
+   "file": "src/routes/_authenticated/workspaces.tsx"
+  },
+  "routes/workspaces.lead": {
+   "en": "Each role you hold on the platform is its own door. Here you see only what is yours.",
+   "ar": "كل دورٍ لك في المنصّة بابٌ مستقل. ترى هنا ما يحقّ لك وحده.",
+   "kind": "text",
+   "hash": "342392d610e4",
+   "file": "src/routes/_authenticated/workspaces.tsx"
+  },
+  "routes/workspaces.title": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
+   "file": "src/routes/_authenticated/workspaces.tsx"
   }
  },
  "skipped": []

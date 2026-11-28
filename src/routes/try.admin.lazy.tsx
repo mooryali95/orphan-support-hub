@@ -4,6 +4,13 @@ import { lazy, Suspense, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 import { AdminNav } from "@/components/admin/AdminNav";
+import type { Job } from "@/components/admin/nav";
+import { PanelSkeleton } from "@/components/admin/PanelState";
+import {
+  TRY_SETTINGS_COPY,
+  TryAdminSettings,
+  type SettingsKey,
+} from "@/components/try/TryAdminSettings";
 import { RecordsConsole } from "@/components/admin/console/RecordsConsole";
 import { CycleAdminTask } from "@/components/try/TryCycleTasks";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
@@ -36,7 +43,7 @@ const TAB_TO_RECORDS: Partial<Record<AdminTab, RecordKind>> = {
 export const Route = createLazyFileRoute("/try/admin")({ component: TryAdmin });
 
 type Verify = "sources" | "trust" | "decisions";
-type Key = RecordKind | Verify | "home" | "today";
+type Key = RecordKind | Verify | SettingsKey | "home" | "today";
 
 const COPY = defineCopy("routes/try.admin", {
   ar: {
@@ -51,7 +58,14 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "المدفوعات",
       access_log: "سجلّ الاطّلاع",
     } satisfies Record<RecordKind, string>,
-    sections: ["اليوم", "الدول", "جودة البيانات", "المال", "الناس"],
+    sections: {
+      today: "اليوم",
+      countries: "الدول",
+      quality: "جودة البيانات",
+      money: "المال",
+      people: "الناس",
+      settings: "الإعدادات",
+    } satisfies Record<Job, string>,
     today: "ما ينتظر قرارك",
     verify: {
       sources: "درج الدول",
@@ -59,14 +73,13 @@ const COPY = defineCopy("routes/try.admin", {
       decisions: "سجلّ القرارات",
     } satisfies Record<Verify, string>,
     verifyCards: {
-      sources:
-        "احسم تنبيهاً وتعارضاً، وجرّب الحسم الجماعي، واربط سجلّاً، وارفع ملفّ CSV، وتتغيّر العدّادات",
-      trust: "الدول الخمس في نظرةٍ واحدة: الأعمار، والفرق، وسجلّ القرارات، وتقرير الأسابيع",
-      decisions: "من حسم ماذا ومتى جملاً مقروءة، وأحداث الأمن في مرشّحها، وحسمك يظهر فيه فوراً",
+      sources: "احسم تنبيهاً أو تعارضاً، وارفع ملفّاً، وشاهد العدّادات تتغيّر.",
+      trust: "صحة الدول الخمس في نظرةٍ واحدة.",
+      decisions: "من حسم ماذا ومتى، وحسمك يظهر فيه فوراً.",
     } satisfies Record<Verify, string>,
     role: "الإدارة",
     title: "لوحة الإدارة",
-    lead: "الجداول نفسها التي يعمل عليها فريق الإدارة في المنصّة الحقيقية: بحث، وحالات، وشارات توثيق، وإجراءات مسجَّلة. ما فعلته في جلستك، كفالتك وتعهّدك وملفّ جهتك، يظهر هنا مظلَّلاً فوق البيانات النموذجية.",
+    lead: "جداول الإدارة نفسها على بياناتٍ نموذجية، وما فعلته في جلستك يظهر فيها مظلَّلاً.",
     real: "دخولٌ برمز البريد ومصادقة ثنائية، وكلّ إجراءٍ في سجلّ التدقيق",
     home: "ابدأ من هنا",
     try: "ماذا تجرّب هنا؟",
@@ -78,7 +91,7 @@ const COPY = defineCopy("routes/try.admin", {
       sponsorships: "كفالتك في العرض تظهر هنا فور إتمامها، مع دفعتها في «المدفوعات»",
     } as Partial<Record<RecordKind, string>>,
     open: "افتح",
-    cycleLead: "وللدورة كاملةً — من إدخال الملفّ إلى تقرير الشهر الأوّل —",
+    cycleLead: "وللدورة كاملةً من إدخال الملفّ إلى تقرير الشهر الأوّل:",
     cycle: "افتح «الدورة الكاملة»",
   },
   en: {
@@ -93,7 +106,14 @@ const COPY = defineCopy("routes/try.admin", {
       payments: "Payments",
       access_log: "Access log",
     } satisfies Record<RecordKind, string>,
-    sections: ["Today", "Countries", "Data quality", "Money", "People"],
+    sections: {
+      today: "Today",
+      countries: "Countries",
+      quality: "Data quality",
+      money: "Money",
+      people: "People",
+      settings: "Settings",
+    } satisfies Record<Job, string>,
     today: "Waiting for you",
     verify: {
       sources: "Country workspace",
@@ -101,16 +121,13 @@ const COPY = defineCopy("routes/try.admin", {
       decisions: "Decision log",
     } satisfies Record<Verify, string>,
     verifyCards: {
-      sources:
-        "Settle an alert and a conflict, try bulk settling, link a record and upload a CSV file, and watch the counts change",
-      trust:
-        "The five countries at a glance: ageing items, teams, the decision log and the weekly report",
-      decisions:
-        "Who settled what and when, as readable sentences, with security events in their own filter; your own settlements appear at once",
+      sources: "Settle an alert or a conflict, upload a file and watch the counts change.",
+      trust: "The health of the five countries at a glance.",
+      decisions: "Who settled what and when; your own settlements appear at once.",
     } satisfies Record<Verify, string>,
     role: "Administration",
     title: "Administration console",
-    lead: "The same tables the administration team works on in the live platform: search, statuses, verification badges and logged actions. What you did this session (your sponsorship, pledge and organization file) is highlighted here above the sample data.",
+    lead: "The administration's own tables on sample data, with what you did this session highlighted.",
     real: "sign-in with an email code and two-factor authentication, and every action in the audit log",
     home: "Start here",
     try: "What to try here",
@@ -129,10 +146,18 @@ const COPY = defineCopy("routes/try.admin", {
 });
 
 /** المال والناس من السجلّات؛ اليوم والدول وجودة البيانات قبلها، كما في ‎/admin. */
-const SECTIONS: RecordKind[][] = [
-  ["pledges", "payments", "sponsorships"],
-  ["orphans", "orgs", "offices", "supervisors", "documents", "access_log"],
+const SECTIONS: Array<[Job, RecordKind[]]> = [
+  ["money", ["pledges", "payments", "sponsorships"]],
+  ["people", ["orphans", "orgs", "offices", "supervisors", "documents", "access_log"]],
 ];
+const SETTINGS: SettingsKey[] = [
+  "country_sources",
+  "languages",
+  "integrations",
+  "health",
+  "golive",
+];
+const isSettings = (k: Key): k is SettingsKey => (SETTINGS as Key[]).includes(k);
 const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "sponsorships"];
 
 /**
@@ -143,6 +168,7 @@ const CARDS: RecordKind[] = ["orphans", "documents", "pledges", "access_log", "s
  */
 function TryAdmin() {
   const t = useCopy(COPY);
+  const s = useCopy(TRY_SETTINGS_COPY);
   const LABELS = t.labels;
   const { country: deep } = Route.useSearch();
   const [tab, setTabState] = useState<Key>(deep ? "sources" : "today");
@@ -162,26 +188,30 @@ function TryAdmin() {
       <div className="mt-8 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:items-start lg:gap-8">
         <AdminNav<Key>
           sections={[
-            { label: t.sections[0] ?? "", items: [{ key: "today", label: t.today, count: null }] },
+            { label: t.sections.today, items: [{ key: "today", label: t.today, count: null }] },
             {
-              label: t.sections[1] ?? "",
+              label: t.sections.countries,
               items: [{ key: "sources", label: t.verify.sources, count: null }],
             },
             {
-              label: t.sections[2] ?? "",
+              label: t.sections.quality,
               items: [
                 { key: "trust", label: t.verify.trust, count: null },
                 { key: "decisions", label: t.verify.decisions, count: null },
               ],
             },
-            ...SECTIONS.map((items, i) => ({
-              label: t.sections[i + 3] ?? "",
+            ...SECTIONS.map(([job, items]) => ({
+              label: t.sections[job],
               items: items.map((key): { key: Key; label: string; count: null } => ({
                 key,
                 label: LABELS[key],
                 count: null,
               })),
             })),
+            {
+              label: t.sections.settings,
+              items: SETTINGS.map((key) => ({ key, label: s.labels[key], count: null })),
+            },
           ]}
           active={tab}
           onSelect={setTab}
@@ -205,7 +235,7 @@ function TryAdmin() {
               <div className="mb-6">
                 <CycleAdminTask />
               </div>
-              <Suspense fallback={null}>
+              <Suspense fallback={<PanelSkeleton shape="cards" count={4} />}>
                 <ManagementOverview
                   sample
                   embedded
@@ -279,6 +309,8 @@ function TryAdmin() {
               tab={workTab}
               setTab={setWorkTab}
             />
+          ) : isSettings(tab) ? (
+            <TryAdminSettings tab={tab} />
           ) : tab === "decisions" ? (
             <TryAdminDecisions />
           ) : tab === "trust" ? (

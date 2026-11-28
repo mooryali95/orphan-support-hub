@@ -182,18 +182,40 @@ export const MESSAGE_STATUS_LABELS: Record<
   rejected: "لم تُعتمد رسالتك — راجعتها الجهة الميدانية حمايةً للطفل",
 };
 
-/** حالة الشهر بجملةٍ واحدة يفهمها الكافل. */
-export function monthState(m: LedgerMonth): {
+const MONTH_STATE = {
+  ar: {
+    upcoming: "مستحَقّ قادم",
+    delivered: "وصل الطفل · موثّق",
+    transferred: "حُوِّل للجهة · بانتظار تأكيد الوصول",
+    paid: "دُفع · بانتظار التحويل",
+    failed: "تعذّر الدفع",
+    waiting: "بانتظار الدفع",
+  },
+  en: {
+    upcoming: "Upcoming",
+    delivered: "Reached the child · documented",
+    transferred: "Sent to the field organization · awaiting delivery",
+    paid: "Paid · awaiting transfer",
+    failed: "Payment failed",
+    waiting: "Awaiting payment",
+  },
+} as const;
+
+/** حالة الشهر بجملةٍ واحدة يفهمها الكافل، بلغة الواجهة. */
+export function monthState(
+  m: LedgerMonth,
+  locale: string = "ar",
+): {
   label: string;
   tone: "done" | "progress" | "wait" | "issue";
 } {
-  if (m.upcoming) return { label: "مستحَقّ قادم", tone: "wait" };
-  if (m.delivery_status === "delivered") return { label: "وصل الطفل · موثّق", tone: "done" };
-  if (m.delivery_status === "transferred")
-    return { label: "حُوِّل للجهة · بانتظار تأكيد الوصول", tone: "progress" };
-  if (m.paid > 0) return { label: "دُفع · بانتظار التحويل", tone: "progress" };
-  if (m.payment_status === "failed") return { label: "تعذّر الدفع", tone: "issue" };
-  return { label: "بانتظار الدفع", tone: "wait" };
+  const t = locale === "en" ? MONTH_STATE.en : MONTH_STATE.ar;
+  if (m.upcoming) return { label: t.upcoming, tone: "wait" };
+  if (m.delivery_status === "delivered") return { label: t.delivered, tone: "done" };
+  if (m.delivery_status === "transferred") return { label: t.transferred, tone: "progress" };
+  if (m.paid > 0) return { label: t.paid, tone: "progress" };
+  if (m.payment_status === "failed") return { label: t.failed, tone: "issue" };
+  return { label: t.waiting, tone: "wait" };
 }
 
 /** يتحقّق الكافل أن إيصالاً حفظه ما زال يطابق حقائق شهره اليوم. */
