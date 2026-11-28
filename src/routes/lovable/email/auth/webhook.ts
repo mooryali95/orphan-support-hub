@@ -8,6 +8,7 @@ import { RecoveryEmail } from "@/lib/email-templates/recovery";
 import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
 import { BRAND } from "@/config/brand";
+import { authEmailFrame as frame } from "@/lib/email-templates/copy";
 
 // Configuration
 const SITE_NAME = `${BRAND.name}`;
@@ -27,66 +28,85 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
           senderDomain: SENDER_DOMAIN,
           sendUrl: process.env["LOVABLE_SEND_URL"],
+          // لغة المستلم من عنوان العودة (authEmailLocale)، والاسم بلغته (brandFor).
           emails: {
-            signup: {
-              subject: "تأكيد بريدك الإلكتروني",
-              render: (data) =>
-                React.createElement(SignupEmail, {
-                  siteName: SITE_NAME,
+            signup: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.signup.subject,
+                element: React.createElement(SignupEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   recipient: data.email,
                   confirmationUrl: data.url,
                   token: data.token ?? "",
+                  locale,
                 }),
+              };
             },
-            invite: {
-              subject: `دعوة للانضمام إلى ${BRAND.name}`,
-              render: (data) =>
-                React.createElement(InviteEmail, {
-                  siteName: SITE_NAME,
+            invite: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.invite.subject(name),
+                element: React.createElement(InviteEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   confirmationUrl: data.url,
+                  locale,
                 }),
+              };
             },
-            magiclink: {
-              subject: `رمز دخولك إلى ${BRAND.name}`,
-              render: (data) =>
-                React.createElement(MagicLinkEmail, {
-                  siteName: SITE_NAME,
+            magiclink: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.magic.subject(name),
+                element: React.createElement(MagicLinkEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   confirmationUrl: data.url,
                   token: data.token ?? "",
+                  locale,
                 }),
+              };
             },
-            recovery: {
-              subject: "إعادة تعيين كلمة المرور",
-              render: (data) =>
-                React.createElement(RecoveryEmail, {
-                  siteName: SITE_NAME,
+            recovery: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.recovery.subject,
+                element: React.createElement(RecoveryEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   confirmationUrl: data.url,
+                  locale,
                 }),
+              };
             },
-            email_change: {
-              subject: "تأكيد بريدك الجديد",
-              render: (data) =>
-                React.createElement(EmailChangeEmail, {
-                  siteName: SITE_NAME,
+            email_change: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.change.subject,
+                element: React.createElement(EmailChangeEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   oldEmail: data.old_email ?? "",
                   email: data.email,
                   newEmail: data.new_email ?? "",
                   confirmationUrl: data.url,
+                  locale,
                 }),
+              };
             },
-            reauthentication: {
-              subject: "رمز التحقّق الخاص بك",
-              render: (data) =>
-                React.createElement(ReauthenticationEmail, {
-                  siteName: SITE_NAME,
+            reauthentication: (data) => {
+              const { locale, name, c } = frame(data.url);
+              return {
+                subject: c.reauth.subject,
+                element: React.createElement(ReauthenticationEmail, {
+                  siteName: name,
                   siteUrl: SITE_URL,
                   token: data.token ?? "",
+                  locale,
                 }),
+              };
             },
           },
         });

@@ -38,6 +38,18 @@ describe("ARC-02/APP-05: طريق البريد الواحد", () => {
     expect(rpc).toHaveBeenCalledWith("mark_email_sent", { _ids: ["a", "b"] });
   });
 
+  it("passes the recipient locale to the template, Arabic when unset", async () => {
+    const rpc = vi.fn(async (fn: string) =>
+      fn === "claim_email_batch"
+        ? { data: [{ ...row("a"), locale: "en" }, row("b")], error: null }
+        : { data: null, error: null },
+    );
+    const { d, send } = deps({ rpc });
+    await drainOutbox(d);
+    const calls = send.mock.calls as unknown as Array<[string, Record<string, unknown>]>;
+    expect(calls.map((c) => c[1]["locale"])).toEqual(["en", "ar"]);
+  });
+
   it("المطالبة من claim_email_batch وحدها (التي تكنس الإلغاء والكتم والحجب) لا قراءة مباشرة", async () => {
     const { d, rpc } = deps();
     await drainOutbox(d);

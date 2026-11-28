@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-import { BRAND } from "@/config/brand";
+import { BRAND, brandFor } from "@/config/brand";
 import { NotificationEmail } from "./notification";
 
 export interface TemplateEntry {
@@ -8,6 +8,8 @@ export interface TemplateEntry {
   subject: string | ((data: Record<string, unknown>) => string);
   displayName?: string;
   previewData?: Record<string, unknown>;
+  /** ما يتبدّل في المعاينة بحسب لغة المستلم (العنوان والنصّ عيّنتان بلغته). */
+  previewByLocale?: Partial<Record<"ar" | "en", Record<string, unknown>>>;
   /** Fixed recipient — overrides caller-provided recipientEmail when set. */
   to?: string;
 }
@@ -35,6 +37,7 @@ export function defineTemplate<P extends Record<string, unknown>>(entry: {
   subject: string | ((data: P) => string);
   displayName?: string;
   previewData?: P;
+  previewByLocale?: Partial<Record<"ar" | "en", Partial<P>>>;
   to?: string;
 }): TemplateEntry {
   return entry as unknown as TemplateEntry;
@@ -61,6 +64,13 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
       link: "/dashboard",
       unsubscribeUrl:
         "https://ioco.sunkvalue.com/unsubscribe?token=00000000-0000-4000-8000-000000000000",
+    },
+    previewByLocale: {
+      en: {
+        siteName: brandFor("en").name,
+        title: "A new impact report about Mohammed was published",
+        body: "The 2026-08 report covers school results and health follow-up.",
+      },
     },
   }),
 };

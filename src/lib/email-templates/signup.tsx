@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { BrandButton, BrandCode, BrandEmail, BrandFallbackLink, BrandText } from "./_brand";
+import { emailCopy, type EmailLocale } from "./copy";
 
 interface SignupEmailProps {
   siteName: string;
@@ -9,6 +10,7 @@ interface SignupEmailProps {
   confirmationUrl: string;
   /** حين بدأ التسجيل برمزٍ في الصفحة: يكتبه ويكمل حيث كان. */
   token?: string;
+  locale?: EmailLocale;
 }
 
 export const SignupEmail = ({
@@ -17,29 +19,34 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
   token,
-}: SignupEmailProps) => (
-  <BrandEmail
-    siteName={siteName}
-    siteUrl={siteUrl}
-    preview={`تأكيد بريدك للانضمام إلى ${siteName}`}
-    eyebrow="تفعيل الحساب"
-    heading="خطوة واحدة ويبدأ عبورك معنا"
-    footNote="إن لم تُنشئ هذا الحساب فلا حاجة لأي إجراء؛ يكفي تجاهل الرسالة."
-  >
-    <BrandText>
-      سجّلنا طلب إنشاء حساب باستخدام البريد <strong dir="ltr">{recipient}</strong>. أكّد ملكيتك لهذا
-      البريد لتفعيل الحساب والوصول إلى ملفّات الأيتام الموثّقة.
-    </BrandText>
-    {token && (
-      <>
-        <BrandText>اكتب هذا الرمز في الصفحة التي طلبته منها:</BrandText>
-        <BrandCode token={token} />
-        <BrandText>أو أكّد بالزر:</BrandText>
-      </>
-    )}
-    <BrandButton href={confirmationUrl}>تأكيد البريد</BrandButton>
-    <BrandFallbackLink url={confirmationUrl} />
-  </BrandEmail>
-);
+  locale = "ar",
+}: SignupEmailProps) => {
+  const c = emailCopy(locale).signup;
+  return (
+    <BrandEmail
+      locale={locale}
+      siteName={siteName}
+      siteUrl={siteUrl}
+      preview={c.preview(siteName)}
+      eyebrow={c.eyebrow}
+      heading={c.heading}
+      footNote={c.foot}
+    >
+      <BrandText>
+        {c.bodyA} <strong dir="ltr">{recipient}</strong>
+        {c.bodyB}
+      </BrandText>
+      {token && (
+        <>
+          <BrandText>{c.codeLead}</BrandText>
+          <BrandCode token={token} />
+          <BrandText>{c.orButton}</BrandText>
+        </>
+      )}
+      <BrandButton href={confirmationUrl}>{c.cta}</BrandButton>
+      <BrandFallbackLink url={confirmationUrl} locale={locale} />
+    </BrandEmail>
+  );
+};
 
 export default SignupEmail;

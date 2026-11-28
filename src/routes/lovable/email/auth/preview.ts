@@ -8,10 +8,10 @@ import { MagicLinkEmail } from "@/lib/email-templates/magic-link";
 import { RecoveryEmail } from "@/lib/email-templates/recovery";
 import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
-import { BRAND } from "@/config/brand";
+import { brandFor } from "@/config/brand";
+import { emailLocale, type EmailLocale } from "@/lib/email-templates/copy";
 
 // Configuration
-const SITE_NAME = `${BRAND.name}`;
 const ROOT_DOMAIN = "ioco.sunkvalue.com";
 
 // Sample data for preview mode ONLY (not used in actual email sending).
@@ -25,44 +25,50 @@ const SAMPLE_EMAIL = "user@example.test";
 // كل مدخلة تُركّب قالبها بخصائصه هي، فتبقى الخصائص تحت فحص المُترجم.
 // لو فُصلت المكوّنات عن بياناتها في خريطتين متوازيتين لضاع هذا الفحص،
 // إذ لا يعرف المُترجم أيّ بيانات تخصّ أيّ قالب.
-const EMAIL_PREVIEWS: Record<string, () => React.ReactElement> = {
-  signup: () =>
+const EMAIL_PREVIEWS: Record<string, (locale: EmailLocale) => React.ReactElement> = {
+  signup: (locale) =>
     React.createElement(SignupEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       recipient: SAMPLE_EMAIL,
       confirmationUrl: SAMPLE_PROJECT_URL,
     }),
-  invite: () =>
+  invite: (locale) =>
     React.createElement(InviteEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       confirmationUrl: SAMPLE_PROJECT_URL,
     }),
-  magiclink: () =>
+  magiclink: (locale) =>
     React.createElement(MagicLinkEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       confirmationUrl: SAMPLE_PROJECT_URL,
     }),
-  recovery: () =>
+  recovery: (locale) =>
     React.createElement(RecoveryEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       confirmationUrl: SAMPLE_PROJECT_URL,
     }),
-  email_change: () =>
+  email_change: (locale) =>
     React.createElement(EmailChangeEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       oldEmail: SAMPLE_EMAIL,
       email: SAMPLE_EMAIL,
       newEmail: SAMPLE_EMAIL,
       confirmationUrl: SAMPLE_PROJECT_URL,
     }),
-  reauthentication: () =>
+  reauthentication: (locale) =>
     React.createElement(ReauthenticationEmail, {
-      siteName: SITE_NAME,
+      siteName: brandFor(locale).name,
+      locale,
       siteUrl: SAMPLE_PROJECT_URL,
       token: "123456",
     }),
@@ -85,12 +91,15 @@ export const Route = createFileRoute("/lovable/email/auth/preview")({
         }
 
         let type: string;
+        let locale: EmailLocale = "ar";
         try {
           const body = await request.json();
           if (typeof body?.type !== "string") {
             return Response.json({ error: "Field 'type' must be a string" }, { status: 400 });
           }
           type = body.type;
+          // معاينة بلغة مستلمٍ بعينه: «ar» افتراضاً، و«en» لمن اختار الإنجليزية.
+          locale = emailLocale(body?.locale);
         } catch {
           return Response.json({ error: "Invalid JSON in request body" }, { status: 400 });
         }
@@ -103,7 +112,7 @@ export const Route = createFileRoute("/lovable/email/auth/preview")({
           return Response.json({ error: `Unknown email type: ${type}` }, { status: 400 });
         }
 
-        const html = await render(buildPreview());
+        const html = await render(buildPreview(locale));
 
         return new Response(html, {
           status: 200,

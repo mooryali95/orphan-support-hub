@@ -55,7 +55,19 @@ export const readLocale = createIsomorphicFn()
 /** تبديل اللغة: كعكة لسنة، ثم إعادة تحميلٍ كاملة لأن الاتجاه يتغيّر من الجذر. */
 export function switchLocale(next: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
-  window.location.reload();
+  // لغة البريد تتبع لغة الواجهة: تُحفظ في حساب الداخل (user_metadata.locale) فيقرؤها
+  // مُصرِّف البريد. تحميلٌ متأخّر فلا يثقل الصفحات العامة، ومهلةٌ فلا يعلق التبديل.
+  const saved = import("@/integrations/supabase/client")
+    .then(async ({ supabase }) => {
+      const { data } = await supabase.auth.getSession();
+      const user = data.session?.user;
+      if (user && user.user_metadata?.["locale"] !== next)
+        await supabase.auth.updateUser({ data: { locale: next } });
+    })
+    .catch(() => undefined);
+  void Promise.race([saved, new Promise((r) => setTimeout(r, 1500))]).then(() =>
+    window.location.reload(),
+  );
 }
 
 /* ── الترجمات المنشورة ─────────────────────────────────────────────── */

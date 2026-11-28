@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { OrgInbox } from "@/components/org/OrgInbox";
+import { OrgCompletenessLine, RejectionLine } from "@/components/org/OrgFileNotes";
 import { OrgPledges } from "@/components/org/OrgPledges";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,10 @@ const COPY = defineCopy("routes/try.org", {
     approved: "اعتمدتها الإدارة",
     simulated:
       "الرسائل والتبرّعات هنا محاكاة، والأطفال خياليون. اعتمد رسالةً أو ارفضها لترى الصندوق يتغيّر.",
+    filesTitle: "ملفّات الجهة (نموذجية)",
+    fileReturned: "ملفّ خيالي أعادته الإدارة",
+    returnedNote: "صورة شهادة الميلاد غير مقروءة",
+    filePublished: "ملفّ خيالي منشور",
   },
   en: {
     pageTitle: "Field organization: interactive demo",
@@ -32,6 +37,10 @@ const COPY = defineCopy("routes/try.org", {
     approved: "Approved by the admin team",
     simulated:
       "The messages and giving here are simulated, and the children are fictional. Approve or reject a message to see the inbox change.",
+    filesTitle: "Organization files (sample)",
+    fileReturned: "A fictional file returned by the admin team",
+    returnedNote: "the birth certificate scan is unreadable",
+    filePublished: "A fictional published file",
   },
 });
 
@@ -67,6 +76,19 @@ function TryOrg() {
       <div className="mt-6">
         <Badge className="mb-6">{t.approved}</Badge>
         <OrgInbox />
+        <section aria-labelledby="try-org-files" className="mt-8 space-y-3">
+          <h2 id="try-org-files" className="text-lg font-bold">
+            {t.filesTitle}
+          </h2>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <h3 className="font-bold">{t.fileReturned}</h3>
+            <RejectionLine code="documents_unclear" reason={t.returnedNote} />
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <h3 className="font-bold">{t.filePublished}</h3>
+            <OrgCompletenessLine filled={4} missing={["health", "aspiration"]} />
+          </div>
+        </section>
         <OrgPledges orgId={TRY_ORG_ID} />
       </div>
     </div>

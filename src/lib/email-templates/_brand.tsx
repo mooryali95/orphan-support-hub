@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { BRAND as IDENTITY } from "@/config/brand";
+import { brandFor } from "@/config/brand";
 import { COLORS } from "@/config/brand-colors";
 import {
   Body,
@@ -14,6 +14,8 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+
+import { emailCopy, type EmailLocale } from "./copy";
 
 /**
  * الغلاف البريدي الموحّد لهوية كهاتين.
@@ -51,7 +53,10 @@ export function BrandEmail({
   children,
   footNote,
   unsubscribeUrl,
+  locale = "ar",
 }: {
+  /** لغة المستلم: تضبط lang وdir ونصوص الغلاف. */
+  locale?: EmailLocale;
   siteName: string;
   siteUrl: string;
   preview: string;
@@ -70,8 +75,12 @@ export function BrandEmail({
    */
   unsubscribeUrl?: string;
 }) {
+  const IDENTITY = brandFor(locale);
+  const c = emailCopy(locale).shell;
+  const partnerWith = locale === "ar" ? IDENTITY.partner.with : IDENTITY.partner.withLatin;
+  const partnerName = locale === "ar" ? IDENTITY.partner.name : IDENTITY.partner.nameLatin;
   return (
-    <Html lang="ar" dir="rtl">
+    <Html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <Head />
       <Preview>{preview}</Preview>
       <Body style={main}>
@@ -115,22 +124,22 @@ export function BrandEmail({
 
           <Section style={footer}>
             <Text style={footerText}>
-              أُرسلت هذه الرسالة من{" "}
+              {c.sentFrom}{" "}
               <Link href={siteUrl} style={footerLink}>
                 {siteName}
               </Link>
-              . لا تُشارك روابطها مع أحد.
+              {c.dontShare}
             </Text>
             <Text style={footerFine}>
-              {IDENTITY.ownerLine}, {IDENTITY.partner.with} {IDENTITY.partner.name}.
+              {IDENTITY.ownerLine}, {partnerWith} {partnerName}.
             </Text>
-            <Text style={footerFine}>كفالة اليتيم استثمار في عمرانٍ قادم، لا إحسان عابر.</Text>
+            <Text style={footerFine}>{c.motto}</Text>
             {unsubscribeUrl && (
               <Text style={footerFine}>
                 <Link href={unsubscribeUrl} style={footerLink}>
-                  إيقاف هذه الرسائل
+                  {c.stop}
                 </Link>
-                ، وتبقى إشعاراتك ظاهرةً داخل المنصّة.
+                {c.stopTail}
               </Text>
             )}
           </Section>
@@ -163,10 +172,10 @@ export function BrandText({ children }: { children: React.ReactNode }) {
 }
 
 /** الرابط الاحتياطي حين يحجب عميل البريد الأزرار. */
-export function BrandFallbackLink({ url }: { url: string }) {
+export function BrandFallbackLink({ url, locale = "ar" }: { url: string; locale?: EmailLocale }) {
   return (
     <>
-      <Text style={fallbackLabel}>تعذّر الزر؟ انسخ الرابط التالي في المتصفّح:</Text>
+      <Text style={fallbackLabel}>{emailCopy(locale).shell.fallback}</Text>
       <Text style={fallbackUrl} dir="ltr">
         {url}
       </Text>

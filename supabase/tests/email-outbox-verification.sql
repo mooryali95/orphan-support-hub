@@ -207,6 +207,28 @@ BEGIN
   END;
 END $$;
 
+-- ---------------------------------------------------------------------
+-- لغة المستلم تصل المُصرِّف: الإنجليزية لمن اختارها، والعربية لغيره
+-- ---------------------------------------------------------------------
+DO $$
+DECLARE _en TEXT; _ar TEXT;
+BEGIN
+  UPDATE public.notifications SET email_state = 'sent' WHERE email_state = 'pending';
+  UPDATE auth.users SET raw_user_meta_data = '{"locale":"en"}'::jsonb
+   WHERE id = 'b1000000-0000-4000-8000-000000000001';
+  UPDATE auth.users SET raw_user_meta_data = '{"locale":"xx"}'::jsonb
+   WHERE id = 'b1000000-0000-4000-8000-000000000002';
+  PERFORM public.notify('b1000000-0000-4000-8000-000000000001', 'welcome', 'Welcome');
+  PERFORM public.notify('b1000000-0000-4000-8000-000000000002', 'welcome', 'أهلاً');
+  SELECT max(locale) FILTER (WHERE recipient = 'ob-one@example.test'),
+         max(locale) FILTER (WHERE recipient = 'ob-two@example.test')
+    INTO _en, _ar FROM public.claim_email_batch(10, 300, 5);
+  IF _en IS DISTINCT FROM 'en' OR _ar IS DISTINCT FROM 'ar' THEN
+    RAISE EXCEPTION 'FAIL — لغة المستلم لم تصل (en=%, ar=%)', _en, _ar;
+  END IF;
+  RAISE NOTICE 'PASS — المطالبة تحمل لغة المستلم، والمجهول عربي';
+END $$;
+
 DO $$ BEGIN RAISE NOTICE '── جميع فحوص مُصرِّف البريد اجتازت ──'; END $$;
 
 ROLLBACK;
