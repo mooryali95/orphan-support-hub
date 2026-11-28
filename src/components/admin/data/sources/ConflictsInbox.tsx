@@ -49,6 +49,7 @@ export function Conflicts({
     void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
     void qc.invalidateQueries({ queryKey: [...dk, "child-file"] });
     void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+    void qc.invalidateQueries({ queryKey: [...dk, "today-strip"] });
     void qc.invalidateQueries({ queryKey: [...dk, "decision-log"] });
   };
   const resolve = useDataFn("golden.resolveConflict", resolveConflict);

@@ -182,6 +182,7 @@ export function Alerts({
       void qc.invalidateQueries({ queryKey: [...dk, "golden-alerts"] });
       void qc.invalidateQueries({ queryKey: [...dk, "data-health"] });
       void qc.invalidateQueries({ queryKey: [...dk, "queue-counts"] });
+      void qc.invalidateQueries({ queryKey: [...dk, "today-strip"] });
       void qc.invalidateQueries({ queryKey: [...dk, "decision-log"] });
     },
   });

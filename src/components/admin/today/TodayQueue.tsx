@@ -229,14 +229,7 @@ export function TodayQueue({
         <TodayTiles items={items} onFilter={setFilters} onOpenTrust={onOpenTrust} />
       )}
       {scope === "country" && (
-        <CountryTodayStrip
-          items={items}
-          access={access}
-          awaiting={queueTotal}
-          partial={serverMore}
-          now={now}
-          onFilter={setFilters}
-        />
+        <CountryTodayStrip items={items} access={access} now={now} onFilter={setFilters} />
       )}
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="min-w-0">
@@ -681,6 +674,7 @@ function useSettle() {
         "data-health",
         "child-file",
         "queue-counts",
+        "today-strip",
         "decision-log",
       ])
         void qc.invalidateQueries({ queryKey: [...dk, k] });

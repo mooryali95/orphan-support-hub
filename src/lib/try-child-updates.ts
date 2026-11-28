@@ -230,5 +230,8 @@ export function registerChildUpdateDemos() {
 }
 
 /** ما ينتظر الحسم من تحديثات العيّنة، لعدّاد «اليوم». */
+/** تحديثاتٌ معلّقة في دولةٍ لم يرفعها الزائر نفسه: ما يحسمه في شريط «اليوم». */
+export const pendingChildUpdatesForOthers = (country: string) =>
+  pending().filter((u) => u.country_code === country && !u.mine);
 export const pendingChildUpdates = (country: string | null) =>
   pending().filter((u) => !country || u.country_code === country).length;
