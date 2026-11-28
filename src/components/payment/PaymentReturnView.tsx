@@ -21,6 +21,7 @@ const COPY = defineCopy("components/payment/PaymentReturnView", {
     stopped: "ما زالت معلّقة. توقّفنا عن التحديث التلقائي؛ حدّثها متى شئت.",
     reference: "مرجع الدفعة",
     child: (n: string) => `الكفالة: ${n}`,
+    nextTrial: "اذهب إلى صفحة أثري",
     simulated: "هذه عودةٌ محاكاة من بوابة دفعٍ تجريبية. لم يُدفع شيء.",
     states: {
       success: {
@@ -58,6 +59,7 @@ const COPY = defineCopy("components/payment/PaymentReturnView", {
     stopped: "Still pending. Automatic refresh has stopped; refresh whenever you like.",
     reference: "Payment reference",
     child: (n: string) => `Sponsorship: ${n}`,
+    nextTrial: "Go to my impact page",
     simulated: "This is a simulated return from a sample payment gateway. Nothing was paid.",
     states: {
       success: {
@@ -219,7 +221,7 @@ export function PaymentReturnView({
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Button asChild size="lg" className="min-h-12">
           <Link to={nextTo} search={(nextSearch ?? {}) as never}>
-            {s.next}
+            {sample ? t.nextTrial : s.next}
           </Link>
         </Button>
         {d.state === "pending" && (
