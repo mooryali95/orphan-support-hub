@@ -4,7 +4,6 @@ import { DonorBoard } from "@/components/donor/DonorBoard";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
-import { registerDonorDemos } from "@/lib/try-workspaces";
 
 const COPY = defineCopy("routes/try.donor", {
   ar: {
@@ -27,7 +26,7 @@ const COPY = defineCopy("routes/try.donor", {
 
 export const Route = createFileRoute("/try/donor/$entityId")({
   // نسخ لوحة الجهة التجريبية تُسجَّل صراحةً قبل الرسم (sideEffects: false).
-  beforeLoad: () => registerDonorDemos(),
+  beforeLoad: () => import("@/lib/try-workspaces").then((m) => m.registerDonorDemos()),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AskView } from "@/components/ask/AskView";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
-import { registerAskDemos } from "@/lib/try-ask";
 import { localTryChild, TRY_CHILDREN } from "@/lib/try-demo";
 
 const COPY = defineCopy("routes/try.ask", {
@@ -21,7 +20,7 @@ const COPY = defineCopy("routes/try.ask", {
 
 export const Route = createFileRoute("/try/ask")({
   // الإجابات الجاهزة تُسجَّل صراحةً قبل الرسم (sideEffects: false).
-  beforeLoad: () => registerAskDemos(),
+  beforeLoad: () => import("@/lib/try-ask").then((m) => m.registerAskDemos()),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

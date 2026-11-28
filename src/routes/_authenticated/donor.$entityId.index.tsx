@@ -1,16 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { DashboardShell } from "@/components/DashboardShell";
-import { DONOR_COPY, DonorBoard } from "@/components/donor/DonorBoard";
+import { DonorBoard } from "@/components/donor/DonorBoard";
 import { pageTitle } from "@/config/brand";
-import { copyOf } from "@/lib/locale";
+import { copyOf, defineCopy } from "@/lib/locale";
+
+// Kept here, not imported from the board, so the route head stays out of the shared bundle.
+const HEAD = defineCopy("routes/donor", {
+  ar: { title: "الجهة المانحة" },
+  en: { title: "Donor entity" },
+});
 
 export const Route = createFileRoute("/_authenticated/donor/$entityId/")({
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
       meta: [
-        { title: pageTitle(copyOf(DONOR_COPY, l).title, false, l) },
+        { title: pageTitle(copyOf(HEAD, l).title, false, l) },
         { name: "robots", content: "noindex" },
       ],
     };

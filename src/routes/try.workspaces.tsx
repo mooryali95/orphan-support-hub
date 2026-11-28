@@ -4,7 +4,7 @@ import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { WorkspacesBoard } from "@/components/workspaces/WorkspacesBoard";
 import { pageTitle } from "@/config/brand";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
-import { registerWorkspacesDemos, TRY_DONOR_ID } from "@/lib/try-workspaces";
+import { TRY_DONOR_ID } from "@/lib/try-workspaces";
 
 const COPY = defineCopy("routes/try.workspaces", {
   ar: {
@@ -25,7 +25,7 @@ const COPY = defineCopy("routes/try.workspaces", {
 
 export const Route = createFileRoute("/try/workspaces")({
   // نسخ «بواباتي» التجريبية تُسجَّل صراحةً قبل الرسم (sideEffects: false).
-  beforeLoad: () => registerWorkspacesDemos(),
+  beforeLoad: () => import("@/lib/try-workspaces").then((m) => m.registerWorkspacesDemos()),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5372,
+ "count": 5375,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -29817,6 +29817,13 @@
    "hash": "58a4af1c234c",
    "file": "src/routes/_authenticated/country-data.tsx"
   },
+  "routes/donor.title": {
+   "en": "Donor entity",
+   "ar": "الجهة المانحة",
+   "kind": "text",
+   "hash": "1d8d17417fa4",
+   "file": "src/routes/_authenticated/donor.$entityId.index.tsx"
+  },
   "routes/hall.description": {
    "en": "The supporter's journey in 3D across the WAMY network: choose a country, support it, and see what your support does for the country, the region, the group and the child.",
    "ar": "قاعة الأثر ثلاثية الأبعاد: اختر دولةً من شبكة الندوة، وشاهد أثر عطائك على البلد والمنطقة والمجموعة والطفل.",
@@ -38164,6 +38171,20 @@
    "kind": "template",
    "params": 1,
    "hash": "259b9b0e2235",
+   "file": "src/routes/_authenticated/workspaces.tsx"
+  },
+  "routes/workspaces.lead": {
+   "en": "Each role you hold on the platform is its own door. Here you see only what is yours.",
+   "ar": "كل دورٍ لك في المنصّة بابٌ مستقل. ترى هنا ما يحقّ لك وحده.",
+   "kind": "text",
+   "hash": "342392d610e4",
+   "file": "src/routes/_authenticated/workspaces.tsx"
+  },
+  "routes/workspaces.title": {
+   "en": "My workspaces",
+   "ar": "بواباتي",
+   "kind": "text",
+   "hash": "95874cbc86b3",
    "file": "src/routes/_authenticated/workspaces.tsx"
   }
  },
