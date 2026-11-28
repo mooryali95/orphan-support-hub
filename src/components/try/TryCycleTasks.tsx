@@ -219,6 +219,22 @@ export function CycleOfficeTask() {
   const t = useCopy(COPY);
   const { c, sponsored, update } = useCycle();
   const name = c.child.name.trim();
+  if (c.stage !== "published") {
+    const to = c.stage === "draft" ? "/try/cycle" : "/try/admin";
+    return (
+      <aside
+        aria-labelledby="cycle-office"
+        className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground"
+      >
+        <span id="cycle-office" className="min-w-0 flex-1">
+          <span className="font-bold text-bridge-ink">{t.officeEyebrow}</span> · {t.afterAdmin}
+        </span>
+        <Button asChild variant="outline" className="min-h-11">
+          <Link to={to}>{c.stage === "draft" ? t.startOrg : t.approveAdmin}</Link>
+        </Button>
+      </aside>
+    );
+  }
   return (
     <section aria-labelledby="cycle-office" className={card}>
       <p className="text-xs font-bold text-bridge-ink">{t.officeEyebrow}</p>

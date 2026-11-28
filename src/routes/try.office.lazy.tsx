@@ -12,6 +12,7 @@ import { defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { loadPledges, targetLabel, type TryPledge } from "@/lib/try-support";
 import { loadOffice, saveOffice, useTrialValue } from "@/lib/try-role-state";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export const Route = createLazyFileRoute("/try/office")({ component: TryOffice });
 
@@ -44,6 +45,13 @@ const COPY = defineCopy("routes/try.office", {
     monthly: (n: number) => `${n} شهرياً`,
     stepsLabel: "خطوات التنفيذ",
     next: "الخطوة التالية",
+    reasonsLabel: "سبب الإعادة",
+    reasons: ["مستند ناقص", "بيانات غير متطابقة", "صورة غير واضحة"],
+    confirmReturn: "أعده بهذا السبب",
+    pickReason: "اختر سبباً أوّلاً",
+    approveNamed: (n: string) => `ارفع ملفّ ${n} للإدارة`,
+    returnNamed: (n: string) => `أعد ملفّ ${n} للجهة`,
+    nextNamed: (n: string) => `الخطوة التالية: ${n}`,
   },
   en: {
     steps: ["Received", "Scheduled", "Delivered", "Report sent"],
@@ -76,6 +84,13 @@ const COPY = defineCopy("routes/try.office", {
     monthly: (n: number) => `${n} a month`,
     stepsLabel: "Delivery steps",
     next: "Next step",
+    reasonsLabel: "Reason for return",
+    reasons: ["Missing document", "Details do not match", "Unclear photo"],
+    confirmReturn: "Return with this reason",
+    pickReason: "Pick a reason first",
+    approveNamed: (n: string) => `Pass ${n}'s file to admin`,
+    returnNamed: (n: string) => `Return ${n}'s file to the organization`,
+    nextNamed: (n: string) => `Next step: ${n}`,
   },
 });
 
@@ -99,6 +114,8 @@ function TryOffice() {
     .filter((o) => o.status === "submitted")
     .slice(0, 5);
 
+  const [returning, setReturning] = useState<string | null>(null);
+  const [reason, setReason] = useState<number | null>(null);
   const decide = (id: string, d: "approved" | "returned", name: string) => {
     saveOffice({ ...office, files: { ...office.files, [id]: d } });
     toast.success(d === "approved" ? t.approvedToast(name) : t.returnedToast(name), {
@@ -135,8 +152,6 @@ function TryOffice() {
       <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />
 
       <div className="mt-8 grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-        <CycleOfficeTask />
-
         <section
           aria-labelledby="office-files"
           className="rounded-2xl border border-border bg-card p-5 shadow-soft"
@@ -176,16 +191,66 @@ function TryOffice() {
                     </span>
                   ) : (
                     <span className="flex flex-wrap gap-2">
-                      <Button size="sm" onClick={() => decide(o.id, "approved", o.name)}>
+                      <Button
+                        className="min-h-11"
+                        aria-label={t.approveNamed(o.name)}
+                        onClick={() => decide(o.id, "approved", o.name)}
+                      >
                         {t.approve}
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => decide(o.id, "returned", o.name)}
-                      >
-                        {t.return}
-                      </Button>
+                      {returning === o.id ? (
+                        <span className="flex basis-full flex-wrap items-center gap-2">
+                          <span
+                            role="radiogroup"
+                            aria-label={t.reasonsLabel}
+                            className="flex flex-wrap gap-2"
+                          >
+                            {t.reasons.map((r, i) => (
+                              <button
+                                key={r}
+                                type="button"
+                                role="radio"
+                                aria-checked={reason === i}
+                                onClick={() => setReason(i)}
+                                className={cn(
+                                  "min-h-11 rounded-full border px-3 text-xs",
+                                  reason === i
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "border-border",
+                                )}
+                              >
+                                {r}
+                              </button>
+                            ))}
+                          </span>
+                          <Button
+                            variant="outline"
+                            className="min-h-11"
+                            aria-disabled={reason === null}
+                            aria-label={`${t.returnNamed(o.name)}${reason === null ? ` (${t.pickReason})` : ""}`}
+                            onClick={() => {
+                              if (reason === null) return;
+                              decide(o.id, "returned", `${o.name} (${t.reasons[reason]})`);
+                              setReturning(null);
+                              setReason(null);
+                            }}
+                          >
+                            {reason === null ? t.pickReason : t.confirmReturn}
+                          </Button>
+                        </span>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          className="min-h-11"
+                          aria-label={t.returnNamed(o.name)}
+                          onClick={() => {
+                            setReturning(o.id);
+                            setReason(null);
+                          }}
+                        >
+                          {t.return}
+                        </Button>
+                      )}
                     </span>
                   )}
                 </li>
@@ -193,6 +258,7 @@ function TryOffice() {
             })}
           </ul>
         </section>
+        <CycleOfficeTask />
       </div>
 
       <section
@@ -247,8 +313,9 @@ function TryOffice() {
                   ))}
                 </ol>
                 <Button
-                  size="sm"
                   variant="outline"
+                  className="min-h-11"
+                  aria-label={t.nextNamed(p.label)}
                   disabled={at >= t.steps.length - 1}
                   onClick={() => advance(p.id)}
                 >

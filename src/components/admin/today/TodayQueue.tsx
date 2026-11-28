@@ -32,6 +32,7 @@ import { dirOf, useCopy, useLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 import { TODAY_COPY } from "./copy";
+import { CountryTodayStrip } from "./CountryTodayStrip";
 import { TodayTiles } from "./TodayTiles";
 import {
   applyFilters,
@@ -201,6 +202,7 @@ export function TodayQueue({
       {scope === "admin" && onOpenTrust && (
         <TodayTiles items={items} onFilter={setFilters} onOpenTrust={onOpenTrust} />
       )}
+      {scope === "country" && <CountryTodayStrip items={items} now={now} onFilter={setFilters} />}
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="min-w-0">
           <h3 id="today-title" className="font-display text-xl font-bold">
