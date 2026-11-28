@@ -153,6 +153,7 @@ type PortalKey = "dashboard" | "guardian" | "org" | "country" | "supervisor" | "
 export type WorkspaceLinks = Partial<Record<PortalKey, string>> & {
   office?: (id: string) => string;
   donor?: (id: string) => string;
+  translate?: (code: string) => string;
 };
 
 const REAL: Record<PortalKey, string> = {
@@ -299,7 +300,7 @@ export function WorkspacesBoard({ links = {} }: { links?: WorkspaceLinks }) {
               text={c.translateText(l.name)}
               chip="active"
               action={c.open}
-              to={`/translate/${l.code}`}
+              to={links.translate?.(l.code) ?? `/translate/${l.code}`}
             />
           ))}
           {ws.admin && (

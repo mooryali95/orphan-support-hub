@@ -34,7 +34,7 @@ const workspacesFor = (locale: string): Workspaces => ({
   care_org_status: "approved",
   guardian: true,
   supervisor: true,
-  translator_locales: [],
+  translator_locales: [{ code: "fr", name: "Français" }],
   pledges: 2,
 });
 
