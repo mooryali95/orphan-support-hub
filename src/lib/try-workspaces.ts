@@ -9,19 +9,26 @@ import type { DonorDashboard, DonorPledge, Workspaces } from "@/lib/workspaces.f
 /** معرّف الجهة المانحة النموذجية: تفتحها صفحة `/try/donor/$id`. */
 export const TRY_DONOR_ID = "try-donor-1";
 
-const WORKSPACES: Workspaces = {
+/** أسماء نموذجية بلغتين: لا يظهر اسمٌ عربي في الواجهة الإنجليزية. */
+const NAMES = {
+  ar: { office: "مكتب نموذجي", donor: "جهة مانحة نموذجية" },
+  en: { office: "Sample office", donor: "Sample donor entity" },
+};
+const namesFor = (locale: string) => (locale === "ar" ? NAMES.ar : NAMES.en);
+
+const workspacesFor = (locale: string): Workspaces => ({
   admin: true,
   offices: [
     {
       id: "try-office",
-      name: "مكتب نموذجي",
+      name: namesFor(locale).office,
       role: "manager",
       country: "LK",
       region: null,
     },
   ],
   donor_entities: [
-    { id: TRY_DONOR_ID, name: "جهة مانحة نموذجية", status: "approved", role: "owner" },
+    { id: TRY_DONOR_ID, name: namesFor(locale).donor, status: "approved", role: "owner" },
   ],
   care_org: true,
   care_org_status: "pending",
@@ -29,14 +36,19 @@ const WORKSPACES: Workspaces = {
   supervisor: true,
   translator_locales: [],
   pledges: 2,
-};
+});
 
-const DONOR: DonorDashboard = {
-  entity: { id: TRY_DONOR_ID, name: "جهة مانحة نموذجية", type: "foundation", status: "approved" },
+const donorFor = (locale: string): DonorDashboard => ({
+  entity: {
+    id: TRY_DONOR_ID,
+    name: namesFor(locale).donor,
+    type: "foundation",
+    status: "approved",
+  },
   by_kind: { qualification: 2, in_kind: 1 },
   by_target: { region: 2, orphan: 1 },
   members: 3,
-};
+});
 
 // تعهّداتٌ نموذجية بلا أسماء أطفال: الهدف منطقةٌ أو رمز ملفٍّ نموذجي.
 const PLEDGES: DonorPledge[] = [
@@ -82,11 +94,11 @@ const PLEDGES: DonorPledge[] = [
  * يسجّل نسخ «بواباتي» التجريبية. تناديه صفحة `/try/workspaces` صراحةً
  * (`package.json` يعلن `sideEffects: false`، فالاستيراد المجرّد يُحذف من الحزمة).
  */
-export function registerWorkspacesDemos() {
+export function registerWorkspacesDemos(locale = "ar") {
   registerDemo("workspaces.mine", async () => ({
     ok: true as const,
     error: null,
-    workspaces: WORKSPACES,
+    workspaces: workspacesFor(locale),
   }));
   registerDemo("workspaces.countryAccess", async () => ({
     ok: true as const,
@@ -96,10 +108,10 @@ export function registerWorkspacesDemos() {
 }
 
 /** نسخ لوحة الجهة المانحة التجريبية. تناديها صفحة `/try/donor/$entityId` صراحةً. */
-export function registerDonorDemos() {
+export function registerDonorDemos(locale = "ar") {
   registerDemo("donor.dashboard", async ({ data }: { data: { entityId: string } }) =>
     data.entityId === TRY_DONOR_ID
-      ? { ok: true as const, error: null, dashboard: DONOR }
+      ? { ok: true as const, error: null, dashboard: donorFor(locale) }
       : { ok: false as const, error: "not_found", dashboard: null },
   );
   registerDemo("donor.pledges", async ({ data }: { data: { entityId: string } }) =>

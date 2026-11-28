@@ -5,7 +5,7 @@ import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { WorkspacesBoard } from "@/components/workspaces/WorkspacesBoard";
 import { pageTitle } from "@/config/brand";
 import { useDemo } from "@/lib/demo-mode";
-import { copyOf, defineCopy, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 import { registerWorkspacesDemos, TRY_DONOR_ID } from "@/lib/try-workspaces";
 
 const COPY = defineCopy("routes/try.workspaces", {
@@ -40,7 +40,8 @@ export const Route = createFileRoute("/try/workspaces")({
 
 function TryWorkspaces() {
   // نسخ «بواباتي» التجريبية تُسجَّل صراحةً في المتصفّح قبل أن تُرسم اللوحة (sideEffects: false).
-  useState(registerWorkspacesDemos);
+  const locale = useLocale();
+  useState(() => registerWorkspacesDemos(locale));
   // the trial session starts in the shell's effect, after this screen mounts: until it does,
   // nothing is fetched, so no call ever reaches the real server from the trial.
   const t = useCopy(COPY);
