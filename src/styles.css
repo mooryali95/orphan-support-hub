@@ -948,6 +948,10 @@ header.sticky {
     animation-timeline: view();
     animation-range: entry 0% cover 22%;
   }
+  /* تقليل الحركة: المحتوى حاضرٌ بكامل وضوحه بلا ظهورٍ مع التمرير */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 /* تبديل المظهر: لحظةٌ بلا انتقالات فلا تتدرّج كلّ حدود الصفحة وخلفياتها. */

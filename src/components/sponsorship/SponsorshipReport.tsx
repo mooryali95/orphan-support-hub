@@ -93,12 +93,14 @@ export function SponsorshipReport({ sponsorshipId }: { sponsorshipId: string }) 
   const l = data?.ledger;
   if (!l) {
     return (
-      <p role="alert" className="p-10 text-center text-sm">
-        {c.loadError}{" "}
-        <Link to={demo ? trialRoute("/try/impact") : "/dashboard"} className="underline">
-          {c.dashboard}
-        </Link>
-      </p>
+      <div role="alert">
+        <h1 className="p-10 text-center text-sm font-normal">
+          {c.loadError}{" "}
+          <Link to={demo ? trialRoute("/try/impact") : "/dashboard"} className="underline">
+            {c.dashboard}
+          </Link>
+        </h1>
+      </div>
     );
   }
   const years = Array.from(new Set(l.months.map((m) => m.month.slice(0, 4))))
