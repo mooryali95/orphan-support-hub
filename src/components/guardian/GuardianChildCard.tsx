@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Check, X } from "lucide-react";
@@ -12,7 +11,8 @@ import {
   setPhotoConsent,
   type GuardianChild,
 } from "@/lib/guardian.functions";
-import { CONSENT_SQ, t, type Lang } from "@/lib/i18n";
+import { CONSENT_EN, CONSENT_SQ, t, type Lang } from "@/lib/i18n";
+import { useDataFn, useDataKey } from "@/lib/data-port";
 import { arNoun, SESSIONS } from "@/lib/plural";
 
 /**
@@ -25,8 +25,10 @@ import { arNoun, SESSIONS } from "@/lib/plural";
  */
 export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang: Lang }) {
   const qc = useQueryClient();
-  const consent = useServerFn(consentEnrollment);
-  const photo = useServerFn(setPhotoConsent);
+  // الكتابة عبر منفذ البيانات: نسخة التجربة لا تنادي الخادم.
+  const consent = useDataFn("guardian.consent", consentEnrollment);
+  const photo = useDataFn("guardian.photo", setPhotoConsent);
+  const childrenKey = useDataKey(["guardian-children"]);
   const [confirm, setConfirm] = useState<null | {
     key: string;
     label: string;
@@ -51,11 +53,13 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
     setBusy(false);
     setConfirm(null);
     if (!res.ok) {
-      toast.error(lang === "ar" ? "تعذّر الحفظ" : "Ruajtja dështoi");
+      toast.error(
+        lang === "ar" ? "تعذّر الحفظ" : lang === "en" ? "Could not save" : "Ruajtja dështoi",
+      );
       return;
     }
     toast.success(t("saved", lang));
-    await qc.invalidateQueries({ queryKey: ["guardian-children"] });
+    await qc.invalidateQueries({ queryKey: childrenKey });
   }
 
   const photoOptions: Array<["face_hidden" | "granted" | "withdrawn", string]> = [
@@ -218,9 +222,9 @@ export function GuardianChildCard({ child, lang }: { child: GuardianChild; lang:
           <p className="mt-2 text-base leading-8" dir="rtl" lang="ar">
             {CONSENT_AR[confirm.key]}
           </p>
-          {lang === "sq" && (
-            <p className="mt-2 text-sm leading-6 text-muted-foreground" dir="ltr" lang="sq">
-              {CONSENT_SQ[confirm.key]}
+          {lang !== "ar" && (
+            <p className="mt-2 text-sm leading-6 text-muted-foreground" dir="ltr" lang={lang}>
+              {(lang === "sq" ? CONSENT_SQ : CONSENT_EN)[confirm.key]}
             </p>
           )}
           <p className="mt-3 text-xs text-muted-foreground">{t("statementNote", lang)}</p>

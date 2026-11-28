@@ -44,6 +44,7 @@ import { Route as TryAdminRouteImport } from './routes/try.admin'
 import { Route as TryAskRouteImport } from './routes/try.ask'
 import { Route as TryCountryRouteImport } from './routes/try.country'
 import { Route as TryCycleRouteImport } from './routes/try.cycle'
+import { Route as TryGuardianRouteImport } from './routes/try.guardian'
 import { Route as TryImpactRouteImport } from './routes/try.impact'
 import { Route as TryJourneyRouteImport } from './routes/try.journey'
 import { Route as TryPayRouteImport } from './routes/try.pay'
@@ -267,6 +268,11 @@ const TryDeciderLazyRoute = TryDeciderLazyRouteImport.update({
   path: '/decider',
   getParentRoute: () => TryRoute,
 } as any).lazy(() => import('./routes/try.decider.lazy').then((d) => d.Route))
+const TryGuardianRoute = TryGuardianRouteImport.update({
+  id: '/guardian',
+  path: '/guardian',
+  getParentRoute: () => TryRoute,
+} as any)
 const TryImpactRoute = TryImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -572,6 +578,7 @@ export interface FileRoutesByFullPath {
   '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
+  '/try/guardian': typeof TryGuardianRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
@@ -656,6 +663,7 @@ export interface FileRoutesByTo {
   '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
+  '/try/guardian': typeof TryGuardianRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
@@ -743,6 +751,7 @@ export interface FileRoutesById {
   '/try/ask': typeof TryAskRoute
   '/try/country': typeof TryCountryRoute
   '/try/cycle': typeof TryCycleRoute
+  '/try/guardian': typeof TryGuardianRoute
   '/try/impact': typeof TryImpactRoute
   '/try/journey': typeof TryJourneyRoute
   '/try/pay': typeof TryPayRoute
@@ -830,6 +839,7 @@ export interface FileRouteTypes {
     | '/try/ask'
     | '/try/country'
     | '/try/cycle'
+    | '/try/guardian'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
@@ -914,6 +924,7 @@ export interface FileRouteTypes {
     | '/try/ask'
     | '/try/country'
     | '/try/cycle'
+    | '/try/guardian'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
@@ -1000,6 +1011,7 @@ export interface FileRouteTypes {
     | '/try/ask'
     | '/try/country'
     | '/try/cycle'
+    | '/try/guardian'
     | '/try/impact'
     | '/try/journey'
     | '/try/pay'
@@ -1339,6 +1351,13 @@ declare module '@tanstack/react-router' {
       path: '/decider'
       fullPath: '/try/decider'
       preLoaderRoute: typeof TryDeciderLazyRouteImport
+      parentRoute: typeof TryRoute
+    }
+    '/try/guardian': {
+      id: '/try/guardian'
+      path: '/guardian'
+      fullPath: '/try/guardian'
+      preLoaderRoute: typeof TryGuardianRouteImport
       parentRoute: typeof TryRoute
     }
     '/try/impact': {
@@ -1752,6 +1771,7 @@ interface TryRouteChildren {
   TryAskRoute: typeof TryAskRoute
   TryCountryRoute: typeof TryCountryRoute
   TryCycleRoute: typeof TryCycleRoute
+  TryGuardianRoute: typeof TryGuardianRoute
   TryImpactRoute: typeof TryImpactRoute
   TryJourneyRoute: typeof TryJourneyRoute
   TryPayRoute: typeof TryPayRoute
@@ -1777,6 +1797,7 @@ const TryRouteChildren: TryRouteChildren = {
   TryAskRoute: TryAskRoute,
   TryCountryRoute: TryCountryRoute,
   TryCycleRoute: TryCycleRoute,
+  TryGuardianRoute: TryGuardianRoute,
   TryImpactRoute: TryImpactRoute,
   TryJourneyRoute: TryJourneyRoute,
   TryPayRoute: TryPayRoute,

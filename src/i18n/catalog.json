@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5584,
+ "count": 5608,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -12055,6 +12055,141 @@
    "kind": "text",
    "hash": "c2f38f84cdb5",
    "file": "src/components/geo/CountryPicker.tsx"
+  },
+  "components/guardian/GuardianBoard.childrenH": {
+   "en": "Children in your care",
+   "ar": "من ترعاهم",
+   "kind": "text",
+   "hash": "fbdc7666ef4a",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.coverage": {
+   "en": "Coverage of {0}'s monthly need",
+   "ar": "تغطية احتياج {0} الشهري",
+   "kind": "template",
+   "params": 1,
+   "hash": "bd44f223a252",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.emptyH": {
+   "en": "No files linked to your account",
+   "ar": "لا ملفات مرتبطة بحسابك",
+   "kind": "text",
+   "hash": "fc3654081ad1",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.emptyP": {
+   "en": "The administration links your account to a file in your care after verifying guardianship. Contact the field organization that uploaded the file.",
+   "ar": "تربط الإدارة حسابك بملف من تحت رعايتك بعد التحقّق من الوصاية. راجع الجهة الميدانية التي رفعت الملفّ.",
+   "kind": "text",
+   "hash": "69b76684410a",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.failed": {
+   "en": "Your files could not be read",
+   "ar": "تعذّرت قراءة ملفّاتك",
+   "kind": "text",
+   "hash": "8a3bf69c765f",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.failedText": {
+   "en": "The files are missing right now, not empty.",
+   "ar": "الملفّات غائبة الآن، وليست فارغة.",
+   "kind": "text",
+   "hash": "810381827868",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.filesH": {
+   "en": "Files and their coverage",
+   "ar": "الملفّات وتغطيتها",
+   "kind": "text",
+   "hash": "73cde40f4b80",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.intro": {
+   "en": "Where the children in your care stand, and what is asked of you.",
+   "ar": "أين وصل من ترعاهم، وما المطلوب منك.",
+   "kind": "text",
+   "hash": "39470976c0f0",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.langGroup": {
+   "en": "Language of the child cards",
+   "ar": "لغة بطاقات الأطفال",
+   "kind": "text",
+   "hash": "80e924f424e7",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.monthly": {
+   "en": "{0} of {1} monthly",
+   "ar": "{0} من {1} شهرياً",
+   "kind": "template",
+   "params": 2,
+   "hash": "5ae391dd914c",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.retry": {
+   "en": "Try again",
+   "ar": "أعد المحاولة",
+   "kind": "text",
+   "hash": "b90b7e9eede9",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.approved": {
+   "en": "Approved",
+   "ar": "معتمد",
+   "kind": "text",
+   "hash": "4a6e365b6c64",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.archived": {
+   "en": "Archived",
+   "ar": "مؤرشف",
+   "kind": "text",
+   "hash": "26c68a14dffb",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.draft": {
+   "en": "Draft",
+   "ar": "مسودة",
+   "kind": "text",
+   "hash": "683783d92412",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.fully_sponsored": {
+   "en": "Fully sponsored",
+   "ar": "مكفول بالكامل",
+   "kind": "text",
+   "hash": "85cc0a887ff3",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.rejected": {
+   "en": "Rejected",
+   "ar": "مرفوض",
+   "kind": "text",
+   "hash": "6f3c73f28fae",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.submitted": {
+   "en": "Awaiting review",
+   "ar": "بانتظار المراجعة",
+   "kind": "text",
+   "hash": "4fa1637946e9",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.status.under_review": {
+   "en": "Under review",
+   "ar": "قيد المراجعة",
+   "kind": "text",
+   "hash": "a11990371e12",
+   "file": "src/components/guardian/GuardianBoard.tsx"
+  },
+  "components/guardian/GuardianBoard.title": {
+   "en": "Guardian space",
+   "ar": "مساحة ولي الأمر",
+   "kind": "text",
+   "hash": "f9b1a010b3cc",
+   "file": "src/components/guardian/GuardianBoard.tsx"
   },
   "components/impact/ChildStanding.bar": {
    "en": "{0}'s monthly need: {1}% without your share, {2}% with it",
@@ -35312,6 +35447,41 @@
    "kind": "text",
    "hash": "987ff26e7296",
    "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.guardian.pageTitle": {
+   "en": "Guardian space: interactive demo",
+   "ar": "مساحة ولي الأمر: عرض تفاعلي",
+   "kind": "text",
+   "hash": "c402d8c29366",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.real": {
+   "en": "a guardian sees only children the admin team linked after verifying guardianship, and never who sponsors them",
+   "ar": "يرى الوليّ من ربطته الإدارة بحسابه بعد التحقّق من الوصاية، ولا يرى من يكفلهم",
+   "kind": "text",
+   "hash": "acf36dfc5390",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.role": {
+   "en": "Guardian",
+   "ar": "ولي أمر",
+   "kind": "text",
+   "hash": "07bf806bdcd6",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.sample": {
+   "en": "Fictional cards",
+   "ar": "بطاقات خيالية",
+   "kind": "text",
+   "hash": "10337c8a6c23",
+   "file": "src/routes/try.guardian.tsx"
+  },
+  "routes/try.guardian.simulated": {
+   "en": "The children here are fictional, and consents are kept on this page only and reach no one.",
+   "ar": "الأطفال هنا خياليون، والموافقات تُحفظ في هذه الصفحة وحدها ولا تصل إلى أحد.",
+   "kind": "text",
+   "hash": "60c4791bbe9e",
+   "file": "src/routes/try.guardian.tsx"
   },
   "routes/try.impact.celebrateDedication": {
    "en": "Ongoing charity on behalf of {0}. May God accept it.",
