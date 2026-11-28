@@ -102,7 +102,7 @@ export function TryRealButton({
   const { registered, register } = useTryJourney();
   if (registered)
     return (
-      <Button asChild size={size} variant={variant} className={className}>
+      <Button asChild size={size} variant={variant} className={cn("min-h-11", className)}>
         <Link to="/dashboard" data-try-real="continue" onClick={exitDemo}>
           {short ? (
             <>

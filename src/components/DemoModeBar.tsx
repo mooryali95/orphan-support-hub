@@ -25,7 +25,7 @@ const COPY = defineCopy("components/DemoModeBar", {
 });
 
 const LINK =
-  "inline-flex min-h-9 items-center rounded-full px-3 max-sm:min-h-11 text-xs font-bold hover:bg-background/15 dark:hover:bg-foreground/10";
+  "inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold hover:bg-background/15 dark:hover:bg-foreground/10";
 
 /**
  * روابط عاديّة لا روابط الموجّه: الشريط قطعةٌ تُحمَّل وحدها، فلا يشارك صفحاتِ المنصّة وحداتِها.
