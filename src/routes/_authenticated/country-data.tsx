@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 import { DashboardShell } from "@/components/DashboardShell";
 import { CountryWorkspace } from "@/components/admin/countries/CountryWorkspace";
@@ -11,7 +13,9 @@ import { AdminSearch } from "@/components/admin/search/AdminSearch";
 import { type Tab as WorkTab } from "@/components/admin/data/sources/shared";
 import { TodayQueue } from "@/components/admin/today/TodayQueue";
 import { useUrlFilters } from "@/components/admin/today/useUrlFilters";
+import { Button } from "@/components/ui/button";
 import { pageTitle } from "@/config/brand";
+import { useAuth } from "@/hooks/useAuth";
 import { getMyCountryAccess } from "@/lib/golden-record.functions";
 import { defineCopy, useCopy } from "@/lib/locale";
 
@@ -20,6 +24,14 @@ const COPY = defineCopy("routes/country-data", {
     title: "بيانات الدولة",
     lead: "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
     none: "حسابك ليس في فريق أي دولة بعد. يضيفك مشرف الدولة أو الإدارة من «فريق الدولة».",
+    roles: [
+      ["المشرف", "يحسم التنبيهات والتعارضات ويدير فريق دولته"],
+      ["مدخل البيانات", "يرفع ملفّات الدولة من مصادرها، ولا يحسم ما رفعه"],
+      ["المطّلع", "يرى صحة البيانات وبنودها دون أن يغيّر شيئاً"],
+    ] as Array<[string, string]>,
+    yourEmail: "أرسل هذا البريد إلى مشرف دولتك ليضيفك:",
+    copy: "انسخ بريدي",
+    copied: "نُسخ البريد",
     all: "كل البنود بحسب الدولة",
     allNote:
       "«اليوم» أعلاه تجمع ما ينتظرك من هذه البنود نفسها؛ وهنا ألسنتها كاملةً لكل دولة، مع الرفع والربط.",
@@ -28,6 +40,14 @@ const COPY = defineCopy("routes/country-data", {
     title: "Country data",
     lead: "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
     none: "Your account isn't on any country team yet. The country supervisor or the admin team adds you under Country team.",
+    roles: [
+      ["Supervisor", "Settles alerts and conflicts and manages the country team"],
+      ["Data entry", "Uploads the country's files from their sources, and never settles their own"],
+      ["Viewer", "Sees data health and items without changing anything"],
+    ] as Array<[string, string]>,
+    yourEmail: "Send this email to your country supervisor so they can add you:",
+    copy: "Copy my email",
+    copied: "Email copied",
     all: "All items by country",
     allNote:
       "Today, above, gathers what is waiting for you from these same items; here are their full tabs for each country, with uploads and linking.",
@@ -68,9 +88,7 @@ function CountryDataPage() {
           <Failed onRetry={() => void access.refetch()} />
         )
       ) : !res.data.admin && res.data.countries.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          {c.none}
-        </p>
+        <NoTeam />
       ) : (
         // «اليوم» بنطاق دول الفريق، ثم درج الدولة نفسه الذي تفتحه الإدارة.
         <div className="space-y-12">
@@ -118,5 +136,48 @@ function CountryDataPage() {
         </div>
       )}
     </DashboardShell>
+  );
+}
+
+/** بلا فريق: ما الأدوار، ومن يضيفك، وبريدك أنت وحده لتنسخه (لا بريدَ غيرك). */
+function NoTeam() {
+  const c = useCopy(COPY);
+  const email = useAuth().user?.email ?? null;
+  return (
+    <section
+      aria-labelledby="no-team-title"
+      className="rounded-2xl border border-dashed border-border p-6 text-sm sm:p-8"
+    >
+      <h2 id="no-team-title" className="text-base font-bold">
+        {c.none}
+      </h2>
+      <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+        {c.roles.map(([role, text]) => (
+          <div key={role} className="rounded-xl bg-secondary/40 p-3">
+            <dt className="font-bold">{role}</dt>
+            <dd className="mt-1 text-muted-foreground leading-6">{text}</dd>
+          </div>
+        ))}
+      </dl>
+      {email && (
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <p className="text-muted-foreground">{c.yourEmail}</p>
+          <bdi dir="ltr" className="font-mono">
+            {email}
+          </bdi>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11"
+            onClick={() =>
+              void navigator.clipboard?.writeText(email).then(() => toast.success(c.copied))
+            }
+          >
+            <Copy className="size-4" aria-hidden="true" />
+            {c.copy}
+          </Button>
+        </div>
+      )}
+    </section>
   );
 }

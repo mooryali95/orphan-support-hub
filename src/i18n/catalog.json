@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5559,
+ "count": 5581,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -9626,6 +9626,13 @@
    "hash": "c003fcbebfc4",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.blocked": {
+   "en": "Not yours to settle",
+   "ar": "لا تحسمه أنت",
+   "kind": "text",
+   "hash": "eb2c3362ffde",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.clear": {
    "en": "Clear filters",
    "ar": "امسح المرشّحات",
@@ -10184,6 +10191,13 @@
    "ar": "{0} من {1}",
    "kind": "text",
    "hash": "f6c620317126",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.stepUp": {
+   "en": "Turn on two-factor to settle it",
+   "ar": "فعّل العامل الثاني لتحسمه",
+   "kind": "text",
+   "hash": "2cdd6eb2bdf7",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.tiles.flagged": {
@@ -21180,6 +21194,13 @@
    "hash": "c4b3647b26a5",
    "file": "src/components/try/TryRoleChip.tsx"
   },
+  "components/try/TryRoleChip.role.guardian": {
+   "en": "Guardian",
+   "ar": "الوليّ",
+   "kind": "text",
+   "hash": "8ca4fad498f1",
+   "file": "src/components/try/TryRoleChip.tsx"
+  },
   "components/try/TryRoleChip.role.office": {
    "en": "Field office",
    "ar": "المكتب الميداني",
@@ -21283,6 +21304,20 @@
    "ar": "صورة الشبكة: الأطفال والتغطية والتوثيق، ونشاط الجلسة كلّه.",
    "kind": "text",
    "hash": "6cfb5a5b2461",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.guardian.0": {
+   "en": "Guardian",
+   "ar": "الوليّ",
+   "kind": "text",
+   "hash": "8ca4fad498f1",
+   "file": "src/components/try/TryRoles.tsx"
+  },
+  "components/try/TryRoles.roles.guardian.1": {
+   "en": "Follows their children and consents to enrollment and photos, or withdraws consent.",
+   "ar": "يتابع أطفاله، ويوافق على الالتحاق ونشر الصور أو يسحب موافقته.",
+   "kind": "text",
+   "hash": "6abdd53f75b0",
    "file": "src/components/try/TryRoles.tsx"
   },
   "components/try/TryRoles.roles.office.0": {
@@ -21440,6 +21475,13 @@
    "hash": "786bd352ec24",
    "file": "src/components/try/TryShareCard.tsx"
   },
+  "components/try/TryShell.about": {
+   "en": "About demo mode",
+   "ar": "عن الوضع التجريبي",
+   "kind": "text",
+   "hash": "4fa2436b0589",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.dialogHint": {
    "en": "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
    "ar": "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
@@ -21452,6 +21494,13 @@
    "ar": "ادخل الرحلة الحقيقية",
    "kind": "text",
    "hash": "6dbd445e4e6c",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.exit": {
+   "en": "Back to the real platform",
+   "ar": "العودة إلى المنصّة الحقيقية",
+   "kind": "text",
+   "hash": "6799a76bf157",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.leftAction": {
@@ -21473,6 +21522,13 @@
    "ar": "غادرت الوضع التجريبي",
    "kind": "text",
    "hash": "f47bd4de08d9",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.menu": {
+   "en": "Demo menu",
+   "ar": "قائمة التجربة",
+   "kind": "text",
+   "hash": "3168d55282b0",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.mode": {
@@ -30727,6 +30783,20 @@
    "hash": "966cff5c669a",
    "file": "src/routes/_authenticated/country-data.tsx"
   },
+  "routes/country-data.copied": {
+   "en": "Email copied",
+   "ar": "نُسخ البريد",
+   "kind": "text",
+   "hash": "0c357b6197f4",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.copy": {
+   "en": "Copy my email",
+   "ar": "انسخ بريدي",
+   "kind": "text",
+   "hash": "08f0d4c3d0fd",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
   "routes/country-data.lead": {
    "en": "Your country's data health, source uploads, alerts, conflicts and link queue, according to your role on its team.",
    "ar": "صحة بيانات دولتك، والرفع من المصادر، والتنبيهات والتعارضات وطابور الربط، بحسب دورك في فريقها.",
@@ -30741,11 +30811,60 @@
    "hash": "94369b6d210e",
    "file": "src/routes/_authenticated/country-data.tsx"
   },
+  "routes/country-data.roles.0.0": {
+   "en": "Supervisor",
+   "ar": "المشرف",
+   "kind": "text",
+   "hash": "f5be59bebab4",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.roles.0.1": {
+   "en": "Settles alerts and conflicts and manages the country team",
+   "ar": "يحسم التنبيهات والتعارضات ويدير فريق دولته",
+   "kind": "text",
+   "hash": "3811823f3a82",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.roles.1.0": {
+   "en": "Data entry",
+   "ar": "مدخل البيانات",
+   "kind": "text",
+   "hash": "0e590d00a967",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.roles.1.1": {
+   "en": "Uploads the country's files from their sources, and never settles their own",
+   "ar": "يرفع ملفّات الدولة من مصادرها، ولا يحسم ما رفعه",
+   "kind": "text",
+   "hash": "54aab0d053ca",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.roles.2.0": {
+   "en": "Viewer",
+   "ar": "المطّلع",
+   "kind": "text",
+   "hash": "2ae3fc8d24a3",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.roles.2.1": {
+   "en": "Sees data health and items without changing anything",
+   "ar": "يرى صحة البيانات وبنودها دون أن يغيّر شيئاً",
+   "kind": "text",
+   "hash": "903942c29141",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
   "routes/country-data.title": {
    "en": "Country data",
    "ar": "بيانات الدولة",
    "kind": "text",
    "hash": "58a4af1c234c",
+   "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/country-data.yourEmail": {
+   "en": "Send this email to your country supervisor so they can add you:",
+   "ar": "أرسل هذا البريد إلى مشرف دولتك ليضيفك:",
+   "kind": "text",
+   "hash": "74a2e3474034",
    "file": "src/routes/_authenticated/country-data.tsx"
   },
   "routes/donor.title": {
@@ -35135,6 +35254,41 @@
    "kind": "text",
    "hash": "987ff26e7296",
    "file": "src/routes/try.donor.$entityId.tsx"
+  },
+  "routes/try.guardian.lead": {
+   "en": "The guardian sees where each child stands, consents to enrollment and to photos, or withdraws consent. These cards are fictional.",
+   "ar": "الوليّ يرى أين وصل كلّ طفل، ويوافق على الالتحاق وعلى نشر الصور أو يسحب موافقته. البطاقات هنا خيالية.",
+   "kind": "text",
+   "hash": "0acd39652859",
+   "file": "src/routes/try.guardian.lazy.tsx"
+  },
+  "routes/try.guardian.loading": {
+   "en": "Loading the children's cards",
+   "ar": "نحمّل بطاقات الأطفال",
+   "kind": "text",
+   "hash": "c494f23542fa",
+   "file": "src/routes/try.guardian.lazy.tsx"
+  },
+  "routes/try.guardian.real": {
+   "en": "a verified guardian who sees only their own children, with each consent stored word for word",
+   "ar": "وليٌّ موثّق يرى أطفاله وحدهم، وموافقته تُحفظ بنصّها",
+   "kind": "text",
+   "hash": "2f4e635ed811",
+   "file": "src/routes/try.guardian.lazy.tsx"
+  },
+  "routes/try.guardian.role": {
+   "en": "Guardian",
+   "ar": "الوليّ",
+   "kind": "text",
+   "hash": "8ca4fad498f1",
+   "file": "src/routes/try.guardian.lazy.tsx"
+  },
+  "routes/try.guardian.title": {
+   "en": "My children",
+   "ar": "أطفالي",
+   "kind": "text",
+   "hash": "f9d4d2e47b5b",
+   "file": "src/routes/try.guardian.lazy.tsx"
   },
   "routes/try.impact.celebrateDedication": {
    "en": "Ongoing charity on behalf of {0}. May God accept it.",
