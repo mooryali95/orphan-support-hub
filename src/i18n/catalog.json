@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5682,
+ "count": 5714,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -31259,6 +31259,232 @@
    "kind": "text",
    "hash": "58a4af1c234c",
    "file": "src/routes/_authenticated/country-data.tsx"
+  },
+  "routes/developers.auth": {
+   "en": "Authentication",
+   "ar": "المصادقة",
+   "kind": "text",
+   "hash": "e3d0818980c7",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.body": {
+   "en": "Request body",
+   "ar": "جسم الطلب",
+   "kind": "text",
+   "hash": "cb5cc74bc0db",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colCode": {
+   "en": "Error",
+   "ar": "الخطأ",
+   "kind": "text",
+   "hash": "91c064ef9bea",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colMeaning": {
+   "en": "Meaning",
+   "ar": "المعنى",
+   "kind": "text",
+   "hash": "6e3c64dfc517",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.colStatus": {
+   "en": "Status",
+   "ar": "الرمز",
+   "kind": "text",
+   "hash": "078471500050",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copied": {
+   "en": "The curl command was copied",
+   "ar": "نُسخ أمر curl",
+   "kind": "text",
+   "hash": "c17b1b337b1d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copy": {
+   "en": "Copy",
+   "ar": "نسخ",
+   "kind": "text",
+   "hash": "15d1e3fb165e",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copyFailed": {
+   "en": "Could not copy; the clipboard is not available in this browser",
+   "ar": "تعذّر النسخ؛ الحافظة غير متاحة في هذا المتصفّح",
+   "kind": "text",
+   "hash": "02521911c679",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.copyLabel": {
+   "en": "Copy the curl command",
+   "ar": "نسخ أمر curl",
+   "kind": "text",
+   "hash": "a2a22dc1ba1f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.description": {
+   "en": "Connecting partner platforms to {0}: authentication, endpoints and examples.",
+   "ar": "ربط المنصّات الشريكة بـ{0}: المصادقة، والنقاط، والأمثلة.",
+   "kind": "template",
+   "params": 1,
+   "hash": "8cc84e3b9eda",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.endpoints": {
+   "en": "Endpoints",
+   "ar": "النقاط",
+   "kind": "text",
+   "hash": "53957d07a984",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.import.text": {
+   "en": "Up to 100 records. Every imported record stays under review until the admin team approves it. An Idempotency-Key header is recommended.",
+   "ar": "حتى 100 سجلّ. كل مستورَدٍ يقف «قيد المراجعة» حتى تعتمده الإدارة. يُنصح بترويسة Idempotency-Key.",
+   "kind": "text",
+   "hash": "24ed2e24cb23",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.import.title": {
+   "en": "Import beneficiaries",
+   "ar": "استيراد المستفيدين",
+   "kind": "text",
+   "hash": "994d7f78113f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.mirror.text": {
+   "en": "Batches of up to 500 per entity with a cursor, or a full reconciliation by every identifier. Details are in the sync contract.",
+   "ar": "دفعات حتى 500 لكل كيان بمؤشّر، أو مطابقة بكل المعرّفات. التفصيل في عقد المزامنة.",
+   "kind": "text",
+   "hash": "b29ef5d05f3c",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.mirror.title": {
+   "en": "Sync an operating platform",
+   "ar": "مزامنة منصّة تشغيل",
+   "kind": "text",
+   "hash": "5e7fe2433fea",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.read.text": {
+   "en": "Public cards with their filters: a pseudonym, country, age band and funding state. No story, photo or city.",
+   "ar": "البطاقات العامّة بفلترتها: اسمٌ مستعار، بلد، فئة عمرية، حال التمويل. لا قصّة ولا صورة ولا مدينة.",
+   "kind": "text",
+   "hash": "70dd3f62ffc1",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.ep.read.title": {
+   "en": "Read cards",
+   "ar": "قراءة البطاقات",
+   "kind": "text",
+   "hash": "02d9ae369d73",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.batch_too_large": {
+   "en": "The batch is larger than the limit",
+   "ar": "الدفعة أكبر من الحدّ",
+   "kind": "text",
+   "hash": "9597735b710b",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.invalid_credentials": {
+   "en": "A wrong or revoked key or secret (one answer, on purpose)",
+   "ar": "مفتاحٌ أو سرٌّ خاطئ أو مُبطَل (ردٌّ واحد عمداً)",
+   "kind": "text",
+   "hash": "d886439e22cd",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.missing_credentials": {
+   "en": "All three headers are required",
+   "ar": "الرؤوس الثلاثة مطلوبة",
+   "kind": "text",
+   "hash": "6d5e06c4cedc",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.rejected": {
+   "en": "The batch was rejected; see code",
+   "ar": "رُفضت الدفعة؛ انظر code",
+   "kind": "text",
+   "hash": "f419cf1befb9",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.scope_denied": {
+   "en": "The key does not carry the scope",
+   "ar": "المفتاح لا يحمل النطاق",
+   "kind": "text",
+   "hash": "140c2d9c6a1d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.err.stale_timestamp": {
+   "en": "The timestamp is outside the five minute window",
+   "ar": "الوقت خارج نافذة خمس دقائق",
+   "kind": "text",
+   "hash": "f122a066c044",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.errors": {
+   "en": "Errors",
+   "ar": "الأخطاء",
+   "kind": "text",
+   "hash": "01a69bde2b66",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.key": {
+   "en": "Key (optional, never sent)",
+   "ar": "المفتاح (اختياري، لا يُرسَل)",
+   "kind": "text",
+   "hash": "3e531736924a",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.lead": {
+   "en": "Connect your platform to {0}. Keys are issued by the admin team with a specific scope, and the secret is shown once. Child protection lives in the database, not the gateway: a key never opens a child's file.",
+   "ar": "اربط منصّتك بـ{0}. المفاتيح تُصدرها الإدارة بنطاقٍ محدّد، والسرّ يُعرض مرّة واحدة. حماية الطفل في القاعدة لا في البوّابة: المفتاح لا يفتح ملفّ طفل.",
+   "kind": "template",
+   "params": 1,
+   "hash": "6c7c4191885e",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.legacy": {
+   "en": "The older X-IOSO-* headers are still accepted.",
+   "ar": "الرؤوس القديمة X-IOSO-* ما زالت مقبولة.",
+   "kind": "text",
+   "hash": "0c45978c6989",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.origin": {
+   "en": "https://<domain>",
+   "ar": "https://<النطاق>",
+   "kind": "text",
+   "hash": "55766af3d1b4",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.refresh": {
+   "en": "Refresh the timestamp",
+   "ar": "تحديث الوقت",
+   "kind": "text",
+   "hash": "90af0c68f95d",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.scope": {
+   "en": "Scope:",
+   "ar": "النطاق:",
+   "kind": "text",
+   "hash": "e60ea2d9bcc0",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.secret": {
+   "en": "Secret (copied, never shown)",
+   "ar": "السرّ (يُنسخ ولا يُعرض)",
+   "kind": "text",
+   "hash": "9c5184de135f",
+   "file": "src/routes/developers.tsx"
+  },
+  "routes/developers.title": {
+   "en": "For developers",
+   "ar": "للمطوّرين",
+   "kind": "text",
+   "hash": "2b88d06e7a09",
+   "file": "src/routes/developers.tsx"
   },
   "routes/donor.title": {
    "en": "Donor entity",
