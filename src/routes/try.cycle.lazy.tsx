@@ -581,7 +581,7 @@ function Stage({
       className={cn(
         "rounded-2xl border bg-card p-5 transition-colors sm:p-6",
         active ? "border-primary/50 shadow-sm" : "border-border",
-        locked && "opacity-60",
+        locked && "border-dashed bg-muted/40",
       )}
     >
       <div className="flex flex-wrap items-center gap-3">
