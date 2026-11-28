@@ -243,7 +243,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     docUnverifiedSaved: "سُحب التوثيق وسُجّل",
     sampleLead: "بيانات نموذجية",
     sampleText:
-      "— أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
+      ": أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
     backToReal: "العودة إلى بيانات المنصّة",
     showSample: "عرض بيانات نموذجية",
     all: "الكلّ",
@@ -446,7 +446,7 @@ const COPY = defineCopy("components/admin/console/RecordsConsole", {
     docUnverifiedSaved: "Verification withdrawn and recorded",
     sampleLead: "Sample data",
     sampleText:
-      "— pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
+      ": pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
     backToReal: "Back to platform data",
     showSample: "Show sample data",
     all: "All",
@@ -1115,7 +1115,8 @@ export function RecordsConsole({
         >
           <FlaskConical className="text-bridge-ink size-5 shrink-0" aria-hidden="true" />
           <p className="min-w-0 flex-1">
-            <strong>{c.sampleLead}</strong> {c.sampleText}
+            <strong>{c.sampleLead}</strong>
+            {c.sampleText}
           </p>
           {onSampleChange && (
             <Button size="sm" variant="outline" onClick={() => onSampleChange(false)}>
@@ -1164,10 +1165,16 @@ export function RecordsConsole({
             placeholder={entity.searchHint}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="h-9 w-64 max-w-full"
+            className="h-11 w-64 max-w-full"
           />
-          <Button type="submit" size="sm" variant="outline" aria-label={c.search}>
-            <Search className="size-4" />
+          <Button
+            type="submit"
+            size="sm"
+            variant="outline"
+            aria-label={c.search}
+            className="size-11"
+          >
+            <Search aria-hidden="true" className="size-4" />
           </Button>
         </form>
       </div>
@@ -1214,7 +1221,7 @@ export function RecordsConsole({
                   onClick={() => setOpen(r)}
                   onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setOpen(r)}
                   className={cn(
-                    "hover:bg-secondary/40 focus-visible:bg-secondary/40 cursor-pointer outline-none",
+                    "hover:bg-secondary/40 focus-visible:bg-secondary/40 focus-visible:outline-ring cursor-pointer outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-solid",
                     visitor && isMine(r) && "bg-bridge/8",
                   )}
                 >

@@ -2177,10 +2177,10 @@
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleText": {
-   "en": "— pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
-   "ar": "— أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
+   "en": ": pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
+   "ar": ": أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
    "kind": "text",
-   "hash": "664a13d62bd8",
+   "hash": "bc064353aef8",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.saveFailed": {
