@@ -114,7 +114,7 @@ export function TryDirectory() {
 
   const chip = (on: boolean) =>
     cn(
-      "inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-bold transition-colors",
+      "inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-bold transition-colors",
       on
         ? "border-primary bg-primary text-primary-foreground"
         : "border-border bg-card hover:border-primary/50",
@@ -143,7 +143,7 @@ export function TryDirectory() {
               setQ(e.target.value);
               setPage(0);
             }}
-            className="h-10 ps-9"
+            className="h-11 ps-9"
           />
         </div>
         <select
@@ -153,7 +153,7 @@ export function TryDirectory() {
             setCo(e.target.value);
             setPage(0);
           }}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-11 rounded-md border border-input bg-background px-3 text-sm"
         >
           <option value="">{t.allCountries}</option>
           {countries.map((c) => (

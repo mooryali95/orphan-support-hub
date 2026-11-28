@@ -28,17 +28,23 @@ const COPY = defineCopy("components/admin/today/CountryTodayStrip", {
  */
 export function CountryTodayStrip({
   items,
+  awaiting,
+  partial,
   now,
   onFilter,
 }: {
   items: readonly QueueItem[];
+  /** العدد على الخادم (`admin_queue_counts` محصوراً بـ `country_can`)، لا ما وصل من صفحات. */
+  awaiting: number;
+  /** بقيت صفحاتٌ لم تصل: عدد المتأخّر حدٌّ أدنى. */
+  partial: boolean;
   now: number;
   onFilter: (patch: Partial<Filters>) => void;
 }) {
   const t = useCopy(COPY);
   const locale = useLocale();
-  const awaiting = items.filter((i) => i.can_settle).length;
   const overdue = items.filter((i) => i.can_settle && isOverdue(i, now)).length;
+  // كلّ طابورٍ يصل مرتّباً من الأحدث، فأحدث ما في صفحاته الأولى هو أحدث رفعٍ فعلاً.
   const latest = items.reduce<string | null>(
     (a, i) => (!a || i.created_at > a ? i.created_at : a),
     null,
@@ -56,7 +62,7 @@ export function CountryTodayStrip({
     { label: t.awaiting, value: String(awaiting), Icon: Hourglass, tone: "text-primary", f: {} },
     {
       label: t.overdue,
-      value: String(overdue),
+      value: partial ? `${overdue}+` : String(overdue),
       Icon: Clock,
       tone: "text-destructive",
       f: { age: "overdue" },

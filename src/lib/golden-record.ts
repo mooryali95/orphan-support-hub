@@ -314,7 +314,9 @@ export type CountryHealth = {
 export type FieldValue = string | number | boolean | null;
 
 /** صفحة الطوابير: كم بنداً في كلّ طلب، والمؤشّر الذي يحمله آخر بندٍ لطلب ما بعده. */
-export const QUEUE_PAGE = 20;
+export const QUEUE_PAGE = 100;
+/** صفوف «اليوم» المعروضة في كلّ دفعة: عشرون صفاً مجموعةً عبر الطوابير كلّها. */
+export const TODAY_ROWS = 20;
 export type QueueCursor = { k: number; at: string; id: string };
 /** المؤشّر بعد صفحةٍ وصلت، أو `null` إن كانت الأخيرة (أقصر من حجمها أو بلا مؤشّر). */
 export function nextCursor(

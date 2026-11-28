@@ -68,7 +68,7 @@ function VisionHub() {
     <VisionShell>
       {/* المشهد الأوّل: نبيذيٌّ بعنوانٍ وثلاث شارات، كما يبدأ الفيلم. */}
       <section
-        aria-labelledby="vision-index-title"
+        aria-labelledby="vision-hero-h"
         className="relative overflow-hidden bg-[radial-gradient(120%_90%_at_50%_0%,#7a2236,var(--color-wine-deep)_75%)] text-ivory"
       >
         <div aria-hidden="true" className="vision-halo pointer-events-none absolute inset-0" />
@@ -80,7 +80,7 @@ function VisionHub() {
             هـ
           </span>
           <h1
-            id="vision-index-title"
+            id="vision-hero-h"
             className="vision-rise mt-6 text-4xl font-extrabold md:text-6xl"
             style={{ animationDelay: "120ms" }}
           >
@@ -142,7 +142,7 @@ function VisionHub() {
       </section>
 
       {/* الطبقات الثلاث */}
-      <section aria-label={c.title} className="mx-auto max-w-6xl px-4 py-14">
+      <section aria-labelledby="vision-live-h" className="mx-auto max-w-6xl px-4 py-14">
         <ol className="grid gap-5 lg:grid-cols-3">
           {LAYERS.map((l, i) => (
             <li key={l.key} style={{ ["--i" as string]: i }} className="stagger-in">
@@ -220,7 +220,9 @@ function VisionHub() {
         </ol>
 
         <div className="mt-10 text-center">
-          <h2 className="text-2xl font-extrabold text-wine md:text-3xl">{c.liveH}</h2>
+          <h2 id="vision-live-h" className="text-2xl font-extrabold text-wine md:text-3xl">
+            {c.liveH}
+          </h2>
           <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">{c.liveLead}</p>
         </div>
         <div className="mt-6 grid gap-5 lg:grid-cols-2">

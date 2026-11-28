@@ -49,9 +49,7 @@ const COPY = defineCopy("routes/try.office", {
     reasons: ["مستند ناقص", "بيانات غير متطابقة", "صورة غير واضحة"],
     confirmReturn: "أعده بهذا السبب",
     pickReason: "اختر سبباً أوّلاً",
-    approveNamed: (n: string) => `ارفع ملفّ ${n} للإدارة`,
-    returnNamed: (n: string) => `أعد ملفّ ${n} للجهة`,
-    nextNamed: (n: string) => `الخطوة التالية: ${n}`,
+    named: (v: string, n: string) => `${v}: ${n}`,
   },
   en: {
     steps: ["Received", "Scheduled", "Delivered", "Report sent"],
@@ -88,9 +86,7 @@ const COPY = defineCopy("routes/try.office", {
     reasons: ["Missing document", "Details do not match", "Unclear photo"],
     confirmReturn: "Return with this reason",
     pickReason: "Pick a reason first",
-    approveNamed: (n: string) => `Pass ${n}'s file to admin`,
-    returnNamed: (n: string) => `Return ${n}'s file to the organization`,
-    nextNamed: (n: string) => `Next step: ${n}`,
+    named: (v: string, n: string) => `${v}: ${n}`,
   },
 });
 
@@ -116,10 +112,10 @@ function TryOffice() {
 
   const [returning, setReturning] = useState<string | null>(null);
   const [reason, setReason] = useState<number | null>(null);
-  const decide = (id: string, d: "approved" | "returned", name: string) => {
+  const decide = (id: string, d: "approved" | "returned", name: string, why?: string) => {
     saveOffice({ ...office, files: { ...office.files, [id]: d } });
     toast.success(d === "approved" ? t.approvedToast(name) : t.returnedToast(name), {
-      description: t.toastNote,
+      description: why ? `${t.reasonsLabel}: ${why}. ${t.toastNote}` : t.toastNote,
     });
   };
   const advance = (id: string) => {
@@ -193,7 +189,7 @@ function TryOffice() {
                     <span className="flex flex-wrap gap-2">
                       <Button
                         className="min-h-11"
-                        aria-label={t.approveNamed(o.name)}
+                        aria-label={t.named(t.approve, o.name)}
                         onClick={() => decide(o.id, "approved", o.name)}
                       >
                         {t.approve}
@@ -227,10 +223,13 @@ function TryOffice() {
                             variant="outline"
                             className="min-h-11"
                             aria-disabled={reason === null}
-                            aria-label={`${t.returnNamed(o.name)}${reason === null ? ` (${t.pickReason})` : ""}`}
+                            aria-label={t.named(
+                              reason === null ? t.pickReason : t.confirmReturn,
+                              o.name,
+                            )}
                             onClick={() => {
                               if (reason === null) return;
-                              decide(o.id, "returned", `${o.name} (${t.reasons[reason]})`);
+                              decide(o.id, "returned", o.name, t.reasons[reason]);
                               setReturning(null);
                               setReason(null);
                             }}
@@ -242,7 +241,7 @@ function TryOffice() {
                         <Button
                           variant="outline"
                           className="min-h-11"
-                          aria-label={t.returnNamed(o.name)}
+                          aria-label={t.named(t.return, o.name)}
                           onClick={() => {
                             setReturning(o.id);
                             setReason(null);
@@ -315,7 +314,7 @@ function TryOffice() {
                 <Button
                   variant="outline"
                   className="min-h-11"
-                  aria-label={t.nextNamed(p.label)}
+                  aria-label={t.named(t.next, p.label)}
                   disabled={at >= t.steps.length - 1}
                   onClick={() => advance(p.id)}
                 >

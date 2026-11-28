@@ -143,6 +143,13 @@ describe("قاعة التجربة تُبنى من كتالوج التجربة و
     expect(JSON.stringify(TRIAL_COPY.en)).not.toMatch(/cloth|SAR|riyal/i);
   });
 
+  it("شارة العيّنة وكلمة المحاكاة باللغتين: لوحة التجربة تسمّي نفسها", () => {
+    expect(TRIAL_COPY.ar.sample).toMatch(/نموذجي/);
+    expect(TRIAL_COPY.ar.simulated).toMatch(/محاكاة/);
+    expect(TRIAL_COPY.en.sample).toMatch(/sample/i);
+    expect(TRIAL_COPY.en.simulated).toMatch(/simulated/i);
+  });
+
   it("بلا تعهّد لا أحد في التأهيل ولا تسليم ولا كفالة: القاعة لا تختلق تقدّماً", () => {
     for (const c of Object.values(empty().countries)) {
       expect([c.enrolled, c.started, c.completed, c.deliveries, c.sponsored]).toEqual([

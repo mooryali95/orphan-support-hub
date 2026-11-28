@@ -48,7 +48,7 @@ const STATUS: Record<WorkRow["status"], [string, string]> = {
 };
 
 /**
- * مراجعة الترجمة — لمراجع اللغة من مكتب الدولة، وللإدارة.
+ * مراجعة الترجمة: لمراجع اللغة من مكتب الدولة، وللإدارة.
  *
  * كل سطر: الأصل العربي، والإنجليزي الذي تُرجم منه، والترجمة قابلةً
  * للتصحيح. «احفظ وراجِع» يكتب التصحيح مراجَعاً باسم المراجع. والنشر
@@ -138,7 +138,7 @@ function ReviewPage() {
   const name = nativeName(locale);
 
   return (
-    <DashboardShell title={`مراجعة الترجمة — ${name}`} description="صحّح، وراجِع، ثم تنشر الإدارة.">
+    <DashboardShell title={`مراجعة الترجمة: ${name}`} description="صحّح، وراجِع، ثم تنشر الإدارة.">
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
         <Link to="/admin" className="text-muted-foreground underline underline-offset-4">
           ← اللوحة

@@ -373,7 +373,10 @@ function CountrySheet({
             </SheetHeader>
             <div className="space-y-5 px-4 pb-8">
               {link ? (
-                <section className="rounded-2xl bg-[linear-gradient(160deg,#5b1626,var(--color-wine-deep))] p-4 text-ivory">
+                <section
+                  aria-label={c.realNote}
+                  className="rounded-2xl bg-[linear-gradient(160deg,#5b1626,var(--color-wine-deep))] p-4 text-ivory"
+                >
                   <dl className="grid grid-cols-2 gap-2 text-center">
                     <Fig v={link.groups} k={c.groups} dark />
                     <Fig v={link.orphans} k={c.orphans} dark />
@@ -390,7 +393,7 @@ function CountrySheet({
                   <p className="mt-2 text-xs text-gold-soft">{c.realNote}</p>
                 </section>
               ) : (
-                <section className="rounded-2xl bg-white p-4">
+                <section aria-label={c.virtualNote} className="rounded-2xl bg-white p-4">
                   <dl className="grid grid-cols-2 gap-2 text-center">
                     <Fig v={fig.groups} k={c.groups} />
                     <Fig v={fig.inQualification} k={c.inQual} />
@@ -405,7 +408,7 @@ function CountrySheet({
                   <p className="mt-3 text-xs leading-6 text-muted-foreground">{c.virtualNote}</p>
                 </section>
               )}
-              <section>
+              <section aria-label={c.activity}>
                 <h3 className="text-sm font-bold text-wine">{c.activity}</h3>
                 <p className="mt-1 text-sm leading-7">{tr(n.activity)}</p>
                 {n.url ? (

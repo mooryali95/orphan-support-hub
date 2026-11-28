@@ -917,7 +917,7 @@ export function CoverageList({ onPick }: { onPick?: (code: string) => void }) {
                   type="button"
                   onClick={onPick ? () => onPick(c.code) : undefined}
                   disabled={!onPick}
-                  className="inline-flex min-h-8 items-center rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
+                  className="inline-flex min-h-11 items-center rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
                 >
                   {nameOf(c.code, locale)}
                 </button>

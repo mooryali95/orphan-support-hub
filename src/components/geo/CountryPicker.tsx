@@ -143,7 +143,7 @@ export function CountryPicker({
           aria-expanded={open}
           aria-label={`${c.country}: ${selected?.label ?? (value || (allLabel ?? placeholder))}`}
           className={cn(
-            "h-9 w-full min-w-44 justify-between font-normal active:scale-100",
+            "h-11 w-full min-w-44 justify-between font-normal active:scale-100",
             className,
           )}
         >

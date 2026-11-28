@@ -6,7 +6,7 @@ import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { pageTitle } from "@/config/brand";
 import { useDemo } from "@/lib/demo-mode";
 import { registerDonorDemos } from "@/lib/try-workspaces";
-import { copyOf, defineCopy, useCopy } from "@/lib/locale";
+import { copyOf, defineCopy, useCopy, useLocale } from "@/lib/locale";
 
 const COPY = defineCopy("routes/try.donor", {
   ar: {
@@ -42,7 +42,8 @@ export const Route = createFileRoute("/try/donor/$entityId")({
 
 function TryDonor() {
   // نسخ لوحة الجهة التجريبية تُسجَّل صراحةً في المتصفّح قبل الرسم (sideEffects: false).
-  useState(registerDonorDemos);
+  const locale = useLocale();
+  useState(() => registerDonorDemos(locale));
   // the trial session starts in the shell's effect, after this screen mounts: until it does,
   // nothing is fetched, so no call ever reaches the real server from the trial.
   const t = useCopy(COPY);

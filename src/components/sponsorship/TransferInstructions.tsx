@@ -37,6 +37,15 @@ const COPY = defineCopy("components/sponsorship/TransferInstructions", {
     step4: "تؤكّد الإدارة الاستلام، فتُفعَّل كفالتك ويصلك إشعار، وتبدأ تقارير الأثر.",
     bankNote:
       "بيانات الحساب البنكي تُرسل إليك مع رسالة التأكيد إن لم تكن قد استلمتها بعد. لأي استفسار تواصل معنا على البريد أعلاه.",
+    trialStep1: (a: string) =>
+      `محاكاة: في الكفالة الحقيقية يحوّل الكافل ${a} إلى حساب المنصّة البنكي. هنا لا تحوّل شيئاً.`,
+    trialStep2: (r: string) =>
+      `محاكاة: يُكتب رقم المرجع ${r} في بيان التحويل لتُربط الدفعة بالكفالة. هذا المرجع نموذجيّ لا يقبله بنك.`,
+    trialStep3:
+      "محاكاة: في الكفالة الحقيقية يُرسل إثبات التحويل إلى فريق الدعم. لا ترسل شيئاً من التجربة.",
+    trialStep4:
+      "محاكاة: تؤكّد الإدارة الاستلام فتُفعَّل الكفالة. التجربة لا تؤكّد شيئاً ولا تفعّل كفالة.",
+    trialBankNote: "لا تظهر في التجربة بياناتُ حسابٍ بنكيّ ولا عنوانُ تواصلٍ حقيقيّ.",
     trialNote:
       "هذه خطواتٌ محاكاة على كفالةٍ نموذجية. لا تحوّل أيّ مبلغ؛ التجربة لا تؤكّد تحويلاً ولا تفعّل كفالة.",
   },
@@ -65,6 +74,15 @@ const COPY = defineCopy("components/sponsorship/TransferInstructions", {
       "The administration confirms receipt, your sponsorship is activated, you are notified, and impact reports begin.",
     bankNote:
       "The bank account details are sent with your confirmation message if you have not received them yet. For any question, write to the address above.",
+    trialStep1: (a: string) =>
+      `Simulated: in a real sponsorship the sponsor transfers ${a} to the platform's bank account. Here you transfer nothing.`,
+    trialStep2: (r: string) =>
+      `Simulated: the reference ${r} goes in the transfer description to match the payment. This sample reference is not valid at any bank.`,
+    trialStep3:
+      "Simulated: in a real sponsorship the transfer proof goes to the support team. Send nothing from the trial.",
+    trialStep4:
+      "Simulated: the administration confirms receipt and activates the sponsorship. The trial confirms nothing and activates nothing.",
+    trialBankNote: "The trial shows no bank account details and no real contact address.",
     trialNote:
       "These are simulated steps on a sample sponsorship. Do not transfer any money; the trial confirms no transfer and activates no sponsorship.",
   },
@@ -154,24 +172,32 @@ export function TransferInstructions({ sponsorshipId }: { sponsorshipId: string 
 
       <div className="rounded-2xl border border-border bg-card p-6 text-sm leading-8">
         <h2 className="font-bold">{c.steps}</h2>
-        <ol className="mt-3 list-decimal space-y-2 ps-5">
-          <li>{c.step1(amount)}</li>
-          <li>{c.step2(reference)}</li>
-          <li>
-            {c.step3}{" "}
-            {demo ? (
-              <bdi dir="ltr" className="font-mono">
-                {SUPPORT_EMAIL}
-              </bdi>
-            ) : (
-              <a className="text-primary underline" href={`mailto:${SUPPORT_EMAIL}`}>
-                <bdi dir="ltr">{SUPPORT_EMAIL}</bdi>
-              </a>
-            )}
-          </li>
-          <li>{c.step4}</li>
-        </ol>
-        <p className="mt-4 text-xs text-muted-foreground">{c.bankNote}</p>
+        {demo ? (
+          <>
+            <ol className="mt-3 list-decimal space-y-2 ps-5">
+              <li>{c.trialStep1(amount)}</li>
+              <li>{c.trialStep2(reference)}</li>
+              <li>{c.trialStep3}</li>
+              <li>{c.trialStep4}</li>
+            </ol>
+            <p className="mt-4 text-xs text-muted-foreground">{c.trialBankNote}</p>
+          </>
+        ) : (
+          <>
+            <ol className="mt-3 list-decimal space-y-2 ps-5">
+              <li>{c.step1(amount)}</li>
+              <li>{c.step2(reference)}</li>
+              <li>
+                {c.step3}{" "}
+                <a className="text-primary underline" href={`mailto:${SUPPORT_EMAIL}`}>
+                  <bdi dir="ltr">{SUPPORT_EMAIL}</bdi>
+                </a>
+              </li>
+              <li>{c.step4}</li>
+            </ol>
+            <p className="mt-4 text-xs text-muted-foreground">{c.bankNote}</p>
+          </>
+        )}
       </div>
 
       <Button asChild variant="outline" className="min-h-11">

@@ -92,7 +92,6 @@ function UnsubscribePage() {
   const { token } = Route.useSearch();
   const run = useServerFn(unsubscribeByToken);
   const [state, setState] = useState<State>("idle");
-  const [message, setMessage] = useState<string | null>(null);
   const c = useCopy(COPY);
   const name = brandFor(useLocale()).name;
   const h1 = useRef<HTMLHeadingElement>(null);
@@ -110,7 +109,6 @@ function UnsubscribePage() {
     try {
       const res = await run({ data: { token } });
       if (res.error) {
-        setMessage(res.error);
         setState("error");
       } else {
         setState(res.ok ? "done" : "bad-token");
@@ -161,7 +159,7 @@ function UnsubscribePage() {
               <h1 ref={h1} tabIndex={-1} className={hc}>
                 {c.errH}
               </h1>
-              <p className={pc}>{message ?? c.errP}</p>
+              <p className={pc}>{c.errP}</p>
               <Button onClick={confirm} className="mt-7 min-h-11">
                 {c.retry}
               </Button>

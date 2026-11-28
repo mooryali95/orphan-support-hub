@@ -20,6 +20,17 @@ import {
 
 import { DashboardShell } from "@/components/DashboardShell";
 import { MfaSettings } from "@/components/account/MfaSettings";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -85,6 +96,10 @@ const COPY = defineCopy("routes/account", {
     signOut: "تسجيل الخروج",
     on: "مفعّل",
     off: "غير مفعّل",
+    confirmRemoveTitle: (n: string) => `أتحذف ${n}؟`,
+    confirmRemoveText: "لن تدخل بهذه البصمة بعد الحذف، ويمكنك إضافتها من جديد متى شئت.",
+    cancel: "إلغاء",
+    confirmRemove: "نعم، احذفها",
   },
   en: {
     title: "My account",
@@ -135,6 +150,11 @@ const COPY = defineCopy("routes/account", {
     signOut: "Sign out",
     on: "On",
     off: "Off",
+    confirmRemoveTitle: (n: string) => `Remove ${n}?`,
+    confirmRemoveText:
+      "You will no longer sign in with this passkey. You can add it again at any time.",
+    cancel: "Cancel",
+    confirmRemove: "Yes, remove it",
   },
 });
 
@@ -286,12 +306,12 @@ function AccountPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Escape" && (setName(fullName), setEditing(false))}
-                    className="h-10 text-base"
+                    className="h-11 text-base"
                   />
                   <Button
                     type="submit"
                     size="icon"
-                    className="size-10"
+                    className="size-11"
                     aria-label={c.save}
                     disabled={saving}
                   >
@@ -302,12 +322,12 @@ function AccountPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="group flex max-w-full items-center gap-2 text-start"
+                  className="group flex min-h-11 max-w-full items-center gap-2 rounded-lg text-start"
                 >
                   <span className="sr-only">{c.editName}: </span>
                   <h1 className="truncate text-2xl font-extrabold">{fullName || c.addName}</h1>
                   <Pencil
-                    className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                    className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
                     aria-hidden="true"
                   />
                 </button>
@@ -382,12 +402,12 @@ function AccountPage() {
                               onChange={(e) => setRenaming({ id: k.id, name: e.target.value })}
                               onKeyDown={(e) => e.key === "Escape" && setRenaming(null)}
                               onBlur={() => void rename()}
-                              className="h-9 text-sm"
+                              className="h-11 text-sm"
                             />
                             <Button
                               type="submit"
                               size="icon"
-                              className="size-9"
+                              className="size-11"
                               aria-label={c.save}
                             >
                               <Check />
@@ -397,14 +417,14 @@ function AccountPage() {
                           <button
                             type="button"
                             onClick={() => setRenaming({ id: k.id, name: k.friendly_name ?? "" })}
-                            className="group flex max-w-full items-center gap-2 text-start"
+                            className="group flex min-h-11 max-w-full items-center gap-2 text-start"
                             aria-label={c.rename(k.friendly_name || c.passkeyFallback)}
                           >
                             <span className="truncate text-sm font-medium">
                               {k.friendly_name || c.passkeyShort}
                             </span>
                             <Pencil
-                              className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 pointer-coarse:opacity-100"
+                              className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
                               aria-hidden="true"
                             />
                           </button>
@@ -414,15 +434,35 @@ function AccountPage() {
                           {k.last_used_at ? c.lastUsed(fmt(k.last_used_at)) : ""}
                         </p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={c.remove(k.friendly_name || c.passkeyFallback)}
-                        onClick={() => void remove(k.id)}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={c.remove(k.friendly_name || c.passkeyFallback)}
+                            className="size-11 shrink-0 text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="size-4" aria-hidden="true" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              {c.confirmRemoveTitle(k.friendly_name || c.passkeyFallback)}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>{c.confirmRemoveText}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="min-h-11">{c.cancel}</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="min-h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={() => void remove(k.id)}
+                            >
+                              {c.confirmRemove}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </li>
                   ))}
                 </ul>

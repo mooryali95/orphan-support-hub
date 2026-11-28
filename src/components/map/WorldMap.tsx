@@ -1549,7 +1549,7 @@ export function WorldMap({
                     type="button"
                     onClick={() => onSelect({ country: null, region: null })}
                     className={cn(
-                      "inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 transition-colors max-md:min-h-11",
+                      "inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 transition-colors",
                       !country ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
                     )}
                   >
@@ -1566,7 +1566,7 @@ export function WorldMap({
                       type="button"
                       onClick={() => onSelect({ country: country.c, region: null })}
                       className={cn(
-                        "min-h-9 rounded-full px-3 transition-colors max-md:min-h-11",
+                        "min-h-11 rounded-full px-3 transition-colors",
                         !region ? "bg-primary text-primary-foreground" : "hover:bg-secondary",
                       )}
                     >
@@ -1579,7 +1579,7 @@ export function WorldMap({
                     <span aria-hidden="true" className="text-muted-foreground">
                       ‹
                     </span>
-                    <span className="min-h-9 rounded-full bg-primary px-3 py-1.5 text-primary-foreground">
+                    <span className="min-h-11 rounded-full bg-primary px-3 py-1.5 text-primary-foreground">
                       {region.n}
                     </span>
                   </li>
@@ -1626,7 +1626,7 @@ export function WorldMap({
                       title={hint}
                       onClick={() => onLayer(key)}
                       className={cn(
-                        "relative min-h-8 shrink-0 rounded-full px-3 whitespace-nowrap transition-colors duration-300",
+                        "relative min-h-11 shrink-0 rounded-full px-3 whitespace-nowrap transition-colors duration-300",
                         // فاصلٌ رفيع بين طبقتي الشبكة (بحثية) وطبقات المنصّة (حيّة).
                         i === 2 && "ms-1.5",
                         layer === key
@@ -1673,7 +1673,7 @@ export function WorldMap({
                   aria-pressed={touring}
                   onClick={() => setTouring((t) => !t)}
                   className={cn(
-                    "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm shadow-sm max-md:min-h-11 backdrop-blur transition-[background-color,color,scale] active:scale-[0.97]",
+                    "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm shadow-sm backdrop-blur transition-[background-color,color,scale] active:scale-[0.97]",
                     touring ? "bg-bridge text-bridge-foreground" : "bg-card/85 hover:bg-card",
                   )}
                 >
@@ -1689,7 +1689,7 @@ export function WorldMap({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="shrink-0 bg-card/85 backdrop-blur"
+                className="min-h-11 shrink-0 bg-card/85 backdrop-blur"
                 aria-expanded={listOpen}
                 onClick={() => setListOpen((o) => !o)}
               >
@@ -1826,7 +1826,7 @@ export function WorldMap({
                         aria-label={c$.prev}
                         title={c$.prev}
                         onClick={() => stepPlace(-1)}
-                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90 max-md:size-11"
+                        className="grid size-11 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
                       >
                         <ChevronRight className="size-4 ltr:-scale-x-100" aria-hidden="true" />
                       </button>
@@ -1835,7 +1835,7 @@ export function WorldMap({
                         aria-label={c$.next}
                         title={c$.next}
                         onClick={() => stepPlace(1)}
-                        className="grid size-9 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90 max-md:size-11"
+                        className="grid size-11 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-90"
                       >
                         <ChevronLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />
                       </button>
@@ -1851,7 +1851,7 @@ export function WorldMap({
                           : { country: null, region: null },
                       )
                     }
-                    className="grid size-9 shrink-0 place-items-center rounded-full max-md:size-11 text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
+                    className="grid size-11 shrink-0 place-items-center rounded-full text-muted-foreground transition-[background-color,transform] hover:bg-secondary active:scale-95"
                   >
                     <X className="size-4" aria-hidden="true" />
                   </button>
@@ -2001,7 +2001,7 @@ export function WorldMap({
                               <button
                                 type="button"
                                 onClick={() => pickRegion(r.id)}
-                                className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
+                                className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-secondary px-3 text-xs transition-[background-color,transform] hover:bg-accent active:scale-[0.97]"
                               >
                                 {r.n}
                                 <span className="tabular-nums text-muted-foreground">
@@ -2061,7 +2061,7 @@ export function WorldMap({
                   type="button"
                   aria-label={c$.closeList}
                   onClick={() => setListOpen(false)}
-                  className="grid size-9 place-items-center rounded-full hover:bg-secondary max-md:size-11"
+                  className="grid size-11 place-items-center rounded-full hover:bg-secondary"
                 >
                   <X className="size-4" aria-hidden="true" />
                 </button>

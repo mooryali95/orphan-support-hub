@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5543,
+ "count": 5559,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -1100,6 +1100,13 @@
    "hash": "29c84246bd75",
    "file": "src/components/admin/AdminTrustStrip.tsx"
   },
+  "components/admin/AwaitingTransfers.close": {
+   "en": "Close",
+   "ar": "إغلاق",
+   "kind": "text",
+   "hash": "bb0cef8044c3",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
   "components/admin/AwaitingTransfers.empty": {
    "en": "No sponsorships are waiting for payment.",
    "ar": "لا توجد كفالات عالقة بانتظار الدفع.",
@@ -1107,11 +1114,48 @@
    "hash": "e170c57f8385",
    "file": "src/components/admin/AwaitingTransfers.tsx"
   },
+  "components/admin/AwaitingTransfers.monthly": {
+   "en": "monthly",
+   "ar": "شهرياً",
+   "kind": "text",
+   "hash": "13f57d1d8d75",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
   "components/admin/AwaitingTransfers.next": {
    "en": "When a sponsor chooses bank transfer, the sponsorship appears here for you to match.",
    "ar": "حين يختار كافلٌ التحويل البنكي تظهر كفالته هنا لتطابقها بما وصل.",
    "kind": "text",
    "hash": "82b5ed34fa61",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.once": {
+   "en": "one time",
+   "ar": "لمرة واحدة",
+   "kind": "text",
+   "hash": "285cbbd200e1",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.reconcile": {
+   "en": "Match transfer",
+   "ar": "مطابقة التحويل",
+   "kind": "text",
+   "hash": "ebb5aebd736f",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.reference": {
+   "en": "Reference {0}",
+   "ar": "مرجع {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "7a1cfe637094",
+   "file": "src/components/admin/AwaitingTransfers.tsx"
+  },
+  "components/admin/AwaitingTransfers.title": {
+   "en": "Transfers awaiting confirmation ({0})",
+   "ar": "تحويلات بانتظار التأكيد ({0})",
+   "kind": "template",
+   "params": 1,
+   "hash": "ed6b37c3af59",
    "file": "src/components/admin/AwaitingTransfers.tsx"
   },
   "components/admin/FourEyesNote.note": {
@@ -1682,6 +1726,13 @@
    "hash": "809b0a6e6c74",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
+  "components/admin/console/RecordsConsole.noRecordsNext": {
+   "en": "Change the filter or clear the search to see other records.",
+   "ar": "غيّر عامل التصفية أو امسح البحث لترى سجلّات أخرى.",
+   "kind": "text",
+   "hash": "41c515b3e606",
+   "file": "src/components/admin/console/RecordsConsole.tsx"
+  },
   "components/admin/console/RecordsConsole.note": {
    "en": "Note",
    "ar": "ملاحظة",
@@ -2126,10 +2177,10 @@
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.sampleText": {
-   "en": "— pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
-   "ar": "— أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
+   "en": ": pseudonyms generated in the page. Actions here are simulated: they don't reach the server, aren't recorded, and are forgotten when you leave the page.",
+   "ar": ": أسماء مستعارة تُولَّد في الصفحة. الإجراءات هنا محاكاة لا تصل الخادم ولا تُسجَّل، وتُنسى عند مغادرة الصفحة.",
    "kind": "text",
-   "hash": "664a13d62bd8",
+   "hash": "bc064353aef8",
    "file": "src/components/admin/console/RecordsConsole.tsx"
   },
   "components/admin/console/RecordsConsole.saveFailed": {
@@ -15257,6 +15308,13 @@
    "hash": "6e250fdc20b2",
    "file": "src/components/payment/PaymentReturnView.tsx"
   },
+  "components/payment/PaymentReturnView.nextTrial": {
+   "en": "Go to my impact page",
+   "ar": "اذهب إلى صفحة أثري",
+   "kind": "text",
+   "hash": "09d808b47fc5",
+   "file": "src/components/payment/PaymentReturnView.tsx"
+  },
   "components/payment/PaymentReturnView.reference": {
    "en": "Payment reference",
    "ar": "مرجع الدفعة",
@@ -18979,11 +19037,48 @@
    "hash": "f5b504473379",
    "file": "src/components/sponsorship/TransferInstructions.tsx"
   },
+  "components/sponsorship/TransferInstructions.trialBankNote": {
+   "en": "The trial shows no bank account details and no real contact address.",
+   "ar": "لا تظهر في التجربة بياناتُ حسابٍ بنكيّ ولا عنوانُ تواصلٍ حقيقيّ.",
+   "kind": "text",
+   "hash": "cd6fff872d9d",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
   "components/sponsorship/TransferInstructions.trialNote": {
    "en": "These are simulated steps on a sample sponsorship. Do not transfer any money; the trial confirms no transfer and activates no sponsorship.",
    "ar": "هذه خطواتٌ محاكاة على كفالةٍ نموذجية. لا تحوّل أيّ مبلغ؛ التجربة لا تؤكّد تحويلاً ولا تفعّل كفالة.",
    "kind": "text",
    "hash": "fe15128fd002",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep1": {
+   "en": "Simulated: in a real sponsorship the sponsor transfers {0} to the platform's bank account. Here you transfer nothing.",
+   "ar": "محاكاة: في الكفالة الحقيقية يحوّل الكافل {0} إلى حساب المنصّة البنكي. هنا لا تحوّل شيئاً.",
+   "kind": "template",
+   "params": 1,
+   "hash": "1e4a4ed9ce97",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep2": {
+   "en": "Simulated: the reference {0} goes in the transfer description to match the payment. This sample reference is not valid at any bank.",
+   "ar": "محاكاة: يُكتب رقم المرجع {0} في بيان التحويل لتُربط الدفعة بالكفالة. هذا المرجع نموذجيّ لا يقبله بنك.",
+   "kind": "template",
+   "params": 1,
+   "hash": "abc91454753e",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep3": {
+   "en": "Simulated: in a real sponsorship the transfer proof goes to the support team. Send nothing from the trial.",
+   "ar": "محاكاة: في الكفالة الحقيقية يُرسل إثبات التحويل إلى فريق الدعم. لا ترسل شيئاً من التجربة.",
+   "kind": "text",
+   "hash": "910c190f22dc",
+   "file": "src/components/sponsorship/TransferInstructions.tsx"
+  },
+  "components/sponsorship/TransferInstructions.trialStep4": {
+   "en": "Simulated: the administration confirms receipt and activates the sponsorship. The trial confirms nothing and activates nothing.",
+   "ar": "محاكاة: تؤكّد الإدارة الاستلام فتُفعَّل الكفالة. التجربة لا تؤكّد شيئاً ولا تفعّل كفالة.",
+   "kind": "text",
+   "hash": "f4cfc98fe706",
    "file": "src/components/sponsorship/TransferInstructions.tsx"
   },
   "components/sponsorship/status.active": {
@@ -21974,10 +22069,10 @@
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.sample": {
-   "en": "Sample data",
-   "ar": "بيانات نموذجية",
+   "en": "Sample data:",
+   "ar": "بيانات نموذجية:",
    "kind": "text",
-   "hash": "2d11ccdc687f",
+   "hash": "dac012e2a7dc",
    "file": "src/components/try/story/TryStory.tsx"
   },
   "components/try/story/TryStory.sampleLead": {
@@ -30185,6 +30280,35 @@
    "hash": "84703a3365f9",
    "file": "src/routes/_authenticated/account.tsx"
   },
+  "routes/account.cancel": {
+   "en": "Cancel",
+   "ar": "إلغاء",
+   "kind": "text",
+   "hash": "7301561fa6d4",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemove": {
+   "en": "Yes, remove it",
+   "ar": "نعم، احذفها",
+   "kind": "text",
+   "hash": "d5d90447b47e",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemoveText": {
+   "en": "You will no longer sign in with this passkey. You can add it again at any time.",
+   "ar": "لن تدخل بهذه البصمة بعد الحذف، ويمكنك إضافتها من جديد متى شئت.",
+   "kind": "text",
+   "hash": "04b737cfbf9c",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
+  "routes/account.confirmRemoveTitle": {
+   "en": "Remove {0}?",
+   "ar": "أتحذف {0}؟",
+   "kind": "template",
+   "params": 1,
+   "hash": "066617166831",
+   "file": "src/routes/_authenticated/account.tsx"
+  },
   "routes/account.confirming": {
    "en": "Confirm it's you on your device…",
    "ar": "أكّد هويتك على جهازك…",
@@ -35309,14 +35433,6 @@
    "hash": "76d85a13de38",
    "file": "src/routes/try.office.lazy.tsx"
   },
-  "routes/try.office.approveNamed": {
-   "en": "Pass {0}'s file to admin",
-   "ar": "ارفع ملفّ {0} للإدارة",
-   "kind": "template",
-   "params": 1,
-   "hash": "879d87a63de6",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
   "routes/try.office.approved": {
    "en": "Passed to administration",
    "ar": "رُفع للإدارة",
@@ -35418,19 +35534,19 @@
    "hash": "abfd4860a842",
    "file": "src/routes/try.office.lazy.tsx"
   },
+  "routes/try.office.named": {
+   "en": "{0}: {1}",
+   "ar": "{0}: {1}",
+   "kind": "template",
+   "params": 2,
+   "hash": "869f6c298bef",
+   "file": "src/routes/try.office.lazy.tsx"
+  },
   "routes/try.office.next": {
    "en": "Next step",
    "ar": "الخطوة التالية",
    "kind": "text",
    "hash": "cbfb6042f27a",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
-  "routes/try.office.nextNamed": {
-   "en": "Next step: {0}",
-   "ar": "الخطوة التالية: {0}",
-   "kind": "template",
-   "params": 1,
-   "hash": "c58ce658f25c",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.pickReason": {
@@ -35480,14 +35596,6 @@
    "ar": "أعده للجهة",
    "kind": "text",
    "hash": "5b3ea21628db",
-   "file": "src/routes/try.office.lazy.tsx"
-  },
-  "routes/try.office.returnNamed": {
-   "en": "Return {0}'s file to the organization",
-   "ar": "أعد ملفّ {0} للجهة",
-   "kind": "template",
-   "params": 1,
-   "hash": "1a2ca7edefe0",
    "file": "src/routes/try.office.lazy.tsx"
   },
   "routes/try.office.returned": {
@@ -35834,6 +35942,14 @@
    "ar": "لا زيارات بعد. سجّل زيارةً لطفلٍ وستظهر هنا بتاريخها.",
    "kind": "text",
    "hash": "b9cad33b5016",
+   "file": "src/routes/try.supervisor.lazy.tsx"
+  },
+  "routes/try.supervisor.focus": {
+   "en": "Core countries in real mode: {0}",
+   "ar": "الدول الأساسية في الوضع الحقيقي: {0}",
+   "kind": "template",
+   "params": 1,
+   "hash": "56f3825cae48",
    "file": "src/routes/try.supervisor.lazy.tsx"
   },
   "routes/try.supervisor.follow": {

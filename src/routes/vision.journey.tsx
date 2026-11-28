@@ -351,7 +351,7 @@ function JourneyPage() {
               type="button"
               onClick={() => run && setStage(i)}
               disabled={!run && i > 0}
-              className="block w-full text-start disabled:cursor-not-allowed"
+              className="block min-h-11 w-full pt-2 text-start disabled:cursor-not-allowed"
             >
               <span
                 className={cn(
@@ -361,7 +361,7 @@ function JourneyPage() {
               />
               <span
                 className={cn(
-                  "mt-2 hidden text-xs font-semibold sm:block",
+                  "sr-only text-xs font-semibold sm:not-sr-only sm:mt-2 sm:block",
                   i === stage ? "text-wine" : "text-muted-foreground",
                 )}
               >
