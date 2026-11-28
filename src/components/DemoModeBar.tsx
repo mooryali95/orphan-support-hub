@@ -72,7 +72,7 @@ export default function DemoModeBar({ force = false }: { force?: boolean }) {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-1.5">
         <span className="inline-flex items-center gap-2 text-sm font-bold">{c.label}</span>
         <span className="text-xs opacity-90">{c.note}</span>
-        <nav className="ms-auto flex flex-wrap items-center gap-1">
+        <nav aria-label={c.label} className="ms-auto flex flex-wrap items-center gap-1">
           <a href="/try" className={LINK}>
             {c.donor}
           </a>
