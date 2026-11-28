@@ -46,7 +46,24 @@
 ## الحزمة
 
 - حزمة الدخول (`index-*.js`، تُحمَّل مع كلّ صفحة): **200KB → 172KB** مضغوطاً (−28KB، −14%).
-- ميزانية صفحات الرؤية (`node scripts/e2e-vision.mjs`): كلّها بين 347 و356KB (الحدّ 385KB).
+- ميزانية صفحات الرؤية (`node scripts/e2e-vision.mjs`، قياس 28 نوفمبر 2026، الحدّ 385KB مضغوطاً):
+
+  | المسار                | الوزن |
+  | --------------------- | ----- |
+  | `/vision`             | 348KB |
+  | `/vision/operations`  | 350KB |
+  | `/vision/cycle`       | 351KB |
+  | `/vision/journey`     | 352KB |
+  | `/vision/payments`    | 352KB |
+  | `/vision/decision`    | 354KB |
+  | `/vision/impact`      | 356KB |
+  | `/vision/me`          | 356KB |
+  | `/vision/network`     | 357KB |
+  | `/vision/receipt/$id` | 298KB |
+
+  `/vision/hall` تحويلٌ إلى `/hall` فلا وزن له. أمّا `/hall` (827KB) فليست صفحة رؤية: تحمّل
+  three.js والمعالجة السينمائية لنفسها وحدها، وحدّها المقرَّر 900KB (`HALL_BUDGET_KB`).
+
 - أكبر القطع: مشهد القاعة `hall-scene` (~400KB مضغوطاً، يُحمَّل في `/hall` وحدها أو
   مسبقاً عند الخمول على الحاسوب)، والمساعد `ask.lazy` (~100KB، في `/ask` وحدها)،
   وعميل Supabase (~54KB).
