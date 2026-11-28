@@ -336,7 +336,10 @@ function HallPage() {
       data-stage="gate"
     >
       <style>{CRITICAL_CSS}</style>
-      <canvas id="gl" role="img" aria-label={c.canvas} />
+      {/* المشهد في معلَمٍ مسمّى: لا يبقى محتوى خارج المعالم (axe region). */}
+      <section aria-label={c.canvas} style={{ position: "absolute", inset: 0 }}>
+        <canvas id="gl" role="img" aria-label={c.canvas} />
+      </section>
       <div id="labels" aria-hidden="true" />
 
       <header id="hud">

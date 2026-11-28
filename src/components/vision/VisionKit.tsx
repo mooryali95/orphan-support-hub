@@ -115,7 +115,7 @@ export function VisionShell({ children }: { children: ReactNode }) {
                     viewTransition
                     aria-current={on ? "page" : undefined}
                     className={cn(
-                      "relative isolate min-h-9 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
+                      "relative isolate min-h-11 shrink-0 rounded-full px-4 py-2 text-sm whitespace-nowrap transition-colors",
                       on ? "text-ivory" : "text-wine-ink hover:bg-wine/5",
                     )}
                   >
@@ -254,7 +254,7 @@ export function PlatformFrame({
                 aria-selected={active === tab.key}
                 onClick={() => onTab?.(tab.key)}
                 className={cn(
-                  "min-h-9 rounded-full px-3 text-sm transition-colors",
+                  "min-h-11 rounded-full px-3 text-sm transition-colors",
                   active === tab.key
                     ? dark
                       ? "bg-white/12 text-ivory"

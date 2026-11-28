@@ -27,6 +27,7 @@ const COPY = defineCopy("components/SiteHeader", {
     signIn: "تسجيل الدخول",
     sponsor: "اكفل يتيماً",
     menu: "القائمة",
+    mainNav: "التنقّل الرئيسي",
   },
   en: {
     nav: ["Children", "Support", "How it works", "Ask"],
@@ -36,6 +37,7 @@ const COPY = defineCopy("components/SiteHeader", {
     signIn: "Sign in",
     sponsor: "Sponsor a child",
     menu: "Menu",
+    mainNav: "Main navigation",
   },
 });
 
@@ -97,7 +99,7 @@ export function SiteHeader() {
         <PartnerLockup className="hidden shrink-0 xl:inline-flex" />
         <PartnerLockup compact className="hidden shrink-0 sm:inline-flex xl:hidden" />
 
-        <nav className="hidden flex-1 items-center gap-1 ps-2 lg:flex">
+        <nav aria-label={c.mainNav} className="hidden flex-1 items-center gap-1 ps-2 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -194,7 +196,7 @@ export function SiteHeader() {
         }}
         className={cn("border-t border-border/70 lg:hidden", open ? "block" : "hidden")}
       >
-        <nav className="mx-auto flex max-w-6xl flex-col p-2">
+        <nav aria-label={c.menu} className="mx-auto flex max-w-6xl flex-col p-2">
           {NAV.map((item) => (
             <Link
               key={item.to}

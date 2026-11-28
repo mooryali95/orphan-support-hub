@@ -124,8 +124,10 @@ export function AnnualStatement({
   const thisYear = new Date().getUTCFullYear();
   const years = [...new Set([thisYear, year, ...statementYears(ledgers)])].sort((a, b) => b - a);
 
+  // the trial twin sits inside the trial shell's own <main>: one main landmark per page
+  const Root = sample ? "div" : "main";
   return (
-    <main
+    <Root
       dir={dirOf(locale)}
       className="print-doc mx-auto max-w-3xl bg-background px-4 py-8 sm:px-6 sm:py-10 print:max-w-none print:p-0"
     >
@@ -264,7 +266,7 @@ export function AnnualStatement({
         <p>{c.zakat}</p>
         {sample && <p className="font-semibold text-bridge-ink">{c.sample}</p>}
       </footer>
-    </main>
+    </Root>
   );
 }
 

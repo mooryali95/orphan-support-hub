@@ -268,7 +268,7 @@ function CyclePage() {
                     <select
                       value={c.child.co}
                       onChange={(e) => update({ ...c, child: { ...c.child, co: e.target.value } })}
-                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                      className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
                     >
                       {COUNTRIES.map((co) => (
                         <option key={co} value={co}>

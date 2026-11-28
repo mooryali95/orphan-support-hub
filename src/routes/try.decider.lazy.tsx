@@ -237,7 +237,7 @@ function TryDecider() {
           </ul>
           <Link
             to="/vision/decision"
-            className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
+            className="mt-5 inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
           >
             {t.scenarios}
             <ArrowLeft className="size-4 ltr:-scale-x-100" aria-hidden="true" />

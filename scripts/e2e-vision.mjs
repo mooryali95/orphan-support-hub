@@ -40,7 +40,9 @@ const PAGES = [
 // رُفعت من 380 إلى 385 بعد مساعد «سؤالي» (تنسيقاته في CSS المشتركة).
 const BUDGET_KB = Number(process.env.VISION_BUDGET_KB ?? 385);
 // قاعة الأثر تحمّل three.js والمعالجة السينمائية كسولاً عند فتحها وحدها.
-const PAGE_BUDGET_KB = { "/hall": Number(process.env.HALL_BUDGET_KB ?? 900) };
+const HALL_KB = Number(process.env.HALL_BUDGET_KB ?? 900);
+// `/vision/hall` رابطٌ قديم يُحوَّل إلى `/hall`: يُوزن بميزانيتها، فلا يفلت من الوزن.
+const PAGE_BUDGET_KB = { "/hall": HALL_KB, "/vision/hall": HALL_KB };
 const IGNORE = [/Failed to load resource/i, /net::ERR_/i];
 const failures = [];
 const fail = (where, msg) => failures.push(`${where}: ${msg}`);
@@ -105,11 +107,36 @@ for (const [lang, dir] of [
     await ctx.close();
   }
 
+// ── القاعة بلا WebGL ───────────────────────────────────────────────
+// لوحات القاعة ترسمها WebGL فلا تظهر في الاختبار؛ يُثبت هنا البديل في DOM: شارة العيّنة
+// ورسالة المتصفّح بلا رسمٍ ثلاثيّ، فلا تُقرأ أرقام العيّنة نتائجَ ولو تعذّر المشهد.
+// زائرٌ بلا جلسة لا يرى قاعة الداعم أبداً: شارته شارة التجربة أو شارة العرض النموذجي.
+for (const path of ["/hall", "/hall?try=1"]) {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await ctx.addInitScript(() => {
+    delete window.WebGL2RenderingContext;
+  });
+  const page = await ctx.newPage();
+  await page.goto(BASE + path, { waitUntil: "networkidle" });
+  await page.waitForTimeout(600);
+  const state = await page.locator(".hall").getAttribute("data-state");
+  if (state !== "unsupported") fail("hall-nogl", `${path}: state ${state}`);
+  const mark = page.locator("[data-hall-trial], [data-hall-live]");
+  const text = (await mark.count()) ? await mark.first().innerText() : "";
+  if (!/نموذجية|التجريبي/.test(text)) fail("hall-nogl", `${path}: no sample chip (${text})`);
+  if (await page.locator("[data-hall-donor]").count()) fail("hall-nogl", `${path}: donor hall`);
+  if (!(await page.getByText(/لا يدعم الرسم ثلاثي الأبعاد/).count()))
+    fail("hall-nogl", `${path}: no fallback message`);
+  if (await page.locator("#gl[data-engine]").count()) fail("hall-nogl", `${path}: engine loaded`);
+  ok(`hall without WebGL ${path}: sample chip and fallback in DOM`);
+  await ctx.close();
+}
+
 // ── الميزانية ───────────────────────────────────────────────────────
 {
   // سياقٌ جديد لكلّ صفحة: بلا ذاكرةٍ مخبّأة، كأوّل زيارة. الإيصال يُوزن بمعرّفٍ لا وجود له:
   // حزمته واحدةٌ أيّاً كان الإيصال، فلا يحتاج تبرّعاً قبله.
-  for (const path of [...PAGES, "/vision/receipt/DEMO-INV-0"]) {
+  for (const path of [...PAGES, "/vision/hall", "/vision/receipt/DEMO-INV-0"]) {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
     // الأجسام تُقرأ بعد الاستجابة؛ تُجمع الوعود وتُنتظر قبل الجمع.
