@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5743,
+ "count": 5748,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -22071,6 +22071,13 @@
    "hash": "4fa2436b0589",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.admin": {
+   "en": "Admin panel",
+   "ar": "لوحة الإدارة",
+   "kind": "text",
+   "hash": "e018d4c236d2",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.dialogHint": {
    "en": "Just your email: a six-digit code arrives, and your account is created the first time you sign in. Or one tap with Google. No password.",
    "ar": "بريدك وحده: يصلك رمزٌ من ستة أرقام، ويُنشأ حسابك عند أوّل دخول. أو بضغطةٍ بحساب جوجل. لا كلمة مرور.",
@@ -22085,11 +22092,25 @@
    "hash": "6dbd445e4e6c",
    "file": "src/components/try/TryShell.tsx"
   },
+  "components/try/TryShell.donor": {
+   "en": "Supporter journey",
+   "ar": "رحلة الداعم",
+   "kind": "text",
+   "hash": "f880d107aa56",
+   "file": "src/components/try/TryShell.tsx"
+  },
   "components/try/TryShell.exit": {
    "en": "Back to the real platform",
    "ar": "العودة إلى المنصّة الحقيقية",
    "kind": "text",
    "hash": "6799a76bf157",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.hall": {
+   "en": "Impact hall",
+   "ar": "قاعة الأثر",
+   "kind": "text",
+   "hash": "a615c42d5729",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TryShell.leftAction": {
@@ -22167,6 +22188,20 @@
    "ar": "بدأت التجربة من جديد",
    "kind": "text",
    "hash": "deb6a4a8e71d",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.roles": {
+   "en": "Roles",
+   "ar": "الأدوار",
+   "kind": "text",
+   "hash": "11a555c88642",
+   "file": "src/components/try/TryShell.tsx"
+  },
+  "components/try/TryShell.sections": {
+   "en": "Demo sections",
+   "ar": "أبواب التجربة",
+   "kind": "text",
+   "hash": "e0f25c909fa9",
    "file": "src/components/try/TryShell.tsx"
   },
   "components/try/TrySupportMap.anywhere": {

@@ -1,5 +1,13 @@
 import { Outlet, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
-import { LogOut, Menu, RotateCcw } from "lucide-react";
+import {
+  Building2,
+  HeartHandshake,
+  LogOut,
+  Menu,
+  RotateCcw,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import {
   type CSSProperties,
   lazy,
@@ -62,6 +70,11 @@ const COPY = defineCopy("components/try/TryShell", {
     restarted: "بدأت التجربة من جديد",
     restart: "ابدأ من جديد",
     menu: "قائمة التجربة",
+    sections: "أبواب التجربة",
+    donor: "رحلة الداعم",
+    roles: "الأدوار",
+    admin: "لوحة الإدارة",
+    hall: "قاعة الأثر",
     about: "عن الوضع التجريبي",
     exit: "العودة إلى المنصّة الحقيقية",
   },
@@ -84,6 +97,11 @@ const COPY = defineCopy("components/try/TryShell", {
     restarted: "The trial has started over",
     restart: "Start over",
     menu: "Demo menu",
+    sections: "Demo sections",
+    donor: "Supporter journey",
+    roles: "Roles",
+    admin: "Admin panel",
+    hall: "Impact hall",
     about: "About demo mode",
     exit: "Back to the real platform",
   },
@@ -269,6 +287,22 @@ function TryShellInner() {
                 {registered ? c.noteRegistered : c.noteShort}
               </p>
               {!present && <TryJourneyGuide />}
+              {/* أبواب شريط الوضع التجريبي: يُخفى على الجوال داخل /try، فتنتقل إلى هنا */}
+              <nav aria-label={c.sections} className="border-y border-border py-1">
+                {(
+                  [
+                    ["/try", c.donor, HeartHandshake],
+                    ["/try#try-roles", c.roles, Users],
+                    ["/try/admin", c.admin, ShieldCheck],
+                    ["/hall?try=1", c.hall, Building2],
+                  ] as const
+                ).map(([href, label, Icon]) => (
+                  <a key={href} href={href} className={item}>
+                    <Icon className="size-4" aria-hidden="true" />
+                    {label}
+                  </a>
+                ))}
+              </nav>
               <button type="button" onClick={restart} className={item}>
                 <RotateCcw className="size-4" aria-hidden="true" />
                 {c.restart}
