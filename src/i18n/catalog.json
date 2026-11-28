@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5738,
+ "count": 5743,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -9703,6 +9703,20 @@
    "hash": "a2d36efb0aa1",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyCountry": {
+   "en": "Nothing is waiting in your country right now.",
+   "ar": "لا شيء ينتظر في دولتك الآن.",
+   "kind": "text",
+   "hash": "42446c30be8c",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.emptyCountryNext": {
+   "en": "Upload a file from the Upload tab below, or check back later.",
+   "ar": "ارفع ملفّاً من لسان «الرفع» أدناه، أو عد لاحقاً.",
+   "kind": "text",
+   "hash": "6f430e181544",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.emptyFiltered": {
    "en": "No items match these filters.",
    "ar": "لا بنود تطابق المرشّحات.",
@@ -9724,11 +9738,25 @@
    "hash": "b76b1ec19eef",
    "file": "src/components/admin/today/copy.ts"
   },
+  "components/admin/today.emptyViewer": {
+   "en": "Nothing is waiting in your country right now. Your role is view only; the country supervisor settles.",
+   "ar": "لا شيء ينتظر في دولتك الآن. دورك اطّلاع، والحسم لمشرف الدولة.",
+   "kind": "text",
+   "hash": "01893f72c5f8",
+   "file": "src/components/admin/today/copy.ts"
+  },
   "components/admin/today.failed": {
    "en": "Some sources didn't load. What's shown is correct but may be incomplete.",
    "ar": "تعذّر تحميل بعض المصادر. ما ظهر صحيح، وقد ينقص.",
    "kind": "text",
    "hash": "3de828d37a95",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.failedCountry": {
+   "en": "Some of your country's queues didn't load. What's shown is correct but may be incomplete.",
+   "ar": "تعذّر تحميل بعض طوابير دولتك. ما ظهر صحيح، وقد ينقص.",
+   "kind": "text",
+   "hash": "79f007d515ce",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.falsePositive": {
@@ -10079,6 +10107,13 @@
    "ar": "يُحمَّل ما ينتظر…",
    "kind": "text",
    "hash": "c661c4ff45d0",
+   "file": "src/components/admin/today/copy.ts"
+  },
+  "components/admin/today.loadingCountry": {
+   "en": "Loading what's waiting in your country…",
+   "ar": "يُحمَّل ما ينتظر في دولتك…",
+   "kind": "text",
+   "hash": "f7ca3455ef51",
    "file": "src/components/admin/today/copy.ts"
   },
   "components/admin/today.normal": {
