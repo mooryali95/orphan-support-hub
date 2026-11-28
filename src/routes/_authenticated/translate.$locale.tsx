@@ -111,13 +111,15 @@ function ReviewPage() {
   }, [rows, filter, ns, q]);
   const pageRows = shown.slice(page * PAGE, page * PAGE + PAGE);
   const counts = useMemo(() => {
+    // أعداد المرشّحات بنطاق الصفحة المختارة: «ناقص» يقول كم بقي فيها هي، لا في الموقع كلّه.
     const c = { missing: 0, draft: 0, reviewed: 0, published: 0, stale: 0 };
     for (const r of rows) {
+      if (ns && r.ns !== ns) continue;
       c[r.status]++;
       if (r.stale) c.stale++;
     }
     return c;
-  }, [rows]);
+  }, [rows, ns]);
 
   const refresh = () => {
     void qc.invalidateQueries({ queryKey: ["locale-work", locale] });
