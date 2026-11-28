@@ -39,7 +39,7 @@ export function NotificationBell() {
         aria-expanded={open}
         aria-controls="notification-panel"
         aria-label={unread > 0 ? `الإشعارات، ${unread} غير مقروء` : "الإشعارات"}
-        className="border-border hover:bg-secondary relative inline-flex size-9 items-center justify-center rounded-lg border"
+        className="border-border hover:bg-secondary relative inline-flex size-11 items-center justify-center rounded-lg border"
       >
         <Bell className="size-4" aria-hidden="true" />
         {unread > 0 && (

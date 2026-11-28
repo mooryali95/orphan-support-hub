@@ -59,7 +59,7 @@ export function VerificationBadge({ orphanId }: { orphanId: string }) {
         <ShieldCheck className="size-3.5" strokeWidth={2} aria-hidden="true" />
       )}
       {c[data.level]}
-      {month && <span className="font-normal opacity-80">· {month}</span>}
+      {month && <span className="font-normal">· {month}</span>}
       {/* الشرح لقارئ الشاشة واللمس كذلك، لا في تلميحٍ يظهر بالمؤشّر وحده */}
       <span className="sr-only">. {hint}</span>
     </span>

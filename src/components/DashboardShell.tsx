@@ -143,8 +143,8 @@ export function DashboardShell({
               <NotificationBell />
               <p className="hidden text-xs font-medium sm:block">{user?.email}</p>
               <ModeSwitcher />
-              <Button variant="ghost" size="sm" onClick={signOut}>
-                <LogOut className="size-4" />
+              <Button variant="ghost" size="sm" className="min-h-11" onClick={signOut}>
+                <LogOut className="size-4" aria-hidden="true" />
                 {t.signOut}
               </Button>
             </div>
@@ -171,7 +171,7 @@ export function DashboardShell({
 }
 
 const NAV_CLASS =
-  "rounded-lg px-3 py-2 text-muted-foreground hover:bg-secondary hover:text-foreground";
+  "inline-flex min-h-11 items-center rounded-lg px-3 text-muted-foreground hover:bg-secondary hover:text-foreground";
 
 function NavLink({
   to,

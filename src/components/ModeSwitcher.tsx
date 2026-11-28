@@ -86,7 +86,7 @@ export function ModeSwitcher() {
   }
 
   const badge = (
-    <span className="border-bridge/50 bg-bridge/10 text-foreground inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold">
+    <span className="border-bridge/50 bg-bridge/10 text-foreground inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-xs font-bold">
       <span className="bg-bridge size-1.5 rounded-full" aria-hidden="true" />
       {t.modes[mode]}
     </span>
@@ -98,7 +98,7 @@ export function ModeSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={`${t.switch}: ${t.modes[mode]}`}
-        className="border-bridge/50 bg-bridge/10 hover:bg-bridge/20 focus-visible:ring-ring inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        className="border-bridge/50 bg-bridge/10 hover:bg-bridge/20 focus-visible:ring-ring inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
       >
         <Repeat className="size-3.5" aria-hidden="true" />
         {t.modes[mode]}

@@ -45,6 +45,7 @@ const COPY = defineCopy("components/sponsorship/AnnualStatement", {
     zakat:
       "أهلية الزكاة تتبع السياسة التي تنشرها الندوة. هذا السجلّ لا يصنّف التبرّعات زكاةً ولا يذكر خصماً ضريبياً.",
     sample: "بيانات نموذجية · محاكاة",
+    watermark: "نموذجٌ محاكى للتجربة، وليس مستنداً رسمياً",
     sampleNote: "سجلٌّ محاكى من التجربة: الفواتير نموذجية ولم يُدفع شيءٌ حقيقي.",
     child: "الطفل",
   },
@@ -78,6 +79,7 @@ const COPY = defineCopy("components/sponsorship/AnnualStatement", {
     zakat:
       "Zakat eligibility follows the policy WAMY publishes. This record does not classify donations as zakat and makes no claim of tax deductibility.",
     sample: "Sample data · simulated",
+    watermark: "A simulated sample for the trial, not an official document",
     sampleNote:
       "A simulated record from the trial: the invoices are sample data and nothing real was paid.",
     child: "Child",
@@ -125,8 +127,13 @@ export function AnnualStatement({
   return (
     <main
       dir={dirOf(locale)}
-      className="mx-auto max-w-3xl bg-background px-4 py-8 sm:px-6 sm:py-10 print:max-w-none print:p-0"
+      className="print-doc mx-auto max-w-3xl bg-background px-4 py-8 sm:px-6 sm:py-10 print:max-w-none print:p-0"
     >
+      {sample && (
+        <div className="print-watermark" aria-hidden="true">
+          <span>{c.watermark}</span>
+        </div>
+      )}
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3 print:hidden">
         <Link to={backTo as "/"} className="inline-flex min-h-11 items-center text-sm underline">
           {c.back}
@@ -161,7 +168,7 @@ export function AnnualStatement({
 
       {sample && (
         <p className="mt-6 rounded-xl border-2 border-dashed border-bridge/60 p-3 text-sm leading-7 font-semibold text-bridge-ink">
-          {c.sample}. {c.sampleNote}
+          {c.sample}. {c.sampleNote} {c.watermark}.
         </p>
       )}
 
