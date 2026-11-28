@@ -1689,7 +1689,7 @@ export function WorldMap({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="shrink-0 bg-card/85 backdrop-blur"
+                className="min-h-11 shrink-0 bg-card/85 backdrop-blur"
                 aria-expanded={listOpen}
                 onClick={() => setListOpen((o) => !o)}
               >
