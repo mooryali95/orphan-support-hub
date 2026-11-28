@@ -14,17 +14,35 @@ export function emailLocale(value: unknown): EmailLocale {
  * (`redirect_to`)، فخطاف المصادقة يعرف لغة المستلم بلا قراءة حسابه.
  */
 export function authEmailLocale(url: string | null | undefined): EmailLocale {
-  if (!url) return "ar";
+  return authEmailLocaleHint(url) ?? "ar";
+}
+
+/**
+ * لغة الرابط إن حملها، أو `null` إن لم يحملها: رسالةٌ بدأها غير الواجهة (استعادةٌ من لوحة
+ * المصادقة، أو دعوةٌ قديمة) تُسأل عنها لغة الحساب المخزّنة قبل العودة إلى العربية.
+ */
+export function authEmailLocaleHint(url: string | null | undefined): EmailLocale | null {
+  if (!url) return null;
   try {
     const u = new URL(url);
     const direct = u.searchParams.get("lang");
     if (direct) return emailLocale(direct);
     const back = u.searchParams.get("redirect_to");
-    if (back) return emailLocale(new URL(back, "https://x.invalid").searchParams.get("lang"));
+    if (back) {
+      const lang = new URL(back, "https://x.invalid").searchParams.get("lang");
+      if (lang) return emailLocale(lang);
+    }
   } catch {
-    return "ar";
+    return null;
   }
-  return "ar";
+  return null;
+}
+
+/** يضيف لغة المستلم إلى عنوان العودة، فيعرفها خطاف البريد من الرابط وحده. */
+export function withEmailLang(href: string, locale: unknown): string {
+  const u = new URL(href);
+  u.searchParams.set("lang", emailLocale(locale));
+  return u.toString();
 }
 
 export const EMAIL_COPY = defineCopy("email/templates", {
@@ -211,7 +229,7 @@ export const EMAIL_COPY = defineCopy("email/templates", {
 export const emailCopy = (locale: EmailLocale) => copyOf(EMAIL_COPY, locale);
 
 /** لغة رسالة المصادقة واسم المنصّة ونصوصها، من رابط الرسالة نفسه. */
-export function authEmailFrame(url: string | null | undefined) {
-  const locale = authEmailLocale(url);
+export function authEmailFrame(url: string | null | undefined, stored?: EmailLocale | null) {
+  const locale = authEmailLocaleHint(url) ?? stored ?? "ar";
   return { locale, name: brandFor(locale).name, c: emailCopy(locale) };
 }
