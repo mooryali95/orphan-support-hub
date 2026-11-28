@@ -36,9 +36,9 @@ export const DONOR_COPY = defineCopy("components/donor/DonorBoard", {
         zero: "لا أعضاء",
         one: "عضو واحد",
         two: "عضوان",
-        few: "{1} أعضاء",
-        many: "{1} عضواً",
-        other: "{1} عضو",
+        few: "{0} أعضاء",
+        many: "{0} عضواً",
+        other: "{0} عضو",
       },
       0,
       "ar",
@@ -76,7 +76,7 @@ export const DONOR_COPY = defineCopy("components/donor/DonorBoard", {
     denied:
       "A donor entity's dashboard is open to the members who accepted its owner's invitation. If you are one, ask the owner to invite your account's email.",
     back: "Back to my workspaces",
-    members: pluralOf({ zero: "No members", one: "1 member", other: "{1} members" }, 0, "en"),
+    members: pluralOf({ zero: "No members", one: "1 member", other: "{0} members" }, 0, "en"),
     underReview:
       "The admin team is reviewing this entity. Support in its name opens once approved.",
     kindTotal: (kind: string) => `${kind}: total pledged`,

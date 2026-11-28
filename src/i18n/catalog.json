@@ -11555,10 +11555,10 @@
    "file": "src/components/donor/DonorBoard.tsx"
   },
   "components/donor/DonorBoard.members.other": {
-   "en": "{1} members",
-   "ar": "{1} عضو",
+   "en": "{0} members",
+   "ar": "{0} عضو",
    "kind": "plural",
-   "hash": "4567dc4db7d9",
+   "hash": "916c4788f983",
    "file": "src/components/donor/DonorBoard.tsx"
   },
   "components/donor/DonorBoard.members.zero": {

@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { WorkspacesBoard } from "@/components/workspaces/WorkspacesBoard";
 import { pageTitle } from "@/config/brand";
+import { useDemo } from "@/lib/demo-mode";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
-import { TRY_DONOR_ID } from "@/lib/try-workspaces";
+import { registerWorkspacesDemos, TRY_DONOR_ID } from "@/lib/try-workspaces";
 
 const COPY = defineCopy("routes/try.workspaces", {
   ar: {
@@ -24,8 +26,6 @@ const COPY = defineCopy("routes/try.workspaces", {
 });
 
 export const Route = createFileRoute("/try/workspaces")({
-  // نسخ «بواباتي» التجريبية تُسجَّل صراحةً قبل الرسم (sideEffects: false).
-  beforeLoad: () => import("@/lib/try-workspaces").then((m) => m.registerWorkspacesDemos()),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
@@ -39,7 +39,14 @@ export const Route = createFileRoute("/try/workspaces")({
 });
 
 function TryWorkspaces() {
+  // نسخ «بواباتي» التجريبية تُسجَّل صراحةً في المتصفّح قبل أن تُرسم اللوحة (sideEffects: false).
+  useState(registerWorkspacesDemos);
+  // the trial session starts in the shell's effect, after this screen mounts: until it does,
+  // nothing is fetched, so no call ever reaches the real server from the trial.
   const t = useCopy(COPY);
+  const demo = useDemo();
+  if (!demo)
+    return <div aria-hidden="true" className="h-64 animate-pulse rounded-2xl bg-secondary" />;
   return (
     <div>
       <TryRoleHeader role={t.role} title={t.title} lead={t.lead} real={t.real} />

@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { DonorBoard } from "@/components/donor/DonorBoard";
 import { TryRoleHeader } from "@/components/try/TryRoleHeader";
 import { pageTitle } from "@/config/brand";
+import { useDemo } from "@/lib/demo-mode";
+import { registerDonorDemos } from "@/lib/try-workspaces";
 import { copyOf, defineCopy, useCopy } from "@/lib/locale";
 
 const COPY = defineCopy("routes/try.donor", {
@@ -25,8 +28,6 @@ const COPY = defineCopy("routes/try.donor", {
 });
 
 export const Route = createFileRoute("/try/donor/$entityId")({
-  // نسخ لوحة الجهة التجريبية تُسجَّل صراحةً قبل الرسم (sideEffects: false).
-  beforeLoad: () => import("@/lib/try-workspaces").then((m) => m.registerDonorDemos()),
   head: ({ match }) => {
     const l = match.context.locale ?? "ar";
     return {
@@ -40,8 +41,15 @@ export const Route = createFileRoute("/try/donor/$entityId")({
 });
 
 function TryDonor() {
+  // نسخ لوحة الجهة التجريبية تُسجَّل صراحةً في المتصفّح قبل الرسم (sideEffects: false).
+  useState(registerDonorDemos);
+  // the trial session starts in the shell's effect, after this screen mounts: until it does,
+  // nothing is fetched, so no call ever reaches the real server from the trial.
   const t = useCopy(COPY);
   const { entityId } = Route.useParams();
+  const demo = useDemo();
+  if (!demo)
+    return <div aria-hidden="true" className="h-64 animate-pulse rounded-2xl bg-secondary" />;
   return (
     <DonorBoard
       entityId={entityId}
