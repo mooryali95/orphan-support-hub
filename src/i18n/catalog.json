@@ -15326,10 +15326,10 @@
    "file": "src/components/org/OrgPledges.tsx"
   },
   "components/org/OrgPledges.lead": {
-   "en": "The office records its preparation and delivery with a document. The donor's identity is not shown here.",
-   "ar": "يسجّل المكتب تجهيزها وتسليمها بمستند. هويّة المتبرّع لا تظهر هنا.",
+   "en": "The office records its preparation and delivery with a document. The supporter's identity is not shown here.",
+   "ar": "يسجّل المكتب تجهيزها وتسليمها بمستند. هويّة الداعم لا تظهر هنا.",
    "kind": "text",
-   "hash": "ed764b489af7",
+   "hash": "5537a5b5d66d",
    "file": "src/components/org/OrgPledges.tsx"
   },
   "components/org/OrgPledges.office": {
@@ -32922,10 +32922,10 @@
    "file": "src/routes/_authenticated/org.tsx"
   },
   "routes/org.building": {
-   "en": "Capability building",
+   "en": "Capability program",
    "ar": "بناء الأهلية",
    "kind": "text",
-   "hash": "92cca0863e96",
+   "hash": "cbc025c9dbea",
    "file": "src/routes/_authenticated/org.tsx"
   },
   "routes/org.close": {
@@ -36752,10 +36752,10 @@
    "file": "src/routes/try.org.tsx"
   },
   "routes/try.org.real": {
-   "en": "an organization uploads no child file before the admin team approves it, and never sees the sponsor's name or the donor's identity",
-   "ar": "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة المتبرّع",
+   "en": "an organization uploads no child file before the admin team approves it, and never sees the sponsor's name or the supporter's identity",
+   "ar": "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة الداعم",
    "kind": "text",
-   "hash": "ed63a58bf00c",
+   "hash": "f1d7c63c84eb",
    "file": "src/routes/try.org.tsx"
   },
   "routes/try.org.role": {

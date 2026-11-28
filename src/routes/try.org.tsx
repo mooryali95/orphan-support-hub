@@ -16,7 +16,7 @@ const COPY = defineCopy("routes/try.org", {
     role: "جهة ميدانية",
     title: "جهة ميدانية نموذجية",
     lead: "ما ينتظر الجهة: رسائل كفلاء تراجعها قبل أن تصل الطفل، وتبرّعات التأهيل والعيني الموجّهة إليها.",
-    real: "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة المتبرّع",
+    real: "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة الداعم",
     sample: "بيانات نموذجية",
     approved: "اعتمدتها الإدارة",
     simulated:
@@ -27,7 +27,7 @@ const COPY = defineCopy("routes/try.org", {
     role: "Field organization",
     title: "A sample field organization",
     lead: "What waits for the organization: sponsor messages it reviews before they reach a child, and capability and in-kind giving directed to it.",
-    real: "an organization uploads no child file before the admin team approves it, and never sees the sponsor's name or the donor's identity",
+    real: "an organization uploads no child file before the admin team approves it, and never sees the sponsor's name or the supporter's identity",
     sample: "Sample data",
     approved: "Approved by the admin team",
     simulated:

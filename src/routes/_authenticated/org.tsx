@@ -93,7 +93,7 @@ export const ORG_COPY = defineCopy("routes/org", {
     resume: "Continue the draft",
     view: "View the file",
     profile: "Profile",
-    building: "Capability building",
+    building: "Capability program",
     report: "Periodic report",
     status: {
       draft: "Draft",

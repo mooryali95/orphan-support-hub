@@ -10,7 +10,7 @@ import { getOrgIncomingPledges, type OrgIncomingPledge } from "@/lib/org.functio
 export const PLEDGES_COPY = defineCopy("components/org/OrgPledges", {
   ar: {
     title: "تبرّعات التأهيل والعيني الموجّهة إليكم",
-    lead: "يسجّل المكتب تجهيزها وتسليمها بمستند. هويّة المتبرّع لا تظهر هنا.",
+    lead: "يسجّل المكتب تجهيزها وتسليمها بمستند. هويّة الداعم لا تظهر هنا.",
     toOrg: "للجهة",
     delivered: "سُلّم موثّقاً",
     preparing: "يُجهَّز",
@@ -19,7 +19,7 @@ export const PLEDGES_COPY = defineCopy("components/org/OrgPledges", {
   },
   en: {
     title: "Capability and in-kind giving directed to you",
-    lead: "The office records its preparation and delivery with a document. The donor's identity is not shown here.",
+    lead: "The office records its preparation and delivery with a document. The supporter's identity is not shown here.",
     toOrg: "For the organization",
     delivered: "Delivered and documented",
     preparing: "Being prepared",

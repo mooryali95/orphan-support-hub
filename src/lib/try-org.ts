@@ -62,4 +62,7 @@ export function registerOrgDemos(locale: Locale = "ar") {
     return { ok: true };
   });
   registerDemo("org.incomingPledges", async () => ({ ok: true, pledges }));
+  // لا تسليم في العرض، فلا رفع: النسختان ترفضان بلا نداءٍ للخادم إن وصلهما شيء.
+  registerDemo("org.signUpload", async () => ({ ok: false }));
+  registerDemo("org.confirmDelivery", async () => ({ ok: false }));
 }
