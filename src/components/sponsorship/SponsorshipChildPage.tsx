@@ -177,7 +177,7 @@ export function SponsorshipChildPage({ sponsorshipId }: { sponsorshipId: string 
   if (!l) {
     return (
       <div role="alert" className="rounded-2xl border border-border bg-card p-8 text-center">
-        <p className="text-sm text-muted-foreground">{c.loadFailed}</p>
+        <h1 className="text-sm font-normal text-muted-foreground">{c.loadFailed}</h1>
         <Button asChild variant="outline" className="mt-3">
           <Link to={demo ? trialRoute("/try/impact") : "/dashboard"}>{c.back}</Link>
         </Button>

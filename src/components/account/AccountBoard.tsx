@@ -355,7 +355,7 @@ export function AccountBoard({ user, shell, mfa, links, onSignOut }: AccountBoar
                   className="group flex min-h-11 max-w-full items-center gap-2 rounded-lg text-start"
                 >
                   <span className="sr-only">{c.editName}: </span>
-                  <h1 className="truncate text-2xl font-extrabold">{fullName || c.addName}</h1>
+                  <h2 className="truncate text-2xl font-extrabold">{fullName || c.addName}</h2>
                   <Pencil
                     className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
                     aria-hidden="true"
