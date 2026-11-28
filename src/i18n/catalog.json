@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5735,
+ "count": 5754,
  "entries": {
   "account/mfa.badge": {
    "en": "Verified session (aal2)",
@@ -15174,6 +15174,20 @@
    "hash": "5c720a19ed1d",
    "file": "src/components/offices/OfficesMap.tsx"
   },
+  "components/org-file-notes.noReason": {
+   "en": "Not specified",
+   "ar": "غير محدّد",
+   "kind": "text",
+   "hash": "d047959932fe",
+   "file": "src/components/org/OrgFileNotes.tsx"
+  },
+  "components/org-file-notes.rejectReason": {
+   "en": "Reason for rejection:",
+   "ar": "سبب الرفض:",
+   "kind": "text",
+   "hash": "417fa143a137",
+   "file": "src/components/org/OrgFileNotes.tsx"
+  },
   "components/org/OrgInbox.approve": {
    "en": "Approve",
    "ar": "اعتماد",
@@ -29177,6 +29191,111 @@
    "hash": "047251131d56",
    "file": "src/lib/office-gap.ts"
   },
+  "lib/review-labels.rejection.documents_inconsistent": {
+   "en": "Documents contradict each other",
+   "ar": "تعارض بين المستندات",
+   "kind": "text",
+   "hash": "8609b2f7cd37",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.documents_missing": {
+   "en": "Missing documents",
+   "ar": "مستندات ناقصة",
+   "kind": "text",
+   "hash": "f5fbd32b5a13",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.documents_unclear": {
+   "en": "Unclear documents",
+   "ar": "مستندات غير واضحة",
+   "kind": "text",
+   "hash": "a9f2c966399d",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.duplicate_profile": {
+   "en": "Duplicate file",
+   "ar": "ملفّ مكرّر",
+   "kind": "text",
+   "hash": "f8f0f7712788",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.guardianship_unproven": {
+   "en": "Guardianship not proven",
+   "ar": "الوصاية غير مُثبَتة",
+   "kind": "text",
+   "hash": "858796c7af96",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.identity_unverified": {
+   "en": "Identity not verified",
+   "ar": "الهوية غير مُتحقَّق منها",
+   "kind": "text",
+   "hash": "75ec402c6b4f",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.needs_unjustified": {
+   "en": "Need items not justified",
+   "ar": "بنود الاحتياج غير مبرَّرة",
+   "kind": "text",
+   "hash": "c8105c249153",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.other": {
+   "en": "Other reason",
+   "ar": "سبب آخر",
+   "kind": "text",
+   "hash": "b279e6389520",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.rejection.photo_consent_missing": {
+   "en": "No photo consent on record",
+   "ar": "لا إقرار بالموافقة على الصورة",
+   "kind": "text",
+   "hash": "e860fcfc2352",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.aspiration": {
+   "en": "Aspirations and interests",
+   "ar": "الطموح والميول",
+   "kind": "text",
+   "hash": "f4ff575d0122",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.education": {
+   "en": "Education",
+   "ar": "التعليم",
+   "kind": "text",
+   "hash": "f5406ee9c0e4",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.family": {
+   "en": "Family and housing",
+   "ar": "الأسرة والسكن",
+   "kind": "text",
+   "hash": "b837a8005ac5",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.health": {
+   "en": "Health",
+   "ar": "الصحّة",
+   "kind": "text",
+   "hash": "93426a5231ee",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.social": {
+   "en": "Psychological and social",
+   "ar": "النفسي والاجتماعي",
+   "kind": "text",
+   "hash": "029702782066",
+   "file": "src/lib/copy/review-labels.ts"
+  },
+  "lib/review-labels.sections.supervisor_note": {
+   "en": "Supervisor note",
+   "ar": "ملاحظة المشرف",
+   "kind": "text",
+   "hash": "2015e213cac6",
+   "file": "src/lib/copy/review-labels.ts"
+  },
   "lib/try-ask.child": {
    "en": "From the public card of file {1}: {0} in {2}, {3}. The monthly sponsorship covers {4}. That is all that is published; the rest of the file is protected.",
    "ar": "من البطاقة العامّة للملفّ {1}: {0} في {2}، {3}. الكفالة الشهرية تغطّي {4}. هذا كلّ ما هو منشور، وبقية الملفّ محميّة.",
@@ -33145,13 +33264,6 @@
    "hash": "d59a431dd4d3",
    "file": "src/routes/_authenticated/org.tsx"
   },
-  "routes/org.noReason": {
-   "en": "Not specified",
-   "ar": "غير محدّد",
-   "kind": "text",
-   "hash": "d047959932fe",
-   "file": "src/routes/_authenticated/org.tsx"
-  },
   "routes/org.pageTitle": {
    "en": "Field organization space",
    "ar": "مساحة الجهة الميدانية",
@@ -33192,13 +33304,6 @@
    "ar": "تسجيل جهة ميدانية",
    "kind": "text",
    "hash": "5e8c35db2b60",
-   "file": "src/routes/_authenticated/org.tsx"
-  },
-  "routes/org.rejectReason": {
-   "en": "Reason for rejection:",
-   "ar": "سبب الرفض:",
-   "kind": "text",
-   "hash": "417fa143a137",
    "file": "src/routes/_authenticated/org.tsx"
   },
   "routes/org.report": {
@@ -36877,6 +36982,27 @@
    "hash": "ed281a01eefb",
    "file": "src/routes/try.org.tsx"
   },
+  "routes/try.org.filePublished": {
+   "en": "A fictional published file",
+   "ar": "ملفّ خيالي منشور",
+   "kind": "text",
+   "hash": "136b0c6cc876",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.fileReturned": {
+   "en": "A fictional file returned by the admin team",
+   "ar": "ملفّ خيالي أعادته الإدارة",
+   "kind": "text",
+   "hash": "7a50bc546b27",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.filesTitle": {
+   "en": "Organization files (sample)",
+   "ar": "ملفّات الجهة (نموذجية)",
+   "kind": "text",
+   "hash": "61b85a37184e",
+   "file": "src/routes/try.org.tsx"
+  },
   "routes/try.org.lead": {
    "en": "What waits for the organization: sponsor messages it reviews before they reach a child, and capability and in-kind giving directed to it.",
    "ar": "ما ينتظر الجهة: رسائل كفلاء تراجعها قبل أن تصل الطفل، وتبرّعات التأهيل والعيني الموجّهة إليها.",
@@ -36896,6 +37022,13 @@
    "ar": "لا ترفع الجهة ملفّ طفل قبل أن تعتمدها الإدارة، ولا يظهر لها اسم الكافل ولا هويّة الداعم",
    "kind": "text",
    "hash": "f1d7c63c84eb",
+   "file": "src/routes/try.org.tsx"
+  },
+  "routes/try.org.returnedNote": {
+   "en": "the birth certificate scan is unreadable",
+   "ar": "صورة شهادة الميلاد غير مقروءة",
+   "kind": "text",
+   "hash": "cdf60ea6de8d",
    "file": "src/routes/try.org.tsx"
   },
   "routes/try.org.role": {
