@@ -104,21 +104,41 @@ function isChildPath(path: string): boolean {
   return /^\/orphans\/[^/]+/.test(path);
 }
 
-/** المسارات التي لا يجوز أن تُخزَّن في وسيط أو متصفّح. */
-const NO_STORE = ["/dashboard", "/admin", "/org", "/guardian", "/auth"];
+/**
+ * الصفحات العامّة التي يجوز تخزينها (N4). المنع هو الافتراض: ما لم يُذكر هنا
+ * لا يُخزَّن، فأيّ صفحةٍ محميّة تُضاف لاحقاً تُحمى دون أن يتذكّرها أحد.
+ * الجذر بالضبط، والبقيّة بحدّ المقطع (`/orphans` لا يلتقط `/orphansX`).
+ */
+export const PUBLIC_CACHEABLE = [
+  "/developers",
+  "/hall",
+  "/how-it-works",
+  "/legal",
+  "/organizations",
+  "/orphans",
+  "/support",
+  "/traits",
+  "/try",
+  "/vision",
+] as const;
+
+/** ملفّات ثابتة عامّة بأسمائها (الأصول المجزّأة والأيقونات والزواحف). */
+const PUBLIC_FILE =
+  /^\/(?:assets\/[^/]+|[A-Za-z0-9._-]+\.(?:xml|txt|ico|png|svg|webmanifest|json|js|css|woff2?))$/;
 
 /**
  * المطابقة على حدّ المقطع لا على البادئة.
  *
- * `startsWith("/org")` يلتقط `/orphans` و`/organizations` أيضاً — وهما
- * صفحتان عامّتان يُراد تخزينهما. فالمطابقة إمّا على المسار نفسه أو على
- * ما يليه شرطة.
+ * `startsWith("/org")` يلتقط `/orphans` و`/organizations` أيضاً؛ فالمطابقة إمّا
+ * على المسار نفسه أو على ما يليه شرطة.
  */
-function isPrivatePath(path: string): boolean {
+export function isPrivatePath(path: string): boolean {
   if (path.startsWith("/api/")) return true;
   // نتائج دوالّ الخادم (GET) تحمل بيانات المستخدم كما تحملها /api.
   if (path.startsWith("/_serverFn/")) return true;
-  return NO_STORE.some((p) => path === p || path.startsWith(`${p}/`));
+  if (path === "/" || path === "") return false;
+  if (PUBLIC_FILE.test(path)) return false;
+  return !PUBLIC_CACHEABLE.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
 export function applySecurityHeaders(

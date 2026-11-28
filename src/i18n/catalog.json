@@ -1,6 +1,6 @@
 {
  "version": 1,
- "count": 5231,
+ "count": 5233,
  "entries": {
   "account/mfa.code": {
    "en": "Code",
@@ -9174,6 +9174,20 @@
    "ar": "أطفال، وكفلاء، وكفالات، وتحويلات، بنطاق صلاحيتك. الأسهم للتنقّل وEnter للفتح.",
    "kind": "text",
    "hash": "8b370df1ffbe",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.limited": {
+   "en": "Too many searches in a short time. Wait a minute and try again.",
+   "ar": "بحثٌ كثير في وقت قصير. انتظر دقيقة ثم أعد المحاولة.",
+   "kind": "text",
+   "hash": "9d718a87ebc5",
+   "file": "src/components/admin/search/AdminSearch.tsx"
+  },
+  "components/admin/search.mfa": {
+   "en": "Sponsors, sponsorships and transfers appear once this session passes two-step verification.",
+   "ar": "الكفلاء والكفالات والتحويلات تظهر بعد تفعيل التحقّق بخطوتين في هذه الجلسة.",
+   "kind": "text",
+   "hash": "ff0da1b32633",
    "file": "src/components/admin/search/AdminSearch.tsx"
   },
   "components/admin/search.none": {

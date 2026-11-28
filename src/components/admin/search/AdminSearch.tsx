@@ -25,6 +25,8 @@ const COPY = defineCopy("components/admin/search", {
     short: "اكتب حرفين على الأقلّ.",
     none: "لا نتائج.",
     failed: "تعذّر البحث. أعد المحاولة.",
+    limited: "بحثٌ كثير في وقت قصير. انتظر دقيقة ثم أعد المحاولة.",
+    mfa: "الكفلاء والكفالات والتحويلات تظهر بعد تفعيل التحقّق بخطوتين في هذه الجلسة.",
     groups: {
       child: "الأطفال",
       sponsor: "الكفلاء",
@@ -41,6 +43,8 @@ const COPY = defineCopy("components/admin/search", {
     short: "Type at least two characters.",
     none: "No results.",
     failed: "Search failed. Try again.",
+    limited: "Too many searches in a short time. Wait a minute and try again.",
+    mfa: "Sponsors, sponsorships and transfers appear once this session passes two-step verification.",
     groups: {
       child: "Children",
       sponsor: "Sponsors",
@@ -169,10 +173,17 @@ function Panel({ onPick }: { onPick: (hit: SearchHit) => void }) {
         )}
       </div>
       <div className="max-h-[60vh] overflow-y-auto overscroll-contain p-2" aria-live="polite">
+        {results.mfa_required && q.length >= SEARCH_MIN && (
+          <p className="text-muted-foreground border-border mx-1 mb-2 rounded-lg border px-3 py-2 text-xs">
+            {t.mfa}
+          </p>
+        )}
         {q.length < SEARCH_MIN ? (
           <p className="text-muted-foreground px-3 py-6 text-center text-sm">{t.short}</p>
         ) : res.data && !res.data.ok ? (
-          <p className="text-destructive px-3 py-6 text-center text-sm">{t.failed}</p>
+          <p className="text-destructive px-3 py-6 text-center text-sm">
+            {res.data.error === "rate_limited" ? t.limited : t.failed}
+          </p>
         ) : res.isPending ? null : hits.length === 0 ? (
           <p className="text-muted-foreground px-3 py-6 text-center text-sm">{t.none}</p>
         ) : (

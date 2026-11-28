@@ -9,7 +9,11 @@ import {
   type RetentionDb,
 } from "./child-updates-retention";
 
-function fakeDb(opts: { items: unknown[]; failRemove?: (paths: string[]) => boolean }) {
+function fakeDb(opts: {
+  items: unknown[];
+  stray?: string[];
+  failRemove?: (paths: string[]) => boolean;
+}) {
   const calls: Array<{ fn: string; args: Record<string, unknown> | undefined }> = [];
   const removed: Array<{ bucket: string; paths: string[] }> = [];
   const db: RetentionDb = {
@@ -17,6 +21,9 @@ function fakeDb(opts: { items: unknown[]; failRemove?: (paths: string[]) => bool
       calls.push({ fn, args });
       if (fn === "child_updates_retention_due")
         return { data: { ok: true, items: opts.items }, error: null };
+      if (fn === "child_updates_stray_objects")
+        return { data: { ok: true, paths: opts.stray ?? [] }, error: null };
+      if (fn === "child_updates_stray_done") return { data: null, error: null };
       const ids = (args?.["_ids"] as string[]) ?? [];
       return { data: { ok: true, deleted: ids.length }, error: null };
     },
@@ -55,9 +62,10 @@ describe("child updates retention", () => {
     expect(calls.map((c) => c.fn)).toEqual([
       "child_updates_retention_due",
       "child_updates_retention_done",
+      "child_updates_stray_objects",
     ]);
     expect(calls[1]?.args).toEqual({ _ids: ["a", "b", "c"], _archive_days: 400 });
-    expect(summary).toEqual({ due: 3, deleted: 3, storageFailed: 0 });
+    expect(summary).toEqual({ due: 3, deleted: 3, storageFailed: 0, stray: 0 });
   });
 
   it("keeps rows whose media could not be removed", async () => {
@@ -66,8 +74,11 @@ describe("child updates retention", () => {
       failRemove: () => true,
     });
     const summary = await runChildUpdatesRetention(db);
-    expect(calls.map((c) => c.fn)).toEqual(["child_updates_retention_due"]);
-    expect(summary).toEqual({ due: 1, deleted: 0, storageFailed: 1 });
+    expect(calls.map((c) => c.fn)).toEqual([
+      "child_updates_retention_due",
+      "child_updates_stray_objects",
+    ]);
+    expect(summary).toEqual({ due: 1, deleted: 0, storageFailed: 1, stray: 0 });
   });
 
   it("purges a rejected update's media and its poster", async () => {
@@ -76,5 +87,20 @@ describe("child updates retention", () => {
     expect(removed).toEqual([{ bucket: CHILD_UPDATES_BUCKET, paths: ["o/v.mp4", "o/p.jpg"] }]);
     expect(await purgeChildUpdateMedia(db, [])).toBe(true);
     expect(removed).toHaveLength(1);
+  });
+
+  it("deletes stored objects that never got a child_updates row (N1)", async () => {
+    const { db, calls, removed } = fakeDb({ items: [], stray: ["o/x.exe", "o/y.jpg"] });
+    const summary = await runChildUpdatesRetention(db);
+    expect(removed).toEqual([{ bucket: CHILD_UPDATES_BUCKET, paths: ["o/x.exe", "o/y.jpg"] }]);
+    expect(calls.at(-1)).toEqual({ fn: "child_updates_stray_done", args: { _deleted: 2 } });
+    expect(summary.stray).toBe(2);
+  });
+
+  it("reports a failed stray sweep without logging a purge", async () => {
+    const { db, calls } = fakeDb({ items: [], stray: ["o/x.exe"], failRemove: () => true });
+    const summary = await runChildUpdatesRetention(db);
+    expect(calls.map((c) => c.fn)).not.toContain("child_updates_stray_done");
+    expect(summary).toEqual({ due: 0, deleted: 0, storageFailed: 1, stray: 0 });
   });
 });

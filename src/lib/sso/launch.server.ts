@@ -30,6 +30,8 @@ export function resetJwksCacheForTest() {
 async function keys(env: Record<string, string | undefined>, kid?: string): Promise<VerifyKeys> {
   const out: VerifyKeys = {};
   if (env["WAMY_SSO_SECRET"]) out.secret = env["WAMY_SSO_SECRET"];
+  // تدوير السرّ بلا انقطاع: يُقبل السابق حتى تبدّل الندوة، ثم يُمحى.
+  if (env["WAMY_SSO_SECRET_PREVIOUS"]) out.previousSecret = env["WAMY_SSO_SECRET_PREVIOUS"];
   const url = env["WAMY_SSO_JWKS_URL"];
   if (url) {
     const stale = !jwksCache || jwksCache.url !== url || Date.now() - jwksCache.at > 10 * 60_000;
